@@ -91,14 +91,24 @@
     <div>Fecha: {{ $transaction->created_at->format('d/m/Y H:i') }}</div>
     <div>Nro. Transacción: #{{ $transaction->id }}</div>
 
-    <div class="details">
-        <h3>Detalles del Cliente</h3>
-        <p>
-            <strong>Cliente:</strong> {{ $transaction->booking->lead->name }}
-            {{ $transaction->booking->lead->last_name }}<br>
-            <strong>Expediente:</strong> {{ $transaction->booking->file_number }}
-        </p>
-    </div>
+    @if($transaction->booking)
+        <div class="mb-4">
+            <p><strong>Expediente:</strong> {{ $transaction->booking->file_number }}</p>
+            @if($transaction->booking->client)
+                <p><strong>Cliente:</strong> {{ $transaction->booking->client->name }}</p>
+            @endif
+            <p><strong>Destino:</strong> {{ $transaction->booking->destination }}</p>
+            <p><strong>Fecha Salida:</strong>
+                {{ $transaction->booking->start_date ? \Carbon\Carbon::parse($transaction->booking->start_date)->format('d/m/Y') : '-' }}
+            </p>
+        </div>
+    @endif
+
+    @if($transaction->payer_name)
+        <div class="mb-4">
+            <p><strong>Pagante / Beneficiario:</strong> {{ $transaction->payer_name }}</p>
+        </div>
+    @endif
 
     <table class="details-table">
         <thead>

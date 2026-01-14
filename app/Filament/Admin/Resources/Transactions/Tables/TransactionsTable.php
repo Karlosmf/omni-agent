@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\Transactions\Tables;
 
 use App\Enums\Currency;
 use App\Enums\TransactionType;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -58,6 +59,12 @@ class TransactionsTable
             ->recordActions([
                 EditAction::make()
                     ->label('Editar'),
+                Action::make('receipt')
+                    ->label('Recibo')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color('info')
+                    ->url(fn ($record) => route('transactions.receipt', $record))
+                    ->openUrlInNewTab(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

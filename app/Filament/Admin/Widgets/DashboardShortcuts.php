@@ -30,6 +30,12 @@ class DashboardShortcuts extends StatsOverviewWidget
                 ->descriptionIcon('heroicon-m-currency-dollar')
                 ->color('warning')
                 ->url(TransactionResource::getUrl('create')),
+
+            Stat::make('Recibos', 'Documentación')
+                ->description('Ver y descargar recibos')
+                ->descriptionIcon('heroicon-m-document-text')
+                ->color('info')
+                ->url(TransactionResource::getUrl('index')),
         ];
     }
 }
