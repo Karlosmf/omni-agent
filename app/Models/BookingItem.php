@@ -14,9 +14,10 @@ class BookingItem extends Model
 
     protected $fillable = [
         'booking_id',
+        'supplier_id',
         'type',
         'description',
-        'supplier_name',
+        'supplier_name', // Mantener por compatibilidad temporal si se desea, o quitar.
         'cost_usd',
         'sell_usd',
     ];
@@ -30,5 +31,10 @@ class BookingItem extends Model
     public function booking(): BelongsTo
     {
         return $this->belongsTo(Booking::class);
+    }
+
+    public function supplier(): BelongsTo
+    {
+        return $this->belongsTo(Supplier::class);
     }
 }

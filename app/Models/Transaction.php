@@ -14,27 +14,59 @@ class Transaction extends Model
     use HasFactory;
 
     protected $fillable = [
+
         'booking_id',
-        'payer_name',
+
+        'supplier_id',
+
+        'supplier_account_id',
+
         'type',
+
         'currency',
+
         'amount',
+
         'exchange_rate',
+
         'amount_usd_fixed',
+
         'method',
-        'notes',
+
     ];
 
     protected $casts = [
+
         'type' => TransactionType::class,
+
         'currency' => Currency::class,
+
         'amount' => 'decimal:2',
+
         'exchange_rate' => 'decimal:4',
+
         'amount_usd_fixed' => 'decimal:2',
+
     ];
 
     public function booking(): BelongsTo
     {
+
         return $this->belongsTo(Booking::class);
+
+    }
+
+    public function supplier(): BelongsTo
+    {
+
+        return $this->belongsTo(Supplier::class);
+
+    }
+
+    public function supplierAccount(): BelongsTo
+    {
+
+        return $this->belongsTo(SupplierAccount::class);
+
     }
 }

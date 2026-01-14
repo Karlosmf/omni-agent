@@ -15,6 +15,7 @@ class Booking extends Model
 
     protected $fillable = [
         'lead_id',
+        'customer_id',
         'file_number',
         'holder_name',
         'total_cost_usd',
@@ -35,6 +36,11 @@ class Booking extends Model
     public function lead(): BelongsTo
     {
         return $this->belongsTo(Lead::class);
+    }
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
     }
 
     public function items(): HasMany

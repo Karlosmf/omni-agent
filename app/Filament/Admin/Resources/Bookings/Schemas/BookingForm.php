@@ -24,11 +24,20 @@ class BookingForm
                     ->schema([
                         Grid::make(3)
                             ->schema([
-                                Select::make('lead_id')
-                                    ->label('Lead Relacionado')
-                                    ->relationship('lead', 'customer_name')
+                                Select::make('customer_id')
+                                    ->label('Cliente (Cuenta)')
+                                    ->relationship('customer', 'name')
                                     ->searchable()
-                                    ->preload(),
+                                    ->preload()
+                                    ->createOptionForm([
+                                        TextInput::make('name')
+                                            ->label('Nombre')
+                                            ->required(),
+                                        TextInput::make('phone')
+                                            ->label('Teléfono')
+                                            ->required(),
+                                    ])
+                                    ->required(),
                                 TextInput::make('file_number')
                                     ->label('Nro Expediente')
                                     ->required()
@@ -38,10 +47,15 @@ class BookingForm
                                     ->options(BookingStatus::class)
                                     ->required(),
                             ]),
-                        Grid::make(2)
+                        Grid::make(3)
                             ->schema([
+                                Select::make('lead_id')
+                                    ->label('Lead Origen')
+                                    ->relationship('lead', 'customer_name')
+                                    ->searchable()
+                                    ->preload(),
                                 TextInput::make('holder_name')
-                                    ->label('Nombre del Titular')
+                                    ->label('Nombre del Pasajero Principal')
                                     ->required(),
                                 DatePicker::make('travel_date')
                                     ->label('Fecha de Viaje')
@@ -65,8 +79,18 @@ class BookingForm
                                             ->label('Descripción')
                                             ->required()
                                             ->columnSpan(2),
-                                        TextInput::make('supplier_name')
+                                        Select::make('supplier_id')
                                             ->label('Proveedor')
+                                            ->relationship('supplier', 'name')
+                                            ->searchable()
+                                            ->preload()
+                                            ->createOptionForm([
+                                                TextInput::make('name')
+                                                    ->label('Nombre Proveedor')
+                                                    ->required(),
+                                                TextInput::make('category')
+                                                    ->label('Categoría'),
+                                            ])
                                             ->required(),
                                     ]),
                                 Grid::make(2)

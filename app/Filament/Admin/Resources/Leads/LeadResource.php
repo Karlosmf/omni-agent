@@ -11,14 +11,26 @@ use App\Models\Lead;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class LeadResource extends Resource
 {
     protected static ?string $model = Lead::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-chat-bubble-left-right';
+
+    protected static UnitEnum|string|null $navigationGroup = 'Ventas';
+
+    protected static ?int $navigationSort = 1;
+
+    protected static ?string $modelLabel = 'Consulta';
+
+    protected static ?string $pluralModelLabel = 'Consultas';
+
+    protected static ?string $navigationLabel = 'Consultas';
+
+    protected static ?string $slug = 'consultas';
 
     public static function form(Schema $schema): Schema
     {

@@ -69,7 +69,7 @@
                 <tr>
                     <td>{{ ucfirst($item->type->value) }}</td>
                     <td>{{ $item->description }}</td>
-                    <td>{{ $item->supplier_name }}</td>
+                    <td>{{ $item->supplier?->name ?? $item->supplier_name }}</td>
                     <td align="right">USD {{ number_format($item->sell_usd, 2) }}</td>
                 </tr>
                 @endforeach

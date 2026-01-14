@@ -11,14 +11,26 @@ use App\Models\Booking;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class BookingResource extends Resource
 {
     protected static ?string $model = Booking::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-briefcase';
+
+    protected static UnitEnum|string|null $navigationGroup = 'Ventas';
+
+    protected static ?int $navigationSort = 3;
+
+    protected static ?string $modelLabel = 'Expediente';
+
+    protected static ?string $pluralModelLabel = 'Expedientes';
+
+    protected static ?string $navigationLabel = 'Expedientes';
+
+    protected static ?string $slug = 'expedientes';
 
     public static function form(Schema $schema): Schema
     {

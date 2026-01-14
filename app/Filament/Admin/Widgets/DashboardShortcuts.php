@@ -13,9 +13,9 @@ class DashboardShortcuts extends StatsOverviewWidget
     protected function getStats(): array
     {
         return [
-            Stat::make('Nuevo Lead', 'Capturar Interesado')
+            Stat::make('Nueva Consulta', 'Capturar Interesado')
                 ->description('Registrar nuevo contacto')
-                ->descriptionIcon('heroicon-m-user-plus')
+                ->descriptionIcon('heroicon-m-chat-bubble-left-right')
                 ->color('primary')
                 ->url(LeadResource::getUrl('create')),
 
@@ -25,14 +25,14 @@ class DashboardShortcuts extends StatsOverviewWidget
                 ->color('success')
                 ->url(BookingResource::getUrl('create')),
 
-            Stat::make('Registrar Pago', 'Caja')
+            Stat::make('Nuevo Movimiento', 'Caja')
                 ->description('Ingresar cobro o pago')
                 ->descriptionIcon('heroicon-m-currency-dollar')
                 ->color('warning')
                 ->url(TransactionResource::getUrl('create')),
 
             Stat::make('Recibos', 'Documentación')
-                ->description('Ver y descargar recibos')
+                ->description('Ver y descargar comprobantes')
                 ->descriptionIcon('heroicon-m-document-text')
                 ->color('info')
                 ->url(TransactionResource::getUrl('index')),

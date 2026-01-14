@@ -11,14 +11,26 @@ use App\Models\Transaction;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class TransactionResource extends Resource
 {
     protected static ?string $model = Transaction::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-currency-dollar';
+
+    protected static UnitEnum|string|null $navigationGroup = 'Finanzas';
+
+    protected static ?int $navigationSort = 1;
+
+    protected static ?string $modelLabel = 'Movimiento';
+
+    protected static ?string $pluralModelLabel = 'Movimientos de Caja';
+
+    protected static ?string $navigationLabel = 'Caja';
+
+    protected static ?string $slug = 'caja';
 
     public static function form(Schema $schema): Schema
     {

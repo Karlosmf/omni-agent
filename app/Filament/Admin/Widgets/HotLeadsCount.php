@@ -12,7 +12,7 @@ class HotLeadsCount extends StatsOverviewWidget
     protected function getStats(): array
     {
         return [
-            Stat::make('Leads Calientes', Lead::where('temperature', LeadTemperature::Hot)->count())
+            Stat::make('Consultas Calientes', Lead::where('temperature', LeadTemperature::Hot)->count())
                 ->description('Requieren atención inmediata')
                 ->descriptionIcon('heroicon-m-fire')
                 ->color('danger'),
@@ -20,9 +20,9 @@ class HotLeadsCount extends StatsOverviewWidget
                 ->description('Marcados para intervención manual')
                 ->descriptionIcon('heroicon-m-exclamation-triangle')
                 ->color('warning'),
-            Stat::make('Total Leads Nuevos', Lead::where('status', 'new')->count())
-                ->description('Esperando ser procesados')
-                ->descriptionIcon('heroicon-m-user-plus')
+            Stat::make('Nuevas Consultas', Lead::where('status', 'new')->count())
+                ->description('Esperando ser procesadas')
+                ->descriptionIcon('heroicon-m-chat-bubble-left-right')
                 ->color('info'),
         ];
     }

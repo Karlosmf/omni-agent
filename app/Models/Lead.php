@@ -6,6 +6,7 @@ use App\Enums\LeadStatus;
 use App\Enums\LeadTemperature;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Lead extends Model
@@ -14,6 +15,7 @@ class Lead extends Model
     use HasFactory;
 
     protected $fillable = [
+        'customer_id',
         'source',
         'temperature',
         'status',
@@ -31,6 +33,11 @@ class Lead extends Model
         'ai_data' => 'array',
         'needs_human_attention' => 'boolean',
     ];
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
+    }
 
     public function booking(): HasOne
     {
