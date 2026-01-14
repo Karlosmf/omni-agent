@@ -14,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('lead_id')->nullable()->constrained()->nullOnDelete();
             $table->string('file_number')->unique();
             $table->string('holder_name');
             $table->decimal('total_cost_usd', 10, 2);

@@ -1,0 +1,37 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Enums\LeadStatus;
+use App\Enums\LeadTemperature;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Lead>
+ */
+class LeadFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            'source' => fake()->randomElement(['whatsapp', 'instagram']),
+            'temperature' => fake()->randomElement(LeadTemperature::cases()),
+            'status' => fake()->randomElement(LeadStatus::cases()),
+            'customer_name' => fake()->name(),
+            'customer_phone' => fake()->phoneNumber(),
+            'raw_message' => fake()->paragraph(),
+            'ai_data' => [
+                'destination' => fake()->city(),
+                'budget' => fake()->numberBetween(1000, 5000),
+                'pax' => fake()->numberBetween(1, 5),
+            ],
+            'ai_summary' => fake()->sentence(),
+            'needs_human_attention' => fake()->boolean(),
+        ];
+    }
+}

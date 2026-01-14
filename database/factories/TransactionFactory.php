@@ -1,0 +1,37 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Enums\Currency;
+use App\Enums\TransactionType;
+use App\Models\Booking;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Transaction>
+ */
+class TransactionFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        $currency = fake()->randomElement(Currency::cases());
+        $amount = fake()->randomFloat(2, 100, 2000);
+        $rate = $currency === Currency::ARS ? 1200 : 1;
+        $amountUsd = $currency === Currency::ARS ? $amount / $rate : $amount;
+
+        return [
+            'booking_id' => Booking::factory(),
+            'type' => fake()->randomElement(TransactionType::cases()),
+            'currency' => $currency,
+            'amount' => $amount,
+            'exchange_rate' => $rate,
+            'amount_usd_fixed' => $amountUsd,
+            'method' => fake()->randomElement(['Cash', 'Bank Transfer', 'Credit Card']),
+        ];
+    }
+}
