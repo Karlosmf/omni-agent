@@ -21,6 +21,7 @@ class Transaction extends Model
         'exchange_rate',
         'amount_usd_fixed',
         'method',
+        'notes',
     ];
 
     protected $casts = [

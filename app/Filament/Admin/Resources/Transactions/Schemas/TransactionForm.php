@@ -6,10 +6,10 @@ use App\Enums\Currency;
 use App\Enums\TransactionType;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 
 class TransactionForm
@@ -64,9 +64,15 @@ class TransactionForm
                                     ->prefix('$')
                                     ->extraInputAttributes(['class' => 'bg-gray-100']),
                                 TextInput::make('method')
-                                    ->label('Método de Pago / Cobro')
                                     ->placeholder('ej: Efectivo, Transferencia, etc.')
                                     ->required(),
+                            ]),
+                        Grid::make(1)
+                            ->schema([
+                                \Filament\Forms\Components\Textarea::make('notes')
+                                    ->label('Notas / Concepto')
+                                    ->placeholder('Detalles adicionales del pago o cobro...')
+                                    ->rows(3),
                             ]),
                     ]),
             ]);

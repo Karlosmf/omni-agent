@@ -8,10 +8,10 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 
 class BookingForm
@@ -88,7 +88,12 @@ class BookingForm
                                     ]),
                             ])
                             ->columns(1)
-                            ->itemLabel(fn (array $state): ?string => ($state['type'] ?? '').': '.($state['description'] ?? ''))
+                            ->itemLabel(function (array $state): ?string {
+                                $type = $state['type'] ?? null;
+                                $label = $type instanceof ServiceType ? $type->getLabel() : $type;
+
+                                return $label.': '.($state['description'] ?? '');
+                            })
                             ->deleteAction(fn (Set $set, Get $get) => self::updateTotals($set, $get)),
                     ]),
 
