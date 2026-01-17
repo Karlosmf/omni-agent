@@ -128,7 +128,17 @@ class TransactionForm
                                     ->prefix('$')
                                     ->extraInputAttributes(['class' => 'bg-gray-100']),
                                 TextInput::make('method')
-                                    ->placeholder('ej: Efectivo, Transferencia, etc.')
+                                    ->label('Método de Pago')
+                                    ->datalist([
+                                        'Efectivo',
+                                        'Transferencia',
+                                        'Tarjeta de Crédito',
+                                        'Tarjeta de Débito',
+                                        'Mercado Pago',
+                                        'PayPal',
+                                        'Zelle',
+                                        'Cripto',
+                                    ])
                                     ->required(),
                             ]),
                         Grid::make(1)

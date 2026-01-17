@@ -27,11 +27,13 @@ class TransactionFactory extends Factory
         return [
             'booking_id' => Booking::factory(),
             'type' => fake()->randomElement(TransactionType::cases()),
-            'currency' => $currency,
+            'currency' => $currency, // Eloquent handles Enum casting if defined in model
             'amount' => $amount,
             'exchange_rate' => $rate,
             'amount_usd_fixed' => $amountUsd,
             'method' => fake()->randomElement(['Cash', 'Bank Transfer', 'Credit Card']),
+            'date' => fake()->date(),
+            'notes' => fake()->sentence(),
         ];
     }
 }

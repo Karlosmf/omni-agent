@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Enums\ServiceType;
 use App\Models\Booking;
+use App\Models\Supplier;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -23,9 +24,9 @@ class BookingItemFactory extends Factory
 
         return [
             'booking_id' => Booking::factory(),
-            'type' => fake()->randomElement(ServiceType::cases()),
+            'supplier_id' => Supplier::factory(),
+            'service_type' => fake()->randomElement(ServiceType::cases()),
             'description' => fake()->sentence(),
-            'supplier_name' => fake()->company(),
             'cost_usd' => $cost,
             'sell_usd' => $sell,
         ];

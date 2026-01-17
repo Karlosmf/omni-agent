@@ -12,7 +12,7 @@ class LeadPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->is_admin;
+        return $user->isAdmin();
     }
 
     /**
@@ -20,7 +20,7 @@ class LeadPolicy
      */
     public function view(User $user, Lead $lead): bool
     {
-        return $user->is_admin;
+        return $user->isAdmin();
     }
 
     /**
@@ -28,7 +28,7 @@ class LeadPolicy
      */
     public function create(User $user): bool
     {
-        return $user->is_admin;
+        return $user->isAdmin();
     }
 
     /**
@@ -36,7 +36,7 @@ class LeadPolicy
      */
     public function update(User $user, Lead $lead): bool
     {
-        return $user->is_admin;
+        return $user->isAdmin();
     }
 
     /**
@@ -44,7 +44,7 @@ class LeadPolicy
      */
     public function delete(User $user, Lead $lead): bool
     {
-        return $user->is_admin;
+        return $user->isAdmin();
     }
 
     /**

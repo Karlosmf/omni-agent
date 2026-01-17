@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('leads', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('customer_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('source');
             $table->enum('temperature', array_column(LeadTemperature::cases(), 'value'));
             $table->enum('status', array_column(LeadStatus::cases(), 'value'));

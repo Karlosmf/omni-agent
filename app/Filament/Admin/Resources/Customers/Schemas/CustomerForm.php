@@ -48,6 +48,7 @@ class CustomerForm
                             ]),
                     ]),
                 Section::make('Notas Internas')
+                    ->columnSpanFull()
                     ->schema([
                         Textarea::make('notes')
                             ->label('Observaciones')

@@ -15,15 +15,14 @@ class BookingItem extends Model
     protected $fillable = [
         'booking_id',
         'supplier_id',
-        'type',
+        'service_type',
         'description',
-        'supplier_name', // Mantener por compatibilidad temporal si se desea, o quitar.
         'cost_usd',
         'sell_usd',
     ];
 
     protected $casts = [
-        'type' => ServiceType::class,
+        'service_type' => ServiceType::class,
         'cost_usd' => 'decimal:2',
         'sell_usd' => 'decimal:2',
     ];

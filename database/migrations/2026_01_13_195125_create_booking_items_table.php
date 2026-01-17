@@ -14,10 +14,10 @@ return new class extends Migration
     {
         Schema::create('booking_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('booking_id')->constrained()->onDelete('cascade');
-            $table->enum('type', array_column(ServiceType::cases(), 'value'));
+            $table->foreignId('booking_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('supplier_id')->constrained('suppliers')->restrictOnDelete();
+            $table->enum('service_type', array_column(ServiceType::cases(), 'value'));
             $table->string('description');
-            $table->string('supplier_name');
             $table->decimal('cost_usd', 10, 2);
             $table->decimal('sell_usd', 10, 2);
             $table->timestamps();

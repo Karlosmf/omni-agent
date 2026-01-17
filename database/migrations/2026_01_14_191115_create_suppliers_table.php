@@ -14,10 +14,17 @@ return new class extends Migration
         Schema::create('suppliers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('category')->nullable(); // Ej: Hotel, Aerea, Mayorista
-            $table->string('contact_email')->nullable();
-            $table->string('contact_phone')->nullable();
-            $table->text('notes')->nullable();
+            $table->string('contact_name')->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('website')->nullable();
+            $table->string('service_type'); // hotel, transport, activity, other
+            $table->string('location')->nullable();
+            $table->string('cuit')->nullable(); // Identificación fiscal
+            $table->string('bank_name')->nullable();
+            $table->string('cbu')->nullable(); // Clave Bancaria Uniforme
+            $table->string('alias')->nullable();
+            $table->string('account_number')->nullable();
             $table->timestamps();
         });
     }

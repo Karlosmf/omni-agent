@@ -21,12 +21,14 @@ class BookingForm
         return $schema
             ->components([
                 Section::make('Información General')
+                    ->columnSpanFull()
                     ->schema([
                         Grid::make(3)
                             ->schema([
                                 Select::make('customer_id')
                                     ->label('Cliente (Cuenta)')
-                                    ->relationship('customer', 'name')
+                                    ->relationship('customer', 'name', modifyQueryUsing: fn ($query) => $query->where('role', \App\Enums\UserRole::Customer))
+                                    ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->name} ({$record->email})")
                                     ->searchable()
                                     ->preload()
                                     ->createOptionForm([
@@ -64,6 +66,7 @@ class BookingForm
                     ]),
 
                 Section::make('Servicios / Items')
+                    ->columnSpanFull()
                     ->schema([
                         Repeater::make('items')
                             ->label('Servicios Detallados')
@@ -71,7 +74,7 @@ class BookingForm
                             ->schema([
                                 Grid::make(4)
                                     ->schema([
-                                        Select::make('type')
+                                        Select::make('service_type')
                                             ->label('Tipo')
                                             ->options(ServiceType::class)
                                             ->required(),
@@ -113,7 +116,7 @@ class BookingForm
                             ])
                             ->columns(1)
                             ->itemLabel(function (array $state): ?string {
-                                $type = $state['type'] ?? null;
+                                $type = $state['service_type'] ?? null;
                                 $label = $type instanceof ServiceType ? $type->getLabel() : $type;
 
                                 return $label.': '.($state['description'] ?? '');
@@ -122,6 +125,7 @@ class BookingForm
                     ]),
 
                 Section::make('Resumen Financiero')
+                    ->columnSpanFull()
                     ->schema([
                         Grid::make(3)
                             ->schema([

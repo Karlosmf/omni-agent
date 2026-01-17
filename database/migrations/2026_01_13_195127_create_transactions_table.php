@@ -15,13 +15,19 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('booking_id')->constrained()->onDelete('cascade');
+            $table->foreignId('booking_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('supplier_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('supplier_account_id')->nullable()->constrained('supplier_accounts')->nullOnDelete();
+            $table->string('payer_name')->nullable();
             $table->enum('type', array_column(TransactionType::cases(), 'value'));
-            $table->enum('currency', array_column(Currency::cases(), 'value'));
             $table->decimal('amount', 10, 2);
-            $table->decimal('exchange_rate', 8, 4);
-            $table->decimal('amount_usd_fixed', 10, 2);
+            $table->string('currency');
+            $table->decimal('exchange_rate', 10, 4)->nullable();
+            $table->decimal('amount_usd_fixed', 10, 2)->nullable();
+            $table->date('date');
             $table->string('method');
+            $table->text('notes')->nullable();
+            $table->string('reference')->nullable();
             $table->timestamps();
         });
     }

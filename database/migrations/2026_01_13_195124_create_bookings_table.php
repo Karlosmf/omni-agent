@@ -15,16 +15,15 @@ return new class extends Migration
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('lead_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('customer_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('file_number')->unique();
             $table->string('holder_name');
-            $table->decimal('total_cost_usd', 10, 2);
-            $table->decimal('total_sell_usd', 10, 2);
-            $table->decimal('profit_usd', 10, 2);
-            $table->enum('status', array_column(BookingStatus::cases(), 'value'));
             $table->date('travel_date');
+            $table->decimal('total_cost_usd', 10, 2)->default(0);
+            $table->decimal('total_sell_usd', 10, 2)->default(0);
+            $table->decimal('profit_usd', 10, 2)->default(0);
+            $table->enum('status', array_column(BookingStatus::cases(), 'value'))->default(BookingStatus::Presupuesto->value);
             $table->timestamps();
-
-            $table->index('file_number');
         });
     }
 
