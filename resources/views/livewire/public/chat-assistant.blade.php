@@ -66,11 +66,37 @@ $sendMessage = function (AiConciergeService $aiService) {
 
         // 3. Process with AI
         // Pass history limited to last 10 messages for context
-        $history = array_slice($this->messages, -10);
-        $replyContent = $aiService->processMessage($userMsg, $history);
+        $queryContext = array_slice($this->messages, -10);
+        $replyContent = $aiService->processMessage($userMsg, $queryContext);
 
-        // 4. Update Lead with latest interaction data if needed (optional for now)
-        // $lead->update([...]);
+        // 4. Update Lead with latest interaction data
+        // We do this asynchronously or after response to not block the UI too much, but here we do it inline for simplicity
+        if (strlen($userMsg) > 2 || count($queryContext) > 0) {
+            // Concatenate recent context for better extraction
+            $extractionContext = $userMsg;
+            if (!empty($queryContext)) {
+                $extractionContext = json_encode($queryContext) . "\nLAST_MSG: " . $userMsg;
+            }
+
+            $extraction = $aiService->extractLeadData($extractionContext);
+
+            if (!empty($extraction)) {
+                $currentAiData = $lead->ai_data ?? [];
+
+                // Only update fields if they are not null in the extraction
+                $newAiData = array_merge($currentAiData, array_filter([
+                    'destino' => $extraction['destino'] ?? null,
+                    'presupuesto' => $extraction['presupuesto'] ?? null,
+                    'pasajeros' => $extraction['pasajeros'] ?? null,
+                ]));
+
+                $lead->update([
+                    'ai_data' => $newAiData,
+                    'ai_summary' => $extraction['resumen'] ?? $lead->ai_summary,
+                    'needs_human_attention' => ($extraction['requiere_atencion'] ?? false) || ($lead->needs_human_attention),
+                ]);
+            }
+        }
 
     } catch (\Throwable $e) {
         \Illuminate\Support\Facades\Log::error("Chatbot Error: " . $e->getMessage());
@@ -131,7 +157,6 @@ $sendMessage = function (AiConciergeService $aiService) {
         </div>
 
         <!-- Messages Area (Beige Pattern) -->
-        <!-- Note: Adding a subtle pattern using CSS logic if needed, solid color for now -->
         <div id="chat-messages"
             class="flex-1 overflow-y-auto p-4 space-y-3 bg-[url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')] bg-repeat"
             x-effect="$wire.messages; setTimeout(() => scrollToBottom(), 50)">
@@ -139,7 +164,7 @@ $sendMessage = function (AiConciergeService $aiService) {
             @foreach($messages as $msg)
                     <div class="flex {{ $msg['role'] === 'user' ? 'justify-end' : 'justify-start' }}">
                         <div class="max-w-[85%] px-3 py-2 text-sm shadow-sm rounded-lg relative
-                                        {{ $msg['role'] === 'user'
+                                                                                {{ $msg['role'] === 'user'
                 ? 'bg-[#E7FFDB] text-gray-800 rounded-tr-none'
                 : 'bg-white text-gray-800 rounded-tl-none' }}">
 
@@ -194,37 +219,124 @@ $sendMessage = function (AiConciergeService $aiService) {
         </div>
     </div>
 
-    <!-- Floating Toggle Button (WhatsApp Style) -->
+    <!-- Toggle Button Area -->
     <template x-if="!$wire.embedded">
-        <button wire:click="toggleChat"
-            class="group h-14 w-14 rounded-full bg-[#25D366] text-white shadow-lg flex items-center justify-center hover:scale-110 hover:shadow-xl transition-all duration-300 relative z-50">
+        <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3" x-data="{ showWelcomeBubble: false }"
+            x-init="setTimeout(() => { if(!$wire.isOpen) showWelcomeBubble = true }, 3000)">
 
-            <!-- Badge -->
-            <span class="absolute -top-1 -right-1 flex h-4 w-4">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                <span
-                    class="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-[9px] font-bold items-center justify-center">1</span>
-            </span>
-
-            <!-- Icons -->
-            <div class="relative w-8 h-8">
-                <svg x-show="!$wire.isOpen"
-                    class="absolute inset-0 w-full h-full transform transition-transform duration-300"
-                    :class="$wire.isOpen ? 'scale-0 rotate-90' : 'scale-100 rotate-0'"
-                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
-                </svg>
-
-                <svg x-show="$wire.isOpen"
-                    class="absolute inset-0 w-full h-full transform transition-transform duration-300"
-                    :class="$wire.isOpen ? 'scale-100 rotate-0' : 'scale-0 -rotate-90'"
-                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                </svg>
+            <!-- Welcome Bubble -->
+            <div x-show="showWelcomeBubble && !$wire.isOpen" x-transition:enter="transition ease-out duration-500"
+                x-transition:enter-start="opacity-0 translate-y-8 scale-90"
+                x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                x-transition:leave="transition ease-in duration-200"
+                class="bg-white px-5 py-3 rounded-2xl rounded-br-none shadow-[0_15px_30px_-5px_rgba(0,0,0,0.2)] border border-amber-100 text-sm font-semibold text-gray-800 relative mb-4 animate-bounce-soft">
+                <div class="flex items-center gap-2">
+                    <span class="text-lg">👋</span>
+                    <span>¡Hola! ¿Buscás un viaje?</span>
+                </div>
+                <div
+                    class="absolute -bottom-2 right-0 w-5 h-5 bg-white border-r border-b border-amber-100 transform rotate-45 mr-4">
+                </div>
+                <button @click="showWelcomeBubble = false"
+                    class="absolute -top-2 -left-2 bg-white text-gray-400 border border-gray-100 shadow-sm rounded-full w-6 h-6 flex items-center justify-center hover:bg-gray-50 transition-colors">
+                    <i class="ph-bold ph-x text-[10px]"></i>
+                </button>
             </div>
-        </button>
+
+            <button wire:click="toggleChat" @click="showWelcomeBubble = false"
+                class="group h-16 w-16 rounded-full bg-[#25D366] text-white shadow-[0_10px_30px_-5px_rgba(37,211,102,0.6)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300 relative z-50 animate-pulse-subtle"
+                :class="!$wire.isOpen ? 'animate-wiggle-periodic' : ''"
+                style="box-shadow: 0 10px 25px -5px rgba(37, 211, 102, 0.4);">
+
+                <!-- Badge -->
+                <span class="absolute -top-1 -right-1 flex h-6 w-6" x-show="!$wire.isOpen">
+                    <span
+                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span
+                        class="relative inline-flex rounded-full h-6 w-6 bg-red-500 text-[11px] font-bold items-center justify-center border-2 border-white shadow-sm">1</span>
+                </span>
+
+                <!-- Icons -->
+                <div class="relative w-9 h-9">
+                    <svg x-show="!$wire.isOpen"
+                        class="absolute inset-0 w-full h-full transform transition-all duration-300 group-hover:scale-110"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+                    </svg>
+
+                    <svg x-show="$wire.isOpen"
+                        class="absolute inset-0 w-full h-full transform transition-all duration-300 scale-100"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </div>
+            </button>
+        </div>
     </template>
+
+    <style>
+        @keyframes bounce-soft {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .animate-bounce-soft {
+            animation: bounce-soft 2s infinite ease-in-out;
+        }
+
+        @keyframes wiggle-periodic {
+
+            0%,
+            90%,
+            100% {
+                transform: rotate(0deg) scale(1);
+            }
+
+            92% {
+                transform: rotate(-10deg) scale(1.1);
+            }
+
+            94% {
+                transform: rotate(10deg) scale(1.1);
+            }
+
+            96% {
+                transform: rotate(-10deg) scale(1.1);
+            }
+
+            98% {
+                transform: rotate(10deg) scale(1.1);
+            }
+        }
+
+        .animate-wiggle-periodic {
+            animation: wiggle-periodic 8s infinite ease-in-out;
+        }
+
+        @keyframes pulse-subtle {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .animate-pulse-subtle {
+            animation: pulse-subtle 3s infinite ease-in-out;
+        }
+    </style>
 </div>

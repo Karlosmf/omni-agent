@@ -14,6 +14,17 @@ class Transaction extends Model
     /** @use HasFactory<\Database\Factories\TransactionFactory> */
     use HasFactory;
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($transaction) {
+            if (empty($transaction->date)) {
+                $transaction->date = now();
+            }
+        });
+    }
+
     protected $fillable = [
         'booking_id',
         'supplier_id',
@@ -31,6 +42,7 @@ class Transaction extends Model
         'attachment_path',
         'payable_type',
         'payable_id',
+        'date',
     ];
 
     protected $casts = [

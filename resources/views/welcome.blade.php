@@ -60,10 +60,7 @@
             <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center gap-3">
-                    <img class="h-12 w-auto dark:hidden" src="{{ asset('images/branding/logo-full.png') }}"
-                        alt="Luopan Logo">
-                    <img class="h-12 w-auto hidden dark:block" src="{{ asset('images/branding/logo-full-white.png') }}"
-                        alt="Luopan Logo">
+                    <img class="h-12 w-auto" src="{{ asset('images/branding/logo-full.png') }}" alt="Luopan Logo">
                 </div>
 
                 <!-- Desktop Menu -->
@@ -302,8 +299,8 @@
     <!-- Footer -->
     <footer class="bg-white/80 backdrop-blur-md border-t border-gray-200 py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <img class="h-12 w-auto mx-auto mb-6 dark:hidden" src="{{ asset('images/branding/logo-full.png') }}" alt="Luopan Logo">
-            <img class="h-12 w-auto mx-auto mb-6 hidden dark:block" src="{{ asset('images/branding/logo-full-white.png') }}" alt="Luopan Logo">
+            <img class="h-12 w-auto mx-auto mb-6" src="{{ asset('images/branding/logo-full.png') }}"
+                alt="Luopan Logo">
             <p class="text-gray-500 mb-6">Belgrano 843, Local A, Reconquista, Santa Fe 3560</p>
             <div class="flex justify-center gap-8 mb-8">
                 <a href="https://www.facebook.com/luopanviajes" target="_blank"

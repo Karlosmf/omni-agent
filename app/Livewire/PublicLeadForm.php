@@ -31,7 +31,7 @@ class PublicLeadForm extends Component
             'customer_phone' => $this->phone ?? 'Web-Form',
             'source' => 'web_form',
             'raw_message' => $this->message,
-            'status' => \App\Enums\LeadStatus::New,
+            'status' => \App\Enums\LeadStatus::New ,
             'temperature' => \App\Enums\LeadTemperature::Cool,
             'ai_data' => [
                 'email' => $this->email,
@@ -39,13 +39,24 @@ class PublicLeadForm extends Component
         ]);
 
         // Process message with AI to get a summary/intent
+        // Process message with AI to get a summary and structured data
         try {
-            $aiResponse = $aiService->processMessage("El usuario {$this->name} envió una consulta desde el sitio web con el mensaje: {$this->message}. Genera un resumen muy corto para la ficha del CRM.");
+            $extraction = $aiService->extractLeadData("El usuario {$this->name} escribió: {$this->message}");
+
+            // Merge existing ai_data (email) with extracted data
+            $currentAiData = $lead->ai_data ?? [];
+            $newAiData = array_merge($currentAiData, [
+                'destino' => $extraction['destino'] ?? null,
+                'presupuesto' => $extraction['presupuesto'] ?? null,
+                'pasajeros' => $extraction['pasajeros'] ?? 1,
+            ]);
+
             $lead->update([
-                'ai_summary' => $aiResponse,
+                'ai_data' => $newAiData,
+                'ai_summary' => $extraction['resumen'] ?? null,
             ]);
         } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::error('Error processing form with AI: '.$e->getMessage());
+            \Illuminate\Support\Facades\Log::error('Error processing form with AI: ' . $e->getMessage());
         }
 
         $this->reset(['name', 'email', 'phone', 'message']);

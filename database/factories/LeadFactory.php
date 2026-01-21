@@ -26,9 +26,9 @@ class LeadFactory extends Factory
             'customer_phone' => fake()->phoneNumber(),
             'raw_message' => fake()->paragraph(),
             'ai_data' => [
-                'destination' => fake()->city(),
-                'budget' => fake()->numberBetween(1000, 5000),
-                'pax' => fake()->numberBetween(1, 5),
+                'destino' => fake()->city(),
+                'presupuesto' => fake()->numberBetween(1000, 5000),
+                'pasajeros' => fake()->numberBetween(1, 5),
             ],
             'ai_summary' => fake()->sentence(),
             'needs_human_attention' => fake()->boolean(),
