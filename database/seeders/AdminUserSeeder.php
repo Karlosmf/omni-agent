@@ -19,5 +19,23 @@ class AdminUserSeeder extends Seeder
                 'role' => UserRole::Admin,
             ]
         );
+
+        User::firstOrCreate(
+            ['email' => 'belenzorzon@luopanviajes.tur.ar'],
+            [
+                'name' => 'Belen',
+                'password' => Hash::make('Agencia843'),
+                'role' => UserRole::Admin,
+            ]
+        );
+
+        User::firstOrCreate(
+            ['email' => 'nelaflama@luopanviajes.tur.ar'],
+            [
+                'name' => 'Nela',
+                'password' => Hash::make('Agencia843'),
+                'role' => UserRole::Staff, // Assuming Staff role exists, else use standard role
+            ]
+        );
     }
 }

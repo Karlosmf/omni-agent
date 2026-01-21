@@ -13,7 +13,7 @@ class MonthlySalesChart extends ChartWidget
     protected function getData(): array
     {
         $data = Booking::select(
-            DB::raw('sum(total_sell_usd) as total'),
+            DB::raw('sum(total_sell) as total'),
             DB::raw("strftime('%m', created_at) as month")
         )
             ->whereYear('created_at', date('Y'))

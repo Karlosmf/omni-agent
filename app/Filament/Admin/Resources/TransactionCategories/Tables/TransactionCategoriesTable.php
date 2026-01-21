@@ -16,14 +16,17 @@ class TransactionCategoriesTable
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 TextColumn::make('type')
+                    ->label('Tipo')
                     ->badge()
                     ->colors([
                         'success' => 'ingreso',
                         'danger' => 'egreso',
                     ]),
                 IconColumn::make('is_system')
+                    ->label('Sistema')
                     ->boolean(),
             ])
             ->filters([

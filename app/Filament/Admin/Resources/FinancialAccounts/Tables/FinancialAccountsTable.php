@@ -16,16 +16,20 @@ class FinancialAccountsTable
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 TextColumn::make('currency')
+                    ->label('Moneda')
                     ->badge(),
                 TextColumn::make('balance')
+                    ->label('Saldo')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('cbu')
                     ->label('CBU/Alias')
                     ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('is_active')
+                    ->label('Activa')
                     ->boolean(),
             ])
             ->filters([

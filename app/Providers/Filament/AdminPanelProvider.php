@@ -30,6 +30,7 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             ->brandLogo(asset('images/branding/logo-full.png'))
+            ->darkModeBrandLogo(asset('images/branding/logo-full-white.png'))
             ->brandLogoHeight('3rem')
             ->favicon(asset('images/branding/logo-icon.png'))
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\Filament\Admin\Resources')
@@ -54,6 +55,19 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->renderHook(
+                'panels::body.start',
+                fn () => new \Illuminate\Support\HtmlString('
+                    <style>
+                        .fi-simple-layout {
+                            background-color: #f0f2f5 !important;
+                            background-image: url("'.asset('images/landing/bg-pattern.png').'") !important;
+                            background-repeat: repeat !important;
+                            background-size: 400px !important;
+                        }
+                    </style>
+                '),
+            );
     }
 }

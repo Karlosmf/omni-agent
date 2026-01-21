@@ -14,14 +14,17 @@ class TransactionCategoryForm
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label('Nombre')
                     ->required(),
                 Select::make('type')
+                    ->label('Tipo')
                     ->options([
                         'ingreso' => 'Ingreso',
                         'egreso' => 'Egreso',
                     ])
                     ->required(),
                 Toggle::make('is_system')
+                    ->label('Es de Sistema')
                     ->default(false),
             ]);
     }

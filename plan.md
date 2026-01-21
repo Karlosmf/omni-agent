@@ -3,7 +3,7 @@
 ## 1. Visión del Proyecto
 Sistema CRM + ERP + AI Concierge para "Luopan Viajes y Turismo".
 **Objetivo:** Centralizar la operación financiera (multimoneda), gestionar expedientes de viajes y automatizar la captura de leads vía WhatsApp/Web con IA.
-**Estado:** MVP Completado (v1.0). Iniciando fase de reestructuración financiera y expansión.
+**Estado:** MVP Completado (v1.0). Fases de refinamiento CRM, IA y QA en progreso.
 
 ## 2. Stack Tecnológico (Strict Rules)
 *   **Framework:** Laravel 12.x
@@ -20,7 +20,7 @@ Sistema CRM + ERP + AI Concierge para "Luopan Viajes y Turismo".
 
 ### Fase 6: CRM y Fidelización (COMPLETO)
 Transformar el manejo de datos planos en entidades relacionales para seguimiento histórico.
-- Entidad `Customer` implementada.
+- Entidad `Customer` **NOTA: Actualmente se usa User con rol Customer; requiere separación si se desea fidelización histórica independiente**.
 - Migración de datos históricos (Leads/Bookings -> Customers) ejecutada.
 - Resource `Customer` activo y formularios actualizados.
 
@@ -52,54 +52,80 @@ Objetivo: Que Belén y Nela puedan cargar gastos, pagos y ver saldos reales.
     *   Soporte para items en distintas monedas (BRL, USD, ARS).
     *   Resumen financiero desglosado (Ganancia USD vs ARS).
 
-### ⚙️ FASE 8 (Ex Fase 2): Backoffice & Tesorería (Filament)
-Objetivo: Que Belén y Nela puedan cargar gastos, pagos y ver saldos reales.
-
-*   **Tarea 8.1: ABMs Financieros**
-    *   [ ] Generar `FinancialAccountResource`: CRUD simple.
-    *   [ ] Generar `TransactionCategoryResource`: CRUD simple con filtro por tipo.
-
-*   **Tarea 8.2: TransactionResource (El Cerebro Contable)**
-    *   [ ] Implementar formulario reactivo (`live()`).
-    *   [ ] Lógica Condicional:
-        *   Si `type` == 'cobro' → Mostrar Select `booking_id`.
-        *   Si `type` == 'pago' → Mostrar Select `supplier_id` (o payable).
-    *   [ ] Filtrar categorías según el tipo seleccionado.
-    *   [ ] Upload de archivos en `attachment_path`.
-    *   [ ] Manejo de Moneda: Si es ARS, pedir Cotización y calcular `amount_usd_fixed`.
-
-*   **Tarea 8.3: Gestión de Proveedores**
-    *   [ ] Actualizar `SupplierResource`.
-    *   [ ] Agregar `RelationManager` para ver historial de Pagos y Compras.
-    *   [ ] Mostrar el `balance_usd` (Deuda actual) en la tabla principal.
-
-### 🧠 FASE 9 (Ex Fase 3): Motor de Inteligencia Artificial
+### 🧠 FASE 9: Motor de Inteligencia Artificial (COMPLETO)
 Objetivo: Conectar Laravel con Gemini de forma robusta.
 
-*   **Tarea 9.1: Servicio de IA (AiConciergeService)**
-    *   [ ] Implementar método `processMessage` real.
-    *   [ ] Configurar cliente Gemini con API Key del `.env`.
-    *   [ ] System Prompt: Definir personalidad "Asistente Luopan" y estructura de salida JSON obligatoria.
-    *   [ ] Manejo de Errores: Try/Catch para evitar pantallas rojas si Google falla.
+*   **Tarea 9.1: Servicio de IA (AiConciergeService)** (Done)
+    *   Implementado con Gemini Flash 1.5. Resúmenes automáticos y respuestas en chat.
+*   **Tarea 9.2: Integración con Leads** (Done)
+    *   Campos `ai_summary` y resúmenes automáticos activos en el CRM.
 
-*   **Tarea 9.2: Integración con Leads**
-    *   [ ] Asegurar que el JSON devuelto por la IA actualice los campos `ai_data`, `ai_summary` y `temperature` en la tabla `leads`.
+### 💬 FASE 10: Frontend Público (Chatbot & Navbar) (COMPLETO)
+Objetivo: Interfaz visual premium y captura de leads.
 
-### 💬 FASE 10 (Ex Fase 4): Frontend Público (Chatbot)
-Objetivo: Interfaz visual para el cliente final.
+*   **Tarea 10.1: Componente Visual (Volt)** (Done)
+    *   Chat tipo WhatsApp integrado.
+*   **Tarea 10.2: Lógica Reactiva** (Done)
+    *   Conexión con Gemini y persistencia de leads.
+*   **Tarea 10.3: Refactor Navbar** (Done)
+    -   Modal de Consultas, Dropdown WhatsApp, Botón Instagram y Soporte Dark Mode.
 
-*   **Tarea 10.1: Componente Visual (Volt)**
-    *   [ ] Crear `resources/views/livewire/public/chat-assistant.blade.php`.
-    *   [ ] Estilos: Usar Tailwind CSS puro para replicar estética WhatsApp (Fondo beige, burbujas verdes/blancas).
-    *   [ ] NO usar librerías externas (MaryUI eliminada).
+### 🏗️ FASE 11: Refinamiento CRM y Relacional (Alta Prioridad)
+Objetivo: Separar Customer de User para fidelización histórica y datos relacionales.
 
-*   **Tarea 10.2: Lógica Reactiva**
-    *   [ ] Conectar Input usuario -> AiConciergeService -> Respuesta en pantalla.
-    *   [ ] Implementar indicador de carga "Escribiendo...".
-    *   [ ] Persistencia: Guardar cada mensaje en el historial del Lead.
+*   **Tarea 11.1: Crear Modelo Customer**
+    *   [ ] Generar `app/Models/Customer.php` con campos: name, email, phone, history_json.
+    *   [ ] Relaciones: hasMany Booking, hasMany Lead.
+
+*   **Tarea 11.2: Migración de Datos**
+    *   [ ] Script para copiar User::Customer a Customer, actualizar foreign keys en bookings/leads.
+
+*   **Tarea 11.3: Actualizar CustomerResource**
+    *   [ ] Añadir RelationManager para ver historial de bookings/transacciones.
+
+Beneficio: Mejor seguimiento de leads a clientes recurrentes.
+
+### 🧠 FASE 12: Mejoras en IA y Persistencia (Media Prioridad)
+Objetivo: Hacer IA más robusta y conversacional.
+
+*   **Tarea 12.1: Modelo Message para Historial**
+    *   [ ] Crear `Message` (belongsTo Lead, campos: content, role (user/ai), timestamp).
+
+*   **Tarea 12.2: Actualizar AiConciergeService**
+    *   [ ] Pasar historial de mensajes a Gemini para contexto (system prompt + últimas 10 msgs).
+    *   [ ] Mejorar error handling: Log detallado de fallos API, fallback a respuestas predefinidas.
+
+*   **Nueva Idea: Temperatura Dinámica**
+    *   [ ] Ajustar "temperatura" basada en lead_data (ej. presupuesto alto → respuestas más agresivas).
+
+### 🧪 FASE 13: Expansión de Tests, QA y UX (Alta Prioridad)
+Objetivo: Aumentar confiabilidad y usabilidad.
+
+*   **Tarea 13.1: Añadir Tests Pest**
+    *   [ ] Feature para TransactionResource (form reactivo, condicional).
+    *   [ ] Unit para AiConciergeService (mock Gemini).
+    *   [ ] Browser para chat-assistant (enviar msg, verificar respuesta).
+
+*   **Tarea 13.2: Ejecutar QA Post-Fase**
+    *   [ ] `php artisan test --compact`, `php artisan model:show [Modelo]`.
+    *   [ ] Pruebas manuales (ej. crear pago → verificar deuda proveedor).
+    *   [ ] `vendor/bin/pint --dirty` para estilo de código.
+
+*   **Tarea 13.3: Mejoras UX**
+    *   [ ] Widget dashboard "AI Insights" con métricas de leads (temperatura promedio, conversiones).
+    *   [ ] Volt componente para "Formulario de Consulta Inicial" (antes del chat), con validación en tiempo real.
 
 ## 5. Protocolo de Control de Calidad (QA)
 Al finalizar cada Fase, ejecutar:
-*   `php artisan test` (Si hay tests creados).
+*   `php artisan test --compact` (Cobertura mínima 70% en Pest, incluyendo browser tests).
 *   `php artisan model:show [Modelo]` para verificar relaciones.
 *   Prueba manual de flujo crítico (ej: Crear Pago -> Ver descuento en deuda Proveedor).
+*   `vendor/bin/pint --dirty` para estilo de código.
+*   Verificar integraciones (ej. Gemini API key, multi-moneda en bookings).
+
+## 6. Nuevas Ideas Generales
+*   **API para Integraciones:** Endpoint REST para bookings (con Sanctum), permitiendo apps móviles futuras.
+*   **Reportes Avanzados:** PDFs con charts (usando Laravel Charts) para finanzas mensuales.
+*   **Multi-Tenant Futuro:** Prep para tenants (ej. añadir tenant_id en modelos clave).
+*   **Seguridad Extra:** Rate limiting en chat IA (via Middleware), encriptación de ai_data sensibles.
+*   **Monitoreo:** Logs de IA en Laravel Telescope para debugging.

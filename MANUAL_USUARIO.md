@@ -4,7 +4,10 @@ Bienvenido al sistema de gestión inteligente de Luopan Viajes. Esta guía te ay
 
 ## 1. Acceso al Sistema
 *   **URL del Panel:** `/admin`
-*   **Credenciales:** Usa tu correo corporativo y contraseña asignada.
+*   **Usuarios:**
+    -   **Belén:** `belenzorzon@luopanviajes.tur.ar` (Admin)
+    -   **Nela:** `nelaflama@luopanviajes.tur.ar` (Staff)
+*   **Credenciales:** Contraseña compartida asignada recientemente. Usar el botón "Ingresar" con icono de usuario en la web principal.
 
 ---
 
@@ -62,7 +65,15 @@ Para registrar pagos de clientes o pagos a proveedores.
 
 ---
 
-## 6. Chat de IA
-La dirección `/chat` es pública. Puedes enviársela a tus clientes.
-*   El asistente virtual ("Omni-Agent") tomará los datos básicos (destino, fechas, pax).
-*   Si la API de IA está saturada, el sistema guardará el mensaje de todos modos para que no pierdas el contacto.
+---
+
+## 6. Captura de Consultas (Web)
+La página principal cuenta con tres puntos de contacto inteligentes:
+1.  **Formulario de Consultas (Modal):** El botón "Consultas" abre un formulario limpio. Al enviarlo, la IA genera automáticamente un resumen para que no tengas que leer todo el mensaje largo en el CRM.
+2.  **WhatsApp Directo:** El menú desplegable permite al cliente elegir contactar a **Belén** o **Nela** directamente.
+3.  **Chatbot (Omni-Agent):** El botón flotante abre el chat tipo WhatsApp. Gemini responderá y creará el lead por ti.
+
+---
+
+## 7. Redes Sociales y Links
+En el pie de página encontrás acceso directo a Facebook e Instagram oficiales de Luopan Viajes.

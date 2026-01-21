@@ -15,15 +15,20 @@ class FinancialAccountForm
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label('Nombre')
                     ->required(),
                 Select::make('currency')
+                    ->label('Moneda')
                     ->options(Currency::class)
                     ->required(),
                 TextInput::make('balance')
+                    ->label('Saldo Inicial')
                     ->numeric()
                     ->default(0),
-                TextInput::make('cbu'),
+                TextInput::make('cbu')
+                    ->label('CBU / Alias'),
                 Toggle::make('is_active')
+                    ->label('Activa')
                     ->default(true),
             ]);
     }

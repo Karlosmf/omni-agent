@@ -25,9 +25,10 @@ class BookingFactory extends Factory
             'lead_id' => Lead::factory(),
             'file_number' => 'LP-'.fake()->year().'-'.fake()->unique()->numberBetween(100, 999),
             'holder_name' => fake()->name(),
-            'total_cost_usd' => $cost,
-            'total_sell_usd' => $sell,
-            'profit_usd' => $sell - $cost,
+            'currency' => 'USD',
+            'total_cost' => $cost,
+            'total_sell' => $sell,
+            'profit' => $sell - $cost,
             'status' => fake()->randomElement(BookingStatus::cases()),
             'travel_date' => fake()->dateTimeBetween('+1 month', '+1 year'),
         ];

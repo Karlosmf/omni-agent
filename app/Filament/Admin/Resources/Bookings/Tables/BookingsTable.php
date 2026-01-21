@@ -29,13 +29,13 @@ class BookingsTable
                     ->label('Estado')
                     ->badge()
                     ->sortable(),
-                TextColumn::make('total_sell_usd')
-                    ->label('Venta (USD)')
-                    ->money('USD')
+                TextColumn::make('total_sell')
+                    ->label('Venta')
+                    ->money(fn ($record) => $record->currency ?? 'USD')
                     ->sortable(),
-                TextColumn::make('profit_usd')
-                    ->label('Ganancia (USD)')
-                    ->money('USD')
+                TextColumn::make('profit')
+                    ->label('Ganancia')
+                    ->money(fn ($record) => $record->currency ?? 'USD')
                     ->color(fn ($state) => $state >= 0 ? 'success' : 'danger')
                     ->sortable(),
                 TextColumn::make('travel_date')
