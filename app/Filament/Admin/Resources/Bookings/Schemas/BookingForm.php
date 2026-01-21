@@ -3,11 +3,13 @@
 namespace App\Filament\Admin\Resources\Bookings\Schemas;
 
 use App\Enums\BookingStatus;
+use App\Enums\Currency;
 use App\Enums\ServiceType;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
@@ -27,8 +29,8 @@ class BookingForm
                             ->schema([
                                 Select::make('customer_id')
                                     ->label('Cliente (Cuenta)')
-                                    ->relationship('customer', 'name', modifyQueryUsing: fn ($query) => $query->where('role', \App\Enums\UserRole::Customer))
-                                    ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->name} ({$record->email})")
+                                    ->relationship('customer', 'name', modifyQueryUsing: fn($query) => $query->where('role', \App\Enums\UserRole::Customer))
+                                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->name} ({$record->email})")
                                     ->searchable()
                                     ->preload()
                                     ->createOptionForm([
@@ -81,7 +83,11 @@ class BookingForm
                                         TextInput::make('description')
                                             ->label('Descripción')
                                             ->required()
-                                            ->columnSpan(2),
+                                            ->columnSpan(3),
+                                    ]),
+
+                                Grid::make(4)
+                                    ->schema([
                                         Select::make('supplier_id')
                                             ->label('Proveedor')
                                             ->relationship('supplier', 'name')
@@ -95,23 +101,39 @@ class BookingForm
                                                     ->label('Categoría'),
                                             ])
                                             ->required(),
-                                    ]),
-                                Grid::make(2)
-                                    ->schema([
-                                        TextInput::make('cost_usd')
-                                            ->label('Costo (USD)')
+
+                                        Select::make('currency')
+                                            ->label('Moneda')
+                                            ->options(Currency::class)
+                                            ->default(Currency::USD->value)
+                                            ->required()
+                                            ->live()
+                                            ->afterStateUpdated(fn(Set $set, Get $get) => self::updateTotals($set, $get)),
+
+                                        TextInput::make('exchange_rate')
+                                            ->label('Cotización Origen')
+                                            ->numeric()
+                                            ->default(1.00)
+                                            ->required()
+                                            ->live(onBlur: true)
+                                            ->visible(fn(Get $get) => self::getCurrencyLabel($get('currency')) !== 'USD')
+                                            ->afterStateUpdated(fn(Set $set, Get $get) => self::updateTotals($set, $get)),
+
+                                        TextInput::make('cost')
+                                            ->label(fn(Get $get) => 'Costo (' . (self::getCurrencyLabel($get('currency'))) . ')')
                                             ->numeric()
                                             ->prefix('$')
                                             ->required()
                                             ->live(onBlur: true)
-                                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateTotals($set, $get)),
-                                        TextInput::make('sell_usd')
-                                            ->label('Venta (USD)')
+                                            ->afterStateUpdated(fn(Set $set, Get $get) => self::updateTotals($set, $get)),
+
+                                        TextInput::make('sell')
+                                            ->label(fn(Get $get) => 'Venta (' . (self::getCurrencyLabel($get('currency'))) . ')')
                                             ->numeric()
                                             ->prefix('$')
                                             ->required()
                                             ->live(onBlur: true)
-                                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateTotals($set, $get)),
+                                            ->afterStateUpdated(fn(Set $set, Get $get) => self::updateTotals($set, $get)),
                                     ]),
                             ])
                             ->columns(1)
@@ -119,32 +141,56 @@ class BookingForm
                                 $type = $state['service_type'] ?? null;
                                 $label = $type instanceof ServiceType ? $type->getLabel() : $type;
 
-                                return $label.': '.($state['description'] ?? '');
+                                return $label . ': ' . ($state['description'] ?? '');
                             })
-                            ->deleteAction(fn (Set $set, Get $get) => self::updateTotals($set, $get)),
+                            ->deleteAction(fn(Set $set, Get $get) => self::updateTotals($set, $get)),
                     ]),
 
                 Section::make('Resumen Financiero')
                     ->columnSpanFull()
                     ->schema([
+                        // ARS Summary
                         Grid::make(3)
                             ->schema([
-                                TextInput::make('total_cost_usd')
+                                TextInput::make('total_cost_ars_display')
+                                    ->label('Costo Total (ARS)')
+                                    ->numeric()
+                                    ->prefix('$')
+                                    ->readOnly()
+                                    ->extraInputAttributes(['class' => 'bg-gray-100']),
+                                TextInput::make('total_sell_ars_display')
+                                    ->label('Venta Total (ARS)')
+                                    ->numeric()
+                                    ->prefix('$')
+                                    ->readOnly()
+                                    ->extraInputAttributes(['class' => 'bg-gray-100']),
+                                TextInput::make('profit_ars_display')
+                                    ->label('Ganancia (ARS)')
+                                    ->numeric()
+                                    ->prefix('$')
+                                    ->readOnly()
+                                    ->extraInputAttributes(['class' => 'bg-gray-100 font-bold text-success-600']),
+                            ]),
+
+                        // USD Summary
+                        Grid::make(3)
+                            ->schema([
+                                TextInput::make('total_cost') // Mapped to DB total_cost
                                     ->label('Costo Total (USD)')
                                     ->numeric()
-                                    ->prefix('$')
+                                    ->prefix('USD')
                                     ->readOnly()
                                     ->extraInputAttributes(['class' => 'bg-gray-100']),
-                                TextInput::make('total_sell_usd')
+                                TextInput::make('total_sell') // Mapped to DB total_sell
                                     ->label('Venta Total (USD)')
                                     ->numeric()
-                                    ->prefix('$')
+                                    ->prefix('USD')
                                     ->readOnly()
                                     ->extraInputAttributes(['class' => 'bg-gray-100']),
-                                TextInput::make('profit_usd')
-                                    ->label('Ganancia Total (USD)')
+                                TextInput::make('profit')
+                                    ->label('Ganancia (USD)')
                                     ->numeric()
-                                    ->prefix('$')
+                                    ->prefix('USD')
                                     ->readOnly()
                                     ->extraInputAttributes(['class' => 'bg-gray-100 font-bold text-success-600']),
                             ]),
@@ -152,19 +198,58 @@ class BookingForm
             ]);
     }
 
+    protected static function getCurrencyLabel(mixed $currency): string
+    {
+        if ($currency instanceof Currency) {
+            return $currency->value;
+        }
+        return (string) ($currency ?? 'USD');
+    }
+
     public static function updateTotals(Set $set, Get $get): void
     {
         $items = $get('items') ?? [];
-        $totalCost = 0;
-        $totalSell = 0;
+
+        $totalCostArs = 0;
+        $totalSellArs = 0;
+
+        $totalCostUsd = 0;
+        $totalSellUsd = 0;
 
         foreach ($items as $item) {
-            $totalCost += (float) ($item['cost_usd'] ?? 0);
-            $totalSell += (float) ($item['sell_usd'] ?? 0);
+            $currency = self::getCurrencyLabel($item['currency'] ?? 'USD');
+            $rate = (float) ($item['exchange_rate'] ?? 1);
+            $cost = (float) ($item['cost'] ?? 0);
+            $sell = (float) ($item['sell'] ?? 0);
+
+            if ($currency === Currency::USD->value) {
+                $totalCostUsd += $cost;
+                $totalSellUsd += $sell;
+            } elseif ($currency === Currency::ARS->value) {
+                $totalCostArs += $cost;
+                $totalSellArs += $sell;
+            } else {
+                // Other currencies (e.g. BRL) fallback to USD conversion?
+                // Or just ignore? Assuming simple ARS/USD split for now as per user request.
+                // If Rate is provided, we can convert to USD.
+                if ($rate > 0) {
+                    // Assume rate is to USD (e.g. BRL->USD 5.5) -> Amount / Rate
+                    // OR Amount * Rate if Rate is "USD value".
+                    // Let's Convert everything else to USD for the USD bucket.
+                    $totalCostUsd += ($cost / $rate);
+                    $totalSellUsd += ($sell / $rate);
+                }
+            }
         }
 
-        $set('total_cost_usd', number_format($totalCost, 2, '.', ''));
-        $set('total_sell_usd', number_format($totalSell, 2, '.', ''));
-        $set('profit_usd', number_format($totalSell - $totalCost, 2, '.', ''));
+        // Set Display Values
+        $set('total_cost_ars_display', number_format($totalCostArs, 2, '.', ''));
+        $set('total_sell_ars_display', number_format($totalSellArs, 2, '.', ''));
+        $set('profit_ars_display', number_format($totalSellArs - $totalCostArs, 2, '.', ''));
+
+        // Set DB Values (USD bucket)
+        $set('total_cost', number_format($totalCostUsd, 2, '.', ''));
+        $set('total_sell', number_format($totalSellUsd, 2, '.', ''));
+        $set('profit', number_format($totalSellUsd - $totalCostUsd, 2, '.', ''));
     }
 }

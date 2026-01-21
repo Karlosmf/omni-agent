@@ -17,14 +17,17 @@ class BookingItem extends Model
         'supplier_id',
         'service_type',
         'description',
-        'cost_usd',
-        'sell_usd',
+        'currency',
+        'exchange_rate',
+        'cost',
+        'sell',
     ];
 
     protected $casts = [
         'service_type' => ServiceType::class,
-        'cost_usd' => 'decimal:2',
-        'sell_usd' => 'decimal:2',
+        'cost' => 'decimal:2',
+        'sell' => 'decimal:2',
+        'exchange_rate' => 'decimal:2',
     ];
 
     public function booking(): BelongsTo

@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Suppliers\Tables;
+namespace App\Filament\Admin\Resources\FinancialAccounts\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class SuppliersTable
+class FinancialAccountsTable
 {
     public static function configure(Table $table): Table
     {
@@ -16,24 +17,16 @@ class SuppliersTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('category')
-                    ->searchable(),
-                TextColumn::make('contact_email')
-                    ->searchable(),
-                TextColumn::make('contact_phone')
-                    ->searchable(),
-                TextColumn::make('balance_usd')
-                    ->label('Deuda (USD)')
-                    ->money('USD')
+                TextColumn::make('currency')
+                    ->badge(),
+                TextColumn::make('balance')
+                    ->numeric()
                     ->sortable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
+                TextColumn::make('cbu')
+                    ->label('CBU/Alias')
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                IconColumn::make('is_active')
+                    ->boolean(),
             ])
             ->filters([
                 //

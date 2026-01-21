@@ -37,8 +37,10 @@ Aquí es donde se arma el viaje.
 1.  Menú **Bookings** -> **Nuevo Booking**.
 2.  **General:** Asocia un Lead (o déjalo vacío si es venta directa), ingresa el Nro de Expediente y Titular.
 3.  **Servicios (Items):** Agrega Vuelos, Hoteles o Traslados.
-    *   Ingresa el **Costo** (lo que pagamos al proveedor) y la **Venta** (lo que paga el cliente).
-    *   El sistema calculará automáticamente la **Ganancia**.
+    *   **Moneda:** Selecciona la moneda origianl del servicio (ej: BRL para un Hotel en Brasil).
+    *   **Cotización:** Indica el tipo de cambio de esa moneda.
+    *   **Costo y Venta:** Ingresa los montos en la moneda seleccionada.
+    *   El sistema mostrará al final dos resúmenes: uno en **Pesos (ARS)** y otro en **Dólares (USD/Moneda de Reporte)**.
 4.  **Guardar.**
 
 ### Descargar Documentación
@@ -54,7 +56,8 @@ Para registrar pagos de clientes o pagos a proveedores.
     *   Elige el Expediente.
     *   Selecciona **Cobro** (Entra dinero) o **Pago** (Sale dinero).
     *   Elige Moneda (ARS/USD).
-    *   **Importante:** Si es ARS, ingresa la tasa de cambio del día. El sistema congelará el valor en USD automáticamente.
+    *   Select "Efectivo", "Transferencia", etc.
+    *   **Cotizar (Switch):** Actívalo si necesitas convertir el monto a USD referencial. Si lo dejas apagado, el sistema tomará el monto tal cual como referencia.
 3.  **Recibos:** En la lista de transacciones, haz clic en el icono "Recibo" para descargar el PDF del comprobante de pago.
 
 ---

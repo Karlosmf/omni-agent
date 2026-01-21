@@ -45,7 +45,7 @@ class SupplierResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            \App\Filament\Admin\Resources\Suppliers\RelationManagers\TransactionsRelationManager::class,
         ];
     }
 

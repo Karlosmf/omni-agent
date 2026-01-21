@@ -18,9 +18,11 @@ class Booking extends Model
         'customer_id',
         'file_number',
         'holder_name',
-        'total_cost_usd',
-        'total_sell_usd',
-        'profit_usd',
+        'currency',
+        'exchange_rate',
+        'total_cost',
+        'total_sell',
+        'profit',
         'status',
         'travel_date',
     ];
@@ -28,9 +30,10 @@ class Booking extends Model
     protected $casts = [
         'status' => BookingStatus::class,
         'travel_date' => 'date',
-        'total_cost_usd' => 'decimal:2',
-        'total_sell_usd' => 'decimal:2',
-        'profit_usd' => 'decimal:2',
+        'total_cost' => 'decimal:2',
+        'total_sell' => 'decimal:2',
+        'profit' => 'decimal:2',
+        'exchange_rate' => 'decimal:2',
     ];
 
     public function lead(): BelongsTo
@@ -55,6 +58,6 @@ class Booking extends Model
 
     public function calculateProfit(): float
     {
-        return (float) ($this->total_sell_usd - $this->total_cost_usd);
+        return (float) ($this->total_sell - $this->total_cost);
     }
 }
