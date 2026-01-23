@@ -45,20 +45,6 @@ Objetivo: Que Belén y Nela puedan cargar gastos, pagos y ver saldos reales.
     *   Formulario reactivo, lógica condicional, upload y manejo de Cotización opcional.
 *   **Tarea 8.3: Gestión de Proveedores** (Done)
 
-*   **Tarea 8.4: Calculadora Financiera y Desglose de Impuestos** (Done)
-    *   **Objetivo:** Calcular el "Neto Real" descontando impuestos (IIBB, Ley 25.413) y comisiones (MercadoPago, Tarjetas).
-    *   **Subtarea A: Migración de Datos**
-        *   Agregar columna `json('tax_details')->nullable()` a la tabla `transactions`.
-        *   Esto almacenará: `{ "tax_bank": 1.2, "tax_iibb": 3.5, "fee_platform": 6.0, "surcharge": 10.0 }`.
-    *   **Subtarea B: Widget Simulador (Dashboard)**
-        *   Crear `FinancialCalculatorWidget`.
-        *   Herramienta aislada para simular cobros rápidos sin guardar datos.
-    *   **Subtarea C: Integración en TransactionResource**
-        *   En el formulario de `Transaction`, agregar una `Section::make('Calculadora de Neto / Impuestos')`.
-        *   **Configuración:** Debe ser `collapsible()`, `collapsed()` por defecto (Opcional).
-        *   **Lógica Live:**
-            *   Campos: `gross_amount` (Monto Bruto), `tax_bank_percent`, `platform_fee_percent`.
-            *   Al editar estos porcentajes, el sistema debe calcular automáticamente el campo `amount` (Neto) y guardar el desglose en `tax_details`.
 
 ### 🌍 FASE EXTRA: Mejoras de Usabilidad y Locale (COMPLETO)
 *   **Localización:** Configuración de idioma 'es'.

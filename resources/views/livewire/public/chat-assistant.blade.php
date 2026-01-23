@@ -128,6 +128,15 @@ $sendMessage = function (AiConciergeService $aiService) {
     x-data="{ 
         init() {
             setTimeout(() => this.scrollToBottom(), 100);
+
+            // Auto-open chat after 2 seconds (Call to Action)
+            if (!this.$wire.embedded) {
+                setTimeout(() => {
+                    if (!this.$wire.isOpen) {
+                        this.$wire.set('isOpen', true);
+                    }
+                }, 2000);
+            }
         },
         scrollToBottom() { 
             const el = document.getElementById('chat-messages'); 
@@ -177,7 +186,7 @@ $sendMessage = function (AiConciergeService $aiService) {
             @foreach($messages as $msg)
                     <div class="flex {{ $msg['role'] === 'user' ? 'justify-end' : 'justify-start' }}">
                         <div class="max-w-[85%] px-3 py-2 text-sm shadow-sm rounded-lg relative
-                                                                                        {{ $msg['role'] === 'user'
+                                                                                                {{ $msg['role'] === 'user'
                 ? 'bg-[#E7FFDB] text-gray-800 rounded-tr-none'
                 : 'bg-white text-gray-800 rounded-tl-none' }}">
 
@@ -237,22 +246,30 @@ $sendMessage = function (AiConciergeService $aiService) {
         <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3" x-data="{ showWelcomeBubble: false }"
             x-init="setTimeout(() => { if(!$wire.isOpen) showWelcomeBubble = true }, 3000)">
 
-            <!-- Welcome Bubble -->
+            <!-- Welcome Bubble (Flashy CTA) -->
             <div x-show="showWelcomeBubble && !$wire.isOpen" x-transition:enter="transition ease-out duration-500"
                 x-transition:enter-start="opacity-0 translate-y-8 scale-90"
                 x-transition:enter-end="opacity-100 translate-y-0 scale-100"
                 x-transition:leave="transition ease-in duration-200"
-                class="bg-white px-5 py-3 rounded-2xl rounded-br-none shadow-[0_15px_30px_-5px_rgba(0,0,0,0.2)] border border-amber-100 text-sm font-semibold text-gray-800 relative mb-4 animate-bounce-soft">
-                <div class="flex items-center gap-2">
-                    <span class="text-lg">👋</span>
-                    <span>¡Hola! ¿Buscás un viaje?</span>
+                class="bg-gradient-to-r from-emerald-500 to-teal-600 px-6 py-4 rounded-2xl rounded-br-none shadow-[0_10px_40px_-10px_rgba(16,185,129,0.5)] text-white text-sm font-bold relative mb-4 animate-[bounce_3s_infinite] border border-white/20">
+                
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl filter drop-shadow-sm">👋</span>
+                    <div class="flex flex-col leading-tight">
+                        <span class="text-emerald-50 font-extrabold uppercase tracking-wide text-[10px]">Asistente Virtual</span>
+                        <span class="text-base drop-shadow-md">¿Planificamos tu viaje?</span>
+                    </div>
                 </div>
-                <div
-                    class="absolute -bottom-2 right-0 w-5 h-5 bg-white border-r border-b border-amber-100 transform rotate-45 mr-4">
-                </div>
-                <button @click="showWelcomeBubble = false"
-                    class="absolute -top-2 -left-2 bg-white text-gray-400 border border-gray-100 shadow-sm rounded-full w-6 h-6 flex items-center justify-center hover:bg-gray-50 transition-colors">
-                    <i class="ph-bold ph-x text-[10px]"></i>
+
+                <!-- Tail -->
+                <div class="absolute -bottom-2 right-0 w-4 h-4 bg-teal-600 transform rotate-45 mr-6 rounded-sm"></div>
+                
+                <!-- Close Button -->
+                <button @click="showWelcomeBubble = false; $event.stopPropagation();"
+                    class="absolute -top-3 -left-3 bg-white text-gray-500 shadow-md rounded-full w-7 h-7 flex items-center justify-center hover:bg-gray-100 transition-colors hover:scale-110 active:scale-95 z-10 font-bold border-2 border-emerald-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3 h-3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
                 </button>
             </div>
 

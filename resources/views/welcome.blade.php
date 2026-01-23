@@ -51,7 +51,7 @@
 </head>
 
 <body class="antialiased min-h-screen relative flex flex-col"
-    x-data="{ showConsultasModal: false, showWhatsAppDropdown: false }">
+    x-data="{ showConsultasModal: false, showWhatsAppDropdown: false, showMobileMenu: false }">
 
     <!-- Navbar / Header (Glassmorphism) -->
     <nav
@@ -122,6 +122,67 @@
                         </a>
                     @endauth
                 </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="flex items-center md:hidden">
+                    <button @click="showMobileMenu = !showMobileMenu" type="button"
+                        class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none transition-colors">
+                        <i class="ph-bold text-2xl" :class="showMobileMenu ? 'ph-x' : 'ph-list'"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div x-show="showMobileMenu" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 -translate-y-2"
+            class="md:hidden bg-white border-t border-gray-100 shadow-lg" style="display: none;">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <button @click="showConsultasModal = true; showMobileMenu = false"
+                    class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-600 hover:bg-amber-50">
+                    Consultas
+                </button>
+
+                <!-- WhatsApp Mobile Group -->
+                <div class="px-3 py-2">
+                    <span
+                        class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">WhatsApp</span>
+                    <div class="flex flex-col gap-2 pl-2">
+                        <a href="https://wa.link/16om0v" target="_blank"
+                            class="flex items-center gap-2 text-gray-700 hover:text-green-600">
+                            <div
+                                class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-[10px] font-bold">
+                                B</div>
+                            <span>Belén</span>
+                        </a>
+                        <a href="https://wa.link/28mpwn" target="_blank"
+                            class="flex items-center gap-2 text-gray-700 hover:text-green-600">
+                            <div
+                                class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-[10px] font-bold">
+                                N</div>
+                            <span>Nela</span>
+                        </a>
+                    </div>
+                </div>
+
+                <a href="https://www.instagram.com/luopanviajes/" target="_blank"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-pink-50">
+                    Instagram
+                </a>
+
+                @auth
+                    <a href="{{ url('/admin') }}"
+                        class="block w-full text-center mt-4 px-5 py-3 rounded-xl bg-gray-900 text-white font-medium hover:bg-gray-800">
+                        Ir al Panel
+                    </a>
+                @else
+                    <a href="{{ route('filament.admin.auth.login') }}"
+                        class="block w-full text-center mt-4 px-5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white font-medium">
+                        Ingresar
+                    </a>
+                @endauth
             </div>
         </div>
     </nav>
