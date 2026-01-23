@@ -25,9 +25,9 @@ class SupplierFactory extends Factory
             'service_type' => fake()->randomElement(['hotel', 'transport', 'activity', 'other']),
             'location' => fake()->city(),
             'cuit' => fake()->numerify('##-########-#'),
-            'bank_name' => fake()->company() . ' Bank',
+            'bank_name' => fake()->company().' Bank',
             'cbu' => fake()->numerify('######################'),
-            'alias' => fake()->word() . '.' . fake()->word() . '.' . fake()->word(),
+            'alias' => fake()->word().'.'.fake()->word().'.'.fake()->word(),
             'account_number' => fake()->bankAccountNumber(),
         ];
     }

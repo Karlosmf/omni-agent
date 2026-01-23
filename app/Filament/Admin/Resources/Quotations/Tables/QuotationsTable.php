@@ -1,0 +1,123 @@
+<?php
+
+namespace App\Filament\Admin\Resources\Quotations\Tables;
+
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+
+class QuotationsTable
+{
+    public static function configure(Table $table): Table
+    {
+        return $table
+            ->columns([
+                TextColumn::make('quotation_number')
+                    ->label('Nro')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('customer.name')
+                    ->label('Cliente')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('destination')
+                    ->label('Destino')
+                    ->searchable(),
+                TextColumn::make('travel_date')
+                    ->label('Fecha Viaje')
+                    ->date('d/m/Y')
+                    ->sortable(),
+                TextColumn::make('total_sell')
+                    ->label('Total (USD)')
+                    ->money('USD')
+                    ->sortable(),
+                TextColumn::make('status')
+                    ->label('Estado')
+                    ->badge()
+                    ->sortable(),
+                TextColumn::make('valid_until')
+                    ->label('Válido Hasta')
+                    ->date('d/m/Y')
+                    ->sortable()
+                    ->color(fn($record) => $record->isExpired() ? 'danger' : 'gray'),
+            ])
+            ->filters([
+                \Filament\Tables\Filters\SelectFilter::make('status')
+                    ->options(\App\Enums\QuotationStatus::class)
+                    ->label('Estado'),
+            ])
+            ->recordActions([
+                \Filament\Actions\Action::make('convert_to_booking')
+                    ->label('Convertir a File')
+                    ->icon('heroicon-o-briefcase')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Convertir Presupuesto a Expediente')
+                    ->modalDescription('¿Estás seguro? Esto creará un nuevo Expediente (Booking) copiando la información del cliente, fechas e items.')
+                    ->action(fn(\App\Models\Quotation $record) => self::convertToBooking($record)),
+                \Filament\Actions\Action::make('pdf')
+                    ->label('PDF')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color('info')
+                    ->action(function (\App\Models\Quotation $record) {
+                        return response()->streamDownload(function () use ($record) {
+                            echo \Barryvdh\DomPDF\Facade\Pdf::loadView('pdfs.quotation', ['record' => $record])->output();
+                        }, "Presupuesto-{$record->quotation_number}.pdf");
+                    }),
+                EditAction::make(),
+                ViewAction::make(),
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+            ])
+            ->defaultSort('created_at', 'desc');
+    }
+
+    public static function convertToBooking(\App\Models\Quotation $quotation)
+    {
+        // Logic to convert quotation to booking
+        $booking = \App\Models\Booking::create([
+            'customer_id' => $quotation->customer_id,
+            'lead_id' => $quotation->lead_id,
+            'holder_name' => $quotation->customer->name ?? 'Cliente',
+            'travel_date' => $quotation->travel_date,
+            'status' => \App\Enums\BookingStatus::Presupuesto, // Start as Presupuesto in Booking too
+            'currency' => 'USD', // Default to USD for now as logic is simplified
+            'exchange_rate' => 1,
+            'total_cost' => $quotation->total_cost,
+            'total_sell' => $quotation->total_sell,
+            'profit' => $quotation->profit,
+            'internal_notes' => "Creado desde Cotización #{$quotation->quotation_number}. \n" . $quotation->notes,
+        ]);
+
+        // Create Booking Items
+        if (!empty($quotation->items)) {
+            foreach ($quotation->items as $item) {
+                $booking->items()->create([
+                    'service_type' => 'other', // Default generic type
+                    'description' => $item['description'] ?? 'Item importado',
+                    'supplier_id' => null, // Needs manual assignment
+                    'currency' => 'USD',
+                    'exchange_rate' => 1,
+                    'cost' => $item['cost'] ?? 0,
+                    'sell' => $item['sell'] ?? 0,
+                ]);
+            }
+        }
+
+        $quotation->update(['status' => \App\Enums\QuotationStatus::Accepted]);
+
+        \Filament\Notifications\Notification::make()
+            ->title('Expediente Creado')
+            ->body("El expediente {$booking->file_number} se ha generado correctamente.")
+            ->success()
+            ->send();
+
+        return redirect()->to(\App\Filament\Admin\Resources\Bookings\BookingResource::getUrl('edit', ['record' => $booking]));
+    }
+}

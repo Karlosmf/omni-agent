@@ -20,9 +20,9 @@ class SupplierResource extends Resource
 
     protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-building-office';
 
-    protected static UnitEnum|string|null $navigationGroup = 'Finanzas';
+    protected static UnitEnum|string|null $navigationGroup = 'Tesorería';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $modelLabel = 'Proveedor';
 

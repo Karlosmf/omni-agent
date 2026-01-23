@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\Currency;
 use App\Enums\TransactionType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;

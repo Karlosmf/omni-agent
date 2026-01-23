@@ -22,6 +22,46 @@ class TransactionForm
     {
         return $schema
             ->components([
+                Section::make('Calculadora de Neto / Impuestos')
+                    ->description('Simula y descuenta impuestos automáticamente del monto final.')
+                    ->collapsible()
+                    ->collapsed()
+                    ->schema([
+                        Grid::make(4)
+                            ->schema([
+                                TextInput::make('tax_details.gross_amount')
+                                    ->label('Monto Bruto')
+                                    ->numeric()
+                                    ->prefix('$')
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(fn(Set $set, Get $get) => self::calculateNet($set, $get)),
+
+                                TextInput::make('tax_details.tax_bank_percent')
+                                    ->label('% Banco')
+                                    ->numeric()
+                                    ->default(1.2)
+                                    ->live(onBlur: true)
+                                    ->suffix('%')
+                                    ->afterStateUpdated(fn(Set $set, Get $get) => self::calculateNet($set, $get)),
+
+                                TextInput::make('tax_details.tax_iibb_percent')
+                                    ->label('% IIBB')
+                                    ->numeric()
+                                    ->default(3.5)
+                                    ->live(onBlur: true)
+                                    ->suffix('%')
+                                    ->afterStateUpdated(fn(Set $set, Get $get) => self::calculateNet($set, $get)),
+
+                                TextInput::make('tax_details.platform_fee_percent')
+                                    ->label('% Plataforma')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->live(onBlur: true)
+                                    ->suffix('%')
+                                    ->afterStateUpdated(fn(Set $set, Get $get) => self::calculateNet($set, $get)),
+                            ]),
+                    ]),
+
                 Section::make('Detalles de la Transacción')
                     ->schema([
                         Grid::make(3)
@@ -64,6 +104,7 @@ class TransactionForm
                                         if ($type === TransactionType::Pago->value) {
                                             return $query->where('type', 'egreso');
                                         }
+
                                         return $query;
                                     })
                                     ->searchable()
@@ -110,11 +151,14 @@ class TransactionForm
                                     ->visible(fn(Get $get) => $get('supplier_account_id'))
                                     ->content(function (Get $get) {
                                         $accountId = $get('supplier_account_id');
-                                        if (!$accountId)
+                                        if (!$accountId) {
                                             return null;
+                                        }
                                         $account = SupplierAccount::find($accountId);
-                                        if (!$account)
+                                        if (!$account) {
                                             return null;
+                                        }
+
                                         return new HtmlString("
                                             <div class='text-xs text-gray-600 bg-gray-50 p-2 rounded border'>
                                                 <b>Banco:</b> {$account->bank_name} ({$account->currency})<br>
@@ -200,6 +244,7 @@ class TransactionForm
         if (!$useExchangeRate) {
             // If toggle is off, reference total equals the amount (in local currency)
             $set('amount_usd_fixed', number_format($amount, 2, '.', ''));
+
             return;
         }
 
@@ -210,6 +255,27 @@ class TransactionForm
             if ($rate > 0) {
                 $set('amount_usd_fixed', number_format($amount / $rate, 2, '.', ''));
             }
+        }
+    }
+
+    public static function calculateNet(Set $set, Get $get): void
+    {
+        $gross = (float) $get('tax_details.gross_amount');
+        $bankPercent = (float) $get('tax_details.tax_bank_percent');
+        $iibbPercent = (float) $get('tax_details.tax_iibb_percent');
+        $platformPercent = (float) $get('tax_details.platform_fee_percent');
+
+        // Allow calculation even if gross is 0 (to reset amount), but usually we want > 0
+        // If percentages are edited, we recalculate amount.
+
+        $taxAmount = $gross * (($bankPercent + $iibbPercent + $platformPercent) / 100);
+        $net = $gross - $taxAmount;
+
+        // Only update amount if we are using the calculator (e.g. gross is set)
+        if ($get('tax_details.gross_amount') !== null && $get('tax_details.gross_amount') !== '') {
+            $set('amount', number_format($net, 2, '.', ''));
+            // Trigger dependency update manually
+            self::updateUsdFixed($set, $get);
         }
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Filament\Admin\Resources\Suppliers\RelationManagers;
 
-use App\Filament\Admin\Resources\Transactions\Schemas\TransactionForm; // Option to reuse if needed, but keeping simple table for now
 use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -21,11 +20,14 @@ class TransactionsRelationManager extends RelationManager
 {
     protected static string $relationship = 'transactions';
 
-    // We can leave form empty to use defaults or configure it if needed
-    // For now, let's allow creating transactions but we might need to handle supplier_id automatic assignment
     public function form(Schema $schema): Schema
     {
-        return TransactionForm::configure($schema);
+        return $schema
+            ->components([
+                TextInput::make('title=created_at')
+                    ->required()
+                    ->maxLength(255),
+            ]);
     }
 
     public function table(Table $table): Table
@@ -33,30 +35,41 @@ class TransactionsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('reference')
             ->columns([
-                TextColumn::make('created_at')
+                TextColumn::make('date')
                     ->label('Fecha')
-                    ->dateTime('d/m/Y H:i')
+                    ->date('d/m/Y')
                     ->sortable(),
+                TextColumn::make('booking.file_number')
+                    ->label('File')
+                    ->searchable()
+                    ->url(fn($record) => $record->booking ? \App\Filament\Admin\Resources\Bookings\BookingResource::getUrl('edit', ['record' => $record->booking]) : null),
                 TextColumn::make('type')
-                    ->badge(),
-                TextColumn::make('category.name')
-                    ->label('Categoría'),
+                    ->label('Tipo')
+                    ->badge()
+                    ->colors([
+                        'success' => \App\Enums\TransactionType::Cobro,
+                        'danger' => \App\Enums\TransactionType::Pago,
+                    ]),
                 TextColumn::make('amount')
                     ->label('Monto')
-                    ->money(fn($record) => $record->currency)
+                    ->money(fn($record) => $record->currency?->value ?? 'USD')
+                    ->sortable(),
+                TextColumn::make('amount_usd_fixed')
+                    ->label('Monto (USD)')
+                    ->money('USD')
                     ->sortable(),
                 TextColumn::make('method')
-                    ->label('Método'),
-                TextColumn::make('notes')
-                    ->label('Notas')
-                    ->limit(30),
+                    ->label('Método')
+                    ->searchable(),
+                TextColumn::make('reference')
+                    ->label('Referencia')
+                    ->searchable(),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
                 CreateAction::make(),
-                // AssociateAction::make(), // Usually not needed for HasMany unless polymorphic or BelongsToMany
             ])
             ->recordActions([
                 EditAction::make(),
@@ -66,6 +79,7 @@ class TransactionsRelationManager extends RelationManager
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('date', 'desc');
     }
 }

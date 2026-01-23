@@ -9,7 +9,6 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
@@ -29,7 +28,7 @@ class BookingForm
                             ->schema([
                                 Select::make('customer_id')
                                     ->label('Cliente (Cuenta)')
-                                    ->relationship('customer', 'name', modifyQueryUsing: fn($query) => $query->where('role', \App\Enums\UserRole::Customer))
+                                    ->relationship('customer', 'name')
                                     ->getOptionLabelFromRecordUsing(fn($record) => "{$record->name} ({$record->email})")
                                     ->searchable()
                                     ->preload()
@@ -43,8 +42,8 @@ class BookingForm
                                     ])
                                     ->required(),
                                 TextInput::make('file_number')
-                                    ->label('Nro Expediente')
-                                    ->required()
+                                    ->label('Nro File')
+                                    ->placeholder('Generado automáticamente')
                                     ->unique(ignoreRecord: true),
                                 Select::make('status')
                                     ->label('Estado')
@@ -65,6 +64,12 @@ class BookingForm
                                     ->label('Fecha de Viaje')
                                     ->required(),
                             ]),
+                        \Filament\Forms\Components\Textarea::make('internal_notes')
+                            ->label('Notas Internas')
+                            ->placeholder('Notas privadas para el equipo (no visibles para el cliente)')
+                            ->rows(3)
+                            ->columnSpanFull()
+                            ->helperText('Estas notas solo son visibles para el equipo administrativo.'),
                     ]),
 
                 Section::make('Servicios / Items')
@@ -203,6 +208,7 @@ class BookingForm
         if ($currency instanceof Currency) {
             return $currency->value;
         }
+
         return (string) ($currency ?? 'USD');
     }
 

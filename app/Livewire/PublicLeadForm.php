@@ -31,7 +31,7 @@ class PublicLeadForm extends Component
             'customer_phone' => $this->phone ?? 'Web-Form',
             'source' => 'web_form',
             'raw_message' => $this->message,
-            'status' => \App\Enums\LeadStatus::New ,
+            'status' => \App\Enums\LeadStatus::New,
             'temperature' => \App\Enums\LeadTemperature::Cool,
             'ai_data' => [
                 'email' => $this->email,
@@ -56,7 +56,7 @@ class PublicLeadForm extends Component
                 'ai_summary' => $extraction['resumen'] ?? null,
             ]);
         } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::error('Error processing form with AI: ' . $e->getMessage());
+            \Illuminate\Support\Facades\Log::error('Error processing form with AI: '.$e->getMessage());
         }
 
         $this->reset(['name', 'email', 'phone', 'message']);

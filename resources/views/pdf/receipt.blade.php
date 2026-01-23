@@ -82,7 +82,8 @@
             <strong>Luopan Viajes & Turismo</strong><br>
             Belgrano 843, Local A<br>
             Reconquista, Santa Fe 3560<br>
-            +5493482300052
+            Nela: +54 9 3482 30-0052<br>
+            Belén: +54 9 3482 60-0801
         </div>
         <img src="{{ public_path('images/branding/logo-full.png') }}" alt="Luopan Logo" class="logo">
     </div>

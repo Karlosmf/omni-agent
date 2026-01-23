@@ -14,14 +14,38 @@ class AiConciergeService
     /**
      * Process a message through the Gemini AI.
      */
-    public function processMessage(string $message, array $history = []): string
+    public function processMessage(string $messageContent, \App\Models\Lead $lead): string
     {
         try {
+            // Save User Message
+            $lead->messages()->create([
+                'role' => 'user',
+                'content' => $messageContent,
+            ]);
+
+            // Dynamic Temperature Logic
+            $lowerMsg = strtolower($messageContent);
+            if (str_contains($lowerMsg, 'humano') || str_contains($lowerMsg, 'agente') || str_contains($lowerMsg, 'asesor')) {
+                $lead->update([
+                    'temperature' => \App\Enums\LeadTemperature::Hot,
+                    'needs_human_attention' => true,
+                ]);
+            } elseif ($lead->temperature === \App\Enums\LeadTemperature::Cool && (str_contains($lowerMsg, 'fecha') || str_contains($lowerMsg, 'presupuesto') || str_contains($lowerMsg, 'reserva'))) {
+                $lead->update(['temperature' => \App\Enums\LeadTemperature::Warm]);
+            }
+
+            // Load History from DB
+            $history = $lead->messages()
+                ->orderBy('created_at', 'desc')
+                ->take(10)
+                ->get()
+                ->reverse();
+
             // Build simple context from history
-            $context = "";
+            $context = '';
             foreach ($history as $msg) {
-                $role = $msg['role'] === 'user' ? 'Usuario' : 'Asistente';
-                $context .= "{$role}: {$msg['content']}\n";
+                $role = $msg->role === 'user' ? 'Usuario' : 'Asistente';
+                $context .= "{$role}: {$msg->content}\n";
             }
 
             $systemPrompt = "Eres 'Brisa', la asistente virtual de Luopan Viajes.
@@ -46,9 +70,16 @@ class AiConciergeService
                 $systemPrompt .= "\n\nHISTORIAL:\n{$context}";
             }
 
-            $result = Gemini::generativeModel('models/gemini-flash-latest')->generateContent("{$systemPrompt}\nUsuario: {$message}");
+            $result = Gemini::generativeModel('models/gemini-flash-latest')->generateContent("{$systemPrompt}\nUsuario: {$messageContent}");
+            $responseText = $result->text();
 
-            return $result->text();
+            // Save Assistant Message
+            $lead->messages()->create([
+                'role' => 'assistant',
+                'content' => $responseText,
+            ]);
+
+            return $responseText;
         } catch (Throwable $e) {
             Log::error('AiConciergeService Error: ' . $e->getMessage());
 
@@ -77,6 +108,7 @@ class AiConciergeService
             return json_decode($text, true) ?? [];
         } catch (Throwable $e) {
             Log::error('AiExtraction Error: ' . $e->getMessage());
+
             return [];
         }
     }

@@ -2,8 +2,8 @@
 
 namespace App\Filament\Admin\Pages;
 
-use Filament\Pages\Page;
 use App\Filament\Admin\Widgets\MonthlyBudgetChart;
+use Filament\Pages\Page;
 
 class FinancialReports extends Page
 {
@@ -18,6 +18,7 @@ class FinancialReports extends Page
     protected static ?int $navigationSort = 10;
 
     public $year;
+
     public $currency;
 
     public function mount()

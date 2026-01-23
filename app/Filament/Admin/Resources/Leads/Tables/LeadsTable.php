@@ -21,7 +21,7 @@ class LeadsTable
                 TextColumn::make('customer_name')
                     ->label('Nombre')
                     ->searchable()
-                    ->description(fn ($record) => $record->customer_phone),
+                    ->description(fn($record) => $record->customer_phone),
                 TextColumn::make('source')
                     ->label('Origen')
                     ->badge(),
@@ -62,16 +62,27 @@ class LeadsTable
                     ->label('Atención Requerida'),
             ])
             ->recordActions([
+                Action::make('whatsapp')
+                    ->label('WhatsApp')
+                    ->icon('heroicon-o-chat-bubble-left-ellipsis')
+                    ->color('success')
+                    ->url(fn($record) => "https://wa.me/{$record->customer_phone}?text=" . urlencode("Hola {$record->customer_name}, soy del equipo de Luopan Viajes. Te contacto por tu consulta sobre viajes. ¿En qué puedo ayudarte?"))
+                    ->openUrlInNewTab()
+                    ->visible(fn($record) => !empty($record->customer_phone)),
                 EditAction::make()
                     ->label('Editar'),
                 Action::make('escalate')
                     ->label('Escalar a humano')
                     ->icon('heroicon-o-user-group')
                     ->color('warning')
-                    ->action(fn ($record) => $record->update(['needs_human_attention' => true]))
-                    ->visible(fn ($record) => ! $record->needs_human_attention),
+                    ->action(fn($record) => $record->update(['needs_human_attention' => true]))
+                    ->visible(fn($record) => !$record->needs_human_attention),
             ])
             ->toolbarActions([
+                \Filament\Actions\ExportAction::make()
+                    ->exporter(\App\Filament\Exporters\LeadExporter::class)
+                    ->label('Exportar')
+                    ->icon('heroicon-o-arrow-down-tray'),
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->label('Eliminar seleccionados'),

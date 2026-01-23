@@ -26,12 +26,14 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->default()
             ->colors([
                 'primary' => Color::Amber,
             ])
             ->brandLogo(asset('images/branding/logo-full.png'))
             ->darkModeBrandLogo(asset('images/branding/logo-full-white.png'))
             ->brandLogoHeight('3rem')
+            ->homeUrl('/')
             ->favicon(asset('images/branding/logo-icon.png'))
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\Filament\Admin\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\Filament\Admin\Pages')
@@ -42,6 +44,7 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 AccountWidget::class,
             ])
+            ->darkMode()
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -58,11 +61,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->renderHook(
                 'panels::body.start',
-                fn () => new \Illuminate\Support\HtmlString('
+                fn() => new \Illuminate\Support\HtmlString('
                     <style>
                         .fi-simple-layout {
                             background-color: #f0f2f5 !important;
-                            background-image: url("'.asset('images/landing/bg-pattern.png').'") !important;
+                            background-image: url("' . asset('images/landing/bg-pattern.png') . '") !important;
                             background-repeat: repeat !important;
                             background-size: 400px !important;
                         }

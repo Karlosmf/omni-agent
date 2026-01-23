@@ -18,6 +18,7 @@ class BookingSeeder extends Seeder
 
         if ($customers->isEmpty()) {
             $this->command->info('No customers found. Skipping BookingSeeder.');
+
             return;
         }
 

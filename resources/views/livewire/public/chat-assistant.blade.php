@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Message;
 use App\Services\AiConciergeService;
 use App\Models\Lead;
 use App\Models\User;
@@ -21,11 +22,20 @@ mount(function (bool $embedded = false) {
     if ($this->embedded) {
         $this->isOpen = true;
     }
-    // Load from session or default
-    $this->messages = session('chat_history', [
-        ['role' => 'assistant', 'content' => '¡Hola! Soy tu asistente virtual de Luopan. 🌴✈️ ¿En qué puedo ayudarte hoy?']
-    ]);
+    // Load from DB or default
     $this->leadId = session('chat_lead_id');
+
+    if ($this->leadId) {
+        $this->messages = Message::where('lead_id', $this->leadId)
+            ->oldest()
+            ->get()
+            ->map(fn($m) => ['role' => $m->role, 'content' => $m->content])
+            ->toArray();
+    } else {
+        $this->messages = [
+            ['role' => 'assistant', 'content' => '¡Hola! Soy tu asistente virtual de Luopan. 🌴✈️ ¿En qué puedo ayudarte hoy?']
+        ];
+    }
 });
 
 $toggleChat = fn() => $this->isOpen = !$this->isOpen;
@@ -34,12 +44,13 @@ $sendMessage = function (AiConciergeService $aiService) {
     if (empty(trim($this->input)))
         return;
 
-    // 1. Add User Message
+    // 1. Add User Message (Optimistic UI)
     $userMsg = $this->input;
     $this->messages[] = ['role' => 'user', 'content' => $userMsg];
     $this->input = '';
     $this->isLoading = true;
-    session(['chat_history' => $this->messages]);
+    // Session history removed in favor of DB
+
 
     try {
         // 2. Manage Lead (Create or Retrieve)
@@ -65,9 +76,11 @@ $sendMessage = function (AiConciergeService $aiService) {
         }
 
         // 3. Process with AI
-        // Pass history limited to last 10 messages for context
+        // processMessage handles persistence to DB for both User and Assistant messages
+        $replyContent = $aiService->processMessage($userMsg, $lead);
+
+        // Context for extraction (just for logic below)
         $queryContext = array_slice($this->messages, -10);
-        $replyContent = $aiService->processMessage($userMsg, $queryContext);
 
         // 4. Update Lead with latest interaction data
         // We do this asynchronously or after response to not block the UI too much, but here we do it inline for simplicity
@@ -105,7 +118,7 @@ $sendMessage = function (AiConciergeService $aiService) {
 
     // 5. Add AI Response
     $this->messages[] = ['role' => 'assistant', 'content' => $replyContent];
-    session(['chat_history' => $this->messages]);
+    // session update removed
     $this->isLoading = false;
 };
 
@@ -164,7 +177,7 @@ $sendMessage = function (AiConciergeService $aiService) {
             @foreach($messages as $msg)
                     <div class="flex {{ $msg['role'] === 'user' ? 'justify-end' : 'justify-start' }}">
                         <div class="max-w-[85%] px-3 py-2 text-sm shadow-sm rounded-lg relative
-                                                                                {{ $msg['role'] === 'user'
+                                                                                        {{ $msg['role'] === 'user'
                 ? 'bg-[#E7FFDB] text-gray-800 rounded-tr-none'
                 : 'bg-white text-gray-800 rounded-tl-none' }}">
 

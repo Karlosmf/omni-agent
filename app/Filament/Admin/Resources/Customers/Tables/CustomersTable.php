@@ -24,9 +24,17 @@ class CustomersTable
                 TextColumn::make('email')
                     ->label('Email')
                     ->searchable(),
-                TextColumn::make('doc_number')
+                TextColumn::make('document_number')
                     ->label('DNI')
                     ->searchable(),
+                TextColumn::make('passport_number')
+                    ->label('Pasaporte')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('birth_date')
+                    ->label('Fecha Nac.')
+                    ->date()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->label('Registrado')
                     ->dateTime()

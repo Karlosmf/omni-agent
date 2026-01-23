@@ -43,6 +43,7 @@ class Transaction extends Model
         'payable_type',
         'payable_id',
         'date',
+        'tax_details',
     ];
 
     protected $casts = [
@@ -51,6 +52,7 @@ class Transaction extends Model
         'amount' => 'decimal:2',
         'exchange_rate' => 'decimal:4',
         'amount_usd_fixed' => 'decimal:2',
+        'tax_details' => 'array',
     ];
 
     public function booking(): BelongsTo

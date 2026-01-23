@@ -2,10 +2,10 @@
 
 namespace App\Filament\Admin\Widgets;
 
+use App\Enums\Currency;
 use App\Models\FinancialAccount;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use App\Enums\Currency;
 
 class FinancialAccountsOverview extends StatsOverviewWidget
 {
@@ -19,8 +19,8 @@ class FinancialAccountsOverview extends StatsOverviewWidget
 
         foreach ($accounts as $account) {
             $formattedBalance = $account->currency === Currency::USD->value
-                ? 'USD ' . number_format($account->balance, 2)
-                : '$ ' . number_format($account->balance, 2);
+                ? 'USD '.number_format($account->balance, 2)
+                : '$ '.number_format($account->balance, 2);
 
             $stats[] = Stat::make($account->name, $formattedBalance)
                 ->description('Saldo Actual')
@@ -35,11 +35,11 @@ class FinancialAccountsOverview extends StatsOverviewWidget
         }
 
         // Add Totals
-        $stats[] = Stat::make('Total Consolidado (ARS)', '$ ' . number_format($totalArs, 2))
+        $stats[] = Stat::make('Total Consolidado (ARS)', '$ '.number_format($totalArs, 2))
             ->description('Suma de Cajas ARS')
             ->color('info');
 
-        $stats[] = Stat::make('Total Consolidado (USD)', 'USD ' . number_format($totalUsd, 2))
+        $stats[] = Stat::make('Total Consolidado (USD)', 'USD '.number_format($totalUsd, 2))
             ->description('Suma de Cajas USD')
             ->color('info');
 

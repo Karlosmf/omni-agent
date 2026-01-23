@@ -13,6 +13,31 @@ class Booking extends Model
     /** @use HasFactory<\Database\Factories\BookingFactory> */
     use HasFactory;
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($booking) {
+            if (empty($booking->file_number)) {
+                $year = now()->year;
+                $prefix = "LP-{$year}-";
+
+                // Find max number for current year
+                $lastBooking = self::where('file_number', 'like', "{$prefix}%")
+                    ->orderByRaw('CAST(SUBSTR(file_number, LENGTH(?) + 1) AS UNSIGNED) DESC', [$prefix])
+                    ->first();
+
+                $number = 1;
+                if ($lastBooking) {
+                    $parts = explode('-', $lastBooking->file_number);
+                    $number = intval(end($parts)) + 1;
+                }
+
+                $booking->file_number = "{$prefix}{$number}";
+            }
+        });
+    }
+
     protected $fillable = [
         'lead_id',
         'customer_id',
@@ -25,6 +50,7 @@ class Booking extends Model
         'profit',
         'status',
         'travel_date',
+        'internal_notes',
     ];
 
     protected $casts = [
@@ -43,7 +69,7 @@ class Booking extends Model
 
     public function customer(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Customer::class);
     }
 
     public function items(): HasMany

@@ -28,6 +28,8 @@ class TransactionCategoryResource extends Resource
 
     protected static \UnitEnum|string|null $navigationGroup = 'Finanzas';
 
+    protected static ?int $navigationSort = 1;
+
     public static function form(Schema $schema): Schema
     {
         return TransactionCategoryForm::configure($schema);

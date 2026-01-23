@@ -3,7 +3,6 @@
 namespace App\Filament\Admin\Widgets;
 
 use Filament\Widgets\StatsOverviewWidget;
-use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class CurrentMonthBalance extends StatsOverviewWidget
 {
@@ -24,17 +23,17 @@ class CurrentMonthBalance extends StatsOverviewWidget
         $balance = $income - $expense;
 
         return [
-            \Filament\Widgets\StatsOverviewWidget\Stat::make('Ingresos (Mes Actual)', '$ ' . number_format($income, 2))
+            \Filament\Widgets\StatsOverviewWidget\Stat::make('Ingresos (Mes Actual)', '$ '.number_format($income, 2))
                 ->description('Total cobrado este mes')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
 
-            \Filament\Widgets\StatsOverviewWidget\Stat::make('Egresos (Mes Actual)', '$ ' . number_format($expense, 2))
+            \Filament\Widgets\StatsOverviewWidget\Stat::make('Egresos (Mes Actual)', '$ '.number_format($expense, 2))
                 ->description('Total pagado este mes')
                 ->descriptionIcon('heroicon-m-arrow-trending-down')
                 ->color('danger'),
 
-            \Filament\Widgets\StatsOverviewWidget\Stat::make('Balance Neto', '$ ' . number_format($balance, 2))
+            \Filament\Widgets\StatsOverviewWidget\Stat::make('Balance Neto', '$ '.number_format($balance, 2))
                 ->description($balance >= 0 ? 'Superávit' : 'Déficit')
                 ->descriptionIcon($balance >= 0 ? 'heroicon-m-check-circle' : 'heroicon-m-exclamation-circle')
                 ->color($balance >= 0 ? 'success' : 'danger'),

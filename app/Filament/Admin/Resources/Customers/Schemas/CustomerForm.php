@@ -17,27 +17,12 @@ class CustomerForm
             ->components([
                 Section::make('Datos Personales')
                     ->schema([
-                        Grid::make(2)
+                        Grid::make(3)
                             ->schema([
                                 TextInput::make('name')
                                     ->label('Nombre Completo')
                                     ->required()
                                     ->maxLength(255),
-                                DatePicker::make('birth_date')
-                                    ->label('Fecha de Nacimiento'),
-                            ]),
-                        Grid::make(3)
-                            ->schema([
-                                TextInput::make('doc_number')
-                                    ->label('DNI / Documento'),
-                                TextInput::make('passport_number')
-                                    ->label('Pasaporte'),
-                            ]),
-                    ]),
-                Section::make('Contacto')
-                    ->schema([
-                        Grid::make(2)
-                            ->schema([
                                 TextInput::make('email')
                                     ->email()
                                     ->maxLength(255),
@@ -46,13 +31,21 @@ class CustomerForm
                                     ->required()
                                     ->maxLength(255),
                             ]),
+                        Grid::make(3)
+                            ->schema([
+                                TextInput::make('document_number')
+                                    ->label('DNI / Documento'),
+                                TextInput::make('passport_number')
+                                    ->label('Pasaporte'),
+                                DatePicker::make('birth_date')
+                                    ->label('Fecha de Nacimiento'),
+                            ]),
                     ]),
-                Section::make('Notas Internas')
-                    ->columnSpanFull()
+                Section::make('Dirección y Detalles')
                     ->schema([
-                        Textarea::make('notes')
-                            ->label('Observaciones')
-                            ->rows(3)
+                        Textarea::make('address')
+                            ->label('Domicilio Completo')
+                            ->rows(2)
                             ->columnSpanFull(),
                     ])
                     ->collapsible(),

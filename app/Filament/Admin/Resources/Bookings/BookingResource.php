@@ -24,13 +24,13 @@ class BookingResource extends Resource
 
     protected static ?int $navigationSort = 3;
 
-    protected static ?string $modelLabel = 'Expediente';
+    protected static ?string $modelLabel = 'File';
 
-    protected static ?string $pluralModelLabel = 'Expedientes';
+    protected static ?string $pluralModelLabel = 'Files';
 
-    protected static ?string $navigationLabel = 'Expedientes';
+    protected static ?string $navigationLabel = 'Files';
 
-    protected static ?string $slug = 'expedientes';
+    protected static ?string $slug = 'files';
 
     public static function form(Schema $schema): Schema
     {

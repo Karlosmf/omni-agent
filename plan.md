@@ -2,7 +2,7 @@
 
 ## 1. Visión del Proyecto
 Sistema CRM + ERP + AI Concierge para "Luopan Viajes y Turismo".
-**Objetivo:** Centralizar la operación financiera (multimoneda), gestionar expedientes de viajes y automatizar la captura de leads vía WhatsApp/Web con IA.
+**Objetivo:** Centralizar la operación financiera (multimoneda), gestionar Files de viajes y automatizar la captura de leads vía WhatsApp/Web con IA.
 **Estado:** MVP Completado (v1.0). Fases de refinamiento CRM, IA y QA en progreso.
 
 ## 2. Stack Tecnológico (Strict Rules)
@@ -45,10 +45,25 @@ Objetivo: Que Belén y Nela puedan cargar gastos, pagos y ver saldos reales.
     *   Formulario reactivo, lógica condicional, upload y manejo de Cotización opcional.
 *   **Tarea 8.3: Gestión de Proveedores** (Done)
 
+*   **Tarea 8.4: Calculadora Financiera y Desglose de Impuestos** (Done)
+    *   **Objetivo:** Calcular el "Neto Real" descontando impuestos (IIBB, Ley 25.413) y comisiones (MercadoPago, Tarjetas).
+    *   **Subtarea A: Migración de Datos**
+        *   Agregar columna `json('tax_details')->nullable()` a la tabla `transactions`.
+        *   Esto almacenará: `{ "tax_bank": 1.2, "tax_iibb": 3.5, "fee_platform": 6.0, "surcharge": 10.0 }`.
+    *   **Subtarea B: Widget Simulador (Dashboard)**
+        *   Crear `FinancialCalculatorWidget`.
+        *   Herramienta aislada para simular cobros rápidos sin guardar datos.
+    *   **Subtarea C: Integración en TransactionResource**
+        *   En el formulario de `Transaction`, agregar una `Section::make('Calculadora de Neto / Impuestos')`.
+        *   **Configuración:** Debe ser `collapsible()`, `collapsed()` por defecto (Opcional).
+        *   **Lógica Live:**
+            *   Campos: `gross_amount` (Monto Bruto), `tax_bank_percent`, `platform_fee_percent`.
+            *   Al editar estos porcentajes, el sistema debe calcular automáticamente el campo `amount` (Neto) y guardar el desglose en `tax_details`.
+
 ### 🌍 FASE EXTRA: Mejoras de Usabilidad y Locale (COMPLETO)
 *   **Localización:** Configuración de idioma 'es'.
 *   **Widget Tesorería:** Saldos de cajas/bancos en Dashboard.
-*   **Multi-moneda en Expedientes:** 
+*   **Multi-moneda en Files:** 
     *   Soporte para items en distintas monedas (BRL, USD, ARS).
     *   Resumen financiero desglosado (Ganancia USD vs ARS).
 
@@ -114,6 +129,24 @@ Objetivo: Aumentar confiabilidad y usabilidad.
 *   **Tarea 13.3: Mejoras UX**
     *   [ ] Widget dashboard "AI Insights" con métricas de leads (temperatura promedio, conversiones).
     *   [ ] Volt componente para "Formulario de Consulta Inicial" (antes del chat), con validación en tiempo real.
+
+### 📄 FASE 14: Mejoras en Recibos, Expedientes (Files) y Servicios (Alta Prioridad)
+Objetivo: Actualizar interfaces y lógica según requerimientos del usuario.
+
+*   **Tarea 14.1: Actualizar Números de Teléfono en Recibos**
+    *   [ ] Cambiar números de teléfono de contacto en encabezado y detalles de la empresa para Nela y Belén en los PDFs de recibos.
+
+*   **Tarea 14.2: Renombrar Expedientes a "File"**
+    *   [ ] Cambiar referencias de "expedientes" a "File" en la interfaz de usuario, modelos y recursos.
+
+*   **Tarea 14.3: Ordenar Listados por Último Creado Primero**
+    *   [ ] Modificar listados de Files, movimientos de caja y recibos para ordenar por fecha de creación descendente (último primero).
+
+*   **Tarea 14.4: Números Correlativos y Automáticos**
+    *   [ ] Asegurar que los números de Files, movimientos de caja y recibos sean correlativos y generados automáticamente.
+
+*   **Tarea 14.5: Agregar Opciones de Servicios en Dropdown de Files**
+    *   [ ] Añadir al desplegable de servicios: "Hotel y Traslado", "Terrestre", "Asistencia al viajero", "Bus", etc.
 
 ## 5. Protocolo de Control de Calidad (QA)
 Al finalizar cada Fase, ejecutar:
