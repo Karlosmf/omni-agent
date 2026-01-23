@@ -53,7 +53,7 @@ Aquí es donde se arma el viaje confirmado.
 
 ### Crear un File
 1.  Menú **Ventas** -> **Files** -> **Nuevo File**.
-2.  **General:** Asocia un Lead (o déjalo vacío si es venta directa), ingresa el Nro de File y Titular.
+2.  **General:** Asocia un Lead (o déjalo vacío si es venta directa). El **Nro de File** se genera automáticamente (ej: LP-2026-001) al guardar. Ingresa el Titular.
 3.  **Servicios (Items):** Agrega Vuelos, Hoteles o Traslados.
     *   **Moneda:** Selecciona la moneda original del servicio (ej: BRL para un Hotel en Brasil).
     *   **Cotización:** Indica el tipo de cambio de esa moneda.

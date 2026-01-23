@@ -44,6 +44,7 @@ class BookingForm
                                 TextInput::make('file_number')
                                     ->label('Nro File')
                                     ->placeholder('Generado automáticamente')
+                                    ->disabledOn('create')
                                     ->unique(ignoreRecord: true),
                                 Select::make('status')
                                     ->label('Estado')
