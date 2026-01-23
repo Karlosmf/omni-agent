@@ -5,9 +5,14 @@ Sistema CRM + ERP + AI Concierge diseñado exclusivamente para la agencia "Luopa
 ## Características Principales
 
 - **Captura de Leads vía IA:** Chat estilo WhatsApp para recolectar información de clientes automáticamente.
-- **Panel Administrativo:** Gestión de expedientes, servicios y finanzas en FilamentPHP v4.
-- **Operaciones Bimonetarias:** Soporte para ARS/USD con conversión automática y congelamiento de tasa.
-- **Dashboard:** Métricas clave en tiempo real.
+- **Sistema de Cotizaciones:** Creación de presupuestos profesionales en PDF y conversión a expedientes.
+- **Gestión de Expedientes (Files):** Nro de file autogenerado, servicios y control de costos/ventas.
+- **Herramientas Financieras:** Calculadora de neto real (impuestos/comisiones) y simulación rápida en dashboard.
+- **Panel Operativo:** Dashboard con métricas, vencimientos y accesos rápidos.
+
+## Documentación y Manuales
+Para una guía detallada sobre cómo operar el sistema (crear files, gestionar pagos, usar la calculadora), consulta el:
+👉 [**Manual de Usuario (Luopan Viajes)**](./MANUAL_USUARIO.md)
 
 ## Requisitos
 
