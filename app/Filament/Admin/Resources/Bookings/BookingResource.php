@@ -45,7 +45,7 @@ class BookingResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            \App\Filament\Admin\Resources\Bookings\RelationManagers\TransactionsRelationManager::class,
         ];
     }
 

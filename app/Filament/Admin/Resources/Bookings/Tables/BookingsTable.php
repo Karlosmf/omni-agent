@@ -19,7 +19,7 @@ class BookingsTable
             ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('file_number')
-                    ->label('Nro Expediente')
+                    ->label('Nro File')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('holder_name')

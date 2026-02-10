@@ -120,7 +120,7 @@
         </thead>
         <tbody>
             <tr>
-                <td>{{ $transaction->notes ?? 'Pago a cuenta por expediente ' . $transaction->booking->file_number }}
+                <td>{{ $transaction->notes ?? ($transaction->booking ? 'Pago a cuenta por expediente ' . $transaction->booking->file_number : 'Pago a cuenta') }}
                 </td>
                 <td style="text-align: right;">
                     {{ $transaction->currency == \App\Enums\Currency::USD ? 'USD' : 'ARS' }}

@@ -13,6 +13,7 @@ enum ServiceType: string implements HasLabel
     case Land = 'land';
     case Assistance = 'assistance';
     case Bus = 'bus';
+    case Other = 'other';
 
     public function getLabel(): ?string
     {
@@ -24,6 +25,7 @@ enum ServiceType: string implements HasLabel
             self::Land => 'Terrestre',
             self::Assistance => 'Asistencia al viajero',
             self::Bus => 'Bus',
+            self::Other => 'Otro',
         };
     }
 }

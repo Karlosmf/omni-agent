@@ -10,6 +10,8 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class DashboardShortcuts extends StatsOverviewWidget
 {
+    protected static bool $shouldRegisterWidget = false;
+
     protected function getStats(): array
     {
         return [
@@ -19,7 +21,7 @@ class DashboardShortcuts extends StatsOverviewWidget
                 ->color('primary')
                 ->url(LeadResource::getUrl('create')),
 
-            Stat::make('Nuevo Expediente', 'Iniciar Venta')
+            Stat::make('Nuevo File', 'Iniciar Venta')
                 ->description('Crear reserva o presupuesto')
                 ->descriptionIcon('heroicon-m-briefcase')
                 ->color('success')

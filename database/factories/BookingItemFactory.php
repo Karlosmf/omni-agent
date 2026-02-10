@@ -27,8 +27,8 @@ class BookingItemFactory extends Factory
             'supplier_id' => Supplier::factory(),
             'service_type' => fake()->randomElement(ServiceType::cases()),
             'description' => fake()->sentence(),
-            'cost_usd' => $cost,
-            'sell_usd' => $sell,
+            'cost' => $cost,
+            'sell' => $sell,
         ];
     }
 }

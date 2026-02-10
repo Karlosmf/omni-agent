@@ -13,7 +13,7 @@ Bienvenido al sistema de gestión inteligente de Luopan Viajes. Esta guía te ay
 
 ## 2. El Dashboard (Tablero Principal)
 Al ingresar, verás el centro de comando con información vital:
-*   **Accesos Rápidos:** Botones grandes para "Nuevo Lead", "Nuevo Expediente" y "Registrar Pago". Úsalos para ahorrar tiempo.
+*   **Accesos Rápidos:** Botones grandes para "Nuevo Lead", "Nuevo File" y "Registrar Pago". Úsalos para ahorrar tiempo.
 *   **Próximas Salidas:** Una lista de los viajes confirmados más cercanos en el tiempo. Ideal para hacer seguimiento de documentación.
 *   **Movimientos de Caja:** Los últimos 5 ingresos o egresos de dinero.
 *   **Métricas:** Indicadores de "Leads Calientes" (urgentes) y ventas del mes.
@@ -48,13 +48,13 @@ Antes de confirmar un viaje, puedes armar una propuesta profesional.
 
 ---
 
-## 5. Gestión de Expedientes (Files)
+## 5. Gestión de Files (Expedientes)
 Aquí es donde se arma el viaje confirmado.
 
 ### Crear un File
 1.  Menú **Ventas** -> **Files** -> **Nuevo File**.
 2.  **General:** Asocia un Lead (o déjalo vacío si es venta directa). El **Nro de File** se genera automáticamente (ej: LP-2026-001) al guardar. Ingresa el Titular.
-3.  **Servicios (Items):** Agrega Vuelos, Hoteles o Traslados.
+3.  **Servicios (Items):** Agrega items al viaje usando el desplegable de tipos (Vuelo, Hotel, Hotel y Traslado, Terrestre, Asistencia, Bus, etc.).
     *   **Moneda:** Selecciona la moneda original del servicio (ej: BRL para un Hotel en Brasil).
     *   **Cotización:** Indica el tipo de cambio de esa moneda.
     *   **Costo y Venta:** Ingresa los montos en la moneda seleccionada.
@@ -83,6 +83,7 @@ Registra pagos de clientes o pagos a proveedores.
 1.  Menú **Tesorería** -> **Movimientos de Caja**.
 2.  **Nueva Transacción**:
     *   Elige el File o Proveedor.
+    *   **Nro Correlativo:** Cada movimiento tiene un número único (#ID) para mejor control.
     *   **Calculadora Financiera (Novedad):**
         *   Despliega la sección "Calculadora de Neto / Impuestos".
         *   Ingresa el monto bruto (ej. lo que paga el cliente por MercadoPago).

@@ -18,8 +18,11 @@ class TransactionsTable
         return $table
             ->defaultSort('created_at', 'desc')
             ->columns([
+                TextColumn::make('id')
+                    ->label('Nro')
+                    ->sortable(),
                 TextColumn::make('booking.file_number')
-                    ->label('Nro Expediente')
+                    ->label('Nro File')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('type')

@@ -5,8 +5,8 @@ namespace App\Filament\Admin\Resources\Quotations\Schemas;
 use App\Enums\QuotationStatus;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class QuotationForm
@@ -32,6 +32,9 @@ class QuotationForm
                             ->relationship('customer', 'name')
                             ->searchable()
                             ->preload()
+                            ->default(request()->query('customer_id'))
+                            ->disabled(fn () => request()->has('customer_id'))
+                            ->dehydrated()
                             ->createOptionForm([
                                 TextInput::make('name')->required()->label('Nombre'),
                                 TextInput::make('email')->email()->label('Email'),
@@ -79,19 +82,19 @@ class QuotationForm
                                             ->prefix('$')
                                             ->default(0)
                                             ->live(onBlur: true)
-                                            ->afterStateUpdated(fn(\Filament\Schemas\Components\Utilities\Set $set, \Filament\Schemas\Components\Utilities\Get $get) => self::updateTotals($set, $get)),
+                                            ->afterStateUpdated(fn (\Filament\Schemas\Components\Utilities\Set $set, \Filament\Schemas\Components\Utilities\Get $get) => self::updateTotals($set, $get)),
                                         TextInput::make('sell')
                                             ->label('Precio Venta (USD)')
                                             ->numeric()
                                             ->prefix('$')
                                             ->default(0)
                                             ->live(onBlur: true)
-                                            ->afterStateUpdated(fn(\Filament\Schemas\Components\Utilities\Set $set, \Filament\Schemas\Components\Utilities\Get $get) => self::updateTotals($set, $get)),
+                                            ->afterStateUpdated(fn (\Filament\Schemas\Components\Utilities\Set $set, \Filament\Schemas\Components\Utilities\Get $get) => self::updateTotals($set, $get)),
                                     ]),
                             ])
                             ->createItemButtonLabel('Agregar Servicio')
                             ->live()
-                            ->afterStateUpdated(fn(\Filament\Schemas\Components\Utilities\Set $set, \Filament\Schemas\Components\Utilities\Get $get) => self::updateTotals($set, $get)),
+                            ->afterStateUpdated(fn (\Filament\Schemas\Components\Utilities\Set $set, \Filament\Schemas\Components\Utilities\Get $get) => self::updateTotals($set, $get)),
                     ]),
 
                 \Filament\Schemas\Components\Section::make('Totales')

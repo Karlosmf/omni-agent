@@ -13,6 +13,10 @@ class EditCustomer extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            \Filament\Actions\Action::make('create_budget')
+                ->label('Crear Presupuesto')
+                ->icon('heroicon-o-document-currency-dollar')
+                ->url(fn (\App\Models\Customer $customer) => \App\Filament\Admin\Resources\Quotations\QuotationResource::getUrl('create', ['customer_id' => $customer->id])),
             DeleteAction::make(),
         ];
     }
