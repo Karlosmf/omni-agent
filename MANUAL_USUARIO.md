@@ -13,10 +13,10 @@ Bienvenido al sistema de gestión inteligente de Luopan Viajes. Esta guía te ay
 
 ## 2. El Dashboard (Tablero Principal)
 Al ingresar, verás el centro de comando con información vital:
-*   **Accesos Rápidos:** Botones grandes para "Nuevo Lead", "Nuevo File" y "Registrar Pago". Úsalos para ahorrar tiempo.
-*   **Próximas Salidas:** Una lista de los viajes confirmados más cercanos en el tiempo. Ideal para hacer seguimiento de documentación.
-*   **Movimientos de Caja:** Los últimos 5 ingresos o egresos de dinero.
-*   **Métricas:** Indicadores de "Leads Calientes" (urgentes) y ventas del mes.
+*   **Métricas de Leads:** Total de leads, leads calientes (urgentes) y tasa de conversión.
+*   **Accesos Rápidos:** Botones para "Nueva Consulta" (crear lead) y "Buscar Cliente".
+*   **Próximas Salidas:** Viajes confirmados en los próximos 30 días con semáforo de urgencia (rojo ≤7 días, amarillo ≤15, gris +15).
+*   **Deudas Proveedores:** Resumen de deuda total USD y proveedores con saldo pendiente (al final del dashboard).
 
 ---
 
@@ -60,7 +60,7 @@ Aquí es donde se arma el viaje confirmado.
 ### Crear un File
 1.  Menú **Ventas** -> **Files** -> **Nuevo File**.
 2.  **General:** Asocia un Lead (o déjalo vacío si es venta directa). El **Nro de File** se genera automáticamente (ej: LP-2026-001) al guardar. Ingresa el Titular.
-3.  **Servicios (Items):** Agrega items al viaje usando el desplegable de tipos (Vuelo, Hotel, Hotel y Traslado, Terrestre, Asistencia, Bus, etc.).
+3.  **Servicios (Items):** Agrega items al viaje usando el desplegable de tipos (Vuelo, Hotel, Hotel y Traslado, Terrestre, Asistencia, Bus, Crucero, Otro).
     *   **Moneda:** Selecciona la moneda original del servicio (ej: BRL para un Hotel en Brasil).
     *   **Cotización:** Indica el tipo de cambio de esa moneda.
     *   **Costo y Venta:** Ingresa los montos en la moneda seleccionada.
@@ -113,7 +113,7 @@ En el panel principal encontrarás el widget **"Simulador Financiero"**.
 La página principal cuenta con tres puntos de contacto inteligentes:
 1.  **Formulario de Consultas (Modal):** El botón "Consultas" abre un formulario limpio. Al enviarlo, la IA genera automáticamente un resumen para que no tengas que leer todo el mensaje largo en el CRM.
 2.  **WhatsApp Directo:** El menú desplegable permite al cliente elegir contactar a **Belén** o **Nela** directamente.
-3.  **Chatbot (Omni-Agent):** El botón flotante abre el chat tipo WhatsApp. Gemini responderá y creará el lead por ti.
+3.  **Chatbot Inteligente (Brisa):** El botón flotante abre el chat. Antes de chatear, el visitante completa su **nombre** y **destino de interés**. Así el lead se crea con datos reales (no más "Web Guest"). El chat abre con un saludo personalizado y la IA recaba información clave del viaje.
 
 ---
 

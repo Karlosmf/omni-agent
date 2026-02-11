@@ -1,11 +1,11 @@
 <?php
 
+use App\Enums\LeadTemperature;
+use App\Models\Lead;
 use App\Services\AiConciergeService;
 use Gemini\Laravel\Facades\Gemini;
-use Illuminate\Support\Facades\Log;
-use App\Models\Lead;
-use App\Enums\LeadTemperature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Log;
 
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
@@ -34,13 +34,13 @@ test('it processes message successfully and saves history', function () {
     $this->assertDatabaseHas('messages', [
         'lead_id' => $lead->id,
         'role' => 'user',
-        'content' => 'Hola'
+        'content' => 'Hola',
     ]);
 
     $this->assertDatabaseHas('messages', [
         'lead_id' => $lead->id,
         'role' => 'assistant',
-        'content' => 'Respuesta simulada de Gemini'
+        'content' => 'Respuesta simulada de Gemini',
     ]);
 });
 
@@ -94,5 +94,5 @@ test('it handles errors gracefully', function () {
     $service = new AiConciergeService;
     $response = $service->processMessage('Hola', $lead);
 
-    expect($response)->toBe('Lo siento, no puedo procesar tu solicitud en este momento.');
+    expect($response)->toBe('Disculpá, estoy teniendo un pequeño problema técnico. ¿Podés intentar de nuevo en unos segundos? 🙏');
 });

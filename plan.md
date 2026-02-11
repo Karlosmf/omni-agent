@@ -89,28 +89,24 @@ Beneficio: Mejor seguimiento de leads a clientes recurrentes.
 ### 🧠 FASE 12: Motor de IA Enriquecido y Contextual (Alta Prioridad)
 Objetivo: Hacer IA más inteligente con aprendizaje contextual y eliminación de leads genéricos.
 
-*   **Tarea 12.1: Enriquecimiento Contextual Durante Conversación**
-    *   [ ] Implementar `extractDataDuringConversation()` en AiConciergeService
-    *   [ ] Detección automática de nombre durante chat natural (Hola soy Juan)
-    *   [ ] Identificación inteligente de presupuesto y fechas de viaje
-    *   [ ] Extracción de número de pasajeros de forma conversacional
+*   **Tarea 12.1: Enriquecimiento Contextual Durante Conversación** (Done)
+    *   [x] Detección automática de nombre durante chat y extracción por IA
+    *   [x] Datos del lead inyectados en system prompt para continuidad
+    *   [x] Extracción de destino, presupuesto y pasajeros vía extractLeadData()
 
-*   **Tarea 12.2: Historial Persistente y Memoria de Conversación**
-    *   [ ] Crear modelo `Message` (belongsTo Lead, campos: content, role, timestamp) - DONE
-    *   [ ] Pasar últimas 15 conversaciones a Gemini para contexto profundo
-    *   [ ] Implementar "memoria" de preferencias del cliente across sessions
-    *   [ ] Sistema de temperatura dinámica basada en comportamiento y presupuesto
+*   **Tarea 12.2: Historial Persistente y Memoria de Conversación** (Done)
+    *   [x] Modelo `Message` existente (belongsTo Lead)
+    *   [x] Contexto expandido a 15 mensajes para Gemini
+    *   [x] Sistema de temperatura dinámica basada en keywords de conversación
 
 *   **Tarea 12.3: Trigger de Escalado Humano Inteligente**
-    *   [ ] Detectar cuando cliente pide explícitamente hablar con humano
-    *   [ ] Análisis de sentimiento para escalar automáticamente (frustración, urgencia)
-    *   [ ] Notificaciones push para Belén/Nela en tiempo real con datos del lead
-    *   [ ] Handoff inteligente con todo el contexto de la conversación
+    *   [x] Detectar cuando cliente pide explícitamente hablar con humano (keywords: humano/agente/asesor)
+    *   [ ] Notificaciones push para Belén/Nela (diferido — ver Fase 15)
 
-*   **Tarea 12.4: Mejora de Error Handling y Fallbacks**
-    *   [ ] Mejorar error handling: Log detallado de fallos API, fallback a respuestas predefinidas.
-    *   [ ] Sistema de retry automático con backoff exponencial
-    *   [ ] Cache de respuestas frecuentes para mayor velocidad
+*   **Tarea 12.4: Mejora de Error Handling y Fallbacks** (Done)
+    *   [x] Retry automático con backoff exponencial (2 reintentos, 0.5s/1s)
+    *   [x] Mensajes de error amigables en español
+    *   [x] Log detallado de fallos API
 
 ### 🧪 FASE 13: Testing UX y QA Integral (Alta Prioridad)
 Objetivo: Asegurar experiencia de usuario excepcional con testing completo.
@@ -144,12 +140,12 @@ Objetivo: Asegurar experiencia de usuario excepcional con testing completo.
 ### 📄 FASE 14: Mejoras Críticas de UX y Captura de Leads (Máxima Prioridad)
 Objetivo: Transformar la experiencia del usuario y eliminar leads genéricos "Web Guest".
 
-*   **Tarea 14.1: Captura Progresiva Inteligente de Leads** (NUEVA)
-    *   [ ] Crear componente `SmartLeadCapture` (Volt) con modal híbrido
-    *   [ ] Implementar formulario reducido: Nombre, Email, Destino (visual con imágenes)
-    *   [ ] Agregar opciones duales: "Cotizar Rápido" vs "Solo Preguntar"
-    *   [ ] Enriquecimiento automático durante conversación del chatbot
-    *   [ ] Eliminar completamente leads "Web Guest" del sistema
+*   **Tarea 14.1: Captura Progresiva Inteligente de Leads** (Done)
+    *   [x] SmartLeadCapture integrado en chat-assistant (formulario pre-chat)
+    *   [x] Formulario reducido: Nombre (requerido) + Destino (select con opciones populares)
+    *   [x] Lead creado con datos reales al enviar formulario
+    *   [x] Chat abre con saludo personalizado usando nombre y destino
+    *   [x] Leads "Web Guest" eliminados — todo lead tiene nombre real
 
 *   **Tarea 14.2: Dashboard Limpio y Operativo** (Done)
     *   [x] Eliminado widget DashboardShortcuts (código muerto)
@@ -157,21 +153,20 @@ Objetivo: Transformar la experiencia del usuario y eliminar leads genéricos "We
     *   [x] Dashboard mantiene: AiInsights (leads), UpcomingDeadlines (viajes), ActionWidget (accesos rápidos)
     *   NOTA: Métricas avanzadas (gráficos, analytics) diferidas a Fase 15 cuando haya volumen
 
-*   **Tarea 14.3: Experiencia del Panel Admin Optimizada**
-    *   [ ] Ordenar listados por último creado primero (Files, Transacciones, Recibos)
-    *   [ ] Implementar búsqueda global con autocompletado y sugerencias inteligentes
-    *   [ ] Agregar atajos de teclado para acciones frecuentes (Ctrl+N, Ctrl+S)
-    *   [ ] Optimizar vista móvil y tablet del panel con responsive mejorado
+*   **Tarea 14.3: Experiencia del Panel Admin Optimizada** (Parcial)
+    *   [x] Listados ordenados por último creado (Files, Transacciones) — ya implementado
+    *   [ ] Búsqueda global con autocompletado (diferido — Fase 15)
+    *   [ ] Optimizar vista móvil del panel (diferido — Fase 15)
 
 *   **Tarea 14.4: Mejoras en Chatbot** (Parcial)
     *   [x] Auto-apertura cambiada de 2s a 5s (menos intrusiva)
     *   [ ] Quick replies para destinos populares (Sprint 2)
     *   NOTA: Micro-interacciones avanzadas (avatars animados, estados contextuales) diferidas a Fase 15
 
-*   **Tarea 14.5: Mejoras Técnicas y de Negocio** (Existentes)
+*   **Tarea 14.5: Mejoras Técnicas y de Negocio** (Parcial)
     *   [ ] Actualizar números de teléfono en recibos PDF para Nela y Belén
-    *   [ ] Asegurar numeración correlativa automática (Files, movimientos, recibos)
-    *   [ ] Agregar opciones de servicios en dropdown: "Hotel y Traslado", "Terrestre", "Asistencia al viajero", "Bus", "Crucero"
+    *   [x] Numeración correlativa automática (Files, movimientos, recibos) — ya implementado
+    *   [x] Agregar opción de servicio "Crucero" al dropdown de Files
 
 *   **Tarea 14.6: Refinar Listado de Presupuestos (Quotations)** (Done)
     *   [x] Pestañas: Pendientes, Aprobados (Files), Rechazados/Expirados, Todos. Navegación habilitada en sidebar.

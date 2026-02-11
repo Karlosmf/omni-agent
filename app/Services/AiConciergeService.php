@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Lead;
 use Gemini\Laravel\Facades\Gemini;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -9,12 +10,19 @@ use Throwable;
 class AiConciergeService
 {
     /**
-     * Process a message through the Gemini AI.
+     * Maximum retries for Gemini API calls.
      */
+    private const MAX_RETRIES = 2;
+
+    /**
+     * Messages to include in context for Gemini.
+     */
+    private const CONTEXT_MESSAGE_COUNT = 15;
+
     /**
      * Process a message through the Gemini AI.
      */
-    public function processMessage(string $messageContent, \App\Models\Lead $lead): string
+    public function processMessage(string $messageContent, Lead $lead): string
     {
         try {
             // Save User Message
@@ -34,10 +42,10 @@ class AiConciergeService
                 $lead->update(['temperature' => \App\Enums\LeadTemperature::Warm]);
             }
 
-            // Load History from DB
+            // Load History from DB (expanded to 15 messages for deeper context)
             $history = $lead->messages()
                 ->orderBy('created_at', 'desc')
-                ->take(10)
+                ->take(self::CONTEXT_MESSAGE_COUNT)
                 ->get()
                 ->reverse();
 
@@ -46,6 +54,25 @@ class AiConciergeService
             foreach ($history as $msg) {
                 $role = $msg->role === 'user' ? 'Usuario' : 'Asistente';
                 $context .= "{$role}: {$msg->content}\n";
+            }
+
+            // Include lead data in system prompt for continuity
+            $leadContext = '';
+            $aiData = $lead->ai_data ?? [];
+            if (! empty($aiData)) {
+                $leadContext = "\n\nDATOS DEL LEAD:";
+                if (! empty($aiData['destino'])) {
+                    $leadContext .= "\n- Destino: {$aiData['destino']}";
+                }
+                if (! empty($aiData['presupuesto'])) {
+                    $leadContext .= "\n- Presupuesto: {$aiData['presupuesto']}";
+                }
+                if (! empty($aiData['pasajeros'])) {
+                    $leadContext .= "\n- Pasajeros: {$aiData['pasajeros']}";
+                }
+            }
+            if ($lead->customer_name && $lead->customer_name !== 'Web Guest') {
+                $leadContext .= "\n- Nombre: {$lead->customer_name}";
             }
 
             $systemPrompt = "Eres 'Brisa', la asistente virtual de Luopan Viajes.
@@ -64,14 +91,13 @@ class AiConciergeService
             REGLAS:
             - Sé MUY BREVE. Máximo 1 oración por respuesta.
             - Si preguntan precios o vuelos, di que eso lo arman las chicas (Nela/Belén).
-            - No inventes nada.";
+            - No inventes nada.{$leadContext}";
 
-            if (!empty($context)) {
+            if (! empty($context)) {
                 $systemPrompt .= "\n\nHISTORIAL:\n{$context}";
             }
 
-            $result = Gemini::generativeModel('models/gemini-flash-latest')->generateContent("{$systemPrompt}\nUsuario: {$messageContent}");
-            $responseText = $result->text();
+            $responseText = $this->callGeminiWithRetry("{$systemPrompt}\nUsuario: {$messageContent}");
 
             // Save Assistant Message
             $lead->messages()->create([
@@ -81,9 +107,9 @@ class AiConciergeService
 
             return $responseText;
         } catch (Throwable $e) {
-            Log::error('AiConciergeService Error: ' . $e->getMessage());
+            Log::error('AiConciergeService Error: '.$e->getMessage());
 
-            return 'Lo siento, no puedo procesar tu solicitud en este momento.';
+            return 'Disculpá, estoy teniendo un pequeño problema técnico. ¿Podés intentar de nuevo en unos segundos? 🙏';
         }
     }
 
@@ -97,19 +123,45 @@ class AiConciergeService
             - 'destino': Lugar mencionado.
             - 'presupuesto': Monto mencionado.
             - 'pasajeros': Cantidad.
+            - 'nombre': Nombre del usuario si se presentó (ej: 'Hola soy Juan' → 'Juan').
             - 'resumen': Resumen corto INCLUYENDO: fechas/quincena, noches y ciudad de salida si están.
             - 'requiere_atencion': true si pide humano o parece molesto.
 
             Texto: \"{$message}\"";
 
-            $result = Gemini::generativeModel('models/gemini-flash-latest')->generateContent($prompt);
-            $text = str_replace(['```json', '```'], '', $result->text());
+            $text = $this->callGeminiWithRetry($prompt);
+            $text = str_replace(['```json', '```'], '', $text);
 
             return json_decode($text, true) ?? [];
         } catch (Throwable $e) {
-            Log::error('AiExtraction Error: ' . $e->getMessage());
+            Log::error('AiExtraction Error: '.$e->getMessage());
 
             return [];
         }
+    }
+
+    /**
+     * Call Gemini API with retry logic and exponential backoff.
+     */
+    private function callGeminiWithRetry(string $prompt): string
+    {
+        $lastException = null;
+
+        for ($attempt = 0; $attempt <= self::MAX_RETRIES; $attempt++) {
+            try {
+                if ($attempt > 0) {
+                    usleep($attempt * 500_000); // 0.5s, 1s backoff
+                }
+
+                $result = Gemini::generativeModel('models/gemini-flash-latest')->generateContent($prompt);
+
+                return $result->text();
+            } catch (Throwable $e) {
+                $lastException = $e;
+                Log::warning("Gemini API attempt {$attempt} failed: ".$e->getMessage());
+            }
+        }
+
+        throw $lastException;
     }
 }

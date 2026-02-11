@@ -15,6 +15,10 @@ state([
     'isLoading' => false,
     'leadId' => null,
     'embedded' => false,
+    // SmartLeadCapture fields
+    'showCaptureForm' => true,
+    'captureName' => '',
+    'captureDestination' => '',
 ]);
 
 mount(function (bool $embedded = false) {
@@ -26,19 +30,65 @@ mount(function (bool $embedded = false) {
     $this->leadId = session('chat_lead_id');
 
     if ($this->leadId) {
-        $this->messages = Message::where('lead_id', $this->leadId)
-            ->oldest()
-            ->get()
-            ->map(fn($m) => ['role' => $m->role, 'content' => $m->content])
-            ->toArray();
-    } else {
+        $lead = Lead::find($this->leadId);
+        if ($lead) {
+            $this->showCaptureForm = false;
+            $this->messages = Message::where('lead_id', $this->leadId)
+                ->oldest()
+                ->get()
+                ->map(fn($m) => ['role' => $m->role, 'content' => $m->content])
+                ->toArray();
+        } else {
+            $this->leadId = null;
+            session()->forget('chat_lead_id');
+        }
+    }
+
+    if ($this->showCaptureForm && empty($this->messages)) {
         $this->messages = [
-            ['role' => 'assistant', 'content' => '¡Hola! Soy tu asistente virtual de Luopan. 🌴✈️ ¿En qué puedo ayudarte hoy?']
+            ['role' => 'assistant', 'content' => '¡Hola! Soy Brisa, tu asistente de Luopan. 🌴✈️ Completá tus datos y te ayudo a planificar tu viaje.']
         ];
     }
 });
 
 $toggleChat = fn() => $this->isOpen = !$this->isOpen;
+
+$submitCapture = function () {
+    if (empty(trim($this->captureName)))
+        return;
+
+    $destination = $this->captureDestination ?: 'Sin definir';
+
+    // Create Lead with real data
+    $lead = Lead::create([
+        'customer_name' => trim($this->captureName),
+        'customer_phone' => 'Web-' . substr(session()->getId(), 0, 8),
+        'source' => 'web_widget',
+        'raw_message' => "Interesado en: {$destination}",
+        'status' => LeadStatus::New ,
+        'temperature' => LeadTemperature::Cool,
+        'needs_human_attention' => false,
+        'ai_data' => [
+            'destino' => $destination !== 'Sin definir' ? $destination : null,
+        ],
+    ]);
+
+    $this->leadId = $lead->id;
+    session(['chat_lead_id' => $lead->id]);
+    $this->showCaptureForm = false;
+
+    // Auto-greeting from assistant with context
+    $greeting = "¡Hola {$this->captureName}! 👋 " .
+        ($destination !== 'Sin definir'
+            ? "Qué lindo destino {$destination}. ¿Tenés alguna fecha en mente para el viaje?"
+            : "¿Tenés algún destino en mente para tu próximo viaje?");
+
+    $lead->messages()->create(['role' => 'assistant', 'content' => $greeting]);
+
+    $this->messages = [
+        ['role' => 'assistant', 'content' => $greeting],
+    ];
+};
 
 $sendMessage = function (AiConciergeService $aiService) {
     if (empty(trim($this->input)))
@@ -49,8 +99,6 @@ $sendMessage = function (AiConciergeService $aiService) {
     $this->messages[] = ['role' => 'user', 'content' => $userMsg];
     $this->input = '';
     $this->isLoading = true;
-    // Session history removed in favor of DB
-
 
     try {
         // 2. Manage Lead (Create or Retrieve)
@@ -60,9 +108,9 @@ $sendMessage = function (AiConciergeService $aiService) {
         }
 
         if (!$lead) {
-            // New Lead - "Web Guest"
+            // Fallback: create lead if somehow capture was skipped
             $lead = Lead::create([
-                'customer_name' => 'Web Guest', // Default until identified
+                'customer_name' => $this->captureName ?: 'Web Guest',
                 'customer_phone' => 'Web-' . substr(session()->getId(), 0, 8),
                 'source' => 'web_widget',
                 'raw_message' => $userMsg,
@@ -76,16 +124,12 @@ $sendMessage = function (AiConciergeService $aiService) {
         }
 
         // 3. Process with AI
-        // processMessage handles persistence to DB for both User and Assistant messages
         $replyContent = $aiService->processMessage($userMsg, $lead);
 
-        // Context for extraction (just for logic below)
+        // 4. Extract and update lead data
         $queryContext = array_slice($this->messages, -10);
 
-        // 4. Update Lead with latest interaction data
-        // We do this asynchronously or after response to not block the UI too much, but here we do it inline for simplicity
         if (strlen($userMsg) > 2 || count($queryContext) > 0) {
-            // Concatenate recent context for better extraction
             $extractionContext = $userMsg;
             if (!empty($queryContext)) {
                 $extractionContext = json_encode($queryContext) . "\nLAST_MSG: " . $userMsg;
@@ -96,29 +140,34 @@ $sendMessage = function (AiConciergeService $aiService) {
             if (!empty($extraction)) {
                 $currentAiData = $lead->ai_data ?? [];
 
-                // Only update fields if they are not null in the extraction
                 $newAiData = array_merge($currentAiData, array_filter([
                     'destino' => $extraction['destino'] ?? null,
                     'presupuesto' => $extraction['presupuesto'] ?? null,
                     'pasajeros' => $extraction['pasajeros'] ?? null,
                 ]));
 
-                $lead->update([
+                $updateData = [
                     'ai_data' => $newAiData,
                     'ai_summary' => $extraction['resumen'] ?? $lead->ai_summary,
                     'needs_human_attention' => ($extraction['requiere_atencion'] ?? false) || ($lead->needs_human_attention),
-                ]);
+                ];
+
+                // Update customer name if extracted and still generic
+                if (!empty($extraction['nombre']) && ($lead->customer_name === 'Web Guest' || empty($lead->customer_name))) {
+                    $updateData['customer_name'] = $extraction['nombre'];
+                }
+
+                $lead->update($updateData);
             }
         }
 
     } catch (\Throwable $e) {
         \Illuminate\Support\Facades\Log::error("Chatbot Error: " . $e->getMessage());
-        $replyContent = "Lo siento, tuve una pequeña desconexión. ¿Me lo repites?";
+        $replyContent = "Disculpá, tuve una pequeña desconexión. ¿Me lo repetís?";
     }
 
     // 5. Add AI Response
     $this->messages[] = ['role' => 'assistant', 'content' => $replyContent];
-    // session update removed
     $this->isLoading = false;
 };
 
@@ -129,7 +178,7 @@ $sendMessage = function (AiConciergeService $aiService) {
         init() {
             setTimeout(() => this.scrollToBottom(), 100);
 
-            // Auto-open chat after 2 seconds (Call to Action)
+            // Auto-open chat after 5 seconds (less intrusive)
             if (!this.$wire.embedded) {
                 setTimeout(() => {
                     if (!this.$wire.isOpen) {
@@ -194,7 +243,7 @@ $sendMessage = function (AiConciergeService $aiService) {
                                 {!! nl2br(e($msg['content'])) !!}
                             </div>
 
-                            <!-- Timestamp / Status (Fake for now) -->
+                            <!-- Timestamp / Status -->
                             <div class="flex justify-end items-center gap-1 mt-1 opacity-60">
                                 <span class="text-[10px]">{{ now()->format('H:i') }}</span>
                                 @if($msg['role'] === 'user')
@@ -222,23 +271,52 @@ $sendMessage = function (AiConciergeService $aiService) {
             @endif
         </div>
 
-        <!-- Input Area -->
-        <div class="bg-[#F0F2F5] p-2 flex items-center gap-2 shrink-0">
-            <form wire:submit="sendMessage" class="flex-1 flex items-center gap-2">
-                <input type="text" wire:model="input" placeholder="Escribe un mensaje..."
-                    class="flex-1 py-2 px-4 rounded-lg border-none focus:ring-1 focus:ring-green-500 text-sm bg-white placeholder:text-gray-400" />
+        <!-- SmartLeadCapture Form (shown before chat starts) -->
+        @if($showCaptureForm)
+            <div class="bg-white border-t border-gray-200 p-4 shrink-0">
+                <form wire:submit="submitCapture" class="space-y-3">
+                    <p class="text-xs text-gray-500 text-center font-medium">Completá para comenzar 👇</p>
 
-                <button type="submit"
-                    class="p-2 rounded-full bg-[#008069] text-white hover:bg-[#006C59] transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center w-10 h-10 shadow-sm"
-                    wire:loading.attr="disabled">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                        class="w-5 h-5 ml-0.5">
-                        <path
-                            d="M3.478 2.404a.75.75 0 00-.926.941l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.404z" />
-                    </svg>
-                </button>
-            </form>
-        </div>
+                    <input type="text" wire:model="captureName" placeholder="Tu nombre *"
+                        class="w-full py-2.5 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm bg-white placeholder:text-gray-400 transition"
+                        required />
+
+                    <select wire:model="captureDestination"
+                        class="w-full py-2.5 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm bg-white text-gray-700 transition">
+                        <option value="">¿Qué destino te interesa?</option>
+                        <option value="Brasil">🇧🇷 Brasil</option>
+                        <option value="Caribe">🏝️ Caribe</option>
+                        <option value="Europa">🇪🇺 Europa</option>
+                        <option value="Disney / Orlando">🏰 Disney / Orlando</option>
+                        <option value="Argentina">🇦🇷 Argentina</option>
+                        <option value="Otro destino">🌍 Otro destino</option>
+                    </select>
+
+                    <button type="submit"
+                        class="w-full py-2.5 px-4 rounded-lg bg-[#008069] text-white font-semibold text-sm hover:bg-[#006C59] transition-all duration-200 shadow-sm hover:shadow-md active:scale-[0.98]">
+                        Comenzar chat ✈️
+                    </button>
+                </form>
+            </div>
+        @else
+            <!-- Input Area (only shown after capture) -->
+            <div class="bg-[#F0F2F5] p-2 flex items-center gap-2 shrink-0">
+                <form wire:submit="sendMessage" class="flex-1 flex items-center gap-2">
+                    <input type="text" wire:model="input" placeholder="Escribe un mensaje..."
+                        class="flex-1 py-2 px-4 rounded-lg border-none focus:ring-1 focus:ring-green-500 text-sm bg-white placeholder:text-gray-400" />
+
+                    <button type="submit"
+                        class="p-2 rounded-full bg-[#008069] text-white hover:bg-[#006C59] transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center w-10 h-10 shadow-sm"
+                        wire:loading.attr="disabled">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 ml-0.5">
+                            <path
+                                d="M3.478 2.404a.75.75 0 00-.926.941l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.404z" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        @endif
     </div>
 
     <!-- Toggle Button Area -->
