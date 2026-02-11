@@ -39,6 +39,21 @@ class QuotationResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'quotation_number';
 
+    public static function getNavigationBadge(): ?string
+    {
+        $count = Quotation::whereIn('status', [
+            \App\Enums\QuotationStatus::Draft,
+            \App\Enums\QuotationStatus::Sent,
+        ])->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'warning';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return QuotationForm::configure($schema);

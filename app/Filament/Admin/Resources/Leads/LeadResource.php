@@ -32,6 +32,18 @@ class LeadResource extends Resource
 
     protected static ?string $slug = 'consultas';
 
+    public static function getNavigationBadge(): ?string
+    {
+        $count = Lead::where('status', \App\Enums\LeadStatus::New)->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'danger';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return LeadForm::configure($schema);

@@ -32,6 +32,25 @@ class BookingResource extends Resource
 
     protected static ?string $slug = 'files';
 
+    public static function getNavigationBadge(): ?string
+    {
+        $count = Booking::whereDate('travel_date', '>=', now())
+            ->whereDate('travel_date', '<=', now()->addDays(7))
+            ->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'info';
+    }
+
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        return 'Viajes en los próximos 7 días';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return BookingForm::configure($schema);
