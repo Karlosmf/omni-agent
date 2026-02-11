@@ -11,7 +11,32 @@ Bienvenido al sistema de gestión inteligente de Luopan Viajes. Esta guía te ay
 
 ---
 
-## 2. El Dashboard (Tablero Principal)
+## 2. Novedades de Interfaz (v1.1)
+El sistema ahora cuenta con ayudas visuales para priorizar tu trabajo:
+
+### 🔴 Notificaciones en Menú (Badges)
+Verás "globos" de colores en la barra lateral que indican tareas pendientes:
+*   **Consultas (Rojo):** Cantidad de leads **nuevos** que requieren atención inmediata.
+*   **Presupuestos (Amarillo):** Presupuestos en borrador o enviados que debes seguir.
+*   **Files (Azul):** Viajes que salen en los **próximos 7 días**.
+
+### 📱 Modo Móvil Mejorado
+El panel ahora es 100% responsivo.
+*   **Dashboard:** Las tarjetas se ordenan en 1 columna en celular y 2 en tablet para mejor lectura.
+*   **Tablas:** En celulares, se ocultan columnas menos importantes (como "Origen" o "Temperatura") para que veas los datos clave sin hacer scroll horizontal.
+
+---
+
+## 3. Permisos y Seguridad 🔐
+(Solo Admins)
+Al crear o editar un usuario, ahora puedes definir exactamente qué puede ver:
+*   **Selector de Permisos:** Marca las casillas de los módulos habilitados (ej: `ver_ventas`, `ver_tesoreria`, `ver_reportes`).
+*   **Efecto:** El usuario solo verá en su menú lateral las opciones permitidas. Si intenta entrar por link directo, el sistema lo bloqueará.
+*   **Reportes Financieros:** Acceso restringido solo a usuarios con permiso `ver_reportes`.
+
+---
+
+## 4. El Dashboard (Tablero Principal)
 Al ingresar, verás el centro de comando con información vital:
 *   **Métricas de Leads:** Total de leads, leads calientes (urgentes) y tasa de conversión.
 *   **Accesos Rápidos:** Botones para "Nueva Consulta" (crear lead) y "Buscar Cliente".

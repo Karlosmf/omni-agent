@@ -114,7 +114,7 @@ Objetivo: Asegurar experiencia de usuario excepcional con testing completo.
 *   **Tarea 13.1: Browser Tests para Flujo Completo**
     *   [ ] Test E2E: Landing → Captura Lead → Dashboard → Conversión
     *   [ ] Test de conversión de chatbot a lead calificado con datos reales
-    *   [ ] Test mobile experience en iPhone, Android y tablet
+    *   [x] Test mobile experience en iPhone, Android y tablet
     *   [ ] Test de accessibility WCAG 2.1 AA con axe-core integration
     *   [ ] Performance testing: Load time <2s, Mobile score >90
 
@@ -156,7 +156,7 @@ Objetivo: Transformar la experiencia del usuario y eliminar leads genéricos "We
 *   **Tarea 14.3: Experiencia del Panel Admin Optimizada** (Parcial)
     *   [x] Listados ordenados por último creado (Files, Transacciones) — ya implementado
     *   [ ] Búsqueda global con autocompletado (diferido — Fase 15)
-    *   [ ] Optimizar vista móvil del panel (diferido — Fase 15)
+    *   [x] Optimizar vista móvil del panel (Dashboard y Tablas)
 
 *   **Tarea 14.4: Mejoras en Chatbot** (Parcial)
     *   [x] Auto-apertura cambiada de 2s a 5s (menos intrusiva)
@@ -170,6 +170,14 @@ Objetivo: Transformar la experiencia del usuario y eliminar leads genéricos "We
 
 *   **Tarea 14.6: Refinar Listado de Presupuestos (Quotations)** (Done)
     *   [x] Pestañas: Pendientes, Aprobados (Files), Rechazados/Expirados, Todos. Navegación habilitada en sidebar.
+
+### 🔒 FASE 14.7: Seguridad y UX (NUEVO - COMPLETADO)
+*   **Gestión de Permisos:**
+    *   [x] Sistema de permisos granular por usuario (JSON en DB).
+    *   [x] Acceso controlado a módulos (Ventas, Tesorería, Reportes).
+    *   [x] Protección de rutas y visibilidad de menú.
+*   **Mejoras Visuales (Badges):**
+    *   [x] Indicadores de estado (Globitos) en sidebar para Leads Nuevos, Presupuestos Pendientes y Próximas Salidas.
 
 ### 🚀 FASE 15: Optimización Continua y Métricas (Media Prioridad)
 Objetivo: Monitoreo constante y optimización basada en datos.
