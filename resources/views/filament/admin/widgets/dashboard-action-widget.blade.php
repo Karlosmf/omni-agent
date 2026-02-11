@@ -1,5 +1,24 @@
 <x-filament-widgets::widget>
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+    <style>
+        .dashboard-action-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .dashboard-action-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1280px) {
+            .dashboard-action-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+    <div class="dashboard-action-grid">
         {{-- Botón Nueva Consulta (Lead) --}}
         <a href="{{ \App\Filament\Admin\Resources\Leads\LeadResource::getUrl('create') }}"
             style="display: flex; align-items: center; gap: 16px; padding: 20px 24px; background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%); border-radius: 16px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px -3px rgba(14, 165, 233, 0.4);"

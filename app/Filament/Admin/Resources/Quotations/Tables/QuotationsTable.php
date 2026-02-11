@@ -25,11 +25,13 @@ class QuotationsTable
                     ->sortable(),
                 TextColumn::make('destination')
                     ->label('Destino')
-                    ->searchable(),
+                    ->searchable()
+                    ->visibleFrom('md'),
                 TextColumn::make('travel_date')
                     ->label('Fecha Viaje')
                     ->date('d/m/Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->visibleFrom('md'),
                 TextColumn::make('total_sell')
                     ->label('Total (USD)')
                     ->money('USD')
@@ -42,7 +44,9 @@ class QuotationsTable
                     ->label('Válido Hasta')
                     ->date('d/m/Y')
                     ->sortable()
-                    ->color(fn ($record) => $record->isExpired() ? 'danger' : 'gray'),
+                    ->color(fn($record) => $record->isExpired() ? 'danger' : 'gray')
+                    ->visibleFrom('lg')
+                    ->toggleable(),
             ])
             ->filters([
                 \Filament\Tables\Filters\SelectFilter::make('status')
@@ -59,7 +63,7 @@ class QuotationsTable
                             ->options(\App\Models\Customer::all()->pluck('name', 'id'))
                             ->searchable()
                             ->required()
-                            ->default(fn (\App\Models\Quotation $record) => $record->customer_id)
+                            ->default(fn(\App\Models\Quotation $record) => $record->customer_id)
                             ->helperText('Selecciona el cliente para el nuevo presupuesto (puede ser el mismo u otro).'),
                     ])
                     ->beforeReplicaSaved(function (\App\Models\Quotation $replica, array $data) {
@@ -75,7 +79,7 @@ class QuotationsTable
                     ->requiresConfirmation()
                     ->modalHeading('Convertir Presupuesto a File')
                     ->modalDescription('¿Estás seguro? Esto creará un nuevo File (Booking) copiando la información del cliente, fechas e items.')
-                    ->action(fn (\App\Models\Quotation $record) => self::convertToBooking($record)),
+                    ->action(fn(\App\Models\Quotation $record) => self::convertToBooking($record)),
                 \Filament\Actions\Action::make('pdf')
                     ->label('PDF')
                     ->icon('heroicon-o-document-arrow-down')
@@ -110,11 +114,11 @@ class QuotationsTable
             'total_cost' => $quotation->total_cost,
             'total_sell' => $quotation->total_sell,
             'profit' => $quotation->profit,
-            'internal_notes' => "Creado desde Cotización #{$quotation->quotation_number}. \n".$quotation->notes,
+            'internal_notes' => "Creado desde Cotización #{$quotation->quotation_number}. \n" . $quotation->notes,
         ]);
 
         // Create Booking Items
-        if (! empty($quotation->items)) {
+        if (!empty($quotation->items)) {
             foreach ($quotation->items as $item) {
                 $booking->items()->create([
                     'service_type' => 'other', // Default generic type

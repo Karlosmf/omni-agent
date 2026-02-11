@@ -21,14 +21,16 @@ class LeadsTable
                 TextColumn::make('customer_name')
                     ->label('Nombre')
                     ->searchable()
-                    ->description(fn ($record) => $record->customer_phone),
+                    ->description(fn($record) => $record->customer_phone),
                 TextColumn::make('source')
                     ->label('Origen')
-                    ->badge(),
+                    ->badge()
+                    ->visibleFrom('md'),
                 TextColumn::make('temperature')
                     ->label('Temperatura')
                     ->badge()
-                    ->sortable(),
+                    ->sortable()
+                    ->visibleFrom('md'),
                 TextColumn::make('status')
                     ->label('Estado')
                     ->badge()
@@ -40,7 +42,9 @@ class LeadsTable
                 TextColumn::make('created_at')
                     ->label('Creado el')
                     ->dateTime()
-                    ->sortable(),
+                    ->sortable()
+                    ->visibleFrom('md')
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultGroup('temperature')
             ->groups([
@@ -83,22 +87,22 @@ class LeadsTable
 
                         return redirect()->to(\App\Filament\Admin\Resources\Customers\CustomerResource::getUrl('edit', ['record' => $customer]));
                     })
-                    ->visible(fn (\App\Models\Lead $record) => is_null($record->customer_id)),
+                    ->visible(fn(\App\Models\Lead $record) => is_null($record->customer_id)),
                 Action::make('whatsapp')
                     ->label('WhatsApp')
                     ->icon('heroicon-o-chat-bubble-left-ellipsis')
                     ->color('success')
-                    ->url(fn ($record) => "https://wa.me/{$record->customer_phone}?text=".urlencode("Hola {$record->customer_name}, soy del equipo de Luopan Viajes. Te contacto por tu consulta sobre viajes. ¿En qué puedo ayudarte?"))
+                    ->url(fn($record) => "https://wa.me/{$record->customer_phone}?text=" . urlencode("Hola {$record->customer_name}, soy del equipo de Luopan Viajes. Te contacto por tu consulta sobre viajes. ¿En qué puedo ayudarte?"))
                     ->openUrlInNewTab()
-                    ->visible(fn ($record) => ! empty($record->customer_phone)),
+                    ->visible(fn($record) => !empty($record->customer_phone)),
                 EditAction::make()
                     ->label('Editar'),
                 Action::make('escalate')
                     ->label('Escalar a humano')
                     ->icon('heroicon-o-user-group')
                     ->color('warning')
-                    ->action(fn ($record) => $record->update(['needs_human_attention' => true]))
-                    ->visible(fn ($record) => ! $record->needs_human_attention),
+                    ->action(fn($record) => $record->update(['needs_human_attention' => true]))
+                    ->visible(fn($record) => !$record->needs_human_attention),
             ])
             ->toolbarActions([
                 \Filament\Actions\ExportAction::make()
