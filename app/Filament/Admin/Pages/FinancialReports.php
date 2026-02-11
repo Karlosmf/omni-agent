@@ -17,6 +17,11 @@ class FinancialReports extends Page
 
     protected static ?int $navigationSort = 10;
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()->hasPermission('view_financial_reports');
+    }
+
     public $year;
 
     public $currency;

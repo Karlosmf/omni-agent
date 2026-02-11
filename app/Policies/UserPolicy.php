@@ -2,25 +2,24 @@
 
 namespace App\Policies;
 
-use App\Models\Lead;
 use App\Models\User;
 
-class LeadPolicy
+class UserPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermission('manage_leads');
+        return $user->hasPermission('manage_users');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Lead $lead): bool
+    public function view(User $user, User $model): bool
     {
-        return $user->hasPermission('manage_leads');
+        return $user->hasPermission('manage_users');
     }
 
     /**
@@ -28,38 +27,38 @@ class LeadPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermission('manage_leads');
+        return $user->hasPermission('manage_users');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Lead $lead): bool
+    public function update(User $user, User $model): bool
     {
-        return $user->hasPermission('manage_leads');
+        return $user->hasPermission('manage_users');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Lead $lead): bool
+    public function delete(User $user, User $model): bool
     {
-        return $user->hasPermission('manage_leads');
+        return $user->hasPermission('manage_users');
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Lead $lead): bool
+    public function restore(User $user, User $model): bool
     {
-        return $user->hasPermission('manage_leads');
+        return $user->hasPermission('manage_users');
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Lead $lead): bool
+    public function forceDelete(User $user, User $model): bool
     {
-        return $user->hasPermission('manage_leads');
+        return $user->hasPermission('manage_users');
     }
 }

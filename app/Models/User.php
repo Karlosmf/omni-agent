@@ -25,6 +25,7 @@ class User extends Authenticatable
         'email',
         'phone',
         'role',
+        'permissions', // Added
         'doc_number',
         'passport_number',
         'birth_date',
@@ -54,6 +55,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'role' => UserRole::class,
             'birth_date' => 'date',
+            'permissions' => 'array', // Added
         ];
     }
 
@@ -79,5 +81,36 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->role === UserRole::Admin;
+    }
+
+    /**
+     * Check if user has specific permission.
+     * Admins always have all permissions.
+     */
+    public function hasPermission(string $permission): bool
+    {
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        return in_array($permission, $this->permissions ?? []);
+    }
+
+    /**
+     * Check if user has any of the given permissions.
+     */
+    public function hasAnyPermission(array $permissions): bool
+    {
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        foreach ($permissions as $permission) {
+            if ($this->hasPermission($permission)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

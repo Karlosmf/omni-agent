@@ -3,6 +3,8 @@
 namespace App\Filament\Admin\Resources\Users\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
+// Added
+use Filament\Schemas\Components\Section; // Updated
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
@@ -27,8 +29,28 @@ class UserForm
                 TextInput::make('password')
                     ->label('Contraseña')
                     ->password()
-                    ->dehydrated(fn ($state) => filled($state))
-                    ->required(fn (string $operation): bool => $operation === 'create'),
+                    ->dehydrated(fn($state) => filled($state))
+                    ->required(fn(string $operation): bool => $operation === 'create'),
+
+                Section::make('Permisos')
+                    ->description('Selecciona los permisos para este usuario')
+                    ->schema([
+                        \Filament\Forms\Components\CheckboxList::make('permissions')
+                            ->label('Accesos Permitidos')
+                            ->options([
+                                'manage_leads' => 'Gestionar Consultas',
+                                'manage_quotations' => 'Gestionar Presupuestos',
+                                'manage_bookings' => 'Gestionar Files',
+                                'manage_customers' => 'Gestionar Clientes',
+                                'manage_transactions' => 'Gestionar Caja',
+                                'manage_users' => 'Gestionar Usuarios',
+                                'view_financial_reports' => 'Ver Reportes Financieros',
+                            ])
+                            ->columns(2)
+                            ->gridDirection('row')
+                            ->bulkToggleable(),
+                    ])
+                    ->collapsed(false),
             ]);
     }
 }
