@@ -179,6 +179,13 @@ Objetivo: Transformar la experiencia del usuario y eliminar leads genéricos "We
 *   **Mejoras Visuales (Badges):**
     *   [x] Indicadores de estado (Globitos) en sidebar para Leads Nuevos, Presupuestos Pendientes y Próximas Salidas.
 
+### ⚡ FASE 14.8: UX Power-Ups & Fixes (NUEVO - COMPLETADO)
+*   **Autocompletado Inteligente (Smart Fill):**
+    *   [x] **Bookings:** Al seleccionar Cliente/Lead se completa automáticamente `holder_name` y `customer_id`.
+    *   [x] **Presupuestos:** Al seleccionar Lead, se completa Cliente + `destination`, `passengers` y `dates` (desde IA data).
+*   **Fixes Críticos:**
+    *   [x] Corrección schema Proveedores (rename `email` -> `contact_email` para evitar error 500).
+
 ### 🚀 FASE 15: Optimización Continua y Métricas (Media Prioridad)
 Objetivo: Monitoreo constante y optimización basada en datos.
 

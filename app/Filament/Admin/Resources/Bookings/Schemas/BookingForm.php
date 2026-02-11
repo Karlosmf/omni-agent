@@ -40,7 +40,16 @@ class BookingForm
                                             ->label('Teléfono')
                                             ->required(),
                                     ])
-                                    ->required(),
+                                    ->required()
+                                    ->live()
+                                    ->afterStateUpdated(function (Set $set, $state) {
+                                        if ($state) {
+                                            $customer = \App\Models\Customer::find($state);
+                                            if ($customer) {
+                                                $set('holder_name', $customer->name);
+                                            }
+                                        }
+                                    }),
                                 TextInput::make('file_number')
                                     ->label('Nro File')
                                     ->placeholder('Generado automáticamente')
@@ -57,7 +66,19 @@ class BookingForm
                                     ->label('Lead Origen')
                                     ->relationship('lead', 'customer_name')
                                     ->searchable()
-                                    ->preload(),
+                                    ->preload()
+                                    ->live()
+                                    ->afterStateUpdated(function (Set $set, $state) {
+                                        if ($state) {
+                                            $lead = \App\Models\Lead::find($state);
+                                            if ($lead) {
+                                                $set('holder_name', $lead->customer_name);
+                                                if ($lead->customer_id) {
+                                                    $set('customer_id', $lead->customer_id);
+                                                }
+                                            }
+                                        }
+                                    }),
                                 TextInput::make('holder_name')
                                     ->label('Nombre del Pasajero Principal')
                                     ->required(),

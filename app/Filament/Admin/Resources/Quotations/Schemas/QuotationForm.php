@@ -33,7 +33,7 @@ class QuotationForm
                             ->searchable()
                             ->preload()
                             ->default(request()->query('customer_id'))
-                            ->disabled(fn () => request()->has('customer_id'))
+                            ->disabled(fn() => request()->has('customer_id'))
                             ->dehydrated()
                             ->createOptionForm([
                                 TextInput::make('name')->required()->label('Nombre'),
@@ -45,7 +45,29 @@ class QuotationForm
                             ->label('Lead Relacionado')
                             ->relationship('lead', 'customer_name')
                             ->searchable()
-                            ->preload(),
+                            ->preload()
+                            ->live()
+                            ->afterStateUpdated(function (\Filament\Schemas\Components\Utilities\Set $set, $state) {
+                                if ($state) {
+                                    $lead = \App\Models\Lead::find($state);
+                                    if ($lead) {
+                                        if ($lead->customer_id) {
+                                            $set('customer_id', $lead->customer_id);
+                                        }
+                                        // Try to fill destination from AI data or source
+                                        $aiData = $lead->ai_data ?? [];
+                                        if (!empty($aiData['destination_city'])) {
+                                            $set('destination', $aiData['destination_city']);
+                                        }
+                                        if (!empty($aiData['passengers_count'])) {
+                                            $set('passengers', $aiData['passengers_count']);
+                                        }
+                                        if (!empty($aiData['travel_date_start'])) {
+                                            $set('travel_date', $aiData['travel_date_start']);
+                                        }
+                                    }
+                                }
+                            }),
                         TextInput::make('destination')
                             ->label('Destino Principal')
                             ->required(),
@@ -82,19 +104,19 @@ class QuotationForm
                                             ->prefix('$')
                                             ->default(0)
                                             ->live(onBlur: true)
-                                            ->afterStateUpdated(fn (\Filament\Schemas\Components\Utilities\Set $set, \Filament\Schemas\Components\Utilities\Get $get) => self::updateTotals($set, $get)),
+                                            ->afterStateUpdated(fn(\Filament\Schemas\Components\Utilities\Set $set, \Filament\Schemas\Components\Utilities\Get $get) => self::updateTotals($set, $get)),
                                         TextInput::make('sell')
                                             ->label('Precio Venta (USD)')
                                             ->numeric()
                                             ->prefix('$')
                                             ->default(0)
                                             ->live(onBlur: true)
-                                            ->afterStateUpdated(fn (\Filament\Schemas\Components\Utilities\Set $set, \Filament\Schemas\Components\Utilities\Get $get) => self::updateTotals($set, $get)),
+                                            ->afterStateUpdated(fn(\Filament\Schemas\Components\Utilities\Set $set, \Filament\Schemas\Components\Utilities\Get $get) => self::updateTotals($set, $get)),
                                     ]),
                             ])
                             ->createItemButtonLabel('Agregar Servicio')
                             ->live()
-                            ->afterStateUpdated(fn (\Filament\Schemas\Components\Utilities\Set $set, \Filament\Schemas\Components\Utilities\Get $get) => self::updateTotals($set, $get)),
+                            ->afterStateUpdated(fn(\Filament\Schemas\Components\Utilities\Set $set, \Filament\Schemas\Components\Utilities\Get $get) => self::updateTotals($set, $get)),
                     ]),
 
                 \Filament\Schemas\Components\Section::make('Totales')
