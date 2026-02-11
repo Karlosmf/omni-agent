@@ -50,7 +50,7 @@ class QuotationsTable
                     ->label('Estado'),
             ])
             ->recordActions([
-                \Filament\Tables\Actions\ReplicateAction::make()
+                \Filament\Actions\ReplicateAction::make()
                     ->label('Duplicar')
                     ->modalHeading('Duplicar Presupuesto')
                     ->form([
