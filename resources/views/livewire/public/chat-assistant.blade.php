@@ -135,7 +135,7 @@ $sendMessage = function (AiConciergeService $aiService) {
                     if (!this.$wire.isOpen) {
                         this.$wire.set('isOpen', true);
                     }
-                }, 2000);
+                }, 5000);
             }
         },
         scrollToBottom() { 
@@ -186,7 +186,7 @@ $sendMessage = function (AiConciergeService $aiService) {
             @foreach($messages as $msg)
                     <div class="flex {{ $msg['role'] === 'user' ? 'justify-end' : 'justify-start' }}">
                         <div class="max-w-[85%] px-3 py-2 text-sm shadow-sm rounded-lg relative
-                                                                                                {{ $msg['role'] === 'user'
+                                                                                                        {{ $msg['role'] === 'user'
                 ? 'bg-[#E7FFDB] text-gray-800 rounded-tr-none'
                 : 'bg-white text-gray-800 rounded-tl-none' }}">
 
@@ -252,22 +252,24 @@ $sendMessage = function (AiConciergeService $aiService) {
                 x-transition:enter-end="opacity-100 translate-y-0 scale-100"
                 x-transition:leave="transition ease-in duration-200"
                 class="bg-gradient-to-r from-emerald-500 to-teal-600 px-6 py-4 rounded-2xl rounded-br-none shadow-[0_10px_40px_-10px_rgba(16,185,129,0.5)] text-white text-sm font-bold relative mb-4 animate-[bounce_3s_infinite] border border-white/20">
-                
+
                 <div class="flex items-center gap-3">
                     <span class="text-2xl filter drop-shadow-sm">👋</span>
                     <div class="flex flex-col leading-tight">
-                        <span class="text-emerald-50 font-extrabold uppercase tracking-wide text-[10px]">Asistente Virtual</span>
+                        <span class="text-emerald-50 font-extrabold uppercase tracking-wide text-[10px]">Asistente
+                            Virtual</span>
                         <span class="text-base drop-shadow-md">¿Planificamos tu viaje?</span>
                     </div>
                 </div>
 
                 <!-- Tail -->
                 <div class="absolute -bottom-2 right-0 w-4 h-4 bg-teal-600 transform rotate-45 mr-6 rounded-sm"></div>
-                
+
                 <!-- Close Button -->
                 <button @click="showWelcomeBubble = false; $event.stopPropagation();"
                     class="absolute -top-3 -left-3 bg-white text-gray-500 shadow-md rounded-full w-7 h-7 flex items-center justify-center hover:bg-gray-100 transition-colors hover:scale-110 active:scale-95 z-10 font-bold border-2 border-emerald-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3 h-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3"
+                        stroke="currentColor" class="w-3 h-3">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>

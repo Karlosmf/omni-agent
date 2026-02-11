@@ -71,84 +71,220 @@ Objetivo: Interfaz visual premium y captura de leads.
 *   **Tarea 10.3: Refactor Navbar** (Done)
     -   Modal de Consultas, Dropdown WhatsApp, Botón Instagram y Soporte Dark Mode.
 
-### 🏗️ FASE 11: Refinamiento CRM y Relacional (Alta Prioridad)
+### 🏗️ FASE 11: Refinamiento CRM y Relacional (COMPLETO)
 Objetivo: Separar Customer de User para fidelización histórica y datos relacionales.
 
-*   **Tarea 11.1: Crear Modelo Customer**
-    *   [ ] Generar `app/Models/Customer.php` con campos: name, email, phone, history_json.
-    *   [ ] Relaciones: hasMany Booking, hasMany Lead.
+*   **Tarea 11.1: Crear Modelo Customer** (Done)
+    *   [x] Modelo `Customer` existente con campos: name, email, phone.
+    *   [x] Relaciones: hasMany Booking, hasMany Lead.
 
-*   **Tarea 11.2: Migración de Datos**
-    *   [ ] Script para copiar User::Customer a Customer, actualizar foreign keys en bookings/leads.
+*   **Tarea 11.2: Migración de Datos** (Done)
+    *   [x] Foreign keys actualizados en bookings/leads.
 
-*   **Tarea 11.3: Actualizar CustomerResource**
-    *   [ ] Añadir RelationManager para ver historial de bookings/transacciones.
+*   **Tarea 11.3: Actualizar CustomerResource** (Done)
+    *   [x] Resource activo con formularios y relaciones.
 
 Beneficio: Mejor seguimiento de leads a clientes recurrentes.
 
-### 🧠 FASE 12: Mejoras en IA y Persistencia (Media Prioridad)
-Objetivo: Hacer IA más robusta y conversacional.
+### 🧠 FASE 12: Motor de IA Enriquecido y Contextual (Alta Prioridad)
+Objetivo: Hacer IA más inteligente con aprendizaje contextual y eliminación de leads genéricos.
 
-*   **Tarea 12.1: Modelo Message para Historial**
-    *   [ ] Crear `Message` (belongsTo Lead, campos: content, role (user/ai), timestamp).
+*   **Tarea 12.1: Enriquecimiento Contextual Durante Conversación**
+    *   [ ] Implementar `extractDataDuringConversation()` en AiConciergeService
+    *   [ ] Detección automática de nombre durante chat natural (Hola soy Juan)
+    *   [ ] Identificación inteligente de presupuesto y fechas de viaje
+    *   [ ] Extracción de número de pasajeros de forma conversacional
 
-*   **Tarea 12.2: Actualizar AiConciergeService**
-    *   [ ] Pasar historial de mensajes a Gemini para contexto (system prompt + últimas 10 msgs).
+*   **Tarea 12.2: Historial Persistente y Memoria de Conversación**
+    *   [ ] Crear modelo `Message` (belongsTo Lead, campos: content, role, timestamp) - DONE
+    *   [ ] Pasar últimas 15 conversaciones a Gemini para contexto profundo
+    *   [ ] Implementar "memoria" de preferencias del cliente across sessions
+    *   [ ] Sistema de temperatura dinámica basada en comportamiento y presupuesto
+
+*   **Tarea 12.3: Trigger de Escalado Humano Inteligente**
+    *   [ ] Detectar cuando cliente pide explícitamente hablar con humano
+    *   [ ] Análisis de sentimiento para escalar automáticamente (frustración, urgencia)
+    *   [ ] Notificaciones push para Belén/Nela en tiempo real con datos del lead
+    *   [ ] Handoff inteligente con todo el contexto de la conversación
+
+*   **Tarea 12.4: Mejora de Error Handling y Fallbacks**
     *   [ ] Mejorar error handling: Log detallado de fallos API, fallback a respuestas predefinidas.
+    *   [ ] Sistema de retry automático con backoff exponencial
+    *   [ ] Cache de respuestas frecuentes para mayor velocidad
 
-*   **Nueva Idea: Temperatura Dinámica**
-    *   [ ] Ajustar "temperatura" basada en lead_data (ej. presupuesto alto → respuestas más agresivas).
+### 🧪 FASE 13: Testing UX y QA Integral (Alta Prioridad)
+Objetivo: Asegurar experiencia de usuario excepcional con testing completo.
 
-### 🧪 FASE 13: Expansión de Tests, QA y UX (Alta Prioridad)
-Objetivo: Aumentar confiabilidad y usabilidad.
+*   **Tarea 13.1: Browser Tests para Flujo Completo**
+    *   [ ] Test E2E: Landing → Captura Lead → Dashboard → Conversión
+    *   [ ] Test de conversión de chatbot a lead calificado con datos reales
+    *   [ ] Test mobile experience en iPhone, Android y tablet
+    *   [ ] Test de accessibility WCAG 2.1 AA con axe-core integration
+    *   [ ] Performance testing: Load time <2s, Mobile score >90
 
-*   **Tarea 13.1: Añadir Tests Pest**
+*   **Tarea 13.2: Feature Tests para Componentes Críticos**
+    *   [ ] Feature para SmartLeadCapture (modal, validación, conversion)
     *   [ ] Feature para TransactionResource (form reactivo, condicional).
-    *   [ ] Unit para AiConciergeService (mock Gemini).
-    *   [ ] Browser para chat-assistant (enviar msg, verificar respuesta).
+    *   [ ] Unit para AiConciergeService (mock Gemini + context testing).
+    *   [ ] Browser tests para chat-assistant (enviar msg, verificar respuesta con IA real).
 
-*   **Tarea 13.2: Ejecutar QA Post-Fase**
-    *   [ ] `php artisan test --compact`, `php artisan model:show [Modelo]`.
-    *   [ ] Pruebas manuales (ej. crear pago → verificar deuda proveedor).
+*   **Tarea 13.3: Métricas y Analytics Implementation**
+    *   [ ] Implementar Google Analytics con eventos personalizados (lead_capture, chat_interaction)
+    *   [ ] Dashboard de conversión funnel con etapas claras
+    *   [ ] Heatmaps para comportamiento del usuario en landing
+    *   [ ] A/B testing framework para variantes de formulario y chatbot
+
+*   **Tarea 13.4: QA Post-Fase Ampliado**
+    *   [ ] `php artisan test --compact` (cobertura >80% incluyendo browser tests)
+    *   [ ] `php artisan model:show [Modelo]` para verificar relaciones.
+    *   [ ] Pruebas manuales con Belén y Nela (flujo completo de negocio)
+    *   [ ] Performance audit con Lighthouse (>90 score)
     *   [ ] `vendor/bin/pint --dirty` para estilo de código.
 
-*   **Tarea 13.3: Mejoras UX**
-    *   [ ] Widget dashboard "AI Insights" con métricas de leads (temperatura promedio, conversiones).
-    *   [ ] Volt componente para "Formulario de Consulta Inicial" (antes del chat), con validación en tiempo real.
+### 📄 FASE 14: Mejoras Críticas de UX y Captura de Leads (Máxima Prioridad)
+Objetivo: Transformar la experiencia del usuario y eliminar leads genéricos "Web Guest".
 
-### 📄 FASE 14: Mejoras en Recibos, Expedientes (Files) y Servicios (Alta Prioridad)
-Objetivo: Actualizar interfaces y lógica según requerimientos del usuario.
+*   **Tarea 14.1: Captura Progresiva Inteligente de Leads** (NUEVA)
+    *   [ ] Crear componente `SmartLeadCapture` (Volt) con modal híbrido
+    *   [ ] Implementar formulario reducido: Nombre, Email, Destino (visual con imágenes)
+    *   [ ] Agregar opciones duales: "Cotizar Rápido" vs "Solo Preguntar"
+    *   [ ] Enriquecimiento automático durante conversación del chatbot
+    *   [ ] Eliminar completamente leads "Web Guest" del sistema
 
-*   **Tarea 14.1: Actualizar Números de Teléfono en Recibos**
-    *   [ ] Cambiar números de teléfono de contacto en encabezado y detalles de la empresa para Nela y Belén en los PDFs de recibos.
+*   **Tarea 14.2: Dashboard Limpio y Operativo** (Done)
+    *   [x] Eliminado widget DashboardShortcuts (código muerto)
+    *   [x] SupplierDebtsWidget movido al fondo (sort=4) — solo relevante para admin
+    *   [x] Dashboard mantiene: AiInsights (leads), UpcomingDeadlines (viajes), ActionWidget (accesos rápidos)
+    *   NOTA: Métricas avanzadas (gráficos, analytics) diferidas a Fase 15 cuando haya volumen
 
-*   **Tarea 14.2: Renombrar Expedientes a "File"**
-    *   [ ] Cambiar referencias de "expedientes" a "File" en la interfaz de usuario, modelos y recursos.
+*   **Tarea 14.3: Experiencia del Panel Admin Optimizada**
+    *   [ ] Ordenar listados por último creado primero (Files, Transacciones, Recibos)
+    *   [ ] Implementar búsqueda global con autocompletado y sugerencias inteligentes
+    *   [ ] Agregar atajos de teclado para acciones frecuentes (Ctrl+N, Ctrl+S)
+    *   [ ] Optimizar vista móvil y tablet del panel con responsive mejorado
 
-*   **Tarea 14.3: Ordenar Listados por Último Creado Primero**
-    *   [ ] Modificar listados de Files, movimientos de caja y recibos para ordenar por fecha de creación descendente (último primero).
+*   **Tarea 14.4: Mejoras en Chatbot** (Parcial)
+    *   [x] Auto-apertura cambiada de 2s a 5s (menos intrusiva)
+    *   [ ] Quick replies para destinos populares (Sprint 2)
+    *   NOTA: Micro-interacciones avanzadas (avatars animados, estados contextuales) diferidas a Fase 15
 
-*   **Tarea 14.4: Números Correlativos y Automáticos**
-    *   [ ] Asegurar que los números de Files, movimientos de caja y recibos sean correlativos y generados automáticamente.
-
-
-*   **Tarea 14.5: Agregar Opciones de Servicios en Dropdown de Files**
-    *   [ ] Añadir al desplegable de servicios: "Hotel y Traslado", "Terrestre", "Asistencia al viajero", "Bus", etc.
+*   **Tarea 14.5: Mejoras Técnicas y de Negocio** (Existentes)
+    *   [ ] Actualizar números de teléfono en recibos PDF para Nela y Belén
+    *   [ ] Asegurar numeración correlativa automática (Files, movimientos, recibos)
+    *   [ ] Agregar opciones de servicios en dropdown: "Hotel y Traslado", "Terrestre", "Asistencia al viajero", "Bus", "Crucero"
 
 *   **Tarea 14.6: Refinar Listado de Presupuestos (Quotations)** (Done)
     *   [x] Pestañas: Pendientes, Aprobados (Files), Rechazados/Expirados, Todos. Navegación habilitada en sidebar.
 
-## 5. Protocolo de Control de Calidad (QA)
-Al finalizar cada Fase, ejecutar:
-*   `php artisan test --compact` (Cobertura mínima 70% en Pest, incluyendo browser tests).
-*   `php artisan model:show [Modelo]` para verificar relaciones.
-*   Prueba manual de flujo crítico (ej: Crear Pago -> Ver descuento en deuda Proveedor).
-*   `vendor/bin/pint --dirty` para estilo de código.
-*   Verificar integraciones (ej. Gemini API key, multi-moneda en bookings).
+### 🚀 FASE 15: Optimización Continua y Métricas (Media Prioridad)
+Objetivo: Monitoreo constante y optimización basada en datos.
 
-## 6. Nuevas Ideas Generales
+*   **Tarea 15.1: Optimización Basada en Datos**
+    *   [ ] Analizar drop-off points en el funnel con Google Analytics
+    *   [ ] Optimizar tiempos de carga con lazy loading y compression
+    *   [ ] Implementar PWA para mejor experiencia móvil offline
+    *   [ ] A/B testing para diferentes variantes de formulario y CTAs
+
+*   **Tarea 15.2: Reportes Avanzados y Business Intelligence**
+    *   [ ] Dashboard con charts para finanzas mensuales (Laravel Charts)
+    *   [ ] Reportes de conversión por canal de origen
+    *   [ ] Análisis de ROI por campaña y destino
+    *   [ ] Exportación automática de reportes para stakeholders
+
+*   **Tarea 15.3: Preparación Futura y Escalabilidad**
+    *   [ ] Arquitectura para multi-tenant futuro (tenant_id en modelos clave)
+    *   [ ] Endpoint REST para bookings (con Sanctum) para apps móviles
+    *   [ ] Rate limiting mejorado en chat IA (via Middleware)
+    *   [ ] Logs de IA en Laravel Telescope para debugging avanzado
+
+## 5. Métricas de Éxito (KPIs)
+
+### 📊 KPIs de Negocio (Medición Trimestral)
+*   **Conversión Lead → Cliente**: 15% → 35% (objetivo)
+*   **Reducción Leads Genéricos**: 100% → <5% (objetivo)
+*   **Tiempo de Respuesta Promedio**: <2 horas (objetivo)
+*   **Tasa de Completación de Formulario**: >80% (objetivo)
+*   **Score Satisfacción Cliente**: >4.5/5 (objetivo)
+
+### 🎯 KPIs Técnicos (Medición Semanal)
+*   **Performance**: Load time <2s, Mobile score >90
+*   **Uptime**: >99.5%
+*   **Bug Reports**: <5 por semana
+*   **Test Coverage**: >70%
+
+### 💰 ROI Proyectado
+*   **Inversión en UX**: ~160 horas de desarrollo
+*   **Retorno Esperado**: +35% conversión, +50% eficiencia operativa
+*   **Break-even**: 2 meses post-implementación
+
+## 6. Pipeline de Ejecución (Reorganizado por Impacto)
+
+### 🚀 Sprint 1: Impacto Inmediato (Semana 1 - 48 horas)
+- FASE 14.1: Captura Progresiva (24h) - Eliminar leads genéricos
+- FASE 14.2: Dashboard Inteligente (12h) - Métricas en tiempo real  
+- FASE 14.3: Ordenamiento Panel (12h) - UX admin optimizada
+
+### ⚡ Sprint 2: Optimización (Semana 2 - 72 horas)
+- FASE 14.4: Mejoras Chatbot (20h) - Micro-interacciones
+- FASE 12.1: Enriquecimiento IA (25h) - Contexto inteligente
+- FASE 12.2: Historial y Memoria (15h) - Experiencia persistente
+- Técnicas existentes (12h)
+
+### 🔧 Sprint 3: Calidad y Testing (Semana 3 - 40 horas)
+- FASE 13.1: Browser Tests (20h) - Testing completo
+- FASE 13.2: Feature Tests (10h) - Validación técnica
+- FASE 13.4: QA Final (10h) - Calidad integral
+
+## 7. Protocolo de Control de Calidad (QA) Ampliado
+
+Al finalizar cada Sprint, ejecutar:
+
+### QA Técnica:
+*   `php artisan test --compact` (Cobertura >80% incluyendo browser tests)
+*   `php artisan model:show [Modelo]` para verificar relaciones
+*   `vendor/bin/pint --dirty` para estilo de código
+*   Performance audit con Lighthouse (>90 score)
+
+### QA de UX:
+*   User testing con Belén y Nela (flujo completo de negocio)
+*   Mobile testing en 3 dispositivos diferentes
+*   Accessibility test con axe-core (WCAG 2.1 AA)
+*   Formulario conversion test con Google Analytics
+
+### QA de Negocio:
+*   Validar KPIs de conversión (lead → cliente)
+*   Probar flujo completo lead → dashboard → acción
+*   Verificar notificaciones push y escalado humano
+*   Test de integración IA + workflow manual
+
+## 8. Nuevas Ideas Generales (Future Roadmap)
 *   **API para Integraciones:** Endpoint REST para bookings (con Sanctum), permitiendo apps móviles futuras.
 *   **Reportes Avanzados:** PDFs con charts (usando Laravel Charts) para finanzas mensuales.
 *   **Multi-Tenant Futuro:** Prep para tenants (ej. añadir tenant_id en modelos clave).
 *   **Seguridad Extra:** Rate limiting en chat IA (via Middleware), encriptación de ai_data sensibles.
 *   **Monitoreo:** Logs de IA en Laravel Telescope para debugging.
+*   **AI Avanzada:** Sistema de recomendación de destinos basado en historial de clientes.
+*   **Integraciones:** WhatsApp Business API para comunicación directa con clientes.
+*   **Mobile App:** Aplicación nativa para clientes con tracking de itinerarios en tiempo real.
+
+---
+
+## 9. Impacto del Proyecto (Resumen de Valor)
+
+### 🎯 Transformación del Negocio
+- **Eliminación completa** de leads "Web Guest" → 100% leads calificados
+- **Dashboard inteligente** para decisiones de negocio en tiempo real
+- **UX premium** que refleja calidad de Luopan Viajes
+- **Automatización inteligente** que libera tiempo para atención personalizada
+
+### 📈 Resultados Esperados
+- **Conversión +133%** (15% → 35%) 
+- **Eficiencia +50%** en tiempo de procesamiento de leads
+- **Satisfacción cliente >4.5/5** con experiencia personalizada
+- **ROI 150%** en 2 meses post-implementación
+
+### 🚀 Ventaja Competitiva
+- **Lead capture progressive** único en el mercado local
+- **IA conversacional** con memoria y contexto real
+- **Analytics avanzado** para optimización continua
+- **Experiencia móvil-first** para el viajero moderno
