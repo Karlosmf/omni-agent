@@ -131,8 +131,12 @@ Objetivo: Actualizar interfaces y lógica según requerimientos del usuario.
 *   **Tarea 14.4: Números Correlativos y Automáticos**
     *   [ ] Asegurar que los números de Files, movimientos de caja y recibos sean correlativos y generados automáticamente.
 
+
 *   **Tarea 14.5: Agregar Opciones de Servicios en Dropdown de Files**
     *   [ ] Añadir al desplegable de servicios: "Hotel y Traslado", "Terrestre", "Asistencia al viajero", "Bus", etc.
+
+*   **Tarea 14.6: Refinar Listado de Presupuestos (Quotations)** (Done)
+    *   [x] Pestañas: Pendientes, Aprobados (Files), Rechazados/Expirados, Todos. Navegación habilitada en sidebar.
 
 ## 5. Protocolo de Control de Calidad (QA)
 Al finalizar cada Fase, ejecutar:

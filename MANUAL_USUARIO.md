@@ -39,12 +39,18 @@ El sistema captura automáticamente consultas desde el Chat Público (`/chat`).
 Antes de confirmar un viaje, puedes armar una propuesta profesional.
 
 1.  Ve al menú **Ventas** -> **Presupuestos**.
-2.  **Nuevo Presupuesto**:
+2.  El listado se organiza en **pestañas** para facilitar el seguimiento:
+    *   🕐 **Pendientes:** Presupuestos en estado Borrador o Enviados (los que estás gestionando).
+    *   ✅ **Aprobados (Files):** Presupuestos que ya fueron aceptados y convertidos a File.
+    *   ❌ **Rechazados / Expirados:** Propuestas que no prosperaron.
+    *   📋 **Todos:** Historial completo.
+3.  **Nuevo Presupuesto**:
     *   Ingresa Cliente (puedes crearlo ahí mismo), Destino y Fechas.
     *   Carga los servicios (Vuelos, Hoteles) con sus costos y precios de venta.
     *   El sistema calculará automáticamente el total y tu ganancia estimada.
-3.  **PDF:** Descarga el presupuesto con diseño profesional para enviar por WhatsApp.
-4.  **Convertir a File:** Si el cliente acepta, usa el botón "Convertir a File" para transformar el presupuesto en una reserva confirmada automáticamente.
+4.  **PDF:** Descarga el presupuesto con diseño profesional para enviar por WhatsApp.
+5.  **Duplicar:** Crea una copia rápida del presupuesto para otro cliente o variante.
+6.  **Convertir a File:** Si el cliente acepta, usa el botón "Aprobar / Convertir a File" para transformar el presupuesto en una reserva confirmada automáticamente. El presupuesto pasará a la pestaña "Aprobados".
 
 ---
 
