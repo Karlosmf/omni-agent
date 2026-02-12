@@ -24,6 +24,8 @@ class LeadFactory extends Factory
             'status' => fake()->randomElement(LeadStatus::cases()),
             'customer_name' => fake()->name(),
             'customer_phone' => fake()->phoneNumber(),
+            'customer_email' => fake()->optional(0.7)->safeEmail(),
+            'customer_budget' => fake()->optional(0.5)->randomElement(['Hasta USD 1.000', 'USD 1.000 - 3.000', 'USD 3.000 - 5.000', 'Más de USD 5.000', 'No definido']),
             'raw_message' => fake()->paragraph(),
             'ai_data' => [
                 'destino' => fake()->city(),

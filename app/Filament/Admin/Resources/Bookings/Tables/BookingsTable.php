@@ -8,6 +8,8 @@ use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ReplicateAction;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -19,13 +21,17 @@ class BookingsTable
             ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('file_number')
-                    ->label('Nro File')
+                    ->label('Nro')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('holder_name')
                     ->label('Titular')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('destination')
+                    ->label('Destino')
+                    ->searchable()
+                    ->visibleFrom('md'),
                 TextColumn::make('status')
                     ->label('Estado')
                     ->badge()
@@ -41,8 +47,15 @@ class BookingsTable
                     ->sortable(),
                 TextColumn::make('travel_date')
                     ->label('Fecha Viaje')
-                    ->date()
+                    ->date('d/m/Y')
                     ->sortable(),
+                TextColumn::make('valid_until')
+                    ->label('Válido Hasta')
+                    ->date('d/m/Y')
+                    ->sortable()
+                    ->color(fn ($record) => $record->isExpired() ? 'danger' : 'gray')
+                    ->visibleFrom('lg')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->label('Creado el')
                     ->dateTime()
@@ -68,6 +81,24 @@ class BookingsTable
                     }),
             ])
             ->recordActions([
+                ReplicateAction::make()
+                    ->label('Duplicar')
+                    ->modalHeading('Duplicar Presupuesto / File')
+                    ->form([
+                        Select::make('customer_id')
+                            ->label('Cliente')
+                            ->options(\App\Models\Customer::all()->pluck('name', 'id'))
+                            ->searchable()
+                            ->required()
+                            ->default(fn (\App\Models\Booking $record) => $record->customer_id)
+                            ->helperText('Selecciona el cliente para el duplicado (puede ser el mismo u otro).'),
+                    ])
+                    ->beforeReplicaSaved(function (\App\Models\Booking $replica, array $data) {
+                        $replica->customer_id = $data['customer_id'];
+                        $replica->file_number = null;
+                        $replica->status = BookingStatus::Borrador;
+                        $replica->valid_until = now()->addDays(7);
+                    }),
                 EditAction::make()
                     ->label('Editar'),
                 Action::make('pdf')

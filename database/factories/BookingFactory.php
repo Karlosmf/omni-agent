@@ -25,12 +25,16 @@ class BookingFactory extends Factory
             'lead_id' => Lead::factory(),
             'file_number' => 'LP-'.fake()->year().'-'.fake()->unique()->numberBetween(100, 999),
             'holder_name' => fake()->name(),
+            'destination' => fake()->optional(0.7)->city(),
+            'nights' => fake()->optional(0.5)->numberBetween(1, 14),
+            'passengers' => fake()->optional(0.7)->numberBetween(1, 6),
             'currency' => 'USD',
             'total_cost' => $cost,
             'total_sell' => $sell,
             'profit' => $sell - $cost,
             'status' => fake()->randomElement(BookingStatus::cases()),
             'travel_date' => fake()->dateTimeBetween('+1 month', '+1 year'),
+            'valid_until' => fake()->optional(0.5)->dateTimeBetween('+1 week', '+1 month'),
         ];
     }
 }

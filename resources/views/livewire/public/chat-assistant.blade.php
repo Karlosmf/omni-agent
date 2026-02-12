@@ -18,6 +18,10 @@ state([
     // SmartLeadCapture fields
     'showCaptureForm' => true,
     'captureName' => '',
+    'capturePhone' => '',
+    'captureEmail' => '',
+    'captureCurrency' => '',
+    'captureBudgetAmount' => '',
     'captureDestination' => '',
 ]);
 
@@ -54,15 +58,21 @@ mount(function (bool $embedded = false) {
 $toggleChat = fn() => $this->isOpen = !$this->isOpen;
 
 $submitCapture = function () {
-    if (empty(trim($this->captureName)))
+    if (empty(trim($this->captureName)) || empty(trim($this->capturePhone)))
         return;
 
     $destination = $this->captureDestination ?: 'Sin definir';
+    $budget = null;
+    if (!empty($this->captureCurrency) && !empty($this->captureBudgetAmount)) {
+        $budget = $this->captureCurrency . ' ' . number_format((float) $this->captureBudgetAmount, 0, ',', '.');
+    }
 
     // Create Lead with real data
     $lead = Lead::create([
         'customer_name' => trim($this->captureName),
-        'customer_phone' => 'Web-' . substr(session()->getId(), 0, 8),
+        'customer_phone' => trim($this->capturePhone),
+        'customer_email' => !empty(trim($this->captureEmail)) ? trim($this->captureEmail) : null,
+        'customer_budget' => $budget,
         'source' => 'web_widget',
         'raw_message' => "Interesado en: {$destination}",
         'status' => LeadStatus::New ,
@@ -70,6 +80,7 @@ $submitCapture = function () {
         'needs_human_attention' => false,
         'ai_data' => [
             'destino' => $destination !== 'Sin definir' ? $destination : null,
+            'presupuesto' => $budget,
         ],
     ]);
 
@@ -111,7 +122,9 @@ $sendMessage = function (AiConciergeService $aiService) {
             // Fallback: create lead if somehow capture was skipped
             $lead = Lead::create([
                 'customer_name' => $this->captureName ?: 'Web Guest',
-                'customer_phone' => 'Web-' . substr(session()->getId(), 0, 8),
+                'customer_phone' => $this->capturePhone ?: 'Sin teléfono',
+                'customer_email' => !empty($this->captureEmail) ? $this->captureEmail : null,
+                'customer_budget' => (!empty($this->captureCurrency) && !empty($this->captureBudgetAmount)) ? $this->captureCurrency . ' ' . $this->captureBudgetAmount : null,
                 'source' => 'web_widget',
                 'raw_message' => $userMsg,
                 'status' => LeadStatus::New ,
@@ -235,7 +248,7 @@ $sendMessage = function (AiConciergeService $aiService) {
             @foreach($messages as $msg)
                     <div class="flex {{ $msg['role'] === 'user' ? 'justify-end' : 'justify-start' }}">
                         <div class="max-w-[85%] px-3 py-2 text-sm shadow-sm rounded-lg relative
-                                                                                                        {{ $msg['role'] === 'user'
+                                                                                                                        {{ $msg['role'] === 'user'
                 ? 'bg-[#E7FFDB] text-gray-800 rounded-tr-none'
                 : 'bg-white text-gray-800 rounded-tl-none' }}">
 
@@ -274,15 +287,22 @@ $sendMessage = function (AiConciergeService $aiService) {
         <!-- SmartLeadCapture Form (shown before chat starts) -->
         @if($showCaptureForm)
             <div class="bg-white border-t border-gray-200 p-4 shrink-0">
-                <form wire:submit="submitCapture" class="space-y-3">
+                <form wire:submit="submitCapture" class="space-y-2.5">
                     <p class="text-xs text-gray-500 text-center font-medium">Completá para comenzar 👇</p>
 
                     <input type="text" wire:model="captureName" placeholder="Tu nombre *"
-                        class="w-full py-2.5 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm bg-white placeholder:text-gray-400 transition"
+                        class="w-full py-2 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm bg-white placeholder:text-gray-400 transition"
                         required />
 
+                    <input type="tel" wire:model="capturePhone" placeholder="Tu teléfono (WhatsApp) *"
+                        class="w-full py-2 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm bg-white placeholder:text-gray-400 transition"
+                        required />
+
+                    <input type="email" wire:model="captureEmail" placeholder="Tu email (opcional)"
+                        class="w-full py-2 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm bg-white placeholder:text-gray-400 transition" />
+
                     <select wire:model="captureDestination"
-                        class="w-full py-2.5 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm bg-white text-gray-700 transition">
+                        class="w-full py-2 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm bg-white text-gray-700 transition">
                         <option value="">¿Qué destino te interesa?</option>
                         <option value="Brasil">🇧🇷 Brasil</option>
                         <option value="Caribe">🏝️ Caribe</option>
@@ -291,6 +311,21 @@ $sendMessage = function (AiConciergeService $aiService) {
                         <option value="Argentina">🇦🇷 Argentina</option>
                         <option value="Otro destino">🌍 Otro destino</option>
                     </select>
+
+                    <p class="text-xs text-gray-500 font-medium mt-1">💰 Presupuesto aproximado para viajar</p>
+                    <p class="text-[10px] text-gray-400 -mt-1">No tiene que ser exacto, nos ayuda a buscar el mejor producto en tu rango</p>
+                    <div class="grid grid-cols-3 gap-2">
+                        <select wire:model="captureCurrency"
+                            class="w-full py-2 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm bg-white text-gray-700 transition">
+                            <option value="">Moneda</option>
+                            <option value="USD">💵 USD</option>
+                            <option value="ARS">🇦🇷 ARS</option>
+                        </select>
+
+                        <input type="number" wire:model="captureBudgetAmount" placeholder="Monto aprox."
+                            class="col-span-2 py-2 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm bg-white placeholder:text-gray-400 transition"
+                            min="0" />
+                    </div>
 
                     <button type="submit"
                         class="w-full py-2.5 px-4 rounded-lg bg-[#008069] text-white font-semibold text-sm hover:bg-[#006C59] transition-all duration-200 shadow-sm hover:shadow-md active:scale-[0.98]">

@@ -8,6 +8,7 @@ use App\Enums\ServiceType;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
@@ -29,7 +30,7 @@ class BookingForm
                                 Select::make('customer_id')
                                     ->label('Cliente (Cuenta)')
                                     ->relationship('customer', 'name')
-                                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->name} ({$record->email})")
+                                    ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->name} ({$record->email})")
                                     ->searchable()
                                     ->preload()
                                     ->createOptionForm([
@@ -58,6 +59,7 @@ class BookingForm
                                 Select::make('status')
                                     ->label('Estado')
                                     ->options(BookingStatus::class)
+                                    ->default(BookingStatus::Borrador)
                                     ->required(),
                             ]),
                         Grid::make(3)
@@ -76,17 +78,35 @@ class BookingForm
                                                 if ($lead->customer_id) {
                                                     $set('customer_id', $lead->customer_id);
                                                 }
+                                                $aiData = $lead->ai_data ?? [];
+                                                if (! empty($aiData['destino'])) {
+                                                    $set('destination', $aiData['destino']);
+                                                }
                                             }
                                         }
                                     }),
                                 TextInput::make('holder_name')
                                     ->label('Nombre del Pasajero Principal')
                                     ->required(),
-                                DatePicker::make('travel_date')
-                                    ->label('Fecha de Viaje')
-                                    ->required(),
+                                TextInput::make('destination')
+                                    ->label('Destino Principal'),
                             ]),
-                        \Filament\Forms\Components\Textarea::make('internal_notes')
+                        Grid::make(4)
+                            ->schema([
+                                DatePicker::make('travel_date')
+                                    ->label('Fecha de Viaje'),
+                                TextInput::make('nights')
+                                    ->label('Noches')
+                                    ->numeric(),
+                                TextInput::make('passengers')
+                                    ->label('Pasajeros')
+                                    ->numeric()
+                                    ->default(2),
+                                DatePicker::make('valid_until')
+                                    ->label('Válido hasta')
+                                    ->default(now()->addDays(7)),
+                            ]),
+                        Textarea::make('internal_notes')
                             ->label('Notas Internas')
                             ->placeholder('Notas privadas para el equipo (no visibles para el cliente)')
                             ->rows(3)
@@ -126,8 +146,7 @@ class BookingForm
                                                     ->required(),
                                                 TextInput::make('category')
                                                     ->label('Categoría'),
-                                            ])
-                                            ->required(),
+                                            ]),
 
                                         Select::make('currency')
                                             ->label('Moneda')
@@ -135,7 +154,7 @@ class BookingForm
                                             ->default(Currency::USD->value)
                                             ->required()
                                             ->live()
-                                            ->afterStateUpdated(fn(Set $set, Get $get) => self::updateTotals($set, $get)),
+                                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateTotals($set, $get)),
 
                                         TextInput::make('exchange_rate')
                                             ->label('Cotización Origen')
@@ -143,24 +162,24 @@ class BookingForm
                                             ->default(1.00)
                                             ->required()
                                             ->live(onBlur: true)
-                                            ->visible(fn(Get $get) => self::getCurrencyLabel($get('currency')) !== 'USD')
-                                            ->afterStateUpdated(fn(Set $set, Get $get) => self::updateTotals($set, $get)),
+                                            ->visible(fn (Get $get) => self::getCurrencyLabel($get('currency')) !== 'USD')
+                                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateTotals($set, $get)),
 
                                         TextInput::make('cost')
-                                            ->label(fn(Get $get) => 'Costo (' . (self::getCurrencyLabel($get('currency'))) . ')')
+                                            ->label(fn (Get $get) => 'Costo ('.self::getCurrencyLabel($get('currency')).')')
                                             ->numeric()
                                             ->prefix('$')
                                             ->required()
                                             ->live(onBlur: true)
-                                            ->afterStateUpdated(fn(Set $set, Get $get) => self::updateTotals($set, $get)),
+                                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateTotals($set, $get)),
 
                                         TextInput::make('sell')
-                                            ->label(fn(Get $get) => 'Venta (' . (self::getCurrencyLabel($get('currency'))) . ')')
+                                            ->label(fn (Get $get) => 'Venta ('.self::getCurrencyLabel($get('currency')).')')
                                             ->numeric()
                                             ->prefix('$')
                                             ->required()
                                             ->live(onBlur: true)
-                                            ->afterStateUpdated(fn(Set $set, Get $get) => self::updateTotals($set, $get)),
+                                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateTotals($set, $get)),
                                     ]),
                             ])
                             ->columns(1)
@@ -168,9 +187,9 @@ class BookingForm
                                 $type = $state['service_type'] ?? null;
                                 $label = $type instanceof ServiceType ? $type->getLabel() : $type;
 
-                                return $label . ': ' . ($state['description'] ?? '');
+                                return $label.': '.($state['description'] ?? '');
                             })
-                            ->deleteAction(fn(Set $set, Get $get) => self::updateTotals($set, $get)),
+                            ->deleteAction(fn (Set $set, Get $get) => self::updateTotals($set, $get)),
                     ]),
 
                 Section::make('Resumen Financiero')
@@ -202,13 +221,13 @@ class BookingForm
                         // USD Summary
                         Grid::make(3)
                             ->schema([
-                                TextInput::make('total_cost') // Mapped to DB total_cost
+                                TextInput::make('total_cost')
                                     ->label('Costo Total (USD)')
                                     ->numeric()
                                     ->prefix('USD')
                                     ->readOnly()
                                     ->extraInputAttributes(['class' => 'bg-gray-100']),
-                                TextInput::make('total_sell') // Mapped to DB total_sell
+                                TextInput::make('total_sell')
                                     ->label('Venta Total (USD)')
                                     ->numeric()
                                     ->prefix('USD')
@@ -221,6 +240,14 @@ class BookingForm
                                     ->readOnly()
                                     ->extraInputAttributes(['class' => 'bg-gray-100 font-bold text-success-600']),
                             ]),
+                    ]),
+
+                Section::make('Notas Adicionales')
+                    ->collapsed()
+                    ->schema([
+                        Textarea::make('notes')
+                            ->label('Notas / Condiciones para el cliente')
+                            ->rows(3),
                     ]),
             ]);
     }
@@ -257,13 +284,7 @@ class BookingForm
                 $totalCostArs += $cost;
                 $totalSellArs += $sell;
             } else {
-                // Other currencies (e.g. BRL) fallback to USD conversion?
-                // Or just ignore? Assuming simple ARS/USD split for now as per user request.
-                // If Rate is provided, we can convert to USD.
                 if ($rate > 0) {
-                    // Assume rate is to USD (e.g. BRL->USD 5.5) -> Amount / Rate
-                    // OR Amount * Rate if Rate is "USD value".
-                    // Let's Convert everything else to USD for the USD bucket.
                     $totalCostUsd += ($cost / $rate);
                     $totalSellUsd += ($sell / $rate);
                 }

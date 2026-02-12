@@ -22,6 +22,8 @@ class Lead extends Model
         'status',
         'customer_name',
         'customer_phone',
+        'customer_email',
+        'customer_budget',
         'raw_message',
         'ai_data',
         'ai_summary',

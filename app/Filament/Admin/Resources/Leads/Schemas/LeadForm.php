@@ -30,6 +30,11 @@ class LeadForm
                                     ->label('Teléfono')
                                     ->tel()
                                     ->required(),
+                                TextInput::make('customer_email')
+                                    ->label('Email')
+                                    ->email(),
+                                TextInput::make('customer_budget')
+                                    ->label('Presupuesto'),
                             ]),
                         Grid::make(3)
                             ->schema([

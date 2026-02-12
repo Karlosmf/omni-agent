@@ -43,6 +43,9 @@ class Booking extends Model
         'customer_id',
         'file_number',
         'holder_name',
+        'destination',
+        'nights',
+        'passengers',
         'currency',
         'exchange_rate',
         'total_cost',
@@ -50,12 +53,15 @@ class Booking extends Model
         'profit',
         'status',
         'travel_date',
+        'valid_until',
         'internal_notes',
+        'notes',
     ];
 
     protected $casts = [
         'status' => BookingStatus::class,
         'travel_date' => 'date',
+        'valid_until' => 'date',
         'total_cost' => 'decimal:2',
         'total_sell' => 'decimal:2',
         'profit' => 'decimal:2',
@@ -80,6 +86,11 @@ class Booking extends Model
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function isExpired(): bool
+    {
+        return $this->valid_until && $this->valid_until->isPast();
     }
 
     public function calculateProfit(): float

@@ -21,7 +21,7 @@ class LeadsTable
                 TextColumn::make('customer_name')
                     ->label('Nombre')
                     ->searchable()
-                    ->description(fn($record) => $record->customer_phone),
+                    ->description(fn ($record) => collect([$record->customer_phone, $record->customer_email])->filter()->implode(' | ')),
                 TextColumn::make('source')
                     ->label('Origen')
                     ->badge()
@@ -77,7 +77,7 @@ class LeadsTable
                         $customer = \App\Models\Customer::create([
                             'name' => $record->customer_name,
                             'phone' => $record->customer_phone,
-                            // Email is not in Leads table, user must fill it manually
+                            'email' => $record->customer_email,
                         ]);
 
                         $record->update([
@@ -87,22 +87,22 @@ class LeadsTable
 
                         return redirect()->to(\App\Filament\Admin\Resources\Customers\CustomerResource::getUrl('edit', ['record' => $customer]));
                     })
-                    ->visible(fn(\App\Models\Lead $record) => is_null($record->customer_id)),
+                    ->visible(fn (\App\Models\Lead $record) => is_null($record->customer_id)),
                 Action::make('whatsapp')
                     ->label('WhatsApp')
                     ->icon('heroicon-o-chat-bubble-left-ellipsis')
                     ->color('success')
-                    ->url(fn($record) => "https://wa.me/{$record->customer_phone}?text=" . urlencode("Hola {$record->customer_name}, soy del equipo de Luopan Viajes. Te contacto por tu consulta sobre viajes. ¿En qué puedo ayudarte?"))
+                    ->url(fn ($record) => "https://wa.me/{$record->customer_phone}?text=".urlencode("Hola {$record->customer_name}, soy del equipo de Luopan Viajes. Te contacto por tu consulta sobre viajes. ¿En qué puedo ayudarte?"))
                     ->openUrlInNewTab()
-                    ->visible(fn($record) => !empty($record->customer_phone)),
+                    ->visible(fn ($record) => ! empty($record->customer_phone)),
                 EditAction::make()
                     ->label('Editar'),
                 Action::make('escalate')
                     ->label('Escalar a humano')
                     ->icon('heroicon-o-user-group')
                     ->color('warning')
-                    ->action(fn($record) => $record->update(['needs_human_attention' => true]))
-                    ->visible(fn($record) => !$record->needs_human_attention),
+                    ->action(fn ($record) => $record->update(['needs_human_attention' => true]))
+                    ->visible(fn ($record) => ! $record->needs_human_attention),
             ])
             ->toolbarActions([
                 \Filament\Actions\ExportAction::make()

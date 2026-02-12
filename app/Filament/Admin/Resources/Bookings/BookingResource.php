@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Bookings;
 
+use App\Enums\BookingStatus;
 use App\Filament\Admin\Resources\Bookings\Pages\CreateBooking;
 use App\Filament\Admin\Resources\Bookings\Pages\EditBooking;
 use App\Filament\Admin\Resources\Bookings\Pages\ListBookings;
@@ -22,33 +23,36 @@ class BookingResource extends Resource
 
     protected static UnitEnum|string|null $navigationGroup = 'Ventas';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 2;
 
-    protected static ?string $modelLabel = 'File';
+    protected static ?string $modelLabel = 'Presupuesto / File';
 
-    protected static ?string $pluralModelLabel = 'Files';
+    protected static ?string $pluralModelLabel = 'Presupuestos / Files';
 
-    protected static ?string $navigationLabel = 'Files';
+    protected static ?string $navigationLabel = 'Presupuestos / Files';
 
-    protected static ?string $slug = 'files';
+    protected static ?string $slug = 'presupuestos-files';
+
+    protected static ?string $recordTitleAttribute = 'file_number';
 
     public static function getNavigationBadge(): ?string
     {
-        $count = Booking::whereDate('travel_date', '>=', now())
-            ->whereDate('travel_date', '<=', now()->addDays(7))
-            ->count();
+        $count = Booking::whereIn('status', [
+            BookingStatus::Borrador->value,
+            BookingStatus::Presupuesto->value,
+        ])->count();
 
         return $count > 0 ? (string) $count : null;
     }
 
     public static function getNavigationBadgeColor(): string|array|null
     {
-        return 'info';
+        return 'warning';
     }
 
     public static function getNavigationBadgeTooltip(): ?string
     {
-        return 'Viajes en los próximos 7 días';
+        return 'Borradores y Presupuestos pendientes';
     }
 
     public static function form(Schema $schema): Schema
