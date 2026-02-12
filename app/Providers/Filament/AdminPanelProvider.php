@@ -10,7 +10,6 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -41,9 +40,8 @@ class AdminPanelProvider extends PanelProvider
                 Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\Filament\Admin\Widgets')
-            ->widgets([
-                AccountWidget::class,
-            ])
+            ->widgets([])
+
             ->darkMode()
             ->middleware([
                 EncryptCookies::class,
@@ -61,11 +59,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->renderHook(
                 'panels::body.start',
-                fn() => new \Illuminate\Support\HtmlString('
+                fn () => new \Illuminate\Support\HtmlString('
                     <style>
                         .fi-simple-layout {
                             background-color: #f0f2f5 !important;
-                            background-image: url("' . asset('images/landing/bg-pattern.png') . '") !important;
+                            background-image: url("'.asset('images/landing/bg-pattern.png').'") !important;
                             background-repeat: repeat !important;
                             background-size: 400px !important;
                         }
