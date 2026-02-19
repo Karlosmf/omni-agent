@@ -59,15 +59,15 @@ class AiConciergeService
             // Include lead data in system prompt for continuity
             $leadContext = '';
             $aiData = $lead->ai_data ?? [];
-            if (! empty($aiData)) {
+            if (!empty($aiData)) {
                 $leadContext = "\n\nDATOS DEL LEAD:";
-                if (! empty($aiData['destino'])) {
+                if (!empty($aiData['destino'])) {
                     $leadContext .= "\n- Destino: {$aiData['destino']}";
                 }
-                if (! empty($aiData['presupuesto'])) {
+                if (!empty($aiData['presupuesto'])) {
                     $leadContext .= "\n- Presupuesto: {$aiData['presupuesto']}";
                 }
-                if (! empty($aiData['pasajeros'])) {
+                if (!empty($aiData['pasajeros'])) {
                     $leadContext .= "\n- Pasajeros: {$aiData['pasajeros']}";
                 }
             }
@@ -93,7 +93,7 @@ class AiConciergeService
             - Si preguntan precios o vuelos, di que eso lo arman las chicas (Nela/Belén).
             - No inventes nada.{$leadContext}";
 
-            if (! empty($context)) {
+            if (!empty($context)) {
                 $systemPrompt .= "\n\nHISTORIAL:\n{$context}";
             }
 
@@ -107,9 +107,104 @@ class AiConciergeService
 
             return $responseText;
         } catch (Throwable $e) {
-            Log::error('AiConciergeService Error: '.$e->getMessage());
+            Log::error('AiConciergeService Error: ' . $e->getMessage());
 
             return 'Disculpá, estoy teniendo un pequeño problema técnico. ¿Podés intentar de nuevo en unos segundos? 🙏';
+        }
+    }
+
+    /**
+     * Process a message through the Gemini AI with streaming response.
+     */
+    public function processMessageStream(string $messageContent, Lead $lead): \Generator
+    {
+        try {
+            // Save User Message
+            $lead->messages()->create([
+                'role' => 'user',
+                'content' => $messageContent,
+            ]);
+
+            // Dynamic Temperature Logic
+            $lowerMsg = strtolower($messageContent);
+            if (str_contains($lowerMsg, 'humano') || str_contains($lowerMsg, 'agente') || str_contains($lowerMsg, 'asesor')) {
+                $lead->update([
+                    'temperature' => \App\Enums\LeadTemperature::Hot,
+                    'needs_human_attention' => true,
+                ]);
+            } elseif ($lead->temperature === \App\Enums\LeadTemperature::Cool && (str_contains($lowerMsg, 'fecha') || str_contains($lowerMsg, 'presupuesto') || str_contains($lowerMsg, 'reserva'))) {
+                $lead->update(['temperature' => \App\Enums\LeadTemperature::Warm]);
+            }
+
+            // Load History
+            $history = $lead->messages()
+                ->orderBy('created_at', 'desc')
+                ->take(self::CONTEXT_MESSAGE_COUNT)
+                ->get()
+                ->reverse();
+
+            $context = '';
+            foreach ($history as $msg) {
+                $role = $msg->role === 'user' ? 'Usuario' : 'Asistente';
+                $context .= "{$role}: {$msg->content}\n";
+            }
+
+            // Lead Context
+            $leadContext = '';
+            $aiData = $lead->ai_data ?? [];
+            if (!empty($aiData)) {
+                $leadContext = "\n\nDATOS DEL LEAD:";
+                if (!empty($aiData['destino']))
+                    $leadContext .= "\n- Destino: {$aiData['destino']}";
+                if (!empty($aiData['presupuesto']))
+                    $leadContext .= "\n- Presupuesto: {$aiData['presupuesto']}";
+                if (!empty($aiData['pasajeros']))
+                    $leadContext .= "\n- Pasajeros: {$aiData['pasajeros']}";
+            }
+            if ($lead->customer_name && $lead->customer_name !== 'Web Guest') {
+                $leadContext .= "\n- Nombre: {$lead->customer_name}";
+            }
+
+            $systemPrompt = "Eres 'Brisa', la asistente virtual de Luopan Viajes.
+            TU OBJETIVO: Recabar información CLAVE de forma RÁPIDA y ESCUETA. No des consejos ni sugieras vuelos/hoteles. Solo pregunta.
+            
+            DATOS A CONSEGUIR (Uno por uno, no abrumes):
+            1. Fecha aprox del viaje: ¿Primera o segunda quincena? ¿Tiene flexibilidad?
+            2. Cantidad de noches deseadas.
+            3. Ciudad de salida (Solo pregunta desde dónde quieren salir, no ofrezcas transporte).
+            4. Destino y Pasajeros (si no lo dijeron).
+
+            CIERRE:
+            Una vez que tengas estos datos básicos, CIERRA LA CALIFICACIÓN con este mensaje exacto:
+            '¡Perfecto! Ya tengo lo necesario. Nela o Belén se van a comunicar con vos a la brevedad para armarte la propuesta. 😉'
+
+            REGLAS:
+            - Sé MUY BREVE. Máximo 1 oración por respuesta.
+            - Si preguntan precios o vuelos, di que eso lo arman las chicas (Nela/Belén).
+            - No inventes nada.{$leadContext}";
+
+            if (!empty($context)) {
+                $systemPrompt .= "\n\nHISTORIAL:\n{$context}";
+            }
+
+            $fullResponse = '';
+            $stream = Gemini::generativeModel('models/gemini-flash-latest')->generateContentStream("{$systemPrompt}\nUsuario: {$messageContent}");
+
+            foreach ($stream as $response) {
+                $chunk = $response->text();
+                $fullResponse .= $chunk;
+                yield $chunk;
+            }
+
+            // Save Assistant Message
+            $lead->messages()->create([
+                'role' => 'assistant',
+                'content' => $fullResponse,
+            ]);
+
+        } catch (Throwable $e) {
+            Log::error('AiConciergeService Stream Error: ' . $e->getMessage());
+            yield 'Disculpá, estoy teniendo un pequeño problema técnico. ¿Podés intentar de nuevo? 🙏';
         }
     }
 
@@ -134,7 +229,7 @@ class AiConciergeService
 
             return json_decode($text, true) ?? [];
         } catch (Throwable $e) {
-            Log::error('AiExtraction Error: '.$e->getMessage());
+            Log::error('AiExtraction Error: ' . $e->getMessage());
 
             return [];
         }
@@ -158,7 +253,7 @@ class AiConciergeService
                 return $result->text();
             } catch (Throwable $e) {
                 $lastException = $e;
-                Log::warning("Gemini API attempt {$attempt} failed: ".$e->getMessage());
+                Log::warning("Gemini API attempt {$attempt} failed: " . $e->getMessage());
             }
         }
 

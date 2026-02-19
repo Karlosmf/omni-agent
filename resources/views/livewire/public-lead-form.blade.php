@@ -1,5 +1,5 @@
 <div
-    class="bg-white/90 dark:bg-zinc-800/90 backdrop-blur-sm p-6 rounded-2xl shadow-xl border border-white/20 dark:border-zinc-700/50">
+    class="bg-white/80 dark:bg-zinc-800/80 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-white/20 dark:border-zinc-700/50">
     <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">¿Consultas?</h3>
     <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Dejanos tus datos y te contactaremos para planear tu
         próximo viaje.</p>

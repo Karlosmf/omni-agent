@@ -246,16 +246,17 @@
                 <div class="relative w-full max-w-md transform transition-all hover:scale-[1.02] duration-500">
                     <div class="absolute inset-0 bg-gray-900 rounded-3xl rotate-3 opacity-20 blur-lg"></div>
                     <img src="{{ asset('images/landing/hero.png') }}" alt="Travel Destination"
-                        class="relative rounded-3xl shadow-2xl object-cover h-[500px] w-full border-4 border-white">
+                        class="relative rounded-3xl shadow-2xl object-cover h-[500px] w-full border-4 border-white"
+                        style="object-position: 85% center;">
 
                     <!-- Chat Assistant Integration -->
-                    <div class="absolute -bottom-16 -left-4 md:-left-12 w-[calc(100%+2rem)] md:w-[110%] z-20"
+                    <div class="absolute -bottom-36 -left-24 md:-left-36 w-[calc(100%+2rem)] md:w-[110%] z-20"
                         id="chat-section">
-                        @livewire('public.chat-assistant', ['embedded' => true])
+                        @livewire('public-lead-form')
                     </div>
                 </div>
                 <!-- Spacer for the form overlap -->
-                <div class="h-24 hidden lg:block"></div>
+                <div class="h-48 hidden lg:block"></div>
             </div>
 
         </div>
@@ -356,6 +357,9 @@
     </div>
 
     <!-- Chat Assistant is now integrated in the hero section -->
+
+    <!-- Floating Chat Assistant (Bottom Right) -->
+    @livewire('public.chat-assistant', ['embedded' => false])
 
     <!-- Footer -->
     <footer class="bg-white/80 backdrop-blur-md border-t border-gray-200 py-12">

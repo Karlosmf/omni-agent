@@ -1,146 +1,92 @@
-# Manual de Usuario: Omni-Agent (Luopan Viajes)
+# 📘 Manual de Usuario: Sistema Luopan
 
-Bienvenido al sistema de gestión inteligente de Luopan Viajes. Esta guía te ayudará a utilizar las funciones principales del panel y el asistente virtual.
-
-## 1. Acceso al Sistema
-*   **URL del Panel:** `/admin`
-*   **Usuarios:**
-    -   **Belén:** `belenzorzon@luopanviajes.tur.ar` (Admin)
-    -   **Nela:** `nelaflama@luopanviajes.tur.ar` (Staff)
-*   **Credenciales:** Contraseña compartida asignada recientemente. Usar el botón "Ingresar" con icono de usuario en la web principal.
+Bienvenido a la guía simple de tu sistema de viajes. Aquí te explicamos cómo usar el panel paso a paso, sin palabras difíciles.
 
 ---
 
-## 2. Novedades de Interfaz (v1.1)
-El sistema ahora cuenta con ayudas visuales para priorizar tu trabajo:
+## 1. ¿Cómo entrar al sistema?
 
-### 🔴 Notificaciones en Menú (Badges)
-Verás "globos" de colores en la barra lateral que indican tareas pendientes:
-*   **Consultas (Rojo):** Cantidad de leads **nuevos** que requieren atención inmediata.
-*   **Presupuestos (Amarillo):** Presupuestos en borrador o enviados que debes seguir.
-*   **Files (Azul):** Viajes que salen en los **próximos 7 días**.
+Para empezar a trabajar, sigue estos pasos:
 
-### 📱 Modo Móvil Mejorado
-El panel ahora es 100% responsivo.
-*   **Dashboard:** Las tarjetas se ordenan en 1 columna en celular y 2 en tablet para mejor lectura.
-*   **Tablas:** En celulares, se ocultan columnas menos importantes (como "Origen" o "Temperatura") para que veas los datos clave sin hacer scroll horizontal.
+1.  Abre la página web de Luopan.
+2.  Busca el botón con el dibujo de una **personita** (arriba a la derecha) o el botón que dice **"Ingresar"**.
+3.  Escribe tu correo y la contraseña que te dieron.
+4.  ¡Listo! Ya estás adentro.
 
 ---
 
-## 3. Permisos y Seguridad 🔐
-(Solo Admins)
-Al crear o editar un usuario, ahora puedes definir exactamente qué puede ver:
-*   **Selector de Permisos:** Marca las casillas de los módulos habilitados (ej: `ver_ventas`, `ver_tesoreria`, `ver_reportes`).
-*   **Efecto:** El usuario solo verá en su menú lateral las opciones permitidas. Si intenta entrar por link directo, el sistema lo bloqueará.
-*   **Reportes Financieros:** Acceso restringido solo a usuarios con permiso `ver_reportes`.
+## 2. El Semáforo de Clientes (Pipeline) 🚦
+
+Cuando entras, verás una lista de personas interesadas en viajar. A esto le llamamos "Pipeline" o "Tubería", pero imagínalo como un **Semáforo** que te dice a quién atender primero.
+
+**¿Qué significan los colores?**
+
+*   🔴 **ROJO (Caliente):** ¡Atención inmediata! Esta persona quiere comprar YA o tiene un presupuesto alto. **Llámalo lo antes posible.**
+*   🟡 **AMARILLO (Tibio):** Está interesado, pero está mirando precios o pensando. Hay que seguirlo de cerca.
+*   🔵 **AZUL (Frío):** Solo está preguntando. Puede comprar en el futuro, pero no es urgente.
+
+**¿Cómo funciona el camino del cliente?**
+1.  **Nuevo:** Acaba de llegar. Nadie le habló todavía.
+2.  **Contactado:** Ya le mandaste un mensajito o lo llamaste.
+3.  **Cerrado:** ¡Venta realizada! O tal vez dijo que no.
 
 ---
 
-## 4. El Dashboard (Tablero Principal)
-Al ingresar, verás el centro de comando con información vital:
-*   **Métricas de Leads:** Total de leads, leads calientes (urgentes) y tasa de conversión.
-*   **Accesos Rápidos:** Botones para "Nueva Consulta" (crear lead) y "Buscar Cliente".
-*   **Próximas Salidas:** Viajes confirmados en los próximos 30 días con semáforo de urgencia (rojo ≤7 días, amarillo ≤15, gris +15).
-*   **Deudas Proveedores:** Resumen de deuda total USD y proveedores con saldo pendiente (al final del dashboard).
+## 3. Armado de Viajes (La Ruta) 🗺️
+
+Aquí es donde armas el plan de viaje para el cliente. Es como llenar una hoja de ruta con todo lo que va a hacer.
+
+**Pasos para armar una Ruta:**
+
+1.  Ve al menú **"Ventas"** y elige **"Files"** (Expedientes) o **"Nuevo File"**.
+2.  Elige el nombre del cliente.
+3.  En la sección **"Servicios"**, ve agregando las partes del viaje una por una:
+    *   ✈️ **Vuelo:** Agrega el avión.
+    *   🏨 **Hotel:** Agrega el alojamiento.
+    *   🚌 **Traslado:** Agrega el transporte del aeropuerto al hotel.
+    *   🛡️ **Asistencia:** Agrega el seguro de viaje.
+4.  Por cada cosa que agregues, pon el precio que nos cuesta a nosotros (Costo) y el precio que le cobramos al cliente (Venta).
+5.  El sistema suma todo automático y te dice cuánto ganas.
+
+**Descargar la Hoja de Ruta:**
+Cuando termines de cargar todo, busca el botón **PDF** (generalmente un icono verde o rojo). Al hacer clic, se descarga un archivo hermoso con todo el itinerario listo para mandar por WhatsApp.
 
 ---
 
-## 3. Gestión de Leads (Clientes Potenciales)
-El sistema captura automáticamente consultas desde el Chat Público (`/chat`).
+## 4. Diferencia entre Presupuesto y File
 
-1.  Ve al menú **Leads**.
-2.  Verás una lista de interesados.
-    *   **Temperatura:**
-        *   🔴 **Caliente:** Presupuesto alto o intención clara de compra. ¡Contactar ya!
-        *   🟡 **Tibio:** Interesado, pero comparando precios.
-        *   🔵 **Frío:** Consultas generales.
-3.  **Acción "Escalar a Humano":** Si un lead requiere atención especial, haz clic en este botón para marcarlo con una bandera amarilla de alerta.
+Es fácil confundirse, pero aquí está la diferencia simple:
+
+*   📝 **Presupuesto (Borrador):** Es un papel de trabajo o una cotización. El cliente todavía lo está pensando. Puedes hacer muchos cambios y borrarlos.
+*   ✅ **File (Confirmado):** Es cuando el cliente dijo **"SÍ, QUIERO VIAJAR"**. Aquí ya es un viaje en serio. Tiene número de expediente y ya empezamos a cobrar y reservar.
+
+**Para pasar de Presupuesto a File:** Solo tienes que cambiar el estado o usar el botón que dice "Aprobar" o "Convertir".
 
 ---
 
----
+## 5. Tesorería (La Caja) 💰
 
-## 4. Gestión de Presupuestos (Cotizaciones)
-Antes de confirmar un viaje, puedes armar una propuesta profesional.
+Aquí anotamos la plata que entra y sale.
 
-1.  Ve al menú **Ventas** -> **Presupuestos**.
-2.  El listado se organiza en **pestañas** para facilitar el seguimiento:
-    *   🕐 **Pendientes:** Presupuestos en estado Borrador o Enviados (los que estás gestionando).
-    *   ✅ **Aprobados (Files):** Presupuestos que ya fueron aceptados y convertidos a File.
-    *   ❌ **Rechazados / Expirados:** Propuestas que no prosperaron.
-    *   📋 **Todos:** Historial completo.
-3.  **Nuevo Presupuesto**:
-    *   Ingresa Cliente (puedes crearlo ahí mismo), Destino y Fechas.
-    *   Carga los servicios (Vuelos, Hoteles) con sus costos y precios de venta.
-    *   El sistema calculará automáticamente el total y tu ganancia estimada.
-4.  **PDF:** Descarga el presupuesto con diseño profesional para enviar por WhatsApp.
-5.  **Duplicar:** Crea una copia rápida del presupuesto para otro cliente o variante.
-6.  **Convertir a File:** Si el cliente acepta, usa el botón "Aprobar / Convertir a File" para transformar el presupuesto en una reserva confirmada automáticamente. El presupuesto pasará a la pestaña "Aprobados".
+**Cobrar a un cliente:**
+1.  Ve a **"Tesorería"** -> **"Movimientos"**.
+2.  Toca **"Nueva Transacción"**.
+3.  Elige el File (el viaje del cliente).
+4.  Pon el monto que pagó.
+5.  Elige cómo pagó (Efectivo, Transferencia, Tarjeta).
+6.  ¡Guardar!
+
+**Pagar a un proveedor (Operador):**
+Es igual, pero eliges al Proveedor en vez del Cliente y pones que es una "Salida" de dinero.
 
 ---
 
-## 5. Gestión de Files (Expedientes)
-Aquí es donde se arma el viaje confirmado.
+## Consejos Rápidos del Sistema 💡
 
-### Crear un File
-1.  Menú **Ventas** -> **Files** -> **Nuevo File**.
-2.  **General:** Asocia un Lead (o déjalo vacío si es venta directa). El **Nro de File** se genera automáticamente (ej: LP-2026-001) al guardar. Ingresa el Titular.
-3.  **Servicios (Items):** Agrega items al viaje usando el desplegable de tipos (Vuelo, Hotel, Hotel y Traslado, Terrestre, Asistencia, Bus, Crucero, Otro).
-    *   **Moneda:** Selecciona la moneda original del servicio (ej: BRL para un Hotel en Brasil).
-    *   **Cotización:** Indica el tipo de cambio de esa moneda.
-    *   **Costo y Venta:** Ingresa los montos en la moneda seleccionada.
-    *   El sistema mostrará dos resúmenes: uno en **Pesos (ARS)** y otro en **Dólares (USD)**.
-4.  **Guardar.**
-
-### Descargar Documentación
-En la lista de Files o dentro de la edición, usa el botón **PDF** (icono verde) para descargar el "Comprobante de File".
+*   **Badges (Globos de colores):** Si ves un numerito rojo en el menú, es que tienes cosas pendientes. ¡Míralo!
+*   **Whatsapp:** En la web, los clientes pueden elegir hablar con Belén o Nela. El sistema te avisa.
+*   **Ayuda:** Si te trabas, pregúntale a Belén o Nela, ellas son las administradoras.
 
 ---
+*Manual actualizado para Sistema Luopan v2.0*
 
-## 6. Panel de Tesorería y Proveedores
-Gestión avanzada para el control de deudas y pagos.
-
-1.  **Proveedores:** (Menú Tesorería -> Proveedores)
-    *   Ficha completa con datos de contacto.
-    *   **Historial de Transacciones:** Pestaña para ver todos los pagos realizados a ese proveedor.
-    *   **Deuda:** Columna "Deuda (USD)" en la tabla principal para ver saldos pendientes rápidamente.
-2.  **Widget de Deudas:** En el Dashboard, verás un resumen de "Deuda Total Proveedores" y alertas de saldos pendientes.
-
----
-
-## 7. Caja y Finanzas (Transactions)
-Registra pagos de clientes o pagos a proveedores.
-
-1.  Menú **Tesorería** -> **Movimientos de Caja**.
-2.  **Nueva Transacción**:
-    *   Elige el File o Proveedor.
-    *   **Nro Correlativo:** Cada movimiento tiene un número único (#ID) para mejor control.
-    *   **Calculadora Financiera (Novedad):**
-        *   Despliega la sección "Calculadora de Neto / Impuestos".
-        *   Ingresa el monto bruto (ej. lo que paga el cliente por MercadoPago).
-        *   Ajusta los porcentajes de Impuestos (Banco, IIBB, Plataforma).
-        *   El sistema calculará el **Neto Real** que entra a caja automáticamente.
-    *   Completa el resto de datos (Método, Moneda, etc.).
-3.  **Recibos:** Descarga el PDF del comprobante de pago desde la lista.
-
----
-
-## 8. Simulador Financiero (Dashboard)
-En el panel principal encontrarás el widget **"Simulador Financiero"**.
-*   Úsalo para hacer cuentas rápidas sin guardar nada.
-*   Ejemplo: "¿Cuánto le tengo que cobrar al cliente para que me queden $1000 limpios?" (Jugando con los montos).
-
----
-
----
-
-## 9. Captura de Consultas (Web)
-La página principal cuenta con tres puntos de contacto inteligentes:
-1.  **Formulario de Consultas (Modal):** El botón "Consultas" abre un formulario limpio. Al enviarlo, la IA genera automáticamente un resumen para que no tengas que leer todo el mensaje largo en el CRM.
-2.  **WhatsApp Directo:** El menú desplegable permite al cliente elegir contactar a **Belén** o **Nela** directamente.
-3.  **Chatbot Inteligente (Brisa):** El botón flotante abre el chat. Antes de chatear, el visitante completa su **nombre** y **destino de interés**. Así el lead se crea con datos reales (no más "Web Guest"). El chat abre con un saludo personalizado y la IA recaba información clave del viaje.
-
----
-
-## 10. Redes Sociales y Links
-En el pie de página encontrás acceso directo a Facebook e Instagram oficiales de Luopan Viajes.
