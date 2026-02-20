@@ -234,25 +234,20 @@
 
             <!-- Image & Lead Form -->
             <div class="w-full lg:w-1/2 relative flex flex-col items-center">
-                <!-- Decorative Elements -->
-                <div
-                    class="absolute -top-10 -right-10 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob">
-                </div>
-                <div
-                    class="absolute -bottom-10 -left-10 w-72 h-72 bg-amber-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000">
-                </div>
 
-                <!-- Hero Image Card -->
+                <!-- Hero Image Stack Card -->
                 <div class="relative w-full max-w-md transform transition-all hover:scale-[1.02] duration-500">
-                    <div class="absolute inset-0 bg-gray-900 rounded-3xl rotate-3 opacity-20 blur-lg"></div>
-                    <img src="{{ asset('images/landing/hero.png') }}" alt="Travel Destination"
-                        class="relative rounded-3xl shadow-2xl object-cover h-[500px] w-full border-4 border-white"
-                        style="object-position: 85% center;">
+                    <!-- Decorative Elements aligned to vertices -->
+                    <div
+                        class="absolute -top-10 -right-10 w-64 h-64 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob">
+                    </div>
+                    <div
+                        class="absolute -bottom-10 -left-10 w-64 h-64 bg-amber-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000">
+                    </div>
 
-                    <!-- Chat Assistant Integration -->
-                    <div class="absolute -bottom-36 -left-24 md:-left-36 w-[calc(100%+2rem)] md:w-[110%] z-20"
-                        id="chat-section">
-                        @livewire('public-lead-form')
+                    <div class="absolute inset-0 bg-gray-900 rounded-3xl rotate-3 opacity-20 blur-lg"></div>
+                    <div class="relative rounded-3xl shadow-2xl overflow-hidden border-4 border-white aspect-[4/5]">
+                        <x-photo-stack />
                     </div>
                 </div>
                 <!-- Spacer for the form overlap -->

@@ -190,15 +190,6 @@ $sendMessage = function (AiConciergeService $aiService) {
     x-data="{ 
         init() {
             setTimeout(() => this.scrollToBottom(), 100);
-
-            // Auto-open chat after 5 seconds (less intrusive)
-            if (!this.$wire.embedded) {
-                setTimeout(() => {
-                    if (!this.$wire.isOpen) {
-                        this.$wire.set('isOpen', true);
-                    }
-                }, 5000);
-            }
         },
         scrollToBottom() { 
             const el = document.getElementById('chat-messages'); 
@@ -248,7 +239,7 @@ $sendMessage = function (AiConciergeService $aiService) {
             @foreach($messages as $msg)
                     <div class="flex {{ $msg['role'] === 'user' ? 'justify-end' : 'justify-start' }}">
                         <div class="max-w-[85%] px-3 py-2 text-sm shadow-sm rounded-lg relative
-                                                                                                                        {{ $msg['role'] === 'user'
+                                                                                                                                {{ $msg['role'] === 'user'
                 ? 'bg-[#E7FFDB] text-gray-800 rounded-tr-none'
                 : 'bg-white text-gray-800 rounded-tl-none' }}">
 
@@ -313,7 +304,8 @@ $sendMessage = function (AiConciergeService $aiService) {
                     </select>
 
                     <p class="text-xs text-gray-500 font-medium mt-1">💰 Presupuesto aproximado para viajar</p>
-                    <p class="text-[10px] text-gray-400 -mt-1">No tiene que ser exacto, nos ayuda a buscar el mejor producto en tu rango</p>
+                    <p class="text-[10px] text-gray-400 -mt-1">No tiene que ser exacto, nos ayuda a buscar el mejor producto
+                        en tu rango</p>
                     <div class="grid grid-cols-3 gap-2">
                         <select wire:model="captureCurrency"
                             class="w-full py-2 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm bg-white text-gray-700 transition">
@@ -356,7 +348,8 @@ $sendMessage = function (AiConciergeService $aiService) {
 
     <!-- Toggle Button Area -->
     <template x-if="!$wire.embedded">
-        <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3" x-data="{ showWelcomeBubble: false }"
+        <div x-show="!$wire.isOpen" class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3"
+            x-data="{ showWelcomeBubble: false }"
             x-init="setTimeout(() => { if(!$wire.isOpen) showWelcomeBubble = true }, 3000)">
 
             <!-- Welcome Bubble (Flashy CTA) -->
