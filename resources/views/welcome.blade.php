@@ -256,8 +256,140 @@
 
         </div>
 
+        <!-- Travel Packages Section -->
+        <div id="travel-packages" class="px-8 sm:px-12 lg:px-16 py-12">
+            <div class="text-center mb-16">
+                <span
+                    class="inline-block px-4 py-1.5 bg-amber-100 text-amber-700 rounded-full text-sm font-semibold tracking-wide uppercase mb-4">✈️
+                    Ideas de Viaje</span>
+                <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Nuestras propuestas de viaje</h2>
+                <p class="text-lg text-gray-500 max-w-2xl mx-auto">Descubrí destinos increíbles con paquetes diseñados
+                    especialmente para vos.</p>
+            </div>
+
+            @php $packages = \App\Models\TravelPackage::where('is_active', true)->latest()->get(); @endphp
+
+            <div x-data="{
+                scrollContainer: null,
+                canScrollLeft: false,
+                canScrollRight: true,
+                autoplayTimer: null,
+                pauseTimeout: null,
+                init() {
+                    this.scrollContainer = this.$refs.slider;
+                    this.checkScroll();
+                    this.scrollContainer.addEventListener('scroll', () => this.checkScroll());
+                    this.startAutoplay();
+                },
+                checkScroll() {
+                    this.canScrollLeft = this.scrollContainer.scrollLeft > 10;
+                    this.canScrollRight = this.scrollContainer.scrollLeft < (this.scrollContainer.scrollWidth - this.scrollContainer.clientWidth - 10);
+                },
+                scrollByCard(direction) {
+                    const cardWidth = this.scrollContainer.querySelector('a').offsetWidth + 24;
+                    this.scrollContainer.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
+                },
+                userScroll(direction) {
+                    this.stopAutoplay();
+                    this.scrollByCard(direction);
+                    clearTimeout(this.pauseTimeout);
+                    this.pauseTimeout = setTimeout(() => this.startAutoplay(), 5000);
+                },
+                startAutoplay() {
+                    this.stopAutoplay();
+                    this.autoplayTimer = setInterval(() => {
+                        if (this.canScrollRight) {
+                            this.scrollByCard(1);
+                        } else {
+                            this.scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
+                        }
+                    }, 4000);
+                },
+                stopAutoplay() {
+                    clearInterval(this.autoplayTimer);
+                }
+            }" class="relative">
+
+                {{-- Arrow Left --}}
+                <button x-show="canScrollLeft" x-transition @click="userScroll(-1)"
+                    class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-6 z-10 w-12 h-12 bg-white rounded-full shadow-xl flex items-center justify-center text-gray-700 hover:bg-gray-50 hover:scale-110 transition-all">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+
+                {{-- Slider Track --}}
+                <div x-ref="slider" class="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4"
+                    style="-ms-overflow-style: none; scrollbar-width: none;">
+                    @foreach ($packages as $package)
+                        <a href="{{ route('packages.show', $package->slug) }}"
+                            class="group relative flex-shrink-0 w-[85%] md:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] snap-start aspect-[3/4] rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-1">
+                            @if ($package->cover_image)
+                                <img src="{{ str_starts_with($package->cover_image, 'http') ? $package->cover_image : asset('storage/' . $package->cover_image) }}"
+                                    alt="{{ $package->title }}"
+                                    class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            @else
+                                <div class="absolute inset-0 bg-gradient-to-br from-amber-400 via-orange-500 to-rose-500"></div>
+                            @endif
+                            <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/60"></div>
+
+                            {{-- Top Left: Title, Destination, Tags --}}
+                            <div class="absolute top-0 left-0 p-5 text-white">
+                                <h3 class="text-2xl font-extrabold leading-tight mb-2 drop-shadow-lg">{{ $package->title }}
+                                </h3>
+                                <p class="text-sm text-white/80 flex items-center gap-2 mb-3">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    {{ $package->destination }} · {{ $package->nights }} noches
+                                </p>
+                                @if ($package->tags)
+                                    <div class="flex flex-wrap gap-1.5">
+                                        @foreach (array_slice($package->tags, 0, 3) as $tag)
+                                            <span
+                                                class="px-2.5 py-1 bg-white/20 backdrop-blur-sm rounded-full text-[10px] font-semibold uppercase tracking-wider">{{ $tag }}</span>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
+
+                            {{-- Bottom Right: Price --}}
+                            <div class="absolute bottom-0 right-0 p-5 text-white">
+                                <span class="block text-sm font-bold italic text-white/80 mb-1">Desde</span>
+                                <span
+                                    class="block text-3xl font-extrabold text-amber-300 drop-shadow-lg">{{ $package->currency }}
+                                    {{ number_format($package->price_from, 0, ',', '.') }}</span>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+
+                {{-- Arrow Right --}}
+                <button x-show="canScrollRight" x-transition @click="userScroll(1)"
+                    class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-6 z-10 w-12 h-12 bg-white rounded-full shadow-xl flex items-center justify-center text-gray-700 hover:bg-gray-50 hover:scale-110 transition-all">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="text-center mt-10">
+                <a href="{{ route('packages.index') }}"
+                    class="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-gray-900 text-white font-semibold hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl">
+                    Ver todas las propuestas
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
         <!-- Features Grid -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Card 1 -->
                 <div

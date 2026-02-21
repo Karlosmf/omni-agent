@@ -88,5 +88,53 @@ Es igual, pero eliges al Proveedor en vez del Cliente y pones que es una "Salida
 *   **Ayuda:** Si te trabas, pregúntale a Belén o Nela, ellas son las administradoras.
 
 ---
-*Manual actualizado para Sistema Luopan v2.0*
+
+## 6. Escaparate de Viajes (Ideas de Viaje) 🌴
+
+Desde el panel podés crear y gestionar **paquetes turísticos** que se muestran automáticamente en la web para tus clientes.
+
+### ¿Cómo cargar un nuevo paquete?
+
+1.  Ve al menú **"Catálogo"** → **"Ideas de Viaje"**.
+2.  Tocá **"Nuevo"** (botón arriba a la derecha).
+3.  Completá los datos principales:
+    *   **Título:** El nombre atractivo del paquete (ej: "Caribe All-Inclusive 2026").
+    *   **Destino:** El lugar principal (ej: "Punta Cana").
+    *   **Noches:** Cuántas noches incluye.
+    *   **Moneda y Precio Desde:** El precio base para mostrar en la web.
+    *   **Tags:** Palabras clave como "playa", "familiar", "luna-de-miel" (apretá Enter después de cada una).
+
+4.  **Cargar el Itinerario (día por día):**
+    *   Bajá hasta la sección **"Itinerario"**.
+    *   Tocá **"Agregar día"**.
+    *   Completá: **Día** (ej: "Día 1"), **Título** (ej: "Llegada y Check-in"), y una **Descripción** del día.
+    *   Podés agregar todos los días que necesites y **reordenarlos** arrastrándolos.
+
+5.  **Subir Imágenes:**
+    *   **Imagen de Portada:** Es la foto principal que se ve en la tarjeta del listado. Subí una sola imagen bien linda.
+    *   **Galería de Fotos:** Acá podés subir **varias fotos** que se van a ver como un carrusel en la página del paquete. Seleccioná varias a la vez.
+
+6.  **Incluye / No incluye:** Escribí lo que entra y lo que no entra en el paquete, cada línea con un ✅ o ❌.
+
+7.  **Toggle "Activo":** Este botoncito controla si el paquete **se muestra o no** en la web pública. Si lo desactivás, el paquete desaparece del Home sin borrarlo.
+
+8.  Tocá **"Crear"** y listo, ¡tu paquete ya está visible en la web!
+
+### Tip rápido
+Desde la **lista de paquetes**, podés activar o desactivar cualquier paquete con un solo click en el botoncito de la columna "Activo", sin necesidad de entrar a editarlo.
+
+---
+
+## 7. Consultas desde la Web (Nuevos Leads) 📩
+
+Cuando un cliente visita un paquete en tu página web y hace clic en el botón naranja **"¡Quiero este viaje! ✈️"**, el sistema le pedirá sus datos de contacto.
+
+¿Qué pasa cuando el cliente envía el formulario?
+1. Se crea automáticamente un **Nuevo Lead (Consulta)** en el sistema Luopan.
+2. Aparecerá en el panel de control con todos los datos que ingresó y el nombre del paquete que le interesó.
+3. El asistente de Inteligencia Artificial analizará su mensaje para extraer información útil como el destino y la cantidad de pasajeros.
+4. **Al cliente** se le muestra un mensaje de confirmación verde avisando que se contactarán a la brevedad.
+
+---
+*Manual actualizado para Sistema Luopan v3.0*
 

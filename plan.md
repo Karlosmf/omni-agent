@@ -186,6 +186,27 @@ Objetivo: Transformar la experiencia del usuario y eliminar leads genéricos "We
 *   **Fixes Críticos:**
     *   [x] Corrección schema Proveedores (rename `email` -> `contact_email` para evitar error 500).
 
+### 🌴 FASE 14.9: Escaparate de Viajes — "Ideas de Viaje" (NUEVO - COMPLETADO)
+Objetivo: Ofrecer un catálogo público de paquetes turísticos que la agencia puede gestionar desde el backoffice.
+
+*   **Backend (Modelo & Filament):**
+    *   [x] Modelo `TravelPackage` con migración (title, slug, destination, nights, tags, price_from, currency, cover_image, gallery, itinerary, included, excluded, is_active).
+    *   [x] Factory + Seeder con datos realistas (5 paquetes de ejemplo).
+    *   [x] Filament Resource completo bajo grupo "Catálogo":
+        *   Formulario con Repeater (itinerario por días), FileUpload (portada + galería múltiple), TagsInput, Toggle.
+        *   Tabla con ImageColumn, ToggleColumn (activar/desactivar en vivo), filtro ternario.
+
+*   **Frontend Público (Livewire Volt + Tailwind):**
+    *   [x] Sección "Nuestras propuestas de viaje" en el Home con grilla responsiva (1/3/4 cols) y slider interactivo.
+    *   [x] Página `/paquetes` con filtros en tiempo real (Destino, Nombre, Categorías) y grid estandarizado.
+    *   [x] Página `/paquetes/{slug}` con carrusel de galería, itinerario detallado (timeline style), inclusiones/exclusiones.
+    *   [x] Generación de Leads Inteligente: Formulario embebido en los detalles del paquete que captura la consulta, crea un Lead asociado y lo clasifica automáticamente con IA.
+    *   [x] Tarjetas con cover_image, overlay degradado, título, destino, noches, precio y badges de tags.
+    *   [x] Página de detalle `/paquetes/{slug}` con:
+        *   Slider de galería (Alpine.js), Share button (Web Share API).
+        *   Layout 2 columnas: descripción + itinerario timeline (izq), sidebar sticky con pricing + incluye/excluye (der).
+        *   CTA "¡Quiero este viaje!" vinculado al chat.
+
 ### 🚀 FASE 15: Optimización Continua y Métricas (Media Prioridad)
 Objetivo: Monitoreo constante y optimización basada en datos.
 

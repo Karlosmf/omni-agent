@@ -1,0 +1,164 @@
+<?php
+
+namespace App\Filament\Admin\Resources\TravelPackages\Schemas;
+
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
+
+class TravelPackageForm
+{
+    public static function configure(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                Section::make('Información General')
+                    ->columnSpanFull()
+                    ->schema([
+                        Grid::make(3)
+                            ->schema([
+                                TextInput::make('title')
+                                    ->label('Título')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state ?? ''))),
+                                TextInput::make('slug')
+                                    ->label('Slug (URL)')
+                                    ->required()
+                                    ->unique(ignoreRecord: true)
+                                    ->maxLength(255),
+                                TextInput::make('destination')
+                                    ->label('Destino')
+                                    ->required()
+                                    ->maxLength(255),
+                            ]),
+                        Grid::make(4)
+                            ->schema([
+                                TextInput::make('nights')
+                                    ->label('Noches')
+                                    ->numeric()
+                                    ->required()
+                                    ->minValue(1),
+                                Select::make('currency')
+                                    ->label('Moneda')
+                                    ->options([
+                                        'USD' => '💵 USD',
+                                        'ARS' => '🇦🇷 ARS',
+                                        'EUR' => '🇪🇺 EUR',
+                                        'BRL' => '🇧🇷 BRL',
+                                    ])
+                                    ->default('USD')
+                                    ->required(),
+                                TextInput::make('price_from')
+                                    ->label('Precio Desde')
+                                    ->numeric()
+                                    ->prefix('$')
+                                    ->required(),
+                                Toggle::make('is_active')
+                                    ->label('Activo')
+                                    ->default(true),
+                            ]),
+                        TagsInput::make('tags')
+                            ->label('Tags / Etiquetas')
+                            ->placeholder('Agregar tag...')
+                            ->suggestions([
+                                'playa',
+                                'aventura',
+                                'familiar',
+                                'all-inclusive',
+                                'cultural',
+                                'crucero',
+                                'luna-de-miel',
+                                'exótico',
+                            ]),
+                    ]),
+
+                Section::make('Contenido')
+                    ->columnSpanFull()
+                    ->schema([
+                        Textarea::make('summary')
+                            ->label('Resumen Corto')
+                            ->rows(2)
+                            ->maxLength(500)
+                            ->helperText('Breve descripción para la tarjeta del listado.'),
+                        Textarea::make('description')
+                            ->label('Descripción Completa')
+                            ->rows(6),
+                    ]),
+
+                Section::make('Itinerario')
+                    ->columnSpanFull()
+                    ->schema([
+                        Repeater::make('itinerary')
+                            ->label('Días del viaje')
+                            ->schema([
+                                Grid::make(3)
+                                    ->schema([
+                                        TextInput::make('day')
+                                            ->label('Día')
+                                            ->placeholder('Día 1')
+                                            ->required(),
+                                        TextInput::make('title')
+                                            ->label('Título')
+                                            ->placeholder('Llegada y traslado')
+                                            ->required()
+                                            ->columnSpan(2),
+                                    ]),
+                                Textarea::make('description')
+                                    ->label('Descripción del día')
+                                    ->rows(3),
+                            ])
+                            ->columns(1)
+                            ->itemLabel(fn (array $state): ?string => ($state['day'] ?? '').': '.($state['title'] ?? ''))
+                            ->addActionLabel('Agregar día')
+                            ->reorderable()
+                            ->collapsible(),
+                    ]),
+
+                Section::make('Imágenes')
+                    ->columnSpanFull()
+                    ->schema([
+                        FileUpload::make('cover_image')
+                            ->label('Imagen de Portada')
+                            ->image()
+                            ->directory('travel-packages/covers')
+                            ->imageResizeMode('cover')
+                            ->imageCropAspectRatio('16:9')
+                            ->imageResizeTargetWidth('1200')
+                            ->imageResizeTargetHeight('675'),
+                        FileUpload::make('gallery')
+                            ->label('Galería de Fotos')
+                            ->image()
+                            ->multiple()
+                            ->reorderable()
+                            ->directory('travel-packages/gallery')
+                            ->imageResizeTargetWidth('1200')
+                            ->imageResizeTargetHeight('800'),
+                    ]),
+
+                Section::make('Incluye / No incluye')
+                    ->columnSpanFull()
+                    ->collapsed()
+                    ->schema([
+                        Textarea::make('included')
+                            ->label('¿Qué incluye?')
+                            ->rows(4)
+                            ->placeholder("✅ Aéreos ida y vuelta\n✅ Alojamiento\n✅ Traslados"),
+                        Textarea::make('excluded')
+                            ->label('¿Qué NO incluye?')
+                            ->rows(4)
+                            ->placeholder("❌ Excursiones opcionales\n❌ Comidas no mencionadas"),
+                    ]),
+            ]);
+    }
+}
