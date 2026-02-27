@@ -7,8 +7,8 @@ use App\Filament\Admin\Resources\Transactions\Tables\TransactionsTable;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Actions\CreateAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Tables\Table;
 
 class TransactionsRelationManager extends RelationManager
