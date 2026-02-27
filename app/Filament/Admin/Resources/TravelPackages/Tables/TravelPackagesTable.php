@@ -64,7 +64,7 @@ class TravelPackagesTable
                     ->form([
                         Select::make('customer_id')
                             ->label('Cliente')
-                            ->relationship('customer', 'name')
+                            ->options(\App\Models\Customer::pluck('name', 'id'))
                             ->searchable()
                             ->preload()
                             ->required()
@@ -75,7 +75,10 @@ class TravelPackagesTable
                                 \Filament\Forms\Components\TextInput::make('phone')
                                     ->label('Teléfono')
                                     ->required(),
-                            ]),
+                            ])
+                            ->createOptionUsing(function (array $data): int {
+                                return \App\Models\Customer::create($data)->id;
+                            }),
                     ])
                     ->action(function (\App\Models\TravelPackage $record, array $data) {
                         $customer = \App\Models\Customer::find($data['customer_id']);
