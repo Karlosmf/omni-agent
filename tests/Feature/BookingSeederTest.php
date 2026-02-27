@@ -7,7 +7,7 @@ use Database\Seeders\BookingSeeder;
 
 test('booking seeder creates bookings for existing customers', function () {
     // Create some customers
-    $customers = User::factory(3)->create(['role' => UserRole::Customer]);
+    $customers = \App\Models\Customer::factory(3)->create();
 
     // Ensure no bookings exist initially
     Booking::query()->delete();

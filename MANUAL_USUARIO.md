@@ -34,13 +34,18 @@ Cuando entras, verás una lista de personas interesadas en viajar. A esto le lla
 
 ## 3. Armado de Viajes (La Ruta) 🗺️
 
-Aquí es donde armas el plan de viaje para el cliente. Es como llenar una hoja de ruta con todo lo que va a hacer.
+Aquí es donde armas el plan de viaje para el cliente. Puedes hacerlo **desde cero** o usar una de tus **Ideas de Viaje** para no tener que cargar todo a mano.
 
-**Pasos para armar una Ruta:**
+**Opciones Rápidas (Automatizadas):**
+1.  **Desde las Consultas (Leads):** Si la consulta de la web vino por un paquete específico, al tocar "Convertir a Cliente" el sistema copiará todo el paquete a su nuevo Presupuesto.
+2.  **Desde el Cliente:** Tocá el botón "Crear desde Idea de Viaje" en su perfil para elegir un paquete y armarle el presupuesto al instante.
+3.  **Desde el Catálogo:** Entrá a "Ideas de Viaje" y tocá el botón verde "Presupuestar" para asignárselo a la persona.
+
+**Pasos para armar manual o agregar servicios extra:**
 
 1.  Ve al menú **"Ventas"** y elige **"Files"** (Expedientes) o **"Nuevo File"**.
 2.  Elige el nombre del cliente.
-3.  En la sección **"Servicios"**, ve agregando las partes del viaje una por una:
+3.  En la sección **"Servicios / Items"**, ve agregando las partes del viaje una por una:
     *   ✈️ **Vuelo:** Agrega el avión.
     *   🏨 **Hotel:** Agrega el alojamiento.
     *   🚌 **Traslado:** Agrega el transporte del aeropuerto al hotel.
@@ -60,7 +65,7 @@ Es fácil confundirse, pero aquí está la diferencia simple:
 *   📝 **Presupuesto (Borrador):** Es un papel de trabajo o una cotización. El cliente todavía lo está pensando. Puedes hacer muchos cambios y borrarlos.
 *   ✅ **File (Confirmado):** Es cuando el cliente dijo **"SÍ, QUIERO VIAJAR"**. Aquí ya es un viaje en serio. Tiene número de expediente y ya empezamos a cobrar y reservar.
 
-**Para pasar de Presupuesto a File:** Solo tienes que cambiar el estado o usar el botón que dice "Aprobar" o "Convertir".
+**Para pasar de Presupuesto a File:** Solo tienes que cambiar el estado en el menú desplegable de Borrador a Confirmado.
 
 ---
 

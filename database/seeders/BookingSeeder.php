@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Enums\UserRole;
 use App\Models\Booking;
-use App\Models\User;
+use App\Models\Customer;
 use Illuminate\Database\Seeder;
 
 class BookingSeeder extends Seeder
@@ -14,7 +14,7 @@ class BookingSeeder extends Seeder
      */
     public function run(): void
     {
-        $customers = User::where('role', UserRole::Customer)->get();
+        $customers = Customer::all();
 
         if ($customers->isEmpty()) {
             $this->command->info('No customers found. Skipping BookingSeeder.');

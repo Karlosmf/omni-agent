@@ -26,9 +26,11 @@ class FinancialAccountResource extends Resource
 
     protected static ?string $navigationLabel = 'Cuentas';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Tesorería';
+    protected static \UnitEnum|string|null $navigationGroup = 'Sistema';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 104;
+
+    protected static ?string $slug = 'sistema/cuentas';
 
     public static function form(Schema $schema): Schema
     {

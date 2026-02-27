@@ -20,7 +20,7 @@ class Booking extends Model
         static::creating(function ($booking) {
             if (empty($booking->file_number)) {
                 $year = now()->year;
-                $prefix = "LP-{$year}-";
+                $prefix = "LPN-{$year}-";
 
                 // Find max number for current year
                 $lastBooking = self::where('file_number', 'like', "{$prefix}%")
@@ -33,7 +33,7 @@ class Booking extends Model
                     $number = intval(end($parts)) + 1;
                 }
 
-                $booking->file_number = "{$prefix}{$number}";
+                $booking->file_number = $prefix . str_pad($number, 5, '0', STR_PAD_LEFT);
             }
         });
     }
@@ -56,6 +56,8 @@ class Booking extends Model
         'valid_until',
         'internal_notes',
         'notes',
+        'is_template',
+        'template_name',
     ];
 
     protected $casts = [
@@ -90,7 +92,7 @@ class Booking extends Model
 
     public function isExpired(): bool
     {
-        return $this->valid_until && $this->valid_until->isPast();
+        return $this->valid_until && \Carbon\Carbon::parse($this->valid_until)->isPast();
     }
 
     public function calculateProfit(): float

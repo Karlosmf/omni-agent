@@ -3,7 +3,6 @@
 namespace App\Filament\Admin\Resources\Leads\Schemas;
 
 use App\Enums\LeadStatus;
-use App\Enums\LeadTemperature;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -40,10 +39,6 @@ class LeadForm
                             ->schema([
                                 TextInput::make('source')
                                     ->label('Origen')
-                                    ->required(),
-                                Select::make('temperature')
-                                    ->label('Temperatura')
-                                    ->options(LeadTemperature::class)
                                     ->required(),
                                 Select::make('status')
                                     ->label('Estado')

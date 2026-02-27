@@ -7,5 +7,8 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateTravelPackage extends CreateRecord
 {
+    protected static bool $canCreateAnother = false;
+
+
     protected static string $resource = TravelPackageResource::class;
 }

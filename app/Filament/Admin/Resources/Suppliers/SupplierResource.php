@@ -20,9 +20,9 @@ class SupplierResource extends Resource
 
     protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-building-office';
 
-    protected static UnitEnum|string|null $navigationGroup = 'Tesorería';
+    protected static \UnitEnum|string|null $navigationGroup = 'Sistema';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 103;
 
     protected static ?string $modelLabel = 'Proveedor';
 
@@ -30,7 +30,7 @@ class SupplierResource extends Resource
 
     protected static ?string $navigationLabel = 'Proveedores';
 
-    protected static ?string $slug = 'proveedores';
+    protected static ?string $slug = 'sistema/proveedores';
 
     public static function form(Schema $schema): Schema
     {

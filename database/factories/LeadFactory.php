@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Enums\LeadStatus;
-use App\Enums\LeadTemperature;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,7 +19,6 @@ class LeadFactory extends Factory
     {
         return [
             'source' => fake()->randomElement(['whatsapp', 'instagram']),
-            'temperature' => fake()->randomElement(LeadTemperature::cases()),
             'status' => fake()->randomElement(LeadStatus::cases()),
             'customer_name' => fake()->name(),
             'customer_phone' => fake()->phoneNumber(),

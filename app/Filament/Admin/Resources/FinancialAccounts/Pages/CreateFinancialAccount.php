@@ -7,5 +7,8 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateFinancialAccount extends CreateRecord
 {
+    protected static bool $canCreateAnother = false;
+
+
     protected static string $resource = FinancialAccountResource::class;
 }

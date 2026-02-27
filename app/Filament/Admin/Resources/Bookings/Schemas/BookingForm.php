@@ -23,14 +23,13 @@ class BookingForm
         return $schema
             ->components([
                 Section::make('Información General')
-                    ->columnSpanFull()
                     ->schema([
                         Grid::make(3)
                             ->schema([
                                 Select::make('customer_id')
                                     ->label('Cliente (Cuenta)')
                                     ->relationship('customer', 'name')
-                                    ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->name} ({$record->email})")
+                                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->name} ({$record->email})")
                                     ->searchable()
                                     ->preload()
                                     ->createOptionForm([
@@ -79,7 +78,7 @@ class BookingForm
                                                     $set('customer_id', $lead->customer_id);
                                                 }
                                                 $aiData = $lead->ai_data ?? [];
-                                                if (! empty($aiData['destino'])) {
+                                                if (!empty($aiData['destino'])) {
                                                     $set('destination', $aiData['destino']);
                                                 }
                                             }
@@ -154,7 +153,7 @@ class BookingForm
                                             ->default(Currency::USD->value)
                                             ->required()
                                             ->live()
-                                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateTotals($set, $get)),
+                                            ->afterStateUpdated(fn(Set $set, Get $get) => self::updateTotals($set, $get)),
 
                                         TextInput::make('exchange_rate')
                                             ->label('Cotización Origen')
@@ -162,24 +161,24 @@ class BookingForm
                                             ->default(1.00)
                                             ->required()
                                             ->live(onBlur: true)
-                                            ->visible(fn (Get $get) => self::getCurrencyLabel($get('currency')) !== 'USD')
-                                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateTotals($set, $get)),
+                                            ->visible(fn(Get $get) => self::getCurrencyLabel($get('currency')) !== 'USD')
+                                            ->afterStateUpdated(fn(Set $set, Get $get) => self::updateTotals($set, $get)),
 
                                         TextInput::make('cost')
-                                            ->label(fn (Get $get) => 'Costo ('.self::getCurrencyLabel($get('currency')).')')
+                                            ->label(fn(Get $get) => 'Costo (' . self::getCurrencyLabel($get('currency')) . ')')
                                             ->numeric()
                                             ->prefix('$')
                                             ->required()
                                             ->live(onBlur: true)
-                                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateTotals($set, $get)),
+                                            ->afterStateUpdated(fn(Set $set, Get $get) => self::updateTotals($set, $get)),
 
                                         TextInput::make('sell')
-                                            ->label(fn (Get $get) => 'Venta ('.self::getCurrencyLabel($get('currency')).')')
+                                            ->label(fn(Get $get) => 'Venta (' . self::getCurrencyLabel($get('currency')) . ')')
                                             ->numeric()
                                             ->prefix('$')
                                             ->required()
                                             ->live(onBlur: true)
-                                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateTotals($set, $get)),
+                                            ->afterStateUpdated(fn(Set $set, Get $get) => self::updateTotals($set, $get)),
                                     ]),
                             ])
                             ->columns(1)
@@ -187,9 +186,9 @@ class BookingForm
                                 $type = $state['service_type'] ?? null;
                                 $label = $type instanceof ServiceType ? $type->getLabel() : $type;
 
-                                return $label.': '.($state['description'] ?? '');
+                                return $label . ': ' . ($state['description'] ?? '');
                             })
-                            ->deleteAction(fn (Set $set, Get $get) => self::updateTotals($set, $get)),
+                            ->deleteAction(fn(Set $set, Get $get) => self::updateTotals($set, $get)),
                     ]),
 
                 Section::make('Resumen Financiero')

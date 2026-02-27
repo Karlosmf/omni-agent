@@ -20,6 +20,13 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdminUserSeeder::class,
             UserSeeder::class,
+        ]);
+
+        \App\Models\TravelPackage::factory(20)->create();
+
+        \App\Models\Customer::factory(50)->create();
+
+        $this->call([
             LeadSeeder::class,
             BookingSeeder::class,
         ]);

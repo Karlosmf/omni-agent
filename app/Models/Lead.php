@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Enums\LeadStatus;
-use App\Enums\LeadTemperature;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,7 +17,7 @@ class Lead extends Model
     protected $fillable = [
         'customer_id',
         'source',
-        'temperature',
+        'travel_package_id',
         'status',
         'customer_name',
         'customer_phone',
@@ -31,7 +30,6 @@ class Lead extends Model
     ];
 
     protected $casts = [
-        'temperature' => LeadTemperature::class,
         'status' => LeadStatus::class,
         'ai_data' => 'array',
         'needs_human_attention' => 'boolean',
@@ -50,5 +48,10 @@ class Lead extends Model
     public function messages(): HasMany
     {
         return $this->hasMany(Message::class);
+    }
+
+    public function travelPackage(): BelongsTo
+    {
+        return $this->belongsTo(TravelPackage::class);
     }
 }

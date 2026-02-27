@@ -7,6 +7,9 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateBooking extends CreateRecord
 {
+    protected static bool $canCreateAnother = false;
+
+
     protected static string $resource = BookingResource::class;
     public function mount(): void
     {
