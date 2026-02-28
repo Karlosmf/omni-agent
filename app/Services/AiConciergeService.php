@@ -59,15 +59,15 @@ class AiConciergeService
             // Include lead data in system prompt for continuity
             $leadContext = '';
             $aiData = $lead->ai_data ?? [];
-            if (!empty($aiData)) {
+            if (! empty($aiData)) {
                 $leadContext = "\n\nDATOS DEL LEAD:";
-                if (!empty($aiData['destino'])) {
+                if (! empty($aiData['destino'])) {
                     $leadContext .= "\n- Destino: {$aiData['destino']}";
                 }
-                if (!empty($aiData['presupuesto'])) {
+                if (! empty($aiData['presupuesto'])) {
                     $leadContext .= "\n- Presupuesto: {$aiData['presupuesto']}";
                 }
-                if (!empty($aiData['pasajeros'])) {
+                if (! empty($aiData['pasajeros'])) {
                     $leadContext .= "\n- Pasajeros: {$aiData['pasajeros']}";
                 }
             }
@@ -93,7 +93,7 @@ class AiConciergeService
             - Si preguntan precios o vuelos, di que eso lo arman las chicas (Nela/Belén).
             - No inventes nada.{$leadContext}";
 
-            if (!empty($context)) {
+            if (! empty($context)) {
                 $systemPrompt .= "\n\nHISTORIAL:\n{$context}";
             }
 
@@ -107,7 +107,7 @@ class AiConciergeService
 
             return $responseText;
         } catch (Throwable $e) {
-            Log::error('AiConciergeService Error: ' . $e->getMessage());
+            Log::error('AiConciergeService Error: '.$e->getMessage());
 
             return 'Disculpá, estoy teniendo un pequeño problema técnico. ¿Podés intentar de nuevo en unos segundos? 🙏';
         }
@@ -152,14 +152,17 @@ class AiConciergeService
             // Lead Context
             $leadContext = '';
             $aiData = $lead->ai_data ?? [];
-            if (!empty($aiData)) {
+            if (! empty($aiData)) {
                 $leadContext = "\n\nDATOS DEL LEAD:";
-                if (!empty($aiData['destino']))
+                if (! empty($aiData['destino'])) {
                     $leadContext .= "\n- Destino: {$aiData['destino']}";
-                if (!empty($aiData['presupuesto']))
+                }
+                if (! empty($aiData['presupuesto'])) {
                     $leadContext .= "\n- Presupuesto: {$aiData['presupuesto']}";
-                if (!empty($aiData['pasajeros']))
+                }
+                if (! empty($aiData['pasajeros'])) {
                     $leadContext .= "\n- Pasajeros: {$aiData['pasajeros']}";
+                }
             }
             if ($lead->customer_name && $lead->customer_name !== 'Web Guest') {
                 $leadContext .= "\n- Nombre: {$lead->customer_name}";
@@ -183,7 +186,7 @@ class AiConciergeService
             - Si preguntan precios o vuelos, di que eso lo arman las chicas (Nela/Belén).
             - No inventes nada.{$leadContext}";
 
-            if (!empty($context)) {
+            if (! empty($context)) {
                 $systemPrompt .= "\n\nHISTORIAL:\n{$context}";
             }
 
@@ -203,7 +206,7 @@ class AiConciergeService
             ]);
 
         } catch (Throwable $e) {
-            Log::error('AiConciergeService Stream Error: ' . $e->getMessage());
+            Log::error('AiConciergeService Stream Error: '.$e->getMessage());
             yield 'Disculpá, estoy teniendo un pequeño problema técnico. ¿Podés intentar de nuevo? 🙏';
         }
     }
@@ -229,7 +232,7 @@ class AiConciergeService
 
             return json_decode($text, true) ?? [];
         } catch (Throwable $e) {
-            Log::error('AiExtraction Error: ' . $e->getMessage());
+            Log::error('AiExtraction Error: '.$e->getMessage());
 
             return [];
         }
@@ -253,7 +256,7 @@ class AiConciergeService
                 return $result->text();
             } catch (Throwable $e) {
                 $lastException = $e;
-                Log::warning("Gemini API attempt {$attempt} failed: " . $e->getMessage());
+                Log::warning("Gemini API attempt {$attempt} failed: ".$e->getMessage());
             }
         }
 

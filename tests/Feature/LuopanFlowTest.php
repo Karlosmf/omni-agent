@@ -2,11 +2,17 @@
 
 use App\Enums\BookingStatus;
 use App\Enums\LeadStatus;
+use App\Enums\UserRole;
 use App\Models\Booking;
-use App\Models\Customer;
 use App\Models\Lead;
+use App\Models\ServiceType;
+use App\Models\User;
 
 it('can verify the full Luopan Flow', function () {
+    // 0. Ensure Service Types exist
+    $hotelType = ServiceType::firstOrCreate(['key' => 'hotel'], ['name' => 'Hotel']);
+    $transferType = ServiceType::firstOrCreate(['key' => 'transfer'], ['name' => 'Traslado']);
+
     // 1. Create a Lead
     $lead = Lead::factory()->create([
         'customer_name' => 'Juan Perez',
@@ -19,10 +25,12 @@ it('can verify the full Luopan Flow', function () {
     expect($lead->status)->toBe(LeadStatus::New);
 
     // 2. Convert Lead to Customer
-    $customer = Customer::create([
+    $customer = User::create([
         'name' => $lead->customer_name,
         'phone' => $lead->customer_phone,
         'email' => $lead->customer_email,
+        'role' => UserRole::Customer,
+        'password' => bcrypt('password'),
     ]);
 
     $lead->update([
@@ -30,7 +38,7 @@ it('can verify the full Luopan Flow', function () {
         'status' => LeadStatus::Closed,
     ]);
 
-    expect($customer)->toBeInstanceOf(Customer::class)
+    expect($customer)->toBeInstanceOf(User::class)
         ->and($lead->fresh()->customer_id)->toBe($customer->id)
         ->and($lead->fresh()->status)->toBe(LeadStatus::Closed);
 
@@ -54,14 +62,14 @@ it('can verify the full Luopan Flow', function () {
 
     // 4. Add items to the Booking
     $booking->items()->create([
-        'service_type' => 'hotel',
+        'service_type_id' => $hotelType->id,
         'description' => 'Hotel 5 Stars',
         'cost' => 800,
         'sell' => 1200,
     ]);
 
     $booking->items()->create([
-        'service_type' => 'transfer',
+        'service_type_id' => $transferType->id,
         'description' => 'Transfer Airport',
         'cost' => 200,
         'sell' => 300,

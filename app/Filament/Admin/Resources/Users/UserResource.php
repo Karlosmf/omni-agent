@@ -32,6 +32,11 @@ class UserResource extends Resource
 
     protected static ?string $slug = 'usuarios';
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()->where('role', '!=', \App\Enums\UserRole::Customer);
+    }
+
     public static function form(Schema $schema): Schema
     {
         return UserForm::configure($schema);

@@ -13,14 +13,14 @@ test('it auto generates file number correctly', function () {
         'file_number' => null,
     ]);
 
-    expect($booking1->file_number)->toBe("LP-{$year}-1");
+    expect($booking1->file_number)->toBe("LPN-{$year}-00001");
 
     // Create second booking
     $booking2 = Booking::factory()->create([
         'file_number' => null,
     ]);
 
-    expect($booking2->file_number)->toBe("LP-{$year}-2");
+    expect($booking2->file_number)->toBe("LPN-{$year}-00002");
 
     // Create booking with explicit number
     $booking3 = Booking::factory()->create([
@@ -32,5 +32,5 @@ test('it auto generates file number correctly', function () {
     $booking4 = Booking::factory()->create([
         'file_number' => null,
     ]);
-    expect($booking4->file_number)->toBe("LP-{$year}-3");
+    expect($booking4->file_number)->toBe("LPN-{$year}-00003");
 });

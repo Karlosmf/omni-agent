@@ -4,11 +4,11 @@ namespace App\Filament\Admin\Resources\Bookings\RelationManagers;
 
 use App\Filament\Admin\Resources\Transactions\Schemas\TransactionForm;
 use App\Filament\Admin\Resources\Transactions\Tables\TransactionsTable;
-use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Schemas\Schema;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 
 class TransactionsRelationManager extends RelationManager
@@ -34,7 +34,9 @@ class TransactionsRelationManager extends RelationManager
             ])
             ->actions([
                 EditAction::make(),
-                DeleteAction::make(),
+                DeleteAction::make()
+                    ->label('Eliminar')
+                    ->icon('heroicon-o-trash'),
             ]);
     }
 }

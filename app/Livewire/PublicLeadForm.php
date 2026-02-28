@@ -3,45 +3,75 @@
 namespace App\Livewire;
 
 use App\Models\Lead;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Schemas\Schema;
 use Livewire\Component;
 
-class PublicLeadForm extends Component
+class PublicLeadForm extends Component implements HasForms
 {
-    public $name = '';
+    use InteractsWithForms;
 
-    public $email = '';
-
-    public $phone = '';
-
-    public $message = '';
+    public ?array $data = [];
 
     public $success = false;
 
+    public function mount(): void
+    {
+        $this->form->fill();
+    }
+
+    public function form(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                TextInput::make('name')
+                    ->label('Nombre')
+                    ->required()
+                    ->minLength(3)
+                    ->placeholder('Tu nombre'),
+                TextInput::make('email')
+                    ->label('Email')
+                    ->email()
+                    ->required()
+                    ->placeholder('tu@email.com'),
+                TextInput::make('phone')
+                    ->label('Teléfono (Opcional)')
+                    ->tel()
+                    ->numeric()
+                    ->placeholder('+54 9 ...'),
+                Textarea::make('message')
+                    ->label('Mensaje')
+                    ->required()
+                    ->minLength(10)
+                    ->rows(3)
+                    ->placeholder('Contanos qué estás buscando...'),
+            ])
+            ->statePath('data');
+    }
+
     public function submit(\App\Services\AiConciergeService $aiService)
     {
-        $this->validate([
-            'name' => 'required|min:3',
-            'email' => 'required|email',
-            'phone' => 'nullable|numeric',
-            'message' => 'required|min:10',
-        ]);
+        $data = $this->form->getState();
 
         $lead = Lead::create([
-            'customer_name' => $this->name,
-            'customer_phone' => $this->phone ?? 'Web-Form',
+            'customer_name' => $data['name'],
+            'customer_phone' => $data['phone'] ?? 'Web-Form',
             'source' => 'web_form',
-            'raw_message' => $this->message,
+            'raw_message' => $data['message'],
             'status' => \App\Enums\LeadStatus::New,
             'temperature' => \App\Enums\LeadTemperature::Cool,
             'ai_data' => [
-                'email' => $this->email,
+                'email' => $data['email'],
             ],
         ]);
 
         // Process message with AI to get a summary/intent
         // Process message with AI to get a summary and structured data
         try {
-            $extraction = $aiService->extractLeadData("El usuario {$this->name} escribió: {$this->message}");
+            $extraction = $aiService->extractLeadData("El usuario {$data['name']} escribió: {$data['message']}");
 
             // Merge existing ai_data (email) with extracted data
             $currentAiData = $lead->ai_data ?? [];
@@ -59,7 +89,7 @@ class PublicLeadForm extends Component
             \Illuminate\Support\Facades\Log::error('Error processing form with AI: '.$e->getMessage());
         }
 
-        $this->reset(['name', 'email', 'phone', 'message']);
+        $this->form->fill();
         $this->success = true;
 
         $this->dispatch('lead-submitted');

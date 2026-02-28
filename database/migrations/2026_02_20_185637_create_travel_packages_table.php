@@ -25,6 +25,7 @@ return new class extends Migration
             $table->text('summary')->nullable();
             $table->text('description')->nullable();
             $table->json('itinerary')->nullable();
+            $table->json('services')->nullable();
             $table->text('included')->nullable();
             $table->text('excluded')->nullable();
             $table->boolean('is_active')->default(true);

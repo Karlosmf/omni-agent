@@ -184,9 +184,7 @@ new #[Layout('components.layouts.guest')] class extends Component
 
                                         <div
                                             class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                                            <span
-                                                class="text-xs font-semibold text-amber-600 uppercase tracking-wider">{{ $day['day'] ?? '' }}</span>
-                                            <h3 class="text-lg font-bold text-gray-900 mt-1">
+                                            <h3 class="text-lg font-bold text-gray-900">
                                                 {{ $day['title'] ?? '' }}</h3>
                                             @if (! empty($day['description']))
                                                 <p class="text-gray-600 mt-2 text-sm leading-relaxed">

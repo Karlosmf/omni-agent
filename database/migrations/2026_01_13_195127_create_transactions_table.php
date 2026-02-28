@@ -17,16 +17,21 @@ return new class extends Migration
             $table->foreignId('booking_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('supplier_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('supplier_account_id')->nullable()->constrained('supplier_accounts')->nullOnDelete();
+            $table->foreignId('financial_account_id')->nullable()->constrained('financial_accounts')->nullOnDelete();
+            $table->foreignId('transaction_category_id')->nullable()->constrained('transaction_categories')->nullOnDelete();
             $table->string('payer_name')->nullable();
             $table->enum('type', array_column(TransactionType::cases(), 'value'));
-            $table->decimal('amount', 10, 2);
+            $table->decimal('amount', 15, 2);
             $table->string('currency');
-            $table->decimal('exchange_rate', 10, 4)->nullable();
-            $table->decimal('amount_usd_fixed', 10, 2)->nullable();
-            $table->date('date');
+            $table->decimal('exchange_rate', 15, 4)->nullable();
+            $table->decimal('amount_usd_fixed', 15, 2)->nullable();
+            $table->dateTime('date')->nullable();
             $table->string('method');
             $table->text('notes')->nullable();
             $table->string('reference')->nullable();
+            $table->string('attachment_path')->nullable();
+            $table->nullableMorphs('payable');
+            $table->json('tax_details')->nullable();
             $table->timestamps();
         });
     }

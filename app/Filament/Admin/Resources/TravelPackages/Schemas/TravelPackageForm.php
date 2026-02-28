@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\TravelPackages\Schemas;
 
+use App\Enums\Currency;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -51,13 +52,8 @@ class TravelPackageForm
                                     ->minValue(1),
                                 Select::make('currency')
                                     ->label('Moneda')
-                                    ->options([
-                                        'USD' => '💵 USD',
-                                        'ARS' => '🇦🇷 ARS',
-                                        'EUR' => '🇪🇺 EUR',
-                                        'BRL' => '🇧🇷 BRL',
-                                    ])
-                                    ->default('USD')
+                                    ->options(Currency::class)
+                                    ->default(Currency::USD->value)
                                     ->required(),
                                 TextInput::make('price_from')
                                     ->label('Precio Desde')
@@ -121,6 +117,64 @@ class TravelPackageForm
                             ->columns(1)
                             ->itemLabel(fn (array $state): ?string => ($state['day'] ?? '').': '.($state['title'] ?? ''))
                             ->addActionLabel('Agregar día')
+                            ->reorderable()
+                            ->collapsible(),
+                    ]),
+
+                Section::make('Detalle de Servicios Sugeridos')
+                    ->columnSpanFull()
+                    ->schema([
+                        Repeater::make('services')
+                            ->label('Servicios Incluidos en la Idea')
+                            ->schema([
+                                Grid::make(4)
+                                    ->schema([
+                                        Select::make('service_type_id')
+                                            ->label('Tipo de Servicio')
+                                            ->options(\App\Models\ServiceType::pluck('name', 'id'))
+                                            ->required(),
+                                        TextInput::make('description')
+                                            ->label('Descripción / Detalle')
+                                            ->required()
+                                            ->columnSpan(3),
+                                    ]),
+
+                                Grid::make(4)
+                                    ->schema([
+                                        Select::make('supplier_id')
+                                            ->label('Proveedor Sugerido')
+                                            ->options(\App\Models\Supplier::pluck('name', 'id'))
+                                            ->searchable()
+                                            ->preload(),
+
+                                        Select::make('currency')
+                                            ->label('Moneda')
+                                            ->options(Currency::class)
+                                            ->default(Currency::USD->value)
+                                            ->required(),
+
+                                        TextInput::make('cost')
+                                            ->label('Costo Neto')
+                                            ->numeric()
+                                            ->prefix('$')
+                                            ->required(),
+
+                                        TextInput::make('sell')
+                                            ->label('Precio Venta')
+                                            ->numeric()
+                                            ->prefix('$')
+                                            ->required(),
+                                    ]),
+                            ])
+                            ->columns(1)
+                            ->itemLabel(function (array $state): ?string {
+                                $typeId = $state['service_type_id'] ?? null;
+                                $serviceType = \App\Models\ServiceType::find($typeId);
+                                $type = $serviceType ? $serviceType->name : 'N/A';
+
+                                return $type.': '.($state['description'] ?? '');
+                            })
+                            ->addActionLabel('Agregar Servicio')
                             ->reorderable()
                             ->collapsible(),
                     ]),

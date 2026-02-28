@@ -1,17 +1,19 @@
 <?php
 
-use App\Models\Customer;
-use App\Models\TravelPackage;
-use App\Services\BudgetGenerationService;
 use App\Enums\BookingStatus;
-use App\Enums\ServiceType;
+use App\Enums\UserRole;
+use App\Models\ServiceType;
+use App\Models\TravelPackage;
+use App\Models\User;
+use App\Services\BudgetGenerationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 it('clones a travel package with itinerary into a new budget', function () {
     // Arrange
-    $customer = Customer::factory()->create(['name' => 'John Doe']);
+    $customer = User::factory()->create(['name' => 'John Doe', 'role' => UserRole::Customer]);
+    ServiceType::firstOrCreate(['key' => 'other'], ['name' => 'Otro']);
 
     $package = TravelPackage::factory()->create([
         'title' => 'Viaje a Roma',
@@ -24,10 +26,10 @@ it('clones a travel package with itinerary into a new budget', function () {
         'itinerary' => [
             ['day' => '1', 'title' => 'Llegada', 'description' => 'Llegada a Roma'],
             ['day' => '2', 'title' => 'Tour', 'description' => 'Tour Coliseo'],
-        ]
+        ],
     ]);
 
-    $service = new BudgetGenerationService();
+    $service = new BudgetGenerationService;
 
     // Act
     $booking = $service->clonePackageToBudget($package, $customer);
@@ -44,20 +46,21 @@ it('clones a travel package with itinerary into a new budget', function () {
         ->and($booking->status)->toBe(BookingStatus::Borrador)
         ->and($booking->items)->toHaveCount(2);
 
-    expect($booking->items->first()->service_type)->toBe(ServiceType::Other);
+    expect($booking->items->first()->service_type_id)->toBe(ServiceType::where('key', 'other')->value('id') ?? 1);
 });
 
 it('clones package info into an empty general item if itinerary is empty', function () {
-    $customer = Customer::factory()->create();
+    $customer = User::factory()->create(['role' => UserRole::Customer]);
+    ServiceType::firstOrCreate(['key' => 'other'], ['name' => 'Otro']);
     $package = TravelPackage::factory()->create([
         'itinerary' => null,
         'price_from' => 2000,
     ]);
 
-    $service = new BudgetGenerationService();
+    $service = new BudgetGenerationService;
     $booking = $service->clonePackageToBudget($package, $customer);
 
     expect($booking->items)->toHaveCount(1)
         ->and((float) $booking->total_sell)->toBe(2000.0)
-        ->and($booking->items->first()->service_type)->toBe(ServiceType::Other);
+        ->and($booking->items->first()->service_type_id)->toBe(ServiceType::where('key', 'other')->value('id') ?? 1);
 });

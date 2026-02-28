@@ -47,24 +47,26 @@ class BookingsRelationManager extends RelationManager
             ])
             ->headerActions([
                 CreateAction::make()
-                    ->url(fn() => BookingResource::getUrl('create', ['customer_id' => $this->getOwnerRecord()->getKey()])),
+                    ->url(fn () => BookingResource::getUrl('create', ['customer_id' => $this->getOwnerRecord()->getKey()])),
             ])
             ->actions([
                 Action::make('pago')
                     ->label('Pago')
                     ->icon('heroicon-o-currency-dollar')
                     ->color('success')
-                    ->url(fn($record) => \App\Filament\Admin\Resources\Transactions\TransactionResource::getUrl('create', ['booking_id' => $record->id])),
+                    ->url(fn ($record) => \App\Filament\Admin\Resources\Transactions\TransactionResource::getUrl('create', ['booking_id' => $record->id])),
                 Action::make('view')
                     ->label('Ver')
                     ->icon('heroicon-m-eye')
-                    ->url(fn($record) => BookingResource::getUrl('edit', ['record' => $record])),
+                    ->url(fn ($record) => BookingResource::getUrl('edit', ['record' => $record])),
                 EditAction::make()
-                    ->url(fn($record) => BookingResource::getUrl('edit', ['record' => $record])),
+                    ->url(fn ($record) => BookingResource::getUrl('edit', ['record' => $record])),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->label('Eliminar seleccionados')
+                        ->icon('heroicon-o-trash'),
                 ]),
             ]);
     }

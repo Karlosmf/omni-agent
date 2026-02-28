@@ -35,6 +35,7 @@ class TravelPackage extends Model
         'summary',
         'description',
         'itinerary',
+        'services',
         'included',
         'excluded',
         'is_active',
@@ -44,6 +45,7 @@ class TravelPackage extends Model
         'tags' => 'array',
         'gallery' => 'array',
         'itinerary' => 'array',
+        'services' => 'array',
         'is_active' => 'boolean',
         'price_from' => 'decimal:2',
     ];

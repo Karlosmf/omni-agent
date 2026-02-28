@@ -26,6 +26,8 @@ class TransactionFactory extends Factory
 
         return [
             'booking_id' => Booking::factory(),
+            'financial_account_id' => \App\Models\FinancialAccount::inRandomOrder()->first()?->id,
+            'transaction_category_id' => \App\Models\TransactionCategory::inRandomOrder()->first()?->id,
             'type' => fake()->randomElement(TransactionType::cases()),
             'currency' => $currency, // Eloquent handles Enum casting if defined in model
             'amount' => $amount,

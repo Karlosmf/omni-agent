@@ -1,42 +1,74 @@
 <?php
 
 use App\Models\Lead;
-use App\Models\Customer;
-use function Livewire\Volt\{state, rules};
+use App\Models\User;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use function Livewire\Volt\{state, mount, form};
 
-state([
-    'name' => '',
-    'email' => '',
-    'phone' => '',
-    'sent' => false,
-]);
+new class extends \Livewire\Volt\Component implements HasForms {
+    use InteractsWithForms;
 
-rules([
-    'name' => 'required|string|max:255',
-    'email' => 'required|email|max:255',
-    'phone' => 'required|string|max:20',
-]);
+    public ?array $data = [];
+    public bool $sent = false;
 
-$submit = function () {
-    $this->validate();
+    public function mount(): void
+    {
+        $this->form->fill();
+    }
 
-    // Check if customer exists or create
-    $customer = Customer::firstOrCreate(
-        ['email' => $this->email],
-        ['name' => $this->name, 'phone' => $this->phone]
-    );
+    public function form(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                TextInput::make('name')
+                    ->label('Nombre')
+                    ->required()
+                    ->maxLength(255),
+                TextInput::make('email')
+                    ->label('Email')
+                    ->email()
+                    ->required()
+                    ->maxLength(255),
+                TextInput::make('phone')
+                    ->label('Teléfono (WhatsApp)')
+                    ->required()
+                    ->maxLength(20),
+            ])
+            ->statePath('data');
+    }
 
-    // Create Lead
-    Lead::create([
-        'customer_id' => $customer->id,
-        'customer_name' => $this->name,
-        'customer_phone' => $this->phone,
-        'source' => 'web_initial_form',
-        'status' => \App\Enums\LeadStatus::New , // Assuming enum
-        'temperature' => \App\Enums\LeadTemperature::Cool,
-    ]);
+    public function submit() 
+    {
+        $data = $this->form->getState();
 
-    $this->sent = true;
+        // Check if customer exists or create
+        $customer = User::firstOrCreate(
+            ['email' => $data['email']],
+            [
+                'name' => $data['name'], 
+                'phone' => $data['phone'],
+                'role' => \App\Enums\UserRole::Customer,
+                'password' => Hash::make(Str::random(12)),
+            ]
+        );
+
+        // Create Lead
+        Lead::create([
+            'customer_id' => $customer->id,
+            'customer_name' => $data['name'],
+            'customer_phone' => $data['phone'],
+            'source' => 'web_initial_form',
+            'status' => \App\Enums\LeadStatus::New , // Assuming enum
+            'temperature' => \App\Enums\LeadTemperature::Cool,
+        ]);
+
+        $this->sent = true;
+    }
 };
 
 ?>
@@ -51,26 +83,7 @@ $submit = function () {
     @else
         <h2 class="text-lg font-bold mb-4 text-gray-800">Comenzar Consulta</h2>
         <form wire:submit="submit" class="space-y-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Nombre</label>
-                <input wire:model="name" type="text"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                @error('name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Email</label>
-                <input wire:model="email" type="email"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                @error('email') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Teléfono (WhatsApp)</label>
-                <input wire:model="phone" type="text"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                @error('phone') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-            </div>
+            {{ $this->form }}
 
             <button type="submit"
                 class="w-full bg-indigo-600 text-white rounded-md py-2 px-4 hover:bg-indigo-700 transition">

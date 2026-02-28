@@ -11,8 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('booking_items', function (Blueprint $table) {
-            $table->foreignId('supplier_id')->nullable()->change();
+        Schema::create('service_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('key')->unique();
+            $table->string('icon')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
         });
     }
 
@@ -21,8 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('booking_items', function (Blueprint $table) {
-            $table->foreignId('supplier_id')->nullable(false)->change();
-        });
+        Schema::dropIfExists('service_types');
     }
 };

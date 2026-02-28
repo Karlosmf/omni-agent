@@ -12,6 +12,11 @@ class CreateCustomer extends CreateRecord
 {
     protected static string $resource = CustomerResource::class;
 
+    public function getMaxWidth(): \Filament\Support\Enums\Width|string|null
+    {
+        return \Filament\Support\Enums\Width::Full;
+    }
+
     public ?string $lead_id = null;
 
     public function mount(): void
@@ -32,7 +37,7 @@ class CreateCustomer extends CreateRecord
             $this->lead_id = request('lead_id');
         }
 
-        if (!empty($data)) {
+        if (! empty($data)) {
             $this->form->fill($data);
         }
     }
@@ -43,7 +48,19 @@ class CreateCustomer extends CreateRecord
             $lead = \App\Models\Lead::find($this->lead_id);
             if ($lead) {
                 $lead->customer_id = $this->record->id;
+                $lead->status = \App\Enums\LeadStatus::Closed;
                 $lead->save();
+
+                if ($lead->travel_package_id) {
+                    $service = app(\App\Services\BudgetGenerationService::class);
+                    $service->clonePackageToBudget($lead->travelPackage, $this->record, $lead->id);
+
+                    \Filament\Notifications\Notification::make()
+                        ->title('Presupuesto Creado')
+                        ->body('Se generó el presupuesto en base a la Idea de Viaje consultada por el lead.')
+                        ->success()
+                        ->send();
+                }
             }
         }
     }
@@ -56,5 +73,19 @@ class CreateCustomer extends CreateRecord
         }
 
         return $data;
+    }
+
+    protected function getCreateFormAction(): \Filament\Actions\Action
+    {
+        return parent::getCreateFormAction()
+            ->label('Crear registro')
+            ->icon('heroicon-o-plus');
+    }
+
+    protected function getCancelFormAction(): \Filament\Actions\Action
+    {
+        return parent::getCancelFormAction()
+            ->label('Cancelar')
+            ->icon('heroicon-o-x-mark');
     }
 }

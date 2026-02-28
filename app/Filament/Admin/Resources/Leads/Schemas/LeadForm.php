@@ -18,30 +18,31 @@ class LeadForm
     {
         return $schema
             ->components([
-                Section::make('Información del Cliente')
+                Section::make('Información del Interesado')
                     ->schema([
                         Grid::make(2)
                             ->schema([
                                 TextInput::make('customer_name')
-                                    ->label('Nombre del Cliente')
+                                    ->label('Nombre Completo')
                                     ->required(),
                                 TextInput::make('customer_phone')
-                                    ->label('Teléfono')
+                                    ->label('Teléfono de Contacto')
                                     ->tel()
                                     ->required(),
                                 TextInput::make('customer_email')
-                                    ->label('Email')
+                                    ->label('Correo Electrónico')
                                     ->email(),
                                 TextInput::make('customer_budget')
-                                    ->label('Presupuesto'),
+                                    ->label('Presupuesto Estimado'),
                             ]),
                         Grid::make(3)
                             ->schema([
                                 TextInput::make('source')
-                                    ->label('Origen')
+                                    ->label('Canal / Origen')
+                                    ->placeholder('Ej: WhatsApp, Instagram, Web')
                                     ->required(),
                                 Select::make('status')
-                                    ->label('Estado')
+                                    ->label('Estado de la Consulta')
                                     ->options(LeadStatus::class)
                                     ->required(),
                             ]),
@@ -49,21 +50,21 @@ class LeadForm
                 Section::make('Análisis de IA')
                     ->schema([
                         KeyValue::make('ai_data')
-                            ->label('Datos Extraídos'),
+                            ->label('Datos Extraídos por IA'),
                         Textarea::make('ai_summary')
-                            ->label('Resumen de IA')
+                            ->label('Resumen de la Conversación')
                             ->rows(3)
                             ->columnSpanFull(),
                         Toggle::make('needs_human_attention')
-                            ->label('Requiere atención humana')
+                            ->label('Requiere intervención manual')
                             ->required(),
                     ]),
                 Section::make('Interacción Original')
-                    ->label('Mensaje Original')
+                    ->label('Historial de Chat')
                     ->collapsed()
                     ->schema([
                         Textarea::make('raw_message')
-                            ->label('Chat Completo')
+                            ->label('Conversación Completa')
                             ->required()
                             ->rows(10)
                             ->columnSpanFull(),

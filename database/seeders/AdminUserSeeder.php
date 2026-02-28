@@ -11,16 +11,16 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
-        User::firstOrCreate(
+        User::updateOrCreate(
             ['email' => 'admin@admin.com'],
             [
-                'name' => 'Admin User',
-                'password' => Hash::make('password'),
+                'name' => 'Administrador',
+                'password' => Hash::make('admin123'),
                 'role' => UserRole::Admin,
             ]
         );
 
-        User::firstOrCreate(
+        User::updateOrCreate(
             ['email' => 'belenzorzon@luopanviajes.tur.ar'],
             [
                 'name' => 'Belen',
@@ -29,12 +29,12 @@ class AdminUserSeeder extends Seeder
             ]
         );
 
-        User::firstOrCreate(
+        User::updateOrCreate(
             ['email' => 'nelaflama@luopanviajes.tur.ar'],
             [
                 'name' => 'Nela',
                 'password' => Hash::make('Agencia843'),
-                'role' => UserRole::Staff, // Assuming Staff role exists, else use standard role
+                'role' => UserRole::Staff,
             ]
         );
     }

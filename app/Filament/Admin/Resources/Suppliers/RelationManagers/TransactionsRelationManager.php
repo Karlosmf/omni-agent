@@ -2,13 +2,10 @@
 
 namespace App\Filament\Admin\Resources\Suppliers\RelationManagers;
 
-use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\DissociateAction;
-use Filament\Actions\DissociateBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -42,7 +39,7 @@ class TransactionsRelationManager extends RelationManager
                 TextColumn::make('booking.file_number')
                     ->label('File')
                     ->searchable()
-                    ->url(fn($record) => $record->booking ? \App\Filament\Admin\Resources\Bookings\BookingResource::getUrl('edit', ['record' => $record->booking]) : null),
+                    ->url(fn ($record) => $record->booking ? \App\Filament\Admin\Resources\Bookings\BookingResource::getUrl('edit', ['record' => $record->booking]) : null),
                 TextColumn::make('type')
                     ->label('Tipo')
                     ->badge()
@@ -52,7 +49,7 @@ class TransactionsRelationManager extends RelationManager
                     ]),
                 TextColumn::make('amount')
                     ->label('Monto')
-                    ->money(fn($record) => $record->currency?->value ?? 'USD')
+                    ->money(fn ($record) => $record->currency?->value ?? 'USD')
                     ->sortable(),
                 TextColumn::make('amount_usd_fixed')
                     ->label('Monto (USD)')
@@ -73,11 +70,15 @@ class TransactionsRelationManager extends RelationManager
             ])
             ->recordActions([
                 EditAction::make(),
-                DeleteAction::make(),
+                DeleteAction::make()
+                    ->label('Eliminar')
+                    ->icon('heroicon-o-trash'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->label('Eliminar seleccionados')
+                        ->icon('heroicon-o-trash'),
                 ]),
             ])
             ->defaultSort('date', 'desc');

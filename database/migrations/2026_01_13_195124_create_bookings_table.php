@@ -18,11 +18,19 @@ return new class extends Migration
             $table->foreignId('customer_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('file_number')->unique();
             $table->string('holder_name');
-            $table->date('travel_date');
-            $table->decimal('total_cost_usd', 10, 2)->default(0);
-            $table->decimal('total_sell_usd', 10, 2)->default(0);
-            $table->decimal('profit_usd', 10, 2)->default(0);
-            $table->enum('status', array_column(BookingStatus::cases(), 'value'))->default(BookingStatus::Presupuesto->value);
+            $table->string('destination')->nullable();
+            $table->integer('nights')->nullable()->default(0);
+            $table->integer('passengers')->nullable()->default(1);
+            $table->dateTime('travel_date')->nullable();
+            $table->decimal('total_cost', 15, 2)->default(0);
+            $table->decimal('total_sell', 15, 2)->default(0);
+            $table->decimal('profit', 15, 2)->default(0);
+            $table->enum('status', array_column(BookingStatus::cases(), 'value'))->default(BookingStatus::Borrador->value);
+            $table->string('currency')->default('USD');
+            $table->decimal('exchange_rate', 15, 2)->default(1.00);
+            $table->dateTime('valid_until')->nullable();
+            $table->text('internal_notes')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

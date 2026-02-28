@@ -10,10 +10,10 @@
         "herd": {
             "command": "php",
             "args": [
-                "/Applications/Herd.app/Contents/Resources/herd-mcp.phar"
+                "C:/Users/quile/.config/herd/bin/herd-mcp.phar"
             ],
             "env": {
-                "SITE_PATH": "/Users/carlitos/Projects/omni-agent"
+                "SITE_PATH": "C:\\qb\\innodesign\\omni-agent"
             }
         }
     }

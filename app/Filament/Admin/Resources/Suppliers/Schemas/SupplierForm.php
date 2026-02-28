@@ -27,6 +27,11 @@ class SupplierForm
                                 TextInput::make('category')
                                     ->label('Categoría')
                                     ->placeholder('Ej: Aerolínea, Hotel, Mayorista'),
+                                Select::make('service_type_id')
+                                    ->label('Tipo de Servicio Principal')
+                                    ->relationship('serviceType', 'name')
+                                    ->searchable()
+                                    ->preload(),
                             ]),
                         Grid::make(2)
                             ->schema([

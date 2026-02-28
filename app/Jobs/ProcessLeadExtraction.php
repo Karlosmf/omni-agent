@@ -16,8 +16,7 @@ class ProcessLeadExtraction implements ShouldQueue
         public \App\Models\Lead $lead,
         public string $messageContent,
         public array $history = []
-    ) {
-    }
+    ) {}
 
     /**
      * Execute the job.
@@ -27,14 +26,14 @@ class ProcessLeadExtraction implements ShouldQueue
         try {
             // Prepare context for extraction
             $extractionContext = $this->messageContent;
-            if (!empty($this->history)) {
-                $extractionContext = json_encode($this->history) . "\nLAST_MSG: " . $this->messageContent;
+            if (! empty($this->history)) {
+                $extractionContext = json_encode($this->history)."\nLAST_MSG: ".$this->messageContent;
             }
 
             // Call AI Service
             $extraction = $aiService->extractLeadData($extractionContext);
 
-            if (!empty($extraction)) {
+            if (! empty($extraction)) {
                 $currentAiData = $this->lead->ai_data ?? [];
 
                 // Merge new data
@@ -51,14 +50,14 @@ class ProcessLeadExtraction implements ShouldQueue
                 ];
 
                 // Update customer name if extracted and still generic
-                if (!empty($extraction['nombre']) && ($this->lead->customer_name === 'Web Guest' || empty($this->lead->customer_name))) {
+                if (! empty($extraction['nombre']) && ($this->lead->customer_name === 'Web Guest' || empty($this->lead->customer_name))) {
                     $updateData['customer_name'] = $extraction['nombre'];
                 }
 
                 $this->lead->update($updateData);
             }
         } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::error("ProcessLeadExtraction Job Error: " . $e->getMessage());
+            \Illuminate\Support\Facades\Log::error('ProcessLeadExtraction Job Error: '.$e->getMessage());
         }
     }
 }

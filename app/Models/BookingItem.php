@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\ServiceType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,7 +14,7 @@ class BookingItem extends Model
     protected $fillable = [
         'booking_id',
         'supplier_id',
-        'service_type',
+        'service_type_id',
         'description',
         'currency',
         'exchange_rate',
@@ -24,7 +23,6 @@ class BookingItem extends Model
     ];
 
     protected $casts = [
-        'service_type' => ServiceType::class,
         'cost' => 'decimal:2',
         'sell' => 'decimal:2',
         'exchange_rate' => 'decimal:2',
@@ -38,5 +36,10 @@ class BookingItem extends Model
     public function supplier(): BelongsTo
     {
         return $this->belongsTo(Supplier::class);
+    }
+
+    public function serviceType(): BelongsTo
+    {
+        return $this->belongsTo(ServiceType::class);
     }
 }

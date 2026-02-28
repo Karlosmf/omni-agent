@@ -14,6 +14,7 @@ class CustomerForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(1)
             ->components([
                 Section::make('Datos Personales')
                     ->schema([
@@ -33,7 +34,7 @@ class CustomerForm
                             ]),
                         Grid::make(3)
                             ->schema([
-                                TextInput::make('document_number')
+                                TextInput::make('doc_number')
                                     ->label('DNI / Documento'),
                                 TextInput::make('passport_number')
                                     ->label('Pasaporte'),

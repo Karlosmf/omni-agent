@@ -33,7 +33,7 @@ class Booking extends Model
                     $number = intval(end($parts)) + 1;
                 }
 
-                $booking->file_number = $prefix . str_pad($number, 5, '0', STR_PAD_LEFT);
+                $booking->file_number = $prefix.str_pad($number, 5, '0', STR_PAD_LEFT);
             }
         });
     }
@@ -56,8 +56,6 @@ class Booking extends Model
         'valid_until',
         'internal_notes',
         'notes',
-        'is_template',
-        'template_name',
     ];
 
     protected $casts = [
@@ -77,7 +75,7 @@ class Booking extends Model
 
     public function customer(): BelongsTo
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(User::class, 'customer_id');
     }
 
     public function items(): HasMany

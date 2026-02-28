@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Users\Tables;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
@@ -20,6 +21,11 @@ class UsersTable
                 TextColumn::make('email')
                     ->label('Email')
                     ->searchable(),
+                TextColumn::make('role')
+                    ->label('Rol')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => $state instanceof \App\Enums\UserRole ? $state->label() : ($state ? \App\Enums\UserRole::tryFrom($state)?->label() ?? $state : '-'))
+                    ->sortable(),
                 TextColumn::make('email_verified_at')
                     ->label('Verificado')
                     ->dateTime()
@@ -40,10 +46,15 @@ class UsersTable
             ])
             ->recordActions([
                 EditAction::make(),
+                DeleteAction::make()
+                    ->label('Eliminar')
+                    ->icon('heroicon-o-trash'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->label('Eliminar seleccionados')
+                        ->icon('heroicon-o-trash'),
                 ]),
             ]);
     }

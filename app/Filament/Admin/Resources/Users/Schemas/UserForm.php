@@ -2,9 +2,10 @@
 
 namespace App\Filament\Admin\Resources\Users\Schemas;
 
+use App\Enums\UserRole;
 use Filament\Forms\Components\DateTimePicker;
-// Added
-use Filament\Forms\Components\TextInput; // Updated
+use Filament\Forms\Components\Select; // Updated
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -24,6 +25,14 @@ class UserForm
                     ->maxLength(255)
                     ->unique(ignoreRecord: true)
                     ->required(),
+                Select::make('role')
+                    ->label('Cargo / Rol')
+                    ->options(collect(UserRole::cases())
+                        ->filter(fn ($role) => $role !== UserRole::Customer)
+                        ->mapWithKeys(fn ($role) => [$role->value => $role->label()])
+                    )
+                    ->required()
+                    ->default(UserRole::Staff->value),
                 DateTimePicker::make('email_verified_at')
                     ->label('Email verificado el'),
                 TextInput::make('password')

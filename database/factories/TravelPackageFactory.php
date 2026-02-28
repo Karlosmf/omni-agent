@@ -26,11 +26,11 @@ class TravelPackageFactory extends Factory
             'Safari en Kenia',
             'Crucero por el Mediterráneo',
             'Tokio y Kioto Express',
-        ]) . ' ' . fake()->numberBetween(2026, 2027);
+        ]).' '.fake()->numberBetween(2026, 2027);
 
         return [
             'title' => $title,
-            'slug' => Str::slug($title) . '-' . fake()->unique()->numberBetween(100, 999),
+            'slug' => Str::slug($title).'-'.fake()->unique()->numberBetween(100, 999),
             'destination' => fake()->randomElement(['Caribe', 'Patagonia', 'Italia', 'Maldivas', 'Orlando', 'Kenia', 'Mediterráneo', 'Japón']),
             'nights' => fake()->numberBetween(3, 14),
             'tags' => fake()->randomElements(['playa', 'aventura', 'familiar', 'all-inclusive', 'cultural', 'crucero', 'luna-de-miel', 'exótico'], fake()->numberBetween(1, 3)),
@@ -50,6 +50,32 @@ class TravelPackageFactory extends Factory
                 ['day' => '3', 'title' => 'Excursión de día completo', 'description' => 'Salida temprano hacia los atractivos naturales de la región. Incluye almuerzo tradicional.'],
                 ['day' => '4', 'title' => 'Día libre', 'description' => 'Día a disposición para compras, paseos opcionales o simplemente descansar en las instalaciones.'],
                 ['day' => '5', 'title' => 'Regreso', 'description' => 'Check-out al mediodía y traslado al aeropuerto para su vuelo de regreso.'],
+            ],
+            'services' => [
+                [
+                    'service_type_id' => \App\Models\ServiceType::where('key', 'flight')->value('id') ?? 1,
+                    'description' => 'Vuelos internacionales ida y vuelta clase económica',
+                    'supplier_id' => null,
+                    'currency' => 'USD',
+                    'cost' => 800.00,
+                    'sell' => 1200.00,
+                ],
+                [
+                    'service_type_id' => \App\Models\ServiceType::where('key', 'hotel')->value('id') ?? 2,
+                    'description' => 'Alojamiento en Hotel 4 estrellas con desayuno',
+                    'supplier_id' => null,
+                    'currency' => 'USD',
+                    'cost' => 500.00,
+                    'sell' => 750.00,
+                ],
+                [
+                    'service_type_id' => \App\Models\ServiceType::where('key', 'transfer')->value('id') ?? 4,
+                    'description' => 'Traslados Aeropuerto - Hotel - Aeropuerto',
+                    'supplier_id' => null,
+                    'currency' => 'USD',
+                    'cost' => 50.00,
+                    'sell' => 80.00,
+                ],
             ],
             'included' => "✅ Aéreos ida y vuelta\n✅ Alojamiento\n✅ Traslados\n✅ Asistencia al viajero",
             'excluded' => "❌ Excursiones opcionales\n❌ Comidas no mencionadas\n❌ Gastos personales",

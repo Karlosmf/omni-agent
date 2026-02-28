@@ -4,7 +4,6 @@ namespace App\Filament\Admin\Resources\Bookings\Schemas;
 
 use App\Enums\BookingStatus;
 use App\Enums\Currency;
-use App\Enums\ServiceType;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -23,13 +22,14 @@ class BookingForm
         return $schema
             ->components([
                 Section::make('Información General')
+                    ->columnSpanFull()
                     ->schema([
                         Grid::make(3)
                             ->schema([
                                 Select::make('customer_id')
                                     ->label('Cliente (Cuenta)')
                                     ->relationship('customer', 'name')
-                                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->name} ({$record->email})")
+                                    ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->name} ({$record->email})")
                                     ->searchable()
                                     ->preload()
                                     ->createOptionForm([
@@ -39,20 +39,29 @@ class BookingForm
                                         TextInput::make('phone')
                                             ->label('Teléfono')
                                             ->required(),
+                                        TextInput::make('email')
+                                            ->label('Email')
+                                            ->email(),
                                     ])
+                                    ->createOptionUsing(function (array $data) {
+                                        $data['role'] = \App\Enums\UserRole::Customer;
+                                        $data['password'] = \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(12));
+
+                                        return \App\Models\User::create($data)->id;
+                                    })
                                     ->required()
                                     ->live()
                                     ->afterStateUpdated(function (Set $set, $state) {
                                         if ($state) {
-                                            $customer = \App\Models\Customer::find($state);
+                                            $customer = \App\Models\User::find($state);
                                             if ($customer) {
                                                 $set('holder_name', $customer->name);
                                             }
                                         }
                                     }),
                                 TextInput::make('file_number')
-                                    ->label('Nro File')
-                                    ->placeholder('Generado automáticamente')
+                                    ->label('Nro. de Legajo')
+                                    ->placeholder('Se generará automáticamente')
                                     ->disabledOn('create')
                                     ->unique(ignoreRecord: true),
                                 Select::make('status')
@@ -64,7 +73,7 @@ class BookingForm
                         Grid::make(3)
                             ->schema([
                                 Select::make('lead_id')
-                                    ->label('Lead Origen')
+                                    ->label('Consulta de Origen')
                                     ->relationship('lead', 'customer_name')
                                     ->searchable()
                                     ->preload()
@@ -78,22 +87,22 @@ class BookingForm
                                                     $set('customer_id', $lead->customer_id);
                                                 }
                                                 $aiData = $lead->ai_data ?? [];
-                                                if (!empty($aiData['destino'])) {
+                                                if (! empty($aiData['destino'])) {
                                                     $set('destination', $aiData['destino']);
                                                 }
                                             }
                                         }
                                     }),
                                 TextInput::make('holder_name')
-                                    ->label('Nombre del Pasajero Principal')
+                                    ->label('Titular de la Reserva')
                                     ->required(),
                                 TextInput::make('destination')
-                                    ->label('Destino Principal'),
+                                    ->label('Destino del Viaje'),
                             ]),
                         Grid::make(4)
                             ->schema([
                                 DatePicker::make('travel_date')
-                                    ->label('Fecha de Viaje'),
+                                    ->label('Fecha de Salida'),
                                 TextInput::make('nights')
                                     ->label('Noches')
                                     ->numeric(),
@@ -102,32 +111,34 @@ class BookingForm
                                     ->numeric()
                                     ->default(2),
                                 DatePicker::make('valid_until')
-                                    ->label('Válido hasta')
+                                    ->label('Vencimiento Presupuesto')
                                     ->default(now()->addDays(7)),
                             ]),
                         Textarea::make('internal_notes')
-                            ->label('Notas Internas')
-                            ->placeholder('Notas privadas para el equipo (no visibles para el cliente)')
+                            ->label('Observaciones Internas')
+                            ->placeholder('Comentarios para uso interno (no se ven en el voucher/presupuesto)')
                             ->rows(3)
                             ->columnSpanFull()
-                            ->helperText('Estas notas solo son visibles para el equipo administrativo.'),
+                            ->helperText('Solo visible para el equipo administrativo.'),
                     ]),
 
-                Section::make('Servicios / Items')
+                Section::make('Detalle de Servicios')
                     ->columnSpanFull()
                     ->schema([
                         Repeater::make('items')
-                            ->label('Servicios Detallados')
+                            ->label('Servicios')
                             ->relationship('items')
                             ->schema([
                                 Grid::make(4)
                                     ->schema([
-                                        Select::make('service_type')
-                                            ->label('Tipo')
-                                            ->options(ServiceType::class)
+                                        Select::make('service_type_id')
+                                            ->label('Tipo de Servicio')
+                                            ->relationship('serviceType', 'name')
+                                            ->searchable()
+                                            ->preload()
                                             ->required(),
                                         TextInput::make('description')
-                                            ->label('Descripción')
+                                            ->label('Descripción / Detalle')
                                             ->required()
                                             ->columnSpan(3),
                                     ]),
@@ -135,13 +146,13 @@ class BookingForm
                                 Grid::make(4)
                                     ->schema([
                                         Select::make('supplier_id')
-                                            ->label('Proveedor')
+                                            ->label('Prestador / Proveedor')
                                             ->relationship('supplier', 'name')
                                             ->searchable()
                                             ->preload()
                                             ->createOptionForm([
                                                 TextInput::make('name')
-                                                    ->label('Nombre Proveedor')
+                                                    ->label('Razón Social / Nombre')
                                                     ->required(),
                                                 TextInput::make('category')
                                                     ->label('Categoría'),
@@ -153,45 +164,46 @@ class BookingForm
                                             ->default(Currency::USD->value)
                                             ->required()
                                             ->live()
-                                            ->afterStateUpdated(fn(Set $set, Get $get) => self::updateTotals($set, $get)),
+                                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateTotals($set, $get)),
 
                                         TextInput::make('exchange_rate')
-                                            ->label('Cotización Origen')
+                                            ->label('Tipo de Cambio')
                                             ->numeric()
                                             ->default(1.00)
                                             ->required()
                                             ->live(onBlur: true)
-                                            ->visible(fn(Get $get) => self::getCurrencyLabel($get('currency')) !== 'USD')
-                                            ->afterStateUpdated(fn(Set $set, Get $get) => self::updateTotals($set, $get)),
+                                            ->visible(fn (Get $get) => self::getCurrencyLabel($get('currency')) !== 'USD')
+                                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateTotals($set, $get)),
 
                                         TextInput::make('cost')
-                                            ->label(fn(Get $get) => 'Costo (' . self::getCurrencyLabel($get('currency')) . ')')
+                                            ->label(fn (Get $get) => 'Costo neto ('.self::getCurrencyLabel($get('currency')).')')
                                             ->numeric()
                                             ->prefix('$')
                                             ->required()
                                             ->live(onBlur: true)
-                                            ->afterStateUpdated(fn(Set $set, Get $get) => self::updateTotals($set, $get)),
+                                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateTotals($set, $get)),
 
                                         TextInput::make('sell')
-                                            ->label(fn(Get $get) => 'Venta (' . self::getCurrencyLabel($get('currency')) . ')')
+                                            ->label(fn (Get $get) => 'Precio Venta ('.self::getCurrencyLabel($get('currency')).')')
                                             ->numeric()
                                             ->prefix('$')
                                             ->required()
                                             ->live(onBlur: true)
-                                            ->afterStateUpdated(fn(Set $set, Get $get) => self::updateTotals($set, $get)),
+                                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateTotals($set, $get)),
                                     ]),
                             ])
                             ->columns(1)
                             ->itemLabel(function (array $state): ?string {
-                                $type = $state['service_type'] ?? null;
-                                $label = $type instanceof ServiceType ? $type->getLabel() : $type;
+                                $typeId = $state['service_type_id'] ?? null;
+                                $serviceType = \App\Models\ServiceType::find($typeId);
+                                $label = $serviceType ? $serviceType->name : 'N/A';
 
-                                return $label . ': ' . ($state['description'] ?? '');
+                                return $label.': '.($state['description'] ?? '');
                             })
-                            ->deleteAction(fn(Set $set, Get $get) => self::updateTotals($set, $get)),
+                            ->deleteAction(fn (Set $set, Get $get) => self::updateTotals($set, $get)),
                     ]),
 
-                Section::make('Resumen Financiero')
+                Section::make('Liquidación / Resumen')
                     ->columnSpanFull()
                     ->schema([
                         // ARS Summary
@@ -204,13 +216,13 @@ class BookingForm
                                     ->readOnly()
                                     ->extraInputAttributes(['class' => 'bg-gray-100']),
                                 TextInput::make('total_sell_ars_display')
-                                    ->label('Venta Total (ARS)')
+                                    ->label('Precio Total (ARS)')
                                     ->numeric()
                                     ->prefix('$')
                                     ->readOnly()
                                     ->extraInputAttributes(['class' => 'bg-gray-100']),
                                 TextInput::make('profit_ars_display')
-                                    ->label('Ganancia (ARS)')
+                                    ->label('Rentabilidad (ARS)')
                                     ->numeric()
                                     ->prefix('$')
                                     ->readOnly()
@@ -227,13 +239,13 @@ class BookingForm
                                     ->readOnly()
                                     ->extraInputAttributes(['class' => 'bg-gray-100']),
                                 TextInput::make('total_sell')
-                                    ->label('Venta Total (USD)')
+                                    ->label('Precio Total (USD)')
                                     ->numeric()
                                     ->prefix('USD')
                                     ->readOnly()
                                     ->extraInputAttributes(['class' => 'bg-gray-100']),
                                 TextInput::make('profit')
-                                    ->label('Ganancia (USD)')
+                                    ->label('Rentabilidad (USD)')
                                     ->numeric()
                                     ->prefix('USD')
                                     ->readOnly()
@@ -241,11 +253,11 @@ class BookingForm
                             ]),
                     ]),
 
-                Section::make('Notas Adicionales')
+                Section::make('Información Adicional')
                     ->collapsed()
                     ->schema([
                         Textarea::make('notes')
-                            ->label('Notas / Condiciones para el cliente')
+                            ->label('Notas / Itinerario / Condiciones para el pasajero')
                             ->rows(3),
                     ]),
             ]);

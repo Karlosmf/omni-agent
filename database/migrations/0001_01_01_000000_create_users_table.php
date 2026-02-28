@@ -15,11 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->nullable()->unique();
-            $table->string('role')->default('customer'); // Default to customer
+            $table->string('role')->default('customer');
+            $table->json('permissions')->nullable();
             $table->string('phone')->nullable()->unique();
             $table->string('doc_number')->nullable();
             $table->string('passport_number')->nullable();
             $table->date('birth_date')->nullable();
+            $table->text('address')->nullable();
+            $table->json('history_json')->nullable();
             $table->text('notes')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

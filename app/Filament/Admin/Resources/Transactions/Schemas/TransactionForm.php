@@ -34,7 +34,7 @@ class TransactionForm
                                     ->numeric()
                                     ->prefix('$')
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn(Set $set, Get $get) => self::calculateNet($set, $get)),
+                                    ->afterStateUpdated(fn (Set $set, Get $get) => self::calculateNet($set, $get)),
 
                                 TextInput::make('tax_details.tax_bank_percent')
                                     ->label('% Banco')
@@ -42,7 +42,7 @@ class TransactionForm
                                     ->default(1.2)
                                     ->live(onBlur: true)
                                     ->suffix('%')
-                                    ->afterStateUpdated(fn(Set $set, Get $get) => self::calculateNet($set, $get)),
+                                    ->afterStateUpdated(fn (Set $set, Get $get) => self::calculateNet($set, $get)),
 
                                 TextInput::make('tax_details.tax_iibb_percent')
                                     ->label('% IIBB')
@@ -50,7 +50,7 @@ class TransactionForm
                                     ->default(3.5)
                                     ->live(onBlur: true)
                                     ->suffix('%')
-                                    ->afterStateUpdated(fn(Set $set, Get $get) => self::calculateNet($set, $get)),
+                                    ->afterStateUpdated(fn (Set $set, Get $get) => self::calculateNet($set, $get)),
 
                                 TextInput::make('tax_details.platform_fee_percent')
                                     ->label('% Plataforma')
@@ -58,7 +58,7 @@ class TransactionForm
                                     ->default(0)
                                     ->live(onBlur: true)
                                     ->suffix('%')
-                                    ->afterStateUpdated(fn(Set $set, Get $get) => self::calculateNet($set, $get)),
+                                    ->afterStateUpdated(fn (Set $set, Get $get) => self::calculateNet($set, $get)),
                             ]),
                     ]),
 
@@ -89,8 +89,8 @@ class TransactionForm
                                     ->label('Cuenta Financiera')
                                     ->relationship('financialAccount', 'name')
                                     // Hidden and optional if paying by Cash (Efectivo)
-                                    ->required(fn(Get $get) => $get('method') !== 'Efectivo')
-                                    ->visible(fn(Get $get) => $get('method') !== 'Efectivo')
+                                    ->required(fn (Get $get) => $get('method') !== 'Efectivo')
+                                    ->visible(fn (Get $get) => $get('method') !== 'Efectivo')
                                     ->searchable()
                                     ->preload(),
 
@@ -111,7 +111,7 @@ class TransactionForm
                                     ->preload()
                                     ->required()
                                     ->live()
-                                    ->columnSpan(fn(Get $get) => $get('method') === 'Efectivo' ? 2 : 1)
+                                    ->columnSpan(fn (Get $get) => $get('method') === 'Efectivo' ? 2 : 1)
                                     ->createOptionForm([
                                         TextInput::make('name')->required(),
                                         Select::make('type')->options(['ingreso' => 'Ingreso', 'egreso' => 'Egreso'])->required(),
@@ -125,37 +125,37 @@ class TransactionForm
                                     ->relationship('booking', 'file_number')
                                     ->searchable()
                                     ->preload()
-                                    ->visible(fn(Get $get) => $get('type') === TransactionType::Cobro->value || $get('type') === TransactionType::Pago->value),
+                                    ->visible(fn (Get $get) => $get('type') === TransactionType::Cobro->value || $get('type') === TransactionType::Pago->value),
 
                                 Select::make('supplier_id')
                                     ->label('Proveedor')
                                     ->relationship('supplier', 'name')
                                     ->searchable()
                                     ->preload()
-                                    ->visible(fn(Get $get) => $get('type') === TransactionType::Pago->value)
+                                    ->visible(fn (Get $get) => $get('type') === TransactionType::Pago->value)
                                     ->live()
-                                    ->afterStateUpdated(fn(Set $set) => $set('supplier_account_id', null)),
+                                    ->afterStateUpdated(fn (Set $set) => $set('supplier_account_id', null)),
                             ]),
 
                         Grid::make(2)
                             ->schema([
                                 Select::make('supplier_account_id')
                                     ->label('Cuenta Bancaria del Proveedor')
-                                    ->options(fn(Get $get) => SupplierAccount::where('supplier_id', $get('supplier_id'))->pluck('bank_name', 'id'))
-                                    ->visible(fn(Get $get) => $get('type') === TransactionType::Pago->value && $get('supplier_id'))
+                                    ->options(fn (Get $get) => SupplierAccount::where('supplier_id', $get('supplier_id'))->pluck('bank_name', 'id'))
+                                    ->visible(fn (Get $get) => $get('type') === TransactionType::Pago->value && $get('supplier_id'))
                                     ->live()
-                                    ->afterStateUpdated(fn(Set $set) => $set('bank_info_trigger', true)),
+                                    ->afterStateUpdated(fn (Set $set) => $set('bank_info_trigger', true)),
 
                                 Placeholder::make('bank_info')
                                     ->label('Datos Bancarios')
-                                    ->visible(fn(Get $get) => $get('supplier_account_id'))
+                                    ->visible(fn (Get $get) => $get('supplier_account_id'))
                                     ->content(function (Get $get) {
                                         $accountId = $get('supplier_account_id');
-                                        if (!$accountId) {
+                                        if (! $accountId) {
                                             return null;
                                         }
                                         $account = SupplierAccount::find($accountId);
-                                        if (!$account) {
+                                        if (! $account) {
                                             return null;
                                         }
 
@@ -172,7 +172,7 @@ class TransactionForm
                         TextInput::make('payer_name')
                             ->label('Pagador / Receptor (Manual)')
                             ->placeholder('Si no hay proveedor seleccionado')
-                            ->visible(fn(Get $get) => !$get('supplier_id'))
+                            ->visible(fn (Get $get) => ! $get('supplier_id'))
                             ->nullable(),
 
                         Grid::make(3)
@@ -182,21 +182,21 @@ class TransactionForm
                                     ->options(Currency::class)
                                     ->required()
                                     ->live()
-                                    ->afterStateUpdated(fn(Set $set, Get $get) => self::updateUsdFixed($set, $get)),
+                                    ->afterStateUpdated(fn (Set $set, Get $get) => self::updateUsdFixed($set, $get)),
 
                                 TextInput::make('amount')
                                     ->label('Monto')
                                     ->numeric()
                                     ->required()
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn(Set $set, Get $get) => self::updateUsdFixed($set, $get)),
+                                    ->afterStateUpdated(fn (Set $set, Get $get) => self::updateUsdFixed($set, $get)),
 
                                 Toggle::make('use_exchange_rate')
                                     ->label('Cotizar')
                                     ->inline(false)
                                     ->default(false)
                                     ->live()
-                                    ->afterStateUpdated(fn(Set $set, Get $get) => self::updateUsdFixed($set, $get)),
+                                    ->afterStateUpdated(fn (Set $set, Get $get) => self::updateUsdFixed($set, $get)),
                             ]),
 
                         Grid::make(2)
@@ -206,13 +206,13 @@ class TransactionForm
                                     ->numeric()
                                     ->default(1.00)
                                     ->live(onBlur: true)
-                                    ->required(fn(Get $get) => $get('use_exchange_rate'))
-                                    ->visible(fn(Get $get) => $get('use_exchange_rate'))
-                                    ->afterStateUpdated(fn(Set $set, Get $get) => self::updateUsdFixed($set, $get)),
+                                    ->required(fn (Get $get) => $get('use_exchange_rate'))
+                                    ->visible(fn (Get $get) => $get('use_exchange_rate'))
+                                    ->afterStateUpdated(fn (Set $set, Get $get) => self::updateUsdFixed($set, $get)),
                             ]),
 
                         TextInput::make('amount_usd_fixed')
-                            ->label(fn(Get $get) => $get('use_exchange_rate') ? 'Total USD (Referencia)' : 'Total (Referencia)')
+                            ->label(fn (Get $get) => $get('use_exchange_rate') ? 'Total USD (Referencia)' : 'Total (Referencia)')
                             ->numeric()
                             ->readOnly()
                             ->prefix('$')
@@ -241,7 +241,7 @@ class TransactionForm
         $useExchangeRate = (bool) $get('use_exchange_rate');
 
         // Reset if toggle is off
-        if (!$useExchangeRate) {
+        if (! $useExchangeRate) {
             // If toggle is off, reference total equals the amount (in local currency)
             $set('amount_usd_fixed', number_format($amount, 2, '.', ''));
 

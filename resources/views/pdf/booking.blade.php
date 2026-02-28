@@ -76,6 +76,12 @@
             background-color: #eee;
         }
 
+        table.items th.right-align,
+        table.items td.right-align,
+        .right-align {
+            text-align: right;
+        }
+
         .footer {
             position: fixed;
             bottom: 0;
@@ -94,7 +100,7 @@
     <div class="header">
         <table width="100%">
             <tr>
-                <td class="logo">Luopan Viajes</td>
+                <td class="logo"><img src="{{ public_path('images/branding/logo.png') }}" style="max-height: 50px;"></td>
                 <td class="company-info">
                     Legajo #1234<br>
                     Av. Corrientes 1234, CABA<br>
@@ -130,21 +136,21 @@
                     <th>Tipo</th>
                     <th>Descripción</th>
                     <th>Proveedor</th>
-                    <th align="right">Precio</th>
+                    <th class="right-align">Precio</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($booking->items as $item)
                     <tr>
-                        <td>{{ $item->service_type->getLabel() }}</td>
+                        <td>{{ $item->serviceType?->name }}</td>
                         <td>{{ $item->description }}</td>
                         <td>{{ $item->supplier?->name ?? $item->supplier_name }}</td>
-                        <td align="right">{{ $item->currency }} {{ number_format($item->sell, 2) }}</td>
+                        <td class="right-align">{{ $item->currency }} {{ number_format($item->sell, 2) }}</td>
                     </tr>
                 @endforeach
                 <tr class="total-row">
-                    <td colspan="3" align="right">TOTAL</td>
-                    <td align="right">{{ $booking->currency }} {{ number_format($booking->total_sell, 2) }}</td>
+                    <td colspan="3" class="right-align">TOTAL</td>
+                    <td class="right-align">{{ $booking->currency }} {{ number_format($booking->total_sell, 2) }}</td>
                 </tr>
             </tbody>
         </table>
@@ -158,8 +164,8 @@
                     <tr>
                         <th>Fecha</th>
                         <th>Método</th>
-                        <th>Moneda Orig.</th>
-                        <th align="right">Monto (USD)</th>
+                        <th class="right-align">Moneda Orig.</th>
+                        <th class="right-align">Monto (USD)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -167,8 +173,8 @@
                         <tr>
                             <td>{{ $trx->created_at->format('d/m/Y') }}</td>
                             <td>{{ $trx->method }}</td>
-                            <td>{{ $trx->amount }} {{ $trx->currency->value }}</td>
-                            <td align="right">USD {{ number_format($trx->amount_usd_fixed, 2) }}</td>
+                            <td class="right-align">{{ $trx->amount }} {{ $trx->currency->value }}</td>
+                            <td class="right-align">USD {{ number_format($trx->amount_usd_fixed, 2) }}</td>
                         </tr>
                     @endforeach
                 </tbody>

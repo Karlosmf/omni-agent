@@ -2,24 +2,18 @@
 
 namespace App\Services;
 
+use App\Enums\BookingStatus;
 use App\Models\Booking;
 use App\Models\BookingItem;
-use App\Models\Customer;
 use App\Models\TravelPackage;
-use App\Enums\BookingStatus;
-use App\Enums\ServiceType;
+use App\Models\User;
 
 class BudgetGenerationService
 {
     /**
      * Creates a new cloned Budget (Booking) for a Customer based on a TravelPackage.
-     *
-     * @param TravelPackage $travelPackage
-     * @param Customer $customer
-     * @param int|null $leadId
-     * @return Booking
      */
-    public function clonePackageToBudget(TravelPackage $travelPackage, Customer $customer, ?int $leadId = null): Booking
+    public function clonePackageToBudget(TravelPackage $travelPackage, User $customer, ?int $leadId = null, ?string $travelDate = null, ?int $passengers = null): Booking
     {
         $booking = Booking::create([
             'customer_id' => $customer->id,
@@ -27,38 +21,42 @@ class BudgetGenerationService
             'holder_name' => $customer->name,
             'destination' => $travelPackage->destination,
             'nights' => $travelPackage->nights,
-            'passengers' => 2, // Default
+            'passengers' => $passengers ?? 2,
             'currency' => $travelPackage->currency,
             'exchange_rate' => 1.00,
             'total_cost' => 0,
             'total_sell' => $travelPackage->price_from,
             'profit' => $travelPackage->price_from,
             'status' => BookingStatus::Borrador,
-            'travel_date' => now()->addMonths(3), // Default future date
+            'travel_date' => $travelDate ?? now()->addMonths(3),
             'valid_until' => now()->addDays(7), // Quotation valid for 7 days
-            'internal_notes' => 'Presupuesto generado a partir de Idea de Viaje: ' . $travelPackage->title,
-            'notes' => $travelPackage->description . "\n" . $travelPackage->summary,
+            'internal_notes' => 'Presupuesto generado a partir de Idea de Viaje: '.$travelPackage->title,
+            'notes' => $travelPackage->description."\n".$travelPackage->summary,
         ]);
 
-        // If itinerary exists, create booking items for them
-        if (is_array($travelPackage->itinerary) && count($travelPackage->itinerary) > 0) {
-            foreach ($travelPackage->itinerary as $day) {
+        $hasDetailedServices = is_array($travelPackage->services) && count($travelPackage->services) > 0;
+
+        if ($hasDetailedServices) {
+            foreach ($travelPackage->services as $service) {
                 BookingItem::create([
                     'booking_id' => $booking->id,
-                    'service_type' => ServiceType::Other,
-                    'description' => "Día {$day['day']}: {$day['title']} - {$day['description']}",
-                    'currency' => $travelPackage->currency,
+                    'service_type_id' => $service['service_type_id'] ?? \App\Models\ServiceType::where('key', 'other')->value('id') ?? 1,
+                    'description' => $service['description'],
+                    'supplier_id' => $service['supplier_id'] ?? null,
+                    'currency' => $service['currency'] ?? $travelPackage->currency,
                     'exchange_rate' => 1.00,
-                    'cost' => 0, // Placeholder
-                    'sell' => 0, // Placeholder, total is in main booking
+                    'cost' => $service['cost'] ?? 0,
+                    'sell' => $service['sell'] ?? 0,
                 ]);
             }
-        } else {
-            // Create a general package item so the budget isn't completely empty
+        }
+
+        // Fallback: If no detailed services exist
+        if (! $hasDetailedServices) {
             BookingItem::create([
                 'booking_id' => $booking->id,
-                'service_type' => ServiceType::Other,
-                'description' => 'Servicios integrales del paquete: ' . $travelPackage->title,
+                'service_type_id' => \App\Models\ServiceType::where('key', 'other')->value('id') ?? 1,
+                'description' => 'Servicios integrales del paquete: '.$travelPackage->title,
                 'currency' => $travelPackage->currency,
                 'exchange_rate' => 1.00,
                 'cost' => 0,
@@ -66,7 +64,7 @@ class BudgetGenerationService
             ]);
         }
 
-        // Recalculate totals if we added a package item with sell price
+        // Recalculate totals based on all created items
         $this->recalculateTotals($booking);
 
         return $booking;

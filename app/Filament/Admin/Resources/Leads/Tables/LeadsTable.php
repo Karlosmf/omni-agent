@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\Leads\Tables;
 use App\Enums\LeadStatus;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
@@ -20,7 +21,7 @@ class LeadsTable
                 TextColumn::make('customer_name')
                     ->label('Nombre')
                     ->searchable()
-                    ->description(fn($record) => collect([$record->customer_phone, $record->customer_email])->filter()->implode(' | ')),
+                    ->description(fn ($record) => collect([$record->customer_phone, $record->customer_email])->filter()->implode(' | ')),
                 TextColumn::make('source')
                     ->label('Origen')
                     ->badge()
@@ -58,55 +59,34 @@ class LeadsTable
                     ->label('Convertir a Cliente')
                     ->icon('heroicon-o-user-plus')
                     ->color('primary')
-                    ->requiresConfirmation()
-                    ->modalHeading('Convertir Lead a Cliente')
-                    ->modalDescription('¿Seguro que deseas crear un nuevo Cliente con los datos de este Lead? Se redirigirá a la edición del cliente.')
-                    ->action(function (\App\Models\Lead $record) {
-                        $customer = \App\Models\Customer::create([
-                            'name' => $record->customer_name,
-                            'phone' => $record->customer_phone,
-                            'email' => $record->customer_email,
-                        ]);
-
-                        $record->update([
-                            'customer_id' => $customer->id,
-                            'status' => \App\Enums\LeadStatus::Closed, // Marking as closed/converted
-                        ]);
-
-                        if ($record->travel_package_id) {
-                            $service = app(\App\Services\BudgetGenerationService::class);
-                            $service->clonePackageToBudget($record->travelPackage, $customer, $record->id);
-
-                            \Filament\Notifications\Notification::make()
-                                ->title('Cliente y Presupuesto Creados')
-                                ->body('Se generó el presupuesto en base a la Idea de Viaje consultada.')
-                                ->success()
-                                ->send();
-                        } else {
-                            \Filament\Notifications\Notification::make()
-                                ->title('Cliente Creado')
-                                ->success()
-                                ->send();
-                        }
-
-                        return redirect()->to(\App\Filament\Admin\Resources\Customers\CustomerResource::getUrl('edit', ['record' => $customer]));
-                    })
-                    ->visible(fn(\App\Models\Lead $record) => is_null($record->customer_id)),
-                Action::make('whatsapp')
-                    ->label('WhatsApp')
-                    ->icon('heroicon-o-chat-bubble-left-ellipsis')
-                    ->color('success')
-                    ->url(fn($record) => "https://wa.me/{$record->customer_phone}?text=" . urlencode("Hola {$record->customer_name}, soy del equipo de Luopan Viajes. Te contacto por tu consulta sobre viajes. ¿En qué puedo ayudarte?"))
-                    ->openUrlInNewTab()
-                    ->visible(fn($record) => !empty($record->customer_phone)),
-                EditAction::make()
-                    ->label('Editar'),
-                Action::make('escalate')
-                    ->label('Escalar a humano')
-                    ->icon('heroicon-o-user-group')
-                    ->color('warning')
-                    ->action(fn($record) => $record->update(['needs_human_attention' => true]))
-                    ->visible(fn($record) => !$record->needs_human_attention),
+                    ->button()
+                    ->url(fn (\App\Models\Lead $record) => \App\Filament\Admin\Resources\Customers\CustomerResource::getUrl('create', [
+                        'name' => $record->customer_name,
+                        'phone' => $record->customer_phone,
+                        'email' => $record->customer_email,
+                        'lead_id' => $record->id,
+                    ]))
+                    ->visible(fn (\App\Models\Lead $record) => is_null($record->customer_id)),
+                \Filament\Actions\ActionGroup::make([
+                    Action::make('whatsapp')
+                        ->label('WhatsApp')
+                        ->icon('heroicon-o-chat-bubble-left-ellipsis')
+                        ->color('success')
+                        ->url(fn ($record) => "https://wa.me/{$record->customer_phone}?text=".urlencode("Hola {$record->customer_name}, soy del equipo de Luopan Viajes. Te contacto por tu consulta sobre viajes. ¿En qué puedo ayudarte?"))
+                        ->openUrlInNewTab()
+                        ->visible(fn ($record) => ! empty($record->customer_phone)),
+                    EditAction::make()
+                        ->label('Editar'),
+                    Action::make('escalate')
+                        ->label('Escalar a humano')
+                        ->icon('heroicon-o-user-group')
+                        ->color('warning')
+                        ->action(fn ($record) => $record->update(['needs_human_attention' => true]))
+                        ->visible(fn ($record) => ! $record->needs_human_attention),
+                    DeleteAction::make()
+                        ->label('Eliminar')
+                        ->icon('heroicon-o-trash'),
+                ]),
             ])
             ->toolbarActions([
                 \Filament\Actions\ExportAction::make()
@@ -115,7 +95,8 @@ class LeadsTable
                     ->icon('heroicon-o-arrow-down-tray'),
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
-                        ->label('Eliminar seleccionados'),
+                        ->label('Eliminar seleccionados')
+                        ->icon('heroicon-o-trash'),
                 ]),
             ]);
     }

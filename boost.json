@@ -3,11 +3,17 @@
         "gemini",
         "opencode"
     ],
-    "editors": [
-        "gemini",
-        "opencode",
-        "vscode"
+    "guidelines": true,
+    "herd_mcp": true,
+    "mcp": true,
+    "packages": [
+        "filament/filament"
     ],
-    "guidelines": [],
-    "herd_mcp": true
+    "sail": false,
+    "skills": [
+        "livewire-development",
+        "volt-development",
+        "pest-testing",
+        "tailwindcss-development"
+    ]
 }

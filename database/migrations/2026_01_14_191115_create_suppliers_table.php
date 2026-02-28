@@ -15,16 +15,18 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('contact_name')->nullable();
-            $table->string('email')->nullable();
-            $table->string('phone')->nullable();
+            $table->string('contact_email')->nullable();
+            $table->string('contact_phone')->nullable();
             $table->string('website')->nullable();
-            $table->string('service_type'); // hotel, transport, activity, other
+            $table->foreignId('service_type_id')->nullable()->constrained('service_types')->nullOnDelete();
+            $table->string('category')->nullable();
             $table->string('location')->nullable();
-            $table->string('cuit')->nullable(); // Identificación fiscal
+            $table->string('cuit')->nullable();
             $table->string('bank_name')->nullable();
-            $table->string('cbu')->nullable(); // Clave Bancaria Uniforme
+            $table->string('cbu')->nullable();
             $table->string('alias')->nullable();
             $table->string('account_number')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

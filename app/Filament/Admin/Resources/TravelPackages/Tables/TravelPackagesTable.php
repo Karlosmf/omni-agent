@@ -2,12 +2,12 @@
 
 namespace App\Filament\Admin\Resources\TravelPackages\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
-use Filament\Actions\Action;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
@@ -40,7 +40,7 @@ class TravelPackagesTable
                     ->suffix(' noches'),
                 TextColumn::make('price_from')
                     ->label('Precio Desde')
-                    ->money(fn($record) => $record->currency ?? 'USD')
+                    ->money(fn ($record) => $record->currency ?? 'USD')
                     ->sortable(),
                 ToggleColumn::make('is_active')
                     ->label('Activo'),
@@ -64,7 +64,7 @@ class TravelPackagesTable
                     ->form([
                         Select::make('customer_id')
                             ->label('Cliente')
-                            ->options(\App\Models\Customer::pluck('name', 'id'))
+                            ->options(\App\Models\User::where('role', \App\Enums\UserRole::Customer)->pluck('name', 'id'))
                             ->searchable()
                             ->preload()
                             ->required()
@@ -77,20 +77,39 @@ class TravelPackagesTable
                                     ->required(),
                             ])
                             ->createOptionUsing(function (array $data): int {
-                                return \App\Models\Customer::create($data)->id;
+                                $data['role'] = \App\Enums\UserRole::Customer;
+                                $data['password'] = \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(12));
+
+                                return \App\Models\User::create($data)->id;
                             }),
+                        \Filament\Forms\Components\DatePicker::make('travel_date')
+                            ->label('Fecha Estimada de Viaje')
+                            ->default(now()->addMonths(3))
+                            ->required(),
+                        \Filament\Forms\Components\TextInput::make('passengers')
+                            ->label('Cantidad de Pasajeros')
+                            ->numeric()
+                            ->default(2)
+                            ->required(),
                     ])
                     ->action(function (\App\Models\TravelPackage $record, array $data) {
-                        $customer = \App\Models\Customer::find($data['customer_id']);
-                        if (!$customer) {
-                            $customer = \App\Models\Customer::create([
+                        $customer = \App\Models\User::find($data['customer_id']);
+                        if (! $customer) {
+                            $customer = \App\Models\User::create([
                                 'name' => $data['name'],
                                 'phone' => $data['phone'] ?? '',
+                                'role' => \App\Enums\UserRole::Customer,
+                                'password' => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(12)),
                             ]);
                         }
 
                         $service = app(\App\Services\BudgetGenerationService::class);
-                        $newBooking = $service->clonePackageToBudget($record, $customer);
+                        $newBooking = $service->clonePackageToBudget(
+                            $record,
+                            $customer,
+                            travelDate: $data['travel_date'],
+                            passengers: $data['passengers']
+                        );
 
                         \Filament\Notifications\Notification::make()
                             ->title('Presupuesto inicial creado')
@@ -103,12 +122,14 @@ class TravelPackagesTable
                 EditAction::make()
                     ->label('Editar'),
                 DeleteAction::make()
-                    ->label('Eliminar'),
+                    ->label('Eliminar')
+                    ->icon('heroicon-o-trash'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
-                        ->label('Eliminar seleccionados'),
+                        ->label('Eliminar seleccionados')
+                        ->icon('heroicon-o-trash'),
                 ]),
             ]);
     }

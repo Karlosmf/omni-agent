@@ -7,7 +7,7 @@ use App\Models\Booking;
 use App\Models\BookingItem;
 use App\Models\Lead;
 use App\Models\Transaction;
-use App\Models\Customer;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class LeadSeeder extends Seeder
@@ -17,7 +17,7 @@ class LeadSeeder extends Seeder
      */
     public function run(): void
     {
-        $customers = Customer::all();
+        $customers = User::where('role', UserRole::Customer)->get();
 
         if ($customers->isEmpty()) {
             return;
@@ -30,7 +30,8 @@ class LeadSeeder extends Seeder
             Lead::factory()
                 ->for($customer, 'customer')
                 ->state(function () use ($travelPackages) {
-                    return ['travel_package_id' => $travelPackages->random()->id ?? null]; })
+                    return ['travel_package_id' => $travelPackages->random()->id ?? null];
+                })
                 ->has(
                     Booking::factory()
                         ->for($customer, 'customer') // Assign same customer to booking
@@ -44,7 +45,8 @@ class LeadSeeder extends Seeder
         Lead::factory(30)
             ->recycle($customers) // Assign random customers from collection
             ->state(function () use ($travelPackages) {
-                return ['travel_package_id' => $travelPackages->random()->id ?? null]; })
+                return ['travel_package_id' => $travelPackages->random()->id ?? null];
+            })
             ->create();
     }
 }

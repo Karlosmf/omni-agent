@@ -9,8 +9,8 @@ class CreateBooking extends CreateRecord
 {
     protected static bool $canCreateAnother = false;
 
-
     protected static string $resource = BookingResource::class;
+
     public function mount(): void
     {
         parent::mount();
@@ -69,7 +69,7 @@ class CreateBooking extends CreateRecord
 
             // Notes from summary
             if ($lead->ai_summary) {
-                $data['notes'] = "Resumen IA: " . $lead->ai_summary . "\n\nMensaje Original: " . $lead->raw_message;
+                $data['notes'] = 'Resumen IA: '.$lead->ai_summary."\n\nMensaje Original: ".$lead->raw_message;
             }
 
             // Holder Name from Customer
@@ -78,12 +78,26 @@ class CreateBooking extends CreateRecord
             }
         } elseif (isset($data['customer_id'])) {
             // Fallback if no lead but customer exists
-            $customer = \App\Models\Customer::find($data['customer_id']);
+            $customer = \App\Models\User::find($data['customer_id']);
             if ($customer) {
                 $data['holder_name'] = $customer->name;
             }
         }
 
         $this->form->fill($data);
+    }
+
+    protected function getCreateFormAction(): \Filament\Actions\Action
+    {
+        return parent::getCreateFormAction()
+            ->label('Crear registro')
+            ->icon('heroicon-o-plus');
+    }
+
+    protected function getCancelFormAction(): \Filament\Actions\Action
+    {
+        return parent::getCancelFormAction()
+            ->label('Cancelar')
+            ->icon('heroicon-o-x-mark');
     }
 }

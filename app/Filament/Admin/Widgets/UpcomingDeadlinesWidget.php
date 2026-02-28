@@ -4,7 +4,6 @@ namespace App\Filament\Admin\Widgets;
 
 use App\Models\Booking;
 use Filament\Widgets\Widget;
-use Illuminate\Support\Carbon;
 
 class UpcomingDeadlinesWidget extends Widget
 {
@@ -21,7 +20,7 @@ class UpcomingDeadlinesWidget extends Widget
             ->orderBy('travel_date')
             ->limit(5)
             ->get()
-            ->map(fn($booking) => [
+            ->map(fn ($booking) => [
                 'id' => $booking->id,
                 'file_number' => $booking->file_number,
                 'holder_name' => $booking->holder_name,

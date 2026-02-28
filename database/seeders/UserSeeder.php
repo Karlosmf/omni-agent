@@ -12,6 +12,10 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(50)->create();
+        // El administrador se crea en AdminUserSeeder
+        // Aquí creamos usuarios con rol de cliente
+        User::factory(20)->create([
+            'role' => \App\Enums\UserRole::Customer,
+        ]);
     }
 }
