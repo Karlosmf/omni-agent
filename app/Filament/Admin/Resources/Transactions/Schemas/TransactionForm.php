@@ -21,6 +21,7 @@ class TransactionForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(1)
             ->components([
                 Section::make('Calculadora de Neto / Impuestos')
                     ->description('Simula y descuenta impuestos automáticamente del monto final.')
@@ -179,13 +180,52 @@ class TransactionForm
                             ->schema([
                                 Select::make('currency')
                                     ->label('Moneda')
-                                    ->options(Currency::class)
+                                    ->options(function () {
+                                        $service = app(\App\Services\CurrencyService::class);
+                                        $data = $service->getAllData();
+
+                                        $options = ['ARS' => 'Pesos Argentinos (ARS)'];
+
+                                        foreach ($data['currencies'] ?? [] as $key => $rate) {
+                                            $options[$key] = "{$rate['name']} ({$key})";
+                                        }
+
+                                        $options['OTHER'] = 'Otro';
+
+                                        return $options;
+                                    })
                                     ->required()
                                     ->live()
-                                    ->afterStateUpdated(fn (Set $set, Get $get) => self::updateUsdFixed($set, $get)),
+                                    ->afterStateUpdated(function (Set $set, Get $get) {
+                                        $currency = $get('currency');
+                                        $service = app(\App\Services\CurrencyService::class);
+
+                                        if ($currency === 'ARS') {
+                                            $rate = $service->getRate('USD', 'sell');
+                                            $set('exchange_rate', $rate);
+                                            $set('use_exchange_rate', true);
+                                        } elseif ($currency !== 'OTHER') {
+                                            $rate = $service->getRate($currency, 'sell');
+                                            if ($rate > 1) {
+                                                $set('exchange_rate', $rate);
+                                                $set('use_exchange_rate', true);
+                                            }
+                                        } else {
+                                            $set('exchange_rate', 1.00);
+                                            $set('use_exchange_rate', false);
+                                        }
+
+                                        self::updateUsdFixed($set, $get);
+                                    }),
 
                                 TextInput::make('amount')
-                                    ->label('Monto')
+                                    ->label(fn (Get $get) => 'Monto'.($get('currency') ? ' ('.$get('currency').')' : ''))
+                                    ->prefix(fn (Get $get) => match ($get('currency')) {
+                                        'USD' => 'USD$',
+                                        'EUR' => '€',
+                                        'BRL' => 'R$',
+                                        default => '$',
+                                    })
                                     ->numeric()
                                     ->required()
                                     ->live(onBlur: true)
@@ -240,20 +280,30 @@ class TransactionForm
         $currency = $get('currency');
         $useExchangeRate = (bool) $get('use_exchange_rate');
 
-        // Reset if toggle is off
+        // If not using exchange rate (manual), normalized is just the amount
         if (! $useExchangeRate) {
-            // If toggle is off, reference total equals the amount (in local currency)
             $set('amount_usd_fixed', number_format($amount, 2, '.', ''));
 
             return;
         }
 
-        if ($currency === Currency::USD->value) {
-            $set('exchange_rate', 1.00);
+        $service = app(\App\Services\CurrencyService::class);
+        $usdRate = $service->getRate('USD', 'sell');
+
+        if ($currency === 'USD') {
+            // Amount is already in USD. We keep the BNA rate in exchange_rate for info.
             $set('amount_usd_fixed', number_format($amount, 2, '.', ''));
-        } else {
+        } elseif ($currency === 'ARS') {
+            // Amount is in ARS. If rate is USD/ARS:
             if ($rate > 0) {
                 $set('amount_usd_fixed', number_format($amount / $rate, 2, '.', ''));
+            }
+        } else {
+            // For other currencies (EUR, BRL)
+            // If the rate field represents ARS Price of that currency:
+            // Amount in USD = (Amount * Currency_ARS_Price) / USD_ARS_Price
+            if ($usdRate > 0) {
+                $set('amount_usd_fixed', number_format(($amount * $rate) / $usdRate, 2, '.', ''));
             }
         }
     }

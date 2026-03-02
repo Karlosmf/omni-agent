@@ -160,11 +160,37 @@ class BookingForm
 
                                         Select::make('currency')
                                             ->label('Moneda')
-                                            ->options(Currency::class)
-                                            ->default(Currency::USD->value)
+                                            ->options(function () {
+                                                $service = app(\App\Services\CurrencyService::class);
+                                                $data = $service->getAllData();
+
+                                                $options = ['ARS' => 'Pesos Argentinos (ARS)'];
+
+                                                foreach ($data['currencies'] ?? [] as $key => $rate) {
+                                                    $options[$key] = "{$rate['name']} ({$key})";
+                                                }
+
+                                                $options['OTHER'] = 'Otro';
+
+                                                return $options;
+                                            })
+                                            ->default('USD')
                                             ->required()
                                             ->live()
-                                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateTotals($set, $get)),
+                                            ->afterStateUpdated(function (Set $set, Get $get) {
+                                                $currency = $get('currency');
+                                                if ($currency !== 'ARS' && $currency !== 'OTHER') {
+                                                    $service = app(\App\Services\CurrencyService::class);
+                                                    $rate = $service->getRate($currency, 'sell');
+                                                    if ($rate > 1) {
+                                                        $set('exchange_rate', $rate);
+                                                    }
+                                                } elseif ($currency === 'ARS') {
+                                                    $set('exchange_rate', 1.00);
+                                                }
+
+                                                self::updateTotals($set, $get);
+                                            }),
 
                                         TextInput::make('exchange_rate')
                                             ->label('Tipo de Cambio')

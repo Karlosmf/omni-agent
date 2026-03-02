@@ -6,6 +6,8 @@ use Filament\Widgets\StatsOverviewWidget;
 
 class CurrentMonthBalance extends StatsOverviewWidget
 {
+    protected static ?int $sort = 4;
+
     protected function getStats(): array
     {
         $now = now();

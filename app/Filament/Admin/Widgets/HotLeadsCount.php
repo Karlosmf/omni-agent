@@ -8,6 +8,8 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class HotLeadsCount extends StatsOverviewWidget
 {
+    protected static ?int $sort = 3;
+
     protected function getStats(): array
     {
         return [

@@ -6,7 +6,18 @@ use Filament\Widgets\ChartWidget;
 
 class MonthlyBudgetChart extends ChartWidget
 {
+    protected static ?int $sort = 10;
+
     protected ?string $heading = 'Resultados Financieros (Año Actual)';
+
+    protected int|string|array $columnSpan = [
+        'default' => 2,
+        'sm' => 2,
+        'md' => 2,
+        'lg' => 2,
+        'xl' => 2,
+        '2xl' => 2,
+    ];
 
     protected ?string $maxHeight = '300px';
 
@@ -47,13 +58,13 @@ class MonthlyBudgetChart extends ChartWidget
                 [
                     'label' => 'Ingresos',
                     'data' => array_values($incomes),
-                    'backgroundColor' => '#22c55e', // vert-500
+                    'backgroundColor' => '#22c55e',
                     'borderColor' => '#22c55e',
                 ],
                 [
                     'label' => 'Egresos',
                     'data' => array_values($expenses),
-                    'backgroundColor' => '#ef4444', // red-500
+                    'backgroundColor' => '#ef4444',
                     'borderColor' => '#ef4444',
                 ],
             ],
