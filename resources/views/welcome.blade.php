@@ -25,10 +25,21 @@
             :root {
                 --p: {{ hex_to_oklch($agencySettings->primary_color) }};
                 --s: {{ hex_to_oklch($agencySettings->secondary_color) }};
+                --a: {{ hex_to_oklch($agencySettings->accent_color) }};
+                --b1: {{ hex_to_oklch($agencySettings->base_100_color) }};
+                --bc: {{ hex_to_oklch($agencySettings->base_content_color) }};
                 --color-primary: {{ $agencySettings->primary_color }};
                 --color-secondary: {{ $agencySettings->secondary_color }};
+                --color-accent: {{ $agencySettings->accent_color }};
+                --color-base-100: {{ $agencySettings->base_100_color }};
+                --color-base-content: {{ $agencySettings->base_content_color }};
             }
             
+            body {
+                background-color: var(--color-base-100) !important;
+                color: var(--color-base-content) !important;
+            }
+
             .from-amber-500 { --tw-gradient-from: var(--color-primary) !important; }
             .to-orange-600 { --tw-gradient-to: var(--color-secondary) !important; }
             .text-amber-600 { color: var(--color-primary) !important; }
