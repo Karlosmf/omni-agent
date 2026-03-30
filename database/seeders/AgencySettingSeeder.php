@@ -24,9 +24,10 @@ class AgencySettingSeeder extends Seeder
                 'contact_phone' => '+34 900 123 456',
                 'address' => 'Calle Principal 123, Madrid, España',
                 'social_links' => [
-                    ['platform' => 'instagram', 'url' => 'https://instagram.com/luopanviajes'],
-                    ['platform' => 'facebook', 'url' => 'https://facebook.com/luopanviajes'],
-                    ['platform' => 'whatsapp', 'url' => 'https://wa.me/34900123456'],
+                    ['platform' => 'Instagram', 'url' => 'https://instagram.com/luopanviajes', 'icon' => 'ph-instagram-logo'],
+                    ['platform' => 'Facebook', 'url' => 'https://facebook.com/luopanviajes', 'icon' => 'ph-facebook-logo'],
+                    ['platform' => 'WhatsApp', 'url' => 'https://wa.me/34900123456', 'icon' => 'ph-whatsapp-logo'],
+                    ['platform' => 'Email', 'url' => 'mailto:info@luopanviajes.com', 'icon' => 'ph-envelope'],
                 ],
             ]
         );

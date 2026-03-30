@@ -20,6 +20,23 @@
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
+    @if($agencySettings)
+        <style>
+            :root {
+                --p: {{ hex_to_oklch($agencySettings->primary_color) }};
+                --s: {{ hex_to_oklch($agencySettings->secondary_color) }};
+                --color-primary: {{ $agencySettings->primary_color }};
+                --color-secondary: {{ $agencySettings->secondary_color }};
+            }
+            
+            .from-amber-500 { --tw-gradient-from: var(--color-primary) !important; }
+            .to-orange-600 { --tw-gradient-to: var(--color-secondary) !important; }
+            .text-amber-600 { color: var(--color-primary) !important; }
+            .bg-amber-100 { background-color: color-mix(in srgb, var(--color-primary) 15%, transparent) !important; }
+            .text-amber-800, .text-amber-700 { color: var(--color-primary) !important; }
+        </style>
+    @endif
+
     <style>
         body {
             font-family: 'Outfit', sans-serif;
@@ -60,7 +77,11 @@
             <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center gap-3">
-                    <img class="h-12 w-auto" src="{{ asset('images/branding/logo-full.png') }}" alt="Luopan Logo">
+                    @if($agencySettings?->logo_path)
+                        <img class="h-12 w-auto" src="{{ asset('storage/' . $agencySettings->logo_path) }}" alt="{{ $agencySettings->company_name }}">
+                    @else
+                        <img class="h-12 w-auto" src="{{ asset('images/branding/logo-full.png') }}" alt="Luopan Logo">
+                    @endif
                 </div>
 
                 <!-- Desktop Menu -->
@@ -202,7 +223,7 @@
                 </div>
                 <h1 class="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">
                     Descubre el mundo con <span
-                        class="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-600">Luopan</span>
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-600">{{ $agencySettings->company_name ?? 'Luopan' }}</span>
                 </h1>
                 <p
                     class="text-lg text-gray-600 leading-relaxed max-w-xl mx-auto lg:mx-0 bg-white/60 p-4 rounded-xl backdrop-blur-sm border border-white/40 shadow-sm">
@@ -491,27 +512,27 @@
     <!-- Footer -->
     <footer class="bg-white/80 backdrop-blur-md border-t border-gray-200 py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <img class="h-12 w-auto mx-auto mb-6" src="{{ asset('images/branding/logo-full.png') }}" alt="Luopan Logo">
-            <p class="text-gray-500 mb-6">Belgrano 843, Local A, Reconquista, Santa Fe 3560</p>
+            @if($agencySettings?->logo_path)
+                <img class="h-12 w-auto mx-auto mb-6" src="{{ asset('storage/' . $agencySettings->logo_path) }}" alt="{{ $agencySettings->company_name }}">
+            @else
+                <img class="h-12 w-auto mx-auto mb-6" src="{{ asset('images/branding/logo-full.png') }}" alt="Luopan Logo">
+            @endif
+            
+            @if($agencySettings?->address)
+                <p class="text-gray-500 mb-6">{{ $agencySettings->address }}</p>
+            @endif
+
             <div class="flex justify-center gap-8 mb-8">
-                <a href="https://www.facebook.com/luopanviajes" target="_blank"
-                    class="text-gray-400 hover:text-blue-600 transition-colors" title="Facebook">
-                    <i class="ph-bold ph-facebook-logo text-3xl"></i>
-                </a>
-                <a href="https://www.instagram.com/luopanviajes/" target="_blank"
-                    class="text-gray-400 hover:text-pink-600 transition-colors" title="Instagram">
-                    <i class="ph-bold ph-instagram-logo text-3xl"></i>
-                </a>
-                <a href="https://wa.link/16om0v" target="_blank"
-                    class="text-gray-400 hover:text-green-600 transition-colors" title="WhatsApp">
-                    <i class="ph-bold ph-whatsapp-logo text-3xl"></i>
-                </a>
-                <a href="mailto:belenzorzon@luopanviajes.tur.ar"
-                    class="text-gray-400 hover:text-amber-600 transition-colors" title="Email">
-                    <i class="ph-bold ph-envelope text-3xl"></i>
-                </a>
+                @if($agencySettings?->social_links)
+                    @foreach($agencySettings->social_links as $link)
+                        <a href="{{ $link['url'] }}" target="_blank"
+                            class="text-gray-400 hover:text-amber-600 transition-colors" title="{{ $link['platform'] }}">
+                            <i class="ph-bold {{ $link['icon'] ?? 'ph-link' }} text-3xl"></i>
+                        </a>
+                    @endforeach
+                @endif
             </div>
-            <p class="text-xs text-gray-400">&copy; {{ date('Y') }} Luopan Viajes & Turismo. Todos los derechos
+            <p class="text-xs text-gray-400">&copy; {{ date('Y') }} {{ $agencySettings->company_name ?? 'Omni-Agent' }}. Todos los derechos
                 reservados.</p>
         </div>
     </footer>

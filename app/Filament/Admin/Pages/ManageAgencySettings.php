@@ -108,8 +108,13 @@ class ManageAgencySettings extends Page implements HasForms
                                     ->label('URL')
                                     ->url()
                                     ->required(),
+                                TextInput::make('icon')
+                                    ->label('Icono (Phosphor)')
+                                    ->placeholder('Ej: ph-instagram-logo')
+                                    ->helperText('Usa los nombres de https://phosphoricons.com (ej: ph-facebook-logo)')
+                                    ->required(),
                             ])
-                            ->columns(2)
+                            ->columns(3)
                             ->columnSpanFull(),
                     ]),
             ])
