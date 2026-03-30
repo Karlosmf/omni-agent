@@ -9,6 +9,8 @@ use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\Repeater;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -53,112 +55,149 @@ class ManageAgencySettings extends Page implements HasForms
     {
         return $schema
             ->components([
-                Section::make('Identidad Visual')
-                    ->schema([
-                        TextInput::make('company_name')
-                            ->label('Nombre de la Empresa')
-                            ->required(),
-                        Grid::make(2)
+                Tabs::make('Settings')
+                    ->tabs([
+                        Tab::make('Identidad y Frontend')
+                            ->icon('heroicon-o-computer-desktop')
                             ->schema([
-                                FileUpload::make('logo_path')
-                                    ->label('Logo')
-                                    ->image()
-                                    ->directory('agency'),
-                                FileUpload::make('favicon_path')
-                                    ->label('Favicon')
-                                    ->image()
-                                    ->directory('agency'),
-                            ]),
-                        Grid::make(3)
-                            ->schema([
-                                ColorPicker::make('primary_color')
-                                    ->label('Color Primario')
-                                    ->helperText('Botones principales y enlaces activos.')
-                                    ->default('#1a56db'),
-                                ColorPicker::make('secondary_color')
-                                    ->label('Color Secundario')
-                                    ->helperText('Elementos destacados y gradientes.')
-                                    ->default('#7e22ce'),
-                                ColorPicker::make('accent_color')
-                                    ->label('Color de Acento')
-                                    ->helperText('Detalles llamativos y micro-interacciones.')
-                                    ->default('#f59e0b'),
-                            ]),
-                        Section::make('Paleta de Interfaz')
-                            ->description('Colores que definen la estructura y el fondo de la aplicación.')
-                            ->compact()
-                            ->schema([
-                                Grid::make(3)
+                                Section::make('Identidad Visual')
                                     ->schema([
-                                        ColorPicker::make('base_100_color')
-                                            ->label('Fondo Principal (Páginas)')
-                                            ->default('#ffffff'),
-                                        ColorPicker::make('base_200_color')
-                                            ->label('Superficie (Cards/Secciones)')
-                                            ->default('#f2f2f2'),
-                                        ColorPicker::make('base_content_color')
-                                            ->label('Color de Texto Principal')
-                                            ->default('#1f2937'),
+                                        TextInput::make('company_name')
+                                            ->label('Nombre de la Empresa')
+                                            ->required(),
+                                        Grid::make(2)
+                                            ->schema([
+                                                FileUpload::make('logo_path')
+                                                    ->label('Logo')
+                                                    ->image()
+                                                    ->directory('agency'),
+                                                FileUpload::make('favicon_path')
+                                                    ->label('Favicon')
+                                                    ->image()
+                                                    ->directory('agency'),
+                                            ]),
+                                    ]),
+                                Section::make('Paleta Frontend (Público)')
+                                    ->description('Define los colores que verán tus clientes en la web.')
+                                    ->schema([
+                                        Grid::make(3)
+                                            ->schema([
+                                                ColorPicker::make('fe_primary_color')
+                                                    ->label('Color Primario')
+                                                    ->helperText('Botones y enlaces.')
+                                                    ->default('#1a56db'),
+                                                ColorPicker::make('fe_secondary_color')
+                                                    ->label('Color Secundario')
+                                                    ->helperText('Destacados y gradientes.')
+                                                    ->default('#7e22ce'),
+                                                ColorPicker::make('fe_accent_color')
+                                                    ->label('Color de Acento')
+                                                    ->default('#f59e0b'),
+                                            ]),
+                                        Grid::make(3)
+                                            ->schema([
+                                                ColorPicker::make('fe_base_100_color')
+                                                    ->label('Fondo Principal')
+                                                    ->default('#ffffff'),
+                                                ColorPicker::make('fe_base_200_color')
+                                                    ->label('Superficie (Cards)')
+                                                    ->default('#f2f2f2'),
+                                                ColorPicker::make('fe_base_content_color')
+                                                    ->label('Texto Principal')
+                                                    ->default('#1f2937'),
+                                            ]),
+                                        Grid::make(4)
+                                            ->schema([
+                                                ColorPicker::make('fe_success_color')
+                                                    ->label('Éxito')
+                                                    ->default('#36d399'),
+                                                ColorPicker::make('fe_error_color')
+                                                    ->label('Error')
+                                                    ->default('#f87272'),
+                                                ColorPicker::make('fe_warning_color')
+                                                    ->label('Advertencia')
+                                                    ->default('#fbbd23'),
+                                                ColorPicker::make('fe_info_color')
+                                                    ->label('Información')
+                                                    ->default('#3abff8'),
+                                            ]),
                                     ]),
                             ]),
-                        Section::make('Colores de Estado')
-                            ->description('Colores utilizados para dar feedback al usuario (mensajes de éxito, error, etc).')
-                            ->compact()
+                        
+                        Tab::make('Panel de Control (Backend)')
+                            ->icon('heroicon-o-swatch')
                             ->schema([
-                                Grid::make(4)
+                                Section::make('Paleta del Panel')
+                                    ->description('Personaliza los colores del panel administrativo de Filament.')
                                     ->schema([
-                                        ColorPicker::make('success_color')
-                                            ->label('Éxito')
-                                            ->default('#36d399'),
-                                        ColorPicker::make('error_color')
-                                            ->label('Error / Crítico')
-                                            ->default('#f87272'),
-                                        ColorPicker::make('warning_color')
-                                            ->label('Advertencia')
-                                            ->default('#fbbd23'),
-                                        ColorPicker::make('info_color')
-                                            ->label('Información')
-                                            ->default('#3abff8'),
+                                        Grid::make(3)
+                                            ->schema([
+                                                ColorPicker::make('be_primary_color')
+                                                    ->label('Color Primario del Panel')
+                                                    ->helperText('Afecta a la navegación, botones y acentos del panel.')
+                                                    ->default('#f59e0b'),
+                                                ColorPicker::make('be_gray_color')
+                                                    ->label('Color Neutral (Gris)')
+                                                    ->default('#71717a'),
+                                                ColorPicker::make('be_info_color')
+                                                    ->label('Información')
+                                                    ->default('#3b82f6'),
+                                            ]),
+                                        Grid::make(3)
+                                            ->schema([
+                                                ColorPicker::make('be_success_color')
+                                                    ->label('Éxito')
+                                                    ->default('#22c55e'),
+                                                ColorPicker::make('be_warning_color')
+                                                    ->label('Advertencia')
+                                                    ->default('#f59e0b'),
+                                                ColorPicker::make('be_danger_color')
+                                                    ->label('Peligro / Error')
+                                                    ->default('#ef4444'),
+                                            ]),
                                     ]),
                             ]),
-                    ]),
 
-                Section::make('Datos de Contacto')
-                    ->schema([
-                        TextInput::make('contact_email')
-                            ->label('Email de Contacto')
-                            ->email()
-                            ->required(),
-                        TextInput::make('contact_phone')
-                            ->label('Teléfono de Contacto')
-                            ->tel()
-                            ->required(),
-                        TextInput::make('address')
-                            ->label('Dirección')
-                            ->columnSpanFull(),
-                    ]),
-
-                Section::make('Redes Sociales')
-                    ->schema([
-                        Repeater::make('social_links')
-                            ->label('Links de Redes Sociales')
+                        Tab::make('Contacto y Redes')
+                            ->icon('heroicon-o-chat-bubble-left-right')
                             ->schema([
-                                TextInput::make('platform')
-                                    ->label('Plataforma')
-                                    ->placeholder('Ej: Instagram, Facebook, WhatsApp')
-                                    ->required(),
-                                TextInput::make('url')
-                                    ->label('URL')
-                                    ->url()
-                                    ->required(),
-                                TextInput::make('icon')
-                                    ->label('Icono (Phosphor)')
-                                    ->placeholder('Ej: ph-instagram-logo')
-                                    ->helperText('Usa los nombres de https://phosphoricons.com (ej: ph-facebook-logo)')
-                                    ->required(),
-                            ])
-                            ->columns(3)
-                            ->columnSpanFull(),
+                                Section::make('Datos de Contacto')
+                                    ->schema([
+                                        TextInput::make('contact_email')
+                                            ->label('Email de Contacto')
+                                            ->email()
+                                            ->required(),
+                                        TextInput::make('contact_phone')
+                                            ->label('Teléfono de Contacto')
+                                            ->tel()
+                                            ->required(),
+                                        TextInput::make('address')
+                                            ->label('Dirección')
+                                            ->columnSpanFull(),
+                                    ]),
+
+                                Section::make('Redes Sociales')
+                                    ->schema([
+                                        Repeater::make('social_links')
+                                            ->label('Links de Redes Sociales')
+                                            ->schema([
+                                                TextInput::make('platform')
+                                                    ->label('Plataforma')
+                                                    ->placeholder('Ej: Instagram, Facebook, WhatsApp')
+                                                    ->required(),
+                                                TextInput::make('url')
+                                                    ->label('URL')
+                                                    ->url()
+                                                    ->required(),
+                                                TextInput::make('icon')
+                                                    ->label('Icono (Phosphor)')
+                                                    ->placeholder('Ej: ph-instagram-logo')
+                                                    ->required(),
+                                            ])
+                                            ->columns(3)
+                                            ->columnSpanFull(),
+                                    ]),
+                            ]),
                     ]),
             ])
             ->statePath('data');

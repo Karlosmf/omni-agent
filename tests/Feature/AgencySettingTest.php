@@ -9,22 +9,23 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('can store agency settings with extended colors', function () {
+it('can store agency settings with separated palettes', function () {
     $settings = AgencySetting::updateOrCreate(
         ['id' => 1],
         [
             'company_name' => 'Test Agency',
             'contact_email' => 'test@example.com',
             'contact_phone' => '123456789',
-            'primary_color' => '#ff0000',
-            'success_color' => '#00ff00',
+            'fe_primary_color' => '#ff0000',
+            'be_primary_color' => '#0000ff',
             'social_links' => [['platform' => 'FB', 'url' => 'fb.com', 'icon' => 'ph-facebook']],
         ]
     );
 
     $saved = AgencySetting::first();
     expect($saved->company_name)->toBe('Test Agency');
-    expect($saved->success_color)->toBe('#00ff00');
+    expect($saved->fe_primary_color)->toBe('#ff0000');
+    expect($saved->be_primary_color)->toBe('#0000ff');
 });
 
 it('converts hex to oklch format and handles null', function () {

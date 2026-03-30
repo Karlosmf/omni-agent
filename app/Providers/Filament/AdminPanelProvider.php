@@ -18,17 +18,40 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
+use App\Models\AgencySetting;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
+
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        $agencySettings = null;
+        
+        if (! app()->runningInConsole() || app()->runningUnitTests()) {
+            try {
+                if (Schema::hasTable('agency_settings')) {
+                    $agencySettings = Cache::rememberForever('agency_settings', function () {
+                        return AgencySetting::first();
+                    });
+                }
+            } catch (\Exception $e) {
+                // Silently fail if table doesn't exist yet (e.g. during migrations)
+            }
+        }
+
         return $panel
             ->id('admin')
             ->path('admin')
             ->login()
             ->default()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => $agencySettings?->be_primary_color ?? Color::Amber,
+                'danger' => $agencySettings?->be_danger_color ?? Color::Red,
+                'gray' => $agencySettings?->be_gray_color ?? Color::Zinc,
+                'info' => $agencySettings?->be_info_color ?? Color::Blue,
+                'success' => $agencySettings?->be_success_color ?? Color::Green,
+                'warning' => $agencySettings?->be_warning_color ?? Color::Amber,
             ])
             ->brandLogo(asset('images/branding/logo-full.png'))
             ->darkModeBrandLogo(asset('images/branding/logo-full-white.png'))

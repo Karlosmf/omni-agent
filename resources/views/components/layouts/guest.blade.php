@@ -21,12 +21,12 @@
     @if($agencySettings)
         <style>
             :root {
-                --color-primary: {{ $agencySettings->primary_color }};
-                --color-secondary: {{ $agencySettings->secondary_color }};
+                --color-primary: {{ $agencySettings->fe_primary_color }};
+                --color-secondary: {{ $agencySettings->fe_secondary_color }};
                 
                 /* DaisyUI / MaryUI variables if applicable */
-                --p: {{ hex_to_oklch($agencySettings->primary_color) }};
-                --s: {{ hex_to_oklch($agencySettings->secondary_color) }};
+                --p: {{ hex_to_oklch($agencySettings->fe_primary_color) }};
+                --s: {{ hex_to_oklch($agencySettings->fe_secondary_color) }};
             }
         </style>
     @endif

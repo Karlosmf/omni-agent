@@ -20,29 +20,29 @@
         @if($agencySettings)
             <style>
                 :root {
-                    --color-primary: {{ $agencySettings->primary_color }};
-                    --color-secondary: {{ $agencySettings->secondary_color }};
-                    --color-accent: {{ $agencySettings->accent_color }};
-                    --color-success: {{ $agencySettings->success_color }};
-                    --color-error: {{ $agencySettings->error_color }};
-                    --color-warning: {{ $agencySettings->warning_color }};
-                    --color-info: {{ $agencySettings->info_color }};
-                    --color-base-100: {{ $agencySettings->base_100_color }};
-                    --color-base-200: {{ $agencySettings->base_200_color }};
-                    --color-base-content: {{ $agencySettings->base_content_color }};
+                    --color-primary: {{ $agencySettings->fe_primary_color }};
+                    --color-secondary: {{ $agencySettings->fe_secondary_color }};
+                    --color-accent: {{ $agencySettings->fe_accent_color }};
+                    --color-success: {{ $agencySettings->fe_success_color }};
+                    --color-error: {{ $agencySettings->fe_error_color }};
+                    --color-warning: {{ $agencySettings->fe_warning_color }};
+                    --color-info: {{ $agencySettings->fe_info_color }};
+                    --color-base-100: {{ $agencySettings->fe_base_100_color }};
+                    --color-base-200: {{ $agencySettings->fe_base_200_color }};
+                    --color-base-content: {{ $agencySettings->fe_base_content_color }};
                     
                     /* DaisyUI / MaryUI variables */
-                    --p: {{ hex_to_oklch($agencySettings->primary_color) }};
-                    --s: {{ hex_to_oklch($agencySettings->secondary_color) }};
-                    --a: {{ hex_to_oklch($agencySettings->accent_color) }};
-                    --n: {{ hex_to_oklch($agencySettings->neutral_color ?? '#3d4451') }};
-                    --b1: {{ hex_to_oklch($agencySettings->base_100_color) }};
-                    --b2: {{ hex_to_oklch($agencySettings->base_200_color) }};
-                    --bc: {{ hex_to_oklch($agencySettings->base_content_color) }};
-                    --su: {{ hex_to_oklch($agencySettings->success_color) }};
-                    --er: {{ hex_to_oklch($agencySettings->error_color) }};
-                    --wa: {{ hex_to_oklch($agencySettings->warning_color) }};
-                    --in: {{ hex_to_oklch($agencySettings->info_color) }};
+                    --p: {{ hex_to_oklch($agencySettings->fe_primary_color) }};
+                    --s: {{ hex_to_oklch($agencySettings->fe_secondary_color) }};
+                    --a: {{ hex_to_oklch($agencySettings->fe_accent_color) }};
+                    --n: {{ hex_to_oklch($agencySettings->fe_neutral_color ?? '#3d4451') }};
+                    --b1: {{ hex_to_oklch($agencySettings->fe_base_100_color) }};
+                    --b2: {{ hex_to_oklch($agencySettings->fe_base_200_color) }};
+                    --bc: {{ hex_to_oklch($agencySettings->fe_base_content_color) }};
+                    --su: {{ hex_to_oklch($agencySettings->fe_success_color) }};
+                    --er: {{ hex_to_oklch($agencySettings->fe_error_color) }};
+                    --wa: {{ hex_to_oklch($agencySettings->fe_warning_color) }};
+                    --in: {{ hex_to_oklch($agencySettings->fe_info_color) }};
                 }
             </style>
         @endif

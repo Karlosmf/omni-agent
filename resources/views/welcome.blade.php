@@ -23,16 +23,16 @@
     @if($agencySettings)
         <style>
             :root {
-                --p: {{ hex_to_oklch($agencySettings->primary_color) }};
-                --s: {{ hex_to_oklch($agencySettings->secondary_color) }};
-                --a: {{ hex_to_oklch($agencySettings->accent_color) }};
-                --b1: {{ hex_to_oklch($agencySettings->base_100_color) }};
-                --bc: {{ hex_to_oklch($agencySettings->base_content_color) }};
-                --color-primary: {{ $agencySettings->primary_color }};
-                --color-secondary: {{ $agencySettings->secondary_color }};
-                --color-accent: {{ $agencySettings->accent_color }};
-                --color-base-100: {{ $agencySettings->base_100_color }};
-                --color-base-content: {{ $agencySettings->base_content_color }};
+                --p: {{ hex_to_oklch($agencySettings->fe_primary_color) }};
+                --s: {{ hex_to_oklch($agencySettings->fe_secondary_color) }};
+                --a: {{ hex_to_oklch($agencySettings->fe_accent_color) }};
+                --b1: {{ hex_to_oklch($agencySettings->fe_base_100_color) }};
+                --bc: {{ hex_to_oklch($agencySettings->fe_base_content_color) }};
+                --color-primary: {{ $agencySettings->fe_primary_color }};
+                --color-secondary: {{ $agencySettings->fe_secondary_color }};
+                --color-accent: {{ $agencySettings->fe_accent_color }};
+                --color-base-100: {{ $agencySettings->fe_base_100_color }};
+                --color-base-content: {{ $agencySettings->fe_base_content_color }};
             }
             
             body {
