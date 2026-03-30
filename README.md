@@ -16,7 +16,7 @@ Para una guía detallada sobre cómo operar el sistema (crear files, gestionar p
 
 ## Requisitos
 
-- PHP 8.4+
+- PHP 8.3+
 - Node.js & NPM
 - SQLite (para desarrollo)
 

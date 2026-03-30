@@ -4,6 +4,11 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
+use App\Models\AgencySetting;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -19,6 +24,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Share Agency Settings globally
+        if (Schema::hasTable('agency_settings')) {
+            $agencySettings = Cache::rememberForever('agency_settings', function () {
+                return AgencySetting::first();
+            });
+
+            if ($agencySettings) {
+                View::share('agencySettings', $agencySettings);
+            }
+        }
     }
 }

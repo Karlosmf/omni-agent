@@ -5,7 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{{ $title ?? 'Luopan Viajes' }}</title>
+    <title>{{ $title ?? ($agencySettings->company_name ?? 'Omni-Agent') }}</title>
+
+    @if($agencySettings?->favicon_path)
+        <link rel="icon" type="image/x-icon" href="{{ asset('storage/' . $agencySettings->favicon_path) }}">
+    @endif
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -13,6 +17,19 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    @if($agencySettings)
+        <style>
+            :root {
+                --color-primary: {{ $agencySettings->primary_color }};
+                --color-secondary: {{ $agencySettings->secondary_color }};
+                
+                /* DaisyUI / MaryUI variables if applicable */
+                --p: {{ hex_to_oklch($agencySettings->primary_color) }};
+                --s: {{ hex_to_oklch($agencySettings->secondary_color) }};
+            }
+        </style>
+    @endif
 </head>
 
 <body class="font-sans antialiased bg-gray-50">
