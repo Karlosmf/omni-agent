@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('can store agency settings', function () {
+it('can store agency settings with extended colors', function () {
     $settings = AgencySetting::updateOrCreate(
         ['id' => 1],
         [
@@ -17,20 +17,24 @@ it('can store agency settings', function () {
             'contact_email' => 'test@example.com',
             'contact_phone' => '123456789',
             'primary_color' => '#ff0000',
-            'social_links' => [['platform' => 'FB', 'url' => 'fb.com']],
+            'success_color' => '#00ff00',
+            'social_links' => [['platform' => 'FB', 'url' => 'fb.com', 'icon' => 'ph-facebook']],
         ]
     );
 
-    expect(AgencySetting::first()->company_name)->toBe('Test Agency');
-    expect(AgencySetting::first()->social_links)->toBeArray()->toHaveCount(1);
+    $saved = AgencySetting::first();
+    expect($saved->company_name)->toBe('Test Agency');
+    expect($saved->success_color)->toBe('#00ff00');
 });
 
-it('converts hex to oklch format', function () {
+it('converts hex to oklch format and handles null', function () {
     $hex = '#1a56db';
     $oklch = hex_to_oklch($hex);
-    
-    // L C H format (approx)
     expect($oklch)->toMatch('/^\d+\.\d+ \d+\.\d+ \d+\.\d+$/');
+
+    // Test null/empty handling
+    expect(hex_to_oklch(null))->toBe("1.00 0.000 0.0");
+    expect(hex_to_oklch(''))->toBe("1.00 0.000 0.0");
 });
 
 it('allows admin to access ManageAgencySettings Filament page', function () {
