@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\AgencySetting;
+use App\Models\User;
+use App\Enums\UserRole;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -31,10 +33,18 @@ it('converts hex to oklch format', function () {
     expect($oklch)->toMatch('/^\d+\.\d+ \d+\.\d+ \d+\.\d+$/');
 });
 
-it('has the ManageAgencySettings Filament page', function () {
-    $this->actingAs(\App\Models\User::factory()->create());
+it('allows admin to access ManageAgencySettings Filament page', function () {
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+    $this->actingAs($admin);
     
-    // Check if the class exists and can be resolved
-    $page = new \App\Filament\Admin\Pages\ManageAgencySettings();
-    expect($page)->toBeInstanceOf(\Filament\Pages\Page::class);
+    $canAccess = \App\Filament\Admin\Pages\ManageAgencySettings::canAccess();
+    expect($canAccess)->toBeTrue();
+});
+
+it('denies non-admin access to ManageAgencySettings Filament page', function () {
+    $staff = User::factory()->create(['role' => UserRole::Staff]);
+    $this->actingAs($staff);
+    
+    $canAccess = \App\Filament\Admin\Pages\ManageAgencySettings::canAccess();
+    expect($canAccess)->toBeFalse();
 });
