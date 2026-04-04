@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Luopan Viajes') }}</title>
+    <link rel="icon" type="image/x-icon" href="{{ get_agency_favicon() }}">
+    <title>{{ $agencySettings?->company_name ?? config('app.name', 'Luopan Viajes') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -91,7 +92,7 @@
                     @if($agencySettings?->logo_path)
                         <img class="h-12 w-auto" src="{{ asset('storage/' . $agencySettings->logo_path) }}" alt="{{ $agencySettings->company_name }}">
                     @else
-                        <img class="h-12 w-auto" src="{{ asset('images/branding/logo-full.png') }}" alt="Luopan Logo">
+                        <img class="h-12 w-auto" src="{{ get_agency_logo() }}" alt="{{ config('app.name') }}">
                     @endif
                 </div>
 
@@ -526,17 +527,32 @@
             @if($agencySettings?->logo_path)
                 <img class="h-12 w-auto mx-auto mb-6" src="{{ asset('storage/' . $agencySettings->logo_path) }}" alt="{{ $agencySettings->company_name }}">
             @else
-                <img class="h-12 w-auto mx-auto mb-6" src="{{ asset('images/branding/logo-full.png') }}" alt="Luopan Logo">
+                <img class="h-12 w-auto mx-auto mb-6" src="{{ get_agency_logo() }}" alt="{{ config('app.name') }}">
             @endif
             
             @if($agencySettings?->address)
-                <p class="text-gray-500 mb-6">{{ $agencySettings->address }}</p>
+                <p class="text-gray-500 mb-2">{{ $agencySettings->address }}</p>
             @endif
+
+            <div class="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 text-gray-500 mb-8">
+                @if($agencySettings?->contact_email)
+                    <a href="mailto:{{ $agencySettings->contact_email }}" class="flex items-center gap-2 hover:text-amber-600 transition-colors">
+                        <i class="ph ph-envelope text-xl"></i>
+                        {{ $agencySettings->contact_email }}
+                    </a>
+                @endif
+                @if($agencySettings?->contact_phone)
+                    <a href="tel:{{ str_replace([' ', '-', '(', ')'], '', $agencySettings->contact_phone) }}" class="flex items-center gap-2 hover:text-amber-600 transition-colors">
+                        <i class="ph ph-phone text-xl"></i>
+                        {{ $agencySettings->contact_phone }}
+                    </a>
+                @endif
+            </div>
 
             <div class="flex justify-center gap-8 mb-8">
                 @if($agencySettings?->social_links)
                     @foreach($agencySettings->social_links as $link)
-                        <a href="{{ $link['url'] }}" target="_blank"
+                        <a href="{{ format_social_link($link['url']) }}" target="_blank"
                             class="text-gray-400 hover:text-amber-600 transition-colors" title="{{ $link['platform'] }}">
                             <i class="ph-bold {{ $link['icon'] ?? 'ph-link' }} text-3xl"></i>
                         </a>

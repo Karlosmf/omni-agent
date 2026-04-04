@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Pages;
 use App\Models\AgencySetting;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
 use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\Repeater;
 use Filament\Schemas\Components\Section;
@@ -14,10 +15,12 @@ use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Pages\Page;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\HtmlString;
 
 class ManageAgencySettings extends Page implements HasForms
 {
@@ -65,16 +68,28 @@ class ManageAgencySettings extends Page implements HasForms
                                         TextInput::make('company_name')
                                             ->label('Nombre de la Empresa')
                                             ->required(),
+                                        
                                         Grid::make(2)
                                             ->schema([
                                                 FileUpload::make('logo_path')
-                                                    ->label('Logo')
+                                                    ->label('Logo de la Agencia')
                                                     ->image()
-                                                    ->directory('agency'),
+                                                    ->disk('public')
+                                                    ->directory('agency')
+                                                    ->imageEditor()
+                                                    ->imagePreviewHeight('80')
+                                                    ->replacesExistingFiles()
+                                                    ->columnSpan(1),
+
                                                 FileUpload::make('favicon_path')
                                                     ->label('Favicon')
                                                     ->image()
-                                                    ->directory('agency'),
+                                                    ->disk('public')
+                                                    ->directory('agency')
+                                                    ->imageEditor()
+                                                    ->imagePreviewHeight('80')
+                                                    ->replacesExistingFiles()
+                                                    ->columnSpan(1),
                                             ]),
                                     ]),
                                 Section::make('Paleta Frontend (Público)')
@@ -186,8 +201,8 @@ class ManageAgencySettings extends Page implements HasForms
                                                     ->placeholder('Ej: Instagram, Facebook, WhatsApp')
                                                     ->required(),
                                                 TextInput::make('url')
-                                                    ->label('URL')
-                                                    ->url()
+                                                    ->label('Enlace o Valor')
+                                                    ->placeholder('Ej: https://instagram.com/tuperfil o email@agencia.com')
                                                     ->required(),
                                                 TextInput::make('icon')
                                                     ->label('Icono (Phosphor)')

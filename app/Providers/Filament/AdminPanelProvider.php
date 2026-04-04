@@ -53,11 +53,10 @@ class AdminPanelProvider extends PanelProvider
                 'success' => $agencySettings?->be_success_color ?? Color::Green,
                 'warning' => $agencySettings?->be_warning_color ?? Color::Amber,
             ])
-            ->brandLogo(asset('images/branding/logo-full.png'))
-            ->darkModeBrandLogo(asset('images/branding/logo-full-white.png'))
+            ->brandLogo(fn () => get_agency_logo())
+            ->favicon(fn () => get_agency_favicon())
             ->brandLogoHeight('3rem')
             ->homeUrl('/')
-            ->favicon(asset('images/branding/logo-icon.png'))
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\Filament\Admin\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\Filament\Admin\Pages')
             ->pages([

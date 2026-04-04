@@ -85,7 +85,10 @@
             Nela: +54 9 3482 30-0052<br>
             Belén: +54 9 3482 60-0801
         </div>
-        <img src="{{ public_path('images/branding/logo-full.png') }}" alt="Luopan Logo" class="logo">
+        @php
+    $logoPath = get_agency_logo_path();
+@endphp
+<img src="{{ $logoPath }}" alt="{{ config('app.name') }}" class="logo">
     </div>
 
     <div class="title">RECIBO DE PAGO</div>

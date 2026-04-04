@@ -46,3 +46,74 @@ if (! function_exists('hex_to_oklch')) {
         return sprintf("%.2f %.3f %.1f", $oklch_l, $oklch_c, $oklch_h);
     }
 }
+
+if (! function_exists('get_agency_settings')) {
+    function get_agency_settings(): ?\App\Models\AgencySetting
+    {
+        try {
+            return \Illuminate\Support\Facades\Cache::rememberForever('agency_settings', function () {
+                return \App\Models\AgencySetting::first();
+            });
+        } catch (\Exception $e) {
+            return \App\Models\AgencySetting::first();
+        }
+    }
+}
+
+if (! function_exists('get_agency_logo')) {
+    function get_agency_logo(): string
+    {
+        $settings = get_agency_settings();
+        
+        if ($settings && $settings->logo_path) {
+            return asset('storage/' . $settings->logo_path);
+        }
+
+        return asset('images/branding/logo-full.png');
+    }
+}
+
+if (! function_exists('get_agency_logo_path')) {
+    function get_agency_logo_path(): string
+    {
+        $settings = get_agency_settings();
+        
+        if ($settings && $settings->logo_path) {
+            return storage_path('app/public/' . $settings->logo_path);
+        }
+
+        return public_path('images/branding/logo-full.png');
+    }
+}
+
+if (! function_exists('get_agency_favicon')) {
+    function get_agency_favicon(): string
+    {
+        $settings = get_agency_settings();
+        
+        if ($settings && $settings->favicon_path) {
+            return asset('storage/' . $settings->favicon_path);
+        }
+
+        return asset('favicon.ico');
+    }
+}
+
+if (! function_exists('format_social_link')) {
+    function format_social_link(string $url): string
+    {
+        if (filter_var($url, FILTER_VALIDATE_EMAIL)) {
+            return 'mailto:' . $url;
+        }
+
+        if (preg_match('/^\+?[0-9]{7,15}$/', str_replace([' ', '-', '(', ')'], '', $url))) {
+            return 'tel:' . str_replace([' ', '-', '(', ')'], '', $url);
+        }
+
+        if (!str_starts_with($url, 'http') && !str_starts_with($url, '/') && !str_contains($url, ':')) {
+            return 'https://' . $url;
+        }
+
+        return $url;
+    }
+}
