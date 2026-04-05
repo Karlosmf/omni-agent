@@ -5,7 +5,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/x-icon" href="{{ get_agency_favicon() }}">
-    <title>{{ $agencySettings?->company_name ?? config('app.name', 'Luopan Viajes') }}</title>
+    <title>{{ $agencySettings?->company_name ?? config('app.name', 'Omni-Agent') }}</title>
+    @if($agencySettings?->meta_description)
+        <meta name="description" content="{{ $agencySettings->meta_description }}">
+    @endif
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -77,6 +80,9 @@
         }
     </style>
     @livewireStyles
+    @if($agencySettings?->header_scripts)
+        {!! $agencySettings->header_scripts !!}
+    @endif
 </head>
 
 <body class="antialiased min-h-screen relative flex flex-col"
@@ -120,27 +126,58 @@
                             x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
                             class="absolute right-0 mt-2 w-48 rounded-xl bg-white shadow-xl border border-gray-100 py-2 z-50 overflow-hidden"
                             style="display: none;">
-                            <a href="https://wa.link/16om0v" target="_blank"
-                                class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
-                                <div
-                                    class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-xs font-bold font-mono">
-                                    B</div>
-                                <span class="font-medium">Belén</span>
-                            </a>
-                            <a href="https://wa.link/28mpwn" target="_blank"
-                                class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
-                                <div
-                                    class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-xs font-bold font-mono">
-                                    N</div>
-                                <span class="font-medium">Nela</span>
-                            </a>
+                            @php
+                                $whatsappLinks = collect($agencySettings?->social_links ?? [])
+                                    ->filter(fn($link) => 
+                                        str_contains(strtolower($link['platform'] ?? ''), 'whatsapp') || 
+                                        str_contains(strtolower($link['icon'] ?? ''), 'whatsapp')
+                                    );
+                            @endphp
+
+                            @if($whatsappLinks->isNotEmpty())
+                                @foreach($whatsappLinks as $link)
+                                    @php
+                                        $platformName = $link['platform'] ?? 'WhatsApp';
+                                        $displayName = str_ireplace('WhatsApp', '', $platformName);
+                                        $displayName = trim($displayName) ?: 'WhatsApp';
+                                        $initial = strtoupper(substr($displayName, 0, 1));
+                                    @endphp
+                                    <a href="{{ format_social_link($link['url']) }}" target="_blank"
+                                        class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
+                                        <div
+                                            class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-xs font-bold font-mono">
+                                            {{ $initial }}</div>
+                                        <span class="font-medium">{{ $displayName }}</span>
+                                    </a>
+                                @endforeach
+                            @else
+                                <a href="https://wa.link/16om0v" target="_blank"
+                                    class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
+                                    <div
+                                        class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-xs font-bold font-mono">
+                                        B</div>
+                                    <span class="font-medium">Belén</span>
+                                </a>
+                                <a href="https://wa.link/28mpwn" target="_blank"
+                                    class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
+                                    <div
+                                        class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-xs font-bold font-mono">
+                                        N</div>
+                                    <span class="font-medium">Nela</span>
+                                </a>
+                            @endif
                         </div>
                     </div>
 
-                    <a href="https://www.instagram.com/luopanviajes/" target="_blank"
-                        class="text-gray-600 hover:text-pink-600 transition-colors">
-                        <i class="ph-bold ph-instagram-logo text-2xl"></i>
-                    </a>
+                    @php
+                        $instagramLink = collect($agencySettings?->social_links ?? [])->first(fn($l) => str_contains(strtolower($l['platform'] ?? ''), 'instagram'));
+                    @endphp
+                    @if($instagramLink)
+                        <a href="{{ format_social_link($instagramLink['url']) }}" target="_blank"
+                            class="text-gray-600 hover:text-pink-600 transition-colors">
+                            <i class="ph-bold ph-instagram-logo text-2xl"></i>
+                        </a>
+                    @endif
                     @auth
                         <a href="{{ url('/admin') }}"
                             class="px-5 py-2.5 rounded-full bg-gray-900 text-white font-medium hover:bg-gray-800 transition-all shadow-md hover:shadow-lg flex items-center gap-2">
@@ -183,27 +220,55 @@
                     <span
                         class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">WhatsApp</span>
                     <div class="flex flex-col gap-2 pl-2">
-                        <a href="https://wa.link/16om0v" target="_blank"
-                            class="flex items-center gap-2 text-gray-700 hover:text-green-600">
-                            <div
-                                class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-[10px] font-bold">
-                                B</div>
-                            <span>Belén</span>
-                        </a>
-                        <a href="https://wa.link/28mpwn" target="_blank"
-                            class="flex items-center gap-2 text-gray-700 hover:text-green-600">
-                            <div
-                                class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-[10px] font-bold">
-                                N</div>
-                            <span>Nela</span>
-                        </a>
+                        @php
+                            $whatsappLinks = collect($agencySettings?->social_links ?? [])
+                                ->filter(fn($link) => 
+                                    str_contains(strtolower($link['platform'] ?? ''), 'whatsapp') || 
+                                    str_contains(strtolower($link['icon'] ?? ''), 'whatsapp')
+                                );
+                        @endphp
+
+                        @if($whatsappLinks->isNotEmpty())
+                            @foreach($whatsappLinks as $link)
+                                @php
+                                    $platformName = $link['platform'] ?? 'WhatsApp';
+                                    $displayName = str_ireplace('WhatsApp', '', $platformName);
+                                    $displayName = trim($displayName) ?: 'WhatsApp';
+                                    $initial = strtoupper(substr($displayName, 0, 1));
+                                @endphp
+                                <a href="{{ format_social_link($link['url']) }}" target="_blank"
+                                    class="flex items-center gap-2 text-gray-700 hover:text-green-600">
+                                    <div
+                                        class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-[10px] font-bold">
+                                        {{ $initial }}</div>
+                                    <span>{{ $displayName }}</span>
+                                </a>
+                            @endforeach
+                        @else
+                            <a href="https://wa.link/16om0v" target="_blank"
+                                class="flex items-center gap-2 text-gray-700 hover:text-green-600">
+                                <div
+                                    class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-[10px] font-bold">
+                                    B</div>
+                                <span>Belén</span>
+                            </a>
+                            <a href="https://wa.link/28mpwn" target="_blank"
+                                class="flex items-center gap-2 text-gray-700 hover:text-green-600">
+                                <div
+                                    class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-[10px] font-bold">
+                                    N</div>
+                                <span>Nela</span>
+                            </a>
+                        @endif
                     </div>
                 </div>
 
-                <a href="https://www.instagram.com/luopanviajes/" target="_blank"
-                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-pink-50">
-                    Instagram
-                </a>
+                @if($instagramLink)
+                    <a href="{{ format_social_link($instagramLink['url']) }}" target="_blank"
+                        class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-pink-50">
+                        Instagram
+                    </a>
+                @endif
 
                 @auth
                     <a href="{{ url('/admin') }}"
@@ -243,27 +308,30 @@
                     destinos exóticos, hacemos realidad el viaje de tus sueños.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                    <a href="https://www.luopanviajes.tur.ar/" target="_blank"
-                        class="px-8 py-4 rounded-xl bg-gray-900 text-white font-semibold hover:bg-gray-800 transition-all shadow-xl hover:shadow-2xl flex items-center justify-center gap-2">
-                        <span>Planear mi viaje</span>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                        </svg>
-                    </a>
-                    <a href="https://maps.app.goo.gl/njs4iW8KYS8owZhz6" target="_blank"
-                        class="px-8 py-4 rounded-xl bg-white text-gray-900 font-semibold hover:bg-gray-50 border border-gray-200 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
-                        <span>Ver ubicación</span>
-                        <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                            </path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        </svg>
-                    </a>
-                </div>
-            </div>
+                    @if($agencySettings?->hero_cta_url)
+                        <a href="{{ $agencySettings->hero_cta_url }}" target="_blank"
+                            class="px-8 py-4 rounded-xl bg-gray-900 text-white font-semibold hover:bg-gray-800 transition-all shadow-xl hover:shadow-2xl flex items-center justify-center gap-2">
+                            <span>Planear mi viaje</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                            </svg>
+                        </a>
+                    @endif
+                    @if($agencySettings?->google_maps_url)
+                        <a href="{{ $agencySettings->google_maps_url }}" target="_blank"
+                            class="px-8 py-4 rounded-xl bg-white text-gray-900 font-semibold hover:bg-gray-50 border border-gray-200 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+                            <span>Ver ubicación</span>
+                            <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                </path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </a>
+                    @endif
+                </div>            </div>
 
             <!-- Image & Lead Form -->
             <div class="w-full lg:w-1/2 relative flex flex-col items-center">
@@ -559,11 +627,19 @@
                     @endforeach
                 @endif
             </div>
+            
+            @if($agencySettings?->footer_text)
+                <p class="text-gray-500 mb-8 max-w-2xl mx-auto">{{ $agencySettings->footer_text }}</p>
+            @endif
+
             <p class="text-xs text-gray-400">&copy; {{ date('Y') }} {{ $agencySettings->company_name ?? 'Omni-Agent' }}. Todos los derechos
                 reservados.</p>
         </div>
     </footer>
 
+    @if($agencySettings?->footer_scripts)
+        {!! $agencySettings->footer_scripts !!}
+    @endif
     @livewireScripts
 </body>
 

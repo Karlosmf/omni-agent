@@ -79,16 +79,40 @@
 
     <div class="header">
         <div class="company-info">
-            <strong>Luopan Viajes & Turismo</strong><br>
-            Belgrano 843, Local A<br>
-            Reconquista, Santa Fe 3560<br>
-            Nela: +54 9 3482 30-0052<br>
-            Belén: +54 9 3482 60-0801
+            @php
+                $settings = get_agency_settings();
+                $whatsappLinks = collect($settings?->social_links ?? [])
+                    ->filter(fn($link) => 
+                        str_contains(strtolower($link['platform'] ?? ''), 'whatsapp') || 
+                        str_contains(strtolower($link['icon'] ?? ''), 'whatsapp')
+                    );
+            @endphp
+            <strong>{{ $settings?->company_name ?? 'Luopan Viajes & Turismo' }}</strong><br>
+            @if($settings?->address)
+                {!! nl2br(e($settings->address)) !!}<br>
+            @else
+                Belgrano 843, Local A<br>
+                Reconquista, Santa Fe 3560<br>
+            @endif
+
+            @if($whatsappLinks->isNotEmpty())
+                @foreach($whatsappLinks as $link)
+                    @php
+                        $platformName = $link['platform'] ?? 'WhatsApp';
+                        $displayName = str_ireplace('WhatsApp', '', $platformName);
+                        $displayName = trim($displayName) ?: 'WhatsApp';
+                    @endphp
+                    {{ $displayName }}: {{ $link['url'] }}<br>
+                @endforeach
+            @else
+                Nela: +54 9 3482 30-0052<br>
+                Belén: +54 9 3482 60-0801
+            @endif
         </div>
         @php
-    $logoPath = get_agency_logo_path();
-@endphp
-<img src="{{ $logoPath }}" alt="{{ config('app.name') }}" class="logo">
+            $logoPath = get_agency_logo_path();
+        @endphp
+        <img src="{{ $logoPath }}" alt="{{ config('app.name') }}" class="logo">
     </div>
 
     <div class="title">RECIBO DE PAGO</div>

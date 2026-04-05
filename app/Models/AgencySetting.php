@@ -15,6 +15,7 @@ class AgencySetting extends Model
      */
     protected $fillable = [
         'company_name',
+        'ai_assistant_name',
         'logo_path',
         'favicon_path',
         'fe_primary_color',
@@ -37,6 +38,12 @@ class AgencySetting extends Model
         'contact_email',
         'contact_phone',
         'address',
+        'hero_cta_url',
+        'google_maps_url',
+        'meta_description',
+        'footer_text',
+        'header_scripts',
+        'footer_scripts',
         'social_links',
     ];
 

@@ -65,9 +65,16 @@ class ManageAgencySettings extends Page implements HasForms
                             ->schema([
                                 Section::make('Identidad Visual')
                                     ->schema([
-                                        TextInput::make('company_name')
-                                            ->label('Nombre de la Empresa')
-                                            ->required(),
+                                        Grid::make(2)
+                                            ->schema([
+                                                TextInput::make('company_name')
+                                                    ->label('Nombre de la Empresa')
+                                                    ->required(),
+                                                TextInput::make('ai_assistant_name')
+                                                    ->label('Nombre de la Asistente Virtual')
+                                                    ->placeholder('Ej: Brisa')
+                                                    ->required(),
+                                            ]),
                                         
                                         Grid::make(2)
                                             ->schema([
@@ -91,6 +98,13 @@ class ManageAgencySettings extends Page implements HasForms
                                                     ->replacesExistingFiles()
                                                     ->columnSpan(1),
                                             ]),
+                                    ]),
+                                Section::make('SEO y Metadatos')
+                                    ->schema([
+                                        TextInput::make('meta_description')
+                                            ->label('Descripción SEO (Meta)')
+                                            ->placeholder('Ej: Tu mejor opción para viajar por el mundo...')
+                                            ->columnSpanFull(),
                                     ]),
                                 Section::make('Paleta Frontend (Público)')
                                     ->description('Define los colores que verán tus clientes en la web.')
@@ -189,6 +203,21 @@ class ManageAgencySettings extends Page implements HasForms
                                         TextInput::make('address')
                                             ->label('Dirección')
                                             ->columnSpanFull(),
+                                        
+                                        Grid::make(2)
+                                            ->schema([
+                                                TextInput::make('hero_cta_url')
+                                                    ->label('URL Botón Principal (Hero)')
+                                                    ->placeholder('Ej: https://tupagina.com/planear'),
+                                                TextInput::make('google_maps_url')
+                                                    ->label('URL Google Maps (Ubicación)')
+                                                    ->placeholder('Ej: https://maps.app.goo.gl/...'),
+                                            ]),
+
+                                        TextInput::make('footer_text')
+                                            ->label('Texto adicional en Footer')
+                                            ->placeholder('Ej: Gracias por confiar en nosotros.')
+                                            ->columnSpanFull(),
                                     ]),
 
                                 Section::make('Redes Sociales')
@@ -211,6 +240,23 @@ class ManageAgencySettings extends Page implements HasForms
                                             ])
                                             ->columns(3)
                                             ->columnSpanFull(),
+                                    ]),
+                            ]),
+                        
+                        Tab::make('Analítica y Scripts')
+                            ->icon('heroicon-o-code-bracket')
+                            ->schema([
+                                Section::make('Scripts Externos')
+                                    ->description('Inserta códigos de seguimiento (Google Analytics, Meta Pixel, etc.)')
+                                    ->schema([
+                                        \Filament\Forms\Components\Textarea::make('header_scripts')
+                                            ->label('Scripts en <head>')
+                                            ->helperText('Se insertará justo antes del cierre de </head>')
+                                            ->rows(5),
+                                        \Filament\Forms\Components\Textarea::make('footer_scripts')
+                                            ->label('Scripts en <body>')
+                                            ->helperText('Se insertará antes del cierre de </body>')
+                                            ->rows(5),
                                     ]),
                             ]),
                     ]),

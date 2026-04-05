@@ -89,8 +89,8 @@ Es igual, pero eliges al Proveedor en vez del Cliente y pones que es una "Salida
 ## Consejos Rápidos del Sistema 💡
 
 *   **Badges (Globos de colores):** Si ves un numerito rojo en el menú, es que tienes cosas pendientes. ¡Míralo!
-*   **Whatsapp:** En la web, los clientes pueden elegir hablar con Belén o Nela. El sistema te avisa.
-*   **Ayuda:** Si te trabas, pregúntale a Belén o Nela, ellas son las administradoras.
+*   **Whatsapp:** En la web, los clientes pueden elegir con quién hablar según los contactos que configures en el panel. El sistema te avisa.
+*   **Ayuda:** Si te trabas, pregúntale a los administradores del sistema.
 
 ---
 
@@ -141,5 +141,34 @@ Cuando un cliente visita un paquete en tu página web y hace clic en el botón n
 4. **Al cliente** se le muestra un mensaje de confirmación verde avisando que se contactarán a la brevedad.
 
 ---
-*Manual actualizado para Sistema Luopan v3.0*
+
+## 8. Configuración de Marca Blanca 🏷️
+
+Si eres administrador, puedes personalizar todo el sistema para que tenga la identidad de tu agencia.
+
+### ¿Cómo personalizar tu agencia?
+
+1.  Ve al menú **"Configuración"** → **"Marca Blanca"**.
+2.  Encontrarás varias pestañas:
+
+#### Identidad y Frontend
+*   **Nombre de la Empresa:** El nombre que aparecerá en los títulos y correos.
+*   **Asistente Virtual:** Dale un nombre a tu IA (ej: "Brisa", "Sole", etc.).
+*   **Logo y Favicon:** Sube las imágenes de tu marca.
+*   **Colores:** Define la paleta de colores (Primario, Secundario, Fondo) que verán tus clientes en la web.
+*   **SEO:** Escribe una descripción para que Google encuentre mejor tu página.
+
+#### Contacto y Redes
+*   **Datos básicos:** Email, teléfono y dirección física.
+*   **Botones del Hero:** Configura a dónde llevan los botones principales de la web ("Planear viaje" y "Ubicación").
+*   **Redes Sociales:** Agrega tus links de Instagram, Facebook, etc. 
+    *   **IMPORTANTE:** Si agregas un link de tipo "WhatsApp", el nombre que le pongas (ej: "WhatsApp Juan") se usará automáticamente en el menú desplegable de la web y el asistente virtual lo mencionará al cerrar una consulta.
+
+#### Analítica y Scripts 📊
+*   Aquí puedes pegar los códigos de **Google Analytics**, **Meta Pixel (Facebook)** o chats externos.
+*   **Scripts en Header:** Códigos que van en el `<head>` (rastreo).
+*   **Scripts en Footer:** Códigos que van al final del `<body>` (widgets de chat).
+
+---
+*Manual actualizado para Sistema Omni-Agent v4.0 (Marca Blanca)*
 

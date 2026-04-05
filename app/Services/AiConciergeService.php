@@ -75,7 +75,25 @@ class AiConciergeService
                 $leadContext .= "\n- Nombre: {$lead->customer_name}";
             }
 
-            $systemPrompt = "Eres 'Brisa', la asistente virtual de Luopan Viajes.
+            // Get dynamic names from WhatsApp links
+            $settings = get_agency_settings();
+            $whatsappLinks = collect($settings?->social_links ?? [])
+                ->filter(fn($link) => 
+                    str_contains(strtolower($link['platform'] ?? ''), 'whatsapp') || 
+                    str_contains(strtolower($link['icon'] ?? ''), 'whatsapp')
+                );
+
+            $names = $whatsappLinks->map(function($link) {
+                $displayName = str_ireplace('WhatsApp', '', $link['platform'] ?? '');
+                return trim($displayName) ?: 'nuestros agentes';
+            })->filter()->unique();
+
+            $namesString = $names->isNotEmpty() ? $names->join(', ', ' o ') : 'Nela o Belén';
+
+            $assistantName = $settings?->ai_assistant_name ?? 'Brisa';
+            $companyName = $settings?->company_name ?? 'Luopan Viajes';
+
+            $systemPrompt = "Eres '{$assistantName}', la asistente virtual de {$companyName}.
             TU OBJETIVO: Recabar información CLAVE de forma RÁPIDA y ESCUETA. No des consejos ni sugieras vuelos/hoteles. Solo pregunta.
             
             DATOS A CONSEGUIR (Uno por uno, no abrumes):
@@ -86,11 +104,11 @@ class AiConciergeService
 
             CIERRE:
             Una vez que tengas estos datos básicos, CIERRA LA CALIFICACIÓN con este mensaje exacto:
-            '¡Perfecto! Ya tengo lo necesario. Nela o Belén se van a comunicar con vos a la brevedad para armarte la propuesta. 😉'
+            '¡Perfecto! Ya tengo lo necesario. {$namesString} se van a comunicar con vos a la brevedad para armarte la propuesta. 😉'
 
             REGLAS:
             - Sé MUY BREVE. Máximo 1 oración por respuesta.
-            - Si preguntan precios o vuelos, di que eso lo arman las chicas (Nela/Belén).
+            - Si preguntan precios o vuelos, di que eso lo arman las chicas ({$namesString}).
             - No inventes nada.{$leadContext}";
 
             if (! empty($context)) {
@@ -168,7 +186,25 @@ class AiConciergeService
                 $leadContext .= "\n- Nombre: {$lead->customer_name}";
             }
 
-            $systemPrompt = "Eres 'Brisa', la asistente virtual de Luopan Viajes.
+            // Get dynamic names from WhatsApp links
+            $settings = get_agency_settings();
+            $whatsappLinks = collect($settings?->social_links ?? [])
+                ->filter(fn($link) => 
+                    str_contains(strtolower($link['platform'] ?? ''), 'whatsapp') || 
+                    str_contains(strtolower($link['icon'] ?? ''), 'whatsapp')
+                );
+
+            $names = $whatsappLinks->map(function($link) {
+                $displayName = str_ireplace('WhatsApp', '', $link['platform'] ?? '');
+                return trim($displayName) ?: 'nuestros agentes';
+            })->filter()->unique();
+
+            $namesString = $names->isNotEmpty() ? $names->join(', ', ' o ') : 'Nela o Belén';
+
+            $assistantName = $settings?->ai_assistant_name ?? 'Brisa';
+            $companyName = $settings?->company_name ?? 'Luopan Viajes';
+
+            $systemPrompt = "Eres '{$assistantName}', la asistente virtual de {$companyName}.
             TU OBJETIVO: Recabar información CLAVE de forma RÁPIDA y ESCUETA. No des consejos ni sugieras vuelos/hoteles. Solo pregunta.
             
             DATOS A CONSEGUIR (Uno por uno, no abrumes):
@@ -179,11 +215,11 @@ class AiConciergeService
 
             CIERRE:
             Una vez que tengas estos datos básicos, CIERRA LA CALIFICACIÓN con este mensaje exacto:
-            '¡Perfecto! Ya tengo lo necesario. Nela o Belén se van a comunicar con vos a la brevedad para armarte la propuesta. 😉'
+            '¡Perfecto! Ya tengo lo necesario. {$namesString} se van a comunicar con vos a la brevedad para armarte la propuesta. 😉'
 
             REGLAS:
             - Sé MUY BREVE. Máximo 1 oración por respuesta.
-            - Si preguntan precios o vuelos, di que eso lo arman las chicas (Nela/Belén).
+            - Si preguntan precios o vuelos, di que eso lo arman las chicas ({$namesString}).
             - No inventes nada.{$leadContext}";
 
             if (! empty($context)) {

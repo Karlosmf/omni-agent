@@ -1,18 +1,20 @@
-# Omni-Agent (Luopan Travel Edition)
+# Omni-Agent (White Label Edition)
 
-Sistema CRM + ERP + AI Concierge diseñado exclusivamente para la agencia "Luopan Viajes y Turismo".
+Sistema CRM + ERP + AI Concierge diseñado para agencias de viajes, totalmente personalizable como Marca Blanca.
 
 ## Características Principales
 
-- **Captura de Leads vía IA:** Chat estilo WhatsApp para recolectar información de clientes automáticamente.
-- **Sistema de Cotizaciones:** Creación de presupuestos profesionales en PDF y conversión a expedientes.
+- **Configuración Marca Blanca:** Personaliza logos, colores (frontend y backend), nombre de la agencia y nombre de la asistente virtual desde el dashboard.
+- **Captura de Leads vía IA:** Asistente virtual dinámico que utiliza los datos de contacto configurados.
+- **Analítica Personalizada:** Inserción de scripts de Google Analytics, Meta Pixel y otros directamente desde el panel.
+- **Sistema de Cotizaciones:** Creación de presupuestos profesionales en PDF dinámicos y conversión a expedientes.
 - **Gestión de Expedientes (Files):** Nro de file autogenerado, servicios y control de costos/ventas.
 - **Herramientas Financieras:** Calculadora de neto real (impuestos/comisiones) y simulación rápida en dashboard.
 - **Panel Operativo:** Dashboard con métricas, vencimientos y accesos rápidos.
 
 ## Documentación y Manuales
-Para una guía detallada sobre cómo operar el sistema (crear files, gestionar pagos, usar la calculadora), consulta el:
-👉 [**Manual de Usuario (Luopan Viajes)**](./MANUAL_USUARIO.md)
+Para una guía detallada sobre cómo operar el sistema y configurar la Marca Blanca, consulta el:
+👉 [**Manual de Usuario**](./MANUAL_USUARIO.md)
 
 ## Requisitos
 
