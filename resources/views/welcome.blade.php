@@ -288,74 +288,177 @@
     <!-- Main Content -->
     <main class="flex-grow flex flex-col pt-20">
 
-        <!-- Hero Section -->
-        <div
-            class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+        @php
+            $sliders = \App\Models\HeroSlider::where('is_active', true)->orderBy('sort_order')->get();
+        @endphp
 
-            <!-- Text Content -->
-            <div class="w-full lg:w-1/2 space-y-8 text-center lg:text-left z-10">
-                <div
-                    class="inline-block px-4 py-1.5 rounded-full bg-amber-100/80 text-amber-800 font-medium text-sm backdrop-blur-sm border border-amber-200">
-                    ✈️ Tu compañera de viajes
-                </div>
-                <h1 class="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">
-                    Descubre el mundo con <span
-                        class="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-600">{{ $agencySettings->company_name ?? 'Luopan' }}</span>
-                </h1>
-                <p
-                    class="text-lg text-gray-600 leading-relaxed max-w-xl mx-auto lg:mx-0 bg-white/60 p-4 rounded-xl backdrop-blur-sm border border-white/40 shadow-sm">
-                    Planificamos tu próxima aventura con dedicación y experiencia. Desde escapadas locales hasta
-                    destinos exóticos, hacemos realidad el viaje de tus sueños.
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                    @if($agencySettings?->hero_cta_url)
-                        <a href="{{ $agencySettings->hero_cta_url }}" target="_blank"
-                            class="px-8 py-4 rounded-xl bg-gray-900 text-white font-semibold hover:bg-gray-800 transition-all shadow-xl hover:shadow-2xl flex items-center justify-center gap-2">
-                            <span>Planear mi viaje</span>
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                            </svg>
-                        </a>
-                    @endif
-                    @if($agencySettings?->google_maps_url)
-                        <a href="{{ $agencySettings->google_maps_url }}" target="_blank"
-                            class="px-8 py-4 rounded-xl bg-white text-gray-900 font-semibold hover:bg-gray-50 border border-gray-200 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
-                            <span>Ver ubicación</span>
-                            <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                </path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            </svg>
-                        </a>
-                    @endif
-                </div>            </div>
+        @if($sliders->isNotEmpty())
+            <!-- Hero Slider -->
+            <div x-data="{ 
+                activeSlide: 0, 
+                slidesCount: {{ $sliders->count() }},
+                autoplay() {
+                    setInterval(() => {
+                        this.activeSlide = (this.activeSlide + 1) % this.slidesCount;
+                    }, 6000);
+                }
+            }" x-init="autoplay()" class="relative overflow-hidden">
 
-            <!-- Image & Lead Form -->
-            <div class="w-full lg:w-1/2 relative flex flex-col items-center">
+                @foreach($sliders as $index => $slide)
+                    <div x-show="activeSlide === {{ $index }}" 
+                         x-transition:enter="transition ease-out duration-1000"
+                         x-transition:enter-start="opacity-0 transform translate-x-full"
+                         x-transition:enter-end="opacity-100 transform translate-x-0"
+                         x-transition:leave="transition ease-in duration-1000"
+                         x-transition:leave-start="opacity-100 transform translate-x-0"
+                         x-transition:leave-end="opacity-0 transform -translate-x-full"
+                         class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 flex flex-col lg:flex-row items-center gap-12 lg:gap-20 min-h-[600px]">
 
-                <!-- Hero Image Stack Card -->
-                <div class="relative w-full max-w-md transform transition-all hover:scale-[1.02] duration-500">
-                    <!-- Decorative Elements aligned to vertices -->
-                    <div
-                        class="absolute -top-10 -right-10 w-64 h-64 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob">
+                        <!-- Text Content -->
+                        <div class="w-full lg:w-1/2 space-y-8 text-center lg:text-left z-10">
+                            @if($slide->subtitle)
+                                <div
+                                    class="inline-block px-4 py-1.5 rounded-full bg-amber-100/80 text-amber-800 font-medium text-sm backdrop-blur-sm border border-amber-200">
+                                    {{ $slide->subtitle }}
+                                </div>
+                            @endif
+                            <h1 class="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">
+                                {!! str_replace($agencySettings?->company_name ?? 'Omni-Agent', '<span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-600">' . ($agencySettings?->company_name ?? 'Omni-Agent') . '</span>', e($slide->title)) !!}
+                            </h1>
+                            @if($slide->description)
+                                <p
+                                    class="text-lg text-gray-600 leading-relaxed max-w-xl mx-auto lg:mx-0 bg-white/60 p-4 rounded-xl backdrop-blur-sm border border-white/40 shadow-sm">
+                                    {{ $slide->description }}
+                                </p>
+                            @endif
+                            <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                                @if($slide->cta_button_text && $slide->cta_button_url)
+                                    <a href="{{ $slide->cta_button_url }}" target="_blank"
+                                        class="px-8 py-4 rounded-xl bg-gray-900 text-white font-semibold hover:bg-gray-800 transition-all shadow-xl hover:shadow-2xl flex items-center justify-center gap-2">
+                                        <span>{{ $slide->cta_button_text }}</span>
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                        </svg>
+                                    </a>
+                                @endif
+                                @if($slide->sec_button_text && $slide->sec_button_url)
+                                    <a href="{{ $slide->sec_button_url }}" target="_blank"
+                                        class="px-8 py-4 rounded-xl bg-white text-gray-900 font-semibold hover:bg-gray-50 border border-gray-200 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+                                        <span>{{ $slide->sec_button_text }}</span>
+                                        <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                            </path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        </svg>
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- Image -->
+                        <div class="w-full lg:w-1/2 relative flex flex-col items-center">
+                            <div class="relative w-full max-w-md transform transition-all hover:scale-[1.02] duration-500">
+                                <div
+                                    class="absolute -top-10 -right-10 w-64 h-64 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob">
+                                </div>
+                                <div
+                                    class="absolute -bottom-10 -left-10 w-64 h-64 bg-amber-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000">
+                                </div>
+
+                                <div class="absolute inset-0 bg-gray-900 rounded-3xl rotate-3 opacity-20 blur-lg"></div>
+                                <div class="relative rounded-3xl shadow-2xl overflow-hidden border-4 border-white aspect-[4/5] bg-gray-100">
+                                    <img src="{{ asset('storage/' . $slide->image_path) }}" class="w-full h-full object-cover" alt="{{ $slide->title }}">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div
-                        class="absolute -bottom-10 -left-10 w-64 h-64 bg-amber-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000">
-                    </div>
+                @endforeach
 
-                    <div class="absolute inset-0 bg-gray-900 rounded-3xl rotate-3 opacity-20 blur-lg"></div>
-                    <div class="relative rounded-3xl shadow-2xl overflow-hidden border-4 border-white aspect-[4/5]">
-                        <x-photo-stack />
+                <!-- Slider Indicators -->
+                @if($sliders->count() > 1)
+                    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+                        @foreach($sliders as $index => $slide)
+                            <button @click="activeSlide = {{ $index }}" 
+                                    class="w-3 h-3 rounded-full transition-all duration-300"
+                                    :class="activeSlide === {{ $index }} ? 'bg-amber-500 w-8' : 'bg-gray-300'"></button>
+                        @endforeach
                     </div>
-                </div>
-                <!-- Spacer for the form overlap -->
-                <div class="h-48 hidden lg:block"></div>
+                @endif
             </div>
+        @else
+            <!-- Hero Section (Fallback) -->
+            <div
+                class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
 
-        </div>
+                <!-- Text Content -->
+                <div class="w-full lg:w-1/2 space-y-8 text-center lg:text-left z-10">
+                    <div
+                        class="inline-block px-4 py-1.5 rounded-full bg-amber-100/80 text-amber-800 font-medium text-sm backdrop-blur-sm border border-amber-200">
+                        ✈️ Tu compañera de viajes
+                    </div>
+                    <h1 class="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">
+                        Descubre el mundo con <span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-600">{{ $agencySettings->company_name ?? 'Omni-Agent' }}</span>
+                    </h1>
+                    <p
+                        class="text-lg text-gray-600 leading-relaxed max-w-xl mx-auto lg:mx-0 bg-white/60 p-4 rounded-xl backdrop-blur-sm border border-white/40 shadow-sm">
+                        Planificamos tu próxima aventura con dedicación y experiencia. Desde escapadas locales hasta
+                        destinos exóticos, hacemos realidad el viaje de tus sueños.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        @if($agencySettings?->hero_cta_url)
+                            <a href="{{ $agencySettings->hero_cta_url }}" target="_blank"
+                                class="px-8 py-4 rounded-xl bg-gray-900 text-white font-semibold hover:bg-gray-800 transition-all shadow-xl hover:shadow-2xl flex items-center justify-center gap-2">
+                                <span>Planear mi viaje</span>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                </svg>
+                            </a>
+                        @endif
+                        @if($agencySettings?->google_maps_url)
+                            <a href="{{ $agencySettings->google_maps_url }}" target="_blank"
+                                class="px-8 py-4 rounded-xl bg-white text-gray-900 font-semibold hover:bg-gray-50 border border-gray-200 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+                                <span>Ver ubicación</span>
+                                <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                    </path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                            </a>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Image & Lead Form -->
+                <div class="w-full lg:w-1/2 relative flex flex-col items-center">
+
+                    <!-- Hero Image Stack Card -->
+                    <div class="relative w-full max-w-md transform transition-all hover:scale-[1.02] duration-500">
+                        <!-- Decorative Elements aligned to vertices -->
+                        <div
+                            class="absolute -top-10 -right-10 w-64 h-64 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob">
+                        </div>
+                        <div
+                            class="absolute -bottom-10 -left-10 w-64 h-64 bg-amber-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000">
+                        </div>
+
+                        <div class="absolute inset-0 bg-gray-900 rounded-3xl rotate-3 opacity-20 blur-lg"></div>
+                        <div class="relative rounded-3xl shadow-2xl overflow-hidden border-4 border-white aspect-[4/5]">
+                            <x-photo-stack />
+                        </div>
+                    </div>
+                    <!-- Spacer for the form overlap -->
+                    <div class="h-48 hidden lg:block"></div>
+                </div>
+
+            </div>
+        @endif
 
         <!-- Travel Packages Section -->
         <div id="travel-packages" class="px-8 sm:px-12 lg:px-16 py-12">

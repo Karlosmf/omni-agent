@@ -169,6 +169,16 @@ Si eres administrador, puedes personalizar todo el sistema para que tenga la ide
 *   **Scripts en Header:** Códigos que van en el `<head>` (rastreo).
 *   **Scripts en Footer:** Códigos que van al final del `<body>` (widgets de chat).
 
+#### Gestión de Sliders (Carrusel del Hero) 🖼️
+*   Ve al menú **"Configuración"** → **"Sliders"**.
+*   Aquí puedes crear las diapositivas que se ven al principio de la web.
+*   Cada slider te permite configurar:
+    *   **Título y Subtítulo:** El texto grande y la etiqueta superior.
+    *   **Descripción:** Un párrafo informativo.
+    *   **Imagen:** La foto que se verá a la derecha.
+    *   **Botones:** Puedes poner hasta dos botones con su propio texto y link (ej: "Ver más", "Reservar ahora"). Si dejas los campos de botones vacíos, no aparecerán.
+    *   **Orden:** Arrastra los sliders en la lista para decidir cuál se ve primero.
+
 ---
-*Manual actualizado para Sistema Omni-Agent v4.0 (Marca Blanca)*
+*Manual actualizado para Sistema Omni-Agent v4.1 (Sliders dinámicos)*
 
