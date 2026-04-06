@@ -18,10 +18,8 @@
             padding-bottom: 10px;
         }
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #075E54;
+        .logo-img {
+            max-height: 50px;
         }
 
         .company-info {
@@ -98,13 +96,21 @@
 <body>
 
     <div class="header">
+        @php
+            $settings = get_agency_settings();
+            $logoPath = get_agency_logo_path();
+        @endphp
         <table width="100%">
             <tr>
-                <td class="logo"><img src="{{ public_path('images/branding/logo.png') }}" style="max-height: 50px;"></td>
+                <td class="logo"><img src="{{ $logoPath }}" class="logo-img"></td>
                 <td class="company-info">
-                    Legajo #1234<br>
-                    Av. Corrientes 1234, CABA<br>
-                    contacto@luopan.com
+                    <strong>{{ $settings?->company_name ?? config('app.name', 'nuestra agencia de viajes') }}</strong><br>
+                    @if($settings?->address)
+                        {!! nl2br(e($settings->address)) !!}<br>
+                    @endif
+                    @if($settings?->contact_email)
+                        {{ $settings->contact_email }}
+                    @endif
                 </td>
             </tr>
         </table>
@@ -183,8 +189,8 @@
     @endif
 
     <div class="footer">
-        Este documento es un comprobante no fiscal emitido por el sistema Omni-Agent.<br>
-        Gracias por confiar en Luopan Viajes.
+        Este documento es un comprobante no fiscal emitido por el sistema {{ config('app.name', 'Omni-Agent') }}.<br>
+        Gracias por confiar en {{ $settings?->company_name ?? config('app.name', 'nuestra agencia') }}.
     </div>
 
 </body>

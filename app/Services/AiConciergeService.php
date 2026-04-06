@@ -91,7 +91,7 @@ class AiConciergeService
             $namesString = $names->isNotEmpty() ? $names->join(', ', ' o ') : 'Nela o Belén';
 
             $assistantName = $settings?->ai_assistant_name ?? 'Brisa';
-            $companyName = $settings?->company_name ?? 'Luopan Viajes';
+            $companyName = $settings?->company_name ?? config('app.name', 'nuestra agencia de viajes');
 
             $systemPrompt = "Eres '{$assistantName}', la asistente virtual de {$companyName}.
             TU OBJETIVO: Recabar información CLAVE de forma RÁPIDA y ESCUETA. No des consejos ni sugieras vuelos/hoteles. Solo pregunta.
@@ -202,7 +202,7 @@ class AiConciergeService
             $namesString = $names->isNotEmpty() ? $names->join(', ', ' o ') : 'Nela o Belén';
 
             $assistantName = $settings?->ai_assistant_name ?? 'Brisa';
-            $companyName = $settings?->company_name ?? 'Luopan Viajes';
+            $companyName = $settings?->company_name ?? config('app.name', 'nuestra agencia de viajes');
 
             $systemPrompt = "Eres '{$assistantName}', la asistente virtual de {$companyName}.
             TU OBJETIVO: Recabar información CLAVE de forma RÁPIDA y ESCUETA. No des consejos ni sugieras vuelos/hoteles. Solo pregunta.

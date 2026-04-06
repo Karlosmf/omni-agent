@@ -49,8 +49,12 @@ mount(function (bool $embedded = false) {
     }
 
     if ($this->showCaptureForm && empty($this->messages)) {
+        $settings = get_agency_settings();
+        $assistantName = $settings?->ai_assistant_name ?? 'Brisa';
+        $companyName = $settings?->company_name ?? config('app.name', 'nuestra agencia');
+        
         $this->messages = [
-            ['role' => 'assistant', 'content' => '¡Hola! Soy Brisa, tu asistente de Luopan. 🌴✈️ Completá tus datos y te ayudo a planificar tu viaje.']
+            ['role' => 'assistant', 'content' => "¡Hola! Soy {$assistantName}, tu asistente de {$companyName}. 🌴✈️ Completá tus datos y te ayudo a planificar tu viaje."]
         ];
     }
 });
@@ -216,7 +220,7 @@ $sendMessage = function (AiConciergeService $aiService) {
                     </div>
                 </div>
                 <div class="flex flex-col">
-                    <h3 class="font-bold text-base leading-tight">Luopan Viajes</h3>
+                    <h3 class="font-bold text-base leading-tight">{{ $agencySettings?->company_name ?? config('app.name', 'nuestra agencia') }}</h3>
                     <span class="text-xs text-green-100">En línea</span>
                 </div>
             </div>

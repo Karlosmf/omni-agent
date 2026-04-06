@@ -609,7 +609,7 @@
                     <p class="text-gray-600 mb-4">Acceso a lugares únicos y experiencias personalizadas que no
                         encontrarás en
                         otro lugar.</p>
-                    <a href="https://www.luopanviajes.tur.ar/" target="_blank"
+                    <a href="#packages" 
                         class="text-amber-600 font-medium hover:text-amber-700 flex items-center gap-1 transition-colors">
                         Explorar destinos
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -735,7 +735,7 @@
                 <p class="text-gray-500 mb-8 max-w-2xl mx-auto">{{ $agencySettings->footer_text }}</p>
             @endif
 
-            <p class="text-xs text-gray-400">&copy; {{ date('Y') }} {{ $agencySettings->company_name ?? 'Omni-Agent' }}. Todos los derechos
+            <p class="text-xs text-gray-400">&copy; {{ date('Y') }} {{ $agencySettings?->company_name ?? 'Omni-Agent' }}. Todos los derechos
                 reservados.</p>
         </div>
     </footer>

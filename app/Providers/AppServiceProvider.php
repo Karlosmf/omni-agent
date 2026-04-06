@@ -25,14 +25,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Share Agency Settings globally
+        $agencySettings = null;
+
         if (Schema::hasTable('agency_settings')) {
             $agencySettings = Cache::rememberForever('agency_settings', function () {
                 return AgencySetting::first();
             });
-
-            if ($agencySettings) {
-                View::share('agencySettings', $agencySettings);
-            }
         }
+
+        View::share('agencySettings', $agencySettings);
     }
 }

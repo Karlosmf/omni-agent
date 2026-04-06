@@ -34,7 +34,7 @@
                     <div class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center">
                         <i class="ph ph-user text-sm"></i>
                     </div>
-                    <span class="font-medium text-sm">Luopan Viajes</span>
+                    <span class="font-medium text-sm">{{ $agencySettings?->company_name ?? config('app.name', 'nuestra agencia') }}</span>
                 </div>
             </div>
         </div>

@@ -1,6 +1,6 @@
-# 📘 Manual de Usuario: Sistema Luopan
+# 📘 Manual de Usuario: Omni-Agent
 
-Bienvenido a la guía simple de tu sistema de viajes. Aquí te explicamos cómo usar el panel paso a paso, sin palabras difíciles.
+Bienvenido a la guía simple de tu sistema de gestión de viajes. Aquí te explicamos cómo usar el panel paso a paso, sin palabras difíciles.
 
 ---
 
@@ -8,9 +8,9 @@ Bienvenido a la guía simple de tu sistema de viajes. Aquí te explicamos cómo 
 
 Para empezar a trabajar, sigue estos pasos:
 
-1.  Abre la página web de Luopan.
+1.  Abre la página web principal de la agencia.
 2.  Busca el botón con el dibujo de una **personita** (arriba a la derecha) o el botón que dice **"Ingresar"**.
-3.  Escribe tu correo y la contraseña que te dieron.
+3.  Escribe tu correo y la contraseña proporcionada por los administradores.
 4.  ¡Listo! Ya estás adentro.
 
 ---
@@ -135,7 +135,7 @@ Desde la **lista de paquetes**, podés activar o desactivar cualquier paquete co
 Cuando un cliente visita un paquete en tu página web y hace clic en el botón naranja **"¡Quiero este viaje! ✈️"**, el sistema le pedirá sus datos de contacto.
 
 ¿Qué pasa cuando el cliente envía el formulario?
-1. Se crea automáticamente un **Nuevo Lead (Consulta)** en el sistema Luopan.
+1. Se crea automáticamente un **Nuevo Lead (Consulta)** en el sistema Omni-Agent.
 2. Aparecerá en el panel de control con todos los datos que ingresó y el nombre del paquete que le interesó.
 3. El asistente de Inteligencia Artificial analizará su mensaje para extraer información útil como el destino y la cantidad de pasajeros.
 4. **Al cliente** se le muestra un mensaje de confirmación verde avisando que se contactarán a la brevedad.

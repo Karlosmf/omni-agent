@@ -72,7 +72,12 @@ class LeadsTable
                         ->label('WhatsApp')
                         ->icon('heroicon-o-chat-bubble-left-ellipsis')
                         ->color('success')
-                        ->url(fn ($record) => "https://wa.me/{$record->customer_phone}?text=".urlencode("Hola {$record->customer_name}, soy del equipo de Luopan Viajes. Te contacto por tu consulta sobre viajes. ¿En qué puedo ayudarte?"))
+                        ->url(function ($record) {
+                            $settings = get_agency_settings();
+                            $companyName = $settings?->company_name ?? config('app.name', 'nuestra agencia de viajes');
+                            $text = urlencode("Hola {$record->customer_name}, soy del equipo de {$companyName}. Te contacto por tu consulta sobre viajes. ¿En qué puedo ayudarte?");
+                            return "https://wa.me/{$record->customer_phone}?text={$text}";
+                        })
                         ->openUrlInNewTab()
                         ->visible(fn ($record) => ! empty($record->customer_phone)),
                     EditAction::make()

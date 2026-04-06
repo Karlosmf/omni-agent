@@ -24,6 +24,7 @@ it('can save agency settings', function () {
 
     Livewire::test(ManageAgencySettings::class)
         ->set('data.company_name', 'Omni Agent Updated')
+        ->set('data.ai_assistant_name', 'Brisa')
         ->set('data.contact_email', 'contact@omniagent.com')
         ->set('data.contact_phone', '123456789')
         ->set('data.fe_primary_color', '#ff0000')

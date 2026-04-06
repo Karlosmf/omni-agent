@@ -27,10 +27,12 @@ class Lead extends Model
         'ai_data',
         'ai_summary',
         'needs_human_attention',
+        'temperature',
     ];
 
     protected $casts = [
         'status' => LeadStatus::class,
+        'temperature' => \App\Enums\LeadTemperature::class,
         'ai_data' => 'array',
         'needs_human_attention' => 'boolean',
     ];

@@ -13,7 +13,11 @@
             margin-bottom: 30px;
         }
 
-        .logo {
+        .logo-img {
+            max-height: 50px;
+        }
+
+        .company-name {
             font-size: 24px;
             font-weight: bold;
             color: #008069;
@@ -57,8 +61,16 @@
 </head>
 
 <body>
+    @php
+        $settings = get_agency_settings();
+        $logoPath = get_agency_logo_path();
+    @endphp
     <div class="header">
-        <div class="logo">LUOPAN VIAJES</div>
+        @if($logoPath)
+            <img src="{{ $logoPath }}" class="logo-img"><br>
+        @else
+            <div class="company-name">{{ $settings?->company_name ?? config('app.name', 'Omni-Agent') }}</div>
+        @endif
         <h3>Reporte de Balance Anual - {{ $year }}</h3>
         <p>Generado el: {{ now()->format('d/m/Y H:i') }}</p>
     </div>

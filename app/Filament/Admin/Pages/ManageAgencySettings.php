@@ -3,24 +3,22 @@
 namespace App\Filament\Admin\Pages;
 
 use App\Models\AgencySetting;
+use Filament\Actions\Action;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Placeholder;
-use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\Repeater;
-use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
+use Filament\Pages\Page;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Schemas\Components\Utilities\Get;
-use Filament\Pages\Page;
-use Filament\Actions\Action;
-use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\HtmlString;
 
 class ManageAgencySettings extends Page implements HasForms
 {
@@ -75,7 +73,7 @@ class ManageAgencySettings extends Page implements HasForms
                                                     ->placeholder('Ej: Brisa')
                                                     ->required(),
                                             ]),
-                                        
+
                                         Grid::make(2)
                                             ->schema([
                                                 FileUpload::make('logo_path')
@@ -85,7 +83,6 @@ class ManageAgencySettings extends Page implements HasForms
                                                     ->directory('agency')
                                                     ->imageEditor()
                                                     ->imagePreviewHeight('80')
-                                                    ->replacesExistingFiles()
                                                     ->columnSpan(1),
 
                                                 FileUpload::make('favicon_path')
@@ -95,7 +92,6 @@ class ManageAgencySettings extends Page implements HasForms
                                                     ->directory('agency')
                                                     ->imageEditor()
                                                     ->imagePreviewHeight('80')
-                                                    ->replacesExistingFiles()
                                                     ->columnSpan(1),
                                             ]),
                                     ]),
@@ -152,7 +148,7 @@ class ManageAgencySettings extends Page implements HasForms
                                             ]),
                                     ]),
                             ]),
-                        
+
                         Tab::make('Panel de Control (Backend)')
                             ->icon('heroicon-o-swatch')
                             ->schema([
@@ -203,7 +199,7 @@ class ManageAgencySettings extends Page implements HasForms
                                         TextInput::make('address')
                                             ->label('Dirección')
                                             ->columnSpanFull(),
-                                        
+
                                         Grid::make(2)
                                             ->schema([
                                                 TextInput::make('hero_cta_url')
@@ -242,18 +238,18 @@ class ManageAgencySettings extends Page implements HasForms
                                             ->columnSpanFull(),
                                     ]),
                             ]),
-                        
+
                         Tab::make('Analítica y Scripts')
                             ->icon('heroicon-o-code-bracket')
                             ->schema([
                                 Section::make('Scripts Externos')
                                     ->description('Inserta códigos de seguimiento (Google Analytics, Meta Pixel, etc.)')
                                     ->schema([
-                                        \Filament\Forms\Components\Textarea::make('header_scripts')
+                                        Textarea::make('header_scripts')
                                             ->label('Scripts en <head>')
                                             ->helperText('Se insertará justo antes del cierre de </head>')
                                             ->rows(5),
-                                        \Filament\Forms\Components\Textarea::make('footer_scripts')
+                                        Textarea::make('footer_scripts')
                                             ->label('Scripts en <body>')
                                             ->helperText('Se insertará antes del cierre de </body>')
                                             ->rows(5),
@@ -277,7 +273,7 @@ class ManageAgencySettings extends Page implements HasForms
     {
         $data = $this->form->getState();
 
-        $settings = AgencySetting::first() ?: new AgencySetting();
+        $settings = AgencySetting::first() ?: new AgencySetting;
         $settings->fill($data);
         $settings->save();
 

@@ -87,12 +87,9 @@
                         str_contains(strtolower($link['icon'] ?? ''), 'whatsapp')
                     );
             @endphp
-            <strong>{{ $settings?->company_name ?? 'Luopan Viajes & Turismo' }}</strong><br>
+            <strong>{{ $settings?->company_name ?? config('app.name', 'nuestra agencia de viajes') }}</strong><br>
             @if($settings?->address)
                 {!! nl2br(e($settings->address)) !!}<br>
-            @else
-                Belgrano 843, Local A<br>
-                Reconquista, Santa Fe 3560<br>
             @endif
 
             @if($whatsappLinks->isNotEmpty())
@@ -104,9 +101,8 @@
                     @endphp
                     {{ $displayName }}: {{ $link['url'] }}<br>
                 @endforeach
-            @else
-                Nela: +54 9 3482 30-0052<br>
-                Belén: +54 9 3482 60-0801
+            @elseif($settings?->contact_phone)
+                Tel: {{ $settings->contact_phone }}<br>
             @endif
         </div>
         @php
@@ -173,7 +169,7 @@
     </div>
 
     <div class="footer">
-        Gracias por confiar en Luopan Viajes & Turismo. <br>
+        Gracias por confiar en {{ $settings?->company_name ?? config('app.name', 'nuestra agencia') }}. <br>
         Este documento es un comprobante de pago no fiscal.
     </div>
 

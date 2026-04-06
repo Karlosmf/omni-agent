@@ -26,7 +26,7 @@ class HeroSliderResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Sliders';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Configuración';
+    protected static \UnitEnum|string|null $navigationGroup = 'Catálogo';
 
     protected static ?int $navigationSort = 110;
 

@@ -24,6 +24,21 @@ test('can create a transaction', function () {
     $this->actingAs($user);
 
     $booking = Booking::factory()->create();
+    
+    // Seed local rates to ensure USD exists as a valid option
+    Illuminate\Support\Facades\Storage::put('currency_rates.json', json_encode([
+        'currencies' => [
+            'USD' => ['name' => 'Dólar Oficial', 'buy' => 800, 'sell' => 850],
+        ],
+        'updated_at' => now()->toDateTimeString(),
+    ]));
+
+    $account = \App\Models\FinancialAccount::create([
+        'name' => 'Caja',
+        'currency' => Currency::USD->value,
+        'balance' => 0,
+        'is_active' => true,
+    ]);
     $category = TransactionCategory::create([
         'name' => 'General',
         'type' => 'egreso',
@@ -32,16 +47,15 @@ test('can create a transaction', function () {
 
     // TransactionType::Pago -> 'pago', Method -> 'Efectivo'
     Livewire::test(CreateTransaction::class)
-        ->fillForm([
-            'booking_id' => $booking->id,
-            'amount' => 100,
-            'currency' => Currency::USD->value,
-            'type' => TransactionType::Pago->value,
-            'exchange_rate' => 1,
-            'date' => now()->format('Y-m-d H:i:s'),
-            'method' => 'Efectivo',
-            'transaction_category_id' => $category->id,
-        ])
+        ->set('data.booking_id', $booking->id)
+        ->set('data.amount', 100)
+        ->set('data.currency', Currency::USD->value)
+        ->set('data.type', TransactionType::Pago->value)
+        ->set('data.exchange_rate', 1)
+        ->set('data.date', now()->format('Y-m-d H:i:s'))
+        ->set('data.method', 'Efectivo')
+        ->set('data.financial_account_id', $account->id)
+        ->set('data.transaction_category_id', $category->id)
         ->call('create')
         ->assertHasNoErrors();
 

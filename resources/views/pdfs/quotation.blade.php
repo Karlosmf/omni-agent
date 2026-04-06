@@ -18,11 +18,10 @@
             margin-bottom: 30px;
         }
 
-        .logo {
-            max-width: 150px;
+        .logo-img {
+            max-height: 50px;
         }
 
-        // Ajustar según logo real
         .company-info {
             float: right;
             text-align: right;
@@ -107,13 +106,23 @@
 <body>
 
     <div class="header">
+        @php
+            $settings = get_agency_settings();
+            $logoPath = get_agency_logo_path();
+        @endphp
         <div class="company-info">
-            <strong>Luopan Viajes y Turismo</strong><br>
-            Legajo: 12345<br>
-            Web: www.luopanviajes.tur.ar<br>
-            Email: reservas@luopanviajes.tur.ar
+            <strong>{{ $settings?->company_name ?? config('app.name', 'nuestra agencia de viajes') }}</strong><br>
+            @if($settings?->address)
+                {!! nl2br(e($settings->address)) !!}<br>
+            @endif
+            @if($settings?->contact_email)
+                Email: {{ $settings->contact_email }}
+            @endif
         </div>
         <div>
+            @if($logoPath)
+                <img src="{{ $logoPath }}" class="logo-img"><br>
+            @endif
             <div class="title">PRESUPUESTO</div>
             <div class="subtitle">#{{ $record->quotation_number }}</div>
             <div class="subtitle">Válido hasta: {{ $record->valid_until?->format('d/m/Y') }}</div>
@@ -170,7 +179,7 @@
     </div>
 
     <div class="footer">
-        Gracias por confiar en nosotros para tu próximo viaje.
+        Gracias por confiar en {{ $settings?->company_name ?? config('app.name', 'nosotros') }} para tu próximo viaje.
     </div>
 
 </body>
