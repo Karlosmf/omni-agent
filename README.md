@@ -84,6 +84,22 @@ La instalación es sencilla y se adapta fácilmente a un flujo de despliegue est
 
 ---
 
+## 🏗️ Arquitectura y Notas para Desarrolladores
+
+Si eres un desarrollador que toma este proyecto, ten en cuenta las siguientes decisiones arquitectónicas implementadas hasta la v1.0:
+
+1. **Gestión de Configuración (Marca Blanca):** 
+   La identidad visual (logos, colores, redes, etc) está centralizada en el modelo `AgencySetting`. Para no castigar la base de datos, toda llamada en el Frontend (`welcome.blade.php`, `app.blade.php`) se realiza a través de **Helpers cacheados** ubicados en `app/helpers.php` (ej. `get_agency_settings()`, `get_agency_logotipo_url()`). ¡Usa estos helpers siempre que necesites un dato de la marca en las vistas!
+2. **Paneles de Filament (Multi-Panel):**
+   El sistema está diseñado para escalar. Actualmente existe un `AdminPanelProvider` que maneja el CMS global (Sliders, Settings). 
+   *Próximo hito (Roadmap):* Activar y popular el `CustomerPanelProvider` e implementar **Multi-tenancy** a nivel de Modelos/Scopes para que las sub-agencias puedan operar aisladas.
+3. **Manejo de Sliders Dinámicos:**
+   Los carruseles del frontend se manejan a través de `HeroSlider`. Se utiliza la columna `slider_type` (`main`, `hero_stack`, `promo`) para renderizar componentes distintos en el archivo `welcome.blade.php`.
+4. **Captura de Leads y Chatbot (Gemini):**
+   El componente Livewire `PublicLeadForm` procesa consultas y dispara el `CaptureLeadAction`. El Chatbot usa la API de Gemini, pero su comportamiento e identidad se inyecta dinámicamente según el nombre configurado en la Marca Blanca.
+
+---
+
 ## 📚 Documentación
 
 Para entender en detalle el funcionamiento del sistema contable, los expedientes, el armado de *Ideas de Viaje* (paquetes) y la inteligencia artificial, asegúrate de leer el manual original:
