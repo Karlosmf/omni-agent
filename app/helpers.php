@@ -60,42 +60,49 @@ if (! function_exists('get_agency_settings')) {
     }
 }
 
-if (! function_exists('get_agency_logo')) {
-    function get_agency_logo(): string
+if (! function_exists('get_agency_logotipo_url')) {
+    function get_agency_logotipo_url(): string
     {
         $settings = get_agency_settings();
         
-        if ($settings && $settings->logo_path) {
-            return asset('storage/' . $settings->logo_path);
+        if ($settings && $settings->logotipo_path) {
+            return asset('images/branding/' . $settings->logotipo_path);
         }
 
         return asset('images/branding/logo-full.png');
     }
 }
 
-if (! function_exists('get_agency_logo_path')) {
-    function get_agency_logo_path(): string
+if (! function_exists('get_agency_logotipo_path')) {
+    function get_agency_logotipo_path(): string
     {
         $settings = get_agency_settings();
         
-        if ($settings && $settings->logo_path) {
-            return storage_path('app/public/' . $settings->logo_path);
+        if ($settings && $settings->logotipo_path) {
+            return public_path('images/branding/' . $settings->logotipo_path);
         }
 
         return public_path('images/branding/logo-full.png');
     }
 }
 
-if (! function_exists('get_agency_favicon')) {
-    function get_agency_favicon(): string
+if (! function_exists('get_agency_isotipo_url')) {
+    function get_agency_isotipo_url(): string
     {
         $settings = get_agency_settings();
         
-        if ($settings && $settings->favicon_path) {
-            return asset('storage/' . $settings->favicon_path);
+        if ($settings && $settings->isotipo_path) {
+            return asset('images/branding/' . $settings->isotipo_path);
         }
 
-        return asset('favicon.ico');
+        return asset('images/branding/logo-icon.png');
+    }
+}
+
+if (! function_exists('get_agency_favicon')) {
+    function get_agency_favicon(): string
+    {
+        return get_agency_isotipo_url();
     }
 }
 

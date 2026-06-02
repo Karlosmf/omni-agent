@@ -15,9 +15,10 @@ class AgencySetting extends Model
      */
     protected $fillable = [
         'company_name',
+        'gemini_api_key',
         'ai_assistant_name',
-        'logo_path',
-        'favicon_path',
+        'logotipo_path',
+        'isotipo_path',
         'fe_primary_color',
         'fe_secondary_color',
         'fe_accent_color',

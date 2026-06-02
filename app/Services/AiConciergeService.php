@@ -127,6 +127,14 @@ class AiConciergeService
         } catch (Throwable $e) {
             Log::error('AiConciergeService Error: '.$e->getMessage());
 
+            if ($e->getMessage() === 'GEMINI_API_KEY_MISSING') {
+                return "Por el momento, nuestro asistente virtual no está disponible.\n\n" .
+                       "PREGUNTAS FRECUENTES:\n" .
+                       "• ¿Cómo reservo un viaje? Puedes contactarnos por WhatsApp usando nuestros enlaces sociales.\n" .
+                       "• ¿Cuáles son los medios de pago? Aceptamos transferencias y tarjetas.\n" .
+                       "• ¿Dónde están ubicados? Revisa nuestra sección de contacto.";
+            }
+
             return 'Disculpá, estoy teniendo un pequeño problema técnico. ¿Podés intentar de nuevo en unos segundos? 🙏';
         }
     }
@@ -226,6 +234,12 @@ class AiConciergeService
                 $systemPrompt .= "\n\nHISTORIAL:\n{$context}";
             }
 
+            if (empty($settings?->gemini_api_key)) {
+                throw new \Exception("GEMINI_API_KEY_MISSING");
+            }
+            // Override config so the facade uses this API Key
+            config(['gemini.api_key' => $settings->gemini_api_key]);
+
             $fullResponse = '';
             $stream = Gemini::generativeModel('models/gemini-flash-latest')->generateContentStream("{$systemPrompt}\nUsuario: {$messageContent}");
 
@@ -243,7 +257,16 @@ class AiConciergeService
 
         } catch (Throwable $e) {
             Log::error('AiConciergeService Stream Error: '.$e->getMessage());
-            yield 'Disculpá, estoy teniendo un pequeño problema técnico. ¿Podés intentar de nuevo? 🙏';
+            
+            if ($e->getMessage() === 'GEMINI_API_KEY_MISSING') {
+                yield "Por el momento, nuestro asistente virtual no está disponible.\n\n" .
+                      "PREGUNTAS FRECUENTES:\n" .
+                      "• ¿Cómo reservo un viaje? Puedes contactarnos por WhatsApp usando nuestros enlaces sociales.\n" .
+                      "• ¿Cuáles son los medios de pago? Aceptamos transferencias y tarjetas.\n" .
+                      "• ¿Dónde están ubicados? Revisa nuestra sección de contacto.";
+            } else {
+                yield 'Disculpá, estoy teniendo un pequeño problema técnico. ¿Podés intentar de nuevo? 🙏';
+            }
         }
     }
 
@@ -279,6 +302,12 @@ class AiConciergeService
      */
     private function callGeminiWithRetry(string $prompt): string
     {
+        $settings = get_agency_settings();
+        if (empty($settings?->gemini_api_key)) {
+            throw new \Exception("GEMINI_API_KEY_MISSING");
+        }
+        config(['gemini.api_key' => $settings->gemini_api_key]);
+
         $lastException = null;
 
         for ($attempt = 0; $attempt <= self::MAX_RETRIES; $attempt++) {

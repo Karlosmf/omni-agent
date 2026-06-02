@@ -6,7 +6,7 @@
 
         <title>{{ $title ?? ($agencySettings->company_name ?? 'Omni-Agent') }}</title>
 
-        <link rel="icon" type="image/x-icon" href="{{ get_agency_favicon() }}">
+        <link rel="icon" type="image/x-icon" href="{{ get_agency_isotipo_url() }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

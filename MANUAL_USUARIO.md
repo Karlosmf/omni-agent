@@ -169,16 +169,22 @@ Si eres administrador, puedes personalizar todo el sistema para que tenga la ide
 *   **Scripts en Header:** Códigos que van en el `<head>` (rastreo).
 *   **Scripts en Footer:** Códigos que van al final del `<body>` (widgets de chat).
 
-#### Gestión de Sliders (Carrusel del Hero) 🖼️
-*   Ve al menú **"Configuración"** → **"Sliders"**.
-*   Aquí puedes crear las diapositivas que se ven al principio de la web.
+#### Gestión de Sliders (Imágenes Destacadas) 🖼️
+*   Ve al menú **"Catálogo"** → **"Sliders"**.
+*   Aquí puedes crear las imágenes que decoran la página principal.
+*   **Tipos de Slider:** Al crear uno nuevo, puedes elegir dónde se mostrará:
+    *   **Slider Principal:** El gran banner de pantalla completa.
+    *   **Hero Stack:** Las tarjetas flotantes a la derecha del inicio.
+    *   **Promociones:** El banner tipo franja horizontal que aparece debajo del encabezado principal.
+*   **Forma de Cargar la Imagen:** 
+    *   Puedes subir una imagen desde tu PC, usar una URL externa o elegir una de las imágenes predefinidas del sistema.
+    *   El sistema te sugerirá el tamaño ideal (ej. 1920x1080 o 1600x400) dependiendo del tipo de slider que elijas.
 *   Cada slider te permite configurar:
     *   **Título y Subtítulo:** El texto grande y la etiqueta superior.
     *   **Descripción:** Un párrafo informativo.
-    *   **Imagen:** La foto que se verá a la derecha.
     *   **Botones:** Puedes poner hasta dos botones con su propio texto y link (ej: "Ver más", "Reservar ahora"). Si dejas los campos de botones vacíos, no aparecerán.
-    *   **Orden:** Arrastra los sliders en la lista para decidir cuál se ve primero.
+    *   **Activo / Inactivo:** Puedes apagar un slider sin necesidad de borrarlo. ¡Ideal para promos temporales!
 
 ---
-*Manual actualizado para Sistema Omni-Agent v4.1 (Sliders dinámicos)*
+*Manual actualizado para Sistema Omni-Agent v4.2 (Marca Blanca, Sliders y Promos Integradas)*
 

@@ -124,6 +124,10 @@ class User extends Authenticatable implements FilamentUser
      */
     public function canAccessPanel(Panel $panel): bool
     {
+        if ($panel->getId() === 'customer') {
+            return $this->role === \App\Enums\UserRole::Customer;
+        }
+
         return $this->hasAnyPermission(['manage_users', 'manage_leads', 'manage_bookings', 'manage_transactions']);
     }
 }

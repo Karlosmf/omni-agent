@@ -22,6 +22,21 @@ class HeroSlidersTable
                 ImageColumn::make('image_path')
                     ->label('Imagen')
                     ->circular(),
+                TextColumn::make('slider_type')
+                    ->label('Ubicación')
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'main' => 'Principal',
+                        'hero_stack' => 'Hero Stack',
+                        'promo' => 'Promociones',
+                        default => $state,
+                    })
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'main' => 'primary',
+                        'hero_stack' => 'info',
+                        'promo' => 'warning',
+                        default => 'gray',
+                    }),
                 TextColumn::make('title')
                     ->label('Título')
                     ->searchable()

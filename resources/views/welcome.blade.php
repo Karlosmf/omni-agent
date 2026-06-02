@@ -95,10 +95,15 @@
             <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center gap-3">
-                    @if($agencySettings?->logo_path)
-                        <img class="h-12 w-auto" src="{{ asset('storage/' . $agencySettings->logo_path) }}" alt="{{ $agencySettings->company_name }}">
+                    @if($agencySettings?->logotipo_path || $agencySettings?->isotipo_path)
+                        @if($agencySettings?->logotipo_path)
+                            <img class="h-12 w-auto hidden md:block" src="{{ get_agency_logotipo_url() }}" alt="{{ $agencySettings->company_name }}">
+                        @endif
+                        @if($agencySettings?->isotipo_path)
+                            <img class="h-12 w-auto {{ $agencySettings?->logotipo_path ? 'md:hidden' : '' }}" src="{{ get_agency_isotipo_url() }}" alt="{{ $agencySettings->company_name }}">
+                        @endif
                     @else
-                        <img class="h-12 w-auto" src="{{ get_agency_logo() }}" alt="{{ config('app.name') }}">
+                        <span class="text-xl font-bold text-gray-900">{{ $agencySettings?->company_name ?? config('app.name') }}</span>
                     @endif
                 </div>
 
@@ -107,67 +112,63 @@
                     <button @click="showConsultasModal = true"
                         class="text-gray-600 hover:text-amber-600 font-medium transition-colors">Consultas</button>
 
-                    <!-- WhatsApp Dropdown -->
-                    <div class="relative" @click.away="showWhatsAppDropdown = false">
-                        <button @click="showWhatsAppDropdown = !showWhatsAppDropdown"
-                            class="text-gray-600 hover:text-green-600 font-medium transition-colors flex items-center gap-1 group">
-                            <span>WhatsApp</span>
-                            <svg class="w-4 h-4 transition-transform duration-200"
-                                :class="showWhatsAppDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </button>
+                    @php
+                        $whatsappLinks = collect($agencySettings?->social_links ?? [])
+                            ->filter(fn($link) => 
+                                str_contains(strtolower($link['platform'] ?? ''), 'whatsapp') || 
+                                str_contains(strtolower($link['icon'] ?? ''), 'whatsapp')
+                            );
+                        $hasPhone = !empty($agencySettings?->contact_phone);
+                    @endphp
+                    @if($whatsappLinks->isNotEmpty() || $hasPhone)
+                        <!-- WhatsApp Dropdown -->
+                        <div class="relative" @click.away="showWhatsAppDropdown = false">
+                            <button @click="showWhatsAppDropdown = !showWhatsAppDropdown"
+                                class="text-gray-600 hover:text-green-600 font-medium transition-colors flex items-center gap-1 group">
+                                <span>WhatsApp</span>
+                                <svg class="w-4 h-4 transition-transform duration-200"
+                                    :class="showWhatsAppDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
 
-                        <div x-show="showWhatsAppDropdown" x-transition:enter="transition ease-out duration-100"
-                            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                            x-transition:leave="transition ease-in duration-75"
-                            x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
-                            class="absolute right-0 mt-2 w-48 rounded-xl bg-white shadow-xl border border-gray-100 py-2 z-50 overflow-hidden"
-                            style="display: none;">
-                            @php
-                                $whatsappLinks = collect($agencySettings?->social_links ?? [])
-                                    ->filter(fn($link) => 
-                                        str_contains(strtolower($link['platform'] ?? ''), 'whatsapp') || 
-                                        str_contains(strtolower($link['icon'] ?? ''), 'whatsapp')
-                                    );
-                            @endphp
+                            <div x-show="showWhatsAppDropdown" x-transition:enter="transition ease-out duration-100"
+                                x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                                x-transition:leave="transition ease-in duration-75"
+                                x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                                class="absolute right-0 mt-2 w-48 rounded-xl bg-white shadow-xl border border-gray-100 py-2 z-50 overflow-hidden"
+                                style="display: none;">
 
-                            @if($whatsappLinks->isNotEmpty())
-                                @foreach($whatsappLinks as $link)
-                                    @php
-                                        $platformName = $link['platform'] ?? 'WhatsApp';
-                                        $displayName = str_ireplace('WhatsApp', '', $platformName);
-                                        $displayName = trim($displayName) ?: 'WhatsApp';
-                                        $initial = strtoupper(substr($displayName, 0, 1));
-                                    @endphp
-                                    <a href="{{ format_social_link($link['url']) }}" target="_blank"
+                                @if($whatsappLinks->isNotEmpty())
+                                    @foreach($whatsappLinks as $link)
+                                        @php
+                                            $platformName = $link['platform'] ?? 'WhatsApp';
+                                            $displayName = str_ireplace('WhatsApp', '', $platformName);
+                                            $displayName = trim($displayName) ?: 'WhatsApp';
+                                            $initial = strtoupper(substr($displayName, 0, 1));
+                                        @endphp
+                                        <a href="{{ format_social_link($link['url']) }}" target="_blank"
+                                            class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
+                                            <div
+                                                class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-xs font-bold font-mono">
+                                                {{ $initial }}</div>
+                                            <span class="font-medium">{{ $displayName }}</span>
+                                        </a>
+                                    @endforeach
+                                @else
+                                    <a href="https://wa.me/{{ str_replace([' ', '-', '(', ')', '+'], '', $agencySettings->contact_phone) }}" target="_blank"
                                         class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
                                         <div
                                             class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-xs font-bold font-mono">
-                                            {{ $initial }}</div>
-                                        <span class="font-medium">{{ $displayName }}</span>
+                                            W</div>
+                                        <span class="font-medium">WhatsApp</span>
                                     </a>
-                                @endforeach
-                            @else
-                                <a href="https://wa.link/16om0v" target="_blank"
-                                    class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
-                                    <div
-                                        class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-xs font-bold font-mono">
-                                        B</div>
-                                    <span class="font-medium">Belén</span>
-                                </a>
-                                <a href="https://wa.link/28mpwn" target="_blank"
-                                    class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
-                                    <div
-                                        class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-xs font-bold font-mono">
-                                        N</div>
-                                    <span class="font-medium">Nela</span>
-                                </a>
-                            @endif
+                                @endif
+                            </div>
                         </div>
-                    </div>
+                    @endif
 
                     @php
                         $instagramLink = collect($agencySettings?->social_links ?? [])->first(fn($l) => str_contains(strtolower($l['platform'] ?? ''), 'instagram'));
@@ -215,53 +216,40 @@
                     Consultas
                 </button>
 
-                <!-- WhatsApp Mobile Group -->
-                <div class="px-3 py-2">
-                    <span
-                        class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">WhatsApp</span>
-                    <div class="flex flex-col gap-2 pl-2">
-                        @php
-                            $whatsappLinks = collect($agencySettings?->social_links ?? [])
-                                ->filter(fn($link) => 
-                                    str_contains(strtolower($link['platform'] ?? ''), 'whatsapp') || 
-                                    str_contains(strtolower($link['icon'] ?? ''), 'whatsapp')
-                                );
-                        @endphp
-
-                        @if($whatsappLinks->isNotEmpty())
-                            @foreach($whatsappLinks as $link)
-                                @php
-                                    $platformName = $link['platform'] ?? 'WhatsApp';
-                                    $displayName = str_ireplace('WhatsApp', '', $platformName);
-                                    $displayName = trim($displayName) ?: 'WhatsApp';
-                                    $initial = strtoupper(substr($displayName, 0, 1));
-                                @endphp
-                                <a href="{{ format_social_link($link['url']) }}" target="_blank"
+                @if($whatsappLinks->isNotEmpty() || $hasPhone)
+                    <!-- WhatsApp Mobile Group -->
+                    <div class="px-3 py-2">
+                        <span
+                            class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">WhatsApp</span>
+                        <div class="flex flex-col gap-2 pl-2">
+                            @if($whatsappLinks->isNotEmpty())
+                                @foreach($whatsappLinks as $link)
+                                    @php
+                                        $platformName = $link['platform'] ?? 'WhatsApp';
+                                        $displayName = str_ireplace('WhatsApp', '', $platformName);
+                                        $displayName = trim($displayName) ?: 'WhatsApp';
+                                        $initial = strtoupper(substr($displayName, 0, 1));
+                                    @endphp
+                                    <a href="{{ format_social_link($link['url']) }}" target="_blank"
+                                        class="flex items-center gap-2 text-gray-700 hover:text-green-600">
+                                        <div
+                                            class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-[10px] font-bold">
+                                            {{ $initial }}</div>
+                                        <span>{{ $displayName }}</span>
+                                    </a>
+                                @endforeach
+                            @else
+                                <a href="https://wa.me/{{ str_replace([' ', '-', '(', ')', '+'], '', $agencySettings->contact_phone) }}" target="_blank"
                                     class="flex items-center gap-2 text-gray-700 hover:text-green-600">
                                     <div
                                         class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-[10px] font-bold">
-                                        {{ $initial }}</div>
-                                    <span>{{ $displayName }}</span>
+                                        W</div>
+                                    <span>WhatsApp</span>
                                 </a>
-                            @endforeach
-                        @else
-                            <a href="https://wa.link/16om0v" target="_blank"
-                                class="flex items-center gap-2 text-gray-700 hover:text-green-600">
-                                <div
-                                    class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-[10px] font-bold">
-                                    B</div>
-                                <span>Belén</span>
-                            </a>
-                            <a href="https://wa.link/28mpwn" target="_blank"
-                                class="flex items-center gap-2 text-gray-700 hover:text-green-600">
-                                <div
-                                    class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-[10px] font-bold">
-                                    N</div>
-                                <span>Nela</span>
-                            </a>
-                        @endif
+                            @endif
+                        </div>
                     </div>
-                </div>
+                @endif
 
                 @if($instagramLink)
                     <a href="{{ format_social_link($instagramLink['url']) }}" target="_blank"
@@ -289,14 +277,16 @@
     <main class="flex-grow flex flex-col pt-20">
 
         @php
-            $sliders = \App\Models\HeroSlider::where('is_active', true)->orderBy('sort_order')->get();
+            $mainSliders = \App\Models\HeroSlider::where('is_active', true)->where('slider_type', 'main')->orderBy('sort_order')->get();
+            $stackSliders = \App\Models\HeroSlider::where('is_active', true)->where('slider_type', 'hero_stack')->orderBy('sort_order')->get();
+            $promoSliders = \App\Models\HeroSlider::where('is_active', true)->where('slider_type', 'promo')->orderBy('sort_order')->get();
         @endphp
 
-        @if($sliders->isNotEmpty())
+        @if($mainSliders->isNotEmpty())
             <!-- Hero Slider -->
             <div x-data="{ 
                 activeSlide: 0, 
-                slidesCount: {{ $sliders->count() }},
+                slidesCount: {{ $mainSliders->count() }},
                 autoplay() {
                     setInterval(() => {
                         this.activeSlide = (this.activeSlide + 1) % this.slidesCount;
@@ -304,7 +294,7 @@
                 }
             }" x-init="autoplay()" class="relative overflow-hidden">
 
-                @foreach($sliders as $index => $slide)
+                @foreach($mainSliders as $index => $slide)
                     <div x-show="activeSlide === {{ $index }}" 
                          x-transition:enter="transition ease-out duration-1000"
                          x-transition:enter-start="opacity-0 transform translate-x-full"
@@ -378,9 +368,9 @@
                 @endforeach
 
                 <!-- Slider Indicators -->
-                @if($sliders->count() > 1)
+                @if($mainSliders->count() > 1)
                     <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
-                        @foreach($sliders as $index => $slide)
+                        @foreach($mainSliders as $index => $slide)
                             <button @click="activeSlide = {{ $index }}" 
                                     class="w-3 h-3 rounded-full transition-all duration-300"
                                     :class="activeSlide === {{ $index }} ? 'bg-amber-500 w-8' : 'bg-gray-300'"></button>
@@ -450,7 +440,7 @@
 
                         <div class="absolute inset-0 bg-gray-900 rounded-3xl rotate-3 opacity-20 blur-lg"></div>
                         <div class="relative rounded-3xl shadow-2xl overflow-hidden border-4 border-white aspect-[4/5]">
-                            <x-photo-stack />
+                            <x-photo-stack :sliders="$stackSliders" />
                         </div>
                     </div>
                     <!-- Spacer for the form overlap -->
@@ -459,6 +449,8 @@
 
             </div>
         @endif
+
+        <x-promo-slider :sliders="$promoSliders" />
 
         <!-- Travel Packages Section -->
         <div id="travel-packages" class="px-8 sm:px-12 lg:px-16 py-12">
@@ -695,10 +687,12 @@
     <!-- Footer -->
     <footer class="bg-white/80 backdrop-blur-md border-t border-gray-200 py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            @if($agencySettings?->logo_path)
-                <img class="h-12 w-auto mx-auto mb-6" src="{{ asset('storage/' . $agencySettings->logo_path) }}" alt="{{ $agencySettings->company_name }}">
+            @if($agencySettings?->logotipo_path)
+                <img class="h-12 w-auto mx-auto mb-6" src="{{ get_agency_logotipo_url() }}" alt="{{ $agencySettings->company_name }}">
+            @elseif($agencySettings?->isotipo_path)
+                <img class="h-12 w-auto mx-auto mb-6" src="{{ get_agency_isotipo_url() }}" alt="{{ $agencySettings->company_name }}">
             @else
-                <img class="h-12 w-auto mx-auto mb-6" src="{{ get_agency_logo() }}" alt="{{ config('app.name') }}">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">{{ $agencySettings?->company_name ?? config('app.name') }}</h2>
             @endif
             
             @if($agencySettings?->address)

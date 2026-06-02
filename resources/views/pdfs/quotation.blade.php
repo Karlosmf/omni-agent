@@ -108,7 +108,7 @@
     <div class="header">
         @php
             $settings = get_agency_settings();
-            $logoPath = get_agency_logo_path();
+            $logoPath = get_agency_logotipo_path();
         @endphp
         <div class="company-info">
             <strong>{{ $settings?->company_name ?? config('app.name', 'nuestra agencia de viajes') }}</strong><br>

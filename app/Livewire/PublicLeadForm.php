@@ -52,20 +52,17 @@ class PublicLeadForm extends Component implements HasForms
             ->statePath('data');
     }
 
-    public function submit(\App\Services\AiConciergeService $aiService)
+    public function submit(\App\Services\AiConciergeService $aiService, \App\Actions\Leads\CaptureLeadAction $captureLeadAction)
     {
         $data = $this->form->getState();
 
-        $lead = Lead::create([
-            'customer_name' => $data['name'],
+        $lead = $captureLeadAction->execute([
+            'customer_name'  => $data['name'],
             'customer_phone' => $data['phone'] ?? 'Web-Form',
-            'source' => 'web_form',
-            'raw_message' => $data['message'],
-            'status' => \App\Enums\LeadStatus::New,
-            'temperature' => \App\Enums\LeadTemperature::Cool,
-            'ai_data' => [
-                'email' => $data['email'],
-            ],
+            'customer_email' => $data['email'],
+            'source'         => 'web_form',
+            'raw_message'    => $data['message'],
+            'ai_data'        => ['email' => $data['email']],
         ]);
 
         // Process message with AI to get a summary/intent

@@ -106,7 +106,7 @@
             @endif
         </div>
         @php
-            $logoPath = get_agency_logo_path();
+            $logoPath = get_agency_logotipo_path();
         @endphp
         <img src="{{ $logoPath }}" alt="{{ config('app.name') }}" class="logo">
     </div>

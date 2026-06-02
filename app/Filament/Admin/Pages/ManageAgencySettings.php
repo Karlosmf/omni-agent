@@ -72,24 +72,38 @@ class ManageAgencySettings extends Page implements HasForms
                                                     ->label('Nombre de la Asistente Virtual')
                                                     ->placeholder('Ej: Brisa')
                                                     ->required(),
+                                                TextInput::make('gemini_api_key')
+                                                    ->label('Gemini API Key')
+                                                    ->placeholder('AIzaSy...')
+                                                    ->helperText('Si se deja en blanco, se desactivará la IA y se mostrarán FAQs.')
+                                                    ->password()
+                                                    ->revealable()
+                                                    ->columnSpanFull(),
                                             ]),
 
                                         Grid::make(2)
                                             ->schema([
-                                                FileUpload::make('logo_path')
-                                                    ->label('Logo de la Agencia')
+                                                FileUpload::make('logotipo_path')
+                                                    ->label('Logotipo de la Agencia (Logo completo)')
                                                     ->image()
-                                                    ->disk('public')
-                                                    ->directory('agency')
+                                                    ->disk('branding')
+                                                    ->directory('')
+                                                    ->getUploadedFileNameForStorageUsing(
+                                                        fn (\Illuminate\Http\UploadedFile $file): string => 'logotipo.' . $file->getClientOriginalExtension()
+                                                    )
+                                                    ->maxSize(2048)
                                                     ->imageEditor()
                                                     ->imagePreviewHeight('80')
                                                     ->columnSpan(1),
-
-                                                FileUpload::make('favicon_path')
-                                                    ->label('Favicon')
+                                                FileUpload::make('isotipo_path')
+                                                    ->label('Isotipo de la Agencia (Icono/Símbolo - Se usará como Favicon)')
                                                     ->image()
-                                                    ->disk('public')
-                                                    ->directory('agency')
+                                                    ->disk('branding')
+                                                    ->directory('')
+                                                    ->getUploadedFileNameForStorageUsing(
+                                                        fn (\Illuminate\Http\UploadedFile $file): string => 'isotipo.' . $file->getClientOriginalExtension()
+                                                    )
+                                                    ->maxSize(1024)
                                                     ->imageEditor()
                                                     ->imagePreviewHeight('80')
                                                     ->columnSpan(1),

@@ -7,8 +7,8 @@
 
     <title>{{ $title ?? ($agencySettings->company_name ?? 'Omni-Agent') }}</title>
 
-    @if($agencySettings?->favicon_path)
-        <link rel="icon" type="image/x-icon" href="{{ asset('storage/' . $agencySettings->favicon_path) }}">
+    @if($agencySettings?->isotipo_path)
+        <link rel="icon" type="image/x-icon" href="{{ get_agency_favicon() }}">
     @endif
 
     <!-- Fonts -->

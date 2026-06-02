@@ -71,17 +71,15 @@ $submitCapture = function () {
         $budget = $this->captureCurrency . ' ' . number_format((float) $this->captureBudgetAmount, 0, ',', '.');
     }
 
-    // Create Lead with real data
-    $lead = Lead::create([
+    // Create Lead with real data and Customer association
+    $captureLeadAction = app(\App\Actions\Leads\CaptureLeadAction::class);
+    $lead = $captureLeadAction->execute([
         'customer_name' => trim($this->captureName),
         'customer_phone' => trim($this->capturePhone),
         'customer_email' => !empty(trim($this->captureEmail)) ? trim($this->captureEmail) : null,
         'customer_budget' => $budget,
         'source' => 'web_widget',
         'raw_message' => "Interesado en: {$destination}",
-        'status' => LeadStatus::New ,
-        'temperature' => LeadTemperature::Cool,
-        'needs_human_attention' => false,
         'ai_data' => [
             'destino' => $destination !== 'Sin definir' ? $destination : null,
             'presupuesto' => $budget,
@@ -105,7 +103,7 @@ $submitCapture = function () {
     ];
 };
 
-$sendMessage = function (AiConciergeService $aiService) {
+$sendMessage = function () {
     if (empty(trim($this->input)))
         return;
 
@@ -124,59 +122,23 @@ $sendMessage = function (AiConciergeService $aiService) {
 
         if (!$lead) {
             // Fallback: create lead if somehow capture was skipped
-            $lead = Lead::create([
+            $captureLeadAction = app(\App\Actions\Leads\CaptureLeadAction::class);
+            $lead = $captureLeadAction->execute([
                 'customer_name' => $this->captureName ?: 'Web Guest',
                 'customer_phone' => $this->capturePhone ?: 'Sin teléfono',
                 'customer_email' => !empty($this->captureEmail) ? $this->captureEmail : null,
                 'customer_budget' => (!empty($this->captureCurrency) && !empty($this->captureBudgetAmount)) ? $this->captureCurrency . ' ' . $this->captureBudgetAmount : null,
                 'source' => 'web_widget',
                 'raw_message' => $userMsg,
-                'status' => LeadStatus::New ,
-                'temperature' => LeadTemperature::Cool,
-                'needs_human_attention' => false,
                 'ai_data' => ['history' => []],
             ]);
             $this->leadId = $lead->id;
             session(['chat_lead_id' => $lead->id]);
         }
 
-        // 3. Process with AI
-        $replyContent = $aiService->processMessage($userMsg, $lead);
-
-        // 4. Extract and update lead data
-        $queryContext = array_slice($this->messages, -10);
-
-        if (strlen($userMsg) > 2 || count($queryContext) > 0) {
-            $extractionContext = $userMsg;
-            if (!empty($queryContext)) {
-                $extractionContext = json_encode($queryContext) . "\nLAST_MSG: " . $userMsg;
-            }
-
-            $extraction = $aiService->extractLeadData($extractionContext);
-
-            if (!empty($extraction)) {
-                $currentAiData = $lead->ai_data ?? [];
-
-                $newAiData = array_merge($currentAiData, array_filter([
-                    'destino' => $extraction['destino'] ?? null,
-                    'presupuesto' => $extraction['presupuesto'] ?? null,
-                    'pasajeros' => $extraction['pasajeros'] ?? null,
-                ]));
-
-                $updateData = [
-                    'ai_data' => $newAiData,
-                    'ai_summary' => $extraction['resumen'] ?? $lead->ai_summary,
-                    'needs_human_attention' => ($extraction['requiere_atencion'] ?? false) || ($lead->needs_human_attention),
-                ];
-
-                // Update customer name if extracted and still generic
-                if (!empty($extraction['nombre']) && ($lead->customer_name === 'Web Guest' || empty($lead->customer_name))) {
-                    $updateData['customer_name'] = $extraction['nombre'];
-                }
-
-                $lead->update($updateData);
-            }
-        }
+        // 3. Process with Action
+        $processAction = app(\App\Actions\Leads\ProcessChatbotInteractionAction::class);
+        $replyContent = $processAction->execute($userMsg, $lead, $this->messages);
 
     } catch (\Throwable $e) {
         \Illuminate\Support\Facades\Log::error("Chatbot Error: " . $e->getMessage());

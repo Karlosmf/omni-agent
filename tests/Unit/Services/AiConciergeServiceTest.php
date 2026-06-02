@@ -9,11 +9,13 @@ use Illuminate\Support\Facades\Log;
 
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
+beforeEach(function () {
+    \App\Models\AgencySetting::factory()->create(['gemini_api_key' => 'fake_api_key']);
+});
+
 test('it processes message successfully and saves history', function () {
-    // Create Lead
     $lead = Lead::factory()->create();
 
-    // Mock Gemini
     $mockResponse = Mockery::mock();
     $mockResponse->shouldReceive('text')->andReturn('Respuesta simulada de Gemini');
 
@@ -30,7 +32,6 @@ test('it processes message successfully and saves history', function () {
 
     expect($response)->toBe('Respuesta simulada de Gemini');
 
-    // Assert Messages Saved
     $this->assertDatabaseHas('messages', [
         'lead_id' => $lead->id,
         'role' => 'user',
@@ -47,7 +48,6 @@ test('it processes message successfully and saves history', function () {
 test('it updates temperature to warm on keywords', function () {
     $lead = Lead::factory()->create(['temperature' => LeadTemperature::Cool]);
 
-    // Mock Gemini (simplified)
     $mockResponse = Mockery::mock();
     $mockResponse->shouldReceive('text')->andReturn('Ok');
     $mockModel = Mockery::mock();
@@ -65,7 +65,6 @@ test('it updates temperature to warm on keywords', function () {
 test('it updates temperature to hot on human request', function () {
     $lead = Lead::factory()->create(['temperature' => LeadTemperature::Cool]);
 
-    // Mock Gemini
     $mockResponse = Mockery::mock();
     $mockResponse->shouldReceive('text')->andReturn('Ok');
     $mockModel = Mockery::mock();
@@ -95,4 +94,20 @@ test('it handles errors gracefully', function () {
     $response = $service->processMessage('Hola', $lead);
 
     expect($response)->toBe('Disculpá, estoy teniendo un pequeño problema técnico. ¿Podés intentar de nuevo en unos segundos? 🙏');
+});
+
+test('it returns FAQ when Gemini API key is missing', function () {
+    $lead = Lead::factory()->create();
+
+    // Set empty API key
+    $settings = \App\Models\AgencySetting::first();
+    $settings->gemini_api_key = null;
+    $settings->save();
+
+    Log::shouldReceive('error')->once();
+
+    $service = new AiConciergeService;
+    $response = $service->processMessage('Hola', $lead);
+
+    expect($response)->toContain('PREGUNTAS FRECUENTES:');
 });

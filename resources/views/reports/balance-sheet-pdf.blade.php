@@ -63,7 +63,7 @@
 <body>
     @php
         $settings = get_agency_settings();
-        $logoPath = get_agency_logo_path();
+        $logoPath = get_agency_logotipo_path();
     @endphp
     <div class="header">
         @if($logoPath)

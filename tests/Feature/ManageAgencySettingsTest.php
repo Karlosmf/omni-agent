@@ -43,10 +43,12 @@ it('can save agency settings', function () {
         ->set('data.be_success_color', '#22c55e')
         ->set('data.be_warning_color', '#f59e0b')
         ->set('data.be_danger_color', '#ef4444')
+        ->set('data.gemini_api_key', 'AIzaSyFakeKey...')
         ->call('save')
         ->assertHasNoErrors();
 
     $settings = AgencySetting::first();
     expect($settings->company_name)->toBe('Omni Agent Updated')
-        ->and($settings->fe_primary_color)->toBe('#ff0000');
+        ->and($settings->fe_primary_color)->toBe('#ff0000')
+        ->and($settings->gemini_api_key)->toBe('AIzaSyFakeKey...');
 });

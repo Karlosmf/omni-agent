@@ -35,17 +35,18 @@ new #[Layout('components.layouts.guest')] class extends Component
         $fullMessage = "Consulta por paquete: {$this->package->title} ({$this->package->nights} noches, {$this->package->destination}).\n".
                        'Mensaje del cliente: '.($this->message ?: 'Sin comentarios adicionales.');
 
-        $lead = \App\Models\Lead::create([
+        $captureLeadAction = app(\App\Actions\Leads\CaptureLeadAction::class);
+        $lead = $captureLeadAction->execute([
             'customer_name' => $this->name,
             'customer_phone' => $this->phone ?: 'No provisto',
+            'customer_email' => $this->email,
             'source' => 'web_form',
             'raw_message' => $fullMessage,
-            'status' => \App\Enums\LeadStatus::New,
-            'temperature' => \App\Enums\LeadTemperature::Cool,
             'ai_data' => [
                 'email' => $this->email,
                 'package_id' => $this->package->id,
             ],
+            'travel_package_id' => $this->package->id,
         ]);
 
         try {
