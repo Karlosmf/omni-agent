@@ -24,13 +24,14 @@ use Symfony\Component\ErrorHandler\ErrorHandler;
 class ErrorHandlerConfigurator
 {
     private array|int|null $levels;
+
     private ?int $throwAt;
 
     /**
-     * @param array|int|null $levels  An array map of E_* to LogLevel::* or an integer bit field of E_* constants
-     * @param int|null       $throwAt Thrown errors in a bit field of E_* constants, or null to keep the current value
-     * @param bool           $scream  Enables/disables screaming mode, where even silenced errors are logged
-     * @param bool           $scope   Enables/disables scoping mode
+     * @param  array|int|null  $levels  An array map of E_* to LogLevel::* or an integer bit field of E_* constants
+     * @param  int|null  $throwAt  Thrown errors in a bit field of E_* constants, or null to keep the current value
+     * @param  bool  $scream  Enables/disables screaming mode, where even silenced errors are logged
+     * @param  bool  $scope  Enables/disables scoping mode
      */
     public function __construct(
         private ?LoggerInterface $logger = null,
@@ -41,7 +42,7 @@ class ErrorHandlerConfigurator
         private ?LoggerInterface $deprecationLogger = null,
     ) {
         $this->levels = $levels ?? \E_ALL;
-        $this->throwAt = \is_int($throwAt) ? $throwAt : (null === $throwAt ? null : ($throwAt ? \E_ALL : null));
+        $this->throwAt = \is_int($throwAt) ? $throwAt : ($throwAt === null ? null : ($throwAt ? \E_ALL : null));
     }
 
     /**
@@ -70,7 +71,7 @@ class ErrorHandlerConfigurator
             }
             $this->logger = $this->deprecationLogger = $this->levels = null;
         }
-        if (null !== $this->throwAt) {
+        if ($this->throwAt !== null) {
             $handler->throwAt($this->throwAt, true);
         }
     }
@@ -81,7 +82,7 @@ class ErrorHandlerConfigurator
             $levelsDeprecatedOnly = [];
             $levelsWithoutDeprecated = [];
             foreach ($this->levels as $type => $log) {
-                if (\E_DEPRECATED == $type || \E_USER_DEPRECATED == $type) {
+                if ($type == \E_DEPRECATED || $type == \E_USER_DEPRECATED) {
                     $levelsDeprecatedOnly[$type] = $log;
                 } else {
                     $levelsWithoutDeprecated[$type] = $log;

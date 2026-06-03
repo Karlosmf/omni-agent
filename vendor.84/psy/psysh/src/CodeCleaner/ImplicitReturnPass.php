@@ -27,21 +27,11 @@ use PhpParser\Node\Stmt\Switch_;
  */
 class ImplicitReturnPass extends CodeCleanerPass
 {
-    /**
-     * @param array $nodes
-     *
-     * @return array
-     */
     public function beforeTraverse(array $nodes): array
     {
         return $this->addImplicitReturn($nodes);
     }
 
-    /**
-     * @param array $nodes
-     *
-     * @return array
-     */
     private function addImplicitReturn(array $nodes): array
     {
         // If nodes is empty, it can't have a return value.
@@ -74,17 +64,17 @@ class ImplicitReturnPass extends CodeCleanerPass
                     $case->stmts[] = $caseLast;
                 }
             }
-        } elseif ($last instanceof Expr && !($last instanceof Exit_)) {
+        } elseif ($last instanceof Expr && ! ($last instanceof Exit_)) {
             // @codeCoverageIgnoreStart
             $nodes[\count($nodes) - 1] = new Return_($last, [
                 'startLine' => $last->getStartLine(),
-                'endLine'   => $last->getEndLine(),
+                'endLine' => $last->getEndLine(),
             ]);
             // @codeCoverageIgnoreEnd
-        } elseif ($last instanceof Expression && !($last->expr instanceof Exit_)) {
+        } elseif ($last instanceof Expression && ! ($last->expr instanceof Exit_)) {
             $nodes[\count($nodes) - 1] = new Return_($last->expr, [
                 'startLine' => $last->getStartLine(),
-                'endLine'   => $last->getEndLine(),
+                'endLine' => $last->getEndLine(),
             ]);
         } elseif ($last instanceof Namespace_) {
             $last->stmts = $this->addImplicitReturn($last->stmts);
@@ -112,14 +102,12 @@ class ImplicitReturnPass extends CodeCleanerPass
      *
      * As of PHP Parser 4.x, Expressions are now instances of Stmt as well, so
      * we'll exclude them here.
-     *
-     * @param Node $node
      */
     private static function isNonExpressionStmt(Node $node): bool
     {
         return $node instanceof Stmt &&
-            !$node instanceof Expression &&
-            !$node instanceof Return_ &&
-            !$node instanceof Namespace_;
+            ! $node instanceof Expression &&
+            ! $node instanceof Return_ &&
+            ! $node instanceof Namespace_;
     }
 }

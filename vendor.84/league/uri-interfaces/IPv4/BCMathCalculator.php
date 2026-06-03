@@ -25,6 +25,7 @@ use function str_split;
 final class BCMathCalculator implements Calculator
 {
     private const SCALE = 0;
+
     private const CONVERSION_TABLE = [
         '0' => '0', '1' => '1', '2' => '2', '3' => '3',
         '4' => '4', '5' => '5', '6' => '6', '7' => '7',
@@ -35,7 +36,7 @@ final class BCMathCalculator implements Calculator
     public function baseConvert(mixed $value, int $base): string
     {
         $value = (string) $value;
-        if (10 === $base) {
+        if ($base === 10) {
             return $value;
         }
 

@@ -29,9 +29,8 @@ class NotACarbonClassException extends BaseInvalidArgumentException implements I
     /**
      * Constructor.
      *
-     * @param string         $className
-     * @param int            $code
-     * @param Throwable|null $previous
+     * @param  string  $className
+     * @param  int  $code
      */
     public function __construct($className, $code = 0, ?Throwable $previous = null)
     {
@@ -46,8 +45,6 @@ class NotACarbonClassException extends BaseInvalidArgumentException implements I
 
     /**
      * Get the className.
-     *
-     * @return string
      */
     public function getClassName(): string
     {

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,14 +9,16 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework;
+
+use PHPUnit\Framework\TestSize\TestSize;
+use PHPUnit\Metadata\Api\Groups;
 
 use function assert;
 use function class_exists;
 use function count;
 use function explode;
-use PHPUnit\Framework\TestSize\TestSize;
-use PHPUnit\Metadata\Api\Groups;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -34,14 +38,14 @@ final class DataProviderTestSuite extends TestSuite
     private ?array $providedTests = null;
 
     /**
-     * @param list<ExecutionOrderDependency> $dependencies
+     * @param  list<ExecutionOrderDependency>  $dependencies
      */
     public function setDependencies(array $dependencies): void
     {
         $this->dependencies = $dependencies;
 
         foreach ($this->tests() as $test) {
-            if (!$test instanceof TestCase) {
+            if (! $test instanceof TestCase) {
                 continue;
             }
 

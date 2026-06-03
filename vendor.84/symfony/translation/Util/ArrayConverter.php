@@ -29,7 +29,7 @@ class ArrayConverter
      * Converts linear messages array to tree-like array.
      * For example: ['foo.bar' => 'value'] will be converted to ['foo' => ['bar' => 'value']].
      *
-     * @param array $messages Linear messages array
+     * @param  array  $messages  Linear messages array
      */
     public static function expandToTree(array $messages): array
     {
@@ -108,20 +108,20 @@ class ArrayConverter
         $buffer = '';
 
         foreach ($parts as $index => $part) {
-            if (0 === $index && '' === $part) {
+            if ($index === 0 && $part === '') {
                 $buffer = '.';
 
                 continue;
             }
 
-            if ($index === $partsCount - 1 && '' === $part) {
+            if ($index === $partsCount - 1 && $part === '') {
                 $buffer .= '.';
                 $result[] = $buffer;
 
                 continue;
             }
 
-            if (isset($parts[$index + 1]) && '' === $parts[$index + 1]) {
+            if (isset($parts[$index + 1]) && $parts[$index + 1] === '') {
                 $buffer .= $part;
 
                 continue;

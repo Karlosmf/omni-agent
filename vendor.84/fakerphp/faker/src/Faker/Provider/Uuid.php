@@ -15,7 +15,7 @@ class Uuid extends Base
     {
         // fix for compatibility with 32bit architecture; each mt_rand call is restricted to 32bit
         // two such calls will cause 64bits of randomness regardless of architecture
-        $seed = self::numberBetween(0, 2147483647) . '#' . self::numberBetween(0, 2147483647);
+        $seed = self::numberBetween(0, 2147483647).'#'.self::numberBetween(0, 2147483647);
 
         // Hash the seed and convert to a byte array
         $val = md5($seed, true);
@@ -26,18 +26,18 @@ class Uuid extends Base
         $tMi = ($byte[4] << 8) | $byte[5];
         $tHi = ($byte[6] << 8) | $byte[7];
         $csLo = $byte[9];
-        $csHi = $byte[8] & 0x3f | (1 << 7);
+        $csHi = $byte[8] & 0x3F | (1 << 7);
 
         // correct byte order for big edian architecture
         if (pack('L', 0x6162797A) == pack('N', 0x6162797A)) {
-            $tLo = (($tLo & 0x000000ff) << 24) | (($tLo & 0x0000ff00) << 8)
-                | (($tLo & 0x00ff0000) >> 8) | (($tLo & 0xff000000) >> 24);
-            $tMi = (($tMi & 0x00ff) << 8) | (($tMi & 0xff00) >> 8);
-            $tHi = (($tHi & 0x00ff) << 8) | (($tHi & 0xff00) >> 8);
+            $tLo = (($tLo & 0x000000FF) << 24) | (($tLo & 0x0000FF00) << 8)
+                | (($tLo & 0x00FF0000) >> 8) | (($tLo & 0xFF000000) >> 24);
+            $tMi = (($tMi & 0x00FF) << 8) | (($tMi & 0xFF00) >> 8);
+            $tHi = (($tHi & 0x00FF) << 8) | (($tHi & 0xFF00) >> 8);
         }
 
         // apply version number
-        $tHi &= 0x0fff;
+        $tHi &= 0x0FFF;
         $tHi |= (3 << 12);
 
         // cast to string

@@ -21,7 +21,7 @@ final class ObjectProperties implements IteratorAggregate
     public array $properties;
 
     /**
-     * @param PropertyDescription[] $properties
+     * @param  PropertyDescription[]  $properties
      */
     public function __construct(array $properties)
     {

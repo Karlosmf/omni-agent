@@ -33,7 +33,7 @@ trait HasRoutes
      */
     protected array $authenticatedTenantRoutes = [];
 
-    protected string | Closure | null $homeUrl = null;
+    protected string|Closure|null $homeUrl = null;
 
     /**
      * @var array<string>
@@ -66,7 +66,7 @@ trait HasRoutes
         return $this;
     }
 
-    public function homeUrl(string | Closure | null $url): static
+    public function homeUrl(string|Closure|null $url): static
     {
         $this->homeUrl = $url;
 
@@ -111,7 +111,7 @@ trait HasRoutes
         $domain = '';
 
         if (count($this->domains) > 1) {
-            $domain = Filament::getCurrentDomain(testingDomain: Arr::first($this->domains)) . '.';
+            $domain = Filament::getCurrentDomain(testingDomain: Arr::first($this->domains)).'.';
         }
 
         return "filament.{$this->getId()}.{$domain}{$name}";
@@ -191,7 +191,7 @@ trait HasRoutes
                 $tenantRoutePrefix .= '/';
             }
 
-            return url(Str::replaceEnd('/', '', $this->getPath()) . '/' . $tenantRoutePrefix . (filled($tenantSlugAttribute) ? $tenant->getAttributeValue($tenantSlugAttribute) : $tenant->getRouteKey()));
+            return url(Str::replaceEnd('/', '', $this->getPath()).'/'.$tenantRoutePrefix.(filled($tenantSlugAttribute) ? $tenant->getAttributeValue($tenantSlugAttribute) : $tenant->getRouteKey()));
         }
 
         return url($this->getPath());

@@ -21,16 +21,16 @@ enum SchemeType
 
     public function isOpaque(): bool
     {
-        return self::Opaque === $this;
+        return $this === self::Opaque;
     }
 
     public function isHierarchical(): bool
     {
-        return self::Hierarchical === $this;
+        return $this === self::Hierarchical;
     }
 
     public function isUnknown(): bool
     {
-        return self::Unknown === $this;
+        return $this === self::Unknown;
     }
 }

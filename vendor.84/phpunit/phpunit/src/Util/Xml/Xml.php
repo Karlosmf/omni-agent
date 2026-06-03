@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,9 +9,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Util;
 
 use const ENT_QUOTES;
+
 use function htmlspecialchars;
 use function mb_convert_encoding;
 use function ord;
@@ -45,7 +49,7 @@ final readonly class Xml
 
     private static function convertToUtf8(string $string): string
     {
-        if (!self::isUtf8($string)) {
+        if (! self::isUtf8($string)) {
             $string = mb_convert_encoding($string, 'UTF-8');
         }
 

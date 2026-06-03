@@ -71,35 +71,35 @@ class Ustring
         $c = static::toCode($char);
 
         // Test for 8-bit control characters.
-        if (0x0 === $c) {
+        if ($c === 0x0) {
             return 0;
         }
 
-        if (0x20 > $c || (0x7F <= $c && $c < 0xA0)) {
+        if ($c < 0x20 || ($c >= 0x7F && $c < 0xA0)) {
             return -1;
         }
 
         // Non-spacing characters.
-        if (0xAD !== $c &&
-            0 !== \preg_match('#^[\p{Mn}\p{Me}\p{Cf}\x{1160}-\x{11ff}\x{200b}]#u', $char)) {
+        if ($c !== 0xAD &&
+            \preg_match('#^[\p{Mn}\p{Me}\p{Cf}\x{1160}-\x{11ff}\x{200b}]#u', $char) !== 0) {
             return 0;
         }
 
         // If we arrive here, $c is not a combining C0/C1 control character.
         return 1 +
-            (0x1100 <= $c &&
-                (0x115F >= $c ||                        // Hangul Jamo init. consonants
-                 0x2329 === $c || 0x232A === $c ||
-                     (0x2E80 <= $c && 0xA4CF >= $c &&
-                      0x303F !== $c) ||                // CJK…Yi
-                     (0xAC00 <= $c && 0xD7A3 >= $c) || // Hangul Syllables
-                     (0xF900 <= $c && 0xFAFF >= $c) || // CJK Compatibility Ideographs
-                     (0xFE10 <= $c && 0xFE19 >= $c) || // Vertical forms
-                     (0xFE30 <= $c && 0xFE6F >= $c) || // CJK Compatibility Forms
-                     (0xFF00 <= $c && 0xFF60 >= $c) || // Fullwidth Forms
-                     (0xFFE0 <= $c && 0xFFE6 >= $c) ||
-                     (0x20000 <= $c && 0x2FFFD >= $c) ||
-                     (0x30000 <= $c && 0x3FFFD >= $c)));
+            ($c >= 0x1100 &&
+                ($c <= 0x115F ||                        // Hangul Jamo init. consonants
+                 $c === 0x2329 || $c === 0x232A ||
+                     ($c >= 0x2E80 && $c <= 0xA4CF &&
+                      $c !== 0x303F) ||                // CJK…Yi
+                     ($c >= 0xAC00 && $c <= 0xD7A3) || // Hangul Syllables
+                     ($c >= 0xF900 && $c <= 0xFAFF) || // CJK Compatibility Ideographs
+                     ($c >= 0xFE10 && $c <= 0xFE19) || // Vertical forms
+                     ($c >= 0xFE30 && $c <= 0xFE6F) || // CJK Compatibility Forms
+                     ($c >= 0xFF00 && $c <= 0xFF60) || // Fullwidth Forms
+                     ($c >= 0xFFE0 && $c <= 0xFFE6) ||
+                     ($c >= 0x20000 && $c <= 0x2FFFD) ||
+                     ($c >= 0x30000 && $c <= 0x3FFFD)));
     }
 
     /**
@@ -107,7 +107,7 @@ class Ustring
      */
     public static function isCharPrintable(string $char): bool
     {
-        return 1 <= static::getCharWidth($char);
+        return static::getCharWidth($char) >= 1;
     }
 
     /**
@@ -119,7 +119,7 @@ class Ustring
         $code = \ord($char[0]);
         $bytes = 1;
 
-        if (!($code & 0x80)) { // 0xxxxxxx
+        if (! ($code & 0x80)) { // 0xxxxxxx
             return $code;
         }
 

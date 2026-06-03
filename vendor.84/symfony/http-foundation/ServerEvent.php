@@ -22,12 +22,12 @@ namespace Symfony\Component\HttpFoundation;
 class ServerEvent implements \IteratorAggregate
 {
     /**
-     * @param string|iterable<string> $data    The event data field for the message
-     * @param string|null             $type    The event type
-     * @param int|null                $retry   The number of milliseconds the client should wait
-     *                                         before reconnecting in case of network failure
-     * @param string|null             $id      The event ID to set the EventSource object's last event ID value
-     * @param string|null             $comment The event comment
+     * @param  string|iterable<string>  $data  The event data field for the message
+     * @param  string|null  $type  The event type
+     * @param  int|null  $retry  The number of milliseconds the client should wait
+     *                           before reconnecting in case of network failure
+     * @param  string|null  $id  The event ID to set the EventSource object's last event ID value
+     * @param  string|null  $comment  The event comment
      */
     public function __construct(
         private string|iterable $data,
@@ -35,8 +35,7 @@ class ServerEvent implements \IteratorAggregate
         private ?int $retry = null,
         private ?string $id = null,
         private ?string $comment = null,
-    ) {
-    }
+    ) {}
 
     public function getData(): iterable|string
     {
@@ -136,7 +135,7 @@ class ServerEvent implements \IteratorAggregate
             foreach ($this->data as $data) {
                 yield \sprintf('data: %s', $data)."\n";
             }
-        } elseif ('' !== $this->data) {
+        } elseif ($this->data !== '') {
             yield \sprintf('data: %s', $this->data)."\n";
         }
 

@@ -134,7 +134,7 @@ class Person extends \Faker\Provider\Person
         $number = static::numerify('########');
         $letter = self::$crcMap[$number % 23];
 
-        return $number . $letter;
+        return $number.$letter;
     }
 
     /**

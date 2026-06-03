@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,17 +9,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner\Filter;
 
-use function end;
-use function preg_match;
-use function sprintf;
-use function substr;
 use PHPUnit\Framework\Test;
 use PHPUnit\Framework\TestSuite;
 use PHPUnit\Runner\Phpt\TestCase as PhptTestCase;
 use RecursiveFilterIterator;
 use RecursiveIterator;
+
+use function end;
+use function preg_match;
+use function sprintf;
+use function substr;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -30,12 +34,14 @@ abstract class NameFilterIterator extends RecursiveFilterIterator
      * @var non-empty-string
      */
     private readonly string $regularExpression;
+
     private readonly ?int $dataSetMinimum;
+
     private readonly ?int $dataSetMaximum;
 
     /**
-     * @param RecursiveIterator<int, Test> $iterator
-     * @param non-empty-string             $filter
+     * @param  RecursiveIterator<int, Test>  $iterator
+     * @param  non-empty-string  $filter
      */
     public function __construct(RecursiveIterator $iterator, string $filter)
     {
@@ -44,8 +50,8 @@ abstract class NameFilterIterator extends RecursiveFilterIterator
         $preparedFilter = $this->prepareFilter($filter);
 
         $this->regularExpression = $preparedFilter['regularExpression'];
-        $this->dataSetMinimum    = $preparedFilter['dataSetMinimum'];
-        $this->dataSetMaximum    = $preparedFilter['dataSetMaximum'];
+        $this->dataSetMinimum = $preparedFilter['dataSetMinimum'];
+        $this->dataSetMaximum = $preparedFilter['dataSetMaximum'];
     }
 
     public function accept(): bool
@@ -60,12 +66,12 @@ abstract class NameFilterIterator extends RecursiveFilterIterator
             return false;
         }
 
-        $name = $test::class . '::' . $test->nameWithDataSet();
+        $name = $test::class.'::'.$test->nameWithDataSet();
 
         $accepted = @preg_match($this->regularExpression, $name, $matches) === 1;
 
         if ($accepted && isset($this->dataSetMaximum)) {
-            $set      = end($matches);
+            $set = end($matches);
             $accepted = $set >= $this->dataSetMinimum && $set <= $this->dataSetMaximum;
         }
 
@@ -75,8 +81,7 @@ abstract class NameFilterIterator extends RecursiveFilterIterator
     abstract protected function doAccept(bool $result): bool;
 
     /**
-     * @param non-empty-string $filter
-     *
+     * @param  non-empty-string  $filter
      * @return array{regularExpression: non-empty-string, dataSetMinimum: ?int, dataSetMaximum: ?int}
      */
     private function prepareFilter(string $filter): array
@@ -124,8 +129,8 @@ abstract class NameFilterIterator extends RecursiveFilterIterator
 
         return [
             'regularExpression' => $filter,
-            'dataSetMinimum'    => $dataSetMinimum,
-            'dataSetMaximum'    => $dataSetMaximum,
+            'dataSetMinimum' => $dataSetMinimum,
+            'dataSetMaximum' => $dataSetMaximum,
         ];
     }
 }

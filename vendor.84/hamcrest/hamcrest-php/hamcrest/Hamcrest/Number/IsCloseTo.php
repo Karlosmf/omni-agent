@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Number;
 
 /*
@@ -13,8 +14,8 @@ use Hamcrest\TypeSafeMatcher;
  */
 class IsCloseTo extends TypeSafeMatcher
 {
-
     private $_value;
+
     private $_delta;
 
     public function __construct($value, $delta)
@@ -33,18 +34,16 @@ class IsCloseTo extends TypeSafeMatcher
     protected function describeMismatchSafely($item, Description $mismatchDescription)
     {
         $mismatchDescription->appendValue($item)
-                                                ->appendText(' differed by ')
-                                                ->appendValue($this->_actualDelta($item))
-                                                ;
+            ->appendText(' differed by ')
+            ->appendValue($this->_actualDelta($item));
     }
 
     public function describeTo(Description $description)
     {
         $description->appendText('a numeric value within ')
-                                ->appendValue($this->_delta)
-                                ->appendText(' of ')
-                                ->appendValue($this->_value)
-                                ;
+            ->appendValue($this->_delta)
+            ->appendText(' of ')
+            ->appendValue($this->_value);
     }
 
     /**
@@ -62,6 +61,6 @@ class IsCloseTo extends TypeSafeMatcher
 
     private function _actualDelta($item)
     {
-        return (abs(($item - $this->_value)) - $this->_delta);
+        return abs(($item - $this->_value)) - $this->_delta;
     }
 }

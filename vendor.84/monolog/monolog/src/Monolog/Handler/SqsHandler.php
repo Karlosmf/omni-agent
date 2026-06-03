@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -13,8 +15,8 @@ namespace Monolog\Handler;
 
 use Aws\Sqs\SqsClient;
 use Monolog\Level;
-use Monolog\Utils;
 use Monolog\LogRecord;
+use Monolog\Utils;
 
 /**
  * Writes to any sqs queue.
@@ -25,10 +27,12 @@ class SqsHandler extends AbstractProcessingHandler
 {
     /** 256 KB in bytes - maximum message size in SQS */
     protected const MAX_MESSAGE_SIZE = 262144;
+
     /** 100 KB in bytes - head message size for new error log */
     protected const HEAD_MESSAGE_SIZE = 102400;
 
     private SqsClient $client;
+
     private string $queueUrl;
 
     public function __construct(SqsClient $sqsClient, string $queueUrl, int|string|Level $level = Level::Debug, bool $bubble = true)
@@ -40,12 +44,12 @@ class SqsHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function write(LogRecord $record): void
     {
-        if (!isset($record->formatted) || 'string' !== \gettype($record->formatted)) {
-            throw new \InvalidArgumentException('SqsHandler accepts only formatted records as a string' . Utils::getRecordMessageForException($record));
+        if (! isset($record->formatted) || \gettype($record->formatted) !== 'string') {
+            throw new \InvalidArgumentException('SqsHandler accepts only formatted records as a string'.Utils::getRecordMessageForException($record));
         }
 
         $messageBody = $record->formatted;

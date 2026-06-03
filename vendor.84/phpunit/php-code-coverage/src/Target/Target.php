@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Test\Target;
 
 /**
@@ -17,7 +20,7 @@ namespace SebastianBergmann\CodeCoverage\Test\Target;
 abstract class Target
 {
     /**
-     * @param non-empty-string $namespace
+     * @param  non-empty-string  $namespace
      */
     public static function forNamespace(string $namespace): Namespace_
     {
@@ -25,7 +28,7 @@ abstract class Target
     }
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      */
     public static function forClass(string $className): Class_
     {
@@ -33,8 +36,8 @@ abstract class Target
     }
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      */
     public static function forMethod(string $className, string $methodName): Method
     {
@@ -42,7 +45,7 @@ abstract class Target
     }
 
     /**
-     * @param class-string $interfaceName
+     * @param  class-string  $interfaceName
      */
     public static function forClassesThatImplementInterface(string $interfaceName): ClassesThatImplementInterface
     {
@@ -50,7 +53,7 @@ abstract class Target
     }
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      */
     public static function forClassesThatExtendClass(string $className): ClassesThatExtendClass
     {
@@ -58,7 +61,7 @@ abstract class Target
     }
 
     /**
-     * @param non-empty-string $functionName
+     * @param  non-empty-string  $functionName
      */
     public static function forFunction(string $functionName): Function_
     {
@@ -66,7 +69,7 @@ abstract class Target
     }
 
     /**
-     * @param trait-string $traitName
+     * @param  trait-string  $traitName
      */
     public static function forTrait(string $traitName): Trait_
     {

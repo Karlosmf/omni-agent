@@ -26,25 +26,25 @@ trait CanGenerateIconButtonHtml
      */
     public function generateIconButtonHtml(
         ComponentAttributeBag $attributes,
-        string | Htmlable | null $badge = null,
-        string | array | null $badgeColor = null,
-        Size | string | null $badgeSize = null,
-        string | array | null $color = 'primary',
+        string|Htmlable|null $badge = null,
+        string|array|null $badgeColor = null,
+        Size|string|null $badgeSize = null,
+        string|array|null $color = 'primary',
         ?string $form = null,
         ?string $formId = null,
         bool $hasLoadingIndicator = true,
         ?bool $hasSpaMode = null,
         ?string $href = null,
-        string | BackedEnum | Htmlable | null $icon = null,
+        string|BackedEnum|Htmlable|null $icon = null,
         ?string $iconAlias = null,
-        IconSize | string | null $iconSize = null,
+        IconSize|string|null $iconSize = null,
         bool $isDisabled = false,
         ?array $keyBindings = null,
-        string | Htmlable | null $label = null,
-        Size | string | null $size = null,
+        string|Htmlable|null $label = null,
+        Size|string|null $size = null,
         string $tag = 'button',
         ?string $target = null,
-        string | Htmlable | null $tooltip = null,
+        string|Htmlable|null $tooltip = null,
         ?string $type = 'button',
     ): string {
         $color ??= 'primary';
@@ -115,7 +115,7 @@ trait CanGenerateIconButtonHtml
 
         ob_start(); ?>
 
-        <?= ($tag === 'form') ? ('<form ' . $formAttributes->toHtml() . '>' . csrf_field()) : '' ?>
+        <?= ($tag === 'form') ? ('<form '.$formAttributes->toHtml().'>'.csrf_field()) : '' ?>
 
         <<?= ($tag === 'form') ? 'button' : $tag ?>
             <?php if (($tag === 'a') && (! ($isDisabled && $hasTooltip))) { ?>
@@ -135,11 +135,11 @@ trait CanGenerateIconButtonHtml
             <?= $attributes->toHtml() ?>
         >
             <?= $icon ? generate_icon_html($icon, $iconAlias, (new ComponentAttributeBag([
-                'wire:loading.remove.delay.' . config('filament.livewire_loading_delay', 'default') => $hasLoadingIndicator,
+                'wire:loading.remove.delay.'.config('filament.livewire_loading_delay', 'default') => $hasLoadingIndicator,
                 'wire:target' => $hasLoadingIndicator ? $loadingIndicatorTarget : false,
             ])), size: $iconSize)->toHtml() : '' ?>
             <?= $hasLoadingIndicator ? generate_loading_indicator_html((new ComponentAttributeBag([
-                'wire:loading.delay.' . config('filament.livewire_loading_delay', 'default') => '',
+                'wire:loading.delay.'.config('filament.livewire_loading_delay', 'default') => '',
                 'wire:target' => $loadingIndicatorTarget,
             ])), size: $iconSize)->toHtml() : '' ?>
 

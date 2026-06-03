@@ -159,7 +159,7 @@ trait CanGenerateModelInfolists
             if (in_array($componentName, [
                 'deleted_at',
             ])) {
-                $componentData['visible'] = [new Literal('fn (' . class_basename($model) . ' $record): bool => $record->trashed()')];
+                $componentData['visible'] = [new Literal('fn ('.class_basename($model).' $record): bool => $record->trashed()')];
                 $this->namespace->addUse($model);
             } elseif ($column['nullable']) {
                 $componentData['placeholder'] = ['-'];
@@ -183,7 +183,7 @@ trait CanGenerateModelInfolists
                 unset($componentData['type']);
 
                 foreach ($componentData as $methodName => $parameters) {
-                    $component .= new Literal(PHP_EOL . "            ->{$methodName}(...?:)", [$parameters]);
+                    $component .= new Literal(PHP_EOL."            ->{$methodName}(...?:)", [$parameters]);
                 }
 
                 return "{$component},";
@@ -205,6 +205,6 @@ trait CanGenerateModelInfolists
             return '//';
         }
 
-        return implode(PHP_EOL . '        ', $columns);
+        return implode(PHP_EOL.'        ', $columns);
     }
 }

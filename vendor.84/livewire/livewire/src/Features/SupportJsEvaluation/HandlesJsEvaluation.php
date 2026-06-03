@@ -6,7 +6,7 @@ use function Livewire\store;
 
 trait HandlesJsEvaluation
 {
-    function js($expression, ...$params)
+    public function js($expression, ...$params)
     {
         store($this)->push('js', compact('expression', 'params'));
     }

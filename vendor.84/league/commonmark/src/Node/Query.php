@@ -18,12 +18,12 @@ use League\CommonMark\Node\Query\OrExpr;
 
 final class Query
 {
-    /** @var callable(Node): bool $condition */
+    /** @var callable(Node): bool */
     private $condition;
 
     public function __construct()
     {
-        $this->condition = new AndExpr();
+        $this->condition = new AndExpr;
     }
 
     public function where(callable ...$conditions): self
@@ -84,7 +84,7 @@ final class Query
                 continue;
             }
 
-            ++$resultCount;
+            $resultCount++;
 
             yield $n;
         }

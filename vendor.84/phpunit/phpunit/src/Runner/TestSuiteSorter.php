@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,7 +9,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner;
+
+use PHPUnit\Framework\DataProviderTestSuite;
+use PHPUnit\Framework\Reorderable;
+use PHPUnit\Framework\Test;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestSuite;
+use PHPUnit\Runner\ResultCache\NullResultCache;
+use PHPUnit\Runner\ResultCache\ResultCache;
+use PHPUnit\Runner\ResultCache\ResultCacheId;
 
 use function array_diff;
 use function array_merge;
@@ -19,14 +31,6 @@ use function in_array;
 use function max;
 use function shuffle;
 use function usort;
-use PHPUnit\Framework\DataProviderTestSuite;
-use PHPUnit\Framework\Reorderable;
-use PHPUnit\Framework\Test;
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\TestSuite;
-use PHPUnit\Runner\ResultCache\NullResultCache;
-use PHPUnit\Runner\ResultCache\ResultCache;
-use PHPUnit\Runner\ResultCache\ResultCacheId;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -35,20 +39,25 @@ use PHPUnit\Runner\ResultCache\ResultCacheId;
  */
 final class TestSuiteSorter
 {
-    public const int ORDER_DEFAULT       = 0;
-    public const int ORDER_RANDOMIZED    = 1;
-    public const int ORDER_REVERSED      = 2;
+    public const int ORDER_DEFAULT = 0;
+
+    public const int ORDER_RANDOMIZED = 1;
+
+    public const int ORDER_REVERSED = 2;
+
     public const int ORDER_DEFECTS_FIRST = 3;
-    public const int ORDER_DURATION      = 4;
-    public const int ORDER_SIZE          = 5;
+
+    public const int ORDER_DURATION = 4;
+
+    public const int ORDER_SIZE = 5;
 
     /**
      * @var non-empty-array<non-empty-string, positive-int>
      */
     private const array SIZE_SORT_WEIGHT = [
-        'small'   => 1,
-        'medium'  => 2,
-        'large'   => 3,
+        'small' => 1,
+        'medium' => 2,
+        'large' => 3,
         'unknown' => 4,
     ];
 
@@ -56,6 +65,7 @@ final class TestSuiteSorter
      * @var array<string, int> Associative array of (string => DEFECT_SORT_WEIGHT) elements
      */
     private array $defectSortOrder = [];
+
     private readonly ResultCache $cache;
 
     public function __construct(?ResultCache $cache = null)
@@ -76,7 +86,7 @@ final class TestSuiteSorter
             self::ORDER_SIZE,
         ];
 
-        if (!in_array($order, $allowedOrders, true)) {
+        if (! in_array($order, $allowedOrders, true)) {
             // @codeCoverageIgnoreStart
             throw new InvalidOrderException;
             // @codeCoverageIgnoreEnd
@@ -87,7 +97,7 @@ final class TestSuiteSorter
             self::ORDER_DEFECTS_FIRST,
         ];
 
-        if (!in_array($orderDefects, $allowedOrderDefects, true)) {
+        if (! in_array($orderDefects, $allowedOrderDefects, true)) {
             // @codeCoverageIgnoreStart
             throw new InvalidOrderException;
             // @codeCoverageIgnoreEnd
@@ -126,7 +136,7 @@ final class TestSuiteSorter
             $suite->setTests($this->sortDefectsFirst($suite->tests()));
         }
 
-        if ($resolveDependencies && !($suite instanceof DataProviderTestSuite)) {
+        if ($resolveDependencies && ! ($suite instanceof DataProviderTestSuite)) {
             $tests = $suite->tests();
 
             /** @noinspection PhpParamsInspection */
@@ -140,15 +150,15 @@ final class TestSuiteSorter
         $max = 0;
 
         foreach ($suite->tests() as $test) {
-            if (!$test instanceof Reorderable) {
+            if (! $test instanceof Reorderable) {
                 continue;
             }
 
             $sortId = $test->sortId();
 
-            if (!isset($this->defectSortOrder[$sortId])) {
+            if (! isset($this->defectSortOrder[$sortId])) {
                 $this->defectSortOrder[$sortId] = $this->cache->status(ResultCacheId::fromReorderable($test))->asInt();
-                $max                            = max($max, $this->defectSortOrder[$sortId]);
+                $max = max($max, $this->defectSortOrder[$sortId]);
             }
         }
 
@@ -156,8 +166,7 @@ final class TestSuiteSorter
     }
 
     /**
-     * @param list<Test> $tests
-     *
+     * @param  list<Test>  $tests
      * @return list<Test>
      */
     private function reverse(array $tests): array
@@ -166,8 +175,7 @@ final class TestSuiteSorter
     }
 
     /**
-     * @param list<Test> $tests
-     *
+     * @param  list<Test>  $tests
      * @return list<Test>
      */
     private function randomize(array $tests): array
@@ -178,8 +186,7 @@ final class TestSuiteSorter
     }
 
     /**
-     * @param list<Test> $tests
-     *
+     * @param  list<Test>  $tests
      * @return list<Test>
      */
     private function sortDefectsFirst(array $tests): array
@@ -193,8 +200,7 @@ final class TestSuiteSorter
     }
 
     /**
-     * @param list<Test> $tests
-     *
+     * @param  list<Test>  $tests
      * @return list<Test>
      */
     private function sortByDuration(array $tests): array
@@ -208,8 +214,7 @@ final class TestSuiteSorter
     }
 
     /**
-     * @param list<Test> $tests
-     *
+     * @param  list<Test>  $tests
      * @return list<Test>
      */
     private function sortBySize(array $tests): array
@@ -255,7 +260,7 @@ final class TestSuiteSorter
      */
     private function cmpDuration(Test $a, Test $b): int
     {
-        if (!($a instanceof Reorderable && $b instanceof Reorderable)) {
+        if (! ($a instanceof Reorderable && $b instanceof Reorderable)) {
             return 0;
         }
 
@@ -288,21 +293,20 @@ final class TestSuiteSorter
      * 3. If the test has dependencies but none left to do: mark done, start again from the top
      * 4. When we reach the end add any leftover tests to the end. These will be marked 'skipped' during execution.
      *
-     * @param array<TestCase> $tests
-     *
+     * @param  array<TestCase>  $tests
      * @return array<TestCase>
      */
     private function resolveDependencies(array $tests): array
     {
         $newTestOrder = [];
-        $i            = 0;
-        $provided     = [];
+        $i = 0;
+        $provided = [];
 
         do {
-            if ([] === array_diff($tests[$i]->requires(), $provided)) {
-                $provided     = array_merge($provided, $tests[$i]->provides());
+            if (array_diff($tests[$i]->requires(), $provided) === []) {
+                $provided = array_merge($provided, $tests[$i]->provides());
                 $newTestOrder = array_merge($newTestOrder, array_splice($tests, $i, 1));
-                $i            = 0;
+                $i = 0;
             } else {
                 $i++;
             }

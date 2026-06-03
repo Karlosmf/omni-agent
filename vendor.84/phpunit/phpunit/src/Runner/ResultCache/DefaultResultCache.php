@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,10 +9,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner\ResultCache;
 
 use const DIRECTORY_SEPARATOR;
 use const LOCK_EX;
+
+use PHPUnit\Framework\TestStatus\TestStatus;
+use PHPUnit\Runner\DirectoryDoesNotExistException;
+use PHPUnit\Runner\Exception;
+use PHPUnit\Util\Filesystem;
+
 use function array_keys;
 use function assert;
 use function dirname;
@@ -21,10 +30,6 @@ use function is_dir;
 use function is_file;
 use function json_decode;
 use function json_encode;
-use PHPUnit\Framework\TestStatus\TestStatus;
-use PHPUnit\Runner\DirectoryDoesNotExistException;
-use PHPUnit\Runner\Exception;
-use PHPUnit\Util\Filesystem;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -33,8 +38,10 @@ use PHPUnit\Util\Filesystem;
  */
 final class DefaultResultCache implements ResultCache
 {
-    private const int VERSION                          = 2;
+    private const int VERSION = 2;
+
     private const string DEFAULT_RESULT_CACHE_FILENAME = '.phpunit.result.cache';
+
     private readonly string $cacheFilename;
 
     /**
@@ -50,7 +57,7 @@ final class DefaultResultCache implements ResultCache
     public function __construct(?string $filepath = null)
     {
         if ($filepath !== null && is_dir($filepath)) {
-            $filepath .= DIRECTORY_SEPARATOR . self::DEFAULT_RESULT_CACHE_FILENAME;
+            $filepath .= DIRECTORY_SEPARATOR.self::DEFAULT_RESULT_CACHE_FILENAME;
         }
 
         $this->cacheFilename = $filepath ?? $_ENV['PHPUNIT_RESULT_CACHE'] ?? self::DEFAULT_RESULT_CACHE_FILENAME;
@@ -93,7 +100,7 @@ final class DefaultResultCache implements ResultCache
 
     public function load(): void
     {
-        if (!is_file($this->cacheFilename)) {
+        if (! is_file($this->cacheFilename)) {
             return;
         }
 
@@ -112,7 +119,7 @@ final class DefaultResultCache implements ResultCache
             return;
         }
 
-        if (!isset($data['version'])) {
+        if (! isset($data['version'])) {
             return;
         }
 
@@ -128,7 +135,7 @@ final class DefaultResultCache implements ResultCache
         }
 
         $this->defects = $data['defects'];
-        $this->times   = $data['times'];
+        $this->times = $data['times'];
     }
 
     /**
@@ -136,14 +143,14 @@ final class DefaultResultCache implements ResultCache
      */
     public function persist(): void
     {
-        if (!Filesystem::createDirectory(dirname($this->cacheFilename))) {
+        if (! Filesystem::createDirectory(dirname($this->cacheFilename))) {
             throw new DirectoryDoesNotExistException(dirname($this->cacheFilename));
         }
 
         $data = [
             'version' => self::VERSION,
             'defects' => [],
-            'times'   => $this->times,
+            'times' => $this->times,
         ];
 
         foreach ($this->defects as $test => $status) {

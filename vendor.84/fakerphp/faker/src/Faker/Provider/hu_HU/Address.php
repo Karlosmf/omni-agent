@@ -12,17 +12,21 @@ class Address extends \Faker\Provider\Address
         '{{bigCity}}',
         '{{smallerCity}}',
     ];
+
     protected static $streetNameFormats = [
         '{{firstName}} {{streetSuffix}}',
         '{{lastName}} {{streetSuffix}}',
     ];
+
     protected static $streetAddressFormats = [
         '{{streetName}} {{buildingNumber}}.',
         '{{streetName}} {{buildingNumber}}. {{secondaryAddress}}',
     ];
+
     protected static $addressFormats = [
         '{{postcode}} {{city}}, {{streetAddress}}',
     ];
+
     protected static $secondaryAddressFormats = ['##. emelet', '##. ajtó'];
 
     /**
@@ -85,10 +89,13 @@ class Address extends \Faker\Provider\Address
     protected static $streetSuffix = [
         'árok', 'átjáró', 'dűlősor', 'dűlőút', 'erdősor', 'fasor', 'forduló', 'gát', 'határsor', 'határút', 'híd', 'játszótér', 'kert', 'körönd', 'körtér', 'körút', 'köz', 'lakótelep', 'lejáró', 'lejtő', 'lépcső', 'liget', 'mélyút', 'orom', 'országút', 'ösvény', 'park', 'part', 'pincesor', 'rakpart', 'sétány', 'sétaút', 'sor', 'sugárút', 'tér', 'tere', 'turistaút', 'udvar', 'út', 'útja', 'utca', 'üdülőpart',
     ];
+
     protected static $postcode = ['####'];
+
     protected static $state = [
         'Budapest', 'Bács-Kiskun', 'Baranya', 'Békés', 'Borsod-Abaúj-Zemplén', 'Csongrád', 'Fejér', 'Győr-Moson-Sopron', 'Hajdú-Bihar', 'Heves', 'Jász-Nagykun-Szolnok', 'Komárom-Esztergom', 'Nógrád', 'Pest', 'Somogy', 'Szabolcs-Szatmár-Bereg', 'Tolna', 'Vas', 'Veszprém', 'Zala',
     ];
+
     protected static $country = [
         'Afganisztán', 'Albánia', 'Algéria', 'Amerikai Egyesült Államok', 'Andorra', 'Angola', 'Antigua és Barbuda', 'Argentína', 'Ausztria', 'Ausztrália', 'Azerbajdzsán',
         'Bahama-szigetek', 'Bahrein', 'Banglades', 'Barbados', 'Belgium', 'Belize', 'Benin', 'Bhután', 'Bolívia', 'Bosznia-Hercegovina', 'Botswana', 'Brazília', 'Brunei', 'Bulgária', 'Burkina Faso', 'Burma', 'Burundi',
@@ -119,9 +126,11 @@ class Address extends \Faker\Provider\Address
      * Source: https://hu.wikipedia.org/wiki/Magyarorsz%C3%A1g_v%C3%A1rosainak_list%C3%A1ja
      */
     protected static $capitals = ['Budapest'];
+
     protected static $bigCities = [
         'Békéscsaba', 'Debrecen', 'Dunaújváros', 'Eger', 'Érd', 'Győr', 'Hódmezővásárhely', 'Kaposvár', 'Kecskemét', 'Miskolc', 'Nagykanizsa', 'Nyíregyháza', 'Pécs', 'Salgótarján', 'Sopron', 'Szeged', 'Székesfehérvár', 'Szekszárd', 'Szolnok', 'Szombathely', 'Tatabánya', 'Veszprém', 'Zalaegerszeg',
     ];
+
     protected static $smallerCities = [
         'Ajka', 'Aszód', 'Bácsalmás',
         'Baja', 'Baktalórántháza', 'Balassagyarmat', 'Balatonalmádi', 'Balatonfüred', 'Balmazújváros', 'Barcs', 'Bátonyterenye', 'Békés', 'Bélapátfalva', 'Berettyóújfalu', 'Bicske', 'Bóly', 'Bonyhád', 'Budakeszi',

@@ -30,9 +30,9 @@ final class HtmlBlockParser extends AbstractBlockContinueParser
     private bool $finished = false;
 
     /**
-     * @psalm-param HtmlBlock::TYPE_* $blockType
-     *
      * @phpstan-param HtmlBlock::TYPE_* $blockType
+     *
+     * @psalm-param HtmlBlock::TYPE_* $blockType
      */
     public function __construct(int $blockType)
     {

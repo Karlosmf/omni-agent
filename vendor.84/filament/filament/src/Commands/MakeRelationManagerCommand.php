@@ -207,7 +207,7 @@ class MakeRelationManagerCommand extends Command
                 name: 'resource-namespace',
                 shortcut: null,
                 mode: InputOption::VALUE_OPTIONAL,
-                description: 'The namespace of the resource class, such as [' . app()->getNamespace() . 'Filament\\Resources]',
+                description: 'The namespace of the resource class, such as ['.app()->getNamespace().'Filament\\Resources]',
             ),
             new InputOption(
                 name: 'soft-deletes',
@@ -394,7 +394,7 @@ class MakeRelationManagerCommand extends Command
             : $this->askForSchema(
                 intialQuestion: 'Would you like to use an existing form schema class?',
                 question: 'Which form schema class would you like to use?',
-                questionPlaceholder: app()->getNamespace() . 'Filament\\Resources\\Users\\Schemas\\UserForm',
+                questionPlaceholder: app()->getNamespace().'Filament\\Resources\\Users\\Schemas\\UserForm',
             );
     }
 
@@ -478,7 +478,7 @@ class MakeRelationManagerCommand extends Command
             : $this->askForSchema(
                 intialQuestion: 'Would you like to use an existing infolist schema class?',
                 question: 'Which infolist schema class would you like to use?',
-                questionPlaceholder: app()->getNamespace() . 'Filament\\Resources\\Users\\Schemas\\UserInfolist',
+                questionPlaceholder: app()->getNamespace().'Filament\\Resources\\Users\\Schemas\\UserInfolist',
             );
     }
 
@@ -495,7 +495,7 @@ class MakeRelationManagerCommand extends Command
             : $this->askForSchema(
                 intialQuestion: 'Would you like to use an existing table class?',
                 question: 'Which table class would you like to use?',
-                questionPlaceholder: app()->getNamespace() . 'Filament\\Resources\\Users\\Tables\\UsersTable',
+                questionPlaceholder: app()->getNamespace().'Filament\\Resources\\Users\\Tables\\UsersTable',
             );
     }
 

@@ -1,8 +1,10 @@
 <?php
+
 /**
  * Class QRGdImageBMP
  *
  * @created      25.10.2023
+ *
  * @author       smiley <smiley@chillerlan.net>
  * @copyright    2023 smiley
  * @license      MIT
@@ -19,15 +21,15 @@ use function imagebmp;
  *
  * @see \imagebmp()
  */
-class QRGdImageBMP extends QRGdImage{
+class QRGdImageBMP extends QRGdImage
+{
+    public const MIME_TYPE = 'image/bmp';
 
-	public const MIME_TYPE = 'image/bmp';
-
-	/**
-	 * @inheritDoc
-	 */
-	protected function renderImage():void{
-		imagebmp($this->image, null, ($this->options->quality > 0));
-	}
-
+    /**
+     * {@inheritDoc}
+     */
+    protected function renderImage(): void
+    {
+        imagebmp($this->image, null, ($this->options->quality > 0));
+    }
 }

@@ -32,20 +32,20 @@ final class SessionUtils
         $sessionCookieWithId = \sprintf('%s%s;', $sessionCookiePrefix, urlencode($sessionId));
         $otherCookies = [];
         foreach (headers_list() as $h) {
-            if (0 !== stripos($h, 'Set-Cookie:')) {
+            if (stripos($h, 'Set-Cookie:') !== 0) {
                 continue;
             }
-            if (11 === strpos($h, $sessionCookiePrefix, 11)) {
+            if (strpos($h, $sessionCookiePrefix, 11) === 11) {
                 $sessionCookie = $h;
 
-                if (11 !== strpos($h, $sessionCookieWithId, 11)) {
+                if (strpos($h, $sessionCookieWithId, 11) !== 11) {
                     $otherCookies[] = $h;
                 }
             } else {
                 $otherCookies[] = $h;
             }
         }
-        if (null === $sessionCookie) {
+        if ($sessionCookie === null) {
             return null;
         }
 

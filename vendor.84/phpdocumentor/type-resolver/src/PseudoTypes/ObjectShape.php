@@ -31,11 +31,11 @@ final class ObjectShape implements PseudoType
 
     public function underlyingType(): Type
     {
-        return new Object_();
+        return new Object_;
     }
 
     public function __toString(): string
     {
-        return 'object{' . implode(', ', $this->items) . '}';
+        return 'object{'.implode(', ', $this->items).'}';
     }
 }

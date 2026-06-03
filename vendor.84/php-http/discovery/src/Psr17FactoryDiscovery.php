@@ -35,12 +35,12 @@ final class Psr17FactoryDiscovery extends ClassDiscovery
     public static function findRequestFactory()
     {
         try {
-            $messageFactory = static::findOneByType(RequestFactoryInterface::class);
+            $messageFactory = self::findOneByType(RequestFactoryInterface::class);
         } catch (DiscoveryFailedException $e) {
             throw self::createException('request factory', $e);
         }
 
-        return static::instantiateClass($messageFactory);
+        return self::instantiateClass($messageFactory);
     }
 
     /**
@@ -51,12 +51,12 @@ final class Psr17FactoryDiscovery extends ClassDiscovery
     public static function findResponseFactory()
     {
         try {
-            $messageFactory = static::findOneByType(ResponseFactoryInterface::class);
+            $messageFactory = self::findOneByType(ResponseFactoryInterface::class);
         } catch (DiscoveryFailedException $e) {
             throw self::createException('response factory', $e);
         }
 
-        return static::instantiateClass($messageFactory);
+        return self::instantiateClass($messageFactory);
     }
 
     /**
@@ -67,12 +67,12 @@ final class Psr17FactoryDiscovery extends ClassDiscovery
     public static function findServerRequestFactory()
     {
         try {
-            $messageFactory = static::findOneByType(ServerRequestFactoryInterface::class);
+            $messageFactory = self::findOneByType(ServerRequestFactoryInterface::class);
         } catch (DiscoveryFailedException $e) {
             throw self::createException('server request factory', $e);
         }
 
-        return static::instantiateClass($messageFactory);
+        return self::instantiateClass($messageFactory);
     }
 
     /**
@@ -83,12 +83,12 @@ final class Psr17FactoryDiscovery extends ClassDiscovery
     public static function findStreamFactory()
     {
         try {
-            $messageFactory = static::findOneByType(StreamFactoryInterface::class);
+            $messageFactory = self::findOneByType(StreamFactoryInterface::class);
         } catch (DiscoveryFailedException $e) {
             throw self::createException('stream factory', $e);
         }
 
-        return static::instantiateClass($messageFactory);
+        return self::instantiateClass($messageFactory);
     }
 
     /**
@@ -99,12 +99,12 @@ final class Psr17FactoryDiscovery extends ClassDiscovery
     public static function findUploadedFileFactory()
     {
         try {
-            $messageFactory = static::findOneByType(UploadedFileFactoryInterface::class);
+            $messageFactory = self::findOneByType(UploadedFileFactoryInterface::class);
         } catch (DiscoveryFailedException $e) {
             throw self::createException('uploaded file factory', $e);
         }
 
-        return static::instantiateClass($messageFactory);
+        return self::instantiateClass($messageFactory);
     }
 
     /**
@@ -115,12 +115,12 @@ final class Psr17FactoryDiscovery extends ClassDiscovery
     public static function findUriFactory()
     {
         try {
-            $messageFactory = static::findOneByType(UriFactoryInterface::class);
+            $messageFactory = self::findOneByType(UriFactoryInterface::class);
         } catch (DiscoveryFailedException $e) {
             throw self::createException('url factory', $e);
         }
 
-        return static::instantiateClass($messageFactory);
+        return self::instantiateClass($messageFactory);
     }
 
     /**
@@ -132,6 +132,6 @@ final class Psr17FactoryDiscovery extends ClassDiscovery
      */
     public static function findUrlFactory()
     {
-        return static::findUriFactory();
+        return self::findUriFactory();
     }
 }

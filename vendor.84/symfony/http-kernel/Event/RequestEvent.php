@@ -51,6 +51,6 @@ class RequestEvent extends KernelEvent
      */
     public function hasResponse(): bool
     {
-        return null !== $this->response;
+        return $this->response !== null;
     }
 }

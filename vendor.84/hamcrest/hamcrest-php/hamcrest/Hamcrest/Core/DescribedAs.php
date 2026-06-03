@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Core;
 
 /*
@@ -13,9 +14,10 @@ use Hamcrest\Matcher;
  */
 class DescribedAs extends BaseMatcher
 {
-
     private $_descriptionTemplate;
+
     private $_matcher;
+
     private $_values;
 
     const ARG_PATTERN = '/%([0-9]+)/';

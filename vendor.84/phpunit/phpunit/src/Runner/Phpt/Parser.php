@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,9 +9,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner\Phpt;
 
 use const DIRECTORY_SEPARATOR;
+
+use PHPUnit\Runner\Exception;
+
 use function assert;
 use function dirname;
 use function explode;
@@ -22,7 +28,6 @@ use function preg_match;
 use function rtrim;
 use function str_contains;
 use function trim;
-use PHPUnit\Runner\Exception;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -34,16 +39,15 @@ use PHPUnit\Runner\Exception;
 final readonly class Parser
 {
     /**
-     * @param non-empty-string $phptFile
+     * @param  non-empty-string  $phptFile
+     * @return array<non-empty-string, non-empty-string>
      *
      * @throws Exception
-     *
-     * @return array<non-empty-string, non-empty-string>
      */
     public function parse(string $phptFile): array
     {
         $sections = [];
-        $section  = '';
+        $section = '';
 
         $unsupportedSections = [
             'CGI',
@@ -68,9 +72,9 @@ final readonly class Parser
             $lineNr++;
 
             if (preg_match('/^--([_A-Z]+)--/', $line, $result)) {
-                $section                        = $result[1];
-                $sections[$section]             = '';
-                $sections[$section . '_offset'] = $lineNr;
+                $section = $result[1];
+                $sections[$section] = '';
+                $sections[$section.'_offset'] = $lineNr;
 
                 continue;
             }
@@ -119,9 +123,8 @@ final readonly class Parser
     }
 
     /**
-     * @param array<string>|string                                              $content
-     * @param array<non-empty-string, array<non-empty-string>|non-empty-string> $ini
-     *
+     * @param  array<string>|string  $content
+     * @param  array<non-empty-string, array<non-empty-string>|non-empty-string>  $ini
      * @return array<non-empty-string, array<non-empty-string>|non-empty-string>
      */
     public function parseIniSection(array|string $content, array $ini = []): array
@@ -131,16 +134,16 @@ final readonly class Parser
         }
 
         foreach ($content as $setting) {
-            if (!str_contains($setting, '=')) {
+            if (! str_contains($setting, '=')) {
                 continue;
             }
 
             $setting = explode('=', $setting, 2);
-            $name    = trim($setting[0]);
-            $value   = trim($setting[1]);
+            $name = trim($setting[0]);
+            $value = trim($setting[1]);
 
             if ($name === 'extension' || $name === 'zend_extension') {
-                if (!isset($ini[$name])) {
+                if (! isset($ini[$name])) {
                     $ini[$name] = [];
                 }
 
@@ -156,8 +159,8 @@ final readonly class Parser
     }
 
     /**
-     * @param non-empty-string                          $phptFile
-     * @param array<non-empty-string, non-empty-string> $sections
+     * @param  non-empty-string  $phptFile
+     * @param  array<non-empty-string, non-empty-string>  $sections
      *
      * @throws Exception
      */
@@ -170,21 +173,21 @@ final readonly class Parser
             'EXPECTREGEX',
         ];
 
-        $testDirectory = dirname($phptFile) . DIRECTORY_SEPARATOR;
+        $testDirectory = dirname($phptFile).DIRECTORY_SEPARATOR;
 
         foreach ($allowSections as $section) {
-            if (isset($sections[$section . '_EXTERNAL'])) {
-                $externalFilename = trim($sections[$section . '_EXTERNAL']);
+            if (isset($sections[$section.'_EXTERNAL'])) {
+                $externalFilename = trim($sections[$section.'_EXTERNAL']);
 
-                if (!is_file($testDirectory . $externalFilename) ||
-                    !is_readable($testDirectory . $externalFilename)) {
+                if (! is_file($testDirectory.$externalFilename) ||
+                    ! is_readable($testDirectory.$externalFilename)) {
                     throw new PhptExternalFileCannotBeLoadedException(
                         $section,
-                        $testDirectory . $externalFilename,
+                        $testDirectory.$externalFilename,
                     );
                 }
 
-                $contents = file_get_contents($testDirectory . $externalFilename);
+                $contents = file_get_contents($testDirectory.$externalFilename);
 
                 assert($contents !== false && $contents !== '');
 
@@ -194,19 +197,19 @@ final readonly class Parser
     }
 
     /**
-     * @param array<non-empty-string, non-empty-string> $sections
+     * @param  array<non-empty-string, non-empty-string>  $sections
      *
      * @throws InvalidPhptFileException
      */
     private function validate(array $sections): void
     {
-        if (!isset($sections['FILE'])) {
+        if (! isset($sections['FILE'])) {
             throw new InvalidPhptFileException;
         }
 
-        if (!isset($sections['EXPECT']) &&
-            !isset($sections['EXPECTF']) &&
-            !isset($sections['EXPECTREGEX'])) {
+        if (! isset($sections['EXPECT']) &&
+            ! isset($sections['EXPECTF']) &&
+            ! isset($sections['EXPECTREGEX'])) {
             throw new InvalidPhptFileException;
         }
     }

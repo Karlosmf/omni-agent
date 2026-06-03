@@ -19,7 +19,9 @@ namespace Symfony\Component\HttpFoundation;
 class AcceptHeaderItem
 {
     private float $quality = 1.0;
+
     private int $index = 0;
+
     private array $attributes = [];
 
     public function __construct(
@@ -148,7 +150,7 @@ class AcceptHeaderItem
      */
     public function setAttribute(string $name, string $value): static
     {
-        if ('q' === $name) {
+        if ($name === 'q') {
             $this->quality = (float) $value;
         } else {
             $this->attributes[$name] = $value;

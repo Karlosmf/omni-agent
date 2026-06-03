@@ -7,9 +7,9 @@ use Filament\Support\Enums\Alignment;
 
 trait HasFooterActionsAlignment
 {
-    protected Alignment | Closure | null $footerActionsAlignment = Alignment::Start;
+    protected Alignment|Closure|null $footerActionsAlignment = Alignment::Start;
 
-    public function footerActionsAlignment(Alignment | Closure | null $alignment): static
+    public function footerActionsAlignment(Alignment|Closure|null $alignment): static
     {
         $this->footerActionsAlignment = $alignment;
 

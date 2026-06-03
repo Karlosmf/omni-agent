@@ -42,6 +42,7 @@ class Company extends \Faker\Provider\Company
     ];
 
     protected static $companyPrefix = ['Asociación', 'Centro', 'Corporación', 'Empresa', 'Gestora', 'Global', 'Grupo', 'Viajes', 'Air'];
+
     protected static $companySuffix = ['e Hijo', 'e Hija', 'e Hijos', 'y Asoc.', 'y Flia.', 'SRL', 'SA', 'S. de H.'];
 
     /**

@@ -21,6 +21,4 @@ use RuntimeException;
  * that doesn't exist on an element or cannot otherwise be evaluated in the
  * current context.
  */
-class InvalidPropertyOrMethod extends RuntimeException implements CollectionException
-{
-}
+class InvalidPropertyOrMethod extends RuntimeException implements CollectionException {}

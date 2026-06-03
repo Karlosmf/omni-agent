@@ -2,7 +2,11 @@
 
 namespace App\Filament\Admin\Pages;
 
+use App\Enums\TransactionType;
 use App\Filament\Admin\Widgets\MonthlyBudgetChart;
+use App\Models\Transaction;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Filament\Actions\Action;
 use Filament\Pages\Page;
 
 class FinancialReports extends Page
@@ -42,12 +46,12 @@ class FinancialReports extends Page
     protected function getHeaderActions(): array
     {
         return [
-            \Filament\Actions\Action::make('downloadPdf')
+            Action::make('downloadPdf')
                 ->label('Descargar Balance (PDF)')
                 ->icon('heroicon-o-document-arrow-down')
                 ->action(function () {
                     return response()->streamDownload(function () {
-                        echo \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.balance-sheet-pdf', $this->getReportData())
+                        echo Pdf::loadView('reports.balance-sheet-pdf', $this->getReportData())
                             ->output();
                     }, "Balance_Anual_{$this->year}.pdf");
                 }),
@@ -61,14 +65,14 @@ class FinancialReports extends Page
         $months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
         for ($i = 1; $i <= 12; $i++) {
-            $income = \App\Models\Transaction::whereYear('created_at', $this->year)
+            $income = Transaction::whereYear('created_at', $this->year)
                 ->whereMonth('created_at', $i)
-                ->where('type', \App\Enums\TransactionType::Cobro)
+                ->where('type', TransactionType::Cobro)
                 ->sum('amount');
 
-            $expense = \App\Models\Transaction::whereYear('created_at', $this->year)
+            $expense = Transaction::whereYear('created_at', $this->year)
                 ->whereMonth('created_at', $i)
-                ->where('type', \App\Enums\TransactionType::Pago)
+                ->where('type', TransactionType::Pago)
                 ->sum('amount');
 
             $balance = $income - $expense;

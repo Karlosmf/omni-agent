@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PharIo\Manifest.
  *
@@ -8,10 +10,12 @@
  * file that was distributed with this source code.
  *
  */
+
 namespace PharIo\Manifest;
 
 use InvalidArgumentException;
 
-class InvalidApplicationNameException extends InvalidArgumentException implements Exception {
+class InvalidApplicationNameException extends InvalidArgumentException implements Exception
+{
     public const InvalidFormat = 2;
 }

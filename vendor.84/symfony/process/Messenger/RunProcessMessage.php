@@ -24,8 +24,7 @@ class RunProcessMessage implements \Stringable
         public readonly ?array $env = null,
         public readonly mixed $input = null,
         public readonly ?float $timeout = 60.0,
-    ) {
-    }
+    ) {}
 
     public function __toString(): string
     {

@@ -18,9 +18,7 @@ class ProcessChatbotInteractionAction
     /**
      * Handle the chatbot message processing, including AI interaction and Lead update.
      *
-     * @param string $userMsg
-     * @param Lead $lead
-     * @param array $messagesContext The previous messages history to provide context
+     * @param  array  $messagesContext  The previous messages history to provide context
      * @return string The AI response content
      */
     public function execute(string $userMsg, Lead $lead, array $messagesContext = []): string
@@ -34,13 +32,13 @@ class ProcessChatbotInteractionAction
 
             if (strlen($userMsg) > 2 || count($queryContext) > 0) {
                 $extractionContext = $userMsg;
-                if (!empty($queryContext)) {
-                    $extractionContext = json_encode($queryContext) . "\nLAST_MSG: " . $userMsg;
+                if (! empty($queryContext)) {
+                    $extractionContext = json_encode($queryContext)."\nLAST_MSG: ".$userMsg;
                 }
 
                 $extraction = $this->aiService->extractLeadData($extractionContext);
 
-                if (!empty($extraction)) {
+                if (! empty($extraction)) {
                     $currentAiData = $lead->ai_data ?? [];
 
                     $newAiData = array_merge($currentAiData, array_filter([
@@ -56,7 +54,7 @@ class ProcessChatbotInteractionAction
                     ];
 
                     // Update customer name if extracted and still generic
-                    if (!empty($extraction['nombre']) && ($lead->customer_name === 'Web Guest' || empty($lead->customer_name))) {
+                    if (! empty($extraction['nombre']) && ($lead->customer_name === 'Web Guest' || empty($lead->customer_name))) {
                         $updateData['customer_name'] = $extraction['nombre'];
                     }
 
@@ -67,8 +65,9 @@ class ProcessChatbotInteractionAction
             return $replyContent;
 
         } catch (\Throwable $e) {
-            Log::error("Chatbot Interaction Error: " . $e->getMessage());
-            return "Disculpá, tuve una pequeña desconexión. ¿Me lo repetís?";
+            Log::error('Chatbot Interaction Error: '.$e->getMessage());
+
+            return 'Disculpá, tuve una pequeña desconexión. ¿Me lo repetís?';
         }
     }
 }

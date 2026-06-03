@@ -29,8 +29,8 @@ class ChromeDevToolsDriver
     /**
      * Executes a Chrome DevTools command
      *
-     * @param string $command The DevTools command to execute
-     * @param array $parameters Optional parameters to the command
+     * @param  string  $command  The DevTools command to execute
+     * @param  array  $parameters  Optional parameters to the command
      * @return array The result of the command
      */
     public function execute($command, array $parameters = [])

@@ -47,7 +47,7 @@ final class TableExtension implements ConfigurableExtensionInterface
 
     public function register(EnvironmentBuilderInterface $environment): void
     {
-        $tableRenderer = new TableRenderer();
+        $tableRenderer = new TableRenderer;
         if ($environment->getConfiguration()->get('table/wrap/enabled')) {
             $tableRenderer = new HtmlDecorator($tableRenderer, $environment->getConfiguration()->get('table/wrap/tag'), $environment->getConfiguration()->get('table/wrap/attributes'));
         }
@@ -56,8 +56,8 @@ final class TableExtension implements ConfigurableExtensionInterface
             ->addBlockStartParser(new TableStartParser($environment->getConfiguration()->get('table/max_autocompleted_cells')))
 
             ->addRenderer(Table::class, $tableRenderer)
-            ->addRenderer(TableSection::class, new TableSectionRenderer())
-            ->addRenderer(TableRow::class, new TableRowRenderer())
+            ->addRenderer(TableSection::class, new TableSectionRenderer)
+            ->addRenderer(TableRow::class, new TableRowRenderer)
             ->addRenderer(TableCell::class, new TableCellRenderer($environment->getConfiguration()->get('table/alignment_attributes')));
     }
 }

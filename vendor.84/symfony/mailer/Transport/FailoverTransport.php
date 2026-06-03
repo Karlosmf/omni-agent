@@ -22,7 +22,7 @@ class FailoverTransport extends RoundRobinTransport
 
     protected function getNextTransport(): ?TransportInterface
     {
-        if (null === $this->currentTransport || $this->isTransportDead($this->currentTransport)) {
+        if ($this->currentTransport === null || $this->isTransportDead($this->currentTransport)) {
             $this->currentTransport = parent::getNextTransport();
         }
 

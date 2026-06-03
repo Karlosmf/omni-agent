@@ -27,8 +27,8 @@ final class Throws extends TagWithType implements Factory\StaticMethod
 {
     public function __construct(Type $type, ?Description $description = null)
     {
-        $this->name        = 'throws';
-        $this->type        = $type;
+        $this->name = 'throws';
+        $this->type = $type;
         $this->description = $description;
     }
 
@@ -43,9 +43,9 @@ final class Throws extends TagWithType implements Factory\StaticMethod
 
         [$type, $description] = self::extractTypeFromBody($body);
 
-        $type        = $typeResolver->resolve($type, $context);
+        $type = $typeResolver->resolve($type, $context);
         $description = $descriptionFactory->create($description, $context);
 
-        return new static($type, $description);
+        return new self($type, $description);
     }
 }

@@ -13,6 +13,10 @@ declare(strict_types=1);
 
 namespace League\Uri;
 
+use const FILTER_FLAG_IPV4;
+use const FILTER_FLAG_IPV6;
+use const FILTER_VALIDATE_IP;
+
 use BackedEnum;
 use Exception;
 use JsonSerializable;
@@ -35,10 +39,6 @@ use function rawurldecode;
 use function strpos;
 use function strtolower;
 use function substr;
-
-use const FILTER_FLAG_IPV4;
-use const FILTER_FLAG_IPV6;
-use const FILTER_VALIDATE_IP;
 
 /**
  * @phpstan-type HostRecordSerializedShape array{0: array{host: ?string}, 1: array{}}
@@ -111,38 +111,48 @@ final class HostRecord implements JsonSerializable
             (?<sub_delims>[!$&\'()*+,;=:])  # also include the : character
         )+
     $/ix';
+
     private const REGEXP_GEN_DELIMS = '/[:\/?#\[\]@ ]/';
+
     private const ADDRESS_BLOCK = "\xfe\x80";
 
     private ?bool $isDomainName = null;
+
     private ?bool $hasZoneIdentifier = null;
+
     private bool $asciiIsLoaded = false;
+
     private ?string $hostAsAscii = null;
+
     private bool $unicodeIsLoaded = false;
+
     private ?string $hostAsUnicode = null;
+
     private bool $isIpVersionLoaded = false;
+
     private ?string $ipVersion = null;
+
     private bool $isIpValueLoaded = false;
+
     private ?string $ipValue = null;
 
     private function __construct(
         public readonly ?string $value,
         public readonly HostType $type,
         public readonly HostFormat $format
-    ) {
-    }
+    ) {}
 
     public function hasZoneIdentifier(): bool
     {
-        return $this->hasZoneIdentifier ??= HostType::Ipv6 === $this->type && str_contains((string) $this->value, '%');
+        return $this->hasZoneIdentifier ??= $this->type === HostType::Ipv6 && str_contains((string) $this->value, '%');
     }
 
     public function toAscii(): ?string
     {
-        if (!$this->asciiIsLoaded) {
+        if (! $this->asciiIsLoaded) {
             $this->asciiIsLoaded = true;
             $this->hostAsAscii = (function (): ?string {
-                if (HostType::RegisteredName !== $this->type || null === $this->value) {
+                if ($this->type !== HostType::RegisteredName || $this->value === null) {
                     return $this->value;
                 }
 
@@ -160,9 +170,9 @@ final class HostRecord implements JsonSerializable
 
     public function toUnicode(): ?string
     {
-        if (!$this->unicodeIsLoaded) {
+        if (! $this->unicodeIsLoaded) {
             $this->unicodeIsLoaded = true;
-            $this->hostAsUnicode = $this->isDomainType() && null !== $this->value ? IdnConverter::toUnicode($this->value)->domain() : $this->value;
+            $this->hostAsUnicode = $this->isDomainType() && $this->value !== null ? IdnConverter::toUnicode($this->value)->domain() : $this->value;
         }
 
         return $this->hostAsUnicode;
@@ -171,22 +181,22 @@ final class HostRecord implements JsonSerializable
     public function isDomainType(): bool
     {
         return $this->isDomainName ??= match (true) {
-            HostType::RegisteredName !== $this->type, '' === $this->value => false,
-            null === $this->value => true,
+            $this->type !== HostType::RegisteredName, $this->value === '' => false,
+            $this->value === null => true,
             default => is_object($result = IdnConverter::toAscii($this->value))
-                && !$result->hasErrors()
+                && ! $result->hasErrors()
                 && self::isValidDomain($result->domain()),
         };
     }
 
     public function ipVersion(): ?string
     {
-        if (!$this->isIpVersionLoaded) {
+        if (! $this->isIpVersionLoaded) {
             $this->isIpVersionLoaded = true;
             $this->ipVersion = match (true) {
-                HostType::Ipv4 === $this->type => '4',
-                HostType::Ipv6 === $this->type => '6',
-                1 === preg_match(self::REGEXP_IP_FUTURE, substr((string) $this->value, 1, -1), $matches) => $matches['version'],
+                $this->type === HostType::Ipv4 => '4',
+                $this->type === HostType::Ipv6 => '6',
+                preg_match(self::REGEXP_IP_FUTURE, substr((string) $this->value, 1, -1), $matches) === 1 => $matches['version'],
                 default => null,
             };
         }
@@ -196,24 +206,24 @@ final class HostRecord implements JsonSerializable
 
     public function ipValue(): ?string
     {
-        if (!$this->isIpValueLoaded) {
+        if (! $this->isIpValueLoaded) {
             $this->isIpValueLoaded = true;
             $this->ipValue = (function (): ?string {
-                if (HostType::RegisteredName === $this->type) {
+                if ($this->type === HostType::RegisteredName) {
                     return null;
                 }
 
-                if (HostType::Ipv4 === $this->type) {
+                if ($this->type === HostType::Ipv4) {
                     return $this->value;
                 }
 
                 $ip = substr((string) $this->value, 1, -1);
-                if (HostType::Ipv6 !== $this->type) {
+                if ($this->type !== HostType::Ipv6) {
                     return substr($ip, (int) strpos($ip, '.') + 1);
                 }
 
                 $pos = strpos($ip, '%');
-                if (false === $pos) {
+                if ($pos === false) {
                     return $ip;
                 }
 
@@ -238,7 +248,7 @@ final class HostRecord implements JsonSerializable
     public static function isIpv4(Stringable|string|null $host): bool
     {
         try {
-            return HostType::Ipv4 === HostRecord::from($host)->type;
+            return HostRecord::from($host)->type === HostType::Ipv4;
         } catch (Throwable) {
             return false;
         }
@@ -247,7 +257,7 @@ final class HostRecord implements JsonSerializable
     public static function isIpv6(Stringable|string|null $host): bool
     {
         try {
-            return HostType::Ipv6 === HostRecord::from($host)->type;
+            return HostRecord::from($host)->type === HostType::Ipv6;
         } catch (Throwable) {
             return false;
         }
@@ -256,7 +266,7 @@ final class HostRecord implements JsonSerializable
     public static function isIpvFuture(Stringable|string|null $host): bool
     {
         try {
-            return HostType::IpvFuture === HostRecord::from($host)->type;
+            return HostRecord::from($host)->type === HostType::IpvFuture;
         } catch (Throwable) {
             return false;
         }
@@ -264,13 +274,13 @@ final class HostRecord implements JsonSerializable
 
     public static function isIp(Stringable|string|null $host): bool
     {
-        return !self::isRegisteredName($host);
+        return ! self::isRegisteredName($host);
     }
 
     public static function isRegisteredName(Stringable|string|null $host): bool
     {
         try {
-            return HostType::RegisteredName === HostRecord::from($host)->type;
+            return HostRecord::from($host)->type === HostType::RegisteredName;
         } catch (Throwable) {
             return false;
         }
@@ -298,7 +308,7 @@ final class HostRecord implements JsonSerializable
             $host = $host->value();
         }
 
-        if (null === $host) {
+        if ($host === null) {
             return new self(
                 value: null,
                 type: HostType::RegisteredName,
@@ -307,7 +317,7 @@ final class HostRecord implements JsonSerializable
         }
 
         $host = (string) $host;
-        if ('' === $host) {
+        if ($host === '') {
             return new self(
                 value: '',
                 type: HostType::RegisteredName,
@@ -320,7 +330,7 @@ final class HostRecord implements JsonSerializable
             return $inMemoryCache[$host];
         }
 
-        if (self::MAXIMUM_HOST_CACHED < count($inMemoryCache)) {
+        if (count($inMemoryCache) > self::MAXIMUM_HOST_CACHED) {
             unset($inMemoryCache[array_key_first($inMemoryCache)]);
         }
 
@@ -336,8 +346,8 @@ final class HostRecord implements JsonSerializable
             str_ends_with($host, ']') || throw new SyntaxError('The host '.$host.' is not a valid IPv6 host.');
 
             $ipHost = substr($host, 1, -1);
-            if (1 === preg_match(self::REGEXP_IP_FUTURE, $ipHost, $matches)) {
-                return !in_array($matches['version'], ['4', '6'], true) ? ($inMemoryCache[$host] = new self(
+            if (preg_match(self::REGEXP_IP_FUTURE, $ipHost, $matches) === 1) {
+                return ! in_array($matches['version'], ['4', '6'], true) ? ($inMemoryCache[$host] = new self(
                     value: $host,
                     type: HostType::IpvFuture,
                     format: HostFormat::Ascii,
@@ -357,12 +367,12 @@ final class HostRecord implements JsonSerializable
 
         $domainName = rawurldecode($host);
         $format = HostFormat::Unicode;
-        if (1 !== preg_match(self::REGEXP_NON_ASCII_PATTERN, $domainName)) {
+        if (preg_match(self::REGEXP_NON_ASCII_PATTERN, $domainName) !== 1) {
             $domainName = strtolower($domainName);
             $format = HostFormat::Ascii;
         }
 
-        if (1 === preg_match(self::REGEXP_REGISTERED_NAME, $domainName)) {
+        if (preg_match(self::REGEXP_REGISTERED_NAME, $domainName) === 1) {
             return $inMemoryCache[$host] = new self(
                 value: $host,
                 type: HostType::RegisteredName,
@@ -370,7 +380,7 @@ final class HostRecord implements JsonSerializable
             );
         }
 
-        (HostFormat::Ascii !== $format && 1 !== preg_match(self::REGEXP_INVALID_HOST_CHARS, $domainName)) || throw new SyntaxError('`'.$host.'` is an invalid domain name : the host contains invalid characters.');
+        ($format !== HostFormat::Ascii && preg_match(self::REGEXP_INVALID_HOST_CHARS, $domainName) !== 1) || throw new SyntaxError('`'.$host.'` is an invalid domain name : the host contains invalid characters.');
         IdnConverter::toAsciiOrFail($domainName);
 
         return $inMemoryCache[$host] = new self(
@@ -390,8 +400,8 @@ final class HostRecord implements JsonSerializable
     {
         $domainMaxLength = str_ends_with($hostname, '.') ? 254 : 253;
 
-        return !isset($hostname[$domainMaxLength])
-            && 1 === preg_match(self::REGEXP_DOMAIN_NAME, $hostname);
+        return ! isset($hostname[$domainMaxLength])
+            && preg_match(self::REGEXP_DOMAIN_NAME, $hostname) === 1;
     }
 
     /**
@@ -403,16 +413,16 @@ final class HostRecord implements JsonSerializable
     private static function isValidIpv6Hostname(string $host): bool
     {
         [$ipv6, $scope] = explode('%', $host, 2) + [1 => null];
-        if (null === $scope) {
+        if ($scope === null) {
             return (bool) filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
         }
 
         $scope = rawurldecode('%'.$scope);
 
-        return 1 !== preg_match(self::REGEXP_NON_ASCII_PATTERN, $scope)
-            && 1 !== preg_match(self::REGEXP_GEN_DELIMS, $scope)
-            && false !== filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)
-            && str_starts_with((string)inet_pton((string)$ipv6), self::ADDRESS_BLOCK);
+        return preg_match(self::REGEXP_NON_ASCII_PATTERN, $scope) !== 1
+            && preg_match(self::REGEXP_GEN_DELIMS, $scope) !== 1
+            && filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false
+            && str_starts_with((string) inet_pton((string) $ipv6), self::ADDRESS_BLOCK);
     }
 
     public function jsonSerialize(): ?string
@@ -429,7 +439,7 @@ final class HostRecord implements JsonSerializable
     }
 
     /**
-     * @param HostRecordSerializedShape $data
+     * @param  HostRecordSerializedShape  $data
      *
      * @throws Exception|SyntaxError
      */
@@ -437,7 +447,7 @@ final class HostRecord implements JsonSerializable
     {
         [$properties] = $data;
         $record = self::from($properties['host'] ?? throw new Exception('The `host` property is missing from the serialized object.'));
-        //if the Host computed value are already cache this avoid recomputing them
+        // if the Host computed value are already cache this avoid recomputing them
         foreach (get_object_vars($record) as $prop => $value) {
             /* @phpstan-ignore-next-line */
             $this->{$prop} = $value;

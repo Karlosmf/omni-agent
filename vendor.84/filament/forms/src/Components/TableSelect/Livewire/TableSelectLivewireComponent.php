@@ -60,7 +60,7 @@ class TableSelectLivewireComponent extends Component implements HasActions, HasF
      * @var string | array<string> | null
      */
     #[Modelable]
-    public string | array | null $state = null;
+    public string|array|null $state = null;
 
     public function table(Table $table): Table
     {

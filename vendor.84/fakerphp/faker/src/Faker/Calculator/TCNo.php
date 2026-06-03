@@ -2,9 +2,11 @@
 
 namespace Faker\Calculator;
 
+use Faker\Provider\tr_TR\Person;
+
 /**
  * @deprecated moved to tr_TR\Person, use {@link \Faker\Provider\tr_TR\Person}.
- * @see \Faker\Provider\tr_TR\Person
+ * @see Person
  */
 class TCNo
 {
@@ -14,30 +16,28 @@ class TCNo
      *
      * https://en.wikipedia.org/wiki/Turkish_Identification_Number
      *
-     * @param string $identityPrefix
-     *
+     * @param  string  $identityPrefix
      * @return string Checksum (two digit)
      *
      * @deprecated use {@link \Faker\Provider\tr_TR\Person::tcNoChecksum()} instead
-     * @see \Faker\Provider\tr_TR\Person::tcNoChecksum()
+     * @see Person::tcNoChecksum()
      */
     public static function checksum($identityPrefix)
     {
-        return \Faker\Provider\tr_TR\Person::tcNoChecksum($identityPrefix);
+        return Person::tcNoChecksum($identityPrefix);
     }
 
     /**
      * Checks whether a TCNo has a valid checksum
      *
-     * @param string $tcNo
-     *
+     * @param  string  $tcNo
      * @return bool
      *
      * @deprecated use {@link \Faker\Provider\tr_TR\Person::tcNoIsValid()} instead
-     * @see \Faker\Provider\tr_TR\Person::tcNoIsValid()
+     * @see Person::tcNoIsValid()
      */
     public static function isValid($tcNo)
     {
-        return \Faker\Provider\tr_TR\Person::tcNoIsValid($tcNo);
+        return Person::tcNoIsValid($tcNo);
     }
 }

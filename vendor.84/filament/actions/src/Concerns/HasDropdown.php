@@ -7,32 +7,32 @@ use Filament\Support\Enums\Width;
 
 trait HasDropdown
 {
-    protected bool | Closure $hasDropdown = true;
+    protected bool|Closure $hasDropdown = true;
 
-    protected string | Closure | null $dropdownPlacement = null;
+    protected string|Closure|null $dropdownPlacement = null;
 
-    protected string | Closure | null $defaultDropdownPlacement = null;
+    protected string|Closure|null $defaultDropdownPlacement = null;
 
-    protected string | Closure | null $dropdownMaxHeight = null;
+    protected string|Closure|null $dropdownMaxHeight = null;
 
-    protected int | Closure | null $dropdownOffset = null;
+    protected int|Closure|null $dropdownOffset = null;
 
-    protected Width | string | Closure | null $dropdownWidth = null;
+    protected Width|string|Closure|null $dropdownWidth = null;
 
-    protected bool | Closure $hasDropdownFlip = true;
+    protected bool|Closure $hasDropdownFlip = true;
 
-    protected bool | Closure | null $hasDropdownTeleport = null;
+    protected bool|Closure|null $hasDropdownTeleport = null;
 
-    protected bool | Closure | null $hasDefaultDropdownTeleport = null;
+    protected bool|Closure|null $hasDefaultDropdownTeleport = null;
 
-    public function dropdown(bool | Closure $condition = true): static
+    public function dropdown(bool|Closure $condition = true): static
     {
         $this->hasDropdown = $condition;
 
         return $this;
     }
 
-    public function dropdownPlacement(string | Closure | null $placement): static
+    public function dropdownPlacement(string|Closure|null $placement): static
     {
         $this->dropdownPlacement = $placement;
 
@@ -47,49 +47,49 @@ trait HasDropdown
         return $this;
     }
 
-    public function defaultDropdownPlacement(string | Closure | null $placement): static
+    public function defaultDropdownPlacement(string|Closure|null $placement): static
     {
         $this->defaultDropdownPlacement = $placement;
 
         return $this;
     }
 
-    public function dropdownMaxHeight(string | Closure | null $height): static
+    public function dropdownMaxHeight(string|Closure|null $height): static
     {
         $this->dropdownMaxHeight = $height;
 
         return $this;
     }
 
-    public function dropdownOffset(int | Closure | null $offset): static
+    public function dropdownOffset(int|Closure|null $offset): static
     {
         $this->dropdownOffset = $offset;
 
         return $this;
     }
 
-    public function dropdownWidth(Width | string | Closure | null $width): static
+    public function dropdownWidth(Width|string|Closure|null $width): static
     {
         $this->dropdownWidth = $width;
 
         return $this;
     }
 
-    public function dropdownFlip(bool | Closure $condition = true): static
+    public function dropdownFlip(bool|Closure $condition = true): static
     {
         $this->hasDropdownFlip = $condition;
 
         return $this;
     }
 
-    public function dropdownTeleport(bool | Closure | null $condition = true): static
+    public function dropdownTeleport(bool|Closure|null $condition = true): static
     {
         $this->hasDropdownTeleport = $condition;
 
         return $this;
     }
 
-    public function defaultDropdownTeleport(bool | Closure | null $condition = true): static
+    public function defaultDropdownTeleport(bool|Closure|null $condition = true): static
     {
         $this->hasDefaultDropdownTeleport = $condition;
 
@@ -111,7 +111,7 @@ trait HasDropdown
         return $this->evaluate($this->dropdownOffset);
     }
 
-    public function getDropdownWidth(): Width | string | null
+    public function getDropdownWidth(): Width|string|null
     {
         $width = $this->evaluate($this->dropdownWidth);
 

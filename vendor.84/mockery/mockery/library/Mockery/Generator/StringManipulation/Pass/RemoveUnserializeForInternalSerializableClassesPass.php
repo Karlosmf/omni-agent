@@ -5,15 +5,18 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
 namespace Mockery\Generator\StringManipulation\Pass;
 
+use const PHP_VERSION_ID;
+
 use Mockery\Generator\MockConfiguration;
+
 use function strrpos;
 use function substr;
-use const PHP_VERSION_ID;
 
 /**
  * Internal classes can not be instantiated with the newInstanceWithoutArgs
@@ -28,7 +31,7 @@ class RemoveUnserializeForInternalSerializableClassesPass implements Pass
     public const DUMMY_METHOD_DEFINITION_LEGACY = 'public function unserialize($string) {} ';
 
     /**
-     * @param  string $code
+     * @param  string  $code
      * @return string
      */
     public function apply($code, MockConfiguration $config)
@@ -52,6 +55,7 @@ class RemoveUnserializeForInternalSerializableClassesPass implements Pass
     protected function appendToClass($class, $code)
     {
         $lastBrace = strrpos($class, '}');
-        return substr($class, 0, $lastBrace) . $code . "\n    }\n";
+
+        return substr($class, 0, $lastBrace).$code."\n    }\n";
     }
 }

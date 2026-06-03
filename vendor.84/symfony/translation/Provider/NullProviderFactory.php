@@ -20,8 +20,8 @@ final class NullProviderFactory extends AbstractProviderFactory
 {
     public function create(Dsn $dsn): ProviderInterface
     {
-        if ('null' === $dsn->getScheme()) {
-            return new NullProvider();
+        if ($dsn->getScheme() === 'null') {
+            return new NullProvider;
         }
 
         throw new UnsupportedSchemeException($dsn, 'null', $this->getSupportedSchemes());

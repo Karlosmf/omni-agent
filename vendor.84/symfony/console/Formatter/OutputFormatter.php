@@ -25,6 +25,7 @@ use function Symfony\Component\String\b;
 class OutputFormatter implements WrappableOutputFormatterInterface
 {
     private array $styles = [];
+
     private OutputFormatterStyleStack $styleStack;
 
     public function __clone()
@@ -65,7 +66,7 @@ class OutputFormatter implements WrappableOutputFormatterInterface
     /**
      * Initializes console output formatter.
      *
-     * @param OutputFormatterStyleInterface[] $styles Array of "name => FormatterStyle" instances
+     * @param  OutputFormatterStyleInterface[]  $styles  Array of "name => FormatterStyle" instances
      */
     public function __construct(
         private bool $decorated = false,
@@ -80,7 +81,7 @@ class OutputFormatter implements WrappableOutputFormatterInterface
             $this->setStyle($name, $style);
         }
 
-        $this->styleStack = new OutputFormatterStyleStack();
+        $this->styleStack = new OutputFormatterStyleStack;
     }
 
     public function setDecorated(bool $decorated): void
@@ -105,7 +106,7 @@ class OutputFormatter implements WrappableOutputFormatterInterface
 
     public function getStyle(string $name): OutputFormatterStyleInterface
     {
-        if (!$this->hasStyle($name)) {
+        if (! $this->hasStyle($name)) {
             throw new InvalidArgumentException(\sprintf('Undefined style: "%s".', $name));
         }
 
@@ -119,7 +120,7 @@ class OutputFormatter implements WrappableOutputFormatterInterface
 
     public function formatAndWrap(?string $message, int $width): string
     {
-        if (null === $message) {
+        if ($message === null) {
             return '';
         }
 
@@ -133,7 +134,7 @@ class OutputFormatter implements WrappableOutputFormatterInterface
             $pos = $match[1];
             $text = $match[0];
 
-            if (0 != $pos && '\\' == $message[$pos - 1]) {
+            if ($pos != 0 && $message[$pos - 1] == '\\') {
                 continue;
             }
 
@@ -144,13 +145,13 @@ class OutputFormatter implements WrappableOutputFormatterInterface
             $offset = $pos + Helper::length($text);
 
             // opening tag?
-            if ($open = '/' !== $text[1]) {
+            if ($open = $text[1] !== '/') {
                 $tag = $matches[1][$i][0];
             } else {
                 $tag = $matches[3][$i][0] ?? '';
             }
 
-            if (!$open && !$tag) {
+            if (! $open && ! $tag) {
                 // </>
                 $this->styleStack->pop();
             } elseif (null === $style = $this->createStyleFromString($tag)) {
@@ -181,23 +182,23 @@ class OutputFormatter implements WrappableOutputFormatterInterface
             return $this->styles[$string];
         }
 
-        if (!preg_match_all('/([^=]+)=([^;]+)(;|$)/', $string, $matches, \PREG_SET_ORDER)) {
+        if (! preg_match_all('/([^=]+)=([^;]+)(;|$)/', $string, $matches, \PREG_SET_ORDER)) {
             return null;
         }
 
-        $style = new OutputFormatterStyle();
+        $style = new OutputFormatterStyle;
         foreach ($matches as $match) {
             array_shift($match);
             $match[0] = strtolower($match[0]);
 
-            if ('fg' == $match[0]) {
+            if ($match[0] == 'fg') {
                 $style->setForeground(strtolower($match[1]));
-            } elseif ('bg' == $match[0]) {
+            } elseif ($match[0] == 'bg') {
                 $style->setBackground(strtolower($match[1]));
-            } elseif ('href' === $match[0]) {
+            } elseif ($match[0] === 'href') {
                 $url = preg_replace('{\\\\([<>])}', '$1', $match[1]);
                 $style->setHref($url);
-            } elseif ('options' === $match[0]) {
+            } elseif ($match[0] === 'options') {
                 preg_match_all('([^,;]+)', strtolower($match[1]), $options);
                 $options = array_shift($options);
                 foreach ($options as $option) {
@@ -216,15 +217,15 @@ class OutputFormatter implements WrappableOutputFormatterInterface
      */
     private function applyCurrentStyle(string $text, string $current, int $width, int &$currentLineLength): string
     {
-        if ('' === $text) {
+        if ($text === '') {
             return '';
         }
 
-        if (!$width) {
+        if (! $width) {
             return $this->isDecorated() ? $this->styleStack->getCurrent()->apply($text) : $text;
         }
 
-        if (!$currentLineLength && '' !== $current) {
+        if (! $currentLineLength && $current !== '') {
             $text = ltrim($text);
         }
 
@@ -235,7 +236,7 @@ class OutputFormatter implements WrappableOutputFormatterInterface
 
             if (isset($lines[1])) {
                 // $prefix may contain the full first line in which the \n is already a part of $prefix.
-                if ('' !== $text) {
+                if ($text !== '') {
                     $text .= "\n";
                 }
 
@@ -249,14 +250,14 @@ class OutputFormatter implements WrappableOutputFormatterInterface
         $text = $prefix.$this->addLineBreaks($text, $width);
         $text = rtrim($text, "\n").($matches[1] ?? '');
 
-        if (!$currentLineLength && '' !== $current && !str_ends_with($current, "\n")) {
+        if (! $currentLineLength && $current !== '' && ! str_ends_with($current, "\n")) {
             $text = "\n".$text;
         }
 
         $lines = explode("\n", $text);
 
         foreach ($lines as $i => $line) {
-            $currentLineLength = 0 === $i ? $currentLineLength + Helper::length($line) : Helper::length($line);
+            $currentLineLength = $i === 0 ? $currentLineLength + Helper::length($line) : Helper::length($line);
             if ($width <= $currentLineLength) {
                 $currentLineLength = 0;
             }

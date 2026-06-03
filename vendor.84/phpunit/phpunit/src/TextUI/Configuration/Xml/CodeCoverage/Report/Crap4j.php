@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\XmlConfiguration\CodeCoverage\Report;
 
 use PHPUnit\TextUI\Configuration\File;
@@ -21,11 +24,12 @@ use PHPUnit\TextUI\Configuration\File;
 final readonly class Crap4j
 {
     private File $target;
+
     private int $threshold;
 
     public function __construct(File $target, int $threshold)
     {
-        $this->target    = $target;
+        $this->target = $target;
         $this->threshold = $threshold;
     }
 

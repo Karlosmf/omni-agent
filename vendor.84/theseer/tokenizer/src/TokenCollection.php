@@ -1,4 +1,7 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
+
 namespace TheSeer\Tokenizer;
 
 use ArrayAccess;
@@ -6,6 +9,7 @@ use ArrayIterator;
 use Countable;
 use Iterator;
 use IteratorAggregate;
+
 use function count;
 use function get_class;
 use function gettype;
@@ -15,31 +19,37 @@ use function sprintf;
 /**
  * @implements IteratorAggregate<int, Token>
  */
-class TokenCollection implements IteratorAggregate, ArrayAccess, Countable {
+class TokenCollection implements ArrayAccess, Countable, IteratorAggregate
+{
     /** @var Token[] */
     private $tokens = [];
 
-    public function addToken(Token $token): void {
+    public function addToken(Token $token): void
+    {
         $this->tokens[] = $token;
     }
 
-    public function getIterator(): Iterator {
+    public function getIterator(): Iterator
+    {
         return new ArrayIterator($this->tokens);
     }
 
-    public function count(): int {
+    public function count(): int
+    {
         return count($this->tokens);
     }
 
-    public function offsetExists($offset): bool {
+    public function offsetExists($offset): bool
+    {
         return isset($this->tokens[$offset]);
     }
 
     /**
      * @throws TokenCollectionException
      */
-    public function offsetGet($offset): Token {
-        if (!$this->offsetExists($offset)) {
+    public function offsetGet($offset): Token
+    {
+        if (! $this->offsetExists($offset)) {
             throw new TokenCollectionException(
                 sprintf('No Token at offest %s', $offset)
             );
@@ -49,12 +59,13 @@ class TokenCollection implements IteratorAggregate, ArrayAccess, Countable {
     }
 
     /**
-     * @param Token $value
+     * @param  Token  $value
      *
      * @throws TokenCollectionException
      */
-    public function offsetSet($offset, $value): void {
-        if (!is_int($offset)) {
+    public function offsetSet($offset, $value): void
+    {
+        if (! is_int($offset)) {
             $type = gettype($offset);
 
             throw new TokenCollectionException(
@@ -65,7 +76,7 @@ class TokenCollection implements IteratorAggregate, ArrayAccess, Countable {
             );
         }
 
-        if (!$value instanceof Token) {
+        if (! $value instanceof Token) {
             $type = gettype($value);
 
             throw new TokenCollectionException(
@@ -79,7 +90,8 @@ class TokenCollection implements IteratorAggregate, ArrayAccess, Countable {
         $this->tokens[$offset] = $value;
     }
 
-    public function offsetUnset($offset): void {
+    public function offsetUnset($offset): void
+    {
         unset($this->tokens[$offset]);
     }
 }

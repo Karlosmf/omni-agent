@@ -37,8 +37,7 @@ class InspectUlidCommand extends Command
                     <info>php %command.full_name% 1BVdfLn3ERmbjYBLCdaaLW</info>
                     <info>php %command.full_name% 01771535-b29c-b898-923b-b5a981f5e417</info>
                 EOF
-            )
-        ;
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -58,7 +57,7 @@ class InspectUlidCommand extends Command
             ['toBase58', $ulid->toBase58()],
             ['toRfc4122', $ulid->toRfc4122()],
             ['toHex', $ulid->toHex()],
-            new TableSeparator(),
+            new TableSeparator,
             ['Time', $ulid->getDateTime()->format('Y-m-d H:i:s.v \U\T\C')],
         ]);
 

@@ -207,7 +207,9 @@ abstract class AbstractCloner implements ClonerInterface
     ];
 
     protected int $maxItems = 2500;
+
     protected int $maxString = -1;
+
     protected int $minDepth = 1;
 
     /**
@@ -221,10 +223,11 @@ abstract class AbstractCloner implements ClonerInterface
     private $prevErrorHandler;
 
     private array $classInfo = [];
+
     private int $filter = 0;
 
     /**
-     * @param callable[]|null $casters A map of casters
+     * @param  callable[]|null  $casters  A map of casters
      *
      * @see addCasters
      */
@@ -241,7 +244,7 @@ abstract class AbstractCloner implements ClonerInterface
      * Prefix types with `::`,
      * see e.g. self::$defaultCasters.
      *
-     * @param array<string, callable> $casters A map of casters
+     * @param  array<string, callable>  $casters  A map of casters
      */
     public function addCasters(array $casters): void
     {
@@ -258,7 +261,7 @@ abstract class AbstractCloner implements ClonerInterface
      * Prefix types with `::`,
      * see e.g. self::$defaultCasters.
      *
-     * @param array<string, callable> $casters A map of casters
+     * @param  array<string, callable>  $casters  A map of casters
      */
     public static function addDefaultCasters(array $casters): void
     {
@@ -293,12 +296,12 @@ abstract class AbstractCloner implements ClonerInterface
     /**
      * Clones a PHP variable.
      *
-     * @param int $filter A bit field of Caster::EXCLUDE_* constants
+     * @param  int  $filter  A bit field of Caster::EXCLUDE_* constants
      */
     public function cloneVar(mixed $var, int $filter = 0): Data
     {
         $this->prevErrorHandler = set_error_handler(function ($type, $msg, $file, $line, $context = []) {
-            if (\E_RECOVERABLE_ERROR === $type || \E_USER_ERROR === $type) {
+            if ($type === \E_RECOVERABLE_ERROR || $type === \E_USER_ERROR) {
                 // Cloner never dies
                 throw new \ErrorException($msg, 0, $type, $file, $line);
             }
@@ -333,7 +336,7 @@ abstract class AbstractCloner implements ClonerInterface
     /**
      * Casts an object to an array representation.
      *
-     * @param bool $isNested True if the object is nested in the dumped structure
+     * @param  bool  $isNested  True if the object is nested in the dumped structure
      */
     protected function castObject(Stub $stub, bool $isNested): array
     {
@@ -352,11 +355,11 @@ abstract class AbstractCloner implements ClonerInterface
 
             foreach (class_parents($class) as $p) {
                 $parents[] = $p;
-                ++$i;
+                $i++;
             }
             foreach (class_implements($class) as $p) {
                 $parents[] = $p;
-                ++$i;
+                $i++;
             }
             $parents[] = '*';
 
@@ -374,14 +377,14 @@ abstract class AbstractCloner implements ClonerInterface
 
         try {
             while ($i--) {
-                if (!empty($this->casters[$p = $parents[$i]])) {
+                if (! empty($this->casters[$p = $parents[$i]])) {
                     foreach ($this->casters[$p] as $callback) {
                         $a = $callback($obj, $a, $stub, $isNested, $this->filter);
                     }
                 }
             }
         } catch (\Exception $e) {
-            $a = [(Stub::TYPE_OBJECT === $stub->type ? Caster::PREFIX_VIRTUAL : '').'⚠' => new ThrowingCasterException($e)] + $a;
+            $a = [($stub->type === Stub::TYPE_OBJECT ? Caster::PREFIX_VIRTUAL : '').'⚠' => new ThrowingCasterException($e)] + $a;
         }
 
         return $a;
@@ -390,7 +393,7 @@ abstract class AbstractCloner implements ClonerInterface
     /**
      * Casts a resource to an array representation.
      *
-     * @param bool $isNested True if the object is nested in the dumped structure
+     * @param  bool  $isNested  True if the object is nested in the dumped structure
      */
     protected function castResource(Stub $stub, bool $isNested): array
     {
@@ -399,13 +402,13 @@ abstract class AbstractCloner implements ClonerInterface
         $type = $stub->class;
 
         try {
-            if (!empty($this->casters[':'.$type])) {
+            if (! empty($this->casters[':'.$type])) {
                 foreach ($this->casters[':'.$type] as $callback) {
                     $a = $callback($res, $a, $stub, $isNested, $this->filter);
                 }
             }
         } catch (\Exception $e) {
-            $a = [(Stub::TYPE_OBJECT === $stub->type ? Caster::PREFIX_VIRTUAL : '').'⚠' => new ThrowingCasterException($e)] + $a;
+            $a = [($stub->type === Stub::TYPE_OBJECT ? Caster::PREFIX_VIRTUAL : '').'⚠' => new ThrowingCasterException($e)] + $a;
         }
 
         return $a;

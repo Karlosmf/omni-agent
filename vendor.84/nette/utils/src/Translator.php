@@ -9,17 +9,15 @@ declare(strict_types=1);
 
 namespace Nette\Localization;
 
-
 /**
  * Translation provider.
  */
 interface Translator
 {
-	/**
-	 * Translates the given string.
-	 */
-	function translate(string|\Stringable $message, mixed ...$parameters): string|\Stringable;
+    /**
+     * Translates the given string.
+     */
+    public function translate(string|\Stringable $message, mixed ...$parameters): string|\Stringable;
 }
-
 
 interface_exists(ITranslator::class);

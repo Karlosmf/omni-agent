@@ -32,8 +32,7 @@ class BundleExtension extends Extension implements PrependExtensionInterface
     public function __construct(
         private ConfigurableExtensionInterface $subject,
         private string $alias,
-    ) {
-    }
+    ) {}
 
     public function getConfiguration(array $config, ContainerBuilder $container): ?ConfigurationInterface
     {

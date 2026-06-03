@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -21,10 +23,10 @@ use Monolog\Formatter\LineFormatter;
  */
 trait FormattableHandlerTrait
 {
-    protected FormatterInterface|null $formatter = null;
+    protected ?FormatterInterface $formatter = null;
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setFormatter(FormatterInterface $formatter): HandlerInterface
     {
@@ -34,11 +36,11 @@ trait FormattableHandlerTrait
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getFormatter(): FormatterInterface
     {
-        if (null === $this->formatter) {
+        if ($this->formatter === null) {
             $this->formatter = $this->getDefaultFormatter();
         }
 
@@ -52,6 +54,6 @@ trait FormattableHandlerTrait
      */
     protected function getDefaultFormatter(): FormatterInterface
     {
-        return new LineFormatter();
+        return new LineFormatter;
     }
 }

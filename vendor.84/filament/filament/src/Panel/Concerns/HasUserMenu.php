@@ -14,16 +14,16 @@ use Illuminate\Support\Collection;
 
 trait HasUserMenu
 {
-    protected UserMenuPosition | Closure | null $userMenuPosition = null;
+    protected UserMenuPosition|Closure|null $userMenuPosition = null;
 
-    protected bool | Closure $hasUserMenu = true;
+    protected bool|Closure $hasUserMenu = true;
 
     /**
      * @var array<Action | Closure | MenuItem>
      */
     protected array $userMenuItems = [];
 
-    public function userMenu(bool | Closure $condition = true, UserMenuPosition | Closure | null $position = null): static
+    public function userMenu(bool|Closure $condition = true, UserMenuPosition|Closure|null $position = null): static
     {
         $this->hasUserMenu = $condition;
         $this->userMenuPosition = $position;
@@ -54,7 +54,7 @@ trait HasUserMenu
         return $this->evaluate($this->userMenuPosition) ?? ($this->hasTopbar() ? UserMenuPosition::Topbar : UserMenuPosition::Sidebar);
     }
 
-    protected function getUserProfileMenuItem(Action | Closure | MenuItem | null $item = null): Action
+    protected function getUserProfileMenuItem(Action|Closure|MenuItem|null $item = null): Action
     {
         $page = Filament::getProfilePage();
 
@@ -73,7 +73,7 @@ trait HasUserMenu
         ]) ?? $action;
     }
 
-    protected function getUserLogoutMenuItem(Action | Closure | MenuItem | null $item = null): Action
+    protected function getUserLogoutMenuItem(Action|Closure|MenuItem|null $item = null): Action
     {
         $action = Action::make('logout')
             ->label(__('filament-panels::layout.actions.logout.label'))
@@ -97,7 +97,7 @@ trait HasUserMenu
     public function getUserMenuItems(): array
     {
         return collect($this->userMenuItems)
-            ->mapWithKeys(function (Action | Closure | MenuItem $item, int | string $key): array {
+            ->mapWithKeys(function (Action|Closure|MenuItem $item, int|string $key): array {
                 if ($item instanceof Action) {
                     return [$item->getName() => $item];
                 }

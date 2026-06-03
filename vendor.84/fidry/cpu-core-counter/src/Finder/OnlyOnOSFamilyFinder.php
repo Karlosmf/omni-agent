@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace Fidry\CpuCoreCounter\Finder;
 
+use const PHP_OS_FAMILY;
+
 use function implode;
 use function sprintf;
-use const PHP_OS_FAMILY;
 
 final class OnlyOnOSFamilyFinder implements CpuCoreFinder
 {
@@ -30,7 +31,7 @@ final class OnlyOnOSFamilyFinder implements CpuCoreFinder
     private $decoratedFinder;
 
     /**
-     * @param string|list<string> $skippedOSFamilyOrFamilies
+     * @param  string|list<string>  $skippedOSFamilyOrFamilies
      */
     public function __construct(
         $skippedOSFamilyOrFamilies,
@@ -108,6 +109,6 @@ final class OnlyOnOSFamilyFinder implements CpuCoreFinder
 
     private function skip(): bool
     {
-        return !in_array(PHP_OS_FAMILY, $this->skippedOSFamilies, true);
+        return ! in_array(PHP_OS_FAMILY, $this->skippedOSFamilies, true);
     }
 }

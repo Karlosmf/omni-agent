@@ -11,7 +11,7 @@ use function sprintf;
 
 class MigrationGenerator extends Generator
 {
-    protected string $stub = __DIR__ . '/../../stubs/migration.stub';
+    protected string $stub = __DIR__.'/../../stubs/migration.stub';
 
     protected string $column = '            $table->string(\'%s\')->nullable();';
 
@@ -19,8 +19,8 @@ class MigrationGenerator extends Generator
     {
         return [
             'baseTable' => $this->getBaseTable(),
-            'table'     => $this->getTable(),
-            'columns'   => $this->getColumns(),
+            'table' => $this->getTable(),
+            'columns' => $this->getColumns(),
         ];
     }
 

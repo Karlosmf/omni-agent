@@ -30,8 +30,7 @@ class InlineFragmentRenderer extends RoutableFragmentRenderer
     public function __construct(
         private HttpKernelInterface $kernel,
         private ?EventDispatcherInterface $dispatcher = null,
-    ) {
-    }
+    ) {}
 
     /**
      * Additional available options:
@@ -66,7 +65,7 @@ class InlineFragmentRenderer extends RoutableFragmentRenderer
         $subRequest = $this->createSubRequest($uri, $request);
 
         // override Request attributes as they can be objects (which are not supported by the generated URI)
-        if (null !== $reference) {
+        if ($reference !== null) {
             $subRequest->attributes->add($reference->attributes);
         }
 
@@ -92,11 +91,11 @@ class InlineFragmentRenderer extends RoutableFragmentRenderer
                 return $this->render($alt, $request, $options);
             }
 
-            if (!isset($options['ignore_errors']) || !$options['ignore_errors']) {
+            if (! isset($options['ignore_errors']) || ! $options['ignore_errors']) {
                 throw $e;
             }
 
-            return new Response();
+            return new Response;
         }
     }
 
@@ -115,7 +114,9 @@ class InlineFragmentRenderer extends RoutableFragmentRenderer
 
         static $setSession;
 
-        $setSession ??= \Closure::bind(static function ($subRequest, $request) { $subRequest->session = $request->session; }, null, Request::class);
+        $setSession ??= \Closure::bind(static function ($subRequest, $request) {
+            $subRequest->session = $request->session;
+        }, null, Request::class);
         $setSession($subRequest, $request);
 
         if ($request->attributes->has('_format')) {

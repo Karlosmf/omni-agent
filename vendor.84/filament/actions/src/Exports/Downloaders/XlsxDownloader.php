@@ -21,9 +21,9 @@ class XlsxDownloader implements Downloader
             abort(404);
         }
 
-        $fileName = $export->file_name . '.xlsx';
+        $fileName = $export->file_name.'.xlsx';
 
-        if ($disk->exists($filePath = $directory . DIRECTORY_SEPARATOR . $fileName)) {
+        if ($disk->exists($filePath = $directory.DIRECTORY_SEPARATOR.$fileName)) {
             $response = $disk->download($filePath);
 
             if (ob_get_length() > 0) {
@@ -52,7 +52,7 @@ class XlsxDownloader implements Downloader
         return response()->streamDownload(function () use ($disk, $directory, $fileName, $writer, $writeRowsFromFile): void {
             $writer->openToBrowser($fileName);
 
-            $writeRowsFromFile($directory . DIRECTORY_SEPARATOR . 'headers.csv');
+            $writeRowsFromFile($directory.DIRECTORY_SEPARATOR.'headers.csv');
 
             foreach ($disk->files($directory) as $file) {
                 if (str($file)->endsWith('headers.csv')) {

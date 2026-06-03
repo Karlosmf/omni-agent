@@ -60,7 +60,7 @@ class EmailVerificationPrompt extends SimplePage
     {
         return Action::make('resendNotification')
             ->link()
-            ->label(__('filament-panels::auth/pages/email-verification/email-verification-prompt.actions.resend_notification.label') . '.')
+            ->label(__('filament-panels::auth/pages/email-verification/email-verification-prompt.actions.resend_notification.label').'.')
             ->size('sm')
             ->action(function (): void {
                 try {
@@ -94,12 +94,12 @@ class EmailVerificationPrompt extends SimplePage
             ->danger();
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('filament-panels::auth/pages/email-verification/email-verification-prompt.title');
     }
 
-    public function getHeading(): string | Htmlable | null
+    public function getHeading(): string|Htmlable|null
     {
         return __('filament-panels::auth/pages/email-verification/email-verification-prompt.heading');
     }
@@ -112,8 +112,8 @@ class EmailVerificationPrompt extends SimplePage
                     'email' => filament()->auth()->user()->getEmailForVerification(),
                 ])),
                 Text::make(new HtmlString(
-                    __('filament-panels::auth/pages/email-verification/email-verification-prompt.messages.notification_not_received') .
-                    ' ' .
+                    __('filament-panels::auth/pages/email-verification/email-verification-prompt.messages.notification_not_received').
+                    ' '.
                     $this->resendNotificationAction->toHtml(),
                 )),
             ]);

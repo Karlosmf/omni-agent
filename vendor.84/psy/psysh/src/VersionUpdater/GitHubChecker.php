@@ -30,7 +30,7 @@ class GitHubChecker implements Checker
 
     public function getLatest(): string
     {
-        if (!isset($this->latest)) {
+        if (! isset($this->latest)) {
             $this->setLatest($this->getVersionFromTag());
         }
 
@@ -45,7 +45,7 @@ class GitHubChecker implements Checker
     private function getVersionFromTag(): ?string
     {
         $contents = $this->fetchLatestRelease();
-        if (!$contents || !isset($contents->tag_name)) {
+        if (! $contents || ! isset($contents->tag_name)) {
             throw new \InvalidArgumentException('Unable to check for updates');
         }
         $this->setLatest($contents->tag_name);
@@ -63,7 +63,7 @@ class GitHubChecker implements Checker
         $context = \stream_context_create([
             'http' => [
                 'user_agent' => 'PsySH/'.Shell::VERSION,
-                'timeout'    => 1.0,
+                'timeout' => 1.0,
             ],
         ]);
 

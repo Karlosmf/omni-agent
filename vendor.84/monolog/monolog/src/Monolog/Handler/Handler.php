@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -19,7 +21,7 @@ namespace Monolog\Handler;
 abstract class Handler implements HandlerInterface
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function handleBatch(array $records): void
     {
@@ -29,11 +31,9 @@ abstract class Handler implements HandlerInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function close(): void
-    {
-    }
+    public function close(): void {}
 
     public function __destruct()
     {

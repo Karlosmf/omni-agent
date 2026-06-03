@@ -30,8 +30,8 @@ class CountryData implements Arrayable
     public function toArray(): array
     {
         return [
-            'code'      => $this->code,
-            'native'    => $this->native,
+            'code' => $this->code,
+            'native' => $this->native,
             'localized' => $this->localized,
         ];
     }

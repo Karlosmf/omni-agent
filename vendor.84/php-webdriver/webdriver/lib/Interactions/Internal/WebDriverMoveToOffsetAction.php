@@ -12,14 +12,15 @@ class WebDriverMoveToOffsetAction extends WebDriverMouseAction implements WebDri
      * @var int|null
      */
     private $xOffset;
+
     /**
      * @var int|null
      */
     private $yOffset;
 
     /**
-     * @param int|null $x_offset
-     * @param int|null $y_offset
+     * @param  int|null  $x_offset
+     * @param  int|null  $y_offset
      */
     public function __construct(
         WebDriverMouse $mouse,

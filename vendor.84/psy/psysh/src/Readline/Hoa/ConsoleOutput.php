@@ -61,7 +61,6 @@ class ConsoleOutput implements StreamOut
     {
         $this->_output = $output;
 
-        return;
     }
 
     /**
@@ -77,14 +76,14 @@ class ConsoleOutput implements StreamOut
      */
     public function write(string $string, int $length)
     {
-        if (0 > $length) {
+        if ($length < 0) {
             throw new ConsoleException('Length must be greater than 0, given %d.', 0, $length);
         }
 
         $out = \substr($string, 0, $length);
 
-        if (true === $this->isMultiplexerConsidered()) {
-            if (true === Console::isTmuxRunning()) {
+        if ($this->isMultiplexerConsidered() === true) {
+            if (Console::isTmuxRunning() === true) {
                 $out =
                     "\033Ptmux;".
                     \str_replace("\033", "\033\033", $out).
@@ -94,7 +93,7 @@ class ConsoleOutput implements StreamOut
             $length = \strlen($out);
         }
 
-        if (null === $this->_output) {
+        if ($this->_output === null) {
             echo $out;
         } else {
             $this->_output->write($out, $length);
@@ -166,7 +165,7 @@ class ConsoleOutput implements StreamOut
             return $this->write($line."\n", \strlen($line) + 1);
         }
 
-        ++$n;
+        $n++;
 
         return $this->write(\substr($line, 0, $n), $n);
     }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,17 +9,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Util;
 
 use const PHP_OS_FAMILY;
-use function assert;
-use function class_exists;
-use function defined;
-use function dirname;
-use function is_dir;
-use function realpath;
-use function str_starts_with;
-use function sys_get_temp_dir;
+
 use Composer\Autoload\ClassLoader;
 use DeepCopy\DeepCopy;
 use PharIo\Manifest\Manifest;
@@ -45,6 +41,15 @@ use SebastianBergmann\Type\TypeName;
 use SebastianBergmann\Version;
 use staabm\SideEffectsDetector\SideEffectsDetector;
 use TheSeer\Tokenizer\Tokenizer;
+
+use function assert;
+use function class_exists;
+use function defined;
+use function dirname;
+use function is_dir;
+use function realpath;
+use function str_starts_with;
+use function sys_get_temp_dir;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -138,17 +143,19 @@ final class ExcludeList
      * @var list<string>
      */
     private static array $directories = [];
-    private static bool $initialized  = false;
+
+    private static bool $initialized = false;
+
     private readonly bool $enabled;
 
     /**
-     * @param non-empty-string $directory
+     * @param  non-empty-string  $directory
      *
      * @throws InvalidDirectoryException
      */
     public static function addDirectory(string $directory): void
     {
-        if (!is_dir($directory)) {
+        if (! is_dir($directory)) {
             throw new InvalidDirectoryException($directory);
         }
 
@@ -162,7 +169,7 @@ final class ExcludeList
     public function __construct(?bool $enabled = null)
     {
         if ($enabled === null) {
-            $enabled = !defined('PHPUNIT_TESTSUITE');
+            $enabled = ! defined('PHPUNIT_TESTSUITE');
         }
 
         $this->enabled = $enabled;
@@ -180,7 +187,7 @@ final class ExcludeList
 
     public function isExcluded(string $file): bool
     {
-        if (!$this->enabled) {
+        if (! $this->enabled) {
             return false;
         }
 
@@ -202,7 +209,7 @@ final class ExcludeList
         }
 
         foreach (self::EXCLUDED_CLASS_NAMES as $className => $parent) {
-            if (!class_exists($className)) {
+            if (! class_exists($className)) {
                 continue;
             }
 
@@ -223,7 +230,7 @@ final class ExcludeList
          */
         if (PHP_OS_FAMILY === 'Windows') {
             // @codeCoverageIgnoreStart
-            self::$directories[] = sys_get_temp_dir() . '\\PHP';
+            self::$directories[] = sys_get_temp_dir().'\\PHP';
             // @codeCoverageIgnoreEnd
         }
 

@@ -75,7 +75,7 @@ class Company extends \Faker\Provider\Company
      * @example '10164090581'
      * @example '20105895410'
      *
-     * @param bool $isNaturalPerson If set to false or empty, RUC starts with 20 and otherwise with 10
+     * @param  bool  $isNaturalPerson  If set to false or empty, RUC starts with 20 and otherwise with 10
      *
      * @see http://www2.sunat.gob.pe/pdt/pdtModulos/independientes/p695/TipoDoc.htm
      */
@@ -83,6 +83,6 @@ class Company extends \Faker\Provider\Company
     {
         $prefix = $isNaturalPerson ? '10' : '20';
 
-        return $prefix . static::numerify('#########');
+        return $prefix.static::numerify('#########');
     }
 }

@@ -16,7 +16,7 @@ use OpenSpout\Writer\ODS\Options;
  *
  * @property WorksheetManager $worksheetManager
  * @property FileSystemHelper $fileSystemHelper
- * @property StyleManager     $styleManager
+ * @property StyleManager $styleManager
  */
 final class WorkbookManager extends AbstractWorkbookManager
 {
@@ -56,7 +56,7 @@ final class WorkbookManager extends AbstractWorkbookManager
     /**
      * Writes all the necessary files to disk and zip them together to create the final file.
      *
-     * @param resource $finalFilePointer Pointer to the spreadsheet that will be created
+     * @param  resource  $finalFilePointer  Pointer to the spreadsheet that will be created
      */
     protected function writeAllFilesToDiskAndZipThem($finalFilePointer): void
     {
@@ -67,7 +67,6 @@ final class WorkbookManager extends AbstractWorkbookManager
             ->createContentFile($this->worksheetManager, $this->styleManager, $worksheets)
             ->deleteWorksheetTempFolder()
             ->createStylesFile($this->styleManager, $numWorksheets)
-            ->zipRootFolderAndCopyToStream($finalFilePointer)
-        ;
+            ->zipRootFolderAndCopyToStream($finalFilePointer);
     }
 }

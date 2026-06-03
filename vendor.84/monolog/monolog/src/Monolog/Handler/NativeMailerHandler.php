@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -11,8 +13,8 @@
 
 namespace Monolog\Handler;
 
-use Monolog\Level;
 use Monolog\Formatter\LineFormatter;
+use Monolog\Level;
 
 /**
  * NativeMailerHandler uses the mail() function to send the emails
@@ -24,6 +26,7 @@ class NativeMailerHandler extends MailHandler
 {
     /**
      * The email addresses to which the message will be sent
+     *
      * @var string[]
      */
     protected array $to;
@@ -35,12 +38,14 @@ class NativeMailerHandler extends MailHandler
 
     /**
      * Optional headers for the message
+     *
      * @var string[]
      */
     protected array $headers = [];
 
     /**
      * Optional parameters for the message
+     *
      * @var string[]
      */
     protected array $parameters = [];
@@ -53,7 +58,7 @@ class NativeMailerHandler extends MailHandler
     /**
      * The Content-type for the message
      */
-    protected string|null $contentType = null;
+    protected ?string $contentType = null;
 
     /**
      * The encoding for the message
@@ -61,10 +66,10 @@ class NativeMailerHandler extends MailHandler
     protected string $encoding = 'utf-8';
 
     /**
-     * @param string|string[] $to             The receiver of the mail
-     * @param string          $subject        The subject of the mail
-     * @param string          $from           The sender of the mail
-     * @param int             $maxColumnWidth The maximum column width that the message lines will have
+     * @param  string|string[]  $to  The receiver of the mail
+     * @param  string  $subject  The subject of the mail
+     * @param  string  $from  The sender of the mail
+     * @param  int  $maxColumnWidth  The maximum column width that the message lines will have
      */
     public function __construct(string|array $to, string $subject, string $from, int|string|Level $level = Level::Error, bool $bubble = true, int $maxColumnWidth = 70)
     {
@@ -78,7 +83,7 @@ class NativeMailerHandler extends MailHandler
     /**
      * Add headers to the message
      *
-     * @param  string|string[] $headers Custom added headers
+     * @param  string|string[]  $headers  Custom added headers
      * @return $this
      */
     public function addHeader($headers): self
@@ -96,7 +101,7 @@ class NativeMailerHandler extends MailHandler
     /**
      * Add parameters to the message
      *
-     * @param  string|string[] $parameters Custom added parameters
+     * @param  string|string[]  $parameters  Custom added parameters
      * @return $this
      */
     public function addParameter($parameters): self
@@ -107,7 +112,7 @@ class NativeMailerHandler extends MailHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function send(string $content, array $records): void
     {
@@ -117,10 +122,10 @@ class NativeMailerHandler extends MailHandler
             $content = wordwrap($content, $this->maxColumnWidth);
         }
 
-        $headers = ltrim(implode("\r\n", $this->headers) . "\r\n", "\r\n");
-        $headers .= 'Content-type: ' . $contentType . '; charset=' . $this->getEncoding() . "\r\n";
-        if ($contentType === 'text/html' && false === strpos($headers, 'MIME-Version:')) {
-            $headers .= 'MIME-Version: 1.0' . "\r\n";
+        $headers = ltrim(implode("\r\n", $this->headers)."\r\n", "\r\n");
+        $headers .= 'Content-type: '.$contentType.'; charset='.$this->getEncoding()."\r\n";
+        if ($contentType === 'text/html' && strpos($headers, 'MIME-Version:') === false) {
+            $headers .= 'MIME-Version: 1.0'."\r\n";
         }
 
         $subjectFormatter = new LineFormatter($this->subject);
@@ -143,7 +148,7 @@ class NativeMailerHandler extends MailHandler
     }
 
     /**
-     * @param  string $contentType The content type of the email - Defaults to text/plain. Use text/html for HTML messages.
+     * @param  string  $contentType  The content type of the email - Defaults to text/plain. Use text/html for HTML messages.
      * @return $this
      */
     public function setContentType(string $contentType): self
@@ -170,7 +175,6 @@ class NativeMailerHandler extends MailHandler
 
         return $this;
     }
-
 
     protected function mail(string $to, string $subject, string $content, string $headers, string $parameters): void
     {

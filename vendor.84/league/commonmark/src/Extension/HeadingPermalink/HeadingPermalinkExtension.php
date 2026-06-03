@@ -43,7 +43,7 @@ final class HeadingPermalinkExtension implements ConfigurableExtensionInterface
 
     public function register(EnvironmentBuilderInterface $environment): void
     {
-        $environment->addEventListener(DocumentParsedEvent::class, new HeadingPermalinkProcessor(), -100);
-        $environment->addRenderer(HeadingPermalink::class, new HeadingPermalinkRenderer());
+        $environment->addEventListener(DocumentParsedEvent::class, new HeadingPermalinkProcessor, -100);
+        $environment->addRenderer(HeadingPermalink::class, new HeadingPermalinkRenderer);
     }
 }

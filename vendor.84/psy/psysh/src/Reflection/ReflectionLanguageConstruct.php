@@ -25,7 +25,7 @@ class ReflectionLanguageConstruct extends \ReflectionFunctionAbstract
         'isset' => [
             'var' => [],
             '...' => [
-                'isOptional'   => true,
+                'isOptional' => true,
                 'defaultValue' => null,
             ],
         ],
@@ -33,7 +33,7 @@ class ReflectionLanguageConstruct extends \ReflectionFunctionAbstract
         'unset' => [
             'var' => [],
             '...' => [
-                'isOptional'   => true,
+                'isOptional' => true,
                 'defaultValue' => null,
             ],
         ],
@@ -44,8 +44,8 @@ class ReflectionLanguageConstruct extends \ReflectionFunctionAbstract
 
         'echo' => [
             'arg1' => [],
-            '...'  => [
-                'isOptional'   => true,
+            '...' => [
+                'isOptional' => true,
                 'defaultValue' => null,
             ],
         ],
@@ -56,14 +56,14 @@ class ReflectionLanguageConstruct extends \ReflectionFunctionAbstract
 
         'die' => [
             'status' => [
-                'isOptional'   => true,
+                'isOptional' => true,
                 'defaultValue' => 0,
             ],
         ],
 
         'exit' => [
             'status' => [
-                'isOptional'   => true,
+                'isOptional' => true,
                 'defaultValue' => 0,
             ],
         ],
@@ -71,12 +71,10 @@ class ReflectionLanguageConstruct extends \ReflectionFunctionAbstract
 
     /**
      * Construct a ReflectionLanguageConstruct object.
-     *
-     * @param string $keyword
      */
     public function __construct(string $keyword)
     {
-        if (!self::isLanguageConstruct($keyword)) {
+        if (! self::isLanguageConstruct($keyword)) {
             throw new \InvalidArgumentException('Unknown language construct: '.$keyword);
         }
 
@@ -111,8 +109,6 @@ class ReflectionLanguageConstruct extends \ReflectionFunctionAbstract
 
     /**
      * Get language construct params.
-     *
-     * @return array
      */
     public function getParameters(): array
     {
@@ -149,8 +145,6 @@ class ReflectionLanguageConstruct extends \ReflectionFunctionAbstract
 
     /**
      * Check whether keyword is a (known) language construct.
-     *
-     * @param string $keyword
      */
     public static function isLanguageConstruct(string $keyword): bool
     {

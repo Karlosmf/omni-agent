@@ -14,6 +14,7 @@ use Faker\Extension\Extension;
 class UniqueGenerator
 {
     protected $generator;
+
     protected $maxRetries;
 
     /**
@@ -29,9 +30,9 @@ class UniqueGenerator
     protected $uniques = [];
 
     /**
-     * @param Extension|Generator                $generator
-     * @param int                                $maxRetries
-     * @param array<string, array<string, null>> $uniques
+     * @param  Extension|Generator  $generator
+     * @param  int  $maxRetries
+     * @param  array<string, array<string, null>>  $uniques
      */
     public function __construct($generator, $maxRetries = 10000, &$uniques = [])
     {
@@ -48,7 +49,7 @@ class UniqueGenerator
     /**
      * Catch and proxy all generator calls but return only unique values
      *
-     * @param string $attribute
+     * @param  string  $attribute
      *
      * @deprecated Use a method instead.
      */
@@ -62,19 +63,19 @@ class UniqueGenerator
     /**
      * Catch and proxy all generator calls with arguments but return only unique values
      *
-     * @param string $name
-     * @param array  $arguments
+     * @param  string  $name
+     * @param  array  $arguments
      */
     public function __call($name, $arguments)
     {
-        if (!isset($this->uniques[$name])) {
+        if (! isset($this->uniques[$name])) {
             $this->uniques[$name] = [];
         }
         $i = 0;
 
         do {
             $res = call_user_func_array([$this->generator, $name], $arguments);
-            ++$i;
+            $i++;
 
             if ($i > $this->maxRetries) {
                 throw new \OverflowException(sprintf('Maximum retries of %d reached without finding a unique value', $this->maxRetries));

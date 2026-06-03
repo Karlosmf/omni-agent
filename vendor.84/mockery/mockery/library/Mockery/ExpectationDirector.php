@@ -5,10 +5,13 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
 namespace Mockery;
+
+use const PHP_EOL;
 
 use Mockery;
 use Mockery\Exception\NoMatchingExpectationException;
@@ -16,8 +19,6 @@ use Mockery\Exception\NoMatchingExpectationException;
 use function array_pop;
 use function array_unshift;
 use function end;
-
-use const PHP_EOL;
 
 class ExpectationDirector
 {
@@ -59,7 +60,7 @@ class ExpectationDirector
     /**
      * Constructor
      *
-     * @param string $name
+     * @param  string  $name
      */
     public function __construct($name, LegacyMockInterface $mock)
     {
@@ -89,12 +90,12 @@ class ExpectationDirector
 
         $exception = new NoMatchingExpectationException(
             'No matching handler found for '
-            . $this->_mock->mockery_getName() . '::'
-            . Mockery::formatArgs($this->_name, $args)
-            . '. Either the method was unexpected or its arguments matched'
-            . ' no expected argument list for this method'
-            . PHP_EOL . PHP_EOL
-            . Mockery::formatObjects($args)
+            .$this->_mock->mockery_getName().'::'
+            .Mockery::formatArgs($this->_name, $args)
+            .'. Either the method was unexpected or its arguments matched'
+            .' no expected argument list for this method'
+            .PHP_EOL.PHP_EOL
+            .Mockery::formatObjects($args)
         );
 
         $exception->setMock($this->_mock)
@@ -151,7 +152,7 @@ class ExpectationDirector
 
         foreach ($expectations as $expectation) {
             if ($expectation->isCallCountConstrained()) {
-                ++$count;
+                $count++;
             }
         }
 
@@ -171,9 +172,10 @@ class ExpectationDirector
     /**
      * Make the given expectation a default for all others assuming it was correctly created last
      *
-     * @throws Exception
      *
      * @return void
+     *
+     * @throws Exception
      */
     public function makeExpectationDefault(Expectation $expectation)
     {
@@ -191,9 +193,10 @@ class ExpectationDirector
     /**
      * Verify all expectations of the director
      *
-     * @throws Exception
      *
      * @return void
+     *
+     * @throws Exception
      */
     public function verify()
     {
@@ -213,8 +216,7 @@ class ExpectationDirector
     /**
      * Search current array of expectations for a match
      *
-     * @param array<ExpectationInterface> $expectations
-     *
+     * @param  array<ExpectationInterface>  $expectations
      * @return null|ExpectationInterface
      */
     protected function _findExpectationIn(array $expectations, array $args)

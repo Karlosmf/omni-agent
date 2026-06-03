@@ -25,7 +25,7 @@ class ClassEnumerator extends Enumerator
     protected function listItems(InputInterface $input, ?\Reflector $reflector = null, $target = null): array
     {
         // if we have a reflector, ensure that it's a namespace reflector
-        if (($target !== null || $reflector !== null) && !$reflector instanceof ReflectionNamespace) {
+        if (($target !== null || $reflector !== null) && ! $reflector instanceof ReflectionNamespace) {
             return [];
         }
 
@@ -57,14 +57,6 @@ class ClassEnumerator extends Enumerator
      *
      * If $internal or $user is defined, results will be limited to internal or
      * user-defined classes as appropriate.
-     *
-     * @param string      $key
-     * @param array       $classes
-     * @param bool        $internal
-     * @param bool        $user
-     * @param string|null $prefix
-     *
-     * @return array
      */
     protected function filterClasses(string $key, array $classes, bool $internal, bool $user, ?string $prefix = null): array
     {
@@ -90,11 +82,11 @@ class ClassEnumerator extends Enumerator
 
                 $refl = new \ReflectionClass($class);
 
-                return !$refl->isInternal();
+                return ! $refl->isInternal();
             });
         }
 
-        if (!$user && !$internal) {
+        if (! $user && ! $internal) {
             $ret[$key] = \array_filter($classes, function ($class) use ($prefix) {
                 return $prefix === null || \strpos(\strtolower($class), $prefix) === 0;
             });
@@ -105,10 +97,6 @@ class ClassEnumerator extends Enumerator
 
     /**
      * Prepare formatted class array.
-     *
-     * @param array $classes
-     *
-     * @return array
      */
     protected function prepareClasses(array $classes): array
     {
@@ -120,7 +108,7 @@ class ClassEnumerator extends Enumerator
         foreach ($classes as $name) {
             if ($this->showItem($name)) {
                 $ret[$name] = [
-                    'name'  => $name,
+                    'name' => $name,
                     'style' => self::IS_CLASS,
                     'value' => $this->presentSignature($name),
                 ];

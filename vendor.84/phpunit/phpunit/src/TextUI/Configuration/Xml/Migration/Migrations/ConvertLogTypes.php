@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\XmlConfiguration;
 
 use DOMDocument;
@@ -23,22 +26,22 @@ final readonly class ConvertLogTypes implements Migration
     {
         $logging = $document->getElementsByTagName('logging')->item(0);
 
-        if (!$logging instanceof DOMElement) {
+        if (! $logging instanceof DOMElement) {
             return;
         }
         $types = [
-            'junit'        => 'junit',
-            'teamcity'     => 'teamcity',
+            'junit' => 'junit',
+            'teamcity' => 'teamcity',
             'testdox-html' => 'testdoxHtml',
             'testdox-text' => 'testdoxText',
-            'testdox-xml'  => 'testdoxXml',
-            'plain'        => 'text',
+            'testdox-xml' => 'testdoxXml',
+            'plain' => 'text',
         ];
 
         $logNodes = [];
 
         foreach ($logging->getElementsByTagName('log') as $logNode) {
-            if (!isset($types[$logNode->getAttribute('type')])) {
+            if (! isset($types[$logNode->getAttribute('type')])) {
                 continue;
             }
 

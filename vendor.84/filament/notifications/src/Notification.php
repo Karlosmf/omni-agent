@@ -78,7 +78,7 @@ class Notification extends ViewComponent implements Arrayable, HasEmbeddedView
 
         return [
             'id' => $this->getId(),
-            'actions' => array_map(fn (Action | ActionGroup $action): array => $action->toArray(), $this->getActions()),
+            'actions' => array_map(fn (Action|ActionGroup $action): array => $action->toArray(), $this->getActions()),
             'body' => $this->getBody(),
             'color' => $this->getColor(),
             'duration' => $this->getDuration(),
@@ -110,7 +110,7 @@ class Notification extends ViewComponent implements Arrayable, HasEmbeddedView
 
         $static->actions(
             array_map(
-                fn (array $action): Action | ActionGroup => match (array_key_exists('actions', $action)) {
+                fn (array $action): Action|ActionGroup => match (array_key_exists('actions', $action)) {
                     true => ActionGroup::fromArray($action),
                     false => Action::fromArray($action),
                 },
@@ -144,7 +144,7 @@ class Notification extends ViewComponent implements Arrayable, HasEmbeddedView
     /**
      * @param  string | array<string>  $safeViews
      */
-    public function safeViews(string | array $safeViews): static
+    public function safeViews(string|array $safeViews): static
     {
         $this->safeViews = [
             ...$this->safeViews,
@@ -167,7 +167,7 @@ class Notification extends ViewComponent implements Arrayable, HasEmbeddedView
     /**
      * @param  Model | Authenticatable | Collection | array<Model | Authenticatable>  $users
      */
-    public function broadcast(Model | Authenticatable | Collection | array $users): static
+    public function broadcast(Model|Authenticatable|Collection|array $users): static
     {
         if (! is_iterable($users)) {
             $users = [$users];
@@ -183,7 +183,7 @@ class Notification extends ViewComponent implements Arrayable, HasEmbeddedView
     /**
      * @param  Model | Authenticatable | Collection | array<Model | Authenticatable>  $users
      */
-    public function sendToDatabase(Model | Authenticatable | Collection | array $users, bool $isEventDispatched = false): static
+    public function sendToDatabase(Model|Authenticatable|Collection|array $users, bool $isEventDispatched = false): static
     {
         if (! is_iterable($users)) {
             $users = [$users];
@@ -243,7 +243,7 @@ class Notification extends ViewComponent implements Arrayable, HasEmbeddedView
         return $static;
     }
 
-    public static function assertNotified(Notification | string | null $notification = null): void
+    public static function assertNotified(Notification|string|null $notification = null): void
     {
         $notificationsLivewireComponent = new Notifications;
         $notificationsLivewireComponent->mount();
@@ -279,7 +279,7 @@ class Notification extends ViewComponent implements Arrayable, HasEmbeddedView
         Assert::assertSame($expectedNotification->title, $notification);
     }
 
-    public static function assertNotNotified(Notification | string | null $notification = null): void
+    public static function assertNotNotified(Notification|string|null $notification = null): void
     {
         $notificationsLivewireComponent = new Notifications;
         $notificationsLivewireComponent->mount();

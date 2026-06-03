@@ -5,7 +5,8 @@ namespace staabm\SideEffectsDetector;
 /**
  * @api
  */
-final class SideEffect {
+final class SideEffect
+{
     /**
      * die, exit, throw.
      */
@@ -36,7 +37,8 @@ final class SideEffect {
      */
     const MAYBE = 'maybe_has_side_effects';
 
-    private function __construct() {
+    private function __construct()
+    {
         // nothing todo
     }
 }

@@ -87,7 +87,7 @@ abstract class Resource
     {
         return static::$model ?? (string) str(class_basename(static::class))
             ->beforeLast('Resource')
-            ->prepend(app()->getNamespace() . 'Models\\');
+            ->prepend(app()->getNamespace().'Models\\');
     }
 
     /**

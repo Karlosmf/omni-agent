@@ -34,6 +34,7 @@ use function is_string;
 final class UserInfo extends Component implements UserInfoInterface
 {
     private readonly ?string $username;
+
     private readonly ?string $password;
 
     /**
@@ -83,7 +84,7 @@ final class UserInfo extends Component implements UserInfoInterface
      * Create a new instance from a hash representation of the URI similar
      * to PHP parse_url function result
      *
-     * @param array{user? : ?string, pass? : ?string} $components
+     * @param  array{user? : ?string, pass? : ?string}  $components
      */
     public static function fromComponents(array $components): self
     {
@@ -108,7 +109,7 @@ final class UserInfo extends Component implements UserInfoInterface
             $value = $value->value;
         }
 
-        if (null === $value) {
+        if ($value === null) {
             return new self(null);
         }
 
@@ -134,20 +135,20 @@ final class UserInfo extends Component implements UserInfoInterface
     public function value(): ?string
     {
         return match (true) {
-            null === $this->password => $this->getUsername(),
+            $this->password === null => $this->getUsername(),
             default => $this->getUsername().':'.$this->getPassword(),
         };
     }
 
     public function equals(mixed $value): bool
     {
-        if (!$value instanceof BackedEnum && !$value instanceof Stringable && !is_string($value) && null !== $value) {
+        if (! $value instanceof BackedEnum && ! $value instanceof Stringable && ! is_string($value) && $value !== null) {
             return false;
         }
 
-        if (!$value instanceof UriComponentInterface) {
+        if (! $value instanceof UriComponentInterface) {
             $value = self::tryNew($value);
-            if (null === $value) {
+            if ($value === null) {
                 return false;
             }
         }
@@ -157,7 +158,7 @@ final class UserInfo extends Component implements UserInfoInterface
 
     public function getUriComponent(): string
     {
-        return $this->value().(null === $this->username ? '' : '@');
+        return $this->value().($this->username === null ? '' : '@');
     }
 
     public function getUser(): ?string
@@ -221,7 +222,7 @@ final class UserInfo extends Component implements UserInfoInterface
      *
      * Create a new instance from a URI object.
      */
-    #[Deprecated(message:'use League\Uri\Components\UserInfo::fromUri() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\UserInfo::fromUri() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromUri(Rfc3986Uri|WhatWgUrl|Psr7UriInterface|UriInterface $uri): self
     {
         return self::fromUri($uri);
@@ -237,7 +238,7 @@ final class UserInfo extends Component implements UserInfoInterface
      *
      * Create a new instance from an Authority object.
      */
-    #[Deprecated(message:'use League\Uri\Components\UserInfo::fromAuthority() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\UserInfo::fromAuthority() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromAuthority(AuthorityInterface|Stringable|string $authority): self
     {
         return self::fromAuthority($authority);
@@ -253,7 +254,7 @@ final class UserInfo extends Component implements UserInfoInterface
      *
      * Creates a new instance from an encoded string.
      */
-    #[Deprecated(message:'use League\Uri\Components\UserInfo::new() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\UserInfo::new() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromString(Stringable|string $userInfo): self
     {
         return self::new($userInfo);

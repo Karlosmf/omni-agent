@@ -1,8 +1,10 @@
 <?php
+
 /**
  * Class QRGdImageGIF
  *
  * @created      25.10.2023
+ *
  * @author       smiley <smiley@chillerlan.net>
  * @copyright    2023 smiley
  * @license      MIT
@@ -19,15 +21,15 @@ use function imagegif;
  *
  * @see \imagegif()
  */
-class QRGdImageGIF extends QRGdImage{
+class QRGdImageGIF extends QRGdImage
+{
+    public const MIME_TYPE = 'image/gif';
 
-	public const MIME_TYPE = 'image/gif';
-
-	/**
-	 * @inheritDoc
-	 */
-	protected function renderImage():void{
-		imagegif($this->image);
-	}
-
+    /**
+     * {@inheritDoc}
+     */
+    protected function renderImage(): void
+    {
+        imagegif($this->image);
+    }
 }

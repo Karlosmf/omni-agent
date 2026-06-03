@@ -33,7 +33,9 @@ use function strtolower;
 
 /**
  * @phpstan-type UrnSerialize array{0: array{urn: non-empty-string}, 1: array{}}
+ *
  * @phpstan-import-type InputComponentMap from UriString
+ *
  * @phpstan-type UrnMap array{
  *      scheme: 'urn',
  *      nid: string,
@@ -43,7 +45,7 @@ use function strtolower;
  *      f_component: ?string,
  *  }
  */
-final class Urn implements Conditionable, Stringable, JsonSerializable, Transformable
+final class Urn implements Conditionable, JsonSerializable, Stringable, Transformable
 {
     /**
      * RFC8141 regular expression URN splitter.
@@ -77,19 +79,24 @@ final class Urn implements Conditionable, Stringable, JsonSerializable, Transfor
 
     /** @var non-empty-string */
     private readonly string $uriString;
+
     /** @var non-empty-string */
     private readonly string $nid;
+
     /** @var non-empty-string */
     private readonly string $nss;
+
     /** @var non-empty-string|null */
     private readonly ?string $rComponent;
+
     /** @var non-empty-string|null */
     private readonly ?string $qComponent;
+
     /** @var non-empty-string|null */
     private readonly ?string $fComponent;
 
     /**
-     * @param Rfc3986Uri|WhatWgUrl|BackedEnum|Stringable|string $urn the percent-encoded URN
+     * @param  Rfc3986Uri|WhatWgUrl|BackedEnum|Stringable|string  $urn  the percent-encoded URN
      */
     public static function parse(Rfc3986Uri|WhatWgUrl|BackedEnum|Stringable|string $urn): ?Urn
     {
@@ -101,7 +108,8 @@ final class Urn implements Conditionable, Stringable, JsonSerializable, Transfor
     }
 
     /**
-     * @param Rfc3986Uri|WhatWgUrl|Stringable|string $urn the percent-encoded URN
+     * @param  Rfc3986Uri|WhatWgUrl|Stringable|string  $urn  the percent-encoded URN
+     *
      * @see self::fromString()
      *
      * @throws SyntaxError if the URN is invalid
@@ -112,7 +120,7 @@ final class Urn implements Conditionable, Stringable, JsonSerializable, Transfor
     }
 
     /**
-     * @param Rfc3986Uri|WhatWgUrl|BackedEnum|Stringable|string $urn the percent-encoded URN
+     * @param  Rfc3986Uri|WhatWgUrl|BackedEnum|Stringable|string  $urn  the percent-encoded URN
      *
      * @throws SyntaxError if the URN is invalid
      */
@@ -126,13 +134,13 @@ final class Urn implements Conditionable, Stringable, JsonSerializable, Transfor
         };
 
         UriString::containsRfc3986Chars($urn) || throw new SyntaxError('The URN is malformed, it contains invalid characters.');
-        1 === preg_match(self::REGEXP_URN_PARTS, $urn, $matches) || throw new SyntaxError('The URN string is invalid.');
+        preg_match(self::REGEXP_URN_PARTS, $urn, $matches) === 1 || throw new SyntaxError('The URN string is invalid.');
 
         return new self(
             nid: $matches['nid'],
             nss: $matches['nss'],
-            rComponent: (isset($matches['frc']) && '' !== $matches['frc']) ? $matches['rcomponent'] : null,
-            qComponent: (isset($matches['fqc']) && '' !== $matches['fqc']) ? $matches['qcomponent'] : null,
+            rComponent: (isset($matches['frc']) && $matches['frc'] !== '') ? $matches['rcomponent'] : null,
+            qComponent: (isset($matches['fqc']) && $matches['fqc'] !== '') ? $matches['qcomponent'] : null,
             fComponent: $matches['fcomponent'] ?? null,
         );
     }
@@ -141,7 +149,7 @@ final class Urn implements Conditionable, Stringable, JsonSerializable, Transfor
      * Create a new instance from a hash representation of the URI similar
      * to PHP parse_url function result.
      *
-     * @param InputComponentMap $components a hash representation of the URI similar to PHP parse_url function result
+     * @param  InputComponentMap  $components  a hash representation of the URI similar to PHP parse_url function result
      */
     public static function fromComponents(array $components = []): self
     {
@@ -154,7 +162,7 @@ final class Urn implements Conditionable, Stringable, JsonSerializable, Transfor
     }
 
     /**
-     * @param Stringable|string $nss the percent-encoded NSS
+     * @param  Stringable|string  $nss  the percent-encoded NSS
      *
      * @throws SyntaxError if the URN is invalid
      */
@@ -172,10 +180,10 @@ final class Urn implements Conditionable, Stringable, JsonSerializable, Transfor
     }
 
     /**
-     * @param string $nss the percent-encoded NSS
-     * @param ?string $rComponent the percent-encoded r-component
-     * @param ?string $qComponent the percent-encoded q-component
-     * @param ?string $fComponent the percent-encoded f-component
+     * @param  string  $nss  the percent-encoded NSS
+     * @param  ?string  $rComponent  the percent-encoded r-component
+     * @param  ?string  $qComponent  the percent-encoded q-component
+     * @param  ?string  $fComponent  the percent-encoded f-component
      *
      * @throws SyntaxError if one of the URN part is invalid
      */
@@ -186,13 +194,13 @@ final class Urn implements Conditionable, Stringable, JsonSerializable, Transfor
         ?string $qComponent = null,
         ?string $fComponent = null,
     ) {
-        ('' !== $nid && 1 === preg_match(self::REGEX_NID_SEQUENCE, $nid)) || throw new SyntaxError('The URN is malformed, the NID is invalid.');
-        ('' !== $nss && Encoder::isPathEncoded($nss)) || throw new SyntaxError('The URN is malformed, the NSS is invalid.');
+        ($nid !== '' && preg_match(self::REGEX_NID_SEQUENCE, $nid) === 1) || throw new SyntaxError('The URN is malformed, the NID is invalid.');
+        ($nss !== '' && Encoder::isPathEncoded($nss)) || throw new SyntaxError('The URN is malformed, the NSS is invalid.');
 
         /** @param Closure(string): ?non-empty-string $closure */
         $validateComponent = static fn (?string $value, Closure $closure, string $name): ?string => match (true) {
-            null === $value,
-            ('' !== $value && 1 !== preg_match('/[#?]/', $value) && $closure($value)) => $value,
+            $value === null,
+            ($value !== '' && preg_match('/[#?]/', $value) !== 1 && $closure($value)) => $value,
             default => throw new SyntaxError('The URN is malformed, the `'.$name.'` component is invalid.'),
         };
 
@@ -210,15 +218,15 @@ final class Urn implements Conditionable, Stringable, JsonSerializable, Transfor
     private function setUriString(): string
     {
         $str = $this->toRfc2141();
-        if (null !== $this->rComponent) {
+        if ($this->rComponent !== null) {
             $str .= '?+'.$this->rComponent;
         }
 
-        if (null !== $this->qComponent) {
+        if ($this->qComponent !== null) {
             $str .= '?='.$this->qComponent;
         }
 
-        if (null !== $this->fComponent) {
+        if ($this->fComponent !== null) {
             $str .= '#'.$this->fComponent;
         }
 
@@ -319,6 +327,7 @@ final class Urn implements Conditionable, Stringable, JsonSerializable, Transfor
 
     /**
      * Returns the RFC8141 URN string representation.
+     *
      * @see self::toString()
      *
      * @return non-empty-string
@@ -340,29 +349,29 @@ final class Urn implements Conditionable, Stringable, JsonSerializable, Transfor
      */
     public function resolve(UriTemplate|Template|BackedEnum|string|null $template = null): UriInterface
     {
-        return null !== $template ? Uri::fromTemplate($template, $this->toComponents()) : Uri::new($this->uriString);
+        return $template !== null ? Uri::fromTemplate($template, $this->toComponents()) : Uri::new($this->uriString);
     }
 
     public function hasRComponent(): bool
     {
-        return null !== $this->rComponent;
+        return $this->rComponent !== null;
     }
 
     public function hasQComponent(): bool
     {
-        return null !== $this->qComponent;
+        return $this->qComponent !== null;
     }
 
     public function hasFComponent(): bool
     {
-        return null !== $this->fComponent;
+        return $this->fComponent !== null;
     }
 
     public function hasOptionalComponent(): bool
     {
-        return null !== $this->rComponent
-            || null !== $this->qComponent
-            || null !== $this->fComponent;
+        return $this->rComponent !== null
+            || $this->qComponent !== null
+            || $this->fComponent !== null;
     }
 
     /**
@@ -434,7 +443,7 @@ final class Urn implements Conditionable, Stringable, JsonSerializable, Transfor
             $component = $component->value();
         }
 
-        if (null !== $component) {
+        if ($component !== null) {
             $component = self::formatComponent(Encoder::encodePath($component));
         }
 
@@ -449,7 +458,7 @@ final class Urn implements Conditionable, Stringable, JsonSerializable, Transfor
 
     private static function formatComponent(?string $component): ?string
     {
-        return null === $component ? null : str_replace(['?', '#'], ['%3F', '%23'], $component);
+        return $component === null ? null : str_replace(['?', '#'], ['%3F', '%23'], $component);
     }
 
     /**
@@ -513,7 +522,7 @@ final class Urn implements Conditionable, Stringable, JsonSerializable, Transfor
         $copy = new self(
             nid: strtolower($this->nid),
             nss: (string) Encoder::normalizePath($this->nss),
-            rComponent: null === $this->rComponent ? $this->rComponent : Encoder::normalizePath($this->rComponent),
+            rComponent: $this->rComponent === null ? $this->rComponent : Encoder::normalizePath($this->rComponent),
             qComponent: Encoder::normalizeQuery($this->qComponent),
             fComponent: Encoder::normalizeFragment($this->fComponent),
         );
@@ -523,11 +532,11 @@ final class Urn implements Conditionable, Stringable, JsonSerializable, Transfor
 
     public function equals(Urn|Rfc3986Uri|WhatWgUrl|BackedEnum|Stringable|string $other, UrnComparisonMode $urnComparisonMode = UrnComparisonMode::ExcludeComponents): bool
     {
-        if (!$other instanceof Urn) {
+        if (! $other instanceof Urn) {
             $other = self::parse($other);
         }
 
-        return (null !== $other) && match ($urnComparisonMode) {
+        return ($other !== null) && match ($urnComparisonMode) {
             UrnComparisonMode::ExcludeComponents => $other->normalize()->toRfc2141() === $this->normalize()->toRfc2141(),
             UrnComparisonMode::IncludeComponents => $other->normalize()->toString() === $this->normalize()->toString(),
         };
@@ -535,13 +544,13 @@ final class Urn implements Conditionable, Stringable, JsonSerializable, Transfor
 
     public function when(callable|bool $condition, callable $onSuccess, ?callable $onFail = null): static
     {
-        if (!is_bool($condition)) {
+        if (! is_bool($condition)) {
             $condition = $condition($this);
         }
 
         return match (true) {
             $condition => $onSuccess($this),
-            null !== $onFail => $onFail($this),
+            $onFail !== null => $onFail($this),
             default => $this,
         } ?? $this;
     }
@@ -560,7 +569,7 @@ final class Urn implements Conditionable, Stringable, JsonSerializable, Transfor
     }
 
     /**
-     * @param UrnSerialize $data
+     * @param  UrnSerialize  $data
      *
      * @throws SyntaxError
      */

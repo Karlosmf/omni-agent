@@ -21,6 +21,7 @@ use Symfony\Component\Process\Process;
 class ProcessTimedOutException extends RuntimeException
 {
     public const TYPE_GENERAL = 1;
+
     public const TYPE_IDLE = 2;
 
     public function __construct(
@@ -41,12 +42,12 @@ class ProcessTimedOutException extends RuntimeException
 
     public function isGeneralTimeout(): bool
     {
-        return self::TYPE_GENERAL === $this->timeoutType;
+        return $this->timeoutType === self::TYPE_GENERAL;
     }
 
     public function isIdleTimeout(): bool
     {
-        return self::TYPE_IDLE === $this->timeoutType;
+        return $this->timeoutType === self::TYPE_IDLE;
     }
 
     public function getExceededTimeout(): ?float

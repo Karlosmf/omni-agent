@@ -53,7 +53,7 @@ trait XMLInternalErrorsHelper
      */
     private function hasXMLErrorOccured(): bool
     {
-        return false !== libxml_get_last_error();
+        return libxml_get_last_error() !== false;
     }
 
     /**
@@ -68,7 +68,7 @@ trait XMLInternalErrorsHelper
         $errorMessage = '';
         $error = libxml_get_last_error();
 
-        if (false !== $error) {
+        if ($error !== false) {
             $errorMessage = trim($error->message);
         }
 

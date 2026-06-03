@@ -13,8 +13,10 @@ declare(strict_types=1);
 
 namespace phpDocumentor\Reflection\DocBlock\Tags\Reference;
 
+use phpDocumentor\Reflection\DocBlock\Tags\See;
+
 /**
- * Interface for references in {@see \phpDocumentor\Reflection\DocBlock\Tags\See}
+ * Interface for references in {@see See}
  */
 interface Reference
 {

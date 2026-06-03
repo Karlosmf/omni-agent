@@ -13,7 +13,7 @@ trait HasBladeComponents
         return $this;
     }
 
-    public function hasViewComponents(string $prefix,  ...$viewComponentNames): static
+    public function hasViewComponents(string $prefix, ...$viewComponentNames): static
     {
         foreach ($viewComponentNames as $componentName) {
             $this->viewComponents[$componentName] = $prefix;

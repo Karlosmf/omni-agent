@@ -103,7 +103,7 @@ trait InteractsWithParentRecord
         return $this->parentRecord;
     }
 
-    public function getParentRecordTitle(): string | Htmlable | null
+    public function getParentRecordTitle(): string|Htmlable|null
     {
         $resource = static::getParentResource();
 

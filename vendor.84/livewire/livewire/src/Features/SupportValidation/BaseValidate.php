@@ -10,7 +10,7 @@ use function Livewire\wrap;
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_ALL)]
 class BaseValidate extends LivewireAttribute
 {
-    function __construct(
+    public function __construct(
         public $rule = null,
         protected $attribute = null,
         protected $as = null,
@@ -19,7 +19,7 @@ class BaseValidate extends LivewireAttribute
         protected bool $translate = true
     ) {}
 
-    function boot()
+    public function boot()
     {
         // If this attribute is added to a "form object", we want to add the rules
         // to the actual form object, not the base component...
@@ -82,9 +82,11 @@ class BaseValidate extends LivewireAttribute
         $target->addRulesFromOutside($rules);
     }
 
-    function update($fullPath, $newValue)
+    public function update($fullPath, $newValue)
     {
-        if ($this->onUpdate === false) return;
+        if ($this->onUpdate === false) {
+            return;
+        }
 
         return function () {
             // If this attribute is added to a "form object", we want to run

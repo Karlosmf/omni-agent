@@ -21,7 +21,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SingleCommandApplication extends Command
 {
     private string $version = 'UNKNOWN';
+
     private bool $autoExit = true;
+
     private bool $running = false;
 
     /**

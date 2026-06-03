@@ -38,11 +38,9 @@ class EmptyArrayDimFetchPass extends CodeCleanerPass
     }
 
     /**
-     * @throws FatalErrorException if the user used empty array dim fetch outside of assignment
-     *
-     * @param Node $node
-     *
      * @return int|Node|null Replacement node (or special return value)
+     *
+     * @throws FatalErrorException if the user used empty array dim fetch outside of assignment
      */
     public function enterNode(Node $node)
     {
@@ -60,7 +58,7 @@ class EmptyArrayDimFetchPass extends CodeCleanerPass
         }
 
         if ($node instanceof ArrayDimFetch && $node->dim === null) {
-            if (!\in_array($node, $this->theseOnesAreFine)) {
+            if (! \in_array($node, $this->theseOnesAreFine)) {
                 throw new FatalErrorException(self::EXCEPTION_MESSAGE, $node->getStartLine());
             }
         }

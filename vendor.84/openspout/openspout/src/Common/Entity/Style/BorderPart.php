@@ -32,15 +32,18 @@ final readonly class BorderPart
     ];
 
     private string $style;
+
     private string $name;
+
     private string $color;
+
     private string $width;
 
     /**
-     * @param string $name  @see  BorderPart::allowedNames
-     * @param string $color A RGB color code
-     * @param string $width @see BorderPart::allowedWidths
-     * @param string $style @see BorderPart::allowedStyles
+     * @param  string  $name  @see  BorderPart::allowedNames
+     * @param  string  $color  A RGB color code
+     * @param  string  $width  @see BorderPart::allowedWidths
+     * @param  string  $style  @see BorderPart::allowedStyles
      *
      * @throws InvalidNameException
      * @throws InvalidStyleException
@@ -52,13 +55,13 @@ final readonly class BorderPart
         string $width = Border::WIDTH_MEDIUM,
         string $style = Border::STYLE_SOLID
     ) {
-        if (!\in_array($name, self::allowedNames, true)) {
+        if (! \in_array($name, self::allowedNames, true)) {
             throw new InvalidNameException($name);
         }
-        if (!\in_array($style, self::allowedStyles, true)) {
+        if (! \in_array($style, self::allowedStyles, true)) {
             throw new InvalidStyleException($style);
         }
-        if (!\in_array($width, self::allowedWidths, true)) {
+        if (! \in_array($width, self::allowedWidths, true)) {
             throw new InvalidWidthException($width);
         }
 

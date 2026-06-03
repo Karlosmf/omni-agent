@@ -19,7 +19,9 @@ use Psr\Http\Message\UriInterface as Psr7UriInterface;
 
 /**
  * @deprecated since version 7.0.0
+ *
  * @codeCoverageIgnore
+ *
  * @see BaseUri
  */
 final class UriInfo
@@ -27,14 +29,12 @@ final class UriInfo
     /**
      * @codeCoverageIgnore
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Tells whether the URI represents an absolute URI.
      */
-    #[Deprecated(message:'use League\Uri\BaseUri::isAbsolute() instead', since:'league/uri:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\BaseUri::isAbsolute() instead', since: 'league/uri:7.0.0')]
     public static function isAbsolute(Psr7UriInterface|UriInterface $uri): bool
     {
         return BaseUri::from($uri)->isAbsolute();
@@ -43,7 +43,7 @@ final class UriInfo
     /**
      * Tell whether the URI represents a network path.
      */
-    #[Deprecated(message:'use League\Uri\BaseUri::isNetworkPath() instead', since:'league/uri:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\BaseUri::isNetworkPath() instead', since: 'league/uri:7.0.0')]
     public static function isNetworkPath(Psr7UriInterface|UriInterface $uri): bool
     {
         return BaseUri::from($uri)->isNetworkPath();
@@ -52,7 +52,7 @@ final class UriInfo
     /**
      * Tells whether the URI represents an absolute path.
      */
-    #[Deprecated(message:'use League\Uri\BaseUri::isAbsolutePath() instead', since:'league/uri:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\BaseUri::isAbsolutePath() instead', since: 'league/uri:7.0.0')]
     public static function isAbsolutePath(Psr7UriInterface|UriInterface $uri): bool
     {
         return BaseUri::from($uri)->isAbsolutePath();
@@ -60,9 +60,8 @@ final class UriInfo
 
     /**
      * Tell whether the URI represents a relative path.
-     *
      */
-    #[Deprecated(message:'use League\Uri\BaseUri::isRelativePath() instead', since:'league/uri:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\BaseUri::isRelativePath() instead', since: 'league/uri:7.0.0')]
     public static function isRelativePath(Psr7UriInterface|UriInterface $uri): bool
     {
         return BaseUri::from($uri)->isRelativePath();
@@ -71,7 +70,7 @@ final class UriInfo
     /**
      * Tells whether both URI refers to the same document.
      */
-    #[Deprecated(message:'use League\Uri\BaseUri::isSameDocument() instead', since:'league/uri:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\BaseUri::isSameDocument() instead', since: 'league/uri:7.0.0')]
     public static function isSameDocument(Psr7UriInterface|UriInterface $uri, Psr7UriInterface|UriInterface $baseUri): bool
     {
         return BaseUri::from($baseUri)->isSameDocument($uri);
@@ -86,7 +85,7 @@ final class UriInfo
      * For URI with the file scheme the method will return null (as this is left to the implementation decision)
      * For URI with a special scheme the method returns the scheme followed by its authority (without the userinfo part)
      */
-    #[Deprecated(message:'use League\Uri\BaseUri::origin() instead', since:'league/uri:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\BaseUri::origin() instead', since: 'league/uri:7.0.0')]
     public static function getOrigin(Psr7UriInterface|UriInterface $uri): ?string
     {
         return BaseUri::from($uri)->origin()?->__toString();
@@ -97,7 +96,7 @@ final class UriInfo
      *
      * @see UriInfo::getOrigin()
      */
-    #[Deprecated(message:'use League\Uri\BaseUri::isCrossOrigin() instead', since:'league/uri:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\BaseUri::isCrossOrigin() instead', since: 'league/uri:7.0.0')]
     public static function isCrossOrigin(Psr7UriInterface|UriInterface $uri, Psr7UriInterface|UriInterface $baseUri): bool
     {
         return BaseUri::from($baseUri)->isCrossOrigin($uri);

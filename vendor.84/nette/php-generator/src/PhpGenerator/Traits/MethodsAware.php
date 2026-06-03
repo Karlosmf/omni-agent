@@ -11,79 +11,75 @@ namespace Nette\PhpGenerator\Traits;
 
 use Nette;
 use Nette\PhpGenerator\Method;
-use function strtolower;
 
+use function strtolower;
 
 /**
  * @internal
  */
 trait MethodsAware
 {
-	/** @var array<string, Method> */
-	private array $methods = [];
+    /** @var array<string, Method> */
+    private array $methods = [];
 
+    /**
+     * Replaces all methods.
+     *
+     * @param  Method[]  $methods
+     */
+    public function setMethods(array $methods): static
+    {
+        (function (Method ...$methods) {})(...$methods);
+        $this->methods = [];
+        foreach ($methods as $m) {
+            $this->methods[strtolower($m->getName())] = $m;
+        }
 
-	/**
-	 * Replaces all methods.
-	 * @param  Method[]  $methods
-	 */
-	public function setMethods(array $methods): static
-	{
-		(function (Method ...$methods) {})(...$methods);
-		$this->methods = [];
-		foreach ($methods as $m) {
-			$this->methods[strtolower($m->getName())] = $m;
-		}
+        return $this;
+    }
 
-		return $this;
-	}
+    /** @return Method[] */
+    public function getMethods(): array
+    {
+        $res = [];
+        foreach ($this->methods as $m) {
+            $res[$m->getName()] = $m;
+        }
 
+        return $res;
+    }
 
-	/** @return Method[] */
-	public function getMethods(): array
-	{
-		$res = [];
-		foreach ($this->methods as $m) {
-			$res[$m->getName()] = $m;
-		}
+    public function getMethod(string $name): Method
+    {
+        return $this->methods[strtolower($name)] ?? throw new Nette\InvalidArgumentException("Method '$name' not found.");
+    }
 
-		return $res;
-	}
+    /**
+     * Adds a method. If it already exists, throws an exception or overwrites it if $overwrite is true.
+     */
+    public function addMethod(string $name, bool $overwrite = false): Method
+    {
+        $lower = strtolower($name);
+        if (! $overwrite && isset($this->methods[$lower])) {
+            throw new Nette\InvalidStateException("Cannot add method '$name', because it already exists.");
+        }
+        $method = new Method($name);
+        if (! $this->isInterface()) {
+            $method->setPublic();
+        }
 
+        return $this->methods[$lower] = $method;
+    }
 
-	public function getMethod(string $name): Method
-	{
-		return $this->methods[strtolower($name)] ?? throw new Nette\InvalidArgumentException("Method '$name' not found.");
-	}
+    public function removeMethod(string $name): static
+    {
+        unset($this->methods[strtolower($name)]);
 
+        return $this;
+    }
 
-	/**
-	 * Adds a method. If it already exists, throws an exception or overwrites it if $overwrite is true.
-	 */
-	public function addMethod(string $name, bool $overwrite = false): Method
-	{
-		$lower = strtolower($name);
-		if (!$overwrite && isset($this->methods[$lower])) {
-			throw new Nette\InvalidStateException("Cannot add method '$name', because it already exists.");
-		}
-		$method = new Method($name);
-		if (!$this->isInterface()) {
-			$method->setPublic();
-		}
-
-		return $this->methods[$lower] = $method;
-	}
-
-
-	public function removeMethod(string $name): static
-	{
-		unset($this->methods[strtolower($name)]);
-		return $this;
-	}
-
-
-	public function hasMethod(string $name): bool
-	{
-		return isset($this->methods[strtolower($name)]);
-	}
+    public function hasMethod(string $name): bool
+    {
+        return isset($this->methods[strtolower($name)]);
+    }
 }

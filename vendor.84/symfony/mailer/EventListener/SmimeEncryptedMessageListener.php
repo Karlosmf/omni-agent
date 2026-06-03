@@ -26,28 +26,27 @@ final class SmimeEncryptedMessageListener implements EventSubscriberInterface
     public function __construct(
         private readonly SmimeCertificateRepositoryInterface $smimeRepository,
         private readonly ?int $cipher = null,
-    ) {
-    }
+    ) {}
 
     public function onMessage(MessageEvent $event): void
     {
         $message = $event->getMessage();
-        if (!$message instanceof Message) {
+        if (! $message instanceof Message) {
             return;
         }
-        if (!$message->getHeaders()->has('X-SMime-Encrypt')) {
+        if (! $message->getHeaders()->has('X-SMime-Encrypt')) {
             return;
         }
         $message->getHeaders()->remove('X-SMime-Encrypt');
         $certificatePaths = [];
         foreach ($event->getEnvelope()->getRecipients() as $recipient) {
             $certificatePath = $this->smimeRepository->findCertificatePathFor($recipient->getAddress());
-            if (null === $certificatePath) {
+            if ($certificatePath === null) {
                 return;
             }
             $certificatePaths[] = $certificatePath;
         }
-        if (0 === \count($certificatePaths)) {
+        if (\count($certificatePaths) === 0) {
             return;
         }
         $encrypter = new SMimeEncrypter($certificatePaths, $this->cipher);

@@ -11,39 +11,35 @@ namespace Nette\PhpGenerator;
 
 use Nette;
 
-
 /**
  * Definition of a PHP attribute.
  */
 final class Attribute
 {
-	private string $name;
+    private string $name;
 
-	/** @var mixed[] */
-	private array $args;
+    /** @var mixed[] */
+    private array $args;
 
+    /** @param  mixed[]  $args */
+    public function __construct(string $name, array $args)
+    {
+        if (! Helpers::isNamespaceIdentifier($name)) {
+            throw new Nette\InvalidArgumentException("Value '$name' is not valid attribute name.");
+        }
 
-	/** @param  mixed[]  $args */
-	public function __construct(string $name, array $args)
-	{
-		if (!Helpers::isNamespaceIdentifier($name)) {
-			throw new Nette\InvalidArgumentException("Value '$name' is not valid attribute name.");
-		}
+        $this->name = $name;
+        $this->args = $args;
+    }
 
-		$this->name = $name;
-		$this->args = $args;
-	}
+    public function getName(): string
+    {
+        return $this->name;
+    }
 
-
-	public function getName(): string
-	{
-		return $this->name;
-	}
-
-
-	/** @return mixed[] */
-	public function getArguments(): array
-	{
-		return $this->args;
-	}
+    /** @return mixed[] */
+    public function getArguments(): array
+    {
+        return $this->args;
+    }
 }

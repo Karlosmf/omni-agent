@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ServiceType;
 use Illuminate\Database\Seeder;
 
 class ServiceTypeSeeder extends Seeder
@@ -24,7 +25,7 @@ class ServiceTypeSeeder extends Seeder
         ];
 
         foreach ($types as $type) {
-            \App\Models\ServiceType::firstOrCreate(
+            ServiceType::firstOrCreate(
                 ['key' => $type['key']],
                 $type
             );

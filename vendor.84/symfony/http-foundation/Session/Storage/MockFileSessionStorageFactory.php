@@ -28,8 +28,7 @@ class MockFileSessionStorageFactory implements SessionStorageFactoryInterface
         private ?string $savePath = null,
         private string $name = 'MOCKSESSID',
         private ?MetadataBag $metaBag = null,
-    ) {
-    }
+    ) {}
 
     public function createStorage(?Request $request): SessionStorageInterface
     {

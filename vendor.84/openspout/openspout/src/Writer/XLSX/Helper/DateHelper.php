@@ -25,7 +25,7 @@ final class DateHelper
         // Fudge factor for the erroneous fact that the year 1900 is treated as a Leap Year in MS Excel
         // This affects every date following 28th February 1900
         $excel1900isLeapYear = 1;
-        if ((1900 === $year) && ($month <= 2)) {
+        if (($year === 1900) && ($month <= 2)) {
             $excel1900isLeapYear = 0;
         }
         $myexcelBaseDate = 2415020;
@@ -35,7 +35,7 @@ final class DateHelper
             $month -= 3;
         } else {
             $month += 9;
-            --$year;
+            $year--;
         }
 
         //    Calculate the Julian Date, then subtract the Excel base date (JD 2415020 = 31-Dec-1899 Giving Excel Date of 0)

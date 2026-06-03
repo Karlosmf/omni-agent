@@ -17,7 +17,7 @@ class OneTimeCodeInput extends Field
      */
     protected string $view = 'filament-forms::components.one-time-code-input';
 
-    protected int | Closure $length = 6;
+    protected int|Closure $length = 6;
 
     protected function setUp(): void
     {
@@ -27,7 +27,7 @@ class OneTimeCodeInput extends Field
         $this->rule(static fn (OneTimeCodeInput $component): string => "digits:{$component->getLength()}");
     }
 
-    public function length(int | Closure $length): static
+    public function length(int|Closure $length): static
     {
         $this->length = $length;
 

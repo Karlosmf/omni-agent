@@ -25,8 +25,7 @@ final class TreeStyle
         private readonly string $prefixMidHasNext,
         private readonly string $prefixMidLast,
         private readonly string $prefixRight,
-    ) {
-    }
+    ) {}
 
     public static function box(): self
     {

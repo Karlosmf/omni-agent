@@ -18,19 +18,19 @@ class ColumnGroup extends Component
 
     protected string $evaluationIdentifier = 'group';
 
-    protected string | Htmlable | Closure $label;
+    protected string|Htmlable|Closure $label;
 
     protected bool $shouldTranslateLabel = false;
 
     /**
      * @var array<Column> | Closure
      */
-    protected array | Closure $columns = [];
+    protected array|Closure $columns = [];
 
     /**
      * @param  array<Column>  $columns
      */
-    final public function __construct(string | Htmlable | Closure $label, array | Closure $columns = [])
+    final public function __construct(string|Htmlable|Closure $label, array|Closure $columns = [])
     {
         $this->label($label);
         $this->columns($columns);
@@ -39,7 +39,7 @@ class ColumnGroup extends Component
     /**
      * @param  array<Column>  $columns
      */
-    public static function make(string | Htmlable | Closure $label, array | Closure $columns = []): static
+    public static function make(string|Htmlable|Closure $label, array|Closure $columns = []): static
     {
         $static = app(static::class, ['label' => $label, 'columns' => $columns]);
         $static->configure();
@@ -47,7 +47,7 @@ class ColumnGroup extends Component
         return $static;
     }
 
-    public function label(string | Htmlable | Closure $label): static
+    public function label(string|Htmlable|Closure $label): static
     {
         $this->label = $label;
 
@@ -61,7 +61,7 @@ class ColumnGroup extends Component
         return $this;
     }
 
-    public function getLabel(): string | Htmlable
+    public function getLabel(): string|Htmlable
     {
         $label = $this->evaluate($this->label);
 
@@ -71,7 +71,7 @@ class ColumnGroup extends Component
     /**
      * @param  array<Column> | Closure  $columns
      */
-    public function columns(array | Closure $columns): static
+    public function columns(array|Closure $columns): static
     {
         $this->columns = $columns;
 

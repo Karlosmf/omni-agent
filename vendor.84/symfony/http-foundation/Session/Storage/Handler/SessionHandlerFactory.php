@@ -15,6 +15,7 @@ use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Schema\DefaultSchemaManagerFactory;
 use Doctrine\DBAL\Tools\DsnParser;
+use Predis\ClientInterface;
 use Relay\Relay;
 use Symfony\Component\Cache\Adapter\AbstractAdapter;
 
@@ -39,7 +40,7 @@ class SessionHandlerFactory
             case $connection instanceof Relay:
             case $connection instanceof \RedisArray:
             case $connection instanceof \RedisCluster:
-            case $connection instanceof \Predis\ClientInterface:
+            case $connection instanceof ClientInterface:
                 return new RedisSessionHandler($connection);
 
             case $connection instanceof \Memcached:
@@ -48,19 +49,19 @@ class SessionHandlerFactory
             case $connection instanceof \PDO:
                 return new PdoSessionHandler($connection);
 
-            case !\is_string($connection):
+            case ! \is_string($connection):
                 throw new \InvalidArgumentException(\sprintf('Unsupported Connection: "%s".', get_debug_type($connection)));
             case str_starts_with($connection, 'file://'):
                 $savePath = substr($connection, 7);
 
-                return new StrictSessionHandler(new NativeFileSessionHandler('' === $savePath ? null : $savePath));
+                return new StrictSessionHandler(new NativeFileSessionHandler($savePath === '' ? null : $savePath));
 
             case str_starts_with($connection, 'redis:'):
             case str_starts_with($connection, 'rediss:'):
             case str_starts_with($connection, 'valkey:'):
             case str_starts_with($connection, 'valkeys:'):
             case str_starts_with($connection, 'memcached:'):
-                if (!class_exists(AbstractAdapter::class)) {
+                if (! class_exists(AbstractAdapter::class)) {
                     throw new \InvalidArgumentException('Unsupported Redis or Memcached DSN. Try running "composer require symfony/cache".');
                 }
                 $handlerClass = str_starts_with($connection, 'memcached:') ? MemcachedSessionHandler::class : RedisSessionHandler::class;
@@ -70,13 +71,13 @@ class SessionHandlerFactory
                 return new $handlerClass($connection, array_intersect_key($options, ['prefix' => 1, 'ttl' => 1]));
 
             case str_starts_with($connection, 'pdo_oci://'):
-                if (!class_exists(DriverManager::class)) {
+                if (! class_exists(DriverManager::class)) {
                     throw new \InvalidArgumentException('Unsupported PDO OCI DSN. Try running "composer require doctrine/dbal".');
                 }
                 $connection[3] = '-';
-                $params = (new DsnParser())->parse($connection);
-                $config = new Configuration();
-                $config->setSchemaManagerFactory(new DefaultSchemaManagerFactory());
+                $params = (new DsnParser)->parse($connection);
+                $config = new Configuration;
+                $config->setSchemaManagerFactory(new DefaultSchemaManagerFactory);
 
                 $connection = DriverManager::getConnection($params, $config)->getNativeConnection();
                 // no break;

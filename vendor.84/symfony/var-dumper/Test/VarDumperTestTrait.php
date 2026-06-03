@@ -29,7 +29,7 @@ trait VarDumperTestTrait
     ];
 
     /**
-     * @param array<string, callable> $casters
+     * @param  array<string, callable>  $casters
      */
     protected function setUpVarDumper(array $casters, ?int $flags = null): void
     {
@@ -71,13 +71,13 @@ trait VarDumperTestTrait
             $flags |= getenv('DUMP_COMMA_SEPARATOR') ? CliDumper::DUMP_COMMA_SEPARATOR : 0;
         }
 
-        $cloner = new VarCloner();
+        $cloner = new VarCloner;
         $cloner->addCasters($this->varDumperConfig['casters']);
         $cloner->setMaxItems(-1);
         $dumper = new CliDumper(null, null, $flags);
         $dumper->setColors(false);
         $data = $cloner->cloneVar($data, $filter)->withRefHandles(false);
-        if (null !== $key && null === $data = $data->seek($key)) {
+        if ($key !== null && null === $data = $data->seek($key)) {
             return null;
         }
 
@@ -86,7 +86,7 @@ trait VarDumperTestTrait
 
     private function prepareExpectation(mixed $expected, int $filter): string
     {
-        if (!\is_string($expected)) {
+        if (! \is_string($expected)) {
             $expected = $this->getDump($expected, null, $filter);
         }
 

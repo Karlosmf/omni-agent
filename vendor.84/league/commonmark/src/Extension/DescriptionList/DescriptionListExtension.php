@@ -30,13 +30,13 @@ final class DescriptionListExtension implements ExtensionInterface
 {
     public function register(EnvironmentBuilderInterface $environment): void
     {
-        $environment->addBlockStartParser(new DescriptionStartParser());
+        $environment->addBlockStartParser(new DescriptionStartParser);
 
-        $environment->addEventListener(DocumentParsedEvent::class, new LooseDescriptionHandler(), 1001);
-        $environment->addEventListener(DocumentParsedEvent::class, new ConsecutiveDescriptionListMerger(), 1000);
+        $environment->addEventListener(DocumentParsedEvent::class, new LooseDescriptionHandler, 1001);
+        $environment->addEventListener(DocumentParsedEvent::class, new ConsecutiveDescriptionListMerger, 1000);
 
-        $environment->addRenderer(DescriptionList::class, new DescriptionListRenderer());
-        $environment->addRenderer(DescriptionTerm::class, new DescriptionTermRenderer());
-        $environment->addRenderer(Description::class, new DescriptionRenderer());
+        $environment->addRenderer(DescriptionList::class, new DescriptionListRenderer);
+        $environment->addRenderer(DescriptionTerm::class, new DescriptionTermRenderer);
+        $environment->addRenderer(Description::class, new DescriptionRenderer);
     }
 }

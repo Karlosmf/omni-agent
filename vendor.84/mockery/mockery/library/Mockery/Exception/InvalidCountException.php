@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -83,8 +84,9 @@ class InvalidCountException extends Exception
     }
 
     /**
-     * @throws RuntimeException
      * @return string|null
+     *
+     * @throws RuntimeException
      */
     public function getMockName()
     {
@@ -104,6 +106,7 @@ class InvalidCountException extends Exception
     public function setActualCount($count)
     {
         $this->actual = $count;
+
         return $this;
     }
 
@@ -114,30 +117,33 @@ class InvalidCountException extends Exception
     public function setExpectedCount($count)
     {
         $this->expected = $count;
+
         return $this;
     }
 
     /**
-     * @param  string $comp
+     * @param  string  $comp
      * @return self
      */
     public function setExpectedCountComparative($comp)
     {
         if (! in_array($comp, ['=', '>', '<', '>=', '<='], true)) {
-            throw new RuntimeException('Illegal comparative for expected call counts set: ' . $comp);
+            throw new RuntimeException('Illegal comparative for expected call counts set: '.$comp);
         }
 
         $this->expectedComparative = $comp;
+
         return $this;
     }
 
     /**
-     * @param  string $name
+     * @param  string  $name
      * @return self
      */
     public function setMethodName($name)
     {
         $this->method = $name;
+
         return $this;
     }
 
@@ -147,6 +153,7 @@ class InvalidCountException extends Exception
     public function setMock(LegacyMockInterface $mock)
     {
         $this->mockObject = $mock;
+
         return $this;
     }
 }

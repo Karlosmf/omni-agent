@@ -2,12 +2,14 @@
 
 namespace App\Livewire;
 
-use App\Models\Lead;
+use App\Actions\Leads\CaptureLeadAction;
+use App\Services\AiConciergeService;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class PublicLeadForm extends Component implements HasForms
@@ -52,17 +54,17 @@ class PublicLeadForm extends Component implements HasForms
             ->statePath('data');
     }
 
-    public function submit(\App\Services\AiConciergeService $aiService, \App\Actions\Leads\CaptureLeadAction $captureLeadAction)
+    public function submit(AiConciergeService $aiService, CaptureLeadAction $captureLeadAction)
     {
         $data = $this->form->getState();
 
         $lead = $captureLeadAction->execute([
-            'customer_name'  => $data['name'],
+            'customer_name' => $data['name'],
             'customer_phone' => $data['phone'] ?? 'Web-Form',
             'customer_email' => $data['email'],
-            'source'         => 'web_form',
-            'raw_message'    => $data['message'],
-            'ai_data'        => ['email' => $data['email']],
+            'source' => 'web_form',
+            'raw_message' => $data['message'],
+            'ai_data' => ['email' => $data['email']],
         ]);
 
         // Process message with AI to get a summary/intent
@@ -83,7 +85,7 @@ class PublicLeadForm extends Component implements HasForms
                 'ai_summary' => $extraction['resumen'] ?? null,
             ]);
         } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::error('Error processing form with AI: '.$e->getMessage());
+            Log::error('Error processing form with AI: '.$e->getMessage());
         }
 
         $this->form->fill();

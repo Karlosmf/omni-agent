@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,11 +9,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\Configuration;
 
-use function realpath;
 use SebastianBergmann\FileIterator\Facade as FileIteratorFacade;
 use SplObjectStorage;
+
+use function realpath;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -46,7 +50,7 @@ final class SourceMapper
             foreach ((new FileIteratorFacade)->getFilesAsArray($path, $suffixes, $prefixes) as $file) {
                 $file = realpath($file);
 
-                if (!$file) {
+                if (! $file) {
                     continue;
                 }
 
@@ -57,7 +61,7 @@ final class SourceMapper
         foreach ($source->includeFiles() as $file) {
             $file = realpath($file->path());
 
-            if (!$file) {
+            if (! $file) {
                 continue;
             }
 
@@ -70,11 +74,11 @@ final class SourceMapper
             foreach ((new FileIteratorFacade)->getFilesAsArray($path, $suffixes, $prefixes) as $file) {
                 $file = realpath($file);
 
-                if (!$file) {
+                if (! $file) {
                     continue;
                 }
 
-                if (!isset($files[$file])) {
+                if (! isset($files[$file])) {
                     continue;
                 }
 
@@ -85,11 +89,11 @@ final class SourceMapper
         foreach ($source->excludeFiles() as $file) {
             $file = realpath($file->path());
 
-            if (!$file) {
+            if (! $file) {
                 continue;
             }
 
-            if (!isset($files[$file])) {
+            if (! isset($files[$file])) {
                 continue;
             }
 
@@ -109,7 +113,7 @@ final class SourceMapper
         $aggregated = [];
 
         foreach ($directories as $directory) {
-            if (!isset($aggregated[$directory->path()])) {
+            if (! isset($aggregated[$directory->path()])) {
                 $aggregated[$directory->path()] = [
                     0 => [],
                     1 => [],

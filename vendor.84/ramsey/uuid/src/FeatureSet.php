@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Ramsey\Uuid;
 
+use const PHP_INT_SIZE;
+
 use Ramsey\Uuid\Builder\FallbackBuilder;
 use Ramsey\Uuid\Builder\UuidBuilderInterface;
 use Ramsey\Uuid\Codec\CodecInterface;
@@ -52,8 +54,6 @@ use Ramsey\Uuid\Rfc4122\UuidBuilder as Rfc4122UuidBuilder;
 use Ramsey\Uuid\Validator\GenericValidator;
 use Ramsey\Uuid\Validator\ValidatorInterface;
 
-use const PHP_INT_SIZE;
-
 /**
  * FeatureSet detects and exposes available features in the current environment
  *
@@ -62,25 +62,37 @@ use const PHP_INT_SIZE;
 class FeatureSet
 {
     private ?TimeProviderInterface $timeProvider = null;
+
     private CalculatorInterface $calculator;
+
     private CodecInterface $codec;
+
     private DceSecurityGeneratorInterface $dceSecurityGenerator;
+
     private NameGeneratorInterface $nameGenerator;
+
     private NodeProviderInterface $nodeProvider;
+
     private NumberConverterInterface $numberConverter;
+
     private RandomGeneratorInterface $randomGenerator;
+
     private TimeConverterInterface $timeConverter;
+
     private TimeGeneratorInterface $timeGenerator;
+
     private TimeGeneratorInterface $unixTimeGenerator;
+
     private UuidBuilderInterface $builder;
+
     private ValidatorInterface $validator;
 
     /**
-     * @param bool $useGuids True build UUIDs using the GuidStringCodec
-     * @param bool $force32Bit True to force the use of 32-bit functionality (primarily for testing purposes)
-     * @param bool $forceNoBigNumber (obsolete)
-     * @param bool $ignoreSystemNode True to disable attempts to check for the system node ID (primarily for testing purposes)
-     * @param bool $enablePecl True to enable the use of the PeclUuidTimeGenerator to generate version 1 UUIDs
+     * @param  bool  $useGuids  True build UUIDs using the GuidStringCodec
+     * @param  bool  $force32Bit  True to force the use of 32-bit functionality (primarily for testing purposes)
+     * @param  bool  $forceNoBigNumber  (obsolete)
+     * @param  bool  $ignoreSystemNode  True to disable attempts to check for the system node ID (primarily for testing purposes)
+     * @param  bool  $enablePecl  True to enable the use of the PeclUuidTimeGenerator to generate version 1 UUIDs
      *
      * @phpstan-ignore constructor.unusedParameter ($forceNoBigNumber is deprecated)
      */
@@ -92,14 +104,14 @@ class FeatureSet
         private bool $enablePecl = false,
     ) {
         $this->randomGenerator = $this->buildRandomGenerator();
-        $this->setCalculator(new BrickMathCalculator());
+        $this->setCalculator(new BrickMathCalculator);
         $this->builder = $this->buildUuidBuilder($useGuids);
         $this->codec = $this->buildCodec($useGuids);
         $this->nodeProvider = $this->buildNodeProvider();
         $this->nameGenerator = $this->buildNameGenerator();
-        $this->setTimeProvider(new SystemTimeProvider());
-        $this->setDceSecurityProvider(new SystemDceSecurityProvider());
-        $this->validator = new GenericValidator();
+        $this->setTimeProvider(new SystemTimeProvider);
+        $this->setDceSecurityProvider(new SystemDceSecurityProvider);
+        $this->validator = new GenericValidator;
 
         assert($this->timeProvider !== null);
         $this->unixTimeGenerator = $this->buildUnixTimeGenerator();
@@ -255,7 +267,7 @@ class FeatureSet
     /**
      * Returns a codec configured for this environment
      *
-     * @param bool $useGuids Whether to build UUIDs using the GuidStringCodec
+     * @param  bool  $useGuids  Whether to build UUIDs using the GuidStringCodec
      */
     private function buildCodec(bool $useGuids = false): CodecInterface
     {
@@ -281,10 +293,10 @@ class FeatureSet
     private function buildNodeProvider(): NodeProviderInterface
     {
         if ($this->ignoreSystemNode) {
-            return new RandomNodeProvider();
+            return new RandomNodeProvider;
         }
 
-        return new FallbackNodeProvider([new SystemNodeProvider(), new RandomNodeProvider()]);
+        return new FallbackNodeProvider([new SystemNodeProvider, new RandomNodeProvider]);
     }
 
     /**
@@ -301,22 +313,22 @@ class FeatureSet
     private function buildRandomGenerator(): RandomGeneratorInterface
     {
         if ($this->enablePecl) {
-            return new PeclUuidRandomGenerator();
+            return new PeclUuidRandomGenerator;
         }
 
-        return (new RandomGeneratorFactory())->getGenerator();
+        return (new RandomGeneratorFactory)->getGenerator();
     }
 
     /**
      * Returns a time generator configured for this environment
      *
-     * @param TimeProviderInterface $timeProvider The time provider to use with
-     *     the time generator
+     * @param  TimeProviderInterface  $timeProvider  The time provider to use with
+     *                                               the time generator
      */
     private function buildTimeGenerator(TimeProviderInterface $timeProvider): TimeGeneratorInterface
     {
         if ($this->enablePecl) {
-            return new PeclUuidTimeGenerator();
+            return new PeclUuidTimeGenerator;
         }
 
         return (new TimeGeneratorFactory($this->nodeProvider, $this->timeConverter, $timeProvider))->getGenerator();
@@ -336,10 +348,10 @@ class FeatureSet
     private function buildNameGenerator(): NameGeneratorInterface
     {
         if ($this->enablePecl) {
-            return new PeclUuidNameGenerator();
+            return new PeclUuidNameGenerator;
         }
 
-        return (new NameGeneratorFactory())->getGenerator();
+        return (new NameGeneratorFactory)->getGenerator();
     }
 
     /**
@@ -359,7 +371,7 @@ class FeatureSet
     /**
      * Returns a UUID builder configured for this environment
      *
-     * @param bool $useGuids Whether to build UUIDs using the GuidStringCodec
+     * @param  bool  $useGuids  Whether to build UUIDs using the GuidStringCodec
      */
     private function buildUuidBuilder(bool $useGuids = false): UuidBuilderInterface
     {
@@ -378,6 +390,6 @@ class FeatureSet
      */
     private function is64BitSystem(): bool
     {
-        return PHP_INT_SIZE === 8 && !$this->force32Bit;
+        return PHP_INT_SIZE === 8 && ! $this->force32Bit;
     }
 }

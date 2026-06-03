@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Composer\Pcre\PHPStan;
 
@@ -8,14 +10,12 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Analyser\Scope;
-use PHPStan\Analyser\SpecifiedTypes;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 use PHPStan\TrinaryLogic;
-use PHPStan\Type\ObjectType;
-use PHPStan\Type\Type;
-use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\Php\RegexArrayShapeMatcher;
+use PHPStan\Type\TypeCombinator;
+
 use function sprintf;
 
 /**
@@ -40,26 +40,26 @@ final class UnsafeStrictGroupsCallRule implements Rule
 
     public function processNode(Node $node, Scope $scope): array
     {
-        if (!$node->class instanceof FullyQualified) {
+        if (! $node->class instanceof FullyQualified) {
             return [];
         }
         $isRegex = $node->class->toString() === Regex::class;
         $isPreg = $node->class->toString() === Preg::class;
-        if (!$isRegex && !$isPreg) {
+        if (! $isRegex && ! $isPreg) {
             return [];
         }
-        if (!$node->name instanceof Node\Identifier || !in_array($node->name->name, ['matchStrictGroups', 'isMatchStrictGroups', 'matchAllStrictGroups', 'isMatchAllStrictGroups'], true)) {
+        if (! $node->name instanceof Node\Identifier || ! in_array($node->name->name, ['matchStrictGroups', 'isMatchStrictGroups', 'matchAllStrictGroups', 'isMatchAllStrictGroups'], true)) {
             return [];
         }
 
         $args = $node->getArgs();
-        if (!isset($args[0])) {
+        if (! isset($args[0])) {
             return [];
         }
 
         $patternArg = $args[0] ?? null;
         if ($isPreg) {
-            if (!isset($args[2])) { // no matches set, skip as the matches won't be used anyway
+            if (! isset($args[2])) { // no matches set, skip as the matches won't be used anyway
                 return [];
             }
             $flagsArg = $args[3] ?? null;

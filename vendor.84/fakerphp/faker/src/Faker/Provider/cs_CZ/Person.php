@@ -426,10 +426,9 @@ class Person extends \Faker\Provider\Person
     ];
 
     /**
-     * @param string|null $gender 'male', 'female' or null for any
-     * @param int         $minAge minimal age of "generated person" in years
-     * @param int         $maxAge maximal age of "generated person" in years
-     *
+     * @param  string|null  $gender  'male', 'female' or null for any
+     * @param  int  $minAge  minimal age of "generated person" in years
+     * @param  int  $maxAge  maximal age of "generated person" in years
      * @return string czech birth number
      */
     public function birthNumber($gender = null, $minAge = 0, $maxAge = 100, $slashProbability = 50)
@@ -471,7 +470,7 @@ class Person extends \Faker\Provider\Person
 
         // add slash
         if ($this->generator->boolean($slashProbability)) {
-            $birthNumber = substr($birthNumber, 0, 6) . '/' . substr($birthNumber, 6);
+            $birthNumber = substr($birthNumber, 0, 6).'/'.substr($birthNumber, 6);
         }
 
         return $birthNumber;
@@ -509,7 +508,7 @@ class Person extends \Faker\Provider\Person
     }
 
     /**
-     * @param string|null $gender 'male', 'female' or null for any
+     * @param  string|null  $gender  'male', 'female' or null for any
      *
      * @example 'Albrecht'
      */

@@ -29,6 +29,7 @@ use function trim;
 final class ParamFactory implements PHPStanFactory
 {
     private DescriptionFactory $descriptionFactory;
+
     private TypeResolver $typeResolver;
 
     public function __construct(TypeResolver $typeResolver, DescriptionFactory $descriptionFactory)

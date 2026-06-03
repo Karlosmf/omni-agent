@@ -15,7 +15,7 @@ class DatabaseNotifications extends BaseComponent
     #[Locked]
     public ?DatabaseNotificationsPosition $position = null;
 
-    public function getUser(): Model | Authenticatable | null
+    public function getUser(): Model|Authenticatable|null
     {
         return Filament::auth()->user();
     }

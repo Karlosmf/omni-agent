@@ -11,6 +11,4 @@
 
 namespace Symfony\Component\Routing\Exception;
 
-class LogicException extends \LogicException
-{
-}
+class LogicException extends \LogicException {}

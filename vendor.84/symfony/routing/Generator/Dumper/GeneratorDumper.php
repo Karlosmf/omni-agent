@@ -22,8 +22,7 @@ abstract class GeneratorDumper implements GeneratorDumperInterface
 {
     public function __construct(
         private RouteCollection $routes,
-    ) {
-    }
+    ) {}
 
     public function getRoutes(): RouteCollection
     {

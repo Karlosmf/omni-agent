@@ -52,13 +52,12 @@ class FileLink extends File
         ?string $context = null,
         bool $wait = false
     ) {
-        if (!\is_link($streamName)) {
+        if (! \is_link($streamName)) {
             throw new FileException('File %s is not a link.', 0, $streamName);
         }
 
         parent::__construct($streamName, $mode, $context, $wait);
 
-        return;
     }
 
     /**
@@ -100,23 +99,23 @@ class FileLink extends File
     {
         $target = \dirname($this->getStreamName()).\DIRECTORY_SEPARATOR.
                    $this->getTargetName();
-        $context = null !== $this->getStreamContext()
+        $context = $this->getStreamContext() !== null
                        ? $this->getStreamContext()->getCurrentId()
                        : null;
 
-        if (true === \is_link($target)) {
+        if (\is_link($target) === true) {
             return new FileLinkReadWrite(
                 $target,
                 File::MODE_APPEND_READ_WRITE,
                 $context
             );
-        } elseif (true === \is_file($target)) {
+        } elseif (\is_file($target) === true) {
             return new FileReadWrite(
                 $target,
                 File::MODE_APPEND_READ_WRITE,
                 $context
             );
-        } elseif (true === \is_dir($target)) {
+        } elseif (\is_dir($target) === true) {
             return new FileDirectory(
                 $target,
                 File::MODE_READ,
@@ -140,7 +139,7 @@ class FileLink extends File
      */
     public static function create(string $name, string $target): bool
     {
-        if (false !== \linkinfo($name)) {
+        if (\linkinfo($name) !== false) {
             return true;
         }
 

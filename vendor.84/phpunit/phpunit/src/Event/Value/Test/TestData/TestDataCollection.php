@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,11 +9,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\TestData;
 
-use function count;
 use Countable;
 use IteratorAggregate;
+
+use function count;
 
 /**
  * @template-implements IteratorAggregate<non-negative-int, TestData>
@@ -24,10 +28,11 @@ final readonly class TestDataCollection implements Countable, IteratorAggregate
      * @var list<TestData>
      */
     private array $data;
+
     private ?DataFromDataProvider $fromDataProvider;
 
     /**
-     * @param list<TestData> $data
+     * @param  list<TestData>  $data
      */
     public static function fromArray(array $data): self
     {
@@ -44,7 +49,7 @@ final readonly class TestDataCollection implements Countable, IteratorAggregate
             }
         }
 
-        $this->data             = $data;
+        $this->data = $data;
         $this->fromDataProvider = $fromDataProvider;
     }
 
@@ -74,7 +79,7 @@ final readonly class TestDataCollection implements Countable, IteratorAggregate
      */
     public function dataFromDataProvider(): DataFromDataProvider
     {
-        if (!$this->hasDataFromDataProvider()) {
+        if (! $this->hasDataFromDataProvider()) {
             throw new NoDataSetFromDataProviderException;
         }
 

@@ -12,7 +12,7 @@ use OpenSpout\Reader\SheetWithVisibilityInterface;
  * @implements SheetWithVisibilityInterface<RowIterator>
  * @implements SheetWithMergeCellsInterface<RowIterator>
  */
-final readonly class Sheet implements SheetWithVisibilityInterface, SheetWithMergeCellsInterface
+final readonly class Sheet implements SheetWithMergeCellsInterface, SheetWithVisibilityInterface
 {
     /** @var RowIterator To iterate over sheet's rows */
     private RowIterator $rowIterator;
@@ -36,12 +36,12 @@ final readonly class Sheet implements SheetWithVisibilityInterface, SheetWithMer
     private array $mergeCells;
 
     /**
-     * @param RowIterator  $rowIterator    The corresponding row iterator
-     * @param int          $sheetIndex     Index of the sheet, based on order in the workbook (zero-based)
-     * @param string       $sheetName      Name of the sheet
-     * @param bool         $isSheetActive  Whether the sheet was defined as active
-     * @param bool         $isSheetVisible Whether the sheet is visible
-     * @param list<string> $mergeCells     Merge cells list ["C7:E7", "A9:D10"]
+     * @param  RowIterator  $rowIterator  The corresponding row iterator
+     * @param  int  $sheetIndex  Index of the sheet, based on order in the workbook (zero-based)
+     * @param  string  $sheetName  Name of the sheet
+     * @param  bool  $isSheetActive  Whether the sheet was defined as active
+     * @param  bool  $isSheetVisible  Whether the sheet is visible
+     * @param  list<string>  $mergeCells  Merge cells list ["C7:E7", "A9:D10"]
      */
     public function __construct(
         RowIterator $rowIterator,

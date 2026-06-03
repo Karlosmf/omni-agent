@@ -20,8 +20,7 @@ final class EmailHeaderSame extends Constraint
     public function __construct(
         private string $headerName,
         private string $expectedValue,
-    ) {
-    }
+    ) {}
 
     public function toString(): string
     {
@@ -29,11 +28,11 @@ final class EmailHeaderSame extends Constraint
     }
 
     /**
-     * @param RawMessage $message
+     * @param  RawMessage  $message
      */
     protected function matches($message): bool
     {
-        if (RawMessage::class === $message::class) {
+        if ($message::class === RawMessage::class) {
             throw new \LogicException('Unable to test a message header on a RawMessage instance.');
         }
 
@@ -41,7 +40,7 @@ final class EmailHeaderSame extends Constraint
     }
 
     /**
-     * @param RawMessage $message
+     * @param  RawMessage  $message
      */
     protected function failureDescription($message): string
     {

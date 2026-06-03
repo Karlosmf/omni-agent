@@ -22,7 +22,7 @@ class UuidV4 extends Uuid
 
     public function __construct(?string $uuid = null)
     {
-        if (null === $uuid) {
+        if ($uuid === null) {
             // Generate 36 random hex characters (144 bits)
             // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
             $uuid = bin2hex(random_bytes(18));

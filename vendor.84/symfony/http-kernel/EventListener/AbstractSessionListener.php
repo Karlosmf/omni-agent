@@ -41,7 +41,7 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
     public const NO_AUTO_CACHE_CONTROL_HEADER = 'Symfony-Session-NoAutoCacheControl';
 
     /**
-     * @param array<string, mixed> $sessionOptions
+     * @param  array<string, mixed>  $sessionOptions
      *
      * @internal
      */
@@ -49,25 +49,24 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
         private ?ContainerInterface $container = null,
         private bool $debug = false,
         private array $sessionOptions = [],
-    ) {
-    }
+    ) {}
 
     /**
      * @internal
      */
     public function onKernelRequest(RequestEvent $event): void
     {
-        if (!$event->isMainRequest()) {
+        if (! $event->isMainRequest()) {
             return;
         }
 
         $request = $event->getRequest();
-        if (!$request->hasSession()) {
+        if (! $request->hasSession()) {
             $request->setSessionFactory(function () use ($request) {
                 // Prevent calling `$this->getSession()` twice in case the Request (and the below factory) is cloned
                 static $sess;
 
-                if (!$sess) {
+                if (! $sess) {
                     $sess = $this->getSession();
                     $request->setSession($sess);
 
@@ -77,7 +76,7 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
                      *
                      * Do not set it when a native php session is active.
                      */
-                    if ($sess && !$sess->isStarted() && \PHP_SESSION_ACTIVE !== session_status()) {
+                    if ($sess && ! $sess->isStarted() && session_status() !== \PHP_SESSION_ACTIVE) {
                         $sessionId = $sess->getId() ?: $request->cookies->get($sess->getName(), '');
                         $sess->setId($sessionId);
                     }
@@ -93,15 +92,15 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
      */
     public function onKernelResponse(ResponseEvent $event): void
     {
-        if (!$event->isMainRequest()) {
+        if (! $event->isMainRequest()) {
             return;
         }
 
         $response = $event->getResponse();
-        $autoCacheControl = !$response->headers->has(self::NO_AUTO_CACHE_CONTROL_HEADER);
+        $autoCacheControl = ! $response->headers->has(self::NO_AUTO_CACHE_CONTROL_HEADER);
         // Always remove the internal header if present
         $response->headers->remove(self::NO_AUTO_CACHE_CONTROL_HEADER);
-        if (!$event->getRequest()->hasSession(true)) {
+        if (! $event->getRequest()->hasSession(true)) {
             return;
         }
         $session = $event->getRequest()->getSession();
@@ -154,7 +153,7 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
                 $request = $event->getRequest();
                 $requestSessionCookieId = $request->cookies->get($sessionName);
 
-                $isSessionEmpty = ($session instanceof Session ? $session->isEmpty() : !$session->all()) && empty($_SESSION); // checking $_SESSION to keep compatibility with native sessions
+                $isSessionEmpty = ($session instanceof Session ? $session->isEmpty() : ! $session->all()) && empty($_SESSION); // checking $_SESSION to keep compatibility with native sessions
                 if ($requestSessionCookieId && $isSessionEmpty) {
                     // PHP internally sets the session cookie value to "deleted" when setcookie() is called with empty string $value argument
                     // which happens in \Symfony\Component\HttpFoundation\Session\Storage\Handler\AbstractSessionHandler::destroy
@@ -169,7 +168,7 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
                         $sessionCookieHttpOnly,
                         $sessionCookieSameSite
                     );
-                } elseif ($sessionId !== $requestSessionCookieId && !$isSessionEmpty) {
+                } elseif ($sessionId !== $requestSessionCookieId && ! $isSessionEmpty) {
                     $expire = 0;
                     $lifetime = $sessionOptions['cookie_lifetime'] ?? null;
                     if ($lifetime) {
@@ -193,7 +192,7 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
             }
         }
 
-        if ($session instanceof Session ? 0 === $session->getUsageIndex() : !$session->isStarted()) {
+        if ($session instanceof Session ? $session->getUsageIndex() === 0 : ! $session->isStarted()) {
             return;
         }
 
@@ -206,7 +205,7 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
                 ->headers->addCacheControlDirective('must-revalidate');
         }
 
-        if (!$event->getRequest()->attributes->get('_stateless', false)) {
+        if (! $event->getRequest()->attributes->get('_stateless', false)) {
             return;
         }
 
@@ -224,7 +223,7 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
      */
     public function onSessionUsage(): void
     {
-        if (!$this->debug) {
+        if (! $this->debug) {
             return;
         }
 
@@ -232,21 +231,21 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
             $this->container->get('session_collector')();
         }
 
-        if (!$requestStack = $this->container?->has('request_stack') ? $this->container->get('request_stack') : null) {
+        if (! $requestStack = $this->container?->has('request_stack') ? $this->container->get('request_stack') : null) {
             return;
         }
 
         $stateless = false;
         $clonedRequestStack = clone $requestStack;
-        while (null !== ($request = $clonedRequestStack->pop()) && !$stateless) {
+        while (null !== ($request = $clonedRequestStack->pop()) && ! $stateless) {
             $stateless = $request->attributes->get('_stateless');
         }
 
-        if (!$stateless) {
+        if (! $stateless) {
             return;
         }
 
-        if (!$session = $requestStack->getCurrentRequest()->getSession()) {
+        if (! $session = $requestStack->getCurrentRequest()->getSession()) {
             return;
         }
 
@@ -274,14 +273,14 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
      */
     public function reset(): void
     {
-        if (\PHP_SESSION_ACTIVE === session_status()) {
+        if (session_status() === \PHP_SESSION_ACTIVE) {
             session_abort();
         }
 
         session_unset();
         $_SESSION = [];
 
-        if (!headers_sent()) { // session id can only be reset when no headers were so we check for headers_sent first
+        if (! headers_sent()) { // session id can only be reset when no headers were so we check for headers_sent first
             session_id('');
         }
     }
@@ -303,7 +302,7 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
 
         foreach ($sessionOptions as $key => $value) {
             // do the same logic as in the NativeSessionStorage
-            if ('cookie_secure' === $key && 'auto' === $value) {
+            if ($key === 'cookie_secure' && $value === 'auto') {
                 continue;
             }
             $mergedSessionOptions[$key] = $value;

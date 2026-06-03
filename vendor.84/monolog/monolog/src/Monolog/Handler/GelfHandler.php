@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -12,9 +14,9 @@
 namespace Monolog\Handler;
 
 use Gelf\PublisherInterface;
-use Monolog\Level;
-use Monolog\Formatter\GelfMessageFormatter;
 use Monolog\Formatter\FormatterInterface;
+use Monolog\Formatter\GelfMessageFormatter;
+use Monolog\Level;
 use Monolog\LogRecord;
 
 /**
@@ -31,7 +33,7 @@ class GelfHandler extends AbstractProcessingHandler
     protected PublisherInterface $publisher;
 
     /**
-     * @param PublisherInterface $publisher a gelf publisher object
+     * @param  PublisherInterface  $publisher  a gelf publisher object
      */
     public function __construct(PublisherInterface $publisher, int|string|Level $level = Level::Debug, bool $bubble = true)
     {
@@ -41,7 +43,7 @@ class GelfHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function write(LogRecord $record): void
     {
@@ -49,10 +51,10 @@ class GelfHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function getDefaultFormatter(): FormatterInterface
     {
-        return new GelfMessageFormatter();
+        return new GelfMessageFormatter;
     }
 }

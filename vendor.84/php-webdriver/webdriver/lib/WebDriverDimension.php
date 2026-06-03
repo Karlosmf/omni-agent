@@ -11,14 +11,15 @@ class WebDriverDimension
      * @var int|float
      */
     private $height;
+
     /**
      * @var int|float
      */
     private $width;
 
     /**
-     * @param int|float $width
-     * @param int|float $height
+     * @param  int|float  $width
+     * @param  int|float  $height
      */
     public function __construct($width, $height)
     {
@@ -49,7 +50,7 @@ class WebDriverDimension
     /**
      * Check whether the given dimension is the same as the instance.
      *
-     * @param WebDriverDimension $dimension The dimension to be compared with.
+     * @param  WebDriverDimension  $dimension  The dimension to be compared with.
      * @return bool Whether the height and the width are the same as the instance.
      */
     public function equals(self $dimension)

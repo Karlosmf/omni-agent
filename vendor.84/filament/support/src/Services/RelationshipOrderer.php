@@ -55,7 +55,7 @@ class RelationshipOrderer
         }
 
         throw new InvalidArgumentException(
-            'Nested sorting only supports [BelongsTo], [HasOne], [MorphOne], [BelongsToThrough], and [HasOneThrough] relationships, [' . $relationship::class . '] found.'
+            'Nested sorting only supports [BelongsTo], [HasOne], [MorphOne], [BelongsToThrough], and [HasOneThrough] relationships, ['.$relationship::class.'] found.'
         );
     }
 
@@ -97,7 +97,7 @@ class RelationshipOrderer
 
     protected function applyFirstRelationshipConstraint(
         EloquentBuilder $subquery,
-        BelongsTo | HasOne | MorphOne | BelongsToThrough | HasOneThrough $relationship,
+        BelongsTo|HasOne|MorphOne|BelongsToThrough|HasOneThrough $relationship,
         Model $baseModel
     ): void {
         $baseTable = $baseModel->getTable();
@@ -201,8 +201,8 @@ class RelationshipOrderer
 
     protected function applyIntermediateRelationshipJoin(
         EloquentBuilder $subquery,
-        BelongsTo | HasOne | MorphOne | BelongsToThrough | HasOneThrough $currentRelationship,
-        BelongsTo | HasOne | MorphOne | BelongsToThrough | HasOneThrough $previousRelationship
+        BelongsTo|HasOne|MorphOne|BelongsToThrough|HasOneThrough $currentRelationship,
+        BelongsTo|HasOne|MorphOne|BelongsToThrough|HasOneThrough $previousRelationship
     ): void {
         $previousTable = $previousRelationship->getRelated()->getTable();
 

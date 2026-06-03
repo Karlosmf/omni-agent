@@ -12,13 +12,13 @@ final class Filesystem
 {
     public static function getBaseDir(): string
     {
-        $dir = __DIR__ . '/../../';
+        $dir = __DIR__.'/../../';
 
-        if (file_exists($dir . DIRECTORY_SEPARATOR . 'vendor')) {
+        if (file_exists($dir.DIRECTORY_SEPARATOR.'vendor')) {
             return $dir;
         }
 
-        return $dir . '../../../';
+        return $dir.'../../../';
     }
 
     /**

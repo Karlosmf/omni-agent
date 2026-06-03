@@ -7,9 +7,9 @@ use Filament\Forms\Components\Field;
 
 trait CanBeAutocompleted
 {
-    protected bool | string | Closure | null $autocomplete = null;
+    protected bool|string|Closure|null $autocomplete = null;
 
-    public function autocomplete(bool | string | Closure | null $autocomplete = true): static
+    public function autocomplete(bool|string|Closure|null $autocomplete = true): static
     {
         $this->autocomplete = $autocomplete;
 
@@ -19,7 +19,7 @@ trait CanBeAutocompleted
     /**
      * @deprecated Use `autocomplete()` instead.
      */
-    public function disableAutocomplete(bool | Closure $condition = true): static
+    public function disableAutocomplete(bool|Closure $condition = true): static
     {
         $this->autocomplete(static function (Field $component) use ($condition): ?bool {
             return $component->evaluate($condition) ? false : null;

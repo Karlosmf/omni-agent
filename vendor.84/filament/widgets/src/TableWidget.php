@@ -33,7 +33,7 @@ class TableWidget extends Widget implements HasActions, HasSchemas, HasTable
     /**
      * @deprecated Override the `table()` method to configure the table.
      */
-    protected function getTableHeading(): string | Htmlable | null
+    protected function getTableHeading(): string|Htmlable|null
     {
         return static::$heading;
     }

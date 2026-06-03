@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner\Filter;
 
 use function in_array;
@@ -19,11 +22,11 @@ use function in_array;
 final class ExcludeGroupFilterIterator extends GroupFilterIterator
 {
     /**
-     * @param non-empty-string       $id
-     * @param list<non-empty-string> $groupTests
+     * @param  non-empty-string  $id
+     * @param  list<non-empty-string>  $groupTests
      */
     protected function doAccept(string $id, array $groupTests): bool
     {
-        return !in_array($id, $groupTests, true);
+        return ! in_array($id, $groupTests, true);
     }
 }

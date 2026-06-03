@@ -32,12 +32,12 @@ use Psy\Exception\FatalErrorException;
 class LabelContextPass extends CodeCleanerPass
 {
     private int $functionDepth = 0;
+
     private array $labelDeclarations = [];
+
     private array $labelGotos = [];
 
     /**
-     * @param array $nodes
-     *
      * @return Node[]|null Array of nodes
      */
     public function beforeTraverse(array $nodes)
@@ -75,8 +75,6 @@ class LabelContextPass extends CodeCleanerPass
     }
 
     /**
-     * @param \PhpParser\Node $node
-     *
      * @return int|Node|Node[]|null Replacement node (or special return value)
      */
     public function leaveNode(Node $node)
@@ -94,7 +92,7 @@ class LabelContextPass extends CodeCleanerPass
     public function afterTraverse(array $nodes)
     {
         foreach ($this->labelGotos as $name => $line) {
-            if (!isset($this->labelDeclarations[$name])) {
+            if (! isset($this->labelDeclarations[$name])) {
                 $msg = "'goto' to undefined label '{$name}'";
                 throw new FatalErrorException($msg, 0, \E_ERROR, null, $line);
             }

@@ -20,8 +20,11 @@ use Symfony\Component\Mime\RawMessage;
 class SentMessage
 {
     private RawMessage $original;
+
     private RawMessage $raw;
+
     private string $messageId;
+
     private string $debug = '';
 
     /**
@@ -38,7 +41,7 @@ class SentMessage
         if ($message instanceof Message) {
             $message = clone $message;
             $headers = $message->getHeaders();
-            if (!$headers->has('Message-ID')) {
+            if (! $headers->has('Message-ID')) {
                 $headers->addIdHeader('Message-ID', $message->generateMessageId());
             }
             $this->messageId = $headers->get('Message-ID')->getId();

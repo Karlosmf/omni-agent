@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -13,6 +14,7 @@ namespace Mockery\Generator;
 use Mockery\Reflector;
 use ReflectionClass;
 use ReflectionParameter;
+
 use function class_exists;
 
 /**
@@ -41,9 +43,8 @@ class Parameter
      * @template TMixed
      * @template TResult
      *
-     * @param string        $method
-     * @param array<TMixed> $args
-     *
+     * @param  string  $method
+     * @param  array<TMixed>  $args
      * @return TResult
      */
     public function __call($method, array $args)
@@ -80,7 +81,7 @@ class Parameter
         $name = $this->rfp->getName();
 
         if (! $name || $name === '...') {
-            return 'arg' . self::$parameterCounter++;
+            return 'arg'.self::$parameterCounter++;
         }
 
         return $name;

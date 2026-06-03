@@ -34,6 +34,6 @@ final class BlockQuoteStartParser implements BlockStartParserInterface
         $cursor->advanceBy(1);
         $cursor->advanceBySpaceOrTab();
 
-        return BlockStart::of(new BlockQuoteParser())->at($cursor);
+        return BlockStart::of(new BlockQuoteParser)->at($cursor);
     }
 }

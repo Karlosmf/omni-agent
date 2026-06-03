@@ -15,7 +15,7 @@ trait HasHeader
     /**
      * @deprecated Override the `table()` method to configure the table.
      */
-    protected function getTableDescription(): string | Htmlable | null
+    protected function getTableDescription(): string|Htmlable|null
     {
         return null;
     }
@@ -23,7 +23,7 @@ trait HasHeader
     /**
      * @deprecated Override the `table()` method to configure the table.
      */
-    protected function getTableHeader(): View | Htmlable | null
+    protected function getTableHeader(): View|Htmlable|null
     {
         return null;
     }
@@ -41,7 +41,7 @@ trait HasHeader
     /**
      * @deprecated Override the `table()` method to configure the table.
      */
-    protected function getTableHeading(): string | Htmlable | null
+    protected function getTableHeading(): string|Htmlable|null
     {
         return null;
     }

@@ -25,22 +25,21 @@ use Twig\Environment;
 class HIncludeFragmentRenderer extends RoutableFragmentRenderer
 {
     /**
-     * @param string|null $globalDefaultTemplate The global default content (it can be a template name or the content)
+     * @param  string|null  $globalDefaultTemplate  The global default content (it can be a template name or the content)
      */
     public function __construct(
         private ?Environment $twig = null,
         private ?UriSigner $signer = null,
         private ?string $globalDefaultTemplate = null,
         private string $charset = 'utf-8',
-    ) {
-    }
+    ) {}
 
     /**
      * Checks if a templating engine has been set.
      */
     public function hasTemplating(): bool
     {
-        return null !== $this->twig;
+        return $this->twig !== null;
     }
 
     /**
@@ -60,7 +59,7 @@ class HIncludeFragmentRenderer extends RoutableFragmentRenderer
         $uri = str_replace('&', '&amp;', $uri);
 
         $template = $options['default'] ?? $this->globalDefaultTemplate;
-        if (null !== $this->twig && $template && $this->twig->getLoader()->exists($template)) {
+        if ($this->twig !== null && $template && $this->twig->getLoader()->exists($template)) {
             $content = $this->twig->render($template);
         } else {
             $content = $template;

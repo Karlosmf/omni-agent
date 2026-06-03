@@ -14,8 +14,10 @@ class RemoteTargetLocator implements WebDriverTargetLocator
 {
     /** @var RemoteExecuteMethod */
     protected $executor;
+
     /** @var RemoteWebDriver */
     protected $driver;
+
     /** @var bool */
     protected $isW3cCompliant;
 
@@ -38,9 +40,9 @@ class RemoteTargetLocator implements WebDriverTargetLocator
     }
 
     /**
-     * @param WebDriverElement|null|int|string $frame The WebDriverElement, the id or the name of the frame.
-     * When null, switch to the current top-level browsing context When int, switch to the WindowProxy identified
-     * by the value. When an Element, switch to that Element.
+     * @param  WebDriverElement|null|int|string  $frame  The WebDriverElement, the id or the name of the frame.
+     *                                                   When null, switch to the current top-level browsing context When int, switch to the WindowProxy identified
+     *                                                   by the value. When an Element, switch to that Element.
      * @return RemoteWebDriver
      */
     public function frame($frame)
@@ -88,7 +90,7 @@ class RemoteTargetLocator implements WebDriverTargetLocator
     }
 
     /**
-     * @param string $handle The handle of the window to be focused on.
+     * @param  string  $handle  The handle of the window to be focused on.
      * @return RemoteWebDriver
      */
     public function window($handle)
@@ -108,11 +110,13 @@ class RemoteTargetLocator implements WebDriverTargetLocator
      * Creates a new browser window and switches the focus for future commands of this driver to the new window.
      *
      * @see https://w3c.github.io/webdriver/#new-window
-     * @param string $windowType The type of a new browser window that should be created. One of [tab, window].
-     * The created window is not guaranteed to be of the requested type; if the driver does not support the requested
-     * type, a new browser window will be created of whatever type the driver does support.
-     * @throws LogicException
+     *
+     * @param  string  $windowType  The type of a new browser window that should be created. One of [tab, window].
+     *                              The created window is not guaranteed to be of the requested type; if the driver does not support the requested
+     *                              type, a new browser window will be created of whatever type the driver does support.
      * @return RemoteWebDriver This driver focused on the given window
+     *
+     * @throws LogicException
      */
     public function newWindow($windowType = self::WINDOW_TYPE_TAB)
     {
@@ -120,7 +124,7 @@ class RemoteTargetLocator implements WebDriverTargetLocator
             throw LogicException::forError('Window type must by either "tab" or "window"');
         }
 
-        if (!$this->isW3cCompliant) {
+        if (! $this->isW3cCompliant) {
             throw LogicException::forError('New window is only supported in W3C mode');
         }
 

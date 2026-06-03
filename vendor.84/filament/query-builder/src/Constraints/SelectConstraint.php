@@ -16,20 +16,20 @@ class SelectConstraint extends Constraint
 {
     use Concerns\CanBeNullable;
 
-    protected bool | Closure $isMultiple = false;
+    protected bool|Closure $isMultiple = false;
 
-    protected bool | Closure $isNative = true;
+    protected bool|Closure $isNative = true;
 
-    protected bool | Closure $isSearchable = false;
+    protected bool|Closure $isSearchable = false;
 
-    protected int | Closure $optionsLimit = 50;
+    protected int|Closure $optionsLimit = 50;
 
     protected ?Closure $getOptionLabelFromRecordUsing = null;
 
     /**
      * @var array<string | array<string>> | Arrayable | class-string | Closure | null
      */
-    protected array | Arrayable | string | Closure | null $options = null;
+    protected array|Arrayable|string|Closure|null $options = null;
 
     protected ?Closure $getOptionLabelUsing = null;
 
@@ -50,14 +50,14 @@ class SelectConstraint extends Constraint
         ]);
     }
 
-    public function multiple(bool | Closure $condition = true): static
+    public function multiple(bool|Closure $condition = true): static
     {
         $this->isMultiple = $condition;
 
         return $this;
     }
 
-    public function searchable(bool | Closure $condition = true): static
+    public function searchable(bool|Closure $condition = true): static
     {
         $this->isSearchable = $condition;
 
@@ -74,7 +74,7 @@ class SelectConstraint extends Constraint
         return (bool) $this->evaluate($this->isSearchable);
     }
 
-    public function optionsLimit(int | Closure $limit): static
+    public function optionsLimit(int|Closure $limit): static
     {
         $this->optionsLimit = $limit;
 
@@ -86,7 +86,7 @@ class SelectConstraint extends Constraint
         return $this->evaluate($this->optionsLimit);
     }
 
-    public function native(bool | Closure $condition = true): static
+    public function native(bool|Closure $condition = true): static
     {
         $this->isNative = $condition;
 
@@ -113,7 +113,7 @@ class SelectConstraint extends Constraint
     /**
      * @param  array<string | array<string>> | Arrayable | class-string | Closure | null  $options
      */
-    public function options(array | Arrayable | string | Closure | null $options): static
+    public function options(array|Arrayable|string|Closure|null $options): static
     {
         $this->options = $options;
 
@@ -132,7 +132,7 @@ class SelectConstraint extends Constraint
             enum_exists($enum = $options)
         ) {
             if (is_a($enum, LabelInterface::class, allow_string: true)) {
-                return array_reduce($enum::cases(), function (array $carry, LabelInterface & UnitEnum $case): array {
+                return array_reduce($enum::cases(), function (array $carry, LabelInterface&UnitEnum $case): array {
                     $carry[$case->value ?? $case->name] = $case->getLabel() ?? $case->name;
 
                     return $carry;

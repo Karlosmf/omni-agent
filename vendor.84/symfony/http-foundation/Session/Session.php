@@ -30,26 +30,30 @@ class_exists(SessionBagProxy::class);
  *
  * @implements \IteratorAggregate<string, mixed>
  */
-class Session implements FlashBagAwareSessionInterface, \IteratorAggregate, \Countable
+class Session implements \Countable, \IteratorAggregate, FlashBagAwareSessionInterface
 {
     protected SessionStorageInterface $storage;
 
     private string $flashName;
+
     private string $attributeName;
+
     private array $data = [];
+
     private int $usageIndex = 0;
+
     private ?\Closure $usageReporter;
 
     public function __construct(?SessionStorageInterface $storage = null, ?AttributeBagInterface $attributes = null, ?FlashBagInterface $flashes = null, ?callable $usageReporter = null)
     {
-        $this->storage = $storage ?? new NativeSessionStorage();
-        $this->usageReporter = null === $usageReporter ? null : $usageReporter(...);
+        $this->storage = $storage ?? new NativeSessionStorage;
+        $this->usageReporter = $usageReporter === null ? null : $usageReporter(...);
 
-        $attributes ??= new AttributeBag();
+        $attributes ??= new AttributeBag;
         $this->attributeName = $attributes->getName();
         $this->registerBag($attributes);
 
-        $flashes ??= new FlashBag();
+        $flashes ??= new FlashBag;
         $this->flashName = $flashes->getName();
         $this->registerBag($flashes);
     }
@@ -128,8 +132,8 @@ class Session implements FlashBagAwareSessionInterface, \IteratorAggregate, \Cou
     public function isEmpty(): bool
     {
         if ($this->isStarted()) {
-            ++$this->usageIndex;
-            if ($this->usageReporter && 0 <= $this->usageIndex) {
+            $this->usageIndex++;
+            if ($this->usageReporter && $this->usageIndex >= 0) {
                 ($this->usageReporter)();
             }
         }
@@ -183,8 +187,8 @@ class Session implements FlashBagAwareSessionInterface, \IteratorAggregate, \Cou
 
     public function getMetadataBag(): MetadataBag
     {
-        ++$this->usageIndex;
-        if ($this->usageReporter && 0 <= $this->usageIndex) {
+        $this->usageIndex++;
+        if ($this->usageReporter && $this->usageIndex >= 0) {
             ($this->usageReporter)();
         }
 

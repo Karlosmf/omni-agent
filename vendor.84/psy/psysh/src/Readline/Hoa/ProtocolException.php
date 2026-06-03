@@ -39,6 +39,4 @@ namespace Psy\Readline\Hoa;
 /**
  * Extends the `Hoa\Exception\Exception` class.
  */
-class ProtocolException extends Exception
-{
-}
+class ProtocolException extends Exception {}

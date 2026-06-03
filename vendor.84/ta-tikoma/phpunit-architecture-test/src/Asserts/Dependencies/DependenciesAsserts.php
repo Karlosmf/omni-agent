@@ -18,8 +18,8 @@ trait DependenciesAsserts
     /**
      * Check layerA does not depend on layerB
      *
-     * @param Layer|Layer[] $layerA
-     * @param Layer|Layer[] $layerB
+     * @param  Layer|Layer[]  $layerA
+     * @param  Layer|Layer[]  $layerB
      */
     public function assertDoesNotDependOn($layerA, $layerB): void
     {
@@ -27,15 +27,15 @@ trait DependenciesAsserts
         self::assertEquals(
             0,
             count($names),
-            'Found dependencies: ' . implode("\n", $names)
+            'Found dependencies: '.implode("\n", $names)
         );
     }
 
     /**
      * Check layerA does not depend on layerB
      *
-     * @param Layer|Layer[] $layerA
-     * @param Layer|Layer[] $layerB
+     * @param  Layer|Layer[]  $layerA
+     * @param  Layer|Layer[]  $layerB
      */
     public function assertDependOn($layerA, $layerB): void
     {
@@ -50,9 +50,8 @@ trait DependenciesAsserts
     /**
      * Get objects which uses on layer A from layer B
      *
-     * @param Layer|Layer[] $layerA
-     * @param Layer|Layer[] $layerB
-     *
+     * @param  Layer|Layer[]  $layerA
+     * @param  Layer|Layer[]  $layerB
      * @return string[]
      */
     private function getObjectsWhichUsesOnLayerAFromLayerB($layerA, $layerB): array

@@ -21,6 +21,7 @@ use Symfony\Component\Translation\MessageCatalogue;
 class CsvFileDumper extends FileDumper
 {
     private string $delimiter = ';';
+
     private string $enclosure = '"';
 
     public function formatCatalogue(MessageCatalogue $messages, string $domain, array $options = []): string

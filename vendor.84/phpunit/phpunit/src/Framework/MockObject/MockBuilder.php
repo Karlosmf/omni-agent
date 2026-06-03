@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,9 +9,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\MockObject;
 
-use function assert;
 use PHPUnit\Framework\InvalidArgumentException;
 use PHPUnit\Framework\MockObject\Generator\ClassIsEnumerationException;
 use PHPUnit\Framework\MockObject\Generator\ClassIsFinalException;
@@ -20,6 +22,8 @@ use PHPUnit\Framework\MockObject\Generator\ReflectionException;
 use PHPUnit\Framework\MockObject\Generator\RuntimeException;
 use PHPUnit\Framework\MockObject\Generator\UnknownTypeException;
 use PHPUnit\Framework\TestCase;
+
+use function assert;
 
 /**
  * @template MockedType
@@ -36,7 +40,7 @@ final class MockBuilder extends TestDoubleBuilder
     private ?string $mockClassName = null;
 
     /**
-     * @param class-string|trait-string $type
+     * @param  class-string|trait-string  $type
      */
     public function __construct(TestCase $testCase, string $type)
     {
@@ -48,6 +52,9 @@ final class MockBuilder extends TestDoubleBuilder
     /**
      * Creates a mock object using a fluent interface.
      *
+     *
+     * @return MockedType&MockObject
+     *
      * @throws ClassIsEnumerationException
      * @throws ClassIsFinalException
      * @throws DuplicateMethodException
@@ -57,8 +64,6 @@ final class MockBuilder extends TestDoubleBuilder
      * @throws ReflectionException
      * @throws RuntimeException
      * @throws UnknownTypeException
-     *
-     * @return MockedType&MockObject
      */
     public function getMock(): MockObject
     {
@@ -75,8 +80,7 @@ final class MockBuilder extends TestDoubleBuilder
     /**
      * Specifies the name for the mock class.
      *
-     * @param class-string $name
-     *
+     * @param  class-string  $name
      * @return $this
      */
     public function setMockClassName(string $name): self

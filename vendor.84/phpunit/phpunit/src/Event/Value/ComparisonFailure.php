@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\Code;
 
 /**
@@ -17,14 +20,16 @@ namespace PHPUnit\Event\Code;
 final readonly class ComparisonFailure
 {
     private string $expected;
+
     private string $actual;
+
     private string $diff;
 
     public function __construct(string $expected, string $actual, string $diff)
     {
         $this->expected = $expected;
-        $this->actual   = $actual;
-        $this->diff     = $diff;
+        $this->actual = $actual;
+        $this->diff = $diff;
     }
 
     public function expected(): string

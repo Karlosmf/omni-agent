@@ -26,18 +26,17 @@ class ErrorListener implements EventSubscriberInterface
 {
     public function __construct(
         private ?LoggerInterface $logger = null,
-    ) {
-    }
+    ) {}
 
     public function onConsoleError(ConsoleErrorEvent $event): void
     {
-        if (null === $this->logger) {
+        if ($this->logger === null) {
             return;
         }
 
         $error = $event->getError();
 
-        if (!$inputString = self::getInputString($event)) {
+        if (! $inputString = self::getInputString($event)) {
             $this->logger->critical('An error occurred while using the console. Message: "{message}"', ['exception' => $error, 'message' => $error->getMessage()]);
 
             return;
@@ -48,17 +47,17 @@ class ErrorListener implements EventSubscriberInterface
 
     public function onConsoleTerminate(ConsoleTerminateEvent $event): void
     {
-        if (null === $this->logger) {
+        if ($this->logger === null) {
             return;
         }
 
         $exitCode = $event->getExitCode();
 
-        if (0 === $exitCode) {
+        if ($exitCode === 0) {
             return;
         }
 
-        if (!$inputString = self::getInputString($event)) {
+        if (! $inputString = self::getInputString($event)) {
             $this->logger->debug('The console exited with code "{code}"', ['code' => $exitCode]);
 
             return;

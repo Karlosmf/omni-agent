@@ -65,7 +65,6 @@ class Protocol extends ProtocolNode
     {
         $this->initialize();
 
-        return;
     }
 
     /**
@@ -74,8 +73,8 @@ class Protocol extends ProtocolNode
      */
     public static function getInstance(): self
     {
-        if (null === static::$_instance) {
-            static::$_instance = new self();
+        if (static::$_instance === null) {
+            static::$_instance = new self;
         }
 
         return static::$_instance;
@@ -91,7 +90,7 @@ class Protocol extends ProtocolNode
 
         $cwd =
             'cli' === \PHP_SAPI
-                ? false !== $argv0 ? \dirname($argv0) : ''
+                ? $argv0 !== false ? \dirname($argv0) : ''
                 : \getcwd();
 
         $this[] = new ProtocolNode(
@@ -148,10 +147,10 @@ class Protocol extends ProtocolNode
     public function resolve(string $path, bool $exists = true, bool $unfold = false)
     {
         if (\substr($path, 0, 6) !== 'hoa://') {
-            if (true === \is_dir($path)) {
+            if (\is_dir($path) === true) {
                 $path = \rtrim($path, '/\\');
 
-                if ('' === $path) {
+                if ($path === '') {
                     $path = '/';
                 }
             }
@@ -165,17 +164,17 @@ class Protocol extends ProtocolNode
             $out = $this->_resolve($path, $handle);
 
             // Not a path but a resource.
-            if (!\is_array($handle)) {
+            if (! \is_array($handle)) {
                 return $out;
             }
 
             $handle = \array_values(\array_unique($handle, \SORT_REGULAR));
 
             foreach ($handle as &$entry) {
-                if (true === \is_dir($entry)) {
+                if (\is_dir($entry) === true) {
                     $entry = \rtrim($entry, '/\\');
 
-                    if ('' === $entry) {
+                    if ($entry === '') {
                         $entry = '/';
                     }
                 }
@@ -184,8 +183,8 @@ class Protocol extends ProtocolNode
             self::$_cache[$path] = $handle;
         }
 
-        if (true === $unfold) {
-            if (true !== $exists) {
+        if ($unfold === true) {
+            if ($exists !== true) {
                 return $handle;
             }
 
@@ -200,7 +199,7 @@ class Protocol extends ProtocolNode
             return $out;
         }
 
-        if (true !== $exists) {
+        if ($exists !== true) {
             return $handle[0];
         }
 

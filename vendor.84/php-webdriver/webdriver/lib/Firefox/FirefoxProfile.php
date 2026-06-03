@@ -16,21 +16,24 @@ class FirefoxProfile
      * @var array
      */
     private $preferences = [];
+
     /**
      * @var array
      */
     private $extensions = [];
+
     /**
      * @var array
      */
     private $extensions_datas = [];
+
     /**
      * @var string
      */
     private $rdf_file;
 
     /**
-     * @param string $extension The path to the xpi extension.
+     * @param  string  $extension  The path to the xpi extension.
      * @return FirefoxProfile
      */
     public function addExtension($extension)
@@ -41,12 +44,12 @@ class FirefoxProfile
     }
 
     /**
-     * @param string $extension_datas The path to the folder containing the datas to add to the extension
+     * @param  string  $extension_datas  The path to the folder containing the datas to add to the extension
      * @return FirefoxProfile
      */
     public function addExtensionDatas($extension_datas)
     {
-        if (!is_dir($extension_datas)) {
+        if (! is_dir($extension_datas)) {
             return null;
         }
 
@@ -56,12 +59,12 @@ class FirefoxProfile
     }
 
     /**
-     * @param string $rdf_file The path to the rdf file
+     * @param  string  $rdf_file  The path to the rdf file
      * @return FirefoxProfile
      */
     public function setRdfFile($rdf_file)
     {
-        if (!is_file($rdf_file)) {
+        if (! is_file($rdf_file)) {
             return null;
         }
 
@@ -71,10 +74,11 @@ class FirefoxProfile
     }
 
     /**
-     * @param string $key
-     * @param string|bool|int $value
-     * @throws LogicException
+     * @param  string  $key
+     * @param  string|bool|int  $value
      * @return FirefoxProfile
+     *
+     * @throws LogicException
      */
     public function setPreference($key, $value)
     {
@@ -99,7 +103,7 @@ class FirefoxProfile
     }
 
     /**
-     * @param mixed $key
+     * @param  mixed  $key
      * @return mixed
      */
     public function getPreference($key)
@@ -119,7 +123,7 @@ class FirefoxProfile
         $temp_dir = $this->createTempDirectory('WebDriverFirefoxProfile');
 
         if (isset($this->rdf_file)) {
-            copy($this->rdf_file, $temp_dir . DIRECTORY_SEPARATOR . 'mimeTypes.rdf');
+            copy($this->rdf_file, $temp_dir.DIRECTORY_SEPARATOR.'mimeTypes.rdf');
         }
 
         foreach ($this->extensions as $extension) {
@@ -127,14 +131,14 @@ class FirefoxProfile
         }
 
         foreach ($this->extensions_datas as $dirname => $extension_datas) {
-            mkdir($temp_dir . DIRECTORY_SEPARATOR . $dirname);
+            mkdir($temp_dir.DIRECTORY_SEPARATOR.$dirname);
             $iterator = new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator($extension_datas, RecursiveDirectoryIterator::SKIP_DOTS),
                 RecursiveIteratorIterator::SELF_FIRST
             );
             foreach ($iterator as $item) {
-                $target_dir = $temp_dir . DIRECTORY_SEPARATOR . $dirname . DIRECTORY_SEPARATOR
-                    . $iterator->getSubPathName();
+                $target_dir = $temp_dir.DIRECTORY_SEPARATOR.$dirname.DIRECTORY_SEPARATOR
+                    .$iterator->getSubPathName();
 
                 if ($item->isDir()) {
                     mkdir($target_dir);
@@ -148,12 +152,12 @@ class FirefoxProfile
         foreach ($this->preferences as $key => $value) {
             $content .= sprintf("user_pref(\"%s\", %s);\n", $key, $value);
         }
-        file_put_contents($temp_dir . '/user.js', $content);
+        file_put_contents($temp_dir.'/user.js', $content);
 
         // Intentionally do not use `tempnam()`, as it creates empty file which zip extension may not handle.
-        $temp_zip = sys_get_temp_dir() . '/' . uniqid('WebDriverFirefoxProfileZip', false);
+        $temp_zip = sys_get_temp_dir().'/'.uniqid('WebDriverFirefoxProfileZip', false);
 
-        $zip = new ZipArchive();
+        $zip = new ZipArchive;
         $zip->open($temp_zip, ZipArchive::CREATE);
 
         $dir = new RecursiveDirectoryIterator($temp_dir);
@@ -162,7 +166,7 @@ class FirefoxProfile
         $dir_prefix = preg_replace(
             '#\\\\#',
             '\\\\\\\\',
-            $temp_dir . DIRECTORY_SEPARATOR
+            $temp_dir.DIRECTORY_SEPARATOR
         );
 
         foreach ($files as $name => $object) {
@@ -185,8 +189,9 @@ class FirefoxProfile
     }
 
     /**
-     * @param string $extension The path to the extension.
-     * @param string $profileDir The path to the profile directory.
+     * @param  string  $extension  The path to the extension.
+     * @param  string  $profileDir  The path to the profile directory.
+     *
      * @throws IOException
      */
     private function installExtension($extension, $profileDir)
@@ -194,15 +199,15 @@ class FirefoxProfile
         $extensionCommonName = $this->parseExtensionName($extension);
 
         // install extension to profile directory
-        $extensionDir = $profileDir . '/extensions/';
-        if (!is_dir($extensionDir) && !mkdir($extensionDir, 0777, true) && !is_dir($extensionDir)) {
+        $extensionDir = $profileDir.'/extensions/';
+        if (! is_dir($extensionDir) && ! mkdir($extensionDir, 0777, true) && ! is_dir($extensionDir)) {
             throw IOException::forFileError(
                 'Cannot install Firefox extension - cannot create directory',
                 $extensionDir
             );
         }
 
-        if (!copy($extension, $extensionDir . $extensionCommonName . '.xpi')) {
+        if (! copy($extension, $extensionDir.$extensionCommonName.'.xpi')) {
             throw IOException::forFileError(
                 'Cannot install Firefox extension - cannot copy file',
                 $extension
@@ -211,10 +216,10 @@ class FirefoxProfile
     }
 
     /**
-     * @param string $prefix Prefix of the temp directory.
+     * @param  string  $prefix  Prefix of the temp directory.
+     * @return string The path to the temp directory created.
      *
      * @throws IOException
-     * @return string The path to the temp directory created.
      */
     private function createTempDirectory($prefix = '')
     {
@@ -222,7 +227,7 @@ class FirefoxProfile
         if (file_exists($temp_dir)) {
             unlink($temp_dir);
             mkdir($temp_dir);
-            if (!is_dir($temp_dir)) {
+            if (! is_dir($temp_dir)) {
                 throw IOException::forFileError(
                     'Cannot install Firefox extension - cannot create directory',
                     $temp_dir
@@ -234,7 +239,7 @@ class FirefoxProfile
     }
 
     /**
-     * @param string $directory The path to the directory.
+     * @param  string  $directory  The path to the directory.
      */
     private function deleteDirectory($directory)
     {
@@ -242,7 +247,7 @@ class FirefoxProfile
         $paths = new RecursiveIteratorIterator($dir, RecursiveIteratorIterator::CHILD_FIRST);
 
         foreach ($paths as $path) {
-            if ($path->isDir() && !$path->isLink()) {
+            if ($path->isDir() && ! $path->isLink()) {
                 rmdir($path->getPathname());
             } else {
                 unlink($path->getPathname());
@@ -253,15 +258,15 @@ class FirefoxProfile
     }
 
     /**
-     * @param string $xpi The path to the .xpi extension.
-     * @param string $target_dir The path to the unzip directory.
+     * @param  string  $xpi  The path to the .xpi extension.
+     * @param  string  $target_dir  The path to the unzip directory.
+     * @return FirefoxProfile
      *
      * @throws IOException
-     * @return FirefoxProfile
      */
     private function extractTo($xpi, $target_dir)
     {
-        $zip = new ZipArchive();
+        $zip = new ZipArchive;
         if (file_exists($xpi)) {
             if ($zip->open($xpi)) {
                 $zip->extractTo($target_dir);
@@ -282,13 +287,13 @@ class FirefoxProfile
 
         $this->extractTo($extensionPath, $temp_dir);
 
-        $mozillaRsaPath = $temp_dir . '/META-INF/mozilla.rsa';
+        $mozillaRsaPath = $temp_dir.'/META-INF/mozilla.rsa';
         $mozillaRsaBinaryData = file_get_contents($mozillaRsaPath);
         $mozillaRsaHex = bin2hex($mozillaRsaBinaryData);
 
-        //We need to find the plugin id. This is the second occurrence of object identifier "2.5.4.3 commonName".
+        // We need to find the plugin id. This is the second occurrence of object identifier "2.5.4.3 commonName".
 
-        //That is marker "2.5.4.3 commonName" in hex:
+        // That is marker "2.5.4.3 commonName" in hex:
         $objectIdentifierHexMarker = '0603550403';
 
         $firstMarkerPosInHex = strpos($mozillaRsaHex, $objectIdentifierHexMarker); // phpcs:ignore

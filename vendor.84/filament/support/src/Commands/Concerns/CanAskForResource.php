@@ -60,7 +60,7 @@ trait CanAskForResource
         if (! $resourceFqns) {
             return (string) str(text(
                 label: "No resources were found within [{$resourcesNamespace}]. {$question}",
-                placeholder: app()->getNamespace() . 'Filament\\Resources\\Posts\\PostResource',
+                placeholder: app()->getNamespace().'Filament\\Resources\\Posts\\PostResource',
                 required: true,
                 validate: function (string $value): ?string {
                     $value = (string) str($value)
@@ -71,7 +71,7 @@ trait CanAskForResource
 
                     return match (true) {
                         ! class_exists($value) => 'The resource class doesn\'t exist, please use the fully-qualified class name.',
-                        ! is_subclass_of($value, Resource::class) => 'The resource class or one of its parents must extend [' . Resource::class . '].',
+                        ! is_subclass_of($value, Resource::class) => 'The resource class or one of its parents must extend ['.Resource::class.'].',
                         default => null,
                     };
                 },

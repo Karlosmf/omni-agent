@@ -6,9 +6,9 @@ use Closure;
 
 trait HasBreadcrumbs
 {
-    protected bool | Closure $hasBreadcrumbs = true;
+    protected bool|Closure $hasBreadcrumbs = true;
 
-    public function breadcrumbs(bool | Closure $condition = true): static
+    public function breadcrumbs(bool|Closure $condition = true): static
     {
         $this->hasBreadcrumbs = $condition;
 

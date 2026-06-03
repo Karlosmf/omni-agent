@@ -25,14 +25,12 @@ use Ramsey\Uuid\Type\Time;
  */
 class FixedTimeProvider implements TimeProviderInterface
 {
-    public function __construct(private Time $time)
-    {
-    }
+    public function __construct(private Time $time) {}
 
     /**
      * Sets the `usec` component of the time
      *
-     * @param IntegerObject | int | string $value The `usec` value to set
+     * @param  IntegerObject | int | string  $value  The `usec` value to set
      */
     public function setUsec($value): void
     {
@@ -42,7 +40,7 @@ class FixedTimeProvider implements TimeProviderInterface
     /**
      * Sets the `sec` component of the time
      *
-     * @param IntegerObject | int | string $value The `sec` value to set
+     * @param  IntegerObject | int | string  $value  The `sec` value to set
      */
     public function setSec($value): void
     {

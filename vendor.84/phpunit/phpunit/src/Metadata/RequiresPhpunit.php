@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Metadata;
 
 use PHPUnit\Metadata\Version\Requirement;
@@ -21,7 +24,7 @@ final readonly class RequiresPhpunit extends Metadata
     private Requirement $versionRequirement;
 
     /**
-     * @param int<0, 1> $level
+     * @param  int<0, 1>  $level
      */
     protected function __construct(int $level, Requirement $versionRequirement)
     {

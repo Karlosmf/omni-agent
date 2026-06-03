@@ -29,7 +29,7 @@ class Route
 
     protected function prefixedGroup(Closure $callback): void
     {
-        BaseRoute::prefix('{' . $this->names()->parameter . '}')
+        BaseRoute::prefix('{'.$this->names()->parameter.'}')
             ->name(RouteName::prefix())
             ->middleware(
                 Config::shared()->routes->group->middleware->prefix

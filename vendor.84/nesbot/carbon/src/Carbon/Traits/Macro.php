@@ -59,10 +59,7 @@ trait Macro
     /**
      * Register a custom macro.
      *
-     * @param callable $macro
-     * @param int      $priority marco with higher priority is tried first
-     *
-     * @return void
+     * @param  int  $priority  marco with higher priority is tried first
      */
     public static function genericMacro(callable $macro, int $priority = 0): void
     {
@@ -71,10 +68,6 @@ trait Macro
 
     /**
      * Checks if macro is registered globally.
-     *
-     * @param string $name
-     *
-     * @return bool
      */
     public static function hasMacro(string $name): bool
     {

@@ -5,13 +5,13 @@ namespace Livewire\Features\SupportMorphAwareBladeCompilation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 use Livewire\ComponentHook;
-use Livewire\Livewire;
 
 use function Livewire\on;
 
 class SupportMorphAwareBladeCompilation extends ComponentHook
 {
     protected static $shouldInjectConditionalMarkers = false;
+
     protected static $shouldInjectLoopMarkers = false;
 
     public static function provide()
@@ -206,7 +206,7 @@ class SupportMorphAwareBladeCompilation extends ComponentHook
             $pattern .= "(?!{$suffixEscaped})";
         }
 
-        $pattern .= "/mUi";
+        $pattern .= '/mUi';
 
         return static::replaceMatchIfNotInsideAHtmlTag($template, $position, $pattern, $found, $prefix, $suffix);
     }
@@ -253,7 +253,7 @@ class SupportMorphAwareBladeCompilation extends ComponentHook
 
         $suffixEscaped = preg_quote($suffix);
 
-        $pattern = "/";
+        $pattern = '/';
 
         // If the prefix is not empty, then add it to the pattern...
         if ($prefixEscaped !== '') {
@@ -322,7 +322,7 @@ class SupportMorphAwareBladeCompilation extends ComponentHook
             'while',
         ];
 
-        $pattern = '/@(' . implode('|', $loopDirectives) . ')(?![a-zA-Z])/i';
+        $pattern = '/@('.implode('|', $loopDirectives).')(?![a-zA-Z])/i';
 
         return preg_match($pattern, $found);
     }
@@ -337,7 +337,7 @@ class SupportMorphAwareBladeCompilation extends ComponentHook
             'endwhile',
         ];
 
-        $pattern = '/@(' . implode('|', $loopDirectives) . ')(?![a-zA-Z])/i';
+        $pattern = '/@('.implode('|', $loopDirectives).')(?![a-zA-Z])/i';
 
         return preg_match($pattern, $found);
     }
@@ -499,6 +499,7 @@ class SupportMorphAwareBladeCompilation extends ComponentHook
             // Skip PHP tags (<?php, <?=, <?) and HTML comments (<!--)...
             if (preg_match('/^<(\?|!--)/', $segment)) {
                 $searchFrom = $bracketPos;
+
                 continue;
             }
 
@@ -507,6 +508,7 @@ class SupportMorphAwareBladeCompilation extends ComponentHook
             // Invalid: < in "1 < 5", << operators, etc.
             if (! preg_match('/^<(\/?[a-zA-Z]|![a-zA-Z]|\/?(\{\{|\{!!))/', $segment)) {
                 $searchFrom = $bracketPos;
+
                 continue;
             }
 

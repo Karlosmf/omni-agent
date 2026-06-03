@@ -14,6 +14,7 @@ abstract class WebDriverTouchAction
      * @var WebDriverTouchScreen
      */
     protected $touchScreen;
+
     /**
      * @var WebDriverLocatable
      */

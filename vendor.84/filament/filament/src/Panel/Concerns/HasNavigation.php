@@ -22,11 +22,11 @@ trait HasNavigation
      */
     protected array $navigationItems = [];
 
-    protected Closure | bool $navigationBuilder = true;
+    protected Closure|bool $navigationBuilder = true;
 
     protected ?NavigationManager $navigationManager = null;
 
-    public function navigation(Closure | bool $builder = true): static
+    public function navigation(Closure|bool $builder = true): static
     {
         $this->navigationBuilder = $builder;
 
@@ -47,7 +47,7 @@ trait HasNavigation
     /**
      * @param  array<string | int, NavigationGroup | string> | class-string<UnitEnum>  $groups
      */
-    public function navigationGroups(array | string $groups): static
+    public function navigationGroups(array|string $groups): static
     {
         if (isset($this->navigationManager)) {
             $this->navigationManager->navigationGroups($groups);

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of phpDocumentor.
  *
@@ -39,11 +40,11 @@ final class KeyOf extends ArrayKey implements PseudoType
 
     public function underlyingType(): Type
     {
-        return new ArrayKey();
+        return new ArrayKey;
     }
 
     public function __toString(): string
     {
-        return 'key-of<' . $this->type . '>';
+        return 'key-of<'.$this->type.'>';
     }
 }

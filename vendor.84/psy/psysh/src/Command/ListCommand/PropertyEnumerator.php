@@ -32,12 +32,12 @@ class PropertyEnumerator extends Enumerator
         }
 
         // We can only list properties on actual class (or object) reflectors.
-        if (!$reflector instanceof \ReflectionClass) {
+        if (! $reflector instanceof \ReflectionClass) {
             return [];
         }
 
         // only list properties if we are specifically asked
-        if (!$input->getOption('properties')) {
+        if (! $input->getOption('properties')) {
             return [];
         }
 
@@ -58,10 +58,8 @@ class PropertyEnumerator extends Enumerator
     /**
      * Get defined properties for the given class or object Reflector.
      *
-     * @param bool             $showAll   Include private and protected properties
-     * @param \ReflectionClass $reflector
-     * @param bool             $noInherit Exclude inherited properties
-     *
+     * @param  bool  $showAll  Include private and protected properties
+     * @param  bool  $noInherit  Exclude inherited properties
      * @return \ReflectionProperty[]
      */
     protected function getProperties(bool $showAll, \ReflectionClass $reflector, bool $noInherit = false): array
@@ -86,7 +84,7 @@ class PropertyEnumerator extends Enumerator
             }
 
             // Skip if a real property with this name already exists
-            if (!isset($properties[$property->getName()])) {
+            if (! isset($properties[$property->getName()])) {
                 $properties[$property->getName()] = $property;
             }
         }
@@ -99,9 +97,7 @@ class PropertyEnumerator extends Enumerator
     /**
      * Prepare formatted property array.
      *
-     * @param \ReflectionProperty[] $properties
-     *
-     * @return array
+     * @param  \ReflectionProperty[]  $properties
      */
     protected function prepareProperties(array $properties, $target = null): array
     {
@@ -112,7 +108,7 @@ class PropertyEnumerator extends Enumerator
             if ($this->showItem($name)) {
                 $fname = '$'.$name;
                 $ret[$fname] = [
-                    'name'  => $fname,
+                    'name' => $fname,
                     'style' => $this->getVisibilityStyle($property),
                     'value' => $this->presentValue($property, $target),
                 ];
@@ -124,8 +120,6 @@ class PropertyEnumerator extends Enumerator
 
     /**
      * Get a label for the particular kind of "class" represented.
-     *
-     * @param \ReflectionClass $reflector
      */
     protected function getKindLabel(\ReflectionClass $reflector): string
     {
@@ -139,7 +133,7 @@ class PropertyEnumerator extends Enumerator
     /**
      * Get output style for the given property's visibility.
      *
-     * @param \ReflectionProperty|ReflectionMagicProperty $property
+     * @param  \ReflectionProperty|ReflectionMagicProperty  $property
      */
     private function getVisibilityStyle(\Reflector $property): string
     {
@@ -159,8 +153,8 @@ class PropertyEnumerator extends Enumerator
     /**
      * Present the $target's current value for a reflection property.
      *
-     * @param \ReflectionProperty|ReflectionMagicProperty $property
-     * @param mixed                                       $target
+     * @param  \ReflectionProperty|ReflectionMagicProperty  $property
+     * @param  mixed  $target
      */
     protected function presentValue(\Reflector $property, $target): string
     {
@@ -169,13 +163,13 @@ class PropertyEnumerator extends Enumerator
             return $this->presentSignature($property);
         }
 
-        if (!$target) {
+        if (! $target) {
             return '';
         }
 
         // If $target is a class or trait (try to) get the default
         // value for the property.
-        if (!\is_object($target)) {
+        if (! \is_object($target)) {
             try {
                 $refl = new \ReflectionClass($target);
                 $props = $refl->getDefaultProperties();

@@ -39,15 +39,15 @@ class CheckboxList extends Field implements Contracts\CanDisableOptions, Contrac
      */
     protected string $view = 'filament-forms::components.checkbox-list';
 
-    protected string | Closure | null $relationshipTitleAttribute = null;
+    protected string|Closure|null $relationshipTitleAttribute = null;
 
     protected ?Closure $getOptionLabelFromRecordUsing = null;
 
     protected ?Closure $getOptionDescriptionFromRecordUsing = null;
 
-    protected string | Closure | null $relationship = null;
+    protected string|Closure|null $relationship = null;
 
-    protected bool | Closure $isBulkToggleable = false;
+    protected bool|Closure $isBulkToggleable = false;
 
     protected ?Closure $modifySelectAllActionUsing = null;
 
@@ -123,7 +123,7 @@ class CheckboxList extends Field implements Contracts\CanDisableOptions, Contrac
         return 'deselectAll';
     }
 
-    public function relationship(string | Closure | null $name = null, string | Closure | null $titleAttribute = null, ?Closure $modifyQueryUsing = null): static
+    public function relationship(string|Closure|null $name = null, string|Closure|null $titleAttribute = null, ?Closure $modifyQueryUsing = null): static
     {
         $this->relationship = $name ?? $this->getName();
         $this->relationshipTitleAttribute = $titleAttribute;
@@ -304,7 +304,7 @@ class CheckboxList extends Field implements Contracts\CanDisableOptions, Contrac
         return $this;
     }
 
-    public function bulkToggleable(bool | Closure $condition = true): static
+    public function bulkToggleable(bool|Closure $condition = true): static
     {
         $this->isBulkToggleable = $condition;
 
@@ -323,7 +323,7 @@ class CheckboxList extends Field implements Contracts\CanDisableOptions, Contrac
         return $this->getOptionLabelFromRecordUsing !== null;
     }
 
-    public function getOptionLabelFromRecord(Model $record): string | Htmlable
+    public function getOptionLabelFromRecord(Model $record): string|Htmlable
     {
         return $this->evaluate(
             $this->getOptionLabelFromRecordUsing,
@@ -349,7 +349,7 @@ class CheckboxList extends Field implements Contracts\CanDisableOptions, Contrac
         return $this->getOptionDescriptionFromRecordUsing !== null;
     }
 
-    public function getOptionDescriptionFromRecord(Model $record): string | Htmlable | null
+    public function getOptionDescriptionFromRecord(Model $record): string|Htmlable|null
     {
         return $this->evaluate(
             $this->getOptionDescriptionFromRecordUsing,
@@ -368,7 +368,7 @@ class CheckboxList extends Field implements Contracts\CanDisableOptions, Contrac
         return $this->evaluate($this->relationshipTitleAttribute);
     }
 
-    public function getLabel(): string | Htmlable | null
+    public function getLabel(): string|Htmlable|null
     {
         if ($this->label === null && $this->getRelationship()) {
             $label = (string) str($this->getRelationshipName())

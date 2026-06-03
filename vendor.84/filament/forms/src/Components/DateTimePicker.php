@@ -32,7 +32,7 @@ class DateTimePicker extends Field implements HasAffixActions
      */
     protected string $view = 'filament-forms::components.date-time-picker';
 
-    protected string | Closure | null $displayFormat = null;
+    protected string|Closure|null $displayFormat = null;
 
     /**
      * @var array<array<mixed> | Closure>
@@ -41,46 +41,46 @@ class DateTimePicker extends Field implements HasAffixActions
 
     protected ?int $firstDayOfWeek = null;
 
-    protected string | Closure | null $format = null;
+    protected string|Closure|null $format = null;
 
-    protected bool | Closure $hasDate = true;
+    protected bool|Closure $hasDate = true;
 
-    protected bool | Closure $hasSeconds = true;
+    protected bool|Closure $hasSeconds = true;
 
-    protected bool | Closure $hasTime = true;
+    protected bool|Closure $hasTime = true;
 
-    protected bool | Closure $shouldCloseOnDateSelection = false;
+    protected bool|Closure $shouldCloseOnDateSelection = false;
 
-    protected CarbonInterface | string | Closure | null $maxDate = null;
+    protected CarbonInterface|string|Closure|null $maxDate = null;
 
-    protected CarbonInterface | string | Closure | null $minDate = null;
+    protected CarbonInterface|string|Closure|null $minDate = null;
 
-    protected CarbonInterface | string | Closure | null $defaultFocusedDate = null;
+    protected CarbonInterface|string|Closure|null $defaultFocusedDate = null;
 
-    protected string | Closure | null $timezone = null;
+    protected string|Closure|null $timezone = null;
 
-    protected string | Closure | null $locale = null;
+    protected string|Closure|null $locale = null;
 
     /**
      * @var array<DateTime | string> | Closure
      */
-    protected array | Closure $disabledDates = [];
+    protected array|Closure $disabledDates = [];
 
-    protected string | Closure $defaultDateDisplayFormat = 'M j, Y';
+    protected string|Closure $defaultDateDisplayFormat = 'M j, Y';
 
-    protected string | Closure $defaultDateTimeDisplayFormat = 'M j, Y H:i';
+    protected string|Closure $defaultDateTimeDisplayFormat = 'M j, Y H:i';
 
-    protected string | Closure $defaultDateTimeWithSecondsDisplayFormat = 'M j, Y H:i:s';
+    protected string|Closure $defaultDateTimeWithSecondsDisplayFormat = 'M j, Y H:i:s';
 
-    protected string | Closure $defaultTimeDisplayFormat = 'H:i';
+    protected string|Closure $defaultTimeDisplayFormat = 'H:i';
 
-    protected string | Closure $defaultTimeWithSecondsDisplayFormat = 'H:i:s';
+    protected string|Closure $defaultTimeWithSecondsDisplayFormat = 'H:i:s';
 
-    protected int | Closure | null $hoursStep = null;
+    protected int|Closure|null $hoursStep = null;
 
-    protected int | Closure | null $minutesStep = null;
+    protected int|Closure|null $minutesStep = null;
 
-    protected int | Closure | null $secondsStep = null;
+    protected int|Closure|null $secondsStep = null;
 
     protected function setUp(): void
     {
@@ -124,7 +124,7 @@ class DateTimePicker extends Field implements HasAffixActions
         return $this->hasSeconds() ? 'Y-m-d H:i:s' : 'Y-m-d H:i';
     }
 
-    public function displayFormat(string | Closure | null $format): static
+    public function displayFormat(string|Closure|null $format): static
     {
         $this->displayFormat = $format;
 
@@ -134,7 +134,7 @@ class DateTimePicker extends Field implements HasAffixActions
     /**
      * @param  array<mixed> | Closure  $attributes
      */
-    public function extraTriggerAttributes(array | Closure $attributes, bool $merge = false): static
+    public function extraTriggerAttributes(array|Closure $attributes, bool $merge = false): static
     {
         if ($merge) {
             $this->extraAttributes[] = $attributes;
@@ -156,7 +156,7 @@ class DateTimePicker extends Field implements HasAffixActions
         return $this;
     }
 
-    public function format(string | Closure | null $format): static
+    public function format(string|Closure|null $format): static
     {
         $this->format = $format;
 
@@ -166,7 +166,7 @@ class DateTimePicker extends Field implements HasAffixActions
     /**
      * @deprecated Use `suffixIcon(Heroicon::Calendar)` instead.
      */
-    public function icon(string | BackedEnum | bool | null $icon = null): static
+    public function icon(string|BackedEnum|bool|null $icon = null): static
     {
         if ($icon === false) {
             return $this;
@@ -175,7 +175,7 @@ class DateTimePicker extends Field implements HasAffixActions
         return $this->suffixIcon($icon ?? Heroicon::Calendar, isInline: true);
     }
 
-    public function maxDate(CarbonInterface | string | Closure | null $date): static
+    public function maxDate(CarbonInterface|string|Closure|null $date): static
     {
         $this->maxDate = $date;
 
@@ -186,7 +186,7 @@ class DateTimePicker extends Field implements HasAffixActions
         return $this;
     }
 
-    public function minDate(CarbonInterface | string | Closure | null $date): static
+    public function minDate(CarbonInterface|string|Closure|null $date): static
     {
         $this->minDate = $date;
 
@@ -197,7 +197,7 @@ class DateTimePicker extends Field implements HasAffixActions
         return $this;
     }
 
-    public function defaultFocusedDate(CarbonInterface | string | Closure | null $date): static
+    public function defaultFocusedDate(CarbonInterface|string|Closure|null $date): static
     {
         $this->defaultFocusedDate = $date;
 
@@ -207,7 +207,7 @@ class DateTimePicker extends Field implements HasAffixActions
     /**
      * @param  array<DateTime | string> | Closure  $dates
      */
-    public function disabledDates(array | Closure $dates): static
+    public function disabledDates(array|Closure $dates): static
     {
         $this->disabledDates = $dates;
 
@@ -221,35 +221,35 @@ class DateTimePicker extends Field implements HasAffixActions
         return $this;
     }
 
-    public function hoursStep(int | Closure | null $hoursStep): static
+    public function hoursStep(int|Closure|null $hoursStep): static
     {
         $this->hoursStep = $hoursStep;
 
         return $this;
     }
 
-    public function minutesStep(int | Closure | null $minutesStep): static
+    public function minutesStep(int|Closure|null $minutesStep): static
     {
         $this->minutesStep = $minutesStep;
 
         return $this;
     }
 
-    public function secondsStep(int | Closure | null $secondsStep): static
+    public function secondsStep(int|Closure|null $secondsStep): static
     {
         $this->secondsStep = $secondsStep;
 
         return $this;
     }
 
-    public function timezone(string | Closure | null $timezone): static
+    public function timezone(string|Closure|null $timezone): static
     {
         $this->timezone = $timezone;
 
         return $this;
     }
 
-    public function locale(string | Closure | null $locale): static
+    public function locale(string|Closure|null $locale): static
     {
         $this->locale = $locale;
 
@@ -270,21 +270,21 @@ class DateTimePicker extends Field implements HasAffixActions
         return $this;
     }
 
-    public function date(bool | Closure $condition = true): static
+    public function date(bool|Closure $condition = true): static
     {
         $this->hasDate = $condition;
 
         return $this;
     }
 
-    public function seconds(bool | Closure $condition = true): static
+    public function seconds(bool|Closure $condition = true): static
     {
         $this->hasSeconds = $condition;
 
         return $this;
     }
 
-    public function time(bool | Closure $condition = true): static
+    public function time(bool|Closure $condition = true): static
     {
         $this->hasTime = $condition;
 
@@ -294,7 +294,7 @@ class DateTimePicker extends Field implements HasAffixActions
     /**
      * @deprecated Use `date()` instead.
      */
-    public function withoutDate(bool | Closure $condition = true): static
+    public function withoutDate(bool|Closure $condition = true): static
     {
         $this->date(fn (DateTimePicker $component): bool => ! $component->evaluate($condition));
 
@@ -304,7 +304,7 @@ class DateTimePicker extends Field implements HasAffixActions
     /**
      * @deprecated Use `seconds()` instead.
      */
-    public function withoutSeconds(bool | Closure $condition = true): static
+    public function withoutSeconds(bool|Closure $condition = true): static
     {
         $this->seconds(fn (DateTimePicker $component): bool => ! $component->evaluate($condition));
 
@@ -314,14 +314,14 @@ class DateTimePicker extends Field implements HasAffixActions
     /**
      * @deprecated Use `time()` instead.
      */
-    public function withoutTime(bool | Closure $condition = true): static
+    public function withoutTime(bool|Closure $condition = true): static
     {
         $this->time(fn (DateTimePicker $component): bool => ! $component->evaluate($condition));
 
         return $this;
     }
 
-    public function closeOnDateSelection(bool | Closure $condition = true): static
+    public function closeOnDateSelection(bool|Closure $condition = true): static
     {
         $this->shouldCloseOnDateSelection = $condition;
 
@@ -351,35 +351,35 @@ class DateTimePicker extends Field implements HasAffixActions
             $this->getDefaultDateTimeDisplayFormat();
     }
 
-    public function defaultDateDisplayFormat(string | Closure $format): static
+    public function defaultDateDisplayFormat(string|Closure $format): static
     {
         $this->defaultDateDisplayFormat = $format;
 
         return $this;
     }
 
-    public function defaultDateTimeDisplayFormat(string | Closure $format): static
+    public function defaultDateTimeDisplayFormat(string|Closure $format): static
     {
         $this->defaultDateTimeDisplayFormat = $format;
 
         return $this;
     }
 
-    public function defaultDateTimeWithSecondsDisplayFormat(string | Closure $format): static
+    public function defaultDateTimeWithSecondsDisplayFormat(string|Closure $format): static
     {
         $this->defaultDateTimeWithSecondsDisplayFormat = $format;
 
         return $this;
     }
 
-    public function defaultTimeDisplayFormat(string | Closure $format): static
+    public function defaultTimeDisplayFormat(string|Closure $format): static
     {
         $this->defaultTimeDisplayFormat = $format;
 
         return $this;
     }
 
-    public function defaultTimeWithSecondsDisplayFormat(string | Closure $format): static
+    public function defaultTimeWithSecondsDisplayFormat(string|Closure $format): static
     {
         $this->defaultTimeWithSecondsDisplayFormat = $format;
 
@@ -544,7 +544,7 @@ class DateTimePicker extends Field implements HasAffixActions
         return (bool) $this->evaluate($this->shouldCloseOnDateSelection);
     }
 
-    public function getStep(): int | float | string | null
+    public function getStep(): int|float|string|null
     {
         $step = $this->evaluate($this->step);
 

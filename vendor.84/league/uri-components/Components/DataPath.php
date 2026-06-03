@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\Uri\Components;
 
+use const FILEINFO_MIME;
+
 use BackedEnum;
 use Deprecated;
 use finfo;
@@ -43,26 +45,34 @@ use function str_replace;
 use function strlen;
 use function strtolower;
 
-use const FILEINFO_MIME;
-
 final class DataPath extends Component implements DataPathInterface
 {
     /**
      * All ASCII letters sorted by typical frequency of occurrence.
      */
     private const ASCII = "\x20\x65\x69\x61\x73\x6E\x74\x72\x6F\x6C\x75\x64\x5D\x5B\x63\x6D\x70\x27\x0A\x67\x7C\x68\x76\x2E\x66\x62\x2C\x3A\x3D\x2D\x71\x31\x30\x43\x32\x2A\x79\x78\x29\x28\x4C\x39\x41\x53\x2F\x50\x22\x45\x6A\x4D\x49\x6B\x33\x3E\x35\x54\x3C\x44\x34\x7D\x42\x7B\x38\x46\x77\x52\x36\x37\x55\x47\x4E\x3B\x4A\x7A\x56\x23\x48\x4F\x57\x5F\x26\x21\x4B\x3F\x58\x51\x25\x59\x5C\x09\x5A\x2B\x7E\x5E\x24\x40\x60\x7F\x00\x01\x02\x03\x04\x05\x06\x07\x08\x0B\x0C\x0D\x0E\x0F\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C\x1D\x1E\x1F";
+
     private const BINARY_PARAMETER = 'base64';
+
     private const DEFAULT_MIMETYPE = 'text/plain';
+
     private const DEFAULT_PARAMETER = 'charset=us-ascii';
+
     private const REGEXP_MIMETYPE = ',^\w+/[-.\w]+(?:\+[-.\w]+)?$,';
+
     private const REGEXP_DATAPATH = '/^\w+\/[-.\w]+(?:\+[-.\w]+)?;,$/';
+
     private const REGEXP_DATAPATH_ENCODING = '/[^A-Za-z0-9_\-.~!$&\'()*+,;=%:\/@]+|%(?![A-Fa-f0-9]{2})/x';
 
     private readonly PathInterface $path;
+
     private readonly string $mimetype;
+
     /** @var string[] */
     private readonly array $parameters;
+
     private readonly bool $isBinaryData;
+
     private readonly string $document;
 
     /**
@@ -88,15 +98,15 @@ final class DataPath extends Component implements DataPathInterface
      */
     private function filterPath(string $path): string
     {
-        if ('' === $path || ',' === $path) {
+        if ($path === '' || $path === ',') {
             return 'text/plain;charset=us-ascii,';
         }
 
-        if (1 === preg_match(self::REGEXP_DATAPATH, $path)) {
+        if (preg_match(self::REGEXP_DATAPATH, $path) === 1) {
             $path = substr($path, 0, -1).'charset=us-ascii,';
         }
 
-        if (strlen($path) !== strspn($path, self::ASCII) || !str_contains($path, ',')) {
+        if (strlen($path) !== strspn($path, self::ASCII) || ! str_contains($path, ',')) {
             throw new SyntaxError(sprintf('The path `%s` is invalid according to RFC2937.', $path));
         }
 
@@ -111,8 +121,8 @@ final class DataPath extends Component implements DataPathInterface
     private function filterMimeType(string $mimetype): string
     {
         return match (true) {
-            '' === $mimetype => self::DEFAULT_MIMETYPE,
-            1 === preg_match(self::REGEXP_MIMETYPE, $mimetype) =>  $mimetype,
+            $mimetype === '' => self::DEFAULT_MIMETYPE,
+            preg_match(self::REGEXP_MIMETYPE, $mimetype) === 1 => $mimetype,
             default => throw new SyntaxError(sprintf('Invalid mimeType, `%s`.', $mimetype)),
         };
     }
@@ -120,24 +130,25 @@ final class DataPath extends Component implements DataPathInterface
     /**
      * Extract and set the binary flag from the parameters if it exists.
      *
-     * @throws SyntaxError If the mediatype parameters contain invalid data
      *
      * @return array{0:array<string>, 1:bool}
+     *
+     * @throws SyntaxError If the mediatype parameters contain invalid data
      */
     private function filterParameters(string $parameters): array
     {
-        if ('' === $parameters) {
+        if ($parameters === '') {
             return [[self::DEFAULT_PARAMETER], false];
         }
 
         $isBinaryData = false;
-        if (1 === preg_match(',(;|^)'.self::BINARY_PARAMETER.'$,', $parameters, $matches)) {
-            $parameters = substr($parameters, 0, - strlen($matches[0]));
+        if (preg_match(',(;|^)'.self::BINARY_PARAMETER.'$,', $parameters, $matches) === 1) {
+            $parameters = substr($parameters, 0, -strlen($matches[0]));
             $isBinaryData = true;
         }
 
-        $params = array_filter(explode(';', $parameters), fn (string $param) => '' !== $param);
-        if ([] !== array_filter($params, $this->validateParameter(...))) {
+        $params = array_filter(explode(';', $parameters), fn (string $param) => $param !== '');
+        if (array_filter($params, $this->validateParameter(...)) !== []) {
             throw new SyntaxError(sprintf('Invalid mediatype parameters, `%s`.', $parameters));
         }
 
@@ -151,7 +162,7 @@ final class DataPath extends Component implements DataPathInterface
     {
         $properties = explode('=', $parameter);
 
-        return 2 !== count($properties) || self::BINARY_PARAMETER === strtolower($properties[0]);
+        return count($properties) !== 2 || strtolower($properties[0]) === self::BINARY_PARAMETER;
     }
 
     /**
@@ -161,12 +172,12 @@ final class DataPath extends Component implements DataPathInterface
      */
     private function validateDocument(): void
     {
-        if (!$this->isBinaryData) {
+        if (! $this->isBinaryData) {
             return;
         }
 
         $res = base64_decode($this->document, true);
-        if (false === $res || $this->document !== base64_encode($res)) {
+        if ($res === false || $this->document !== base64_encode($res)) {
             throw new SyntaxError(sprintf('Invalid document, `%s`.', $this->document));
         }
     }
@@ -194,7 +205,7 @@ final class DataPath extends Component implements DataPathInterface
     /**
      * Creates a new instance from a file path.
      *
-     * @param null|resource $context
+     * @param  null|resource  $context
      *
      * @throws SyntaxError If the File is not readable
      */
@@ -204,13 +215,13 @@ final class DataPath extends Component implements DataPathInterface
 
         $fileArgs = [$path, false];
         $mimeArgs = [$path, FILEINFO_MIME];
-        if (null !== $context) {
+        if ($context !== null) {
             $fileArgs[] = $context;
             $mimeArgs[] = $context;
         }
 
         $content = @file_get_contents(...$fileArgs);
-        if (false === $content) {
+        if ($content === false) {
             throw new SyntaxError(sprintf('`%s` failed to open stream: No such file or directory.', $path));
         }
 
@@ -286,7 +297,7 @@ final class DataPath extends Component implements DataPathInterface
     }
 
     /**
-     * @param ?resource $context
+     * @param  ?resource  $context
      */
     public function save(BackedEnum|Stringable|string $path, string $mode = 'w', $context = null): SplFileObject
     {
@@ -324,7 +335,7 @@ final class DataPath extends Component implements DataPathInterface
         bool $isBinaryData,
         string $data
     ): string {
-        if ('' !== $parameters) {
+        if ($parameters !== '') {
             $parameters = ';'.$parameters;
         }
 
@@ -349,7 +360,7 @@ final class DataPath extends Component implements DataPathInterface
                 $this->mimetype,
                 $this->getParameters(),
                 false,
-                rawurlencode((string)base64_decode($this->document, true))
+                rawurlencode((string) base64_decode($this->document, true))
             )),
         };
     }
@@ -417,7 +428,7 @@ final class DataPath extends Component implements DataPathInterface
      *
      * Returns a new instance from a string or a stringable object.
      */
-    #[Deprecated(message:'use League\Uri\Components\DataPath::new() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\DataPath::new() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromString(Stringable|string $path): self
     {
         return self::new($path);
@@ -433,11 +444,11 @@ final class DataPath extends Component implements DataPathInterface
      *
      * Creates a new instance from a file path.
      *
-     * @param null|resource $context
+     * @param  null|resource  $context
      *
      * @throws SyntaxError If the File is not readable
      */
-    #[Deprecated(message:'use League\Uri\Components\DataPath::fromFilePath() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\DataPath::fromFilePath() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromFilePath(string $path, $context = null): self
     {
         return self::fromFileContents($path, $context);
@@ -453,7 +464,7 @@ final class DataPath extends Component implements DataPathInterface
      *
      * Create a new instance from a URI object.
      */
-    #[Deprecated(message:'use League\Uri\Components\DataPath::fromUri() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\DataPath::fromUri() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromUri(Psr7UriInterface|UriInterface $uri): self
     {
         return self::fromUri($uri);

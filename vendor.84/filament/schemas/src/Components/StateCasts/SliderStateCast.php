@@ -13,7 +13,7 @@ class SliderStateCast implements StateCast
     /**
      * @return float | array<float>
      */
-    public function get(mixed $state): float | array
+    public function get(mixed $state): float|array
     {
         if (is_array($state)) {
             $state = array_map(floatval(...), $state);
@@ -37,7 +37,7 @@ class SliderStateCast implements StateCast
     /**
      * @return float | array<float>
      */
-    public function set(mixed $state): float | array
+    public function set(mixed $state): float|array
     {
         return $this->get($state);
     }

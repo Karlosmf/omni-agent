@@ -34,14 +34,14 @@ abstract class BasePage extends Component implements HasActions, HasRenderHookSc
 
     public static ?Closure $reportValidationErrorUsing = null;
 
-    protected Width | string | null $maxContentWidth = null;
+    protected Width|string|null $maxContentWidth = null;
 
     /**
      * @var array<mixed>
      */
     protected array $extraBodyAttributes = [];
 
-    public static string | Alignment $formActionsAlignment = Alignment::Start;
+    public static string|Alignment $formActionsAlignment = Alignment::Start;
 
     public static bool $formActionsAreSticky = false;
 
@@ -70,17 +70,17 @@ abstract class BasePage extends Component implements HasActions, HasRenderHookSc
         return static::$layout;
     }
 
-    public function getHeading(): string | Htmlable | null
+    public function getHeading(): string|Htmlable|null
     {
         return $this->heading ?? $this->getTitle();
     }
 
-    public function getSubheading(): string | Htmlable | null
+    public function getSubheading(): string|Htmlable|null
     {
         return $this->subheading;
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return static::$title ?? (string) str(class_basename(static::class))
             ->kebab()
@@ -88,7 +88,7 @@ abstract class BasePage extends Component implements HasActions, HasRenderHookSc
             ->ucwords();
     }
 
-    public function getMaxContentWidth(): Width | string | null
+    public function getMaxContentWidth(): Width|string|null
     {
         return $this->maxContentWidth;
     }
@@ -176,7 +176,7 @@ abstract class BasePage extends Component implements HasActions, HasRenderHookSc
         static::alignFormActionsEnd();
     }
 
-    public function getFormActionsAlignment(): string | Alignment
+    public function getFormActionsAlignment(): string|Alignment
     {
         return static::$formActionsAlignment;
     }
@@ -191,7 +191,7 @@ abstract class BasePage extends Component implements HasActions, HasRenderHookSc
         return static::$hasInlineLabels;
     }
 
-    public static function formActionsAlignment(string | Alignment $alignment): void
+    public static function formActionsAlignment(string|Alignment $alignment): void
     {
         static::$formActionsAlignment = $alignment;
     }

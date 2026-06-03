@@ -15,6 +15,4 @@ namespace League\CommonMark\Extension\DescriptionList\Node;
 
 use League\CommonMark\Node\Block\AbstractBlock;
 
-class DescriptionList extends AbstractBlock
-{
-}
+class DescriptionList extends AbstractBlock {}

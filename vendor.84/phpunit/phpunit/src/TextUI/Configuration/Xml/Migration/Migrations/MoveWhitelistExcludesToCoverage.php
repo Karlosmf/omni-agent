@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,12 +9,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\XmlConfiguration;
+
+use DOMDocument;
+use DOMElement;
 
 use function assert;
 use function in_array;
-use DOMDocument;
-use DOMElement;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -40,7 +44,7 @@ final readonly class MoveWhitelistExcludesToCoverage implements Migration
 
         $coverage = $document->getElementsByTagName('coverage')->item(0);
 
-        if (!$coverage instanceof DOMElement) {
+        if (! $coverage instanceof DOMElement) {
             throw new MigrationException('Unexpected state - No coverage element');
         }
 
@@ -56,7 +60,7 @@ final readonly class MoveWhitelistExcludesToCoverage implements Migration
             assert($excludeNode instanceof DOMElement);
 
             foreach (SnapshotNodeList::fromNodeList($excludeNode->childNodes) as $child) {
-                if (!$child instanceof DOMElement || !in_array($child->nodeName, ['directory', 'file'], true)) {
+                if (! $child instanceof DOMElement || ! in_array($child->nodeName, ['directory', 'file'], true)) {
                     continue;
                 }
 

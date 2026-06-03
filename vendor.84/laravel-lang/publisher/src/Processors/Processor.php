@@ -105,7 +105,7 @@ abstract class Processor
     protected function collectKeys(string $directory, array $files): void
     {
         foreach ($files as $source => $target) {
-            $values = $this->filesystem->load($directory . '/source/' . $source);
+            $values = $this->filesystem->load($directory.'/source/'.$source);
 
             $this->translation->setSource($target, $values);
         }
@@ -122,7 +122,7 @@ abstract class Processor
                 $locale_alias = $this->toAlias($locale);
 
                 foreach ($this->file_types as $type) {
-                    $main_path   = $this->localeFilename($locale_alias, "$directory/locales/$locale/$type.json");
+                    $main_path = $this->localeFilename($locale_alias, "$directory/locales/$locale/$type.json");
                     $inline_path = $this->localeFilename($locale_alias, "$directory/locales/$locale/$type.json", true);
 
                     $values = $this->filesystem->load($main_path);

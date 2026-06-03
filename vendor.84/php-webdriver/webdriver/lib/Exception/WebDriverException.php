@@ -15,8 +15,8 @@ class WebDriverException extends Exception implements PhpWebDriverExceptionInter
     private $results;
 
     /**
-     * @param string $message
-     * @param mixed $results
+     * @param  string  $message
+     * @param  mixed  $results
      */
     public function __construct($message, $results = null)
     {
@@ -35,9 +35,9 @@ class WebDriverException extends Exception implements PhpWebDriverExceptionInter
     /**
      * Throw WebDriverExceptions based on WebDriver status code.
      *
-     * @param int|string $status_code
-     * @param string $message
-     * @param mixed $results
+     * @param  int|string  $status_code
+     * @param  string  $message
+     * @param  mixed  $results
      *
      * @throws ElementClickInterceptedException
      * @throws ElementNotInteractableException

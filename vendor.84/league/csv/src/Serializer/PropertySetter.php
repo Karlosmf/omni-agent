@@ -31,8 +31,7 @@ final class PropertySetter
         public readonly TypeCasting $cast,
         public readonly bool $convertEmptyStringToNull,
         public readonly bool $trimFieldValueBeforeCasting,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws ReflectionException
@@ -53,7 +52,7 @@ final class PropertySetter
      */
     private function getRecordValue(array $record): mixed
     {
-        if (!array_key_exists($this->offset, $record)) {
+        if (! array_key_exists($this->offset, $record)) {
             throw TypeCastingFailed::dueToUndefinedValue($this->offset, TypeCastingInfo::fromAccessor($this->accessor));
         }
 
@@ -62,7 +61,7 @@ final class PropertySetter
             $value = trim($value);
         }
 
-        if ('' === $value && $this->convertEmptyStringToNull) {
+        if ($value === '' && $this->convertEmptyStringToNull) {
             return null;
         }
 

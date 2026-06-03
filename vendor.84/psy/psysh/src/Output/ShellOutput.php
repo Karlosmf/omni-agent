@@ -24,16 +24,18 @@ class ShellOutput extends ConsoleOutput
     const NUMBER_LINES = 128;
 
     private int $paging = 0;
+
     private OutputPager $pager;
+
     private Theme $theme;
 
     /**
      * Construct a ShellOutput instance.
      *
-     * @param mixed                         $verbosity (default: self::VERBOSITY_NORMAL)
-     * @param bool|null                     $decorated (default: null)
-     * @param OutputFormatterInterface|null $formatter (default: null)
-     * @param string|OutputPager|null       $pager     (default: null)
+     * @param  mixed  $verbosity  (default: self::VERBOSITY_NORMAL)
+     * @param  bool|null  $decorated  (default: null)
+     * @param  OutputFormatterInterface|null  $formatter  (default: null)
+     * @param  string|OutputPager|null  $pager  (default: null)
      */
     public function __construct($verbosity = self::VERBOSITY_NORMAL, $decorated = null, ?OutputFormatterInterface $formatter = null, $pager = null, $theme = null)
     {
@@ -63,8 +65,8 @@ class ShellOutput extends ConsoleOutput
      *
      * Upon completion, the output pager is flushed.
      *
-     * @param string|array|\Closure $messages A string, array of strings or a callback
-     * @param int                   $type     (default: 0)
+     * @param  string|array|\Closure  $messages  A string, array of strings or a callback
+     * @param  int  $type  (default: 0)
      */
     public function page($messages, int $type = 0)
     {
@@ -74,7 +76,7 @@ class ShellOutput extends ConsoleOutput
             $messages = \explode("\n", $messages);
         }
 
-        if (!\is_array($messages) && !\is_callable($messages)) {
+        if (! \is_array($messages) && ! \is_callable($messages)) {
             throw new \InvalidArgumentException('Paged output requires a string, array or callback');
         }
 
@@ -112,11 +114,12 @@ class ShellOutput extends ConsoleOutput
      * Optionally, pass `$type | self::NUMBER_LINES` as the $type parameter to
      * number the lines of output.
      *
-     * @throws \InvalidArgumentException When unknown output type is given
      *
-     * @param string|array $messages The message as an array of lines or a single string
-     * @param bool         $newline  Whether to add a newline or not
-     * @param int          $type     The type of output
+     * @param  string|array  $messages  The message as an array of lines or a single string
+     * @param  bool  $newline  Whether to add a newline or not
+     * @param  int  $type  The type of output
+     *
+     * @throws \InvalidArgumentException When unknown output type is given
      */
     public function write($messages, $newline = false, $type = 0): void
     {
@@ -150,8 +153,8 @@ class ShellOutput extends ConsoleOutput
      *
      * Handles paged output, or writes directly to the output stream.
      *
-     * @param string $message A message to write to the output
-     * @param bool   $newline Whether to add a newline or not
+     * @param  string  $message  A message to write to the output
+     * @param  bool  $newline  Whether to add a newline or not
      */
     public function doWrite($message, $newline): void
     {
@@ -187,7 +190,7 @@ class ShellOutput extends ConsoleOutput
      */
     private function initFormatters()
     {
-        $useGrayFallback = !$this->grayExists();
+        $useGrayFallback = ! $this->grayExists();
         $this->theme->applyStyles($this->getFormatter(), $useGrayFallback);
         $this->theme->applyErrorStyles($this->getErrorOutput()->getFormatter(), $useGrayFallback);
 

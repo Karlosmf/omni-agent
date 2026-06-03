@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -70,24 +71,27 @@ class NoMatchingExpectationException extends Exception
 
     /**
      * @todo Rename param `count` to `args`
+     *
      * @template TMixed
      *
-     * @param  array<TMixed> $count
+     * @param  array<TMixed>  $count
      * @return self
      */
     public function setActualArguments($count)
     {
         $this->actual = $count;
+
         return $this;
     }
 
     /**
-     * @param  string $name
+     * @param  string  $name
      * @return self
      */
     public function setMethodName($name)
     {
         $this->method = $name;
+
         return $this;
     }
 
@@ -97,6 +101,7 @@ class NoMatchingExpectationException extends Exception
     public function setMock(LegacyMockInterface $mock)
     {
         $this->mockObject = $mock;
+
         return $this;
     }
 }

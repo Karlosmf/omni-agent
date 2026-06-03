@@ -10,8 +10,8 @@ namespace Sabberworm\CSS\Parsing;
 class UnexpectedTokenException extends SourceException
 {
     /**
-     * @param 'literal'|'identifier'|'count'|'expression'|'search'|'custom' $matchType
-     * @param int<1, max>|null $lineNumber
+     * @param  'literal'|'identifier'|'count'|'expression'|'search'|'custom'  $matchType
+     * @param  int<1, max>|null  $lineNumber
      */
     public function __construct(string $expected, string $found, string $matchType = 'literal', ?int $lineNumber = null)
     {

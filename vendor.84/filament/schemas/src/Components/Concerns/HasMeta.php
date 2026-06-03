@@ -21,7 +21,7 @@ trait HasMeta
     /**
      * @param  string | array<string> | null  $keys
      */
-    public function getMeta(string | array | null $keys = null): mixed
+    public function getMeta(string|array|null $keys = null): mixed
     {
         if (is_array($keys)) {
             return Arr::only($this->meta, $keys);
@@ -37,7 +37,7 @@ trait HasMeta
     /**
      * @param  string | array<string>  $keys
      */
-    public function hasMeta(string | array $keys): bool
+    public function hasMeta(string|array $keys): bool
     {
         return Arr::has($this->meta, $keys);
     }

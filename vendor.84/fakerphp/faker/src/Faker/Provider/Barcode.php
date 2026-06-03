@@ -15,7 +15,7 @@ class Barcode extends Base
     {
         $code = static::numerify(str_repeat('#', $length - 1));
 
-        return $code . Ean::checksum($code);
+        return $code.Ean::checksum($code);
     }
 
     /**
@@ -23,8 +23,7 @@ class Barcode extends Base
      *
      * @deprecated Use \Faker\Calculator\Ean::checksum() instead
      *
-     * @param string $input
-     *
+     * @param  string  $input
      * @return int
      */
     protected static function eanChecksum($input)
@@ -38,11 +37,10 @@ class Barcode extends Base
      * @see http://en.wikipedia.org/wiki/International_Standard_Book_Number#ISBN-10_check_digits
      * @deprecated Use \Faker\Calculator\Isbn::checksum() instead
      *
-     * @param string $input ISBN without check-digit
+     * @param  string  $input  ISBN without check-digit
+     * @return string
      *
      * @throws \LengthException When wrong input length passed
-     *
-     * @return string
      */
     protected static function isbnChecksum($input)
     {
@@ -86,7 +84,7 @@ class Barcode extends Base
     {
         $code = static::numerify(str_repeat('#', 9));
 
-        return $code . Isbn::checksum($code);
+        return $code.Isbn::checksum($code);
     }
 
     /**
@@ -100,8 +98,8 @@ class Barcode extends Base
      */
     public function isbn13()
     {
-        $code = '97' . self::numberBetween(8, 9) . static::numerify(str_repeat('#', 9));
+        $code = '97'.self::numberBetween(8, 9).static::numerify(str_repeat('#', 9));
 
-        return $code . Ean::checksum($code);
+        return $code.Ean::checksum($code);
     }
 }

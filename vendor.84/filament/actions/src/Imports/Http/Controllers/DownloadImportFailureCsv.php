@@ -65,7 +65,7 @@ class DownloadImportFailureCsv
         }, __('filament-actions::import.failure_csv.file_name', [
             'import_id' => $import->getKey(),
             'csv_name' => (string) str($import->file_name)->beforeLast('.')->remove('.'),
-        ]) . '.csv', [
+        ]).'.csv', [
             'Content-Type' => 'text/csv',
         ]);
     }

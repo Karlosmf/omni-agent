@@ -29,8 +29,7 @@ class ErrorController
         private HttpKernelInterface $kernel,
         private string|object|array|null $controller,
         private ErrorRendererInterface $errorRenderer,
-    ) {
-    }
+    ) {}
 
     public function __invoke(\Throwable $exception): Response
     {

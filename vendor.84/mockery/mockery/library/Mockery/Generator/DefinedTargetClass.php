@@ -5,10 +5,13 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
 namespace Mockery\Generator;
+
+use const PHP_VERSION_ID;
 
 use ReflectionAttribute;
 use ReflectionClass;
@@ -17,8 +20,6 @@ use ReflectionMethod;
 use function array_map;
 use function array_merge;
 use function array_unique;
-
-use const PHP_VERSION_ID;
 
 class DefinedTargetClass implements TargetClassInterface
 {
@@ -33,8 +34,7 @@ class DefinedTargetClass implements TargetClassInterface
     private $rfc;
 
     /**
-     * @param ReflectionClass   $rfc
-     * @param class-string|null $alias
+     * @param  class-string|null  $alias
      */
     public function __construct(ReflectionClass $rfc, $alias = null)
     {
@@ -51,8 +51,8 @@ class DefinedTargetClass implements TargetClassInterface
     }
 
     /**
-     * @param  class-string      $name
-     * @param  class-string|null $alias
+     * @param  class-string  $name
+     * @param  class-string|null  $alias
      * @return self
      */
     public static function factory($name, $alias = null)
@@ -74,7 +74,7 @@ class DefinedTargetClass implements TargetClassInterface
                 ['\AllowDynamicProperties'],
                 array_map(
                     static function (ReflectionAttribute $attribute): string {
-                        return '\\' . $attribute->getName();
+                        return '\\'.$attribute->getName();
                     },
                     $this->rfc->getAttributes()
                 )
@@ -154,7 +154,7 @@ class DefinedTargetClass implements TargetClassInterface
     }
 
     /**
-     * @param  class-string $interface
+     * @param  class-string  $interface
      * @return bool
      */
     public function implementsInterface($interface)

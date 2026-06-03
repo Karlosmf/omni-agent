@@ -6,9 +6,9 @@ use Closure;
 
 trait CanBePreloaded
 {
-    protected bool | Closure $isPreloaded = false;
+    protected bool|Closure $isPreloaded = false;
 
-    public function preload(bool | Closure $condition = true): static
+    public function preload(bool|Closure $condition = true): static
     {
         $this->isPreloaded = $condition;
 

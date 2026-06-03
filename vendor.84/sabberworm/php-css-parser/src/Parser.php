@@ -19,8 +19,8 @@ class Parser
     private $parserState;
 
     /**
-     * @param string $text the complete CSS as text (i.e., usually the contents of a CSS file)
-     * @param int<1, max> $lineNumber the line number (starting from 1, not from 0)
+     * @param  string  $text  the complete CSS as text (i.e., usually the contents of a CSS file)
+     * @param  int<1, max>  $lineNumber  the line number (starting from 1, not from 0)
      */
     public function __construct(string $text, ?Settings $parserSettings = null, int $lineNumber = 1)
     {

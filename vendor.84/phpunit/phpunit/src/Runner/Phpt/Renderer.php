@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,7 +9,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner\Phpt;
+
+use PHPUnit\TextUI\Configuration\Registry as ConfigurationRegistry;
+use SebastianBergmann\Template\InvalidArgumentException;
+use SebastianBergmann\Template\Template;
 
 use function assert;
 use function defined;
@@ -15,9 +22,6 @@ use function dirname;
 use function file_put_contents;
 use function str_replace;
 use function var_export;
-use PHPUnit\TextUI\Configuration\Registry as ConfigurationRegistry;
-use SebastianBergmann\Template\InvalidArgumentException;
-use SebastianBergmann\Template\Template;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -29,9 +33,8 @@ use SebastianBergmann\Template\Template;
 final readonly class Renderer
 {
     /**
-     * @param non-empty-string $phptFile
-     * @param non-empty-string $code
-     *
+     * @param  non-empty-string  $phptFile
+     * @param  non-empty-string  $code
      * @return non-empty-string
      */
     public function render(string $phptFile, string $code): string
@@ -42,16 +45,16 @@ final readonly class Renderer
                 '__FILE__',
             ],
             [
-                "'" . dirname($phptFile) . "'",
-                "'" . $phptFile . "'",
+                "'".dirname($phptFile)."'",
+                "'".$phptFile."'",
             ],
             $code,
         );
     }
 
     /**
-     * @param non-empty-string                                         $job
-     * @param array{coverage: non-empty-string, job: non-empty-string} $files
+     * @param  non-empty-string  $job
+     * @param  array{coverage: non-empty-string, job: non-empty-string}  $files
      *
      * @param-out non-empty-string $job
      *
@@ -60,7 +63,7 @@ final readonly class Renderer
     public function renderForCoverage(string &$job, bool $pathCoverage, ?string $codeCoverageCacheDirectory, array $files): void
     {
         $template = new Template(
-            __DIR__ . '/templates/phpt.tpl',
+            __DIR__.'/templates/phpt.tpl',
         );
 
         $composerAutoload = '\'\'';
@@ -78,7 +81,7 @@ final readonly class Renderer
         if ($codeCoverageCacheDirectory === null) {
             $codeCoverageCacheDirectory = 'null';
         } else {
-            $codeCoverageCacheDirectory = "'" . $codeCoverageCacheDirectory . "'";
+            $codeCoverageCacheDirectory = "'".$codeCoverageCacheDirectory."'";
         }
 
         $bootstrap = '';
@@ -89,12 +92,12 @@ final readonly class Renderer
 
         $template->setVar(
             [
-                'bootstrap'                  => $bootstrap,
-                'composerAutoload'           => $composerAutoload,
-                'phar'                       => $phar,
-                'job'                        => $files['job'],
-                'coverageFile'               => $files['coverage'],
-                'driverMethod'               => $pathCoverage ? 'forLineAndPathCoverage' : 'forLineCoverage',
+                'bootstrap' => $bootstrap,
+                'composerAutoload' => $composerAutoload,
+                'phar' => $phar,
+                'job' => $files['job'],
+                'coverageFile' => $files['coverage'],
+                'driverMethod' => $pathCoverage ? 'forLineAndPathCoverage' : 'forLineCoverage',
                 'codeCoverageCacheDirectory' => $codeCoverageCacheDirectory,
             ],
         );

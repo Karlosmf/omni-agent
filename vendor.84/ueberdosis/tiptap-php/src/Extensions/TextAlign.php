@@ -22,21 +22,20 @@ class TextAlign extends Extension
     {
         return [
             [
-              'types' => $this->options['types'],
-              'attributes' => [
-                'textAlign' => [
-                    'default' => $this->options['defaultAlignment'],
-                    'parseHTML' => fn ($DOMNode) =>
-                        InlineStyle::getAttribute($DOMNode, 'text-align') ?? $this->options['defaultAlignment'],
-                    'renderHTML' => function ($attributes) {
-                        if ($attributes->textAlign === $this->options['defaultAlignment']) {
-                            return null;
-                        }
+                'types' => $this->options['types'],
+                'attributes' => [
+                    'textAlign' => [
+                        'default' => $this->options['defaultAlignment'],
+                        'parseHTML' => fn ($DOMNode) => InlineStyle::getAttribute($DOMNode, 'text-align') ?? $this->options['defaultAlignment'],
+                        'renderHTML' => function ($attributes) {
+                            if ($attributes->textAlign === $this->options['defaultAlignment']) {
+                                return null;
+                            }
 
-                        return ['style' => "text-align: {$attributes->textAlign}"];
-                    },
+                            return ['style' => "text-align: {$attributes->textAlign}"];
+                        },
+                    ],
                 ],
-              ],
             ],
         ];
     }

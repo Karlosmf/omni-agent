@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,14 +9,16 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\Constraint;
+
+use PHPUnit\Framework\ExpectationFailedException;
 
 use function array_map;
 use function count;
 use function preg_match;
 use function preg_quote;
 use function preg_replace;
-use PHPUnit\Framework\ExpectationFailedException;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -56,7 +60,7 @@ final class LogicalNot extends UnaryOperator
         }
 
         $positives = array_map(
-            static fn (string $s) => '/\\b' . preg_quote($s, '/') . '/',
+            static fn (string $s) => '/\\b'.preg_quote($s, '/').'/',
             $positives,
         );
 
@@ -64,7 +68,7 @@ final class LogicalNot extends UnaryOperator
             $nonInput = $matches[2];
 
             $negatedString = preg_replace(
-                '/' . preg_quote($nonInput, '/') . '/',
+                '/'.preg_quote($nonInput, '/').'/',
                 preg_replace(
                     $positives,
                     $negatives,
@@ -109,7 +113,7 @@ final class LogicalNot extends UnaryOperator
      */
     protected function matches(mixed $other): bool
     {
-        return !$this->constraint()->evaluate($other, '', true);
+        return ! $this->constraint()->evaluate($other, '', true);
     }
 
     /**

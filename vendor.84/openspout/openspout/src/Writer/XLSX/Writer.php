@@ -27,7 +27,7 @@ final class Writer extends AbstractWriterMultiSheets
 
     public function __construct(?Options $options = null)
     {
-        $this->options = $options ?? new Options();
+        $this->options = $options ?? new Options;
     }
 
     public function getOptions(): Options
@@ -54,28 +54,28 @@ final class Writer extends AbstractWriterMultiSheets
 
     protected function createWorkbookManager(): WorkbookManager
     {
-        $workbook = new Workbook();
+        $workbook = new Workbook;
 
         $fileSystemHelper = new FileSystemHelper(
             $this->options->getTempFolder(),
-            new ZipHelper(),
-            new XLSX(),
+            new ZipHelper,
+            new XLSX,
             $this->options->getProperties()
         );
         $fileSystemHelper->createBaseFilesAndFolders();
 
         $xlFolder = $fileSystemHelper->getXlFolder();
-        $sharedStringsManager = new SharedStringsManager($xlFolder, new XLSX());
+        $sharedStringsManager = new SharedStringsManager($xlFolder, new XLSX);
 
-        $styleMerger = new StyleMerger();
-        $escaper = new XLSX();
+        $styleMerger = new StyleMerger;
+        $escaper = new XLSX;
 
         $styleManager = new StyleManager(
             new StyleRegistry($this->options->DEFAULT_ROW_STYLE),
             $escaper
         );
 
-        $commentsManager = new CommentsManager($xlFolder, new XLSX());
+        $commentsManager = new CommentsManager($xlFolder, new XLSX);
 
         $worksheetManager = new WorksheetManager(
             $this->options,

@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace ParaTest\WrapperRunner;
 
+use const DIRECTORY_SEPARATOR;
+use const PHP_EOL;
+use const PHP_VERSION;
+
 use ParaTest\Options;
 use PHPUnit\Logging\TestDox\TestResultCollection as TestDoxTestResultCollection;
 use PHPUnit\Runner\TestSuiteSorter;
@@ -33,23 +37,26 @@ use function sprintf;
 use function str_repeat;
 use function strlen;
 
-use const DIRECTORY_SEPARATOR;
-use const PHP_EOL;
-use const PHP_VERSION;
-
 /** @internal */
 final class ResultPrinter
 {
     public readonly Printer $printer;
 
-    private int $numTestsWidth  = 0;
-    private int $maxColumn      = 0;
-    private int $totalCases     = 0;
-    private int $column         = 0;
+    private int $numTestsWidth = 0;
+
+    private int $maxColumn = 0;
+
+    private int $totalCases = 0;
+
+    private int $column = 0;
+
     private int $casesProcessed = 0;
+
     private int $numberOfColumns;
+
     /** @var resource|null */
     private $teamcityLogFileHandle;
+
     /** @var array<non-empty-string, int> */
     private array $tailPositions;
 
@@ -57,20 +64,18 @@ final class ResultPrinter
         private readonly OutputInterface $output,
         private readonly Options $options
     ) {
-        $this->printer = new class ($this->output) implements Printer {
+        $this->printer = new class($this->output) implements Printer
+        {
             public function __construct(
                 private readonly OutputInterface $output,
-            ) {
-            }
+            ) {}
 
             public function print(string $buffer): void
             {
                 $this->output->write(OutputFormatter::escape($buffer));
             }
 
-            public function flush(): void
-            {
-            }
+            public function flush(): void {}
         };
 
         $this->numberOfColumns = $this->options->configuration->columns();
@@ -92,34 +97,34 @@ final class ResultPrinter
     public function start(): void
     {
         $this->numTestsWidth = strlen((string) $this->totalCases);
-        $this->maxColumn     = $this->numberOfColumns
+        $this->maxColumn = $this->numberOfColumns
                          + (DIRECTORY_SEPARATOR === '\\' ? -1 : 0) // fix windows blank lines
                          - strlen($this->getProgress());
 
         // @see \PHPUnit\TextUI\TestRunner::writeMessage()
         $output = $this->output;
-        $write  = static function (string $type, string $message) use ($output): void {
-            $output->write(sprintf("%-15s%s\n", $type . ':', $message));
+        $write = static function (string $type, string $message) use ($output): void {
+            $output->write(sprintf("%-15s%s\n", $type.':', $message));
         };
 
         // @see \PHPUnit\TextUI\Application::writeRuntimeInformation()
         $write('Processes', (string) $this->options->processes);
 
         if ($this->options->hasShard()) {
-            $write('Shard', $this->options->currentShard . '/' . $this->options->totalShards);
+            $write('Shard', $this->options->currentShard.'/'.$this->options->totalShards);
         }
 
-        $runtime = 'PHP ' . PHP_VERSION;
+        $runtime = 'PHP '.PHP_VERSION;
 
         if ($this->options->configuration->hasCoverageReport()) {
-            $filter = new Filter();
+            $filter = new Filter;
             if ($this->options->configuration->pathCoverage()) {
-                $codeCoverageDriver = (new Selector())->forLineAndPathCoverage($filter); // @codeCoverageIgnore
+                $codeCoverageDriver = (new Selector)->forLineAndPathCoverage($filter); // @codeCoverageIgnore
             } else {
-                $codeCoverageDriver = (new Selector())->forLineCoverage($filter);
+                $codeCoverageDriver = (new Selector)->forLineCoverage($filter);
             }
 
-            $runtime .= ' with ' . $codeCoverageDriver->nameAndVersion();
+            $runtime .= ' with '.$codeCoverageDriver->nameAndVersion();
         }
 
         $write('Runtime', $runtime);
@@ -138,7 +143,7 @@ final class ResultPrinter
     public function printFeedback(
         SplFileInfo $progressFile,
         SplFileInfo $outputFile,
-        SplFileInfo|null $teamcityFile
+        ?SplFileInfo $teamcityFile
     ): void {
         if ($this->options->needsTeamcity && $teamcityFile !== null) {
             $teamcityProgress = $this->tailMultiple([$teamcityFile]);
@@ -170,14 +175,14 @@ final class ResultPrinter
         }
 
         $actualTestCount = strlen($feedbackItems);
-        for ($index = 0; $index < $actualTestCount; ++$index) {
+        for ($index = 0; $index < $actualTestCount; $index++) {
             $this->printFeedbackItem($feedbackItems[$index]);
         }
     }
 
     /**
-     * @param list<SplFileInfo>                         $teamcityFiles
-     * @param array<string,TestDoxTestResultCollection> $testdoxResults
+     * @param  list<SplFileInfo>  $teamcityFiles
+     * @param  array<string,TestDoxTestResultCollection>  $testdoxResults
      */
     public function printResults(TestResult $testResult, array $teamcityFiles, array $testdoxResults): void
     {
@@ -186,7 +191,7 @@ final class ResultPrinter
 
             if ($this->teamcityLogFileHandle !== null) {
                 fwrite($this->teamcityLogFileHandle, $teamcityProgress);
-                $resource                    = $this->teamcityLogFileHandle;
+                $resource = $this->teamcityLogFileHandle;
                 $this->teamcityLogFileHandle = null;
                 fclose($resource);
             }
@@ -199,7 +204,7 @@ final class ResultPrinter
             return;
         }
 
-        $this->printer->print(PHP_EOL . (new ResourceUsageFormatter())->resourceUsageSinceStartOfRequest() . PHP_EOL . PHP_EOL);
+        $this->printer->print(PHP_EOL.(new ResourceUsageFormatter)->resourceUsageSinceStartOfRequest().PHP_EOL.PHP_EOL);
 
         $defaultResultPrinter = new DefaultResultPrinter(
             $this->printer,
@@ -257,8 +262,8 @@ final class ResultPrinter
     private function printFeedbackItem(string $item): void
     {
         $this->printFeedbackItemColor($item);
-        ++$this->column;
-        ++$this->casesProcessed;
+        $this->column++;
+        $this->casesProcessed++;
         if ($this->column !== $this->maxColumn && $this->casesProcessed < $this->totalCases) {
             return;
         }
@@ -271,7 +276,7 @@ final class ResultPrinter
             $this->output->write(str_repeat(' ', $pad));
         }
 
-        $this->output->write($this->getProgress() . "\n");
+        $this->output->write($this->getProgress()."\n");
         $this->column = 0;
     }
 
@@ -290,7 +295,7 @@ final class ResultPrinter
     private function getProgress(): string
     {
         return sprintf(
-            ' %' . $this->numTestsWidth . 'd / %' . $this->numTestsWidth . 'd (%3s%%)',
+            ' %'.$this->numTestsWidth.'d / %'.$this->numTestsWidth.'d (%3s%%)',
             $this->casesProcessed,
             $this->totalCases,
             floor(($this->totalCases > 0 ? $this->casesProcessed / $this->totalCases : 0) * 100),

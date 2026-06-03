@@ -24,8 +24,7 @@ abstract class AbstractStyleManager implements StyleManagerInterface
      * Registers the given style as a used style.
      * Duplicate styles won't be registered more than once.
      *
-     * @param Style $style The style to be registered
-     *
+     * @param  Style  $style  The style to be registered
      * @return Style the registered style, updated with an internal ID
      */
     final public function registerStyle(Style $style): Style
@@ -64,8 +63,7 @@ abstract class AbstractStyleManager implements StyleManagerInterface
      *        A workaround would be to encode "\n" as "_x000D_" but it does not work
      *        on the Windows version of Excel...
      *
-     * @param Cell $cell The cell the style should be applied to
-     *
+     * @param  Cell  $cell  The cell the style should be applied to
      * @return PossiblyUpdatedStyle The eventually updated style
      */
     private function applyWrapTextIfCellContainsNewLine(Cell $cell): PossiblyUpdatedStyle
@@ -73,7 +71,7 @@ abstract class AbstractStyleManager implements StyleManagerInterface
         $cellStyle = $cell->getStyle();
 
         // if the "wrap text" option is already set, no-op
-        if (!$cellStyle->hasSetWrapText() && $cell instanceof Cell\StringCell && str_contains($cell->getValue(), "\n")) {
+        if (! $cellStyle->hasSetWrapText() && $cell instanceof Cell\StringCell && str_contains($cell->getValue(), "\n")) {
             $cellStyle->setShouldWrapText();
 
             return new PossiblyUpdatedStyle($cellStyle, true);

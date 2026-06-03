@@ -7,17 +7,18 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Queue\SerializesAndRestoresModelIdentifiers;
 use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;
 
-class EloquentCollectionSynth extends Synth {
+class EloquentCollectionSynth extends Synth
+{
     use SerializesAndRestoresModelIdentifiers;
 
     public static $key = 'elcln';
 
-    static function match($target)
+    public static function match($target)
     {
         return $target instanceof EloquentCollection;
     }
 
-    function dehydrate(EloquentCollection $target, $dehydrateChild)
+    public function dehydrate(EloquentCollection $target, $dehydrateChild)
     {
         $class = $target::class;
         $modelClass = $target->getQueueableClass();
@@ -41,11 +42,11 @@ class EloquentCollectionSynth extends Synth {
 
         return [
             null,
-            $meta
+            $meta,
         ];
     }
 
-    function hydrate($data, $meta, $hydrateChild)
+    public function hydrate($data, $meta, $hydrateChild)
     {
         $class = $meta['class'];
 
@@ -61,7 +62,7 @@ class EloquentCollectionSynth extends Synth {
         $keys = $meta['keys'] ?? [];
 
         if (count($keys) === 0) {
-            return new $class();
+            return new $class;
         }
 
         // We are using Laravel's method here for restoring the collection, which ensures
@@ -78,15 +79,18 @@ class EloquentCollectionSynth extends Synth {
         );
     }
 
-    function get(&$target, $key) {
+    public function get(&$target, $key)
+    {
         throw new \Exception('Can\'t access model properties directly');
     }
 
-    function set(&$target, $key, $value, $pathThusFar, $fullPath) {
+    public function set(&$target, $key, $value, $pathThusFar, $fullPath)
+    {
         throw new \Exception('Can\'t set model properties directly');
     }
 
-    function call($target, $method, $params, $addEffect) {
+    public function call($target, $method, $params, $addEffect)
+    {
         throw new \Exception('Can\'t call model methods directly');
     }
 }

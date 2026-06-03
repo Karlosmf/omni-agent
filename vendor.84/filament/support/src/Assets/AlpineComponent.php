@@ -18,6 +18,6 @@ class AlpineComponent extends Asset
 
     public function getSrc(): string
     {
-        return asset($this->getRelativePublicPath()) . '?v=' . $this->getVersion();
+        return asset($this->getRelativePublicPath()).'?v='.$this->getVersion();
     }
 }

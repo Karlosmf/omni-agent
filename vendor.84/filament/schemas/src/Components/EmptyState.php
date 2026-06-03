@@ -28,16 +28,16 @@ class EmptyState extends Component
      */
     protected string $view = 'filament-schemas::components.empty-state';
 
-    protected string | Htmlable | Closure $heading;
+    protected string|Htmlable|Closure $heading;
 
     const FOOTER_SCHEMA_KEY = 'footer';
 
-    final public function __construct(string | Htmlable | Closure $heading)
+    final public function __construct(string|Htmlable|Closure $heading)
     {
         $this->heading($heading);
     }
 
-    public static function make(string | Htmlable | Closure $heading): static
+    public static function make(string|Htmlable|Closure $heading): static
     {
         $static = app(static::class, ['heading' => $heading]);
         $static->configure();
@@ -48,7 +48,7 @@ class EmptyState extends Component
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function footer(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components): static
+    public function footer(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components): static
     {
         $this->childComponents($components, static::FOOTER_SCHEMA_KEY);
 
@@ -70,14 +70,14 @@ class EmptyState extends Component
         return $schema;
     }
 
-    public function heading(string | Htmlable | Closure $heading): static
+    public function heading(string|Htmlable|Closure $heading): static
     {
         $this->heading = $heading;
 
         return $this;
     }
 
-    public function getHeading(): string | Htmlable
+    public function getHeading(): string|Htmlable
     {
         return $this->evaluate($this->heading);
     }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\Attributes;
 
 use Attribute;
@@ -23,9 +26,9 @@ final readonly class IgnoreDeprecations
     private ?string $messagePattern;
 
     /**
-     * @param null|non-empty-string $messagePattern
+     * @param  null|non-empty-string  $messagePattern
      */
-    public function __construct(null|string $messagePattern = null)
+    public function __construct(?string $messagePattern = null)
     {
         $this->messagePattern = $messagePattern;
     }

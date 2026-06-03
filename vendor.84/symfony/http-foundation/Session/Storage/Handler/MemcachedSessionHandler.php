@@ -91,7 +91,7 @@ class MemcachedSessionHandler extends AbstractSessionHandler
     {
         $result = $this->memcached->delete($this->prefix.$sessionId);
 
-        return $result || \Memcached::RES_NOTFOUND == $this->memcached->getResultCode();
+        return $result || $this->memcached->getResultCode() == \Memcached::RES_NOTFOUND;
     }
 
     public function gc(int $maxlifetime): int|false

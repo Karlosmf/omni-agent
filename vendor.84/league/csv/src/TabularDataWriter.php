@@ -25,7 +25,7 @@ interface TabularDataWriter
      *
      * @see TabularDataWriter::insertOne
      *
-     * @param iterable<array<null|int|float|string|Stringable>> $records
+     * @param  iterable<array<null|int|float|string|Stringable>>  $records
      *
      * @throws CannotInsertRecord If the record can not be inserted
      * @throws Exception If the record can not be inserted
@@ -38,7 +38,7 @@ interface TabularDataWriter
      * A record is an array that can contain scalar type values, NULL values
      * or objects implementing the __toString method.
      *
-     * @param array<mixed> $record
+     * @param  array<mixed>  $record
      *
      * @throws CannotInsertRecord If the record can not be inserted
      * @throws Exception If the record can not be inserted

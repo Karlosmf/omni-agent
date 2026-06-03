@@ -13,6 +13,10 @@ declare(strict_types=1);
 
 namespace League\Csv;
 
+use const E_USER_WARNING;
+use const PSFS_ERR_FATAL;
+use const PSFS_PASS_ON;
+
 use Deprecated;
 use InvalidArgumentException;
 use php_user_filter;
@@ -30,10 +34,6 @@ use function stream_get_filters;
 use function strlen;
 use function trigger_error;
 
-use const E_USER_WARNING;
-use const PSFS_ERR_FATAL;
-use const PSFS_PASS_ON;
-
 /**
  * A stream filter to improve enclosure character usage.
  *
@@ -41,7 +41,6 @@ use const PSFS_PASS_ON;
  *
  * @deprecated since version 9.10.0
  * @see Writer::forceEnclosure()
- *
  * @see https://tools.ietf.org/html/rfc4180#section-2
  * @see https://bugs.php.net/bug.php?id=38301
  */
@@ -52,6 +51,7 @@ class EncloseField extends php_user_filter
 
     /** Default sequence. */
     protected string $sequence = '';
+
     /** Characters that triggers enclosure in PHP. */
     protected static string $force_enclosure = "\n\r\t ";
 
@@ -68,7 +68,7 @@ class EncloseField extends php_user_filter
      */
     public static function register(): void
     {
-        if (!in_array(self::FILTERNAME, stream_get_filters(), true)) {
+        if (! in_array(self::FILTERNAME, stream_get_filters(), true)) {
             stream_filter_register(self::FILTERNAME, self::class);
         }
     }
@@ -83,7 +83,7 @@ class EncloseField extends php_user_filter
     {
         self::register();
 
-        if (!self::isValidSequence($sequence)) {
+        if (! self::isValidSequence($sequence)) {
             throw new InvalidArgumentException('The sequence must contain at least one character to force enclosure');
         }
 
@@ -111,9 +111,9 @@ class EncloseField extends php_user_filter
     }
 
     /**
-     * @param resource $in
-     * @param resource $out
-     * @param int $consumed
+     * @param  resource  $in
+     * @param  resource  $out
+     * @param  int  $consumed
      */
     public function filter($in, $out, &$consumed, bool $closing): int
     {

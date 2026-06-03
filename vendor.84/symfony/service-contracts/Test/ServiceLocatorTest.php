@@ -17,7 +17,5 @@ if (false) {
     /**
      * @deprecated since PHPUnit 9.6
      */
-    class ServiceLocatorTest
-    {
-    }
+    class ServiceLocatorTest {}
 }

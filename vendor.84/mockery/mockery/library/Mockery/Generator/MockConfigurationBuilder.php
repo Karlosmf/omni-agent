@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -27,7 +28,7 @@ class MockConfigurationBuilder
         '__toString',
         '__isset',
         '__destruct',
-        '__debugInfo', ## mocking this makes it difficult to debug with xdebug
+        '__debugInfo', // # mocking this makes it difficult to debug with xdebug
 
         // below are reserved words in PHP
         '__halt_compiler', 'abstract', 'and', 'array', 'as',
@@ -99,17 +100,18 @@ class MockConfigurationBuilder
     }
 
     /**
-     * @param  string $blackListedMethod
+     * @param  string  $blackListedMethod
      * @return self
      */
     public function addBlackListedMethod($blackListedMethod)
     {
         $this->blackListedMethods[] = $blackListedMethod;
+
         return $this;
     }
 
     /**
-     * @param  list<string> $blackListedMethods
+     * @param  list<string>  $blackListedMethods
      * @return self
      */
     public function addBlackListedMethods(array $blackListedMethods)
@@ -122,7 +124,7 @@ class MockConfigurationBuilder
     }
 
     /**
-     * @param  class-string $target
+     * @param  class-string  $target
      * @return self
      */
     public function addTarget($target)
@@ -133,7 +135,7 @@ class MockConfigurationBuilder
     }
 
     /**
-     * @param  list<class-string> $targets
+     * @param  list<class-string>  $targets
      * @return self
      */
     public function addTargets($targets)
@@ -151,6 +153,7 @@ class MockConfigurationBuilder
     public function addWhiteListedMethod($whiteListedMethod)
     {
         $this->whiteListedMethods[] = $whiteListedMethod;
+
         return $this;
     }
 
@@ -184,12 +187,13 @@ class MockConfigurationBuilder
     }
 
     /**
-     * @param  list<string> $blackListedMethods
+     * @param  list<string>  $blackListedMethods
      * @return self
      */
     public function setBlackListedMethods(array $blackListedMethods)
     {
         $this->blackListedMethods = $blackListedMethods;
+
         return $this;
     }
 
@@ -204,7 +208,7 @@ class MockConfigurationBuilder
     }
 
     /**
-     * @param bool $instanceMock
+     * @param  bool  $instanceMock
      */
     public function setInstanceMock($instanceMock)
     {
@@ -214,20 +218,22 @@ class MockConfigurationBuilder
     }
 
     /**
-     * @param bool $mockDestructor
+     * @param  bool  $mockDestructor
      */
     public function setMockOriginalDestructor($mockDestructor)
     {
         $this->mockOriginalDestructor = (bool) $mockDestructor;
+
         return $this;
     }
 
     /**
-     * @param string $name
+     * @param  string  $name
      */
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -237,16 +243,18 @@ class MockConfigurationBuilder
     public function setParameterOverrides(array $overrides)
     {
         $this->parameterOverrides = $overrides;
+
         return $this;
     }
 
     /**
-     * @param  list<string> $whiteListedMethods
+     * @param  list<string>  $whiteListedMethods
      * @return self
      */
     public function setWhiteListedMethods(array $whiteListedMethods)
     {
         $this->whiteListedMethods = $whiteListedMethods;
+
         return $this;
     }
 }

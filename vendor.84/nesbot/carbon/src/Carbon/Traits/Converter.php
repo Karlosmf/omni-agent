@@ -50,7 +50,7 @@ trait Converter
             ?? $this->getFactory()->getSettings()['formatFunction']
             ?? static::$formatFunction;
 
-        if (!$function) {
+        if (! $function) {
             return $this->rawFormat($format);
         }
 
@@ -160,7 +160,7 @@ trait Converter
     /**
      * Return a format from H:i to H:i:s.u according to given unit precision.
      *
-     * @param string $unitPrecision "minute", "second", "millisecond" or "microsecond"
+     * @param  string  $unitPrecision  "minute", "second", "millisecond" or "microsecond"
      */
     public static function getTimeFormatByPrecision(string $unitPrecision): string
     {
@@ -437,11 +437,11 @@ trait Converter
      * echo Carbon::now('America/Toronto')->toISOString(true) . "\n";
      * ```
      *
-     * @param bool $keepOffset Pass true to keep the date offset. Else forced to UTC.
+     * @param  bool  $keepOffset  Pass true to keep the date offset. Else forced to UTC.
      */
     public function toISOString(bool $keepOffset = false): ?string
     {
-        if (!$this->isValid()) {
+        if (! $this->isValid()) {
             return null;
         }
 
@@ -511,9 +511,9 @@ trait Converter
     /**
      * Create a iterable CarbonPeriod object from current date to a given end date (and optional interval).
      *
-     * @param \DateTimeInterface|Carbon|CarbonImmutable|int|null $end      period end date or recurrences count if int
-     * @param int|\DateInterval|string|null                      $interval period default interval or number of the given $unit
-     * @param string|null                                        $unit     if specified, $interval must be an integer
+     * @param  DateTimeInterface|Carbon|CarbonImmutable|int|null  $end  period end date or recurrences count if int
+     * @param  int|\DateInterval|string|null  $interval  period default interval or number of the given $unit
+     * @param  string|null  $unit  if specified, $interval must be an integer
      */
     public function toPeriod($end = null, $interval = null, $unit = null): CarbonPeriod
     {
@@ -521,7 +521,7 @@ trait Converter
             $interval = CarbonInterval::make("$interval ".static::pluralUnit($unit));
         }
 
-        $isDefaultInterval = !$interval;
+        $isDefaultInterval = ! $interval;
         $interval ??= CarbonInterval::day();
         $class = $this->isMutable() ? CarbonPeriod::class : CarbonPeriodImmutable::class;
 
@@ -531,7 +531,7 @@ trait Converter
 
         $end ??= 1;
 
-        if (!\is_int($end)) {
+        if (! \is_int($end)) {
             $end = $this->resolveCarbon($end);
         }
 
@@ -545,9 +545,9 @@ trait Converter
     /**
      * Create a iterable CarbonPeriod object from current date to a given end date (and optional interval).
      *
-     * @param \DateTimeInterface|Carbon|CarbonImmutable|null $end      period end date
-     * @param int|\DateInterval|string|null                  $interval period default interval or number of the given $unit
-     * @param string|null                                    $unit     if specified, $interval must be an integer
+     * @param  DateTimeInterface|Carbon|CarbonImmutable|null  $end  period end date
+     * @param  int|\DateInterval|string|null  $interval  period default interval or number of the given $unit
+     * @param  string|null  $unit  if specified, $interval must be an integer
      */
     public function range($end = null, $interval = null, $unit = null): CarbonPeriod
     {

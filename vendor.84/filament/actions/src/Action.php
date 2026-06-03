@@ -97,7 +97,7 @@ class Action extends ViewComponent implements Arrayable
     use HasIconSize;
     use HasTooltip;
 
-    protected bool | Closure $isBulk = false;
+    protected bool|Closure $isBulk = false;
 
     public const BADGE_VIEW = 'filament::components.badge';
 
@@ -115,11 +115,11 @@ class Action extends ViewComponent implements Arrayable
 
     protected ?string $livewireTarget = null;
 
-    protected string | Closure | null $alpineClickHandler = null;
+    protected string|Closure|null $alpineClickHandler = null;
 
-    protected bool | Closure $shouldMarkAsRead = false;
+    protected bool|Closure $shouldMarkAsRead = false;
 
-    protected bool | Closure $shouldMarkAsUnread = false;
+    protected bool|Closure $shouldMarkAsUnread = false;
 
     protected ?int $nestingIndex = null;
 
@@ -149,14 +149,14 @@ class Action extends ViewComponent implements Arrayable
         $this->defaultView(static::BUTTON_VIEW);
     }
 
-    public function markAsRead(bool | Closure $condition = true): static
+    public function markAsRead(bool|Closure $condition = true): static
     {
         $this->shouldMarkAsRead = $condition;
 
         return $this;
     }
 
-    public function markAsUnread(bool | Closure $condition = true): static
+    public function markAsUnread(bool|Closure $condition = true): static
     {
         $this->shouldMarkAsUnread = $condition;
 
@@ -260,7 +260,7 @@ class Action extends ViewComponent implements Arrayable
         return $this->getView() === static::BADGE_VIEW;
     }
 
-    public function badge(string | int | float | Closure | null $badge = null): static
+    public function badge(string|int|float|Closure|null $badge = null): static
     {
         if (func_num_args() === 0) {
             /** @phpstan-ignore-next-line */
@@ -307,7 +307,7 @@ class Action extends ViewComponent implements Arrayable
         return $this->getView() === static::LINK_VIEW;
     }
 
-    public function alpineClickHandler(string | Closure | null $handler): static
+    public function alpineClickHandler(string|Closure|null $handler): static
     {
         $this->alpineClickHandler = $handler;
         $this->livewireClickHandlerEnabled(blank($handler));
@@ -315,7 +315,7 @@ class Action extends ViewComponent implements Arrayable
         return $this;
     }
 
-    public function actionJs(string | Closure | null $action): static
+    public function actionJs(string|Closure|null $action): static
     {
         $this->alpineClickHandler($action);
 
@@ -694,7 +694,7 @@ class Action extends ViewComponent implements Arrayable
         return ActionStatus::Failure;
     }
 
-    public function bulk(bool | Closure $condition = true): static
+    public function bulk(bool|Closure $condition = true): static
     {
         $this->isBulk = $condition;
 

@@ -23,7 +23,7 @@ final class CalculatorRegistry
      *
      * An instance is typically set only in unit tests: autodetect is usually the best option.
      *
-     * @param Calculator|null $calculator The calculator instance, or null to revert to autodetect.
+     * @param  Calculator|null  $calculator  The calculator instance, or null to revert to autodetect.
      */
     final public static function set(?Calculator $calculator): void
     {
@@ -62,13 +62,13 @@ final class CalculatorRegistry
     private static function detect(): Calculator
     {
         if (extension_loaded('gmp')) {
-            return new Calculator\GmpCalculator();
+            return new Calculator\GmpCalculator;
         }
 
         if (extension_loaded('bcmath')) {
-            return new Calculator\BcMathCalculator();
+            return new Calculator\BcMathCalculator;
         }
 
-        return new Calculator\NativeCalculator();
+        return new Calculator\NativeCalculator;
     }
 }

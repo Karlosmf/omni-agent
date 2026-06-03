@@ -4,40 +4,43 @@ namespace Livewire\Mechanisms\ExtendBlade;
 
 use Illuminate\Support\Facades\Blade;
 use Livewire\Mechanisms\Mechanism;
+
 use function Livewire\invade;
 use function Livewire\on;
 
 class ExtendBlade extends Mechanism
 {
     protected $directives = [];
+
     protected $precompilers = [];
+
     protected $renderCounter = 0;
 
     protected static $livewireComponents = [];
 
-    function startLivewireRendering($component)
+    public function startLivewireRendering($component)
     {
         static::$livewireComponents[] = $component;
     }
 
-    function endLivewireRendering()
+    public function endLivewireRendering()
     {
         array_pop(static::$livewireComponents);
     }
 
-    static function currentRendering()
+    public static function currentRendering()
     {
         return end(static::$livewireComponents);
     }
 
-    static function isRenderingLivewireComponent()
+    public static function isRenderingLivewireComponent()
     {
         return ! empty(static::$livewireComponents);
     }
 
-    function boot()
+    public function boot()
     {
-        Blade::directive('this', fn() => "window.Livewire.find('{{ \$_instance->getId() }}')");
+        Blade::directive('this', fn () => "window.Livewire.find('{{ \$_instance->getId() }}')");
 
         on('render', function ($target, $view) {
             $this->startLivewireRendering($target);
@@ -46,7 +49,7 @@ class ExtendBlade extends Mechanism
 
             $this->renderCounter++;
 
-            return function ($html) use ($view, $undo, $target) {
+            return function ($html) use ($undo) {
                 $this->endLivewireRendering();
 
                 $this->renderCounter--;
@@ -84,17 +87,18 @@ class ExtendBlade extends Mechanism
         });
     }
 
-    function livewireOnlyDirective($name, $handler)
+    public function livewireOnlyDirective($name, $handler)
     {
         $this->directives[$name] = $handler;
     }
 
-    function livewireOnlyPrecompiler($handler)
+    public function livewireOnlyPrecompiler($handler)
     {
         $this->precompilers[] = $handler;
     }
 
-    function livewireifyBladeCompiler() {
+    public function livewireifyBladeCompiler()
+    {
         $removals = [];
 
         if ($this->renderCounter === 0) {
@@ -128,7 +132,9 @@ class ExtendBlade extends Mechanism
 
                         $index = array_search($handler, $precompilers);
 
-                        if ($index === false) return;
+                        if ($index === false) {
+                            return;
+                        }
 
                         unset($precompilers[$index]);
 
@@ -139,7 +145,9 @@ class ExtendBlade extends Mechanism
         }
 
         return function () use ($removals) {
-            while ($removals) array_pop($removals)();
+            while ($removals) {
+                array_pop($removals)();
+            }
         };
     }
 }

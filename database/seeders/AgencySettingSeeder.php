@@ -18,7 +18,7 @@ class AgencySettingSeeder extends Seeder
                 'company_name' => 'Luopan Viajes',
                 'logo_path' => null,
                 'favicon_path' => null,
-                
+
                 // Frontend Colors
                 'fe_primary_color' => '#1a56db',
                 'fe_secondary_color' => '#7e22ce',

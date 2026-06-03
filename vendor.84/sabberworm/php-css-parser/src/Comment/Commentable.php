@@ -10,7 +10,7 @@ namespace Sabberworm\CSS\Comment;
 interface Commentable
 {
     /**
-     * @param list<Comment> $comments
+     * @param  list<Comment>  $comments
      */
     public function addComments(array $comments): void;
 
@@ -20,7 +20,7 @@ interface Commentable
     public function getComments(): array;
 
     /**
-     * @param list<Comment> $comments
+     * @param  list<Comment>  $comments
      */
     public function setComments(array $comments): void;
 }

@@ -13,7 +13,7 @@ class ReplaceFilter implements TypeFilter
     protected $callback;
 
     /**
-     * @param callable $callable Will be called to get the new value for each element to replace
+     * @param  callable  $callable  Will be called to get the new value for each element to replace
      */
     public function __construct(callable $callable)
     {

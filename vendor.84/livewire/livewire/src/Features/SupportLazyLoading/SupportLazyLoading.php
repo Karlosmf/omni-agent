@@ -2,25 +2,30 @@
 
 namespace Livewire\Features\SupportLazyLoading;
 
+use Illuminate\Routing\Route;
+use Livewire\Attributes\Lazy;
+use Livewire\Component;
+use Livewire\ComponentHook;
+use Livewire\Drawer\Utils;
 use Livewire\Features\SupportLifecycleHooks\SupportLifecycleHooks;
 use Livewire\Mechanisms\HandleComponents\ComponentContext;
 use Livewire\Mechanisms\HandleComponents\ViewContext;
-use function Livewire\{ on, store, trigger, wrap };
-use Illuminate\Routing\Route;
-use Livewire\ComponentHook;
-use Livewire\Drawer\Utils;
-use Livewire\Component;
+
+use function Livewire\on;
+use function Livewire\store;
+use function Livewire\trigger;
+use function Livewire\wrap;
 
 class SupportLazyLoading extends ComponentHook
 {
-    static $disableWhileTesting = false;
+    public static $disableWhileTesting = false;
 
-    static function disableWhileTesting()
+    public static function disableWhileTesting()
     {
         static::$disableWhileTesting = true;
     }
 
-    static function provide()
+    public static function provide()
     {
         static::registerRouteMacro();
 
@@ -29,7 +34,7 @@ class SupportLazyLoading extends ComponentHook
         });
     }
 
-    static function registerRouteMacro()
+    public static function registerRouteMacro()
     {
         Route::macro('lazy', function ($enabled = true) {
             $this->defaults['lazy'] = $enabled;
@@ -45,14 +50,20 @@ class SupportLazyLoading extends ComponentHook
         $isolate = true;
 
         $reflectionClass = new \ReflectionClass($this->component);
-        $lazyAttribute = $reflectionClass->getAttributes(\Livewire\Attributes\Lazy::class)[0] ?? null;
+        $lazyAttribute = $reflectionClass->getAttributes(Lazy::class)[0] ?? null;
 
         // If Livewire::withoutLazyLoading()...
-        if (static::$disableWhileTesting) return;
+        if (static::$disableWhileTesting) {
+            return;
+        }
         // If `:lazy="false"` disable lazy loading...
-        if ($hasLazyParam && ! $lazyProperty) return;
+        if ($hasLazyParam && ! $lazyProperty) {
+            return;
+        }
         // If no lazy loading is included at all...
-        if (! $hasLazyParam && ! $lazyAttribute) return;
+        if (! $hasLazyParam && ! $lazyAttribute) {
+            return;
+        }
 
         if ($lazyAttribute) {
             $attribute = $lazyAttribute->newInstance();
@@ -72,15 +83,19 @@ class SupportLazyLoading extends ComponentHook
 
     public function hydrate($memo)
     {
-        if (! isset($memo['lazyLoaded'])) return;
-        if ($memo['lazyLoaded'] === true) return;
+        if (! isset($memo['lazyLoaded'])) {
+            return;
+        }
+        if ($memo['lazyLoaded'] === true) {
+            return;
+        }
 
         $this->component->skipHydrate();
 
         store($this->component)->set('isLazyLoadHydrating', true);
     }
 
-    function dehydrate($context)
+    public function dehydrate($context)
     {
         if (store($this->component)->get('isLazyLoadMounting') === true) {
             $context->addMemo('lazyLoaded', false);
@@ -90,11 +105,13 @@ class SupportLazyLoading extends ComponentHook
         }
     }
 
-    function call($method, $params, $returnEarly)
+    public function call($method, $params, $returnEarly)
     {
-        if ($method !== '__lazyLoad') return;
+        if ($method !== '__lazyLoad') {
+            return;
+        }
 
-        [ $encoded ] = $params;
+        [$encoded] = $params;
 
         $mountParams = $this->resurrectMountParams($encoded);
 
@@ -160,18 +177,18 @@ class SupportLazyLoading extends ComponentHook
         return $view;
     }
 
-    function resurrectMountParams($encoded)
+    public function resurrectMountParams($encoded)
     {
         $snapshot = json_decode(base64_decode($encoded), associative: true);
 
         $this->registerContainerComponent();
 
-        [ $container ] = app('livewire')->fromSnapshot($snapshot);
+        [$container] = app('livewire')->fromSnapshot($snapshot);
 
         return $container->forMount;
     }
 
-    function callMountLifecycleMethod($params)
+    public function callMountLifecycleMethod($params)
     {
         $hook = new SupportLifecycleHooks;
 
@@ -182,7 +199,8 @@ class SupportLazyLoading extends ComponentHook
 
     public function registerContainerComponent()
     {
-        app('livewire')->component('__mountParamsContainer', new class extends Component {
+        app('livewire')->component('__mountParamsContainer', new class extends Component
+        {
             public $forMount;
         });
     }

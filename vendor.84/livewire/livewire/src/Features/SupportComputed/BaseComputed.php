@@ -2,19 +2,19 @@
 
 namespace Livewire\Features\SupportComputed;
 
-use function Livewire\invade;
-use function Livewire\on;
-use function Livewire\off;
-
-use Livewire\Features\SupportAttributes\Attribute;
 use Illuminate\Support\Facades\Cache;
+use Livewire\Features\SupportAttributes\Attribute;
+
+use function Livewire\invade;
+use function Livewire\off;
+use function Livewire\on;
 
 #[\Attribute]
 class BaseComputed extends Attribute
 {
     protected $requestCachedValue;
 
-    function __construct(
+    public function __construct(
         public $persist = false,
         public $seconds = 3600, // 1 hour...
         public $cache = false,
@@ -22,7 +22,7 @@ class BaseComputed extends Attribute
         public $tags = null,
     ) {}
 
-    function boot()
+    public function boot()
     {
         off('__get', $this->handleMagicGet(...));
         on('__get', $this->handleMagicGet(...));
@@ -31,7 +31,7 @@ class BaseComputed extends Attribute
         on('__unset', $this->handleMagicUnset(...));
     }
 
-    function call()
+    public function call()
     {
         throw new CannotCallComputedDirectlyException(
             $this->component->getName(),
@@ -41,8 +41,12 @@ class BaseComputed extends Attribute
 
     protected function handleMagicGet($target, $property, $returnValue)
     {
-        if ($target !== $this->component) return;
-        if ($this->generatePropertyName($property) !== $this->getName()) return;
+        if ($target !== $this->component) {
+            return;
+        }
+        if ($this->generatePropertyName($property) !== $this->getName()) {
+            return;
+        }
 
         if ($this->persist) {
             $returnValue($this->handlePersistedGet());
@@ -63,8 +67,12 @@ class BaseComputed extends Attribute
 
     protected function handleMagicUnset($target, $property)
     {
-        if ($target !== $this->component) return;
-        if ($property !== $this->getName()) return;
+        if ($target !== $this->component) {
+            return;
+        }
+        if ($property !== $this->getName()) {
+            return;
+        }
 
         if ($this->persist) {
             $this->handlePersistedUnset();
@@ -87,7 +95,7 @@ class BaseComputed extends Attribute
 
         $closure = fn () => $this->evaluateComputed();
 
-        return match(Cache::supportsTags() && !empty($this->tags)) {
+        return match (Cache::supportsTags() && ! empty($this->tags)) {
             true => Cache::tags($this->tags)->remember($key, $this->seconds, $closure),
             default => Cache::remember($key, $this->seconds, $closure)
         };
@@ -99,7 +107,7 @@ class BaseComputed extends Attribute
 
         $closure = fn () => $this->evaluateComputed();
 
-        return match(Cache::supportsTags() && !empty($this->tags)) {
+        return match (Cache::supportsTags() && ! empty($this->tags)) {
             true => Cache::tags($this->tags)->remember($key, $this->seconds, $closure),
             default => Cache::remember($key, $this->seconds, $closure)
         };
@@ -121,14 +129,18 @@ class BaseComputed extends Attribute
 
     protected function generatePersistedKey()
     {
-        if ($this->key) return $this->key;
+        if ($this->key) {
+            return $this->key;
+        }
 
         return 'lw_computed.'.$this->component->getId().'.'.$this->getName();
     }
 
     protected function generateCachedKey()
     {
-        if ($this->key) return $this->key;
+        if ($this->key) {
+            return $this->key;
+        }
 
         return 'lw_computed.'.$this->component->getName().'.'.$this->getName();
     }
@@ -147,6 +159,4 @@ class BaseComputed extends Attribute
     {
         return str($value)->camel()->toString();
     }
-
-
 }

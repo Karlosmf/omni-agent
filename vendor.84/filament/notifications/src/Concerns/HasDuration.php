@@ -6,16 +6,16 @@ use Closure;
 
 trait HasDuration
 {
-    protected int | string | Closure $duration = 6000;
+    protected int|string|Closure $duration = 6000;
 
-    public function duration(int | string | Closure | null $duration): static
+    public function duration(int|string|Closure|null $duration): static
     {
         $this->duration = $duration ?? 'persistent';
 
         return $this;
     }
 
-    public function getDuration(): int | string
+    public function getDuration(): int|string
     {
         return $this->evaluate($this->duration) ?? 'persistent';
     }

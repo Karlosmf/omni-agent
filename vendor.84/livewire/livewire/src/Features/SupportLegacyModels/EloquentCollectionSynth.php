@@ -38,7 +38,9 @@ class EloquentCollectionSynth extends Synth
 
         $rules = $this->getRules($this->context);
 
-        if (empty($rules)) return [[], $meta];
+        if (empty($rules)) {
+            return [[], $meta];
+        }
 
         $data = $this->getDataFromCollection($target, $rules);
 
@@ -47,7 +49,7 @@ class EloquentCollectionSynth extends Synth
             $data[$key] = $dehydrateChild($key, $child);
         }
 
-        return [ $data, $meta ];
+        return [$data, $meta];
     }
 
     public function hydrate($data, $meta, $hydrateChild)
@@ -96,15 +98,15 @@ class EloquentCollectionSynth extends Synth
         return [];
     }
 
-    public function call($target, $method, $params, $addEffect)
-    {
-    }
+    public function call($target, $method, $params, $addEffect) {}
 
     protected function getRules($context)
     {
         $key = $this->path ?? null;
 
-        if (is_null($key)) return [];
+        if (is_null($key)) {
+            return [];
+        }
 
         return SupportLegacyModels::getRulesFor($context->component, $key);
     }
@@ -171,6 +173,6 @@ class EloquentCollectionSynth extends Synth
             );
         }
 
-        return new $meta['class']();
+        return new $meta['class'];
     }
 }

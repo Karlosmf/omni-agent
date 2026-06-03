@@ -16,7 +16,7 @@ class RichEditorStateCast implements StateCast
     /**
      * @return string | array<string, mixed>
      */
-    public function get(mixed $state): string | array
+    public function get(mixed $state): string|array
     {
         $editor = $this->richEditor->getTipTapEditor()
             ->setContent($state ?? [

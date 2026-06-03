@@ -16,7 +16,7 @@ class Sum extends Summarizer
         $this->numeric();
     }
 
-    public function summarize(Builder $query, string $attribute): int | float | null
+    public function summarize(Builder $query, string $attribute): int|float|null
     {
         return $query->sum($attribute);
     }
@@ -33,7 +33,7 @@ class Sum extends Summarizer
         ];
     }
 
-    public function getSelectedState(): int | float | null
+    public function getSelectedState(): int|float|null
     {
         if (! array_key_exists($this->selectAlias, $this->selectedState)) {
             return null;

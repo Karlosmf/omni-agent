@@ -29,15 +29,17 @@ use UnitEnum;
 final class EnumFormatter
 {
     private const NAME_FORMAT = 'name';
+
     private const VALUE_FORMAT = 'value';
+
     private const JSON_FORMAT = 'json';
+
     private const CALLBACK_FORMAT = 'callback';
 
     private function __construct(
         private readonly string $format,
         private readonly ?Closure $callback
-    ){
-    }
+    ) {}
 
     public static function usingName(): self
     {
@@ -58,7 +60,7 @@ final class EnumFormatter
      * Register a callback that will convert the UnitEnum in a representation suitable
      * to be used by PHP's fputcsv and fwrite functions without emitting errors
      *
-     * @param callable(UnitEnum): mixed $callback
+     * @param  callable(UnitEnum): mixed  $callback
      */
     public static function usingCallback(callable $callback): self
     {
@@ -72,7 +74,7 @@ final class EnumFormatter
      */
     public function __invoke(array $record): array
     {
-        return array_map(fn (mixed $value) => !$value instanceof UnitEnum ? $value : $this->encode($value), $record);
+        return array_map(fn (mixed $value) => ! $value instanceof UnitEnum ? $value : $this->encode($value), $record);
     }
 
     /**
@@ -84,10 +86,10 @@ final class EnumFormatter
     public function encode(UnitEnum $value): mixed
     {
         return match (true) {
-            self::NAME_FORMAT === $this->format => $value->name,
-            self::VALUE_FORMAT === $this->format && $value instanceof BackedEnum => $value->value,
-            self::JSON_FORMAT === $this->format && $value instanceof JsonSerializable => $value->jsonSerialize(),
-            self::CALLBACK_FORMAT === $this->format && null !== $this->callback => ($this->callback)($value),
+            $this->format === self::NAME_FORMAT => $value->name,
+            $this->format === self::VALUE_FORMAT && $value instanceof BackedEnum => $value->value,
+            $this->format === self::JSON_FORMAT && $value instanceof JsonSerializable => $value->jsonSerialize(),
+            $this->format === self::CALLBACK_FORMAT && $this->callback !== null => ($this->callback)($value),
             default => throw new TypeError('The Enum `'.$value::class.'` cannot be encoded using the "'.$this->format.'" strategy.'),
         };
     }

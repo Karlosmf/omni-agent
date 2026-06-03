@@ -13,12 +13,12 @@ trait HasDescriptions
     /**
      * @var array<string | Htmlable> | Arrayable | Closure
      */
-    protected array | Arrayable | Closure $descriptions = [];
+    protected array|Arrayable|Closure $descriptions = [];
 
     /**
      * @param  array<string | Htmlable> | Arrayable | Closure  $descriptions
      */
-    public function descriptions(array | Arrayable | Closure $descriptions): static
+    public function descriptions(array|Arrayable|Closure $descriptions): static
     {
         $this->descriptions = $descriptions;
 
@@ -36,7 +36,7 @@ trait HasDescriptions
     /**
      * @param  array-key  $value
      */
-    public function getDescription($value): string | Htmlable | null
+    public function getDescription($value): string|Htmlable|null
     {
         return $this->getDescriptions()[$value] ?? null;
     }
@@ -57,7 +57,7 @@ trait HasDescriptions
             filled($enum = $this->getEnum()) &&
             is_a($enum, HasDescription::class, allow_string: true)
         ) {
-            $descriptions = array_reduce($enum::cases(), function (array $carry, HasDescription & UnitEnum $case): array {
+            $descriptions = array_reduce($enum::cases(), function (array $carry, HasDescription&UnitEnum $case): array {
                 if (filled($description = $case->getDescription())) {
                     $carry[$case->value ?? $case->name] = $description;
                 }

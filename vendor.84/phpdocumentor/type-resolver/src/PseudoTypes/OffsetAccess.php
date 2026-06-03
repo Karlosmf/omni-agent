@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of phpDocumentor.
  *
@@ -28,6 +29,7 @@ final class OffsetAccess extends Mixed_ implements PseudoType
 {
     /** @var Type */
     private $type;
+
     /** @var Type */
     private $offset;
 
@@ -49,7 +51,7 @@ final class OffsetAccess extends Mixed_ implements PseudoType
 
     public function underlyingType(): Type
     {
-        return new Mixed_();
+        return new Mixed_;
     }
 
     public function __toString(): string
@@ -59,9 +61,9 @@ final class OffsetAccess extends Mixed_ implements PseudoType
             || $this->type instanceof ConstExpression
             || $this->type instanceof Nullable
         ) {
-            return '(' . $this->type . ')[' . $this->offset . ']';
+            return '('.$this->type.')['.$this->offset.']';
         }
 
-        return $this->type . '[' . $this->offset . ']';
+        return $this->type.'['.$this->offset.']';
     }
 }

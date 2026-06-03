@@ -46,6 +46,6 @@ final class Expression implements Type
      */
     public function __toString(): string
     {
-        return '(' . $this->valueType . ')';
+        return '('.$this->valueType.')';
     }
 }

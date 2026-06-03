@@ -33,7 +33,7 @@ class BigNumberTimeConverter implements TimeConverterInterface
 
     public function __construct()
     {
-        $this->converter = new GenericTimeConverter(new BrickMathCalculator());
+        $this->converter = new GenericTimeConverter(new BrickMathCalculator);
     }
 
     public function calculateTime(string $seconds, string $microseconds): Hexadecimal

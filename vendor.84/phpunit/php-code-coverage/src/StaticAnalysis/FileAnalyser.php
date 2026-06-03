@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use function file_get_contents;
@@ -17,7 +20,9 @@ use function file_get_contents;
 final class FileAnalyser
 {
     private readonly SourceAnalyser $sourceAnalyser;
+
     private readonly bool $useAnnotationsForIgnoringCode;
+
     private readonly bool $ignoreDeprecatedCode;
 
     /**
@@ -27,13 +32,13 @@ final class FileAnalyser
 
     public function __construct(SourceAnalyser $sourceAnalyser, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode)
     {
-        $this->sourceAnalyser                = $sourceAnalyser;
+        $this->sourceAnalyser = $sourceAnalyser;
         $this->useAnnotationsForIgnoringCode = $useAnnotationsForIgnoringCode;
-        $this->ignoreDeprecatedCode          = $ignoreDeprecatedCode;
+        $this->ignoreDeprecatedCode = $ignoreDeprecatedCode;
     }
 
     /**
-     * @param non-empty-string $sourceCodeFile
+     * @param  non-empty-string  $sourceCodeFile
      */
     public function analyse(string $sourceCodeFile): AnalysisResult
     {

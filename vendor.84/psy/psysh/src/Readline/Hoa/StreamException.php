@@ -41,6 +41,4 @@ namespace Psy\Readline\Hoa;
  *
  * Extending the \Hoa\Exception\Exception class.
  */
-class StreamException extends Exception
-{
-}
+class StreamException extends Exception {}

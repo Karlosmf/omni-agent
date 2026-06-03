@@ -9,28 +9,26 @@ declare(strict_types=1);
 
 namespace Nette\PhpGenerator;
 
-
 /**
  * Definition of an enum case.
  */
 final class EnumCase
 {
-	use Traits\NameAware;
-	use Traits\CommentAware;
-	use Traits\AttributeAware;
+    use Traits\AttributeAware;
+    use Traits\CommentAware;
+    use Traits\NameAware;
 
-	private string|int|Literal|null $value = null;
+    private string|int|Literal|null $value = null;
 
+    public function setValue(string|int|Literal|null $val): static
+    {
+        $this->value = $val;
 
-	public function setValue(string|int|Literal|null $val): static
-	{
-		$this->value = $val;
-		return $this;
-	}
+        return $this;
+    }
 
-
-	public function getValue(): string|int|Literal|null
-	{
-		return $this->value;
-	}
+    public function getValue(): string|int|Literal|null
+    {
+        return $this->value;
+    }
 }

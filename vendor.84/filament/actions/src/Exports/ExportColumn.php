@@ -19,11 +19,11 @@ class ExportColumn extends Component
 
     protected string $name;
 
-    protected string | Closure | null $label = null;
+    protected string|Closure|null $label = null;
 
     protected ?Exporter $exporter = null;
 
-    protected bool | Closure $isEnabledByDefault = true;
+    protected bool|Closure $isEnabledByDefault = true;
 
     protected string $evaluationIdentifier = 'column';
 
@@ -60,7 +60,7 @@ class ExportColumn extends Component
         return $this;
     }
 
-    public function label(string | Closure | null $label): static
+    public function label(string|Closure|null $label): static
     {
         $this->label = $label;
 
@@ -74,7 +74,7 @@ class ExportColumn extends Component
         return $this;
     }
 
-    public function enabledByDefault(bool | Closure $condition): static
+    public function enabledByDefault(bool|Closure $condition): static
     {
         $this->isEnabledByDefault = $condition;
 

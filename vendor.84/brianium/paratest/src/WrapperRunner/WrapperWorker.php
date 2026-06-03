@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ParaTest\WrapperRunner;
 
+use const DIRECTORY_SEPARATOR;
+
 use ParaTest\Options;
 use SplFileInfo;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,27 +26,37 @@ use function sprintf;
 use function touch;
 use function uniqid;
 
-use const DIRECTORY_SEPARATOR;
-
 /** @internal */
 final class WrapperWorker
 {
     public const COMMAND_EXIT = "EXIT\n";
 
     public readonly SplFileInfo $statusFile;
+
     public readonly SplFileInfo $progressFile;
+
     public readonly SplFileInfo $unexpectedOutputFile;
+
     public readonly SplFileInfo $testResultFile;
+
     public readonly SplFileInfo $resultCacheFile;
+
     public readonly SplFileInfo $junitFile;
+
     public readonly SplFileInfo $coverageFile;
+
     public readonly SplFileInfo $teamcityFile;
+
     public readonly SplFileInfo $testdoxFile;
 
     private ?string $currentlyExecuting = null;
+
     private Process $process;
+
     private int $inExecution = 0;
+
     private InputStream $input;
+
     private int $exitCode = -1;
 
     /** @param non-empty-string[] $parameters */
@@ -61,32 +73,32 @@ final class WrapperWorker
             $token,
             uniqid(),
         );
-        $this->statusFile  = new SplFileInfo($commonTmpFilePath . 'status');
+        $this->statusFile = new SplFileInfo($commonTmpFilePath.'status');
         touch($this->statusFile->getPathname());
-        $this->progressFile = new SplFileInfo($commonTmpFilePath . 'progress');
+        $this->progressFile = new SplFileInfo($commonTmpFilePath.'progress');
         touch($this->progressFile->getPathname());
-        $this->unexpectedOutputFile = new SplFileInfo($commonTmpFilePath . 'unexpected_output');
+        $this->unexpectedOutputFile = new SplFileInfo($commonTmpFilePath.'unexpected_output');
         touch($this->unexpectedOutputFile->getPathname());
-        $this->testResultFile = new SplFileInfo($commonTmpFilePath . 'test_result');
+        $this->testResultFile = new SplFileInfo($commonTmpFilePath.'test_result');
 
         if ($this->options->configuration->cacheResult()) {
-            $this->resultCacheFile = new SplFileInfo($commonTmpFilePath . 'result_cache');
+            $this->resultCacheFile = new SplFileInfo($commonTmpFilePath.'result_cache');
         }
 
         if ($options->configuration->hasLogfileJunit()) {
-            $this->junitFile = new SplFileInfo($commonTmpFilePath . 'junit');
+            $this->junitFile = new SplFileInfo($commonTmpFilePath.'junit');
         }
 
         if ($options->configuration->hasCoverageReport()) {
-            $this->coverageFile = new SplFileInfo($commonTmpFilePath . 'coverage');
+            $this->coverageFile = new SplFileInfo($commonTmpFilePath.'coverage');
         }
 
         if ($options->needsTeamcity) {
-            $this->teamcityFile = new SplFileInfo($commonTmpFilePath . 'teamcity');
+            $this->teamcityFile = new SplFileInfo($commonTmpFilePath.'teamcity');
         }
 
         if ($options->needsTestdox) {
-            $this->testdoxFile = new SplFileInfo($commonTmpFilePath . 'testdox');
+            $this->testdoxFile = new SplFileInfo($commonTmpFilePath.'testdox');
         }
 
         $parameters[] = '--status-file';
@@ -121,6 +133,7 @@ final class WrapperWorker
 
             if ($value === true) {
                 $phpunitArguments[] = "--{$key}";
+
                 continue;
             }
 
@@ -158,7 +171,7 @@ final class WrapperWorker
             ));
         }
 
-        $this->input   = new InputStream();
+        $this->input = new InputStream;
         $this->process = new Process(
             $parameters,
             $options->cwd,
@@ -190,9 +203,9 @@ final class WrapperWorker
             $this->output->write("Process {$this->token} executing: {$test}\n");
         }
 
-        $this->input->write($test . "\n");
+        $this->input->write($test."\n");
         $this->currentlyExecuting = $test;
-        ++$this->inExecution;
+        $this->inExecution++;
     }
 
     public function reset(): void

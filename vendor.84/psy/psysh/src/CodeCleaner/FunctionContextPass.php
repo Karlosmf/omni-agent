@@ -21,8 +21,6 @@ class FunctionContextPass extends CodeCleanerPass
     private int $functionDepth = 0;
 
     /**
-     * @param array $nodes
-     *
      * @return Node[]|null Array of nodes
      */
     public function beforeTraverse(array $nodes)
@@ -58,8 +56,6 @@ class FunctionContextPass extends CodeCleanerPass
     }
 
     /**
-     * @param \PhpParser\Node $node
-     *
      * @return int|Node|Node[]|null Replacement node (or special return value)
      */
     public function leaveNode(Node $node)

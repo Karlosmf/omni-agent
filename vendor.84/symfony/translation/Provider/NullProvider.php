@@ -24,16 +24,12 @@ class NullProvider implements ProviderInterface
         return 'null';
     }
 
-    public function write(TranslatorBagInterface $translatorBag, bool $override = false): void
-    {
-    }
+    public function write(TranslatorBagInterface $translatorBag, bool $override = false): void {}
 
     public function read(array $domains, array $locales): TranslatorBag
     {
-        return new TranslatorBag();
+        return new TranslatorBag;
     }
 
-    public function delete(TranslatorBagInterface $translatorBag): void
-    {
-    }
+    public function delete(TranslatorBagInterface $translatorBag): void {}
 }

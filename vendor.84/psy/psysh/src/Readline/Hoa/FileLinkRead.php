@@ -36,6 +36,10 @@
 
 namespace Psy\Readline\Hoa;
 
+use Hoa\File\Exception;
+use Hoa\File\Exception\FileDoesNotExist;
+use Hoa\Stream\Context;
+
 /**
  * Class \Hoa\File\Link\Read.
  *
@@ -48,11 +52,11 @@ class FileLinkRead extends FileLink implements StreamIn
     /**
      * Open a file.
      *
-     * @param string $streamName stream name
-     * @param string $mode       open mode, see the parent::MODE_* constants
-     * @param string $context    context ID (please, see the
+     * @param  string  $streamName  stream name
+     * @param  string  $mode  open mode, see the parent::MODE_* constants
+     * @param  string  $context  context ID (please, see the
      *                           \Hoa\Stream\Context class)
-     * @param bool   $wait       differ opening or not
+     * @param  bool  $wait  differ opening or not
      */
     public function __construct(
         string $streamName,
@@ -62,19 +66,17 @@ class FileLinkRead extends FileLink implements StreamIn
     ) {
         parent::__construct($streamName, $mode, $context, $wait);
 
-        return;
     }
 
     /**
      * Open the stream and return the associated resource.
      *
-     * @param string              $streamName Stream name (e.g. path or URL).
-     * @param \Hoa\Stream\Context $context    context
-     *
+     * @param  string  $streamName  Stream name (e.g. path or URL).
+     * @param  Context  $context  context
      * @return resource
      *
-     * @throws \Hoa\File\Exception\FileDoesNotExist
-     * @throws \Hoa\File\Exception
+     * @throws FileDoesNotExist
+     * @throws Exception
      */
     protected function &_open(string $streamName, ?StreamContext $context = null)
     {
@@ -82,14 +84,14 @@ class FileLinkRead extends FileLink implements StreamIn
             parent::MODE_READ,
         ];
 
-        if (!\in_array($this->getMode(), $createModes)) {
+        if (! \in_array($this->getMode(), $createModes)) {
             throw new FileException('Open mode are not supported; given %d. Only %s are supported.', 0, [$this->getMode(), \implode(', ', $createModes)]);
         }
 
         \preg_match('#^(\w+)://#', $streamName, $match);
 
-        if (((isset($match[1]) && $match[1] === 'file') || !isset($match[1])) &&
-            !\file_exists($streamName)) {
+        if (((isset($match[1]) && $match[1] === 'file') || ! isset($match[1])) &&
+            ! \file_exists($streamName)) {
             throw new FileDoesNotExistException('File %s does not exist.', 1, $streamName);
         }
 
@@ -100,8 +102,6 @@ class FileLinkRead extends FileLink implements StreamIn
 
     /**
      * Test for end-of-file.
-     *
-     * @return bool
      */
     public function eof(): bool
     {
@@ -111,15 +111,14 @@ class FileLinkRead extends FileLink implements StreamIn
     /**
      * Read n characters.
      *
-     * @param int $length length
-     *
+     * @param  int  $length  length
      * @return string
      *
-     * @throws \Hoa\File\Exception
+     * @throws Exception
      */
     public function read(int $length)
     {
-        if (0 > $length) {
+        if ($length < 0) {
             throw new FileException('Length must be greater than 0, given %d.', 2, $length);
         }
 
@@ -129,8 +128,7 @@ class FileLinkRead extends FileLink implements StreamIn
     /**
      * Alias of $this->read().
      *
-     * @param int $length length
-     *
+     * @param  int  $length  length
      * @return string
      */
     public function readString(int $length)
@@ -161,8 +159,7 @@ class FileLinkRead extends FileLink implements StreamIn
     /**
      * Read an integer.
      *
-     * @param int $length length
-     *
+     * @param  int  $length  length
      * @return int
      */
     public function readInteger(int $length = 1)
@@ -173,8 +170,7 @@ class FileLinkRead extends FileLink implements StreamIn
     /**
      * Read a float.
      *
-     * @param int $length length
-     *
+     * @param  int  $length  length
      * @return float
      */
     public function readFloat(int $length = 1)
@@ -186,8 +182,7 @@ class FileLinkRead extends FileLink implements StreamIn
      * Read an array.
      * Alias of the $this->scanf() method.
      *
-     * @param string $format format (see printf's formats)
-     *
+     * @param  string  $format  format (see printf's formats)
      * @return array
      */
     public function readArray(?string $format = null)
@@ -208,8 +203,7 @@ class FileLinkRead extends FileLink implements StreamIn
     /**
      * Read all, i.e. read as much as possible.
      *
-     * @param int $offset offset
-     *
+     * @param  int  $offset  offset
      * @return string
      */
     public function readAll(int $offset = 0)
@@ -220,9 +214,7 @@ class FileLinkRead extends FileLink implements StreamIn
     /**
      * Parse input from a stream according to a format.
      *
-     * @param string $format format (see printf's formats)
-     *
-     * @return array
+     * @param  string  $format  format (see printf's formats)
      */
     public function scanf(string $format): array
     {

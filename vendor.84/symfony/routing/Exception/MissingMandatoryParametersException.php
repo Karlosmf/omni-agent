@@ -20,10 +20,11 @@ namespace Symfony\Component\Routing\Exception;
 class MissingMandatoryParametersException extends \InvalidArgumentException implements ExceptionInterface
 {
     private string $routeName = '';
+
     private array $missingParameters = [];
 
     /**
-     * @param string[] $missingParameters
+     * @param  string[]  $missingParameters
      */
     public function __construct(string $routeName = '', array $missingParameters = [], int $code = 0, ?\Throwable $previous = null)
     {

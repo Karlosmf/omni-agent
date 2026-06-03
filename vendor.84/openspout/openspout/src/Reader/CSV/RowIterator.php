@@ -38,7 +38,7 @@ final class RowIterator implements RowIteratorInterface
     private readonly EncodingHelper $encodingHelper;
 
     /**
-     * @param resource $filePointer Pointer to the CSV file to read
+     * @param  resource  $filePointer  Pointer to the CSV file to read
      */
     public function __construct(
         $filePointer,
@@ -72,7 +72,7 @@ final class RowIterator implements RowIteratorInterface
      */
     public function valid(): bool
     {
-        return null !== $this->filePointer && !$this->hasReachedEndOfFile;
+        return $this->filePointer !== null && ! $this->hasReachedEndOfFile;
     }
 
     /**
@@ -86,7 +86,7 @@ final class RowIterator implements RowIteratorInterface
     {
         $this->hasReachedEndOfFile = feof($this->filePointer);
 
-        if (!$this->hasReachedEndOfFile) {
+        if (! $this->hasReachedEndOfFile) {
             $this->readDataForNextRow();
         }
     }
@@ -132,13 +132,13 @@ final class RowIterator implements RowIteratorInterface
             $rowData = $this->getNextUTF8EncodedRow();
         } while ($this->shouldReadNextRow($rowData));
 
-        if (false !== $rowData) {
+        if ($rowData !== false) {
             // array_map will replace NULL values by empty strings
             $rowDataBufferAsArray = array_map('\strval', $rowData);
             $this->rowBuffer = new Row(array_map(static function ($cellValue) {
                 return Cell::fromValue($cellValue);
             }, $rowDataBufferAsArray), null);
-            ++$this->numReadRows;
+            $this->numReadRows++;
         } else {
             // If we reach this point, it means end of file was reached.
             // This happens when the last lines are empty lines.
@@ -147,19 +147,18 @@ final class RowIterator implements RowIteratorInterface
     }
 
     /**
-     * @param array<int, null|string>|bool $currentRowData
-     *
+     * @param  array<int, null|string>|bool  $currentRowData
      * @return bool Whether the data for the current row can be returned or if we need to keep reading
      */
     private function shouldReadNextRow($currentRowData): bool
     {
-        $hasSuccessfullyFetchedRowData = (false !== $currentRowData);
+        $hasSuccessfullyFetchedRowData = ($currentRowData !== false);
         $hasNowReachedEndOfFile = feof($this->filePointer);
         $isEmptyLine = $this->isEmptyLine($currentRowData);
 
         return
-            (!$hasSuccessfullyFetchedRowData && !$hasNowReachedEndOfFile)
-            || (!$this->options->SHOULD_PRESERVE_EMPTY_ROWS && $isEmptyLine);
+            (! $hasSuccessfullyFetchedRowData && ! $hasNowReachedEndOfFile)
+            || (! $this->options->SHOULD_PRESERVE_EMPTY_ROWS && $isEmptyLine);
     }
 
     /**
@@ -180,7 +179,7 @@ final class RowIterator implements RowIteratorInterface
             $this->options->FIELD_ENCLOSURE,
             ''
         );
-        if (false === $encodedRowData) {
+        if ($encodedRowData === false) {
             return false;
         }
 
@@ -208,12 +207,11 @@ final class RowIterator implements RowIteratorInterface
     }
 
     /**
-     * @param array<int, null|string>|bool $lineData Array containing the cells value for the line
-     *
+     * @param  array<int, null|string>|bool  $lineData  Array containing the cells value for the line
      * @return bool Whether the given line is empty
      */
     private function isEmptyLine($lineData): bool
     {
-        return \is_array($lineData) && 1 === \count($lineData) && null === $lineData[0];
+        return \is_array($lineData) && \count($lineData) === 1 && $lineData[0] === null;
     }
 }

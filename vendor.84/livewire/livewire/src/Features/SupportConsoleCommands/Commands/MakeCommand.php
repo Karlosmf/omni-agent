@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\File;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\select;
 
@@ -26,7 +27,7 @@ class MakeCommand extends FileManipulationCommand implements PromptsForMissingIn
             $this->option('stub')
         );
 
-        if (!$this->isClassNameValid($name = $this->parser->className())) {
+        if (! $this->isClassNameValid($name = $this->parser->className())) {
             $this->line("<options=bold,reverse;fg=red> WHOOPS! </> 😳 \n");
             $this->line("<fg=red;options=bold>Class is invalid:</> {$name}");
 
@@ -54,7 +55,7 @@ class MakeCommand extends FileManipulationCommand implements PromptsForMissingIn
             $test = $this->createTest($force, $testType);
         }
 
-        if($class || $view) {
+        if ($class || $view) {
             $this->line("<options=bold,reverse;fg=green> COMPONENT CREATED </> 🤙\n");
             $class && $this->line("<options=bold;fg=green>CLASS:</> {$this->parser->relativeClassPath()}");
 
@@ -144,17 +145,16 @@ class MakeCommand extends FileManipulationCommand implements PromptsForMissingIn
             return;
         }
 
-        if(
+        if (
             confirm(
                 label: 'Do you want to make this an inline component?',
                 default: false
             )
-        )
-        {
+        ) {
             $input->setOption('inline', true);
         }
 
-        if(
+        if (
             $testSuite = select(
                 label: 'Do you want to create a test file?',
                 options: [
@@ -163,11 +163,10 @@ class MakeCommand extends FileManipulationCommand implements PromptsForMissingIn
                     'pest' => 'Pest',
                 ],
             )
-        )
-        {
+        ) {
             $input->setOption('test', true);
 
-            if($testSuite === 'pest') {
+            if ($testSuite === 'pest') {
                 $input->setOption('pest', true);
             }
         }
@@ -253,5 +252,4 @@ class MakeCommand extends FileManipulationCommand implements PromptsForMissingIn
             'yield',
         ];
     }
-
 }

@@ -2,9 +2,9 @@
 
 namespace Livewire;
 
-use Stringable;
-use Illuminate\View\ComponentAttributeBag;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\View\ComponentAttributeBag;
+use Stringable;
 
 class WireDirective implements Htmlable, Stringable
 {

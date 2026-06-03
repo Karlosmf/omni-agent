@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Core;
 
 /*
@@ -12,15 +13,14 @@ use Hamcrest\DiagnosingMatcher;
  */
 class IsInstanceOf extends DiagnosingMatcher
 {
-
     private $_theClass;
 
     /**
      * Creates a new instance of IsInstanceOf
      *
-     * @param string $theClass
-     *   The predicate evaluates to true for instances of this class
-     *   or one of its subclasses.
+     * @param  string  $theClass
+     *                            The predicate evaluates to true for instances of this class
+     *                            or one of its subclasses.
      */
     public function __construct($theClass)
     {
@@ -29,15 +29,15 @@ class IsInstanceOf extends DiagnosingMatcher
 
     protected function matchesWithDiagnosticDescription($item, Description $mismatchDescription)
     {
-        if (!is_object($item)) {
+        if (! is_object($item)) {
             $mismatchDescription->appendText('was ')->appendValue($item);
 
             return false;
         }
 
-        if (!($item instanceof $this->_theClass)) {
-            $mismatchDescription->appendText('[' . get_class($item) . '] ')
-                                                    ->appendValue($item);
+        if (! ($item instanceof $this->_theClass)) {
+            $mismatchDescription->appendText('['.get_class($item).'] ')
+                ->appendValue($item);
 
             return false;
         }
@@ -48,8 +48,7 @@ class IsInstanceOf extends DiagnosingMatcher
     public function describeTo(Description $description)
     {
         $description->appendText('an instance of ')
-                                ->appendText($this->_theClass)
-                                ;
+            ->appendText($this->_theClass);
     }
 
     /**

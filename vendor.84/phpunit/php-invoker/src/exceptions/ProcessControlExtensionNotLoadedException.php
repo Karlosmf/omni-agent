@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-invoker.
  *
@@ -7,13 +9,16 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\Invoker;
 
 use const PHP_EOL;
+
+use RuntimeException;
+
 use function extension_loaded;
 use function function_exists;
 use function implode;
-use RuntimeException;
 
 final class ProcessControlExtensionNotLoadedException extends RuntimeException implements Exception
 {
@@ -21,19 +26,19 @@ final class ProcessControlExtensionNotLoadedException extends RuntimeException i
     {
         $message = [];
 
-        if (!extension_loaded('pcntl')) {
+        if (! extension_loaded('pcntl')) {
             $message[] = 'The pcntl (process control) extension for PHP must be loaded.';
         }
 
-        if (!function_exists('pcntl_signal')) {
+        if (! function_exists('pcntl_signal')) {
             $message[] = 'The pcntl_signal() function must not be disabled.';
         }
 
-        if (!function_exists('pcntl_async_signals')) {
+        if (! function_exists('pcntl_async_signals')) {
             $message[] = 'The pcntl_async_signals() function must not be disabled.';
         }
 
-        if (!function_exists('pcntl_alarm')) {
+        if (! function_exists('pcntl_alarm')) {
             $message[] = 'The pcntl_alarm() function must not be disabled.';
         }
 

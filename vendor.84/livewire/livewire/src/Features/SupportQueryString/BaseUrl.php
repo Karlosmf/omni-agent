@@ -26,7 +26,9 @@ class BaseUrl extends LivewireAttribute
 
     public function dehydrate($context)
     {
-        if (! $context->mounting) return;
+        if (! $context->mounting) {
+            return;
+        }
 
         $this->pushQueryStringEffect($context);
     }
@@ -34,7 +36,9 @@ class BaseUrl extends LivewireAttribute
     protected function determineNullability()
     {
         // It's nullable if they passed it in like: #[Url(nullable: true)]
-        if ($this->nullable !== null) return $this->nullable;
+        if ($this->nullable !== null) {
+            return $this->nullable;
+        }
 
         $reflectionClass = new ReflectionClass($this->getSubTarget() ?? $this->getComponent());
 
@@ -58,7 +62,9 @@ class BaseUrl extends LivewireAttribute
 
         $initialValue = $this->getFromUrlQueryString($this->urlName(), $nonExistentValue);
 
-        if ($initialValue === $nonExistentValue) return;
+        if ($initialValue === $nonExistentValue) {
+            return;
+        }
 
         $decoded = is_array($initialValue)
             ? json_decode(json_encode($initialValue), true)

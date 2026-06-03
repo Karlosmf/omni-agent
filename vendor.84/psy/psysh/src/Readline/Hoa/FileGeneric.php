@@ -69,7 +69,7 @@ abstract class FileGeneric extends Stream implements StreamPathable, StreamStata
      */
     public function getSize(): int
     {
-        if (false === $this->getStatistic()) {
+        if ($this->getStatistic() === false) {
             return false;
         }
 
@@ -231,11 +231,11 @@ abstract class FileGeneric extends Stream implements StreamPathable, StreamStata
      */
     public function touch(?int $time = null, ?int $atime = null): bool
     {
-        if (null === $time) {
+        if ($time === null) {
             $time = \time();
         }
 
-        if (null === $atime) {
+        if ($atime === null) {
             $atime = $time;
         }
 
@@ -251,11 +251,11 @@ abstract class FileGeneric extends Stream implements StreamPathable, StreamStata
         $from = $this->getStreamName();
 
         if ($force === StreamTouchable::DO_NOT_OVERWRITE &&
-            true === \file_exists($to)) {
+            \file_exists($to) === true) {
             return true;
         }
 
-        if (null === $this->getStreamContext()) {
+        if ($this->getStreamContext() === null) {
             return @\copy($from, $to);
         }
 
@@ -273,18 +273,18 @@ abstract class FileGeneric extends Stream implements StreamPathable, StreamStata
         $from = $this->getStreamName();
 
         if ($force === StreamTouchable::DO_NOT_OVERWRITE &&
-            true === \file_exists($name)) {
+            \file_exists($name) === true) {
             return false;
         }
 
-        if (StreamTouchable::MAKE_DIRECTORY === $mkdir) {
+        if ($mkdir === StreamTouchable::MAKE_DIRECTORY) {
             FileDirectory::create(
                 \dirname($name),
                 FileDirectory::MODE_CREATE_RECURSIVE
             );
         }
 
-        if (null === $this->getStreamContext()) {
+        if ($this->getStreamContext() === null) {
             return @\rename($from, $name);
         }
 
@@ -296,7 +296,7 @@ abstract class FileGeneric extends Stream implements StreamPathable, StreamStata
      */
     public function delete(): bool
     {
-        if (null === $this->getStreamContext()) {
+        if ($this->getStreamContext() === null) {
             return @\unlink($this->getStreamName());
         }
 
@@ -335,7 +335,7 @@ abstract class FileGeneric extends Stream implements StreamPathable, StreamStata
      */
     public static function umask(?int $umask = null): int
     {
-        if (null === $umask) {
+        if ($umask === null) {
             return \umask();
         }
 
@@ -438,7 +438,7 @@ abstract class FileGeneric extends Stream implements StreamPathable, StreamStata
      */
     public static function isCaseSensitive(): bool
     {
-        return !(
+        return ! (
             \file_exists(\mb_strtolower(__FILE__)) &&
             \file_exists(\mb_strtoupper(__FILE__))
         );

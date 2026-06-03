@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -29,7 +31,7 @@ use Monolog\LogRecord;
  * @author Bryan Davis <bd808@wikimedia.org>
  * @author Kunal Mehta <legoktm@gmail.com>
  */
-class SamplingHandler extends AbstractHandler implements ProcessableHandlerInterface, FormattableHandlerInterface
+class SamplingHandler extends AbstractHandler implements FormattableHandlerInterface, ProcessableHandlerInterface
 {
     use ProcessableHandlerTrait;
 
@@ -43,10 +45,10 @@ class SamplingHandler extends AbstractHandler implements ProcessableHandlerInter
     protected int $factor;
 
     /**
-     * @phpstan-param (Closure(LogRecord|null, HandlerInterface): HandlerInterface)|HandlerInterface $handler
+     * @param  Closure|HandlerInterface  $handler  Handler or factory Closure($record|null, $samplingHandler).
+     * @param  int  $factor  Sample factor (e.g. 10 means every ~10th record is sampled)
      *
-     * @param Closure|HandlerInterface $handler Handler or factory Closure($record|null, $samplingHandler).
-     * @param int                      $factor  Sample factor (e.g. 10 means every ~10th record is sampled)
+     * @phpstan-param (Closure(LogRecord|null, HandlerInterface): HandlerInterface)|HandlerInterface $handler
      */
     public function __construct(Closure|HandlerInterface $handler, int $factor)
     {
@@ -70,7 +72,7 @@ class SamplingHandler extends AbstractHandler implements ProcessableHandlerInter
             $this->getHandler($record)->handle($record);
         }
 
-        return false === $this->bubble;
+        return $this->bubble === false;
     }
 
     /**
@@ -78,12 +80,12 @@ class SamplingHandler extends AbstractHandler implements ProcessableHandlerInter
      *
      * If the handler was provided as a factory, this will trigger the handler's instantiation.
      */
-    public function getHandler(LogRecord|null $record = null): HandlerInterface
+    public function getHandler(?LogRecord $record = null): HandlerInterface
     {
-        if (!$this->handler instanceof HandlerInterface) {
+        if (! $this->handler instanceof HandlerInterface) {
             $handler = ($this->handler)($record, $this);
-            if (!$handler instanceof HandlerInterface) {
-                throw new \RuntimeException("The factory Closure should return a HandlerInterface");
+            if (! $handler instanceof HandlerInterface) {
+                throw new \RuntimeException('The factory Closure should return a HandlerInterface');
             }
             $this->handler = $handler;
         }
@@ -92,7 +94,7 @@ class SamplingHandler extends AbstractHandler implements ProcessableHandlerInter
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setFormatter(FormatterInterface $formatter): HandlerInterface
     {
@@ -107,7 +109,7 @@ class SamplingHandler extends AbstractHandler implements ProcessableHandlerInter
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getFormatter(): FormatterInterface
     {

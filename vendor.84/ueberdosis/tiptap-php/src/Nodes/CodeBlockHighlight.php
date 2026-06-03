@@ -21,7 +21,7 @@ class CodeBlockHighlight extends CodeBlock
         $code = $node->content[0]->text ?? '';
 
         try {
-            $highlighter = new Highlighter();
+            $highlighter = new Highlighter;
 
             if ($node->attrs->language ?? null) {
                 $result = $highlighter->highlight($node->attrs->language, $code);
@@ -31,7 +31,7 @@ class CodeBlockHighlight extends CodeBlock
 
             $mergedAttributes = HTML::mergeAttributes(
                 [
-                    'class' => $this->options['languageClassPrefix'] . $result->language,
+                    'class' => $this->options['languageClassPrefix'].$result->language,
                 ],
                 $this->options['HTMLAttributes'],
                 $HTMLAttributes,
@@ -39,9 +39,9 @@ class CodeBlockHighlight extends CodeBlock
 
             $renderedAttributes = HTML::renderAttributes($mergedAttributes);
 
-            $content = "<pre><code" . $renderedAttributes . ">";
+            $content = '<pre><code'.$renderedAttributes.'>';
             $content .= $result->value;
-            $content .= "</code></pre>";
+            $content .= '</code></pre>';
         } catch (DomainException $exception) {
             $mergedAttributes = HTML::mergeAttributes(
                 $this->options['HTMLAttributes'],
@@ -50,9 +50,9 @@ class CodeBlockHighlight extends CodeBlock
 
             $renderedAttributes = HTML::renderAttributes($mergedAttributes);
 
-            $content = "<pre><code" . $renderedAttributes . ">";
+            $content = '<pre><code'.$renderedAttributes.'>';
             $content .= htmlentities($code);
-            $content .= "</code></pre>";
+            $content .= '</code></pre>';
         }
 
         return [

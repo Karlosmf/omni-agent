@@ -4,8 +4,8 @@ namespace Barryvdh\DomPDF;
 
 use Dompdf\Dompdf;
 use Exception;
-use Illuminate\Support\Str;
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
+use Illuminate\Support\Str;
 
 class ServiceProvider extends IlluminateServiceProvider
 {
@@ -19,12 +19,11 @@ class ServiceProvider extends IlluminateServiceProvider
     /**
      * Register the service provider.
      *
-     * @throws \Exception
-     * @return void
+     * @throws Exception
      */
     public function register(): void
     {
-        $configPath = __DIR__ . '/../config/dompdf.php';
+        $configPath = __DIR__.'/../config/dompdf.php';
         $this->mergeConfigFrom($configPath, 'dompdf');
 
         $this->app->bind('dompdf.options', function ($app) {
@@ -77,7 +76,7 @@ class ServiceProvider extends IlluminateServiceProvider
     public function boot(): void
     {
         if (! $this->isLumen()) {
-            $configPath = __DIR__ . '/../config/dompdf.php';
+            $configPath = __DIR__.'/../config/dompdf.php';
             $this->publishes([$configPath => config_path('dompdf.php')], 'config');
         }
     }

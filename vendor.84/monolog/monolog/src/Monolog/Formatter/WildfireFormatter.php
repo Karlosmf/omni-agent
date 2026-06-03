@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -24,7 +26,7 @@ use Monolog\LogRecord;
 class WildfireFormatter extends NormalizerFormatter
 {
     /**
-     * @param string|null $dateFormat The format of the timestamp: one supported by DateTime::format
+     * @param  string|null  $dateFormat  The format of the timestamp: one supported by DateTime::format
      */
     public function __construct(?string $dateFormat = null)
     {
@@ -42,19 +44,19 @@ class WildfireFormatter extends NormalizerFormatter
     private function toWildfireLevel(Level $level): string
     {
         return match ($level) {
-            Level::Debug     => 'LOG',
-            Level::Info      => 'INFO',
-            Level::Notice    => 'INFO',
-            Level::Warning   => 'WARN',
-            Level::Error     => 'ERROR',
-            Level::Critical  => 'ERROR',
-            Level::Alert     => 'ERROR',
+            Level::Debug => 'LOG',
+            Level::Info => 'INFO',
+            Level::Notice => 'INFO',
+            Level::Warning => 'WARN',
+            Level::Error => 'ERROR',
+            Level::Critical => 'ERROR',
+            Level::Alert => 'ERROR',
             Level::Emergency => 'ERROR',
         };
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function format(LogRecord $record): string
     {
@@ -84,20 +86,20 @@ class WildfireFormatter extends NormalizerFormatter
         }
 
         if (is_array($message) && isset($message['context']) && \is_array($message['context']) && isset($message['context']['table'])) {
-            $type  = 'TABLE';
-            $label = $record->channel .': '. $record->message;
+            $type = 'TABLE';
+            $label = $record->channel.': '.$record->message;
             $message = $message['context']['table'];
         } else {
-            $type  = $this->toWildfireLevel($record->level);
+            $type = $this->toWildfireLevel($record->level);
             $label = $record->channel;
         }
 
         // Create JSON object describing the appearance of the message in the console
         $json = $this->toJson([
             [
-                'Type'  => $type,
-                'File'  => $file,
-                'Line'  => $line,
+                'Type' => $type,
+                'File' => $file,
+                'Line' => $line,
                 'Label' => $label,
             ],
             $message,
@@ -112,7 +114,7 @@ class WildfireFormatter extends NormalizerFormatter
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @phpstan-return never
      */
@@ -122,13 +124,13 @@ class WildfireFormatter extends NormalizerFormatter
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @return null|scalar|array<mixed[]|scalar|null>|object
      */
     protected function normalize(mixed $data, int $depth = 0): mixed
     {
-        if (\is_object($data) && !$data instanceof \DateTimeInterface) {
+        if (\is_object($data) && ! $data instanceof \DateTimeInterface) {
             return $data;
         }
 

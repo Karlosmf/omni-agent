@@ -47,7 +47,7 @@ class InlineStyle
             return array_diff($value, $styles) == [];
         }
 
-        throw new Exception('Can’t compare inline styles to ' . json_encode($value));
+        throw new Exception('Can’t compare inline styles to '.json_encode($value));
     }
 
     public static function getAttribute($DOMNode, $attribute): ?string

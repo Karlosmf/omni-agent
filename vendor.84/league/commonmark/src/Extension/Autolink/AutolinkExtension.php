@@ -30,7 +30,7 @@ final class AutolinkExtension implements ConfigurableExtensionInterface
 
     public function register(EnvironmentBuilderInterface $environment): void
     {
-        $environment->addInlineParser(new EmailAutolinkParser());
+        $environment->addInlineParser(new EmailAutolinkParser);
         $environment->addInlineParser(new UrlAutolinkParser(
             $environment->getConfiguration()->get('autolink.allowed_protocols'),
             $environment->getConfiguration()->get('autolink.default_protocol'),

@@ -49,13 +49,13 @@ class ParserState
     private $charset;
 
     /**
-     * @var int<1, max> $lineNumber
+     * @var int<1, max>
      */
     private $lineNumber;
 
     /**
-     * @param string $text the complete CSS as text (i.e., usually the contents of a CSS file)
-     * @param int<1, max> $lineNumber
+     * @param  string  $text  the complete CSS as text (i.e., usually the contents of a CSS file)
+     * @param  int<1, max>  $lineNumber
      */
     public function __construct(string $text, Settings $parserSettings, int $lineNumber = 1)
     {
@@ -101,7 +101,7 @@ class ParserState
     }
 
     /**
-     * @param int<0, max> $position
+     * @param  int<0, max>  $position
      */
     public function setPosition(int $position): void
     {
@@ -123,11 +123,11 @@ class ParserState
             throw new UnexpectedTokenException('', $this->peek(5), 'identifier', $this->lineNumber);
         }
         $character = null;
-        while (!$this->isEnd() && ($character = $this->parseCharacter(true)) !== null) {
+        while (! $this->isEnd() && ($character = $this->parseCharacter(true)) !== null) {
             if (preg_match('/[a-zA-Z0-9\\x{00A0}-\\x{FFFF}_-]/Sux', $character) !== 0) {
                 $result .= $character;
             } else {
-                $result .= '\\' . $character;
+                $result .= '\\'.$character;
             }
         }
         if ($ignoreCase) {
@@ -164,10 +164,11 @@ class ParserState
             }
             $codePoint = \intval($hexCodePoint, 16);
             $utf32EncodedCharacter = '';
-            for ($i = 0; $i < 4; ++$i) {
-                $utf32EncodedCharacter .= \chr($codePoint & 0xff);
+            for ($i = 0; $i < 4; $i++) {
+                $utf32EncodedCharacter .= \chr($codePoint & 0xFF);
                 $codePoint = $codePoint >> 8;
             }
+
             return iconv('utf-32le', $this->charset, $utf32EncodedCharacter);
         }
         if ($isForIdentifier) {
@@ -179,7 +180,7 @@ class ParserState
                 || ($peek >= 48 && $peek <= 57)
                 || ($peek === 45)
                 || ($peek === 95)
-                || ($peek > 0xa1)
+                || ($peek > 0xA1)
             ) {
                 return $this->consume(1);
             }
@@ -222,7 +223,7 @@ class ParserState
     }
 
     /**
-     * @param non-empty-string $string
+     * @param  non-empty-string  $string
      */
     public function comes(string $string, bool $caseInsensitive = false): bool
     {
@@ -232,8 +233,8 @@ class ParserState
     }
 
     /**
-     * @param int<1, max> $length
-     * @param int<0, max> $offset
+     * @param  int<1, max>  $length
+     * @param  int<0, max>  $offset
      */
     public function peek(int $length = 1, int $offset = 0): string
     {
@@ -246,7 +247,7 @@ class ParserState
     }
 
     /**
-     * @param string|int<1, max> $value
+     * @param  string|int<1, max>  $value
      *
      * @throws UnexpectedEOFException
      * @throws UnexpectedTokenException
@@ -256,7 +257,7 @@ class ParserState
         if (\is_string($value)) {
             $numberOfLines = \substr_count($value, "\n");
             $length = $this->strlen($value);
-            if (!$this->streql($this->substr($this->currentPosition, $length), $value)) {
+            if (! $this->streql($this->substr($this->currentPosition, $length), $value)) {
                 throw new UnexpectedTokenException(
                     $value,
                     $this->peek(\max($length, 5)),
@@ -283,8 +284,7 @@ class ParserState
     }
 
     /**
-     * @param string $expression
-     * @param int<1, max>|null $maximumLength
+     * @param  int<1, max>|null  $maximumLength
      *
      * @throws UnexpectedEOFException
      * @throws UnexpectedTokenException
@@ -330,8 +330,8 @@ class ParserState
     }
 
     /**
-     * @param list<string|self::EOF>|string|self::EOF $stopCharacters
-     * @param array<int, Comment> $comments
+     * @param  list<string|self::EOF>|string|self::EOF  $stopCharacters
+     * @param  array<int, Comment>  $comments
      *
      * @throws UnexpectedEOFException
      * @throws UnexpectedTokenException
@@ -346,14 +346,15 @@ class ParserState
         $consumedCharacters = '';
         $start = $this->currentPosition;
 
-        while (!$this->isEnd()) {
+        while (! $this->isEnd()) {
             $character = $this->consume(1);
             if (\in_array($character, $stopCharacters, true)) {
                 if ($includeEnd) {
                     $consumedCharacters .= $character;
-                } elseif (!$consumeEnd) {
+                } elseif (! $consumeEnd) {
                     $this->currentPosition -= $this->strlen($character);
                 }
+
                 return $consumedCharacters;
             }
             $consumedCharacters .= $character;
@@ -369,7 +370,7 @@ class ParserState
 
         $this->currentPosition = $start;
         throw new UnexpectedEOFException(
-            'One of ("' . \implode('","', $stopCharacters) . '")',
+            'One of ("'.\implode('","', $stopCharacters).'")',
             $this->peek(5),
             'search',
             $this->lineNumber
@@ -389,7 +390,7 @@ class ParserState
     }
 
     /**
-     * @param int<1, max> $numberOfCharacters
+     * @param  int<1, max>  $numberOfCharacters
      */
     public function backtrack(int $numberOfCharacters): void
     {
@@ -407,7 +408,7 @@ class ParserState
     }
 
     /**
-     * @param int<0, max> $offset
+     * @param  int<0, max>  $offset
      */
     private function substr(int $offset, int $length): string
     {
@@ -448,7 +449,7 @@ class ParserState
             } else {
                 $length = \mb_strlen($string, $this->charset);
                 $result = [];
-                for ($i = 0; $i < $length; ++$i) {
+                for ($i = 0; $i < $length; $i++) {
                     $result[] = \mb_substr($string, $i, 1, $this->charset);
                 }
             }

@@ -1,8 +1,10 @@
 <?php
+
 /**
  * Class SettingsContainerAbstract
  *
  * @created      28.08.2018
+ *
  * @author       Smiley <smiley@chillerlan.net>
  * @copyright    2018 Smiley
  * @license      MIT
@@ -11,242 +13,275 @@ declare(strict_types=1);
 
 namespace chillerlan\Settings;
 
-use InvalidArgumentException, JsonException, ReflectionClass, ReflectionProperty;
-use function array_keys, get_object_vars, is_object, json_decode, json_encode,
-	json_last_error_msg, method_exists, property_exists, serialize, unserialize;
 use const JSON_THROW_ON_ERROR;
 
-abstract class SettingsContainerAbstract implements SettingsContainerInterface{
+use InvalidArgumentException;
+use JsonException;
+use ReflectionClass;
+use ReflectionProperty;
 
-	/**
-	 * SettingsContainerAbstract constructor.
-	 *
-	 * @phpstan-param array<string, mixed> $properties
-	 */
-	public function __construct(iterable|null $properties = null){
+use function array_keys;
+use function get_object_vars;
+use function is_object;
+use function json_decode;
+use function json_encode;
+use function json_last_error_msg;
+use function method_exists;
+use function property_exists;
+use function serialize;
+use function unserialize;
 
-		if(!empty($properties)){
-			$this->fromIterable($properties);
-		}
+abstract class SettingsContainerAbstract implements SettingsContainerInterface
+{
+    /**
+     * SettingsContainerAbstract constructor.
+     *
+     * @phpstan-param array<string, mixed> $properties
+     */
+    public function __construct(?iterable $properties = null)
+    {
 
-		$this->construct();
-	}
+        if (! empty($properties)) {
+            $this->fromIterable($properties);
+        }
 
-	/**
-	 * calls a method with trait name as replacement constructor for each used trait
-	 * (remember pre-php5 classname constructors? yeah, basically this.)
-	 */
-	protected function construct():void{
-		$traits = (new ReflectionClass($this))->getTraits();
+        $this->construct();
+    }
 
-		foreach($traits as $trait){
-			$method = $trait->getShortName();
+    /**
+     * calls a method with trait name as replacement constructor for each used trait
+     * (remember pre-php5 classname constructors? yeah, basically this.)
+     */
+    protected function construct(): void
+    {
+        $traits = (new ReflectionClass($this))->getTraits();
 
-			if(method_exists($this, $method)){
-				$this->{$method}();
-			}
-		}
+        foreach ($traits as $trait) {
+            $method = $trait->getShortName();
 
-	}
+            if (method_exists($this, $method)) {
+                $this->{$method}();
+            }
+        }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function __get(string $property):mixed{
+    }
 
-		if(!property_exists($this, $property) || $this->isPrivate($property)){
-			return null;
-		}
+    /**
+     * {@inheritdoc}
+     */
+    public function __get(string $property): mixed
+    {
 
-		$method = 'get_'.$property;
+        if (! property_exists($this, $property) || $this->isPrivate($property)) {
+            return null;
+        }
 
-		if(method_exists($this, $method)){
-			return $this->{$method}();
-		}
+        $method = 'get_'.$property;
 
-		return $this->{$property};
-	}
+        if (method_exists($this, $method)) {
+            return $this->{$method}();
+        }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function __set(string $property, mixed $value):void{
+        return $this->{$property};
+    }
 
-		if(!property_exists($this, $property) || $this->isPrivate($property)){
-			return;
-		}
+    /**
+     * {@inheritdoc}
+     */
+    public function __set(string $property, mixed $value): void
+    {
 
-		$method = 'set_'.$property;
+        if (! property_exists($this, $property) || $this->isPrivate($property)) {
+            return;
+        }
 
-		if(method_exists($this, $method)){
-			$this->{$method}($value);
+        $method = 'set_'.$property;
 
-			return;
-		}
+        if (method_exists($this, $method)) {
+            $this->{$method}($value);
 
-		$this->{$property} = $value;
-	}
+            return;
+        }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function __isset(string $property):bool{
-		return isset($this->{$property}) && !$this->isPrivate($property);
-	}
+        $this->{$property} = $value;
+    }
 
-	/**
-	 * @internal Checks if a property is private
-	 */
-	protected function isPrivate(string $property):bool{
-		return (new ReflectionProperty($this, $property))->isPrivate();
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function __isset(string $property): bool
+    {
+        return isset($this->{$property}) && ! $this->isPrivate($property);
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function __unset(string $property):void{
+    /**
+     * @internal Checks if a property is private
+     */
+    protected function isPrivate(string $property): bool
+    {
+        return (new ReflectionProperty($this, $property))->isPrivate();
+    }
 
-		if($this->__isset($property)){
-			unset($this->{$property});
-		}
+    /**
+     * {@inheritdoc}
+     */
+    public function __unset(string $property): void
+    {
 
-	}
+        if ($this->__isset($property)) {
+            unset($this->{$property});
+        }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function __toString():string{
-		return $this->toJSON();
-	}
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function toArray():array{
-		$properties = [];
+    /**
+     * {@inheritdoc}
+     */
+    public function __toString(): string
+    {
+        return $this->toJSON();
+    }
 
-		foreach(array_keys(get_object_vars($this)) as $key){
-			$properties[$key] = $this->__get($key);
-		}
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray(): array
+    {
+        $properties = [];
 
-		return $properties;
-	}
+        foreach (array_keys(get_object_vars($this)) as $key) {
+            $properties[$key] = $this->__get($key);
+        }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function fromIterable(iterable $properties):static{
+        return $properties;
+    }
 
-		foreach($properties as $key => $value){
-			$this->__set($key, $value);
-		}
+    /**
+     * {@inheritdoc}
+     */
+    public function fromIterable(iterable $properties): static
+    {
 
-		return $this;
-	}
+        foreach ($properties as $key => $value) {
+            $this->__set($key, $value);
+        }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function toJSON(int|null $jsonOptions = null):string{
-		$json = json_encode($this, ($jsonOptions ?? 0));
+        return $this;
+    }
 
-		if($json === false){
-			throw new JsonException(json_last_error_msg());
-		}
+    /**
+     * {@inheritdoc}
+     */
+    public function toJSON(?int $jsonOptions = null): string
+    {
+        $json = json_encode($this, ($jsonOptions ?? 0));
 
-		return $json;
-	}
+        if ($json === false) {
+            throw new JsonException(json_last_error_msg());
+        }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function fromJSON(string $json):static{
-		/** @phpstan-var array<string, mixed> $data */
-		$data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+        return $json;
+    }
 
-		return $this->fromIterable($data);
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function fromJSON(string $json): static
+    {
+        /** @phpstan-var array<string, mixed> $data */
+        $data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
 
-	/**
-	 * @inheritdoc
-	 * @return array<string, mixed>
-	 */
-	public function jsonSerialize():array{
-		return $this->toArray();
-	}
+        return $this->fromIterable($data);
+    }
 
-	/**
-	 * Returns a serialized string representation of the object in its current state (except static/readonly properties)
-	 *
-	 * @inheritdoc
-	 * @see \chillerlan\Settings\SettingsContainerInterface::toArray()
-	 */
-	public function serialize():string{
-		return serialize($this);
-	}
+    /**
+     * {@inheritdoc}
+     *
+     * @return array<string, mixed>
+     */
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
+    }
 
-	/**
-	 * Restores the data (except static/readonly properties) from the given serialized object to the current instance
-	 *
-	 * @inheritdoc
-	 * @see \chillerlan\Settings\SettingsContainerInterface::fromIterable()
-	 */
-	public function unserialize(string $data):void{
-		$obj = unserialize($data);
+    /**
+     * Returns a serialized string representation of the object in its current state (except static/readonly properties)
+     *
+     * {@inheritdoc}
+     *
+     * @see SettingsContainerInterface::toArray()
+     */
+    public function serialize(): string
+    {
+        return serialize($this);
+    }
 
-		if($obj === false || !is_object($obj)){
-			throw new InvalidArgumentException('The given serialized string is invalid');
-		}
+    /**
+     * Restores the data (except static/readonly properties) from the given serialized object to the current instance
+     *
+     * {@inheritdoc}
+     *
+     * @see SettingsContainerInterface::fromIterable()
+     */
+    public function unserialize(string $data): void
+    {
+        $obj = unserialize($data);
 
-		$reflection = new ReflectionClass($obj);
+        if ($obj === false || ! is_object($obj)) {
+            throw new InvalidArgumentException('The given serialized string is invalid');
+        }
 
-		if(!$reflection->isInstance($this)){
-			throw new InvalidArgumentException('The unserialized object does not match the class of this container');
-		}
+        $reflection = new ReflectionClass($obj);
 
-		$properties = $reflection->getProperties(~(ReflectionProperty::IS_STATIC | ReflectionProperty::IS_READONLY));
+        if (! $reflection->isInstance($this)) {
+            throw new InvalidArgumentException('The unserialized object does not match the class of this container');
+        }
 
-		foreach($properties as $reflectionProperty){
-			$this->{$reflectionProperty->name} = $reflectionProperty->getValue($obj);
-		}
+        $properties = $reflection->getProperties(~(ReflectionProperty::IS_STATIC | ReflectionProperty::IS_READONLY));
 
-	}
+        foreach ($properties as $reflectionProperty) {
+            $this->{$reflectionProperty->name} = $reflectionProperty->getValue($obj);
+        }
 
-	/**
-	 * Returns a serialized string representation of the object in its current state (except static/readonly properties)
-	 *
-	 * @inheritdoc
-	 * @see \chillerlan\Settings\SettingsContainerInterface::toArray()
-	 */
-	public function __serialize():array{
+    }
 
-		$properties = (new ReflectionClass($this))
-			->getProperties(~(ReflectionProperty::IS_STATIC | ReflectionProperty::IS_READONLY))
-		;
+    /**
+     * Returns a serialized string representation of the object in its current state (except static/readonly properties)
+     *
+     * {@inheritdoc}
+     *
+     * @see SettingsContainerInterface::toArray()
+     */
+    public function __serialize(): array
+    {
 
-		$data = [];
+        $properties = (new ReflectionClass($this))
+            ->getProperties(~(ReflectionProperty::IS_STATIC | ReflectionProperty::IS_READONLY));
 
-		foreach($properties as $reflectionProperty){
-			$data[$reflectionProperty->name] = $reflectionProperty->getValue($this);
-		}
+        $data = [];
 
-		return $data;
-	}
+        foreach ($properties as $reflectionProperty) {
+            $data[$reflectionProperty->name] = $reflectionProperty->getValue($this);
+        }
 
-	/**
-	 * Restores the data from the given array to the current instance
-	 *
-	 * @inheritdoc
-	 * @see \chillerlan\Settings\SettingsContainerInterface::fromIterable()
-	 *
-	 * @param array<string, mixed> $data
-	 */
-	public function __unserialize(array $data):void{
+        return $data;
+    }
 
-		foreach($data as $key => $value){
-			$this->{$key} = $value;
-		}
+    /**
+     * Restores the data from the given array to the current instance
+     *
+     * {@inheritdoc}
+     *
+     * @see SettingsContainerInterface::fromIterable()
+     *
+     * @param  array<string, mixed>  $data
+     */
+    public function __unserialize(array $data): void
+    {
 
-	}
+        foreach ($data as $key => $value) {
+            $this->{$key} = $value;
+        }
 
+    }
 }

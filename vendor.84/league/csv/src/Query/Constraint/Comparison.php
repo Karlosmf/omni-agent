@@ -96,11 +96,11 @@ enum Comparison: string
             self::Between => $subject >= $reference[0] && $subject <= $reference[1], /* @phpstan-ignore-line */
             self::NotBetween => $subject < $reference[0] || $subject > $reference[1], /* @phpstan-ignore-line */
             self::In => in_array($subject, $reference, self::isSingleValue($subject)), /* @phpstan-ignore-line */
-            self::NotIn => !in_array($subject, $reference, self::isSingleValue($subject)), /* @phpstan-ignore-line */
-            self::Regexp => is_string($subject) && 1 === preg_match($reference, $subject), /* @phpstan-ignore-line */
-            self::NotRegexp => is_string($subject) && 1 !== preg_match($reference, $subject), /* @phpstan-ignore-line */
+            self::NotIn => ! in_array($subject, $reference, self::isSingleValue($subject)), /* @phpstan-ignore-line */
+            self::Regexp => is_string($subject) && preg_match($reference, $subject) === 1, /* @phpstan-ignore-line */
+            self::NotRegexp => is_string($subject) && preg_match($reference, $subject) !== 1, /* @phpstan-ignore-line */
             self::Contains => is_string($subject) && str_contains($subject, $reference), /* @phpstan-ignore-line */
-            self::NotContain => is_string($subject) && !str_contains($subject, $reference), /* @phpstan-ignore-line */
+            self::NotContain => is_string($subject) && ! str_contains($subject, $reference), /* @phpstan-ignore-line */
             self::StartsWith => is_string($subject) && str_starts_with($subject, $reference), /* @phpstan-ignore-line */
             self::EndsWith => is_string($subject) && str_ends_with($subject, $reference), /* @phpstan-ignore-line */
         };
@@ -108,7 +108,7 @@ enum Comparison: string
 
     private static function isSingleValue(mixed $value): bool
     {
-        return is_scalar($value) || null === $value;
+        return is_scalar($value) || $value === null;
     }
 
     /**
@@ -121,29 +121,29 @@ enum Comparison: string
         match ($this) {
             self::Between,
             self::NotBetween => match (true) {
-                !is_array($reference),
-                !array_is_list($reference),
-                2 !== count($reference) => throw new QueryException('The value used for comparison with the `'.$this->name.'` operator must be an list containing 2 values, the minimum and maximum values.'),
+                ! is_array($reference),
+                ! array_is_list($reference),
+                count($reference) !== 2 => throw new QueryException('The value used for comparison with the `'.$this->name.'` operator must be an list containing 2 values, the minimum and maximum values.'),
                 default => true,
             },
             self::In,
             self::NotIn => match (true) {
-                !is_array($reference) => throw new QueryException('The value used for comparison with the `'.$this->name.'` operator must be an array.'),
+                ! is_array($reference) => throw new QueryException('The value used for comparison with the `'.$this->name.'` operator must be an array.'),
                 default => true,
             },
             self::Regexp,
             self::NotRegexp => match (true) {
-                !is_string($reference),
-                '' === $reference,
-                false === @preg_match($reference, '') => throw new QueryException('The value used for comparison with the `'.$this->name.'` operator must be a valid regular expression pattern string.'),
+                ! is_string($reference),
+                $reference === '',
+                @preg_match($reference, '') === false => throw new QueryException('The value used for comparison with the `'.$this->name.'` operator must be a valid regular expression pattern string.'),
                 default => true,
             },
             self::Contains,
             self::NotContain,
             self::StartsWith,
             self::EndsWith => match (true) {
-                !is_string($reference),
-                '' === $reference => throw new QueryException('The value used for comparison with the `'.$this->name.'` operator must be a non empty string.'),
+                ! is_string($reference),
+                $reference === '' => throw new QueryException('The value used for comparison with the `'.$this->name.'` operator must be a non empty string.'),
                 default => true,
             },
             self::Equals,

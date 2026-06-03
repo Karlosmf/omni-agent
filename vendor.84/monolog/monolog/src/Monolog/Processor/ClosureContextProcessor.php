@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -29,7 +31,7 @@ class ClosureContextProcessor implements ProcessorInterface
     public function __invoke(LogRecord $record): LogRecord
     {
         $context = $record->context;
-        if (isset($context[0]) && 1 === \count($context) && $context[0] instanceof \Closure) {
+        if (isset($context[0]) && \count($context) === 1 && $context[0] instanceof \Closure) {
             try {
                 $context = $context[0]();
             } catch (\Throwable $e) {
@@ -39,7 +41,7 @@ class ClosureContextProcessor implements ProcessorInterface
                 ];
             }
 
-            if (!\is_array($context)) {
+            if (! \is_array($context)) {
                 $context = [$context];
             }
 

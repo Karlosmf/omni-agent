@@ -8,9 +8,9 @@ use Illuminate\Support\Collection;
 
 class KeyValueEntry extends Entry implements HasEmbeddedView
 {
-    protected string | Closure | null $keyLabel = null;
+    protected string|Closure|null $keyLabel = null;
 
-    protected string | Closure | null $valueLabel = null;
+    protected string|Closure|null $valueLabel = null;
 
     protected function setUp(): void
     {
@@ -19,14 +19,14 @@ class KeyValueEntry extends Entry implements HasEmbeddedView
         $this->placeholder(__('filament-infolists::components.entries.key_value.placeholder'));
     }
 
-    public function keyLabel(string | Closure | null $label): static
+    public function keyLabel(string|Closure|null $label): static
     {
         $this->keyLabel = $label;
 
         return $this;
     }
 
-    public function valueLabel(string | Closure | null $label): static
+    public function valueLabel(string|Closure|null $label): static
     {
         $this->valueLabel = $label;
 
@@ -36,7 +36,7 @@ class KeyValueEntry extends Entry implements HasEmbeddedView
     /**
      * @deprecated Use `placeholder()` instead.
      */
-    public function emptyMessage(string | Closure | null $message): static
+    public function emptyMessage(string|Closure|null $message): static
     {
         $this->placeholder($message);
 

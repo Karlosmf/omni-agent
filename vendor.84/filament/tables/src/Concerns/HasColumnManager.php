@@ -173,7 +173,7 @@ trait HasColumnManager
      *
      * @return int | array<string, int | null>
      */
-    protected function getTableColumnToggleFormColumns(): int | array
+    protected function getTableColumnToggleFormColumns(): int|array
     {
         return 1;
     }
@@ -257,7 +257,7 @@ trait HasColumnManager
     protected function updateTableColumns(): void
     {
         $reorderedColumns = collect($this->tableColumns)
-            ->map(function (array $item): Column | ColumnGroup | null {
+            ->map(function (array $item): Column|ColumnGroup|null {
                 if ($item['type'] === self::TABLE_COLUMN_MANAGER_COLUMN_TYPE) {
                     return $this->getTable()->getColumn($item['name']);
                 }
@@ -422,11 +422,11 @@ trait HasColumnManager
     protected function getNewDefaultColumnStateItems(array $defaultState): array
     {
         $existingKeys = collect($this->tableColumns)
-            ->map(fn (array $item) => $item['type'] . ':' . $item['name'])
+            ->map(fn (array $item) => $item['type'].':'.$item['name'])
             ->all();
 
         return collect($defaultState)
-            ->reject(fn (array $item) => in_array($item['type'] . ':' . $item['name'], $existingKeys))
+            ->reject(fn (array $item) => in_array($item['type'].':'.$item['name'], $existingKeys))
             ->values()
             ->all();
     }
@@ -472,12 +472,12 @@ trait HasColumnManager
         $flattenedItems = [];
 
         foreach ($items as $item) {
-            $prefix = $item['type'] . ':' . $item['name'];
+            $prefix = $item['type'].':'.$item['name'];
             $flattenedItems[] = $prefix;
 
             if ($item['type'] === self::TABLE_COLUMN_MANAGER_GROUP_TYPE && isset($item['columns'])) {
                 foreach ($item['columns'] as $column) {
-                    $flattenedItems[] = $prefix . ':' . $column['name'];
+                    $flattenedItems[] = $prefix.':'.$column['name'];
                 }
             }
         }

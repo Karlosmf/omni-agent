@@ -28,16 +28,16 @@ class ToggleButtons extends Field implements Contracts\CanDisableOptions
 
     public const GROUPED_VIEW = 'filament-forms::components.toggle-buttons.grouped';
 
-    protected bool | Closure $isMultiple = false;
+    protected bool|Closure $isMultiple = false;
 
     /**
      * @var view-string
      */
     protected string $view = 'filament-forms::components.toggle-buttons.index';
 
-    protected bool | Closure $isInline = false;
+    protected bool|Closure $isInline = false;
 
-    protected bool | Closure $areButtonLabelsHidden = false;
+    protected bool|Closure $areButtonLabelsHidden = false;
 
     public function grouped(): static
     {
@@ -66,7 +66,7 @@ class ToggleButtons extends Field implements Contracts\CanDisableOptions
         return $this;
     }
 
-    public function inline(bool | Closure $condition = true): static
+    public function inline(bool|Closure $condition = true): static
     {
         $this->isInline = $condition;
 
@@ -78,7 +78,7 @@ class ToggleButtons extends Field implements Contracts\CanDisableOptions
         return (bool) $this->evaluate($this->isInline);
     }
 
-    public function hiddenButtonLabels(bool | Closure $condition = true): static
+    public function hiddenButtonLabels(bool|Closure $condition = true): static
     {
         $this->areButtonLabelsHidden = $condition;
 
@@ -90,7 +90,7 @@ class ToggleButtons extends Field implements Contracts\CanDisableOptions
         return (bool) $this->evaluate($this->areButtonLabelsHidden);
     }
 
-    public function multiple(bool | Closure $condition = true): static
+    public function multiple(bool|Closure $condition = true): static
     {
         $this->isMultiple = $condition;
 

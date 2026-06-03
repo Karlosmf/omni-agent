@@ -6,11 +6,11 @@ use Closure;
 
 trait CanTrimState
 {
-    protected bool | Closure $isTrimmed = false;
+    protected bool|Closure $isTrimmed = false;
 
     protected bool $cachedIsTrimmed;
 
-    public function trim(bool | Closure $condition = true): static
+    public function trim(bool|Closure $condition = true): static
     {
         $this->isTrimmed = $condition;
 

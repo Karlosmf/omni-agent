@@ -14,8 +14,7 @@ final readonly class ProgressPrinterOutput implements Printer
     public function __construct(
         private Printer $progressPrinter,
         private Printer $outputPrinter,
-    ) {
-    }
+    ) {}
 
     public function print(string $buffer): void
     {

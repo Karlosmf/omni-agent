@@ -37,14 +37,14 @@ class Documentor
                 $parameters = [];
 
                 foreach ($reflmethod->getParameters() as $reflparameter) {
-                    $parameter = '$' . $reflparameter->getName();
+                    $parameter = '$'.$reflparameter->getName();
 
                     if ($reflparameter->isDefaultValueAvailable()) {
-                        $parameter .= ' = ' . var_export($reflparameter->getDefaultValue(), true);
+                        $parameter .= ' = '.var_export($reflparameter->getDefaultValue(), true);
                     }
                     $parameters[] = $parameter;
                 }
-                $parameters = $parameters ? '(' . implode(', ', $parameters) . ')' : '';
+                $parameters = $parameters ? '('.implode(', ', $parameters).')' : '';
 
                 try {
                     $example = $this->generator->format($methodName);
@@ -53,15 +53,15 @@ class Documentor
                 }
 
                 if (is_array($example)) {
-                    $example = "array('" . implode("', '", $example) . "')";
+                    $example = "array('".implode("', '", $example)."')";
                 } elseif ($example instanceof \DateTime) {
-                    $example = "DateTime('" . $example->format('Y-m-d H:i:s') . "')";
+                    $example = "DateTime('".$example->format('Y-m-d H:i:s')."')";
                 } elseif ($example instanceof Generator || $example instanceof UniqueGenerator) { // modifier
                     $example = '';
                 } else {
                     $example = var_export($example, true);
                 }
-                $formatters[$providerClass][$methodName . $parameters] = $example;
+                $formatters[$providerClass][$methodName.$parameters] = $example;
             }
         }
 

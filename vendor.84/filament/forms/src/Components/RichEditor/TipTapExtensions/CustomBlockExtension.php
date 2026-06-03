@@ -27,7 +27,7 @@ class CustomBlockExtension extends Node
     {
         return [
             [
-                'tag' => 'div[data-type="' . self::$name . '"]',
+                'tag' => 'div[data-type="'.self::$name.'"]',
             ],
         ];
     }

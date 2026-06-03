@@ -22,13 +22,21 @@ use Symfony\Component\VarDumper\Caster\ClassStub;
 final class WrappedListener
 {
     private string|array|object $listener;
+
     private ?\Closure $optimizedListener;
+
     private string $name;
+
     private bool $called = false;
+
     private bool $stoppedPropagation = false;
+
     private string $pretty;
+
     private string $callableRef;
+
     private ClassStub|string $stub;
+
     private static bool $hasClassStub;
 
     public function __construct(
@@ -63,7 +71,7 @@ final class WrappedListener
             $this->callableRef = $listener::class.'::__invoke';
         }
 
-        if (null !== $name) {
+        if ($name !== null) {
             $this->name = $name;
         }
 

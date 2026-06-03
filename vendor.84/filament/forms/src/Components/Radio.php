@@ -22,7 +22,7 @@ class Radio extends Field implements Contracts\CanDisableOptions
      */
     protected string $view = 'filament-forms::components.radio';
 
-    protected bool | Closure $isInline = false;
+    protected bool|Closure $isInline = false;
 
     public function boolean(?string $trueLabel = null, ?string $falseLabel = null): static
     {
@@ -36,7 +36,7 @@ class Radio extends Field implements Contracts\CanDisableOptions
         return $this;
     }
 
-    public function inline(bool | Closure $condition = true): static
+    public function inline(bool|Closure $condition = true): static
     {
         $this->isInline = $condition;
 

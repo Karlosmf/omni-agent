@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,12 +9,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\Test;
 
 use const PHP_EOL;
-use function sprintf;
+
 use PHPUnit\Event\Event;
 use PHPUnit\Event\Telemetry;
+
+use function sprintf;
 
 /**
  * @immutable
@@ -29,12 +34,12 @@ final readonly class PrintedUnexpectedOutput implements Event
     private string $output;
 
     /**
-     * @param non-empty-string $output
+     * @param  non-empty-string  $output
      */
     public function __construct(Telemetry\Info $telemetryInfo, string $output)
     {
         $this->telemetryInfo = $telemetryInfo;
-        $this->output        = $output;
+        $this->output = $output;
     }
 
     public function telemetryInfo(): Telemetry\Info

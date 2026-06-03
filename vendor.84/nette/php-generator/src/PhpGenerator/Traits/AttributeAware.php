@@ -11,39 +11,38 @@ namespace Nette\PhpGenerator\Traits;
 
 use Nette\PhpGenerator\Attribute;
 
-
 /**
  * @internal
  */
 trait AttributeAware
 {
-	/** @var Attribute[] */
-	private array $attributes = [];
+    /** @var Attribute[] */
+    private array $attributes = [];
 
+    /** @param  mixed[]  $args */
+    public function addAttribute(string $name, array $args = []): static
+    {
+        $this->attributes[] = new Attribute($name, $args);
 
-	/** @param  mixed[]  $args */
-	public function addAttribute(string $name, array $args = []): static
-	{
-		$this->attributes[] = new Attribute($name, $args);
-		return $this;
-	}
+        return $this;
+    }
 
+    /**
+     * Replaces all attributes.
+     *
+     * @param  Attribute[]  $attrs
+     */
+    public function setAttributes(array $attrs): static
+    {
+        (function (Attribute ...$attrs) {})(...$attrs);
+        $this->attributes = $attrs;
 
-	/**
-	 * Replaces all attributes.
-	 * @param  Attribute[]  $attrs
-	 */
-	public function setAttributes(array $attrs): static
-	{
-		(function (Attribute ...$attrs) {})(...$attrs);
-		$this->attributes = $attrs;
-		return $this;
-	}
+        return $this;
+    }
 
-
-	/** @return Attribute[] */
-	public function getAttributes(): array
-	{
-		return $this->attributes;
-	}
+    /** @return Attribute[] */
+    public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
 }

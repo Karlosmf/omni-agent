@@ -42,10 +42,15 @@ use Psr\Http\Message\UriInterface;
 class Psr17Factory implements RequestFactoryInterface, ResponseFactoryInterface, ServerRequestFactoryInterface, StreamFactoryInterface, UploadedFileFactoryInterface, UriFactoryInterface
 {
     private $requestFactory;
+
     private $responseFactory;
+
     private $serverRequestFactory;
+
     private $streamFactory;
+
     private $uploadedFileFactory;
+
     private $uriFactory;
 
     public function __construct(
@@ -72,7 +77,7 @@ class Psr17Factory implements RequestFactoryInterface, ResponseFactoryInterface,
     }
 
     /**
-     * @param UriInterface|string $uri
+     * @param  UriInterface|string  $uri
      */
     public function createRequest(string $method, $uri): RequestInterface
     {
@@ -89,7 +94,7 @@ class Psr17Factory implements RequestFactoryInterface, ResponseFactoryInterface,
     }
 
     /**
-     * @param UriInterface|string $uri
+     * @param  UriInterface|string  $uri
      */
     public function createServerRequest(string $method, $uri, array $serverParams = []): ServerRequestInterface
     {
@@ -125,7 +130,7 @@ class Psr17Factory implements RequestFactoryInterface, ResponseFactoryInterface,
     }
 
     /**
-     * @param resource $resource
+     * @param  resource  $resource
      */
     public function createStreamFromResource($resource): StreamInterface
     {
@@ -155,22 +160,22 @@ class Psr17Factory implements RequestFactoryInterface, ResponseFactoryInterface,
 
     private function setFactory($factory)
     {
-        if (!$this->requestFactory && $factory instanceof RequestFactoryInterface) {
+        if (! $this->requestFactory && $factory instanceof RequestFactoryInterface) {
             $this->requestFactory = $factory;
         }
-        if (!$this->responseFactory && $factory instanceof ResponseFactoryInterface) {
+        if (! $this->responseFactory && $factory instanceof ResponseFactoryInterface) {
             $this->responseFactory = $factory;
         }
-        if (!$this->serverRequestFactory && $factory instanceof ServerRequestFactoryInterface) {
+        if (! $this->serverRequestFactory && $factory instanceof ServerRequestFactoryInterface) {
             $this->serverRequestFactory = $factory;
         }
-        if (!$this->streamFactory && $factory instanceof StreamFactoryInterface) {
+        if (! $this->streamFactory && $factory instanceof StreamFactoryInterface) {
             $this->streamFactory = $factory;
         }
-        if (!$this->uploadedFileFactory && $factory instanceof UploadedFileFactoryInterface) {
+        if (! $this->uploadedFileFactory && $factory instanceof UploadedFileFactoryInterface) {
             $this->uploadedFileFactory = $factory;
         }
-        if (!$this->uriFactory && $factory instanceof UriFactoryInterface) {
+        if (! $this->uriFactory && $factory instanceof UriFactoryInterface) {
             $this->uriFactory = $factory;
         }
 
@@ -185,9 +190,9 @@ class Psr17Factory implements RequestFactoryInterface, ResponseFactoryInterface,
 
         $headers = [];
         foreach ($server as $k => $v) {
-            if (0 === strpos($k, 'HTTP_')) {
+            if (strpos($k, 'HTTP_') === 0) {
                 $k = substr($k, 5);
-            } elseif (!\in_array($k, ['CONTENT_TYPE', 'CONTENT_LENGTH', 'CONTENT_MD5'], true)) {
+            } elseif (! \in_array($k, ['CONTENT_TYPE', 'CONTENT_LENGTH', 'CONTENT_MD5'], true)) {
                 continue;
             }
             $k = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', $k))));
@@ -195,7 +200,7 @@ class Psr17Factory implements RequestFactoryInterface, ResponseFactoryInterface,
             $headers[$k] = $v;
         }
 
-        if (!isset($headers['Authorization'])) {
+        if (! isset($headers['Authorization'])) {
             if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
                 $headers['Authorization'] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
             } elseif (isset($_SERVER['PHP_AUTH_USER'])) {
@@ -218,7 +223,7 @@ class Psr17Factory implements RequestFactoryInterface, ResponseFactoryInterface,
 
     private function buildUriFromGlobals(UriInterface $uri, array $server): UriInterface
     {
-        $uri = $uri->withScheme(!empty($server['HTTPS']) && 'off' !== strtolower($server['HTTPS']) ? 'https' : 'http');
+        $uri = $uri->withScheme(! empty($server['HTTPS']) && strtolower($server['HTTPS']) !== 'off' ? 'https' : 'http');
 
         $hasPort = false;
         if (isset($server['HTTP_HOST'])) {
@@ -234,7 +239,7 @@ class Psr17Factory implements RequestFactoryInterface, ResponseFactoryInterface,
             $uri = $uri->withHost($server['SERVER_NAME'] ?? $server['SERVER_ADDR'] ?? 'localhost');
         }
 
-        if (!$hasPort && isset($server['SERVER_PORT'])) {
+        if (! $hasPort && isset($server['SERVER_PORT'])) {
             $uri = $uri->withPort($server['SERVER_PORT']);
         }
 
@@ -248,7 +253,7 @@ class Psr17Factory implements RequestFactoryInterface, ResponseFactoryInterface,
             }
         }
 
-        if (!$hasQuery && isset($server['QUERY_STRING'])) {
+        if (! $hasQuery && isset($server['QUERY_STRING'])) {
             $uri = $uri->withQuery($server['QUERY_STRING']);
         }
 
@@ -261,9 +266,9 @@ class Psr17Factory implements RequestFactoryInterface, ResponseFactoryInterface,
             if ($v instanceof UploadedFileInterface) {
                 continue;
             }
-            if (!\is_array($v)) {
+            if (! \is_array($v)) {
                 unset($files[$k]);
-            } elseif (!isset($v['tmp_name'])) {
+            } elseif (! isset($v['tmp_name'])) {
                 $files[$k] = $this->normalizeFiles($v);
             } else {
                 $files[$k] = $this->createUploadedFileFromSpec($v);
@@ -276,13 +281,12 @@ class Psr17Factory implements RequestFactoryInterface, ResponseFactoryInterface,
     /**
      * Create and return an UploadedFile instance from a $_FILES specification.
      *
-     * @param array $value $_FILES struct
-     *
+     * @param  array  $value  $_FILES struct
      * @return UploadedFileInterface|UploadedFileInterface[]
      */
     private function createUploadedFileFromSpec(array $value)
     {
-        if (!is_array($tmpName = $value['tmp_name'])) {
+        if (! is_array($tmpName = $value['tmp_name'])) {
             $file = is_file($tmpName) ? $this->createStreamFromFile($tmpName, 'r') : $this->createStream();
 
             return $this->createUploadedFile($file, $value['size'], $value['error'], $value['name'], $value['type']);

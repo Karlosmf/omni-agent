@@ -9,12 +9,12 @@ trait HasTooltips
     /**
      * @var array<string> | Closure | null
      */
-    protected array | Closure | null $tooltips = null;
+    protected array|Closure|null $tooltips = null;
 
     /**
      * @param  array<string> | Closure | null  $tooltips
      */
-    public function tooltips(array | Closure | null $tooltips): static
+    public function tooltips(array|Closure|null $tooltips): static
     {
         $this->tooltips = $tooltips;
 
@@ -24,7 +24,7 @@ trait HasTooltips
     /**
      * @return string | array<string> | null
      */
-    public function getTooltip(mixed $value): string | array | null
+    public function getTooltip(mixed $value): string|array|null
     {
         return $this->getTooltips()[$value] ?? null;
     }

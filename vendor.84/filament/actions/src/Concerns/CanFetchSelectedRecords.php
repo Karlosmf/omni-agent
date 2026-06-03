@@ -6,11 +6,11 @@ use Closure;
 
 trait CanFetchSelectedRecords
 {
-    protected bool | Closure $shouldFetchSelectedRecords = true;
+    protected bool|Closure $shouldFetchSelectedRecords = true;
 
-    protected int | Closure | null $selectedRecordsChunkSize = null;
+    protected int|Closure|null $selectedRecordsChunkSize = null;
 
-    public function fetchSelectedRecords(bool | Closure $condition = true): static
+    public function fetchSelectedRecords(bool|Closure $condition = true): static
     {
         $this->shouldFetchSelectedRecords = $condition;
 
@@ -22,7 +22,7 @@ trait CanFetchSelectedRecords
         return (bool) $this->evaluate($this->shouldFetchSelectedRecords);
     }
 
-    public function chunkSelectedRecords(int | Closure | null $chunkSize = 100): static
+    public function chunkSelectedRecords(int|Closure|null $chunkSize = 100): static
     {
         $this->selectedRecordsChunkSize = $chunkSize;
 

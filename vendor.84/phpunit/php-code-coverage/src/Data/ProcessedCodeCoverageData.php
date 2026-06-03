@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,7 +9,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Data;
+
+use SebastianBergmann\CodeCoverage\Driver\Driver;
+use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
 
 use function array_key_exists;
 use function array_keys;
@@ -16,8 +22,6 @@ use function array_unique;
 use function count;
 use function is_array;
 use function ksort;
-use SebastianBergmann\CodeCoverage\Driver\Driver;
-use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -50,7 +54,7 @@ final class ProcessedCodeCoverageData
     public function initializeUnseenData(RawCodeCoverageData $rawData): void
     {
         foreach ($rawData->lineCoverage() as $file => $lines) {
-            if (!isset($this->lineCoverage[$file])) {
+            if (! isset($this->lineCoverage[$file])) {
                 $this->lineCoverage[$file] = [];
 
                 foreach ($lines as $k => $v) {
@@ -98,7 +102,7 @@ final class ProcessedCodeCoverageData
     }
 
     /**
-     * @param LineCoverageType $lineCoverage
+     * @param  LineCoverageType  $lineCoverage
      */
     public function setLineCoverage(array $lineCoverage): void
     {
@@ -116,7 +120,7 @@ final class ProcessedCodeCoverageData
     }
 
     /**
-     * @param FunctionCoverageType $functionCoverage
+     * @param  FunctionCoverageType  $functionCoverage
      */
     public function setFunctionCoverage(array $functionCoverage): void
     {
@@ -157,7 +161,7 @@ final class ProcessedCodeCoverageData
     public function merge(self $newData): void
     {
         foreach ($newData->lineCoverage as $file => $lines) {
-            if (!isset($this->lineCoverage[$file])) {
+            if (! isset($this->lineCoverage[$file])) {
                 $this->lineCoverage[$file] = $lines;
 
                 continue;
@@ -186,7 +190,7 @@ final class ProcessedCodeCoverageData
         }
 
         foreach ($newData->functionCoverage as $file => $functions) {
-            if (!isset($this->functionCoverage[$file])) {
+            if (! isset($this->functionCoverage[$file])) {
                 $this->functionCoverage[$file] = $functions;
 
                 continue;
@@ -216,7 +220,7 @@ final class ProcessedCodeCoverageData
      */
     private function priorityForLine(array $data, int $line): int
     {
-        if (!array_key_exists($line, $data)) {
+        if (! array_key_exists($line, $data)) {
             return 1;
         }
 
@@ -234,7 +238,7 @@ final class ProcessedCodeCoverageData
     /**
      * For a function we have never seen before, copy all data over and simply init the 'hit' array.
      *
-     * @param ProcessedFunctionCoverageData|XdebugFunctionCoverageType $functionData
+     * @param  ProcessedFunctionCoverageData|XdebugFunctionCoverageType  $functionData
      */
     private function initPreviouslyUnseenFunction(string $file, string $functionName, array|ProcessedFunctionCoverageData $functionData): void
     {
@@ -250,7 +254,7 @@ final class ProcessedCodeCoverageData
      * Techniques such as mocking and where the contents of a file are different vary during tests (e.g. compiling
      * containers) mean that the functions inside a file cannot be relied upon to be static.
      *
-     * @param ProcessedFunctionCoverageData|XdebugFunctionCoverageType $functionData
+     * @param  ProcessedFunctionCoverageData|XdebugFunctionCoverageType  $functionData
      */
     private function initPreviouslySeenFunction(string $file, string $functionName, array|ProcessedFunctionCoverageData $functionData): void
     {

@@ -16,6 +16,7 @@ use Composer\Semver\Constraint\Constraint;
 class Semver
 {
     const SORT_ASC = 1;
+
     const SORT_DESC = -1;
 
     /** @var VersionParser */
@@ -24,15 +25,14 @@ class Semver
     /**
      * Determine if given version satisfies given constraints.
      *
-     * @param string $version
-     * @param string $constraints
-     *
+     * @param  string  $version
+     * @param  string  $constraints
      * @return bool
      */
     public static function satisfies($version, $constraints)
     {
-        if (null === self::$versionParser) {
-            self::$versionParser = new VersionParser();
+        if (self::$versionParser === null) {
+            self::$versionParser = new VersionParser;
         }
 
         $versionParser = self::$versionParser;
@@ -45,9 +45,8 @@ class Semver
     /**
      * Return all versions that satisfy given constraints.
      *
-     * @param string[] $versions
-     * @param string   $constraints
-     *
+     * @param  string[]  $versions
+     * @param  string  $constraints
      * @return list<string>
      */
     public static function satisfiedBy(array $versions, $constraints)
@@ -62,8 +61,7 @@ class Semver
     /**
      * Sort given array of versions.
      *
-     * @param string[] $versions
-     *
+     * @param  string[]  $versions
      * @return list<string>
      */
     public static function sort(array $versions)
@@ -74,8 +72,7 @@ class Semver
     /**
      * Sort given array of versions in reverse.
      *
-     * @param string[] $versions
-     *
+     * @param  string[]  $versions
      * @return list<string>
      */
     public static function rsort(array $versions)
@@ -84,26 +81,25 @@ class Semver
     }
 
     /**
-     * @param string[] $versions
-     * @param int      $direction
-     *
+     * @param  string[]  $versions
+     * @param  int  $direction
      * @return list<string>
      */
     private static function usort(array $versions, $direction)
     {
-        if (null === self::$versionParser) {
-            self::$versionParser = new VersionParser();
+        if (self::$versionParser === null) {
+            self::$versionParser = new VersionParser;
         }
 
         $versionParser = self::$versionParser;
-        $normalized = array();
+        $normalized = [];
 
         // Normalize outside of usort() scope for minor performance increase.
         // Creates an array of arrays: [[normalized, key], ...]
         foreach ($versions as $key => $version) {
             $normalizedVersion = $versionParser->normalize($version);
             $normalizedVersion = $versionParser->normalizeDefaultBranch($normalizedVersion);
-            $normalized[] = array($normalizedVersion, $key);
+            $normalized[] = [$normalizedVersion, $key];
         }
 
         usort($normalized, function (array $left, array $right) use ($direction) {
@@ -119,7 +115,7 @@ class Semver
         });
 
         // Recreate input array, using the original indexes which are now in sorted order.
-        $sorted = array();
+        $sorted = [];
         foreach ($normalized as $item) {
             $sorted[] = $versions[$item[1]];
         }

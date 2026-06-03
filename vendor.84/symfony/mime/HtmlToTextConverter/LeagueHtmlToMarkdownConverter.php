@@ -25,8 +25,7 @@ class LeagueHtmlToMarkdownConverter implements HtmlToTextConverterInterface
             'strip_tags' => true,
             'remove_nodes' => 'head style',
         ]),
-    ) {
-    }
+    ) {}
 
     public function convert(string $html, string $charset): string
     {

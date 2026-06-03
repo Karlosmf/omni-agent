@@ -32,7 +32,7 @@ final class DateIntervalHelper
             + $interval->i / 24 / 60
             + $interval->s / 24 / 60 / 60;
 
-        if (1 === $interval->invert) {
+        if ($interval->invert === 1) {
             $days *= -1;
         }
 

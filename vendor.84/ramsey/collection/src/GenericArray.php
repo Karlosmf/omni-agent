@@ -19,6 +19,4 @@ namespace Ramsey\Collection;
  *
  * @extends AbstractArray<mixed>
  */
-class GenericArray extends AbstractArray
-{
-}
+class GenericArray extends AbstractArray {}

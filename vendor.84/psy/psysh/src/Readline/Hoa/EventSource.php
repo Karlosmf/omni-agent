@@ -39,6 +39,4 @@ namespace Psy\Readline\Hoa;
 /**
  * Each object which is listenable must implement this interface.
  */
-interface EventSource
-{
-}
+interface EventSource {}

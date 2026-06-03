@@ -25,15 +25,11 @@ interface Listener
 
     /**
      * Called once before the REPL session starts.
-     *
-     * @param Shell $shell
      */
     public function beforeRun(Shell $shell);
 
     /**
      * Called at the start of each loop.
-     *
-     * @param Shell $shell
      */
     public function beforeLoop(Shell $shell);
 
@@ -42,8 +38,6 @@ interface Listener
      *
      * Return a new string to override or rewrite user input.
      *
-     * @param Shell  $shell
-     * @param string $input
      *
      * @return string|null User input override
      */
@@ -58,8 +52,6 @@ interface Listener
      * or unsafe PHP here, it'll be executed without any of the safety Code
      * Cleaner provides. This comes with the big kid warranty :)
      *
-     * @param Shell  $shell
-     * @param string $code
      *
      * @return string|null User code override
      */
@@ -67,16 +59,13 @@ interface Listener
 
     /**
      * Called at the end of each loop.
-     *
-     * @param Shell $shell
      */
     public function afterLoop(Shell $shell);
 
     /**
      * Called once after the REPL session ends.
      *
-     * @param Shell $shell
-     * @param int   $exitCode Exit code from the execution loop
+     * @param  int  $exitCode  Exit code from the execution loop
      */
     public function afterRun(Shell $shell, int $exitCode = 0);
 }

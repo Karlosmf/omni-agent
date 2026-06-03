@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,7 +9,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Data;
+
+use SebastianBergmann\CodeCoverage\Driver\Driver;
+use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 
 use function array_diff;
 use function array_diff_key;
@@ -25,9 +32,6 @@ use function range;
 use function str_ends_with;
 use function str_starts_with;
 use function trim;
-use SebastianBergmann\CodeCoverage\Driver\Driver;
-use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -54,7 +58,7 @@ final class RawCodeCoverageData
     private array $functionCoverage;
 
     /**
-     * @param XdebugCodeCoverageWithoutPathCoverageType $rawCoverage
+     * @param  XdebugCodeCoverageWithoutPathCoverageType  $rawCoverage
      */
     public static function fromXdebugWithoutPathCoverage(array $rawCoverage): self
     {
@@ -62,24 +66,24 @@ final class RawCodeCoverageData
     }
 
     /**
-     * @param XdebugCodeCoverageWithPathCoverageType $rawCoverage
+     * @param  XdebugCodeCoverageWithPathCoverageType  $rawCoverage
      */
     public static function fromXdebugWithPathCoverage(array $rawCoverage): self
     {
-        $lineCoverage     = [];
+        $lineCoverage = [];
         $functionCoverage = [];
 
         foreach ($rawCoverage as $file => $fileCoverageData) {
             // Xdebug annotates the function name of traits, strip that off
             foreach ($fileCoverageData['functions'] as $existingKey => $data) {
-                if (str_ends_with($existingKey, '}') && !str_starts_with($existingKey, '{')) { // don't want to catch {main}
-                    $newKey                                 = preg_replace('/\{.*}$/', '', $existingKey);
+                if (str_ends_with($existingKey, '}') && ! str_starts_with($existingKey, '{')) { // don't want to catch {main}
+                    $newKey = preg_replace('/\{.*}$/', '', $existingKey);
                     $fileCoverageData['functions'][$newKey] = $data;
                     unset($fileCoverageData['functions'][$existingKey]);
                 }
             }
 
-            $lineCoverage[$file]     = $fileCoverageData['lines'];
+            $lineCoverage[$file] = $fileCoverageData['lines'];
             $functionCoverage[$file] = $fileCoverageData['functions'];
         }
 
@@ -97,12 +101,12 @@ final class RawCodeCoverageData
     }
 
     /**
-     * @param XdebugCodeCoverageWithoutPathCoverageType  $lineCoverage
-     * @param array<string, XdebugFunctionsCoverageType> $functionCoverage
+     * @param  XdebugCodeCoverageWithoutPathCoverageType  $lineCoverage
+     * @param  array<string, XdebugFunctionsCoverageType>  $functionCoverage
      */
     private function __construct(array $lineCoverage, array $functionCoverage)
     {
-        $this->lineCoverage     = $lineCoverage;
+        $this->lineCoverage = $lineCoverage;
         $this->functionCoverage = $functionCoverage;
     }
 
@@ -133,11 +137,11 @@ final class RawCodeCoverageData
     }
 
     /**
-     * @param int[] $lines
+     * @param  int[]  $lines
      */
     public function keepLineCoverageDataOnlyForLines(string $filename, array $lines): void
     {
-        if (!isset($this->lineCoverage[$filename])) {
+        if (! isset($this->lineCoverage[$filename])) {
             return;
         }
 
@@ -148,11 +152,11 @@ final class RawCodeCoverageData
     }
 
     /**
-     * @param int[] $linesToBranchMap
+     * @param  int[]  $linesToBranchMap
      */
     public function markExecutableLineByBranch(string $filename, array $linesToBranchMap): void
     {
-        if (!isset($this->lineCoverage[$filename])) {
+        if (! isset($this->lineCoverage[$filename])) {
             return;
         }
 
@@ -163,13 +167,13 @@ final class RawCodeCoverageData
         }
 
         foreach ($this->lineCoverage[$filename] as $line => $lineStatus) {
-            if (!isset($linesToBranchMap[$line])) {
+            if (! isset($linesToBranchMap[$line])) {
                 continue;
             }
 
             $branch = $linesToBranchMap[$line];
 
-            if (!isset($linesByBranch[$branch])) {
+            if (! isset($linesByBranch[$branch])) {
                 continue;
             }
 
@@ -177,18 +181,18 @@ final class RawCodeCoverageData
                 $this->lineCoverage[$filename][$lineInBranch] = $lineStatus;
             }
 
-            if (Driver::LINE_EXECUTED === $lineStatus) {
+            if ($lineStatus === Driver::LINE_EXECUTED) {
                 unset($linesByBranch[$branch]);
             }
         }
     }
 
     /**
-     * @param int[] $lines
+     * @param  int[]  $lines
      */
     public function keepFunctionCoverageDataOnlyForLines(string $filename, array $lines): void
     {
-        if (!isset($this->functionCoverage[$filename])) {
+        if (! isset($this->functionCoverage[$filename])) {
             return;
         }
 
@@ -208,7 +212,7 @@ final class RawCodeCoverageData
     }
 
     /**
-     * @param int[] $lines
+     * @param  int[]  $lines
      */
     public function removeCoverageDataForLines(string $filename, array $lines): void
     {
@@ -216,7 +220,7 @@ final class RawCodeCoverageData
             return;
         }
 
-        if (!isset($this->lineCoverage[$filename])) {
+        if (! isset($this->lineCoverage[$filename])) {
             return;
         }
 
@@ -264,7 +268,7 @@ final class RawCodeCoverageData
      */
     private function getEmptyLinesForFile(string $filename): array
     {
-        if (!isset(self::$emptyLineCache[$filename])) {
+        if (! isset(self::$emptyLineCache[$filename])) {
             self::$emptyLineCache[$filename] = [];
 
             if (is_file($filename)) {

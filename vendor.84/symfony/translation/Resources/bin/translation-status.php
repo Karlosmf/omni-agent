@@ -13,7 +13,7 @@ if ('cli' !== \PHP_SAPI) {
     throw new Exception('This script must be run from the command line.');
 }
 
-$usageInstructions = <<<END
+$usageInstructions = <<<'END'
 
       Usage instructions
       -------------------------------------------------------------------------------
@@ -61,8 +61,9 @@ if ($argc > 4) {
 }
 
 foreach (array_slice($argv, 1) as $argumentOrOption) {
-    if ('--incomplete' === $argumentOrOption) {
+    if ($argumentOrOption === '--incomplete') {
         $config['include_completed_languages'] = false;
+
         continue;
     }
 
@@ -74,7 +75,7 @@ foreach (array_slice($argv, 1) as $argumentOrOption) {
 }
 
 foreach ($config['original_files'] as $originalFilePath) {
-    if (!file_exists($originalFilePath)) {
+    if (! file_exists($originalFilePath)) {
         echo sprintf('The following file does not exist. Make sure that you execute this command at the root dir of the Symfony code repository.%s  %s', \PHP_EOL, $originalFilePath);
         exit(1);
     }
@@ -108,7 +109,7 @@ function findTranslationFiles($originalFilePath, $localeToAnalyze): array
     foreach ($translationFiles as $filePath) {
         $locale = extractLocaleFromFilePath($filePath);
 
-        if (null !== $localeToAnalyze && $locale !== $localeToAnalyze) {
+        if ($localeToAnalyze !== null && $locale !== $localeToAnalyze) {
             continue;
         }
 
@@ -142,7 +143,7 @@ function calculateTranslationStatus($originalFilePath, $translationFilePaths): a
 
 function isTranslationCompleted(array $translationStatus): bool
 {
-    return $translationStatus['total'] === $translationStatus['translated'] && 0 === count($translationStatus['mismatches']);
+    return $translationStatus['total'] === $translationStatus['translated'] && count($translationStatus['mismatches']) === 0;
 }
 
 function printTranslationStatus($originalFilePath, $translationStatus, $verboseOutput, $includeCompletedLanguages)
@@ -182,7 +183,7 @@ function findTransUnitMismatches(array $baseTranslationKeys, array $translatedKe
     $mismatches = [];
 
     foreach ($baseTranslationKeys as $translationId => $translationKey) {
-        if (!isset($translatedKeys[$translationId])) {
+        if (! isset($translatedKeys[$translationId])) {
             continue;
         }
         if ($translatedKeys[$translationId] !== $translationKey) {
@@ -204,7 +205,7 @@ function printTitle($title)
 
 function printTable($translations, $verboseOutput, bool $includeCompletedLanguages)
 {
-    if (0 === count($translations)) {
+    if (count($translations) === 0) {
         echo 'No translations found';
 
         return;
@@ -212,7 +213,7 @@ function printTable($translations, $verboseOutput, bool $includeCompletedLanguag
     $longestLocaleNameLength = max(array_map('strlen', array_keys($translations)));
 
     foreach ($translations as $locale => $translation) {
-        if (!$includeCompletedLanguages && $translation['is_completed']) {
+        if (! $includeCompletedLanguages && $translation['is_completed']) {
             continue;
         }
 
@@ -235,7 +236,7 @@ function printTable($translations, $verboseOutput, bool $includeCompletedLanguag
         textColorNormal();
 
         $shouldBeClosed = false;
-        if (true === $verboseOutput && count($translation['missingKeys']) > 0) {
+        if ($verboseOutput === true && count($translation['missingKeys']) > 0) {
             echo '|    Missing Translations:'.\PHP_EOL;
 
             foreach ($translation['missingKeys'] as $id => $content) {
@@ -243,7 +244,7 @@ function printTable($translations, $verboseOutput, bool $includeCompletedLanguag
             }
             $shouldBeClosed = true;
         }
-        if (true === $verboseOutput && count($translation['mismatches']) > 0) {
+        if ($verboseOutput === true && count($translation['mismatches']) > 0) {
             echo '|    Mismatches between trans-unit id and source:'.\PHP_EOL;
 
             foreach ($translation['mismatches'] as $id => $content) {

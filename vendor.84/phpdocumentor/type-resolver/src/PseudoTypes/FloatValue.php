@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of phpDocumentor.
  *
@@ -35,7 +36,7 @@ class FloatValue implements PseudoType
 
     public function underlyingType(): Type
     {
-        return new Float_();
+        return new Float_;
     }
 
     public function __toString(): string

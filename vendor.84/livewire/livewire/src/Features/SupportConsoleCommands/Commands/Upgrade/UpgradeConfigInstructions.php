@@ -16,8 +16,7 @@ class UpgradeConfigInstructions extends UpgradeStep
         $console->line('Removed options: app_url, middleware_group, manifest_path, back_button_cache');
         $console->newLine();
 
-        if($console->confirm('Continue?', true))
-        {
+        if ($console->confirm('Continue?', true)) {
             return $next($console);
         }
     }

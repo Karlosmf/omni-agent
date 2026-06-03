@@ -24,22 +24,27 @@ namespace Symfony\Component\CssSelector\Parser;
 class Token
 {
     public const TYPE_FILE_END = 'eof';
+
     public const TYPE_DELIMITER = 'delimiter';
+
     public const TYPE_WHITESPACE = 'whitespace';
+
     public const TYPE_IDENTIFIER = 'identifier';
+
     public const TYPE_HASH = 'hash';
+
     public const TYPE_NUMBER = 'number';
+
     public const TYPE_STRING = 'string';
 
     /**
-     * @param self::TYPE_*|null $type
+     * @param  self::TYPE_*|null  $type
      */
     public function __construct(
         private ?string $type,
         private ?string $value,
         private ?int $position,
-    ) {
-    }
+    ) {}
 
     /**
      * @return self::TYPE_*|null
@@ -61,16 +66,16 @@ class Token
 
     public function isFileEnd(): bool
     {
-        return self::TYPE_FILE_END === $this->type;
+        return $this->type === self::TYPE_FILE_END;
     }
 
     public function isDelimiter(array $values = []): bool
     {
-        if (self::TYPE_DELIMITER !== $this->type) {
+        if ($this->type !== self::TYPE_DELIMITER) {
             return false;
         }
 
-        if (!$values) {
+        if (! $values) {
             return true;
         }
 
@@ -79,27 +84,27 @@ class Token
 
     public function isWhitespace(): bool
     {
-        return self::TYPE_WHITESPACE === $this->type;
+        return $this->type === self::TYPE_WHITESPACE;
     }
 
     public function isIdentifier(): bool
     {
-        return self::TYPE_IDENTIFIER === $this->type;
+        return $this->type === self::TYPE_IDENTIFIER;
     }
 
     public function isHash(): bool
     {
-        return self::TYPE_HASH === $this->type;
+        return $this->type === self::TYPE_HASH;
     }
 
     public function isNumber(): bool
     {
-        return self::TYPE_NUMBER === $this->type;
+        return $this->type === self::TYPE_NUMBER;
     }
 
     public function isString(): bool
     {
-        return self::TYPE_STRING === $this->type;
+        return $this->type === self::TYPE_STRING;
     }
 
     public function __toString(): string

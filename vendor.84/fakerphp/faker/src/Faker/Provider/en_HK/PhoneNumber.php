@@ -5,8 +5,11 @@ namespace Faker\Provider\en_HK;
 class PhoneNumber extends \Faker\Provider\PhoneNumber
 {
     protected static $formats = ['2#######', '3#######', '5#######', '6#######', '9#######'];
+
     protected static $mobileFormats = ['5#######', '6#######', '9#######'];
+
     protected static $landlineFormats = ['2#######', '3#######'];
+
     protected static $faxFormats = ['7#######'];
 
     /**

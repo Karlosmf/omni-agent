@@ -56,6 +56,6 @@ class Relation
 
     protected static function modelName(Model $model): string
     {
-        return get_class($model) . Config::shared()->models->suffix;
+        return get_class($model).Config::shared()->models->suffix;
     }
 }

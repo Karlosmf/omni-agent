@@ -21,8 +21,6 @@ class PassthruPager extends StreamOutput implements OutputPager
 {
     /**
      * Constructor.
-     *
-     * @param StreamOutput $output
      */
     public function __construct(StreamOutput $output)
     {
@@ -32,8 +30,8 @@ class PassthruPager extends StreamOutput implements OutputPager
     /**
      * Writes a message to the output.
      *
-     * @param string $message A message to write to the output
-     * @param bool   $newline Whether to add a newline or not
+     * @param  string  $message  A message to write to the output
+     * @param  bool  $newline  Whether to add a newline or not
      */
     public function doWrite($message, $newline): void
     {

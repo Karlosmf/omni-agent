@@ -11,6 +11,7 @@
 
 namespace Psy\Command;
 
+use PhpParser\Error;
 use PhpParser\Parser;
 use Psy\Exception\ParseErrorException;
 use Psy\ParserFactory;
@@ -24,7 +25,7 @@ class CodeArgumentParser
 
     public function __construct(?Parser $parser = null)
     {
-        $this->parser = $parser ?? (new ParserFactory())->createParser();
+        $this->parser = $parser ?? (new ParserFactory)->createParser();
     }
 
     /**
@@ -32,9 +33,10 @@ class CodeArgumentParser
      *
      * This is intended for code arguments, so the code string *should not* start with <?php
      *
-     * @throws ParseErrorException
      *
      * @return array Statements
+     *
+     * @throws ParseErrorException
      */
     public function parse(string $code): array
     {
@@ -42,7 +44,7 @@ class CodeArgumentParser
 
         try {
             return $this->parser->parse($code);
-        } catch (\PhpParser\Error $e) {
+        } catch (Error $e) {
             if (\strpos($e->getMessage(), 'unexpected EOF') === false) {
                 throw ParseErrorException::fromParseError($e);
             }
@@ -50,7 +52,7 @@ class CodeArgumentParser
             // If we got an unexpected EOF, let's try it again with a semicolon.
             try {
                 return $this->parser->parse($code.';');
-            } catch (\PhpParser\Error $_e) {
+            } catch (Error $_e) {
                 // Throw the original error, not the semicolon one.
                 throw ParseErrorException::fromParseError($e);
             }

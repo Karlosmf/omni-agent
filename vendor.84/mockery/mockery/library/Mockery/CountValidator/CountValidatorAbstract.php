@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -31,7 +32,7 @@ abstract class CountValidatorAbstract implements CountValidatorInterface
     /**
      * Set Expectation object and upper call limit
      *
-     * @param int $limit
+     * @param  int  $limit
      */
     public function __construct(Expectation $expectation, $limit)
     {
@@ -42,8 +43,7 @@ abstract class CountValidatorAbstract implements CountValidatorInterface
     /**
      * Checks if the validator can accept an additional nth call
      *
-     * @param int $n
-     *
+     * @param  int  $n
      * @return bool
      */
     public function isEligible($n)
@@ -54,8 +54,7 @@ abstract class CountValidatorAbstract implements CountValidatorInterface
     /**
      * Validate the call count against this validator
      *
-     * @param int $n
-     *
+     * @param  int  $n
      * @return bool
      */
     abstract public function validate($n);

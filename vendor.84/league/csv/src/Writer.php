@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\Csv;
 
+use const STREAM_FILTER_WRITE;
+
 use Closure;
 use Deprecated;
 
@@ -21,24 +23,30 @@ use function array_reduce;
 use function implode;
 use function str_replace;
 
-use const STREAM_FILTER_WRITE;
-
 /**
  * A class to insert records into a CSV Document.
  */
 class Writer extends AbstractCsv implements TabularDataWriter
 {
     protected const ENCLOSE_ALL = 1;
+
     protected const ENCLOSE_NECESSARY = 0;
+
     protected const ENCLOSE_NONE = -1;
 
     protected const STREAM_FILTER_MODE = STREAM_FILTER_WRITE;
+
     /** @var array<Closure(array): bool> callable collection to validate the record before insertion. */
     protected array $validators = [];
+
     protected string $newline = "\n";
+
     protected int $flush_counter = 0;
+
     protected ?int $flush_threshold = null;
+
     protected int $enclose_all = self::ENCLOSE_NECESSARY;
+
     /** @var array{0:array<string>,1:array<string>} */
     protected array $enclosure_replace = [[], []];
 
@@ -88,7 +96,7 @@ class Writer extends AbstractCsv implements TabularDataWriter
      */
     public function encloseAll(): bool
     {
-        return self::ENCLOSE_ALL === $this->enclose_all;
+        return $this->enclose_all === self::ENCLOSE_ALL;
     }
 
     /**
@@ -97,7 +105,7 @@ class Writer extends AbstractCsv implements TabularDataWriter
      */
     public function encloseNecessary(): bool
     {
-        return self::ENCLOSE_NECESSARY === $this->enclose_all;
+        return $this->enclose_all === self::ENCLOSE_NECESSARY;
     }
 
     /**
@@ -105,11 +113,12 @@ class Writer extends AbstractCsv implements TabularDataWriter
      */
     public function encloseNone(): bool
     {
-        return self::ENCLOSE_NONE === $this->enclose_all;
+        return $this->enclose_all === self::ENCLOSE_NONE;
     }
 
     /**
      * Adds multiple records to the CSV document.
+     *
      * @see Writer::insertOne
      *
      * @throws CannotInsertRecord
@@ -151,16 +160,16 @@ class Writer extends AbstractCsv implements TabularDataWriter
         $this->validateRecord($record);
         /** @var int|false $bytes */
         $bytes = Warning::cloak($this->insertRecord(...), $record);
-        if (false === $bytes) {
+        if ($bytes === false) {
             throw CannotInsertRecord::triggerOnInsertion($record);
         }
 
-        if (null === $this->flush_threshold) {
+        if ($this->flush_threshold === null) {
             return $bytes;
         }
 
-        ++$this->flush_counter;
-        if (0 === $this->flush_counter % $this->flush_threshold) {
+        $this->flush_counter++;
+        if ($this->flush_counter % $this->flush_threshold === 0) {
             $this->flush_counter = 0;
             $this->document->fflush();
         }
@@ -176,18 +185,18 @@ class Writer extends AbstractCsv implements TabularDataWriter
     protected function validateRecord(array $record): void
     {
         foreach ($this->validators as $name => $validator) {
-            true === $validator($record) || throw CannotInsertRecord::triggerOnValidation($name, $record);
+            $validator($record) === true || throw CannotInsertRecord::triggerOnValidation($name, $record);
         }
     }
 
     /**
      * Adds a record validator.
      *
-     * @param callable(array): bool $validator
+     * @param  callable(array): bool  $validator
      */
     public function addValidator(callable $validator, string $validator_name): self
     {
-        $this->validators[$validator_name] = !$validator instanceof Closure ? $validator(...) : $validator;
+        $this->validators[$validator_name] = ! $validator instanceof Closure ? $validator(...) : $validator;
 
         return $this;
     }
@@ -213,7 +222,7 @@ class Writer extends AbstractCsv implements TabularDataWriter
             return $this;
         }
 
-        null === $threshold || 1 <= $threshold || throw InvalidArgument::dueToInvalidThreshold($threshold, __METHOD__);
+        $threshold === null || $threshold >= 1 || throw InvalidArgument::dueToInvalidThreshold($threshold, __METHOD__);
 
         $this->flush_threshold = $threshold;
         $this->flush_counter = 0;
@@ -250,6 +259,7 @@ class Writer extends AbstractCsv implements TabularDataWriter
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @deprecated since version 9.8.0
+     *
      * @codeCoverageIgnore
      *
      * Format a record.
@@ -259,7 +269,7 @@ class Writer extends AbstractCsv implements TabularDataWriter
      *   - NULL values,
      *   - or objects implementing the __toString() method.
      */
-    #[Deprecated(message:'no longer affecting the class behaviour', since:'league/csv:9.8.0')]
+    #[Deprecated(message: 'no longer affecting the class behaviour', since: 'league/csv:9.8.0')]
     protected function formatRecord(array $record, callable $formatter): array
     {
         return $formatter($record);
@@ -269,13 +279,14 @@ class Writer extends AbstractCsv implements TabularDataWriter
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @deprecated Since version 9.9.0
+     *
      * @codeCoverageIgnore
      *
      * Adds a single record to a CSV Document using PHP algorithm.
      *
      * @see https://php.net/manual/en/function.fputcsv.php
      */
-    #[Deprecated(message:'no longer affecting the class behaviour', since:'league/csv:9.9.0')]
+    #[Deprecated(message: 'no longer affecting the class behaviour', since: 'league/csv:9.9.0')]
     protected function addRecord(array $record): int|false
     {
         return $this->document->fputcsv($record, $this->delimiter, $this->enclosure, $this->escape, $this->newline);
@@ -285,19 +296,20 @@ class Writer extends AbstractCsv implements TabularDataWriter
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @deprecated Since version 9.9.0
+     *
      * @codeCoverageIgnore
      *
      * Applies post insertion actions.
      */
-    #[Deprecated(message:'no longer affecting the class behaviour', since:'league/csv:9.9.0')]
+    #[Deprecated(message: 'no longer affecting the class behaviour', since: 'league/csv:9.9.0')]
     protected function consolidate(): int
     {
-        if (null === $this->flush_threshold) {
+        if ($this->flush_threshold === null) {
             return 0;
         }
 
-        ++$this->flush_counter;
-        if (0 === $this->flush_counter % $this->flush_threshold) {
+        $this->flush_counter++;
+        if ($this->flush_counter % $this->flush_threshold === 0) {
             $this->flush_counter = 0;
             $this->document->fflush();
         }
@@ -310,11 +322,12 @@ class Writer extends AbstractCsv implements TabularDataWriter
      *
      * @see Writer::getEndOfLine()
      * @deprecated Since version 9.10.0
+     *
      * @codeCoverageIgnore
      *
      * Returns the current newline sequence characters.
      */
-    #[Deprecated(message:'use League\Csv\Writer::getEndOfLine()', since:'league/csv:9.10.0')]
+    #[Deprecated(message: 'use League\Csv\Writer::getEndOfLine()', since: 'league/csv:9.10.0')]
     public function getNewline(): string
     {
         return $this->getEndOfLine();
@@ -325,11 +338,12 @@ class Writer extends AbstractCsv implements TabularDataWriter
      *
      * @see Writer::setEndOfLine()
      * @deprecated Since version 9.10.0
+     *
      * @codeCoverageIgnore
      *
      * Sets the newline sequence.
      */
-    #[Deprecated(message:'use League\Csv\Writer::setEndOfLine()', since:'league/csv:9.10.0')]
+    #[Deprecated(message: 'use League\Csv\Writer::setEndOfLine()', since: 'league/csv:9.10.0')]
     public function setNewline(string $newline): self
     {
         return $this->setEndOfLine($newline);
@@ -340,11 +354,12 @@ class Writer extends AbstractCsv implements TabularDataWriter
      *
      * @see Writer::necessaryEnclosure()
      * @deprecated Since version 9.22.0
+     *
      * @codeCoverageIgnore
      *
      * Sets the enclosure threshold to only enclose necessary fields.
      */
-    #[Deprecated(message:'use League\Csv\Writer::necessaryEnclosure()', since:'league/csv:9.22.0')]
+    #[Deprecated(message: 'use League\Csv\Writer::necessaryEnclosure()', since: 'league/csv:9.22.0')]
     public function relaxEnclosure(): self
     {
         return $this->necessaryEnclosure();

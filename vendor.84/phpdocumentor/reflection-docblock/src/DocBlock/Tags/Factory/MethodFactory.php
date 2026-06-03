@@ -27,6 +27,7 @@ use function trim;
 final class MethodFactory implements PHPStanFactory
 {
     private DescriptionFactory $descriptionFactory;
+
     private TypeResolver $typeResolver;
 
     public function __construct(TypeResolver $typeResolver, DescriptionFactory $descriptionFactory)
@@ -51,7 +52,7 @@ final class MethodFactory implements PHPStanFactory
                 function (MethodTagValueParameterNode $param) use ($context) {
                     return new MethodParameter(
                         trim($param->parameterName, '$'),
-                        $param->type === null ? new Mixed_() : $this->typeResolver->createType(
+                        $param->type === null ? new Mixed_ : $this->typeResolver->createType(
                             $param->type,
                             $context
                         ),
@@ -75,7 +76,7 @@ final class MethodFactory implements PHPStanFactory
     private function createReturnType(MethodTagValueNode $tagValue, Context $context): Type
     {
         if ($tagValue->returnType === null) {
-            return new Void_();
+            return new Void_;
         }
 
         return $this->typeResolver->createType($tagValue->returnType, $context);

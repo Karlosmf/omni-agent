@@ -96,7 +96,7 @@ class Cluster extends Page
 
     public static function prependClusterSlug(Panel $panel, string $slug): string
     {
-        return static::getSlug($panel) . "/{$slug}";
+        return static::getSlug($panel)."/{$slug}";
     }
 
     public static function prependClusterRouteBaseName(Panel $panel, string $name): string
@@ -127,7 +127,7 @@ class Cluster extends Page
 
     public static function getNavigationItemActiveRoutePattern(): string
     {
-        return static::getRouteName() . '.*';
+        return static::getRouteName().'.*';
     }
 
     public static function registerRoutes(Panel $panel): void

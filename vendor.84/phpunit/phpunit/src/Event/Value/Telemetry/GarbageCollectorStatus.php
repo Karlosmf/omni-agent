@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\Telemetry;
 
 /**
@@ -17,32 +20,43 @@ namespace PHPUnit\Event\Telemetry;
 final readonly class GarbageCollectorStatus
 {
     private int $runs;
+
     private int $collected;
+
     private int $threshold;
+
     private int $roots;
+
     private float $applicationTime;
+
     private float $collectorTime;
+
     private float $destructorTime;
+
     private float $freeTime;
+
     private bool $running;
+
     private bool $protected;
+
     private bool $full;
+
     private int $bufferSize;
 
     public function __construct(int $runs, int $collected, int $threshold, int $roots, float $applicationTime, float $collectorTime, float $destructorTime, float $freeTime, bool $running, bool $protected, bool $full, int $bufferSize)
     {
-        $this->runs            = $runs;
-        $this->collected       = $collected;
-        $this->threshold       = $threshold;
-        $this->roots           = $roots;
+        $this->runs = $runs;
+        $this->collected = $collected;
+        $this->threshold = $threshold;
+        $this->roots = $roots;
         $this->applicationTime = $applicationTime;
-        $this->collectorTime   = $collectorTime;
-        $this->destructorTime  = $destructorTime;
-        $this->freeTime        = $freeTime;
-        $this->running         = $running;
-        $this->protected       = $protected;
-        $this->full            = $full;
-        $this->bufferSize      = $bufferSize;
+        $this->collectorTime = $collectorTime;
+        $this->destructorTime = $destructorTime;
+        $this->freeTime = $freeTime;
+        $this->running = $running;
+        $this->protected = $protected;
+        $this->full = $full;
+        $this->bufferSize = $bufferSize;
     }
 
     public function runs(): int

@@ -22,7 +22,6 @@ interface ConstraintInterface
     /**
      * Checks whether the given constraint intersects in any way with this constraint
      *
-     * @param ConstraintInterface $provider
      *
      * @return bool
      */
@@ -36,13 +35,14 @@ interface ConstraintInterface
      * - $b = whether or not the version is a non-comparable branch (starts with "dev-")
      *
      * @see Constraint::OP_* for the list of available operators.
+     *
      * @example return '!$b && version_compare($v, '1.0', '>')';
      *
-     * @param int $otherOperator one Constraint::OP_*
-     *
-     * @return string
+     * @param  int  $otherOperator  one Constraint::OP_*
      *
      * @phpstan-param Constraint::OP_* $otherOperator
+     *
+     * @return string
      */
     public function compile($otherOperator);
 
@@ -62,8 +62,7 @@ interface ConstraintInterface
     public function getPrettyString();
 
     /**
-     * @param string|null $prettyString
-     *
+     * @param  string|null  $prettyString
      * @return void
      */
     public function setPrettyString($prettyString);

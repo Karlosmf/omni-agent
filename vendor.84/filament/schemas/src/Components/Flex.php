@@ -26,7 +26,7 @@ class Flex extends Component
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Closure  $schema
      */
-    final public function __construct(array | Closure $schema)
+    final public function __construct(array|Closure $schema)
     {
         $this->schema($schema);
     }
@@ -34,7 +34,7 @@ class Flex extends Component
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Closure  $schema
      */
-    public static function make(array | Closure $schema): static
+    public static function make(array|Closure $schema): static
     {
         $static = app(static::class, ['schema' => $schema]);
         $static->configure();

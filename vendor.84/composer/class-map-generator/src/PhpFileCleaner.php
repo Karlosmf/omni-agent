@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of Composer.
@@ -16,6 +18,7 @@ use Composer\Pcre\Preg;
 
 /**
  * @author Jordi Boggiano <j.boggiano@seld.be>
+ *
  * @internal
  */
 class PhpFileCleaner
@@ -28,18 +31,21 @@ class PhpFileCleaner
 
     /**
      * @readonly
+     *
      * @var string
      */
     private $contents;
 
     /**
      * @readonly
+     *
      * @var int
      */
     private $len;
 
     /**
      * @readonly
+     *
      * @var int
      */
     private $maxMatches;
@@ -48,7 +54,7 @@ class PhpFileCleaner
     private $index = 0;
 
     /**
-     * @param string[] $types
+     * @param  string[]  $types
      */
     public static function setTypeConfig(array $types): void
     {
@@ -83,36 +89,42 @@ class PhpFileCleaner
                 if ($char === '?' && $this->peek('>')) {
                     $clean .= '?>';
                     $this->index += 2;
+
                     continue 2;
                 }
 
                 if ($char === '"') {
                     $this->skipString('"');
                     $clean .= 'null';
+
                     continue;
                 }
 
                 if ($char === "'") {
                     $this->skipString("'");
                     $clean .= 'null';
+
                     continue;
                 }
 
-                if ($char === "<" && $this->peek('<') && $this->match('{<<<[ \t]*+([\'"]?)([a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*+)\\1(?:\r\n|\n|\r)}A', $match)) {
+                if ($char === '<' && $this->peek('<') && $this->match('{<<<[ \t]*+([\'"]?)([a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*+)\\1(?:\r\n|\n|\r)}A', $match)) {
                     $this->index += \strlen($match[0]);
                     $this->skipHeredoc($match[2]);
                     $clean .= 'null';
+
                     continue;
                 }
 
                 if ($char === '/') {
                     if ($this->peek('/')) {
                         $this->skipToNewline();
+
                         continue;
                     }
 
                     if ($this->peek('*')) {
                         $this->skipComment();
+
                         continue;
                     }
                 }
@@ -123,13 +135,13 @@ class PhpFileCleaner
                         \substr($this->contents, $this->index, $type['length']) === $type['name']
                         && Preg::isMatch($type['pattern'], $this->contents, $match, 0, $this->index - 1)
                     ) {
-                        return $clean . $match[0];
+                        return $clean.$match[0];
                     }
                 }
 
                 $this->index += 1;
                 if ($this->match(self::$restPattern, $match)) {
-                    $clean .= $char . $match[0];
+                    $clean .= $char.$match[0];
                     $this->index += \strlen($match[0]);
                 } else {
                     $clean .= $char;
@@ -158,6 +170,7 @@ class PhpFileCleaner
         while ($this->index < $this->len) {
             if ($this->contents[$this->index] === '\\' && ($this->peek('\\') || $this->peek($delimiter))) {
                 $this->index += 2;
+
                 continue;
             }
 
@@ -204,8 +217,9 @@ class PhpFileCleaner
             // check if we find the delimiter after some spaces/tabs
             switch ($this->contents[$this->index]) {
                 case "\t":
-                case " ":
+                case ' ':
                     $this->index += 1;
+
                     continue 2;
                 case $firstDelimiterChar:
                     if (
@@ -240,8 +254,9 @@ class PhpFileCleaner
     }
 
     /**
-     * @param non-empty-string $regex
-     * @param null|array<mixed> $match
+     * @param  non-empty-string  $regex
+     * @param  null|array<mixed>  $match
+     *
      * @param-out array<int|string, string> $match
      */
     private function match(string $regex, ?array &$match = null): bool

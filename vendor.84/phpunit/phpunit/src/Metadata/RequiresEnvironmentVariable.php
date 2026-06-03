@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Metadata;
 
 /**
@@ -17,14 +20,15 @@ namespace PHPUnit\Metadata;
 final readonly class RequiresEnvironmentVariable extends Metadata
 {
     private string $environmentVariableName;
-    private null|string $value;
 
-    protected function __construct(int $level, string $environmentVariableName, null|string $value)
+    private ?string $value;
+
+    protected function __construct(int $level, string $environmentVariableName, ?string $value)
     {
         parent::__construct($level);
 
         $this->environmentVariableName = $environmentVariableName;
-        $this->value                   = $value;
+        $this->value = $value;
     }
 
     public function isRequiresEnvironmentVariable(): true
@@ -37,7 +41,7 @@ final readonly class RequiresEnvironmentVariable extends Metadata
         return $this->environmentVariableName;
     }
 
-    public function value(): null|string
+    public function value(): ?string
     {
         return $this->value;
     }

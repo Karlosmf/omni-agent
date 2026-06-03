@@ -94,28 +94,28 @@ class RegenerateAppAuthenticationRecoveryCodesAction
                             ))
                                 ->size('xs'),
                             Text::make(fn (): Htmlable => new HtmlString(
-                                __('filament-panels::auth/multi-factor/recovery-codes-modal-content.actions.0') .
-                                ' ' .
+                                __('filament-panels::auth/multi-factor/recovery-codes-modal-content.actions.0').
+                                ' '.
                                 Action::make('copy')
                                     ->label(__('filament-panels::auth/multi-factor/recovery-codes-modal-content.actions.copy.label'))
                                     ->link()
                                     ->alpineClickHandler('
-                                        window.navigator.clipboard.writeText(' . Js::from(implode(PHP_EOL, $arguments['recoveryCodes'])) . ')
-                                        $tooltip(' . Js::from(__('filament-panels::auth/multi-factor/recovery-codes-modal-content.messages.copied')) . ', {
+                                        window.navigator.clipboard.writeText('.Js::from(implode(PHP_EOL, $arguments['recoveryCodes'])).')
+                                        $tooltip('.Js::from(__('filament-panels::auth/multi-factor/recovery-codes-modal-content.messages.copied')).', {
                                             theme: $store.theme,
                                         })
                                     ')
-                                    ->toHtml() .
-                                ' ' .
-                                __('filament-panels::auth/multi-factor/recovery-codes-modal-content.actions.1') .
-                                ' ' .
+                                    ->toHtml().
+                                ' '.
+                                __('filament-panels::auth/multi-factor/recovery-codes-modal-content.actions.1').
+                                ' '.
                                 Action::make('download')
                                     ->label(__('filament-panels::auth/multi-factor/recovery-codes-modal-content.actions.download.label'))
                                     ->link()
-                                    ->url('data:application/octet-stream,' . urlencode(implode(PHP_EOL, $arguments['recoveryCodes'])))
+                                    ->url('data:application/octet-stream,'.urlencode(implode(PHP_EOL, $arguments['recoveryCodes'])))
                                     ->extraAttributes(['download' => true])
-                                    ->toHtml() .
-                                ' ' .
+                                    ->toHtml().
+                                ' '.
                                 __('filament-panels::auth/multi-factor/recovery-codes-modal-content.actions.2')
                             )),
                         ])

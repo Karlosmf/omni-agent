@@ -2,16 +2,18 @@
 
 namespace Livewire\Mechanisms\FrontendAssets;
 
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Vite;
 use Livewire\Drawer\Utils;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Blade;
 use Livewire\Mechanisms\Mechanism;
+
 use function Livewire\on;
 
 class FrontendAssets extends Mechanism
 {
     public $hasRenderedScripts = false;
+
     public $hasRenderedStyles = false;
 
     public $javaScriptRoute;
@@ -32,7 +34,7 @@ class FrontendAssets extends Mechanism
         Blade::directive('livewireScriptConfig', [static::class, 'livewireScriptConfig']);
         Blade::directive('livewireStyles', [static::class, 'livewireStyles']);
 
-        app('livewire')->provide(function() {
+        app('livewire')->provide(function () {
             $this->publishes(
                 [
                     __DIR__.'/../../../dist' => public_path('vendor/livewire'),
@@ -49,12 +51,12 @@ class FrontendAssets extends Mechanism
         });
     }
 
-    function useScriptTagAttributes($attributes)
+    public function useScriptTagAttributes($attributes)
     {
         $this->scriptTagAttributes = array_merge($this->scriptTagAttributes, $attributes);
     }
 
-    function setScriptRoute($callback)
+    public function setScriptRoute($callback)
     {
         $route = $callback([self::class, 'returnJavaScriptAsFile']);
 
@@ -179,7 +181,7 @@ class FrontendAssets extends Mechanism
 
         $url = rtrim($url, '/');
 
-        $url = (string) str($url)->when(! str($url)->isUrl(), fn($url) => $url->start('/'));
+        $url = (string) str($url)->when(! str($url)->isUrl(), fn ($url) => $url->start('/'));
 
         // Add the build manifest hash to it...
         $manifest = json_decode(file_get_contents(__DIR__.'/../../../dist/manifest.json'), true);

@@ -8,17 +8,19 @@ class WebDriverResponse
      * @var int
      */
     private $status;
+
     /**
      * @var mixed
      */
     private $value;
+
     /**
      * @var string
      */
     private $sessionID;
 
     /**
-     * @param null|string $session_id
+     * @param  null|string  $session_id
      */
     public function __construct($session_id = null)
     {
@@ -34,7 +36,7 @@ class WebDriverResponse
     }
 
     /**
-     * @param int $status
+     * @param  int  $status
      * @return WebDriverResponse
      */
     public function setStatus($status)
@@ -53,7 +55,7 @@ class WebDriverResponse
     }
 
     /**
-     * @param mixed $value
+     * @param  mixed  $value
      * @return WebDriverResponse
      */
     public function setValue($value)
@@ -72,7 +74,7 @@ class WebDriverResponse
     }
 
     /**
-     * @param mixed $session_id
+     * @param  mixed  $session_id
      * @return WebDriverResponse
      */
     public function setSessionID($session_id)

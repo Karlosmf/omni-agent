@@ -18,17 +18,22 @@ class GitHubChecker implements Checker
     const RELEASES_URL = 'https://api.github.com/repos/bobthecow/psysh-manual/releases';
 
     private string $lang;
+
     private string $format;
+
     private ?string $currentVersion;
+
     private ?string $currentLang;
+
     private ?string $latestVersion = null;
+
     private ?string $downloadUrl = null;
 
     /**
-     * @param string      $lang           Language code (e.g., 'en')
-     * @param string      $format         Format type ('php' or 'sqlite')
-     * @param string|null $currentVersion Current manual version, or null if not installed
-     * @param string|null $currentLang    Current manual language, or null if not installed
+     * @param  string  $lang  Language code (e.g., 'en')
+     * @param  string  $format  Format type ('php' or 'sqlite')
+     * @param  string|null  $currentVersion  Current manual version, or null if not installed
+     * @param  string|null  $currentLang  Current manual language, or null if not installed
      */
     public function __construct(string $lang, string $format, ?string $currentVersion = null, ?string $currentLang = null)
     {
@@ -54,7 +59,7 @@ class GitHubChecker implements Checker
 
     public function getLatest(): string
     {
-        if (!isset($this->latestVersion)) {
+        if (! isset($this->latestVersion)) {
             $this->fetchLatestRelease();
         }
 
@@ -63,7 +68,7 @@ class GitHubChecker implements Checker
 
     public function getDownloadUrl(): string
     {
-        if (!isset($this->downloadUrl)) {
+        if (! isset($this->downloadUrl)) {
             $this->fetchLatestRelease();
         }
 
@@ -75,7 +80,7 @@ class GitHubChecker implements Checker
         $context = \stream_context_create([
             'http' => [
                 'user_agent' => 'PsySH/'.Shell::VERSION,
-                'timeout'    => 3.0,
+                'timeout' => 3.0,
             ],
         ]);
 
@@ -87,12 +92,12 @@ class GitHubChecker implements Checker
 
         \restore_error_handler();
 
-        if (!$result) {
+        if (! $result) {
             throw new \RuntimeException('Unable to fetch manual releases from GitHub');
         }
 
         $releases = \json_decode($result, true);
-        if (!$releases || !\is_array($releases)) {
+        if (! $releases || ! \is_array($releases)) {
             throw new \RuntimeException('Invalid response from GitHub releases API');
         }
 
@@ -130,8 +135,6 @@ class GitHubChecker implements Checker
 
     /**
      * Fetch and parse manifest.json from a release.
-     *
-     * @return array|null
      */
     private function fetchManifest(array $release): ?array
     {
@@ -141,7 +144,7 @@ class GitHubChecker implements Checker
                 $context = \stream_context_create([
                     'http' => [
                         'user_agent' => 'PsySH/'.Shell::VERSION,
-                        'timeout'    => 3.0,
+                        'timeout' => 3.0,
                     ],
                 ]);
 

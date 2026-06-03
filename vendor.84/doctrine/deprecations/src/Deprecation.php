@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Doctrine\Deprecations;
 
+use const DEBUG_BACKTRACE_IGNORE_ARGS;
+use const DIRECTORY_SEPARATOR;
+use const E_USER_DEPRECATED;
+
 use Psr\Log\LoggerInterface;
 
 use function array_key_exists;
@@ -16,10 +20,6 @@ use function strpos;
 use function strrpos;
 use function substr;
 use function trigger_error;
-
-use const DEBUG_BACKTRACE_IGNORE_ARGS;
-use const DIRECTORY_SEPARATOR;
-use const E_USER_DEPRECATED;
 
 /**
  * Manages Deprecation logging in different ways.
@@ -43,10 +43,13 @@ use const E_USER_DEPRECATED;
  */
 class Deprecation
 {
-    private const TYPE_NONE               = 0;
+    private const TYPE_NONE = 0;
+
     private const TYPE_TRACK_DEPRECATIONS = 1;
-    private const TYPE_TRIGGER_ERROR      = 2;
-    private const TYPE_PSR_LOGGER         = 4;
+
+    private const TYPE_TRIGGER_ERROR = 2;
+
+    private const TYPE_PSR_LOGGER = 4;
 
     /** @var int-mask-of<self::TYPE_*>|null */
     private static $type;
@@ -73,7 +76,7 @@ class Deprecation
      * deprecation. It is additionally used to de-duplicate the trigger of the
      * same deprecation during a request.
      *
-     * @param float|int|string $args
+     * @param  float|int|string  $args
      */
     public static function trigger(string $package, string $link, string $message, ...$args): void
     {
@@ -125,7 +128,7 @@ class Deprecation
      * deprecation tracking is enabled even during deduplication, because it
      * needs to call {@link debug_backtrace()}
      *
-     * @param float|int|string $args
+     * @param  float|int|string  $args
      */
     public static function triggerIfCalledFromOutside(string $package, string $link, string $message, ...$args): void
     {
@@ -138,8 +141,8 @@ class Deprecation
         $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
 
         // first check that the caller is not from a tests folder, in which case we always let deprecations pass
-        if (isset($backtrace[1]['file'], $backtrace[0]['file']) && strpos($backtrace[1]['file'], DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR) === false) {
-            $path = DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $package) . DIRECTORY_SEPARATOR;
+        if (isset($backtrace[1]['file'], $backtrace[0]['file']) && strpos($backtrace[1]['file'], DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR) === false) {
+            $path = DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $package).DIRECTORY_SEPARATOR;
 
             if (strpos($backtrace[0]['file'], $path) === false) {
                 return;
@@ -224,20 +227,20 @@ class Deprecation
 
     public static function enableTrackingDeprecations(): void
     {
-        self::$type  = self::$type ?? self::getTypeFromEnv();
+        self::$type = self::$type ?? self::getTypeFromEnv();
         self::$type |= self::TYPE_TRACK_DEPRECATIONS;
     }
 
     public static function enableWithTriggerError(): void
     {
-        self::$type  = self::$type ?? self::getTypeFromEnv();
+        self::$type = self::$type ?? self::getTypeFromEnv();
         self::$type |= self::TYPE_TRIGGER_ERROR;
     }
 
     public static function enableWithPsrLogger(LoggerInterface $logger): void
     {
-        self::$type   = self::$type ?? self::getTypeFromEnv();
-        self::$type  |= self::TYPE_PSR_LOGGER;
+        self::$type = self::$type ?? self::getTypeFromEnv();
+        self::$type |= self::TYPE_PSR_LOGGER;
         self::$logger = $logger;
     }
 
@@ -248,10 +251,10 @@ class Deprecation
 
     public static function disable(): void
     {
-        self::$type          = self::TYPE_NONE;
-        self::$logger        = null;
+        self::$type = self::TYPE_NONE;
+        self::$logger = null;
         self::$deduplication = true;
-        self::$ignoredLinks  = [];
+        self::$ignoredLinks = [];
 
         foreach (self::$triggeredDeprecations as $link => $count) {
             self::$triggeredDeprecations[$link] = 0;

@@ -35,9 +35,9 @@ class ColorEntry extends Entry implements HasEmbeddedView
                 ->merge([
                     'x-tooltip' => filled($tooltip = $this->getEmptyTooltip())
                         ? '{
-                            content: ' . Js::from($tooltip) . ',
+                            content: '.Js::from($tooltip).',
                             theme: $store.theme,
-                            allowHTML: ' . Js::from($tooltip instanceof Htmlable) . ',
+                            allowHTML: '.Js::from($tooltip instanceof Htmlable).',
                         }'
                         : null,
                 ], escape: false);
@@ -98,9 +98,9 @@ class ColorEntry extends Entry implements HasEmbeddedView
                             : null,
                         'x-tooltip' => filled($tooltip = $this->getTooltip($stateItem))
                             ? '{
-                                content: ' . Js::from($tooltip) . ',
+                                content: '.Js::from($tooltip).',
                                 theme: $store.theme,
-                                allowHTML: ' . Js::from($tooltip instanceof Htmlable) . ',
+                                allowHTML: '.Js::from($tooltip instanceof Htmlable).',
                             }'
                             : null,
                     ], escape: false)
@@ -109,7 +109,7 @@ class ColorEntry extends Entry implements HasEmbeddedView
                         'fi-copyable' => $isCopyable,
                     ])
                     ->style([
-                        'background-color: ' . e($stateItem) => $stateItem,
+                        'background-color: '.e($stateItem) => $stateItem,
                     ])
                     ->toHtml() ?>></div>
             <?php } ?>

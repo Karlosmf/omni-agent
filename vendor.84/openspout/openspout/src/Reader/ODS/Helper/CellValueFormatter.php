@@ -22,33 +22,51 @@ final readonly class CellValueFormatter
      * Definition of all possible cell types.
      */
     public const CELL_TYPE_STRING = 'string';
+
     public const CELL_TYPE_FLOAT = 'float';
+
     public const CELL_TYPE_BOOLEAN = 'boolean';
+
     public const CELL_TYPE_DATE = 'date';
+
     public const CELL_TYPE_TIME = 'time';
+
     public const CELL_TYPE_CURRENCY = 'currency';
+
     public const CELL_TYPE_PERCENTAGE = 'percentage';
+
     public const CELL_TYPE_VOID = 'void';
 
     /**
      * Definition of XML nodes names used to parse data.
      */
     public const XML_NODE_P = 'p';
+
     public const XML_NODE_TEXT_A = 'text:a';
+
     public const XML_NODE_TEXT_SPAN = 'text:span';
+
     public const XML_NODE_TEXT_S = 'text:s';
+
     public const XML_NODE_TEXT_TAB = 'text:tab';
+
     public const XML_NODE_TEXT_LINE_BREAK = 'text:line-break';
 
     /**
      * Definition of XML attributes used to parse data.
      */
     public const XML_ATTRIBUTE_TYPE = 'office:value-type';
+
     public const XML_ATTRIBUTE_VALUE = 'office:value';
+
     public const XML_ATTRIBUTE_BOOLEAN_VALUE = 'office:boolean-value';
+
     public const XML_ATTRIBUTE_DATE_VALUE = 'office:date-value';
+
     public const XML_ATTRIBUTE_TIME_VALUE = 'office:time-value';
+
     public const XML_ATTRIBUTE_CURRENCY = 'office:currency';
+
     public const XML_ATTRIBUTE_C = 'text:c';
 
     /**
@@ -67,8 +85,8 @@ final readonly class CellValueFormatter
     private ODS $escaper;
 
     /**
-     * @param bool $shouldFormatDates Whether date/time values should be returned as PHP objects or be formatted as strings
-     * @param ODS  $escaper           Used to unescape XML data
+     * @param  bool  $shouldFormatDates  Whether date/time values should be returned as PHP objects or be formatted as strings
+     * @param  ODS  $escaper  Used to unescape XML data
      */
     public function __construct(bool $shouldFormatDates, ODS $escaper)
     {
@@ -240,7 +258,7 @@ final readonly class CellValueFormatter
                 $textValue .= $childNode->nodeValue;
             } elseif ($this->isWhitespaceNode($childNode->nodeName) && $childNode instanceof DOMElement) {
                 $textValue .= $this->transformWhitespaceNode($childNode);
-            } elseif (self::XML_NODE_TEXT_A === $childNode->nodeName || self::XML_NODE_TEXT_SPAN === $childNode->nodeName) {
+            } elseif ($childNode->nodeName === self::XML_NODE_TEXT_A || $childNode->nodeName === self::XML_NODE_TEXT_SPAN) {
                 $textValue .= $this->extractTextValueFromNode($childNode);
             }
         }
@@ -269,14 +287,13 @@ final readonly class CellValueFormatter
      *
      * @see https://docs.oasis-open.org/office/v1.2/os/OpenDocument-v1.2-os-part1.html#__RefHeading__1415200_253892949
      *
-     * @param DOMElement $node The XML node representing a whitespace
-     *
+     * @param  DOMElement  $node  The XML node representing a whitespace
      * @return string The corresponding whitespace value
      */
     private function transformWhitespaceNode(DOMElement $node): string
     {
         $countAttribute = $node->getAttribute(self::XML_ATTRIBUTE_C); // only defined for "<text:s>"
-        $numWhitespaces = '' !== $countAttribute ? (int) $countAttribute : 1;
+        $numWhitespaces = $countAttribute !== '' ? (int) $countAttribute : 1;
 
         return str_repeat(self::WHITESPACE_XML_NODES[$node->nodeName], $numWhitespaces);
     }

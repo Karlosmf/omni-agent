@@ -41,6 +41,4 @@ namespace Psy\Readline\Hoa;
  *
  * Extending the \Hoa\Exception\Exception class.
  */
-class ConsoleException extends Exception
-{
-}
+class ConsoleException extends Exception {}

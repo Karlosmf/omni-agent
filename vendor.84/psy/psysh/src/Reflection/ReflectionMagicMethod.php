@@ -23,24 +23,31 @@ namespace Psy\Reflection;
 class ReflectionMagicMethod implements \Reflector
 {
     private \ReflectionClass $declaringClass;
+
     public string $name;
+
     public string $class;
+
     private bool $isStatic;
+
     private ?string $returnType;
+
     private string $parameters;
+
     private ?string $description;
+
     private bool $returnsReference;
 
     /**
      * Construct a ReflectionMagicMethod.
      *
-     * @param \ReflectionClass $declaringClass   The class that declares this magic method
-     * @param string           $name             The method name
-     * @param bool             $isStatic         Whether this is a static method
-     * @param string|null      $returnType       The return type (from docblock)
-     * @param string           $parameters       The parameter string (without parentheses)
-     * @param string|null      $description      The method description
-     * @param bool             $returnsReference Whether the method returns by reference
+     * @param  \ReflectionClass  $declaringClass  The class that declares this magic method
+     * @param  string  $name  The method name
+     * @param  bool  $isStatic  Whether this is a static method
+     * @param  string|null  $returnType  The return type (from docblock)
+     * @param  string  $parameters  The parameter string (without parentheses)
+     * @param  string|null  $description  The method description
+     * @param  bool  $returnsReference  Whether the method returns by reference
      */
     public function __construct(
         \ReflectionClass $declaringClass,

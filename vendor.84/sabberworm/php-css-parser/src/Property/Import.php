@@ -29,7 +29,7 @@ class Import implements AtRule, Positionable
     private $mediaQuery;
 
     /**
-     * @param int<1, max>|null $lineNumber
+     * @param  int<1, max>|null  $lineNumber
      */
     public function __construct(URL $location, ?string $mediaQuery, ?int $lineNumber = null)
     {
@@ -53,8 +53,8 @@ class Import implements AtRule, Positionable
      */
     public function render(OutputFormat $outputFormat): string
     {
-        return $outputFormat->getFormatter()->comments($this) . '@import ' . $this->location->render($outputFormat)
-            . ($this->mediaQuery === null ? '' : ' ' . $this->mediaQuery) . ';';
+        return $outputFormat->getFormatter()->comments($this).'@import '.$this->location->render($outputFormat)
+            .($this->mediaQuery === null ? '' : ' '.$this->mediaQuery).';';
     }
 
     /**

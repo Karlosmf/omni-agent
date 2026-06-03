@@ -24,70 +24,70 @@ class FileUpload extends BaseFileUpload
      */
     protected string $view = 'filament-forms::components.file-upload';
 
-    protected bool | Closure $shouldAutomaticallyCropImagesToAspectRatio = false;
+    protected bool|Closure $shouldAutomaticallyCropImagesToAspectRatio = false;
 
-    protected string | Closure | null $automaticallyResizeImagesMode = null;
+    protected string|Closure|null $automaticallyResizeImagesMode = null;
 
-    protected string | Closure | null $automaticallyResizeImagesHeight = null;
+    protected string|Closure|null $automaticallyResizeImagesHeight = null;
 
-    protected string | Closure | null $automaticallyResizeImagesWidth = null;
+    protected string|Closure|null $automaticallyResizeImagesWidth = null;
 
-    protected bool | Closure $shouldAutomaticallyUpscaleImagesWhenResizing = true;
+    protected bool|Closure $shouldAutomaticallyUpscaleImagesWhenResizing = true;
 
-    protected string | Closure | null $imagePreviewHeight = null;
+    protected string|Closure|null $imagePreviewHeight = null;
 
-    protected bool | Closure $isAvatar = false;
+    protected bool|Closure $isAvatar = false;
 
-    protected string | int | float | Closure | null $itemPanelAspectRatio = null;
+    protected string|int|float|Closure|null $itemPanelAspectRatio = null;
 
-    protected string | Closure $loadingIndicatorPosition = 'right';
+    protected string|Closure $loadingIndicatorPosition = 'right';
 
-    protected string | Closure | null $panelAspectRatio = null;
+    protected string|Closure|null $panelAspectRatio = null;
 
-    protected string | Closure | null $panelLayout = 'compact';
+    protected string|Closure|null $panelLayout = 'compact';
 
-    protected string | Closure $removeUploadedFileButtonPosition = 'left';
+    protected string|Closure $removeUploadedFileButtonPosition = 'left';
 
-    protected bool | Closure $shouldAppendFiles = false;
+    protected bool|Closure $shouldAppendFiles = false;
 
-    protected bool | Closure $shouldOrientImagesFromExif = true;
+    protected bool|Closure $shouldOrientImagesFromExif = true;
 
-    protected string | Closure $uploadButtonPosition = 'right';
+    protected string|Closure $uploadButtonPosition = 'right';
 
-    protected string | Closure $uploadProgressIndicatorPosition = 'right';
+    protected string|Closure $uploadProgressIndicatorPosition = 'right';
 
-    protected bool | Closure $hasImageEditor = false;
+    protected bool|Closure $hasImageEditor = false;
 
-    protected bool | Closure $hasCircleCropper = false;
+    protected bool|Closure $hasCircleCropper = false;
 
-    protected bool | Closure $canEditSvgs = true;
+    protected bool|Closure $canEditSvgs = true;
 
-    protected bool | Closure $isSvgEditingConfirmed = false;
+    protected bool|Closure $isSvgEditingConfirmed = false;
 
-    protected bool | Closure $shouldAutomaticallyOpenImageEditorForAspectRatio = false;
+    protected bool|Closure $shouldAutomaticallyOpenImageEditorForAspectRatio = false;
 
-    protected int | Closure | null $imageEditorViewportWidth = null;
+    protected int|Closure|null $imageEditorViewportWidth = null;
 
-    protected int | Closure | null $imageEditorViewportHeight = null;
+    protected int|Closure|null $imageEditorViewportHeight = null;
 
     protected int $imageEditorMode = 1;
 
     /**
      * @var string | array<string> | Closure | null
      */
-    protected string | array | Closure | null $imageEditorEmptyFillColor = null;
+    protected string|array|Closure|null $imageEditorEmptyFillColor = null;
 
     /**
      * @var array<string | null> | Closure
      */
-    protected array | Closure $imageEditorAspectRatioOptions = [];
+    protected array|Closure $imageEditorAspectRatioOptions = [];
 
     /**
      * @var array<string, string> | Closure
      */
-    protected array | Closure $mimeTypeMap = [];
+    protected array|Closure $mimeTypeMap = [];
 
-    public function appendFiles(bool | Closure $condition = true): static
+    public function appendFiles(bool|Closure $condition = true): static
     {
         $this->shouldAppendFiles = $condition;
 
@@ -117,7 +117,7 @@ class FileUpload extends BaseFileUpload
     /**
      * @deprecated Use `placeholder()` instead.
      */
-    public function idleLabel(string | Closure | null $label): static
+    public function idleLabel(string|Closure|null $label): static
     {
         $this->placeholder($label);
 
@@ -133,7 +133,7 @@ class FileUpload extends BaseFileUpload
         return $this;
     }
 
-    public function automaticallyCropImagesToAspectRatio(bool | Closure $condition = true): static
+    public function automaticallyCropImagesToAspectRatio(bool|Closure $condition = true): static
     {
         $this->shouldAutomaticallyCropImagesToAspectRatio = $condition;
 
@@ -143,7 +143,7 @@ class FileUpload extends BaseFileUpload
     /**
      * @deprecated Use `imageAspectRatio()` and `automaticallyCropImagesToAspectRatio()` instead.
      */
-    public function imageCropAspectRatio(string | Closure | null $ratio): static
+    public function imageCropAspectRatio(string|Closure|null $ratio): static
     {
         $this->imageAspectRatio($ratio);
         $this->automaticallyCropImagesToAspectRatio(($ratio instanceof Closure) ? $ratio : filled($ratio));
@@ -151,7 +151,7 @@ class FileUpload extends BaseFileUpload
         return $this;
     }
 
-    public function automaticallyResizeImagesMode(string | Closure | null $mode): static
+    public function automaticallyResizeImagesMode(string|Closure|null $mode): static
     {
         $this->automaticallyResizeImagesMode = $mode;
 
@@ -161,12 +161,12 @@ class FileUpload extends BaseFileUpload
     /**
      * @deprecated Use `automaticallyResizeImagesMode()` instead.
      */
-    public function imageResizeMode(string | Closure | null $mode): static
+    public function imageResizeMode(string|Closure|null $mode): static
     {
         return $this->automaticallyResizeImagesMode($mode);
     }
 
-    public function automaticallyResizeImagesToHeight(string | Closure | null $height): static
+    public function automaticallyResizeImagesToHeight(string|Closure|null $height): static
     {
         $this->automaticallyResizeImagesHeight = $height;
 
@@ -176,12 +176,12 @@ class FileUpload extends BaseFileUpload
     /**
      * @deprecated Use `automaticallyResizeImagesToHeight()` instead.
      */
-    public function imageResizeTargetHeight(string | Closure | null $height): static
+    public function imageResizeTargetHeight(string|Closure|null $height): static
     {
         return $this->automaticallyResizeImagesToHeight($height);
     }
 
-    public function automaticallyResizeImagesToWidth(string | Closure | null $width): static
+    public function automaticallyResizeImagesToWidth(string|Closure|null $width): static
     {
         $this->automaticallyResizeImagesWidth = $width;
 
@@ -191,12 +191,12 @@ class FileUpload extends BaseFileUpload
     /**
      * @deprecated Use `automaticallyResizeImagesToWidth()` instead.
      */
-    public function imageResizeTargetWidth(string | Closure | null $width): static
+    public function imageResizeTargetWidth(string|Closure|null $width): static
     {
         return $this->automaticallyResizeImagesToWidth($width);
     }
 
-    public function automaticallyUpscaleImagesWhenResizing(bool | Closure $condition = true): static
+    public function automaticallyUpscaleImagesWhenResizing(bool|Closure $condition = true): static
     {
         $this->shouldAutomaticallyUpscaleImagesWhenResizing = $condition;
 
@@ -206,33 +206,33 @@ class FileUpload extends BaseFileUpload
     /**
      * @deprecated Use `automaticallyUpscaleImagesWhenResizing()` instead.
      */
-    public function imageResizeUpscale(bool | Closure $condition = true): static
+    public function imageResizeUpscale(bool|Closure $condition = true): static
     {
         return $this->automaticallyUpscaleImagesWhenResizing($condition);
     }
 
-    public function imagePreviewHeight(string | Closure | null $height): static
+    public function imagePreviewHeight(string|Closure|null $height): static
     {
         $this->imagePreviewHeight = $height;
 
         return $this;
     }
 
-    public function itemPanelAspectRatio(string | int | float | Closure | null $ratio): static
+    public function itemPanelAspectRatio(string|int|float|Closure|null $ratio): static
     {
         $this->itemPanelAspectRatio = $ratio;
 
         return $this;
     }
 
-    public function loadingIndicatorPosition(string | Closure | null $position): static
+    public function loadingIndicatorPosition(string|Closure|null $position): static
     {
         $this->loadingIndicatorPosition = $position;
 
         return $this;
     }
 
-    public function orientImagesFromExif(bool | Closure $condition = true): static
+    public function orientImagesFromExif(bool|Closure $condition = true): static
     {
         $this->shouldOrientImagesFromExif = $condition;
 
@@ -242,42 +242,42 @@ class FileUpload extends BaseFileUpload
     /**
      * @deprecated Use `orientImagesFromExif()` instead.
      */
-    public function orientImageFromExif(bool | Closure $condition = true): static
+    public function orientImageFromExif(bool|Closure $condition = true): static
     {
         $this->orientImagesFromExif($condition);
 
         return $this;
     }
 
-    public function panelAspectRatio(string | Closure | null $ratio): static
+    public function panelAspectRatio(string|Closure|null $ratio): static
     {
         $this->panelAspectRatio = $ratio;
 
         return $this;
     }
 
-    public function panelLayout(string | Closure | null $layout): static
+    public function panelLayout(string|Closure|null $layout): static
     {
         $this->panelLayout = $layout;
 
         return $this;
     }
 
-    public function removeUploadedFileButtonPosition(string | Closure | null $position): static
+    public function removeUploadedFileButtonPosition(string|Closure|null $position): static
     {
         $this->removeUploadedFileButtonPosition = $position;
 
         return $this;
     }
 
-    public function uploadButtonPosition(string | Closure | null $position): static
+    public function uploadButtonPosition(string|Closure|null $position): static
     {
         $this->uploadButtonPosition = $position;
 
         return $this;
     }
 
-    public function uploadProgressIndicatorPosition(string | Closure | null $position): static
+    public function uploadProgressIndicatorPosition(string|Closure|null $position): static
     {
         $this->uploadProgressIndicatorPosition = $position;
 
@@ -373,7 +373,7 @@ class FileUpload extends BaseFileUpload
         return $this->evaluate($this->imagePreviewHeight);
     }
 
-    public function getItemPanelAspectRatio(): int | float | null
+    public function getItemPanelAspectRatio(): int|float|null
     {
         $ratio = $this->evaluate($this->itemPanelAspectRatio);
 
@@ -436,49 +436,49 @@ class FileUpload extends BaseFileUpload
         return (bool) $this->evaluate($this->shouldOrientImagesFromExif);
     }
 
-    public function imageEditor(bool | Closure $condition = true): static
+    public function imageEditor(bool|Closure $condition = true): static
     {
         $this->hasImageEditor = $condition;
 
         return $this;
     }
 
-    public function circleCropper(bool | Closure $condition = true): static
+    public function circleCropper(bool|Closure $condition = true): static
     {
         $this->hasCircleCropper = $condition;
 
         return $this;
     }
 
-    public function editableSvgs(bool | Closure $condition = true): static
+    public function editableSvgs(bool|Closure $condition = true): static
     {
         $this->canEditSvgs = $condition;
 
         return $this;
     }
 
-    public function confirmSvgEditing(bool | Closure $condition = true): static
+    public function confirmSvgEditing(bool|Closure $condition = true): static
     {
         $this->isSvgEditingConfirmed = $condition;
 
         return $this;
     }
 
-    public function automaticallyOpenImageEditorForAspectRatio(bool | Closure $condition = true): static
+    public function automaticallyOpenImageEditorForAspectRatio(bool|Closure $condition = true): static
     {
         $this->shouldAutomaticallyOpenImageEditorForAspectRatio = $condition;
 
         return $this;
     }
 
-    public function imageEditorViewportWidth(int | Closure | null $width): static
+    public function imageEditorViewportWidth(int|Closure|null $width): static
     {
         $this->imageEditorViewportWidth = $width;
 
         return $this;
     }
 
-    public function imageEditorViewportHeight(int | Closure | null $height): static
+    public function imageEditorViewportHeight(int|Closure|null $height): static
     {
         $this->imageEditorViewportHeight = $height;
 
@@ -496,7 +496,7 @@ class FileUpload extends BaseFileUpload
         return $this;
     }
 
-    public function imageEditorEmptyFillColor(string | Closure | null $color): static
+    public function imageEditorEmptyFillColor(string|Closure|null $color): static
     {
         $this->imageEditorEmptyFillColor = $color;
 
@@ -506,7 +506,7 @@ class FileUpload extends BaseFileUpload
     /**
      * @param  array<string | null> | Closure  $ratios
      */
-    public function imageEditorAspectRatioOptions(array | Closure $ratios): static
+    public function imageEditorAspectRatioOptions(array|Closure $ratios): static
     {
         $this->imageEditorAspectRatioOptions = $ratios;
 
@@ -518,7 +518,7 @@ class FileUpload extends BaseFileUpload
      *
      * @param  array<string | null> | Closure  $ratios
      */
-    public function imageEditorAspectRatios(array | Closure $ratios): static
+    public function imageEditorAspectRatios(array|Closure $ratios): static
     {
         return $this->imageEditorAspectRatioOptions($ratios);
     }
@@ -557,7 +557,7 @@ class FileUpload extends BaseFileUpload
         return $this->evaluate($this->imageEditorViewportWidth);
     }
 
-    protected function getParentTargetSizes(int $widthOrHeight): int | float
+    protected function getParentTargetSizes(int $widthOrHeight): int|float
     {
         $targetWidth = (int) $this->getAutomaticallyResizeImagesWidth();
 
@@ -669,7 +669,7 @@ class FileUpload extends BaseFileUpload
 
                 return [$label => $floatValue];
             })
-            ->filter(fn (float | string | null $ratio): bool => $ratio !== null)
+            ->filter(fn (float|string|null $ratio): bool => $ratio !== null)
             ->when(
                 fn (Collection $ratios): bool => $ratios->count() < 2,
                 fn (Collection $ratios) => $ratios->take(0),
@@ -809,7 +809,7 @@ class FileUpload extends BaseFileUpload
     /**
      * @param  array<string, string> | Closure  $map
      */
-    public function mimeTypeMap(array | Closure $map): static
+    public function mimeTypeMap(array|Closure $map): static
     {
         $this->mimeTypeMap = $map;
 

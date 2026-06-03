@@ -33,13 +33,13 @@ class UndefinedFunctionErrorEnhancer implements ErrorEnhancerInterface
             return null;
         }
 
-        if (0 !== substr_compare($message, $notFoundSuffix, -$notFoundSuffixLen)) {
+        if (substr_compare($message, $notFoundSuffix, -$notFoundSuffixLen) !== 0) {
             return null;
         }
 
         $prefix = 'Call to undefined function ';
         $prefixLen = \strlen($prefix);
-        if (!str_starts_with($message, $prefix)) {
+        if (! str_starts_with($message, $prefix)) {
             return null;
         }
 

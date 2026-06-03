@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,11 +9,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework;
 
-use function array_merge;
-use function assert;
-use function sprintf;
 use PHPUnit\Event\Facade as EventFacade;
 use PHPUnit\Metadata\Api\DataProvider;
 use PHPUnit\Metadata\Api\Groups;
@@ -27,6 +27,10 @@ use PHPUnit\Runner\ErrorHandler;
 use PHPUnit\TextUI\Configuration\Registry as ConfigurationRegistry;
 use ReflectionClass;
 
+use function array_merge;
+use function assert;
+use function sprintf;
+
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  *
@@ -35,9 +39,9 @@ use ReflectionClass;
 final readonly class TestBuilder
 {
     /**
-     * @param ReflectionClass<TestCase> $theClass
-     * @param non-empty-string          $methodName
-     * @param list<non-empty-string>    $groups
+     * @param  ReflectionClass<TestCase>  $theClass
+     * @param  non-empty-string  $methodName
+     * @param  list<non-empty-string>  $groups
      *
      * @throws InvalidDataProviderException
      */
@@ -84,16 +88,16 @@ final readonly class TestBuilder
     }
 
     /**
-     * @param non-empty-string                                                                                                                                                  $methodName
-     * @param class-string<TestCase>                                                                                                                                            $className
-     * @param array<ProvidedData>                                                                                                                                               $data
-     * @param array{backupGlobals: ?true, backupGlobalsExcludeList: list<string>, backupStaticProperties: ?true, backupStaticPropertiesExcludeList: array<string,list<string>>} $backupSettings
-     * @param list<non-empty-string>                                                                                                                                            $groups
+     * @param  non-empty-string  $methodName
+     * @param  class-string<TestCase>  $className
+     * @param  array<ProvidedData>  $data
+     * @param  array{backupGlobals: ?true, backupGlobalsExcludeList: list<string>, backupStaticProperties: ?true, backupStaticPropertiesExcludeList: array<string,list<string>>}  $backupSettings
+     * @param  list<non-empty-string>  $groups
      */
     private function buildDataProviderTestSuite(string $methodName, string $className, array $data, bool $runTestInSeparateProcess, ?bool $preserveGlobalState, bool $runClassInSeparateProcess, array $backupSettings, array $groups): DataProviderTestSuite
     {
         $dataProviderTestSuite = DataProviderTestSuite::empty(
-            $className . '::' . $methodName,
+            $className.'::'.$methodName,
         );
 
         $groups = array_merge(
@@ -121,7 +125,7 @@ final readonly class TestBuilder
     }
 
     /**
-     * @param array{backupGlobals: ?true, backupGlobalsExcludeList: list<string>, backupStaticProperties: ?true, backupStaticPropertiesExcludeList: array<string,list<string>>} $backupSettings
+     * @param  array{backupGlobals: ?true, backupGlobalsExcludeList: list<string>, backupStaticProperties: ?true, backupStaticPropertiesExcludeList: array<string,list<string>>}  $backupSettings
      */
     private function configureTestCase(TestCase $test, bool $runTestInSeparateProcess, ?bool $preserveGlobalState, bool $runClassInSeparateProcess, array $backupSettings): void
     {
@@ -155,18 +159,17 @@ final readonly class TestBuilder
     }
 
     /**
-     * @param class-string<TestCase> $className
-     * @param non-empty-string       $methodName
-     *
+     * @param  class-string<TestCase>  $className
+     * @param  non-empty-string  $methodName
      * @return array{backupGlobals: ?true, backupGlobalsExcludeList: list<string>, backupStaticProperties: ?true, backupStaticPropertiesExcludeList: array<string,list<string>>}
      */
     private function backupSettings(string $className, string $methodName): array
     {
-        $metadataForClass          = MetadataRegistry::parser()->forClass($className);
-        $metadataForMethod         = MetadataRegistry::parser()->forMethod($className, $methodName);
+        $metadataForClass = MetadataRegistry::parser()->forClass($className);
+        $metadataForMethod = MetadataRegistry::parser()->forMethod($className, $methodName);
         $metadataForClassAndMethod = MetadataRegistry::parser()->forClassAndMethod($className, $methodName);
 
-        $backupGlobals            = null;
+        $backupGlobals = null;
         $backupGlobalsExcludeList = [];
 
         if ($metadataForMethod->isBackupGlobals()->isNotEmpty()) {
@@ -193,7 +196,7 @@ final readonly class TestBuilder
             $backupGlobalsExcludeList[] = $metadata->globalVariableName();
         }
 
-        $backupStaticProperties            = null;
+        $backupStaticProperties = null;
         $backupStaticPropertiesExcludeList = [];
 
         if ($metadataForMethod->isBackupStaticProperties()->isNotEmpty()) {
@@ -217,7 +220,7 @@ final readonly class TestBuilder
         foreach ($metadataForClassAndMethod->isExcludeStaticPropertyFromBackup() as $metadata) {
             assert($metadata instanceof ExcludeStaticPropertyFromBackup);
 
-            if (!isset($backupStaticPropertiesExcludeList[$metadata->className()])) {
+            if (! isset($backupStaticPropertiesExcludeList[$metadata->className()])) {
                 $backupStaticPropertiesExcludeList[$metadata->className()] = [];
             }
 
@@ -225,16 +228,16 @@ final readonly class TestBuilder
         }
 
         return [
-            'backupGlobals'                     => $backupGlobals,
-            'backupGlobalsExcludeList'          => $backupGlobalsExcludeList,
-            'backupStaticProperties'            => $backupStaticProperties,
+            'backupGlobals' => $backupGlobals,
+            'backupGlobalsExcludeList' => $backupGlobalsExcludeList,
+            'backupStaticProperties' => $backupStaticProperties,
             'backupStaticPropertiesExcludeList' => $backupStaticPropertiesExcludeList,
         ];
     }
 
     /**
-     * @param class-string<TestCase> $className
-     * @param non-empty-string       $methodName
+     * @param  class-string<TestCase>  $className
+     * @param  non-empty-string  $methodName
      */
     private function shouldGlobalStateBePreserved(string $className, string $methodName): ?bool
     {
@@ -262,8 +265,8 @@ final readonly class TestBuilder
     }
 
     /**
-     * @param class-string<TestCase> $className
-     * @param non-empty-string       $methodName
+     * @param  class-string<TestCase>  $className
+     * @param  non-empty-string  $methodName
      */
     private function shouldTestMethodBeRunInSeparateProcess(string $className, string $methodName): bool
     {
@@ -279,7 +282,7 @@ final readonly class TestBuilder
     }
 
     /**
-     * @param class-string<TestCase> $className
+     * @param  class-string<TestCase>  $className
      */
     private function shouldAllTestMethodsOfTestClassBeRunInSingleSeparateProcess(string $className): bool
     {
@@ -298,8 +301,8 @@ final readonly class TestBuilder
     }
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      */
     private function requirementsSatisfied(string $className, string $methodName): bool
     {

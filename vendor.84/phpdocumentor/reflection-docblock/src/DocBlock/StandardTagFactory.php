@@ -78,41 +78,41 @@ final class StandardTagFactory implements TagFactory
 
     /**
      * @var array<class-string<Tag>|Factory> An array with a tag as a key, and an
-     *                               FQCN to a class that handles it as an array value.
+     *                                       FQCN to a class that handles it as an array value.
      */
     private array $tagHandlerMappings = [
-        'author'             => Author::class,
-        'covers'             => Covers::class,
-        'deprecated'         => Deprecated::class,
+        'author' => Author::class,
+        'covers' => Covers::class,
+        'deprecated' => Deprecated::class,
         // 'example'         => '\phpDocumentor\Reflection\DocBlock\Tags\Example',
-        'link'               => LinkTag::class,
-        'mixin'              => Mixin::class,
-        'method'             => Method::class,
-        'param'              => Param::class,
-        'property-read'      => PropertyRead::class,
-        'property'           => Property::class,
-        'property-write'     => PropertyWrite::class,
-        'return'             => Return_::class,
-        'see'                => SeeTag::class,
-        'since'              => Since::class,
-        'source'             => Source::class,
+        'link' => LinkTag::class,
+        'mixin' => Mixin::class,
+        'method' => Method::class,
+        'param' => Param::class,
+        'property-read' => PropertyRead::class,
+        'property' => Property::class,
+        'property-write' => PropertyWrite::class,
+        'return' => Return_::class,
+        'see' => SeeTag::class,
+        'since' => Since::class,
+        'source' => Source::class,
         'template-covariant' => TemplateCovariant::class,
-        'throw'              => Throws::class,
-        'throws'             => Throws::class,
-        'uses'               => Uses::class,
-        'var'                => Var_::class,
-        'version'            => Version::class,
+        'throw' => Throws::class,
+        'throws' => Throws::class,
+        'uses' => Uses::class,
+        'var' => Var_::class,
+        'version' => Version::class,
     ];
 
     /**
      * @var array<class-string<Tag>> An array with an annotation as a key, and an
-     *      FQCN to a class that handles it as an array value.
+     *                               FQCN to a class that handles it as an array value.
      */
     private array $annotationMappings = [];
 
     /**
      * @var ReflectionParameter[][] a lazy-loading cache containing parameters
-     *      for each tagHandler that has been used.
+     *                              for each tagHandler that has been used.
      */
     private array $tagHandlerParameterCache = [];
 
@@ -120,7 +120,7 @@ final class StandardTagFactory implements TagFactory
 
     /**
      * @var mixed[] an array representing a simple Service Locator where we can store parameters and
-     *     services that can be inserted into the Factory Methods of Tag Handlers.
+     *              services that can be inserted into the Factory Methods of Tag Handlers.
      */
     private array $serviceLocator = [];
 
@@ -132,7 +132,7 @@ final class StandardTagFactory implements TagFactory
      *
      * @see self::registerTagHandler() to add a new tag handler to the existing default list.
      *
-     * @param array<class-string<Tag>> $tagHandlers
+     * @param  array<class-string<Tag>>  $tagHandlers
      */
     public function __construct(FqsenResolver $fqsenResolver, ?array $tagHandlers = null)
     {
@@ -146,7 +146,7 @@ final class StandardTagFactory implements TagFactory
 
     public function create(string $tagLine, ?TypeContext $context = null): Tag
     {
-        if (!$context) {
+        if (! $context) {
             $context = new TypeContext('');
         }
 
@@ -156,7 +156,7 @@ final class StandardTagFactory implements TagFactory
     }
 
     /**
-     * @param mixed $value
+     * @param  mixed  $value
      */
     public function addParameter(string $name, $value): void
     {
@@ -198,9 +198,9 @@ final class StandardTagFactory implements TagFactory
     private function extractTagParts(string $tagLine): array
     {
         $matches = [];
-        if (!preg_match('/^@(' . self::REGEX_TAGNAME . ')((?:[\s\(\{])\s*([^\s].*)|$)/us', $tagLine, $matches)) {
+        if (! preg_match('/^@('.self::REGEX_TAGNAME.')((?:[\s\(\{])\s*([^\s].*)|$)/us', $tagLine, $matches)) {
             throw new InvalidArgumentException(
-                'The tag "' . $tagLine . '" does not seem to be wellformed, please check it for errors'
+                'The tag "'.$tagLine.'" does not seem to be wellformed, please check it for errors'
             );
         }
 
@@ -214,7 +214,7 @@ final class StandardTagFactory implements TagFactory
     private function createTag(string $body, string $name, TypeContext $context): Tag
     {
         $handlerClassName = $this->findHandlerClassName($name, $context);
-        $arguments        = $this->getArgumentsForParametersFromWiring(
+        $arguments = $this->getArgumentsForParametersFromWiring(
             $this->fetchParametersForHandlerFactoryMethod($handlerClassName),
             $this->getServiceLocatorWithDynamicParameters($context, $name, $body)
         );
@@ -259,17 +259,16 @@ final class StandardTagFactory implements TagFactory
     /**
      * Retrieves the arguments that need to be passed to the Factory Method with the given Parameters.
      *
-     * @param ReflectionParameter[] $parameters
-     * @param mixed[]               $locator
-     *
+     * @param  ReflectionParameter[]  $parameters
+     * @param  mixed[]  $locator
      * @return mixed[] A series of values that can be passed to the Factory Method of the tag whose parameters
-     *     is provided with this method.
+     *                 is provided with this method.
      */
     private function getArgumentsForParametersFromWiring(array $parameters, array $locator): array
     {
         $arguments = [];
         foreach ($parameters as $parameter) {
-            $type     = $parameter->getType();
+            $type = $parameter->getType();
             $typeHint = null;
             if ($type instanceof ReflectionNamedType) {
                 $typeHint = $type->getName();
@@ -284,11 +283,13 @@ final class StandardTagFactory implements TagFactory
             $parameterName = $parameter->getName();
             if (isset($locator[$typeHint ?? ''])) {
                 $arguments[$parameterName] = $locator[$typeHint ?? ''];
+
                 continue;
             }
 
             if (isset($locator[$parameterName])) {
                 $arguments[$parameterName] = $locator[$parameterName];
+
                 continue;
             }
 
@@ -302,16 +303,15 @@ final class StandardTagFactory implements TagFactory
      * Retrieves a series of ReflectionParameter objects for the static 'create' method of the given
      * tag handler class name.
      *
-     * @param class-string|Factory $handler
-     *
+     * @param  class-string|Factory  $handler
      * @return ReflectionParameter[]
      */
     private function fetchParametersForHandlerFactoryMethod($handler): array
     {
         $handlerClassName = is_object($handler) ? get_class($handler) : $handler;
 
-        if (!isset($this->tagHandlerParameterCache[$handlerClassName])) {
-            $methodReflection                                  = new ReflectionMethod($handlerClassName, 'create');
+        if (! isset($this->tagHandlerParameterCache[$handlerClassName])) {
+            $methodReflection = new ReflectionMethod($handlerClassName, 'create');
             $this->tagHandlerParameterCache[$handlerClassName] = $methodReflection->getParameters();
         }
 
@@ -322,13 +322,12 @@ final class StandardTagFactory implements TagFactory
      * Returns a copy of this class' Service Locator with added dynamic parameters,
      * such as the tag's name, body and Context.
      *
-     * @param TypeContext $context The Context (namespace and aliases) that may be
-     *  passed and is used to resolve FQSENs.
-     * @param string      $tagName The name of the tag that may be
-     *  passed onto the factory method of the Tag class.
-     * @param string      $tagBody The body of the tag that may be
-     *  passed onto the factory method of the Tag class.
-     *
+     * @param  TypeContext  $context  The Context (namespace and aliases) that may be
+     *                                passed and is used to resolve FQSENs.
+     * @param  string  $tagName  The name of the tag that may be
+     *                           passed onto the factory method of the Tag class.
+     * @param  string  $tagBody  The body of the tag that may be
+     *                           passed onto the factory method of the Tag class.
      * @return mixed[]
      */
     private function getServiceLocatorWithDynamicParameters(

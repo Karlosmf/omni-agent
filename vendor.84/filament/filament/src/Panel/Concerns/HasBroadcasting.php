@@ -6,9 +6,9 @@ use Closure;
 
 trait HasBroadcasting
 {
-    protected bool | Closure $hasBroadcasting = true;
+    protected bool|Closure $hasBroadcasting = true;
 
-    public function broadcasting(bool | Closure $condition = true): static
+    public function broadcasting(bool|Closure $condition = true): static
     {
         $this->hasBroadcasting = $condition;
 

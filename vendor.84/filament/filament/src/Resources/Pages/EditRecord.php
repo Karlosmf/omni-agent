@@ -58,7 +58,7 @@ class EditRecord extends Page
 
     public ?string $previousUrl = null;
 
-    public static function getNavigationIcon(): string | BackedEnum | Htmlable | null
+    public static function getNavigationIcon(): string|BackedEnum|Htmlable|null
     {
         return static::$navigationIcon
             ?? FilamentIcon::resolve(PanelsIconAlias::RESOURCES_PAGES_EDIT_RECORD_NAVIGATION_ITEM)
@@ -84,7 +84,7 @@ class EditRecord extends Page
         return __('filament-panels::resources/pages/edit-record.content.tab.label');
     }
 
-    public function mount(int | string $record): void
+    public function mount(int|string $record): void
     {
         $this->record = $this->resolveRecord($record);
 
@@ -293,7 +293,7 @@ class EditRecord extends Page
         };
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         if (filled(static::$title)) {
             return static::$title;
@@ -344,8 +344,8 @@ class EditRecord extends Page
             ->label(__('filament-panels::resources/pages/edit-record.form.actions.cancel.label'))
             ->alpineClickHandler(
                 FilamentView::hasSpaMode($url)
-                    ? 'document.referrer ? window.history.back() : Livewire.navigate(' . Js::from($url) . ')'
-                    : 'document.referrer ? window.history.back() : (window.location.href = ' . Js::from($url) . ')',
+                    ? 'document.referrer ? window.history.back() : Livewire.navigate('.Js::from($url).')'
+                    : 'document.referrer ? window.history.back() : (window.location.href = '.Js::from($url).')',
             )
             ->color('gray');
     }
@@ -389,7 +389,7 @@ class EditRecord extends Page
             $this->authorizeAccess();
 
             return null;
-        } catch (AuthorizationException | HttpExceptionInterface) {
+        } catch (AuthorizationException|HttpExceptionInterface) {
             // Do nothing.
         }
 
@@ -467,7 +467,7 @@ class EditRecord extends Page
     {
         return [
             'fi-resource-edit-record-page',
-            'fi-resource-' . str_replace('/', '-', $this->getResource()::getSlug(Filament::getCurrentOrDefaultPanel())),
+            'fi-resource-'.str_replace('/', '-', $this->getResource()::getSlug(Filament::getCurrentOrDefaultPanel())),
             "fi-resource-record-{$this->getRecord()->getKey()}",
         ];
     }

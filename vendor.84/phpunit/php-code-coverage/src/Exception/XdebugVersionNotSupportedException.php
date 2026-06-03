@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,16 +9,18 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Driver;
 
-use function sprintf;
 use RuntimeException;
 use SebastianBergmann\CodeCoverage\Exception;
+
+use function sprintf;
 
 final class XdebugVersionNotSupportedException extends RuntimeException implements Exception
 {
     /**
-     * @param non-empty-string $version
+     * @param  non-empty-string  $version
      */
     public function __construct(string $version)
     {

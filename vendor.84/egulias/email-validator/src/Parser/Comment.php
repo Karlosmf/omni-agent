@@ -3,13 +3,13 @@
 namespace Egulias\EmailValidator\Parser;
 
 use Egulias\EmailValidator\EmailLexer;
-use Egulias\EmailValidator\Result\Result;
-use Egulias\EmailValidator\Warning\QuotedPart;
-use Egulias\EmailValidator\Result\InvalidEmail;
 use Egulias\EmailValidator\Parser\CommentStrategy\CommentStrategy;
+use Egulias\EmailValidator\Result\InvalidEmail;
 use Egulias\EmailValidator\Result\Reason\UnclosedComment;
 use Egulias\EmailValidator\Result\Reason\UnOpenedComment;
+use Egulias\EmailValidator\Result\Result;
 use Egulias\EmailValidator\Warning\Comment as WarningComment;
+use Egulias\EmailValidator\Warning\QuotedPart;
 
 class Comment extends PartParser
 {
@@ -34,15 +34,15 @@ class Comment extends PartParser
         if ($this->lexer->current->isA(EmailLexer::S_OPENPARENTHESIS)) {
             $this->openedParenthesis++;
             if ($this->noClosingParenthesis()) {
-                return new InvalidEmail(new UnclosedComment(), $this->lexer->current->value);
+                return new InvalidEmail(new UnclosedComment, $this->lexer->current->value);
             }
         }
 
         if ($this->lexer->current->isA(EmailLexer::S_CLOSEPARENTHESIS)) {
-            return new InvalidEmail(new UnOpenedComment(), $this->lexer->current->value);
+            return new InvalidEmail(new UnOpenedComment, $this->lexer->current->value);
         }
 
-        $this->warnings[WarningComment::CODE] = new WarningComment();
+        $this->warnings[WarningComment::CODE] = new WarningComment;
 
         $moreTokens = true;
         while ($this->commentStrategy->exitCondition($this->lexer, $this->openedParenthesis) && $moreTokens) {
@@ -58,10 +58,10 @@ class Comment extends PartParser
         }
 
         if ($this->openedParenthesis >= 1) {
-            return new InvalidEmail(new UnclosedComment(), $this->lexer->current->value);
+            return new InvalidEmail(new UnclosedComment, $this->lexer->current->value);
         }
         if ($this->openedParenthesis < 0) {
-            return new InvalidEmail(new UnOpenedComment(), $this->lexer->current->value);
+            return new InvalidEmail(new UnOpenedComment, $this->lexer->current->value);
         }
 
         $finalValidations = $this->commentStrategy->endOfLoopValidations($this->lexer);
@@ -71,18 +71,14 @@ class Comment extends PartParser
         return $finalValidations;
     }
 
-
-    /**
-     * @return void
-     */
     private function warnEscaping(): void
     {
-        //Backslash found
-        if (!$this->lexer->current->isA(EmailLexer::S_BACKSLASH)) {
+        // Backslash found
+        if (! $this->lexer->current->isA(EmailLexer::S_BACKSLASH)) {
             return;
         }
 
-        if (!$this->lexer->isNextTokenAny(array(EmailLexer::S_SP, EmailLexer::S_HTAB, EmailLexer::C_DEL))) {
+        if (! $this->lexer->isNextTokenAny([EmailLexer::S_SP, EmailLexer::S_HTAB, EmailLexer::C_DEL])) {
             return;
         }
 
@@ -94,6 +90,7 @@ class Comment extends PartParser
     {
         try {
             $this->lexer->find(EmailLexer::S_CLOSEPARENTHESIS);
+
             return false;
         } catch (\RuntimeException $e) {
             return true;

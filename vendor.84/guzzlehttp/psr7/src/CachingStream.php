@@ -28,8 +28,8 @@ final class CachingStream implements StreamInterface
     /**
      * We will treat the buffer object as the body of the stream
      *
-     * @param StreamInterface $stream Stream to cache. The cursor is assumed to be at the beginning of the stream.
-     * @param StreamInterface $target Optionally specify where data is cached
+     * @param  StreamInterface  $stream  Stream to cache. The cursor is assumed to be at the beginning of the stream.
+     * @param  StreamInterface  $target  Optionally specify where data is cached
      */
     public function __construct(
         StreamInterface $stream,
@@ -43,7 +43,7 @@ final class CachingStream implements StreamInterface
     {
         $remoteSize = $this->remoteStream->getSize();
 
-        if (null === $remoteSize) {
+        if ($remoteSize === null) {
             return null;
         }
 
@@ -76,7 +76,7 @@ final class CachingStream implements StreamInterface
         if ($diff > 0) {
             // Read the remoteStream until we have read in at least the amount
             // of bytes requested, or we reach the end of the file.
-            while ($diff > 0 && !$this->remoteStream->eof()) {
+            while ($diff > 0 && ! $this->remoteStream->eof()) {
                 $this->read($diff);
                 $diff = $byte - $this->stream->getSize();
             }

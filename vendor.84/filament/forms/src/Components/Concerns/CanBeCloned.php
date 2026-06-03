@@ -6,9 +6,9 @@ use Closure;
 
 trait CanBeCloned
 {
-    protected bool | Closure $isCloneable = false;
+    protected bool|Closure $isCloneable = false;
 
-    public function cloneable(bool | Closure $condition = true): static
+    public function cloneable(bool|Closure $condition = true): static
     {
         $this->isCloneable = $condition;
 

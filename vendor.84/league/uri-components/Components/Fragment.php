@@ -79,7 +79,7 @@ final class Fragment extends Component implements FragmentInterface
 
     public function getUriComponent(): string
     {
-        return (null === $this->fragment ? '' : '#').$this->value();
+        return ($this->fragment === null ? '' : '#').$this->value();
     }
 
     /**
@@ -87,22 +87,22 @@ final class Fragment extends Component implements FragmentInterface
      */
     public function decoded(): ?string
     {
-        if (null === $this->fragment) {
+        if ($this->fragment === null) {
             return null;
         }
 
-        return  str_replace('%20', ' ', $this->fragment);
+        return str_replace('%20', ' ', $this->fragment);
     }
 
     public function equals(mixed $value): bool
     {
-        if (!$value instanceof BackedEnum && !$value instanceof Stringable && !is_string($value) && null !== $value) {
+        if (! $value instanceof BackedEnum && ! $value instanceof Stringable && ! is_string($value) && $value !== null) {
             return false;
         }
 
-        if (!$value instanceof UriComponentInterface) {
+        if (! $value instanceof UriComponentInterface) {
             $value = self::tryNew($value);
-            if (null === $value) {
+            if ($value === null) {
                 return false;
             }
         }
@@ -112,7 +112,7 @@ final class Fragment extends Component implements FragmentInterface
 
     public function normalize(): self
     {
-        return  new self(Encoder::normalizeFragment($this->value()));
+        return new self(Encoder::normalizeFragment($this->value()));
     }
 
     /**
@@ -123,7 +123,7 @@ final class Fragment extends Component implements FragmentInterface
      *
      * @codeCoverageIgnore
      */
-    #[Deprecated(message:'use League\Uri\Components\Fragment::new() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Fragment::new() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromString(Stringable|string $fragment): self
     {
         return self::new($fragment);
@@ -139,7 +139,7 @@ final class Fragment extends Component implements FragmentInterface
      *
      * Create a new instance from a URI object.
      */
-    #[Deprecated(message:'use League\Uri\Components\Fragment::fromUri() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Fragment::fromUri() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromUri(Psr7UriInterface|UriInterface $uri): self
     {
         return self::fromUri($uri);

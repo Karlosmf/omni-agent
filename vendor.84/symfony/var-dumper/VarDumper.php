@@ -39,7 +39,7 @@ class VarDumper
 
     public static function dump(mixed $var, ?string $label = null): mixed
     {
-        if (null === self::$handler) {
+        if (self::$handler === null) {
             self::register();
         }
 
@@ -62,37 +62,37 @@ class VarDumper
 
     private static function register(): void
     {
-        $cloner = new VarCloner();
+        $cloner = new VarCloner;
         $cloner->addCasters(ReflectionCaster::UNSET_CLOSURE_FILE_INFO);
 
         $format = $_SERVER['VAR_DUMPER_FORMAT'] ?? null;
         switch (true) {
-            case 'html' === $format:
-                $dumper = new HtmlDumper();
+            case $format === 'html':
+                $dumper = new HtmlDumper;
                 break;
-            case 'cli' === $format:
-                $dumper = new CliDumper();
+            case $format === 'cli':
+                $dumper = new CliDumper;
                 break;
-            case 'server' === $format:
-            case $format && 'tcp' === parse_url($format, \PHP_URL_SCHEME):
-                $host = 'server' === $format ? $_SERVER['VAR_DUMPER_SERVER'] ?? '127.0.0.1:9912' : $format;
+            case $format === 'server':
+            case $format && parse_url($format, \PHP_URL_SCHEME) === 'tcp':
+                $host = $format === 'server' ? $_SERVER['VAR_DUMPER_SERVER'] ?? '127.0.0.1:9912' : $format;
                 $accept = $_SERVER['HTTP_ACCEPT'] ?? (\in_array(\PHP_SAPI, ['cli', 'phpdbg', 'embed'], true) ? 'txt' : 'html');
-                $dumper = str_contains($accept, 'html') || str_contains($accept, '*/*') ? new HtmlDumper() : new CliDumper();
+                $dumper = str_contains($accept, 'html') || str_contains($accept, '*/*') ? new HtmlDumper : new CliDumper;
                 $dumper = new ServerDumper($host, $dumper, self::getDefaultContextProviders());
                 break;
             default:
                 $accept = $_SERVER['HTTP_ACCEPT'] ?? (\in_array(\PHP_SAPI, ['cli', 'phpdbg', 'embed'], true) ? 'txt' : 'html');
-                $dumper = str_contains($accept, 'html') || str_contains($accept, '*/*') ? new HtmlDumper() : new CliDumper();
+                $dumper = str_contains($accept, 'html') || str_contains($accept, '*/*') ? new HtmlDumper : new CliDumper;
         }
 
-        if (!$dumper instanceof ServerDumper) {
-            $dumper = new ContextualizedDumper($dumper, [new SourceContextProvider()]);
+        if (! $dumper instanceof ServerDumper) {
+            $dumper = new ContextualizedDumper($dumper, [new SourceContextProvider]);
         }
 
         self::$handler = function ($var, ?string $label = null) use ($cloner, $dumper) {
             $var = $cloner->cloneVar($var);
 
-            if (null !== $label) {
+            if ($label !== null) {
                 $var = $var->withContext(['label' => $label]);
             }
 
@@ -104,8 +104,8 @@ class VarDumper
     {
         $contextProviders = [];
 
-        if (!\in_array(\PHP_SAPI, ['cli', 'phpdbg', 'embed'], true) && class_exists(Request::class)) {
-            $requestStack = new RequestStack();
+        if (! \in_array(\PHP_SAPI, ['cli', 'phpdbg', 'embed'], true) && class_exists(Request::class)) {
+            $requestStack = new RequestStack;
             $requestStack->push(Request::createFromGlobals());
             $contextProviders['request'] = new RequestContextProvider($requestStack);
         }
@@ -113,7 +113,7 @@ class VarDumper
         $fileLinkFormatter = class_exists(FileLinkFormatter::class) ? new FileLinkFormatter(null, $requestStack ?? null) : null;
 
         return $contextProviders + [
-            'cli' => new CliContextProvider(),
+            'cli' => new CliContextProvider,
             'source' => new SourceContextProvider(null, null, $fileLinkFormatter),
         ];
     }

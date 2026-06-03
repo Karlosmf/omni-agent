@@ -21,6 +21,7 @@ use function is_string;
 final class TemplateFactory implements PHPStanFactory
 {
     private DescriptionFactory $descriptionFactory;
+
     private TypeResolver $typeResolver;
 
     public function __construct(TypeResolver $typeResolver, DescriptionFactory $descriptionFactory)

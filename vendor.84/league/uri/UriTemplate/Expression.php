@@ -25,14 +25,17 @@ use function implode;
 
 /**
  * @internal The class exposes the internal representation of an Expression and its usage
+ *
  * @link https://www.rfc-editor.org/rfc/rfc6570#section-2.2
  */
 final class Expression
 {
     /** @var array<VarSpecifier> */
     private readonly array $varSpecifiers;
+
     /** @var array<string> */
     public readonly array $variableNames;
+
     public readonly string $value;
 
     private function __construct(public readonly Operator $operator, VarSpecifier ...$varSpecifiers)
@@ -67,12 +70,13 @@ final class Expression
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @throws SyntaxError if the expression is invalid
-     * @see Expression::new()
      *
+     * @see Expression::new()
      * @deprecated Since version 7.0.0
+     *
      * @codeCoverageIgnore
      */
-    #[Deprecated(message:'use League\Uri\UriTemplate\Exppression::new() instead', since:'league/uri:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\UriTemplate\Exppression::new() instead', since: 'league/uri:7.0.0')]
     public static function createFromString(Stringable|string $expression): self
     {
         return self::new($expression);
@@ -87,7 +91,7 @@ final class Expression
                     fn (VarSpecifier $varSpecifier): string => $this->operator->expand($varSpecifier, $variables),
                     $this->varSpecifiers
                 ),
-                static fn ($value): bool => '' !== $value
+                static fn ($value): bool => $value !== ''
             )
         );
 

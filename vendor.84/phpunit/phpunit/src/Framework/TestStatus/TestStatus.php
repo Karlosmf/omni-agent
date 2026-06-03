@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\TestStatus;
 
 /**
@@ -23,15 +26,15 @@ abstract readonly class TestStatus
     public static function from(int $status): self
     {
         return match ($status) {
-            0       => self::success(),
-            1       => self::skipped(),
-            2       => self::incomplete(),
-            3       => self::notice(),
-            4       => self::deprecation(),
-            5       => self::risky(),
-            6       => self::warning(),
-            7       => self::failure(),
-            8       => self::error(),
+            0 => self::success(),
+            1 => self::skipped(),
+            2 => self::incomplete(),
+            3 => self::notice(),
+            4 => self::deprecation(),
+            5 => self::risky(),
+            6 => self::warning(),
+            7 => self::failure(),
+            8 => self::error(),
             default => self::unknown(),
         };
     }

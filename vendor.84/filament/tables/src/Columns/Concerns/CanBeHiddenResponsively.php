@@ -6,18 +6,18 @@ use Closure;
 
 trait CanBeHiddenResponsively
 {
-    protected string | Closure | null $hiddenFrom = null;
+    protected string|Closure|null $hiddenFrom = null;
 
-    protected string | Closure | null $visibleFrom = null;
+    protected string|Closure|null $visibleFrom = null;
 
-    public function hiddenFrom(string | Closure | null $breakpoint): static
+    public function hiddenFrom(string|Closure|null $breakpoint): static
     {
         $this->hiddenFrom = $breakpoint;
 
         return $this;
     }
 
-    public function visibleFrom(string | Closure | null $breakpoint): static
+    public function visibleFrom(string|Closure|null $breakpoint): static
     {
         $this->visibleFrom = $breakpoint;
 

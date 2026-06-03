@@ -17,6 +17,7 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable
      * @var WebDriverElement
      */
     protected $element;
+
     /**
      * @var WebDriverDispatcher
      */
@@ -45,9 +46,10 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable
     }
 
     /**
-     * @param mixed $value
-     * @throws WebDriverException
+     * @param  mixed  $value
      * @return $this
+     *
+     * @throws WebDriverException
      */
     public function sendKeys($value)
     {
@@ -65,8 +67,9 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable
     }
 
     /**
-     * @throws WebDriverException
      * @return $this
+     *
+     * @throws WebDriverException
      */
     public function click()
     {
@@ -84,8 +87,9 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable
     }
 
     /**
-     * @throws WebDriverException
      * @return EventFiringWebElement
+     *
+     * @throws WebDriverException
      */
     public function findElement(WebDriverBy $by)
     {
@@ -114,8 +118,9 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable
     }
 
     /**
-     * @throws WebDriverException
      * @return array
+     *
+     * @throws WebDriverException
      */
     public function findElements(WebDriverBy $by)
     {
@@ -146,8 +151,9 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable
     }
 
     /**
-     * @throws WebDriverException
      * @return $this
+     *
+     * @throws WebDriverException
      */
     public function clear()
     {
@@ -162,9 +168,10 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable
     }
 
     /**
-     * @param string $attribute_name
-     * @throws WebDriverException
+     * @param  string  $attribute_name
      * @return string
+     *
+     * @throws WebDriverException
      */
     public function getAttribute($attribute_name)
     {
@@ -177,9 +184,10 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable
     }
 
     /**
-     * @param string $css_property_name
-     * @throws WebDriverException
+     * @param  string  $css_property_name
      * @return string
+     *
+     * @throws WebDriverException
      */
     public function getCSSValue($css_property_name)
     {
@@ -192,8 +200,9 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable
     }
 
     /**
-     * @throws WebDriverException
      * @return WebDriverPoint
+     *
+     * @throws WebDriverException
      */
     public function getLocation()
     {
@@ -206,8 +215,9 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable
     }
 
     /**
-     * @throws WebDriverException
      * @return WebDriverPoint
+     *
+     * @throws WebDriverException
      */
     public function getLocationOnScreenOnceScrolledIntoView()
     {
@@ -233,8 +243,9 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable
     }
 
     /**
-     * @throws WebDriverException
      * @return WebDriverDimension
+     *
+     * @throws WebDriverException
      */
     public function getSize()
     {
@@ -247,8 +258,9 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable
     }
 
     /**
-     * @throws WebDriverException
      * @return string
+     *
+     * @throws WebDriverException
      */
     public function getTagName()
     {
@@ -261,8 +273,9 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable
     }
 
     /**
-     * @throws WebDriverException
      * @return string
+     *
+     * @throws WebDriverException
      */
     public function getText()
     {
@@ -275,8 +288,9 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable
     }
 
     /**
-     * @throws WebDriverException
      * @return bool
+     *
+     * @throws WebDriverException
      */
     public function isDisplayed()
     {
@@ -289,8 +303,9 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable
     }
 
     /**
-     * @throws WebDriverException
      * @return bool
+     *
+     * @throws WebDriverException
      */
     public function isEnabled()
     {
@@ -303,8 +318,9 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable
     }
 
     /**
-     * @throws WebDriverException
      * @return bool
+     *
+     * @throws WebDriverException
      */
     public function isSelected()
     {
@@ -317,8 +333,9 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable
     }
 
     /**
-     * @throws WebDriverException
      * @return $this
+     *
+     * @throws WebDriverException
      */
     public function submit()
     {
@@ -333,8 +350,9 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable
     }
 
     /**
-     * @throws WebDriverException
      * @return string
+     *
+     * @throws WebDriverException
      */
     public function getID()
     {
@@ -391,12 +409,12 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable
     }
 
     /**
-     * @param mixed $method
-     * @param mixed ...$arguments
+     * @param  mixed  $method
+     * @param  mixed  ...$arguments
      */
     protected function dispatch($method, ...$arguments)
     {
-        if (!$this->dispatcher) {
+        if (! $this->dispatcher) {
             return;
         }
 

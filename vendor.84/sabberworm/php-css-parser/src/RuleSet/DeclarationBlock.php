@@ -46,7 +46,7 @@ class DeclarationBlock implements CSSElement, CSSListItem, Positionable, RuleCon
     private $ruleSet;
 
     /**
-     * @param int<1, max>|null $lineNumber
+     * @param  int<1, max>|null  $lineNumber
      */
     public function __construct(?int $lineNumber = null)
     {
@@ -72,7 +72,7 @@ class DeclarationBlock implements CSSElement, CSSListItem, Positionable, RuleCon
             $consumedNextCharacter = false;
             static $stopCharacters = ['{', '}', '\'', '"', '(', ')', ','];
             do {
-                if (!$consumedNextCharacter) {
+                if (! $consumedNextCharacter) {
                     $selectorParts[] = $parserState->consume(1);
                 }
                 $selectorParts[] = $parserState->consumeUntil($stopCharacters, false, false, $comments);
@@ -82,7 +82,7 @@ class DeclarationBlock implements CSSElement, CSSListItem, Positionable, RuleCon
                     case '\'':
                         // The fallthrough is intentional.
                     case '"':
-                        if (!\is_string($stringWrapperCharacter)) {
+                        if (! \is_string($stringWrapperCharacter)) {
                             $stringWrapperCharacter = $nextCharacter;
                         } elseif ($stringWrapperCharacter === $nextCharacter) {
                             if (\substr(\end($selectorParts), -1) !== '\\') {
@@ -91,20 +91,20 @@ class DeclarationBlock implements CSSElement, CSSListItem, Positionable, RuleCon
                         }
                         break;
                     case '(':
-                        if (!\is_string($stringWrapperCharacter)) {
-                            ++$functionNestingLevel;
+                        if (! \is_string($stringWrapperCharacter)) {
+                            $functionNestingLevel++;
                         }
                         break;
                     case ')':
-                        if (!\is_string($stringWrapperCharacter)) {
+                        if (! \is_string($stringWrapperCharacter)) {
                             if ($functionNestingLevel <= 0) {
                                 throw new UnexpectedTokenException('anything but', ')');
                             }
-                            --$functionNestingLevel;
+                            $functionNestingLevel--;
                         }
                         break;
                     case ',':
-                        if (!\is_string($stringWrapperCharacter) && $functionNestingLevel === 0) {
+                        if (! \is_string($stringWrapperCharacter) && $functionNestingLevel === 0) {
                             $selectors[] = \implode('', $selectorParts);
                             $selectorParts = [];
                             $parserState->consume(1);
@@ -112,7 +112,7 @@ class DeclarationBlock implements CSSElement, CSSListItem, Positionable, RuleCon
                         }
                         break;
                 }
-            } while (!\in_array($nextCharacter, ['{', '}'], true) || \is_string($stringWrapperCharacter));
+            } while (! \in_array($nextCharacter, ['{', '}'], true) || \is_string($stringWrapperCharacter));
             if ($functionNestingLevel !== 0) {
                 throw new UnexpectedTokenException(')', $nextCharacter);
             }
@@ -123,9 +123,10 @@ class DeclarationBlock implements CSSElement, CSSListItem, Positionable, RuleCon
             }
         } catch (UnexpectedTokenException $e) {
             if ($parserState->getSettings()->usesLenientParsing()) {
-                if (!$parserState->comes('}')) {
+                if (! $parserState->comes('}')) {
                     $parserState->consumeUntil('}', false, true);
                 }
+
                 return null;
             } else {
                 throw $e;
@@ -139,7 +140,7 @@ class DeclarationBlock implements CSSElement, CSSListItem, Positionable, RuleCon
     }
 
     /**
-     * @param array<Selector|string>|string $selectors
+     * @param  array<Selector|string>|string  $selectors
      *
      * @throws UnexpectedTokenException
      */
@@ -151,20 +152,20 @@ class DeclarationBlock implements CSSElement, CSSListItem, Positionable, RuleCon
             $this->selectors = \explode(',', $selectors);
         }
         foreach ($this->selectors as $key => $selector) {
-            if (!($selector instanceof Selector)) {
-                if ($list === null || !($list instanceof KeyFrame)) {
-                    if (!Selector::isValid($selector)) {
+            if (! ($selector instanceof Selector)) {
+                if ($list === null || ! ($list instanceof KeyFrame)) {
+                    if (! Selector::isValid($selector)) {
                         throw new UnexpectedTokenException(
-                            "Selector did not match '" . Selector::SELECTOR_VALIDATION_RX . "'.",
+                            "Selector did not match '".Selector::SELECTOR_VALIDATION_RX."'.",
                             $selector,
                             'custom'
                         );
                     }
                     $this->selectors[$key] = new Selector($selector);
                 } else {
-                    if (!KeyframeSelector::isValid($selector)) {
+                    if (! KeyframeSelector::isValid($selector)) {
                         throw new UnexpectedTokenException(
-                            "Selector did not match '" . KeyframeSelector::SELECTOR_VALIDATION_RX . "'.",
+                            "Selector did not match '".KeyframeSelector::SELECTOR_VALIDATION_RX."'.",
                             $selector,
                             'custom'
                         );
@@ -178,7 +179,7 @@ class DeclarationBlock implements CSSElement, CSSListItem, Positionable, RuleCon
     /**
      * Remove one of the selectors of the block.
      *
-     * @param Selector|string $selectorToRemove
+     * @param  Selector|string  $selectorToRemove
      */
     public function removeSelector($selectorToRemove): bool
     {
@@ -188,9 +189,11 @@ class DeclarationBlock implements CSSElement, CSSListItem, Positionable, RuleCon
         foreach ($this->selectors as $key => $selector) {
             if ($selector->getSelector() === $selectorToRemove) {
                 unset($this->selectors[$key]);
+
                 return true;
             }
         }
+
         return false;
     }
 
@@ -228,7 +231,7 @@ class DeclarationBlock implements CSSElement, CSSListItem, Positionable, RuleCon
     /**
      * @see RuleSet::setRules()
      *
-     * @param array<Rule> $rules
+     * @param  array<Rule>  $rules
      */
     public function setRules(array $rules): void
     {
@@ -287,11 +290,11 @@ class DeclarationBlock implements CSSElement, CSSListItem, Positionable, RuleCon
         }
         $result .= $outputFormat->getContentBeforeDeclarationBlock();
         $result .= $formatter->implode(
-            $formatter->spaceBeforeSelectorSeparator() . ',' . $formatter->spaceAfterSelectorSeparator(),
+            $formatter->spaceBeforeSelectorSeparator().','.$formatter->spaceAfterSelectorSeparator(),
             $this->selectors
         );
         $result .= $outputFormat->getContentAfterDeclarationBlockSelectors();
-        $result .= $formatter->spaceBeforeOpeningBrace() . '{';
+        $result .= $formatter->spaceBeforeOpeningBrace().'{';
         $result .= $this->ruleSet->render($outputFormat);
         $result .= '}';
         $result .= $outputFormat->getContentAfterDeclarationBlock();

@@ -11,7 +11,7 @@ trait InteractsWithTableQuery
 
     protected ?Closure $modifyBaseQueryUsing = null;
 
-    protected bool | Closure $shouldExcludeWhenResolvingRecord = false;
+    protected bool|Closure $shouldExcludeWhenResolvingRecord = false;
 
     /**
      * @param  array<string, mixed>  $data
@@ -103,7 +103,7 @@ trait InteractsWithTableQuery
         return $this->modifyBaseQueryUsing instanceof Closure;
     }
 
-    public function excludeWhenResolvingRecord(bool | Closure $condition = true): static
+    public function excludeWhenResolvingRecord(bool|Closure $condition = true): static
     {
         $this->shouldExcludeWhenResolvingRecord = $condition;
 

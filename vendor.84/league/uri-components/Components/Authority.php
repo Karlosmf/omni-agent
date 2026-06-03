@@ -35,7 +35,9 @@ use function is_string;
 final class Authority extends Component implements AuthorityInterface
 {
     private readonly HostInterface $host;
+
     private readonly PortInterface $port;
+
     private readonly UserInfoInterface $userInfo;
 
     public function __construct(
@@ -43,10 +45,10 @@ final class Authority extends Component implements AuthorityInterface
         BackedEnum|Stringable|string|int|null $port = null,
         #[SensitiveParameter] BackedEnum|Stringable|string|null $userInfo = null
     ) {
-        $this->host = !$host instanceof HostInterface ? Host::new($host) : $host;
-        $this->port = !$port instanceof PortInterface ? Port::new($port) : $port;
-        $this->userInfo = !$userInfo instanceof UserInfoInterface ? UserInfo::new($userInfo) : $userInfo;
-        if (null === $this->host->value() && null !== $this->value()) {
+        $this->host = ! $host instanceof HostInterface ? Host::new($host) : $host;
+        $this->port = ! $port instanceof PortInterface ? Port::new($port) : $port;
+        $this->userInfo = ! $userInfo instanceof UserInfoInterface ? UserInfo::new($userInfo) : $userInfo;
+        if ($this->host->value() === null && $this->value() !== null) {
             throw new SyntaxError('A non-empty authority must contains a non null host.');
         }
     }
@@ -83,7 +85,7 @@ final class Authority extends Component implements AuthorityInterface
     /**
      * Create a new instance from a URI object.
      */
-    public static function fromUri(WhatwgUrl|Rfc3986Uri|BackedEnum|Stringable|string $uri): self
+    public static function fromUri(WhatWgUrl|Rfc3986Uri|BackedEnum|Stringable|string $uri): self
     {
         $uri = self::filterUri($uri);
         if ($uri instanceof Rfc3986Uri) {
@@ -130,8 +132,8 @@ final class Authority extends Component implements AuthorityInterface
         $components += ['user' => null, 'pass' => null, 'host' => null, 'port' => null];
 
         return match (true) {
-            null === $components['user'] => new self($components['host'], $components['port']),
-            null === $components['pass'] => new self($components['host'], $components['port'], $components['user']),
+            $components['user'] === null => new self($components['host'], $components['port']),
+            $components['pass'] === null => new self($components['host'], $components['port'], $components['user']),
             default => new self($components['host'], $components['port'], $components['user'].':'.$components['pass']),
         };
     }
@@ -148,7 +150,7 @@ final class Authority extends Component implements AuthorityInterface
     ): ?string {
         $auth = $host->value();
         $port = $port->value();
-        if (null !== $port) {
+        if ($port !== null) {
             $auth .= ':'.$port;
         }
 
@@ -185,13 +187,13 @@ final class Authority extends Component implements AuthorityInterface
 
     public function equals(mixed $value): bool
     {
-        if (!$value instanceof BackedEnum && !$value instanceof Stringable && !is_string($value) && null !== $value) {
+        if (! $value instanceof BackedEnum && ! $value instanceof Stringable && ! is_string($value) && $value !== null) {
             return false;
         }
 
-        if (!$value instanceof UriComponentInterface) {
+        if (! $value instanceof UriComponentInterface) {
             $value = self::tryNew($value);
-            if (null === $value) {
+            if ($value === null) {
                 return false;
             }
         }
@@ -204,7 +206,7 @@ final class Authority extends Component implements AuthorityInterface
      */
     public function components(): array
     {
-        return  $this->userInfo->components() + [
+        return $this->userInfo->components() + [
             'host' => $this->host->value(),
             'port' => $this->port->toInt(),
         ];
@@ -212,7 +214,7 @@ final class Authority extends Component implements AuthorityInterface
 
     public function withHost(BackedEnum|Stringable|string|null $host): AuthorityInterface
     {
-        if (!$host instanceof HostInterface) {
+        if (! $host instanceof HostInterface) {
             $host = Host::new($host);
         }
 
@@ -224,7 +226,7 @@ final class Authority extends Component implements AuthorityInterface
 
     public function withPort(BackedEnum|Stringable|string|int|null $port): AuthorityInterface
     {
-        if (!$port instanceof PortInterface) {
+        if (! $port instanceof PortInterface) {
             $port = Port::new($port);
         }
 
@@ -256,7 +258,7 @@ final class Authority extends Component implements AuthorityInterface
      *
      * Create a new instance from a URI object.
      */
-    #[Deprecated(message:'use League\Uri\Components\Authority::fromUri() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Authority::fromUri() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromUri(UriInterface|Psr7UriInterface $uri): self
     {
         return self::fromUri($uri);
@@ -272,7 +274,7 @@ final class Authority extends Component implements AuthorityInterface
      *
      * Returns a new instance from a string or a stringable object.
      */
-    #[Deprecated(message:'use League\Uri\Components\Authority::new() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Authority::new() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromString(Stringable|string $authority): self
     {
         return self::new($authority);
@@ -288,7 +290,7 @@ final class Authority extends Component implements AuthorityInterface
      *
      * Returns a new instance from null.
      */
-    #[Deprecated(message:'use League\Uri\Components\Authority::new() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Authority::new() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromNull(): self
     {
         return self::new();
@@ -314,7 +316,7 @@ final class Authority extends Component implements AuthorityInterface
      *     port? : ?int
      * } $components
      */
-    #[Deprecated(message:'use League\Uri\Components\Authority::fromComponents() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Authority::fromComponents() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromComponents(array $components): self
     {
         return self::fromComponents($components);

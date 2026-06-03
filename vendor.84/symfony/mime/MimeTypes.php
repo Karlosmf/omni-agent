@@ -37,12 +37,14 @@ use Symfony\Component\Mime\Exception\LogicException;
 final class MimeTypes implements MimeTypesInterface
 {
     private array $extensions = [];
+
     private array $mimeTypes = [];
 
     /**
      * @var MimeTypeGuesserInterface[]
      */
     private array $guessers = [];
+
     private static MimeTypes $default;
 
     public function __construct(array $map = [])
@@ -54,8 +56,8 @@ final class MimeTypes implements MimeTypesInterface
                 $this->mimeTypes[$extension][] = $mimeType;
             }
         }
-        $this->registerGuesser(new FileBinaryMimeTypeGuesser());
-        $this->registerGuesser(new FileinfoMimeTypeGuesser());
+        $this->registerGuesser(new FileBinaryMimeTypeGuesser);
+        $this->registerGuesser(new FileinfoMimeTypeGuesser);
     }
 
     public static function setDefault(self $default): void
@@ -65,7 +67,7 @@ final class MimeTypes implements MimeTypesInterface
 
     public static function getDefault(): self
     {
-        return self::$default ??= new self();
+        return self::$default ??= new self;
     }
 
     /**
@@ -116,7 +118,7 @@ final class MimeTypes implements MimeTypesInterface
     public function guessMimeType(string $path): ?string
     {
         foreach ($this->guessers as $guesser) {
-            if (!$guesser->isGuesserSupported()) {
+            if (! $guesser->isGuesserSupported()) {
                 continue;
             }
 
@@ -125,7 +127,7 @@ final class MimeTypes implements MimeTypesInterface
             }
         }
 
-        if (!$this->isGuesserSupported()) {
+        if (! $this->isGuesserSupported()) {
             throw new LogicException('Unable to guess the MIME type as no guessers are available (have you enabled the php_fileinfo extension?).');
         }
 

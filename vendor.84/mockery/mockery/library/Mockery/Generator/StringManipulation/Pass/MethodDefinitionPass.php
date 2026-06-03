@@ -5,14 +5,18 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
 namespace Mockery\Generator\StringManipulation\Pass;
 
+use const PHP_VERSION_ID;
+
 use Mockery\Generator\Method;
 use Mockery\Generator\MockConfiguration;
 use Mockery\Generator\Parameter;
+
 use function array_values;
 use function count;
 use function enum_exists;
@@ -27,12 +31,11 @@ use function strrpos;
 use function strtolower;
 use function substr;
 use function var_export;
-use const PHP_VERSION_ID;
 
 class MethodDefinitionPass implements Pass
 {
     /**
-     * @param  string $code
+     * @param  string  $code
      * @return string
      */
     public function apply($code, MockConfiguration $config)
@@ -66,7 +69,8 @@ class MethodDefinitionPass implements Pass
     protected function appendToClass($class, $code)
     {
         $lastBrace = strrpos($class, '}');
-        return substr($class, 0, $lastBrace) . $code . "\n    }\n";
+
+        return substr($class, 0, $lastBrace).$code."\n    }\n";
     }
 
     protected function renderParams(Method $method, $config)
@@ -76,7 +80,7 @@ class MethodDefinitionPass implements Pass
             $overrides = $config->getParameterOverrides();
 
             if (isset($overrides[strtolower($class->getName())][$method->getName()])) {
-                return '(' . implode(',', $overrides[strtolower($class->getName())][$method->getName()]) . ')';
+                return '('.implode(',', $overrides[strtolower($class->getName())][$method->getName()]).')';
             }
         }
 
@@ -87,7 +91,7 @@ class MethodDefinitionPass implements Pass
             $paramDef = $this->renderTypeHint($param);
             $paramDef .= $param->isPassedByReference() ? '&' : '';
             $paramDef .= $param->isVariadic() ? '...' : '';
-            $paramDef .= '$' . $param->getName();
+            $paramDef .= '$'.$param->getName();
 
             if (! $param->isVariadic()) {
                 if ($param->isDefaultValueAvailable() !== false) {
@@ -107,14 +111,14 @@ class MethodDefinitionPass implements Pass
                                     $matches
                                 ) === 1
                             ) {
-                                $prefix = 'new ' . $matches[1];
+                                $prefix = 'new '.$matches[1];
                             }
                         }
                     } else {
                         $prefix = var_export($defaultValue, true);
                     }
 
-                    $paramDef .= ' = ' . $prefix;
+                    $paramDef .= ' = '.$prefix;
                 } elseif ($param->isOptional()) {
                     $paramDef .= ' = null';
                 }
@@ -123,7 +127,7 @@ class MethodDefinitionPass implements Pass
             $methodParams[] = $paramDef;
         }
 
-        return '(' . implode(', ', $methodParams) . ')';
+        return '('.implode(', ', $methodParams).')';
     }
 
     protected function renderReturnType(Method $method)
@@ -143,10 +147,10 @@ class MethodDefinitionPass implements Pass
     private function renderMethodBody($method, $config)
     {
         $invoke = $method->isStatic() ? 'static::_mockery_handleStaticMethodCall' : '$this->_mockery_handleMethodCall';
-        $body = <<<BODY
+        $body = <<<'BODY'
 {
-\$argc = func_num_args();
-\$argv = func_get_args();
+$argc = func_num_args();
+$argv = func_get_args();
 
 BODY;
 
@@ -159,7 +163,7 @@ BODY;
         if (isset($overrides[$class_name][$method->getName()])) {
             $params = array_values($overrides[$class_name][$method->getName()]);
             $paramCount = count($params);
-            for ($i = 0; $i < $paramCount; ++$i) {
+            for ($i = 0; $i < $paramCount; $i++) {
                 $param = $params[$i];
                 if (strpos($param, '&') !== false) {
                     $body .= <<<BODY
@@ -173,7 +177,7 @@ BODY;
         } else {
             $params = array_values($method->getParameters());
             $paramCount = count($params);
-            for ($i = 0; $i < $paramCount; ++$i) {
+            for ($i = 0; $i < $paramCount; $i++) {
                 $param = $params[$i];
                 if (! $param->isPassedByReference()) {
                     continue;
@@ -194,6 +198,6 @@ BODY;
             $body .= "return \$ret;\n";
         }
 
-        return $body . "}\n";
+        return $body."}\n";
     }
 }

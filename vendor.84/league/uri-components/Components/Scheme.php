@@ -38,6 +38,7 @@ final class Scheme extends Component
     private const REGEXP_SCHEME = ',^[a-z]([-a-z0-9+.]+)?$,i';
 
     private readonly ?string $scheme;
+
     private readonly ?UriScheme $uriScheme;
 
     private function __construct(BackedEnum|Stringable|string|null $scheme)
@@ -81,7 +82,7 @@ final class Scheme extends Component
         static $emptyPort = null;
         $emptyPort ??= Port::new();
 
-        return !$emptyPort->equals($this->defaultPort());
+        return ! $emptyPort->equals($this->defaultPort());
     }
 
     public function type(): SchemeType
@@ -97,7 +98,7 @@ final class Scheme extends Component
     private function validate(BackedEnum|Stringable|string|null $scheme): ?string
     {
         $scheme = self::filterComponent($scheme);
-        if (null === $scheme) {
+        if ($scheme === null) {
             return null;
         }
 
@@ -109,11 +110,11 @@ final class Scheme extends Component
             return $fScheme;
         }
 
-        if (1 !== preg_match(self::REGEXP_SCHEME, $fScheme)) {
+        if (preg_match(self::REGEXP_SCHEME, $fScheme) !== 1) {
             throw new SyntaxError(sprintf("The scheme '%s' is invalid.", $scheme));
         }
 
-        if (100 < count($inMemoryCache)) {
+        if (count($inMemoryCache) > 100) {
             unset($inMemoryCache[array_key_first($inMemoryCache)]);
         }
         $inMemoryCache[$fScheme] = 1;
@@ -159,18 +160,18 @@ final class Scheme extends Component
 
     public function getUriComponent(): string
     {
-        return $this->value().(null === $this->scheme ? '' : ':');
+        return $this->value().($this->scheme === null ? '' : ':');
     }
 
     public function equals(mixed $value): bool
     {
-        if (!$value instanceof BackedEnum && !$value instanceof Stringable && !is_string($value) && null !== $value) {
+        if (! $value instanceof BackedEnum && ! $value instanceof Stringable && ! is_string($value) && $value !== null) {
             return false;
         }
 
-        if (!$value instanceof UriComponentInterface) {
+        if (! $value instanceof UriComponentInterface) {
             $value = self::tryNew($value);
-            if (null === $value) {
+            if ($value === null) {
                 return false;
             }
         }
@@ -186,7 +187,7 @@ final class Scheme extends Component
      *
      * @codeCoverageIgnore
      */
-    #[Deprecated(message:'use League\Uri\Components\Scheme::new() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Scheme::new() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromString(Stringable|string $scheme): self
     {
         return self::new($scheme);
@@ -202,7 +203,7 @@ final class Scheme extends Component
      *
      * Create a new instance from a URI object.
      */
-    #[Deprecated(message:'use League\Uri\Components\Scheme::fromUri() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Scheme::fromUri() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromUri(Psr7UriInterface|UriInterface $uri): self
     {
         return self::fromUri($uri);

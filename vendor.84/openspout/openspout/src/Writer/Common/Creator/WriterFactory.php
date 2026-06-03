@@ -21,7 +21,7 @@ final class WriterFactory
     /**
      * This creates an instance of the appropriate writer, given the extension of the file to be written.
      *
-     * @param string $path The path to the spreadsheet file. Supported extensions are .csv,.ods and .xlsx
+     * @param  string  $path  The path to the spreadsheet file. Supported extensions are .csv,.ods and .xlsx
      *
      * @throws UnsupportedTypeException
      */
@@ -30,9 +30,9 @@ final class WriterFactory
         $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
         return match ($extension) {
-            'csv' => new CSVWriter(),
-            'xlsx' => new XLSXWriter(),
-            'ods' => new ODSWriter(),
+            'csv' => new CSVWriter,
+            'xlsx' => new XLSXWriter,
+            'ods' => new ODSWriter,
             default => throw new UnsupportedTypeException('No writers supporting the given type: '.$extension),
         };
     }

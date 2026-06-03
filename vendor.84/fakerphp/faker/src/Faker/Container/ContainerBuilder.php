@@ -18,13 +18,13 @@ final class ContainerBuilder
     private array $definitions = [];
 
     /**
-     * @param callable|object|string $definition
+     * @param  callable|object|string  $definition
      *
      * @throws \InvalidArgumentException
      */
     public function add(string $id, $definition): self
     {
-        if (!is_string($definition) && !is_callable($definition) && !is_object($definition)) {
+        if (! is_string($definition) && ! is_callable($definition) && ! is_object($definition)) {
             throw new \InvalidArgumentException(sprintf(
                 'First argument to "%s::add()" must be a string, callable or object.',
                 self::class,
@@ -57,7 +57,7 @@ final class ContainerBuilder
 
     public static function withDefaultExtensions(): self
     {
-        $instance = new self();
+        $instance = new self;
 
         foreach (self::defaultExtensions() as $id => $definition) {
             $instance->add($id, $definition);

@@ -43,7 +43,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * @final
  */
-class RequestPayloadValueResolver implements ValueResolverInterface, EventSubscriberInterface
+class RequestPayloadValueResolver implements EventSubscriberInterface, ValueResolverInterface
 {
     /**
      * @see DenormalizerInterface::COLLECT_DENORMALIZATION_ERRORS
@@ -64,8 +64,7 @@ class RequestPayloadValueResolver implements ValueResolverInterface, EventSubscr
         private readonly ?ValidatorInterface $validator = null,
         private readonly ?TranslatorInterface $translator = null,
         private string $translationDomain = 'validators',
-    ) {
-    }
+    ) {}
 
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
@@ -74,17 +73,17 @@ class RequestPayloadValueResolver implements ValueResolverInterface, EventSubscr
             ?? $argument->getAttributesOfType(MapUploadedFile::class, ArgumentMetadata::IS_INSTANCEOF)[0]
             ?? null;
 
-        if (!$attribute) {
+        if (! $attribute) {
             return [];
         }
 
-        if (!$attribute instanceof MapUploadedFile && $argument->isVariadic()) {
+        if (! $attribute instanceof MapUploadedFile && $argument->isVariadic()) {
             throw new \LogicException(\sprintf('Mapping variadic argument "$%s" is not supported.', $argument->getName()));
         }
 
         if ($attribute instanceof MapRequestPayload) {
-            if ('array' === $argument->getType()) {
-                if (!$attribute->type) {
+            if ($argument->getType() === 'array') {
+                if (! $attribute->type) {
                     throw new NearMissValueResolverException(\sprintf('Please set the $type argument of the #[%s] attribute to the type of the objects in the expected array.', MapRequestPayload::class));
                 }
             } elseif ($attribute->type) {
@@ -116,12 +115,12 @@ class RequestPayloadValueResolver implements ValueResolverInterface, EventSubscr
             }
             $request = $event->getRequest();
 
-            if (!$argument->metadata->getType()) {
+            if (! $argument->metadata->getType()) {
                 throw new \LogicException(\sprintf('Could not resolve the "$%s" controller argument: argument should be typed.', $argument->metadata->getName()));
             }
 
             if ($this->validator) {
-                $violations = new ConstraintViolationList();
+                $violations = new ConstraintViolationList;
                 try {
                     $payload = $payloadMapper($request, $argument->metadata, $argument);
                 } catch (PartialDenormalizationException $e) {
@@ -142,9 +141,9 @@ class RequestPayloadValueResolver implements ValueResolverInterface, EventSubscr
                     $payload = $e->getData();
                 }
 
-                if (null !== $payload && !\count($violations)) {
+                if ($payload !== null && ! \count($violations)) {
                     $constraints = $argument->constraints ?? null;
-                    if (\is_array($payload) && !empty($constraints) && !$constraints instanceof Assert\All) {
+                    if (\is_array($payload) && ! empty($constraints) && ! $constraints instanceof Assert\All) {
                         $constraints = new Assert\All($constraints);
                     }
                     $violations->addAll($this->validator->validate($payload, $constraints, $argument->validationGroups ?? null));
@@ -161,7 +160,7 @@ class RequestPayloadValueResolver implements ValueResolverInterface, EventSubscr
                 }
             }
 
-            if (null === $payload) {
+            if ($payload === null) {
                 $payload = match (true) {
                     $argument->metadata->hasDefaultValue() => $argument->metadata->getDefaultValue(),
                     $argument->metadata->isNullable() => null,
@@ -184,7 +183,7 @@ class RequestPayloadValueResolver implements ValueResolverInterface, EventSubscr
 
     private function mapQueryString(Request $request, ArgumentMetadata $argument, MapQueryString $attribute): ?object
     {
-        if (!($data = $request->query->all($attribute->key)) && ($argument->isNullable() || $argument->hasDefaultValue())) {
+        if (! ($data = $request->query->all($attribute->key)) && ($argument->isNullable() || $argument->hasDefaultValue())) {
             return null;
         }
 
@@ -201,21 +200,21 @@ class RequestPayloadValueResolver implements ValueResolverInterface, EventSubscr
             throw new UnsupportedMediaTypeHttpException('Unsupported format.');
         }
 
-        if ($attribute->acceptFormat && !\in_array($format, (array) $attribute->acceptFormat, true)) {
+        if ($attribute->acceptFormat && ! \in_array($format, (array) $attribute->acceptFormat, true)) {
             throw new UnsupportedMediaTypeHttpException(\sprintf('Unsupported format, expects "%s", but "%s" given.', implode('", "', (array) $attribute->acceptFormat), $format));
         }
 
-        if ('array' === $argument->getType() && null !== $attribute->type) {
+        if ($argument->getType() === 'array' && $attribute->type !== null) {
             $type = $attribute->type.'[]';
         } else {
             $type = $argument->getType();
         }
 
         if (\is_array($data)) {
-            return $this->serializer->denormalize($data, $type, 'csv', $attribute->serializationContext + self::CONTEXT_DENORMALIZE + ('form' === $format ? ['filter_bool' => true] : []));
+            return $this->serializer->denormalize($data, $type, 'csv', $attribute->serializationContext + self::CONTEXT_DENORMALIZE + ($format === 'form' ? ['filter_bool' => true] : []));
         }
 
-        if ('form' === $format) {
+        if ($format === 'form') {
             throw new BadRequestHttpException('Request payload contains invalid "form" data.');
         }
 
@@ -232,10 +231,10 @@ class RequestPayloadValueResolver implements ValueResolverInterface, EventSubscr
 
     private function mapUploadedFile(Request $request, ArgumentMetadata $argument, MapUploadedFile $attribute): UploadedFile|array|null
     {
-        if (!($files = $request->files->get($attribute->name ?? $argument->getName())) && ($argument->isNullable() || $argument->hasDefaultValue())) {
+        if (! ($files = $request->files->get($attribute->name ?? $argument->getName())) && ($argument->isNullable() || $argument->hasDefaultValue())) {
             return null;
         }
 
-        return $files ?? ('array' === $argument->getType() ? [] : null);
+        return $files ?? ($argument->getType() === 'array' ? [] : null);
     }
 }

@@ -33,7 +33,7 @@ final class Link extends BaseTag implements Factory\StaticMethod
      */
     public function __construct(string $link, ?Description $description = null)
     {
-        $this->link        = $link;
+        $this->link = $link;
         $this->description = $description;
     }
 
@@ -47,7 +47,7 @@ final class Link extends BaseTag implements Factory\StaticMethod
         $parts = Utils::pregSplit('/\s+/Su', $body, 2);
         $description = isset($parts[1]) ? $descriptionFactory->create($parts[1], $context) : null;
 
-        return new static($parts[0], $description);
+        return new self($parts[0], $description);
     }
 
     /**
@@ -71,6 +71,6 @@ final class Link extends BaseTag implements Factory\StaticMethod
 
         $link = $this->link;
 
-        return $link . ($description !== '' ? ($link !== '' ? ' ' : '') . $description : '');
+        return $link.($description !== '' ? ($link !== '' ? ' ' : '').$description : '');
     }
 }

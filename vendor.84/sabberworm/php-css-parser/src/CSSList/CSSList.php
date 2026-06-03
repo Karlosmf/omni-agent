@@ -49,7 +49,7 @@ abstract class CSSList implements CSSElement, CSSListItem, Positionable
     protected $contents = [];
 
     /**
-     * @param int<1, max>|null $lineNumber
+     * @param  int<1, max>|null  $lineNumber
      */
     public function __construct(?int $lineNumber = null)
     {
@@ -67,7 +67,7 @@ abstract class CSSList implements CSSElement, CSSListItem, Positionable
         $isRoot = $list instanceof Document;
         $usesLenientParsing = $parserState->getSettings()->usesLenientParsing();
         $comments = [];
-        while (!$parserState->isEnd()) {
+        while (! $parserState->isEnd()) {
             $comments = \array_merge($comments, $parserState->consumeWhiteSpace());
             $listItem = null;
             if ($usesLenientParsing) {
@@ -90,16 +90,16 @@ abstract class CSSList implements CSSElement, CSSListItem, Positionable
             $comments = $parserState->consumeWhiteSpace();
         }
         $list->addComments($comments);
-        if (!$isRoot && !$usesLenientParsing) {
+        if (! $isRoot && ! $usesLenientParsing) {
             throw new SourceException('Unexpected end of document', $parserState->currentLine());
         }
     }
 
     /**
      * @return CSSListItem|false|null
-     *         If `null` is returned, it means the end of the list has been reached.
-     *         If `false` is returned, it means an invalid item has been encountered,
-     *         but parsing of the next item should proceed.
+     *                                If `null` is returned, it means the end of the list has been reached.
+     *                                If `false` is returned, it means an invalid item has been encountered,
+     *                                but parsing of the next item should proceed.
      *
      * @throws SourceException
      * @throws UnexpectedEOFException
@@ -111,7 +111,7 @@ abstract class CSSList implements CSSElement, CSSListItem, Positionable
         if ($parserState->comes('@')) {
             $atRule = self::parseAtRule($parserState);
             if ($atRule instanceof Charset) {
-                if (!$isRoot) {
+                if (! $isRoot) {
                     throw new UnexpectedTokenException(
                         '@charset may only occur in root document',
                         '',
@@ -129,6 +129,7 @@ abstract class CSSList implements CSSElement, CSSListItem, Positionable
                 }
                 $parserState->setCharset($atRule->getCharset());
             }
+
             return $atRule;
         } elseif ($parserState->comes('}')) {
             if ($isRoot) {
@@ -161,18 +162,20 @@ abstract class CSSList implements CSSElement, CSSListItem, Positionable
             $location = URL::parse($parserState);
             $parserState->consumeWhiteSpace();
             $mediaQuery = null;
-            if (!$parserState->comes(';')) {
+            if (! $parserState->comes(';')) {
                 $mediaQuery = \trim($parserState->consumeUntil([';', ParserState::EOF]));
                 if ($mediaQuery === '') {
                     $mediaQuery = null;
                 }
             }
             $parserState->consumeUntil([';', ParserState::EOF], true, true);
+
             return new Import($location, $mediaQuery, $identifierLineNumber);
         } elseif ($identifier === 'charset') {
             $charsetString = CSSString::parse($parserState);
             $parserState->consumeWhiteSpace();
             $parserState->consumeUntil([';', ParserState::EOF], true, true);
+
             return new Charset($charsetString, $identifierLineNumber);
         } elseif (self::identifierIs($identifier, 'keyframes')) {
             $result = new KeyFrame($identifierLineNumber);
@@ -182,19 +185,20 @@ abstract class CSSList implements CSSElement, CSSListItem, Positionable
             if ($parserState->comes('}')) {
                 $parserState->consume('}');
             }
+
             return $result;
         } elseif ($identifier === 'namespace') {
             $prefix = null;
             $url = Value::parsePrimitiveValue($parserState);
-            if (!$parserState->comes(';')) {
+            if (! $parserState->comes(';')) {
                 $prefix = $url;
                 $url = Value::parsePrimitiveValue($parserState);
             }
             $parserState->consumeUntil([';', ParserState::EOF], true, true);
-            if ($prefix !== null && !\is_string($prefix)) {
+            if ($prefix !== null && ! \is_string($prefix)) {
                 throw new UnexpectedTokenException('Wrong namespace prefix', $prefix, 'custom', $identifierLineNumber);
             }
-            if (!($url instanceof CSSString || $url instanceof URL)) {
+            if (! ($url instanceof CSSString || $url instanceof URL)) {
                 throw new UnexpectedTokenException(
                     'Wrong namespace url of invalid type',
                     $url,
@@ -202,6 +206,7 @@ abstract class CSSList implements CSSElement, CSSListItem, Positionable
                     $identifierLineNumber
                 );
             }
+
             return new CSSNamespace($url, $prefix, $identifierLineNumber);
         } else {
             // Unknown other at rule (font-face or such)
@@ -230,6 +235,7 @@ abstract class CSSList implements CSSElement, CSSListItem, Positionable
                     $parserState->consume('}');
                 }
             }
+
             return $atRule;
         }
     }
@@ -266,7 +272,7 @@ abstract class CSSList implements CSSElement, CSSListItem, Positionable
     /**
      * Splices the list of contents.
      *
-     * @param array<int, CSSListItem> $replacement
+     * @param  array<int, CSSListItem>  $replacement
      */
     public function splice(int $offset, ?int $length = null, ?array $replacement = null): void
     {
@@ -289,10 +295,9 @@ abstract class CSSList implements CSSElement, CSSListItem, Positionable
     /**
      * Removes an item from the CSS list.
      *
-     * @param CSSListItem $itemToRemove
-     *        May be a `RuleSet` (most likely a `DeclarationBlock`), an `Import`,
-     *        a `Charset` or another `CSSList` (most likely a `MediaQuery`)
-     *
+     * @param  CSSListItem  $itemToRemove
+     *                                     May be a `RuleSet` (most likely a `DeclarationBlock`), an `Import`,
+     *                                     a `Charset` or another `CSSList` (most likely a `MediaQuery`)
      * @return bool whether the item was removed
      */
     public function remove(CSSListItem $itemToRemove): bool
@@ -300,6 +305,7 @@ abstract class CSSList implements CSSElement, CSSListItem, Positionable
         $key = \array_search($itemToRemove, $this->contents, true);
         if ($key !== false) {
             unset($this->contents[$key]);
+
             return true;
         }
 
@@ -309,10 +315,10 @@ abstract class CSSList implements CSSElement, CSSListItem, Positionable
     /**
      * Replaces an item from the CSS list.
      *
-     * @param CSSListItem $oldItem
-     *        May be a `RuleSet` (most likely a `DeclarationBlock`), an `Import`, a `Charset`
-     *        or another `CSSList` (most likely a `MediaQuery`)
-     * @param CSSListItem|array<CSSListItem> $newItem
+     * @param  CSSListItem  $oldItem
+     *                                May be a `RuleSet` (most likely a `DeclarationBlock`), an `Import`, a `Charset`
+     *                                or another `CSSList` (most likely a `MediaQuery`)
+     * @param  CSSListItem|array<CSSListItem>  $newItem
      */
     public function replace(CSSListItem $oldItem, $newItem): bool
     {
@@ -323,6 +329,7 @@ abstract class CSSList implements CSSElement, CSSListItem, Positionable
             } else {
                 \array_splice($this->contents, $key, 1, [$newItem]);
             }
+
             return true;
         }
 
@@ -330,7 +337,7 @@ abstract class CSSList implements CSSElement, CSSListItem, Positionable
     }
 
     /**
-     * @param array<int, CSSListItem> $contents
+     * @param  array<int, CSSListItem>  $contents
      */
     public function setContents(array $contents): void
     {
@@ -343,22 +350,22 @@ abstract class CSSList implements CSSElement, CSSListItem, Positionable
     /**
      * Removes a declaration block from the CSS list if it matches all given selectors.
      *
-     * @param DeclarationBlock|array<Selector>|string $selectors the selectors to match
-     * @param bool $removeAll whether to stop at the first declaration block found or remove all blocks
+     * @param  DeclarationBlock|array<Selector>|string  $selectors  the selectors to match
+     * @param  bool  $removeAll  whether to stop at the first declaration block found or remove all blocks
      */
     public function removeDeclarationBlockBySelector($selectors, bool $removeAll = false): void
     {
         if ($selectors instanceof DeclarationBlock) {
             $selectors = $selectors->getSelectors();
         }
-        if (!\is_array($selectors)) {
+        if (! \is_array($selectors)) {
             $selectors = \explode(',', $selectors);
         }
         foreach ($selectors as $key => &$selector) {
-            if (!($selector instanceof Selector)) {
-                if (!Selector::isValid($selector)) {
+            if (! ($selector instanceof Selector)) {
+                if (! Selector::isValid($selector)) {
                     throw new UnexpectedTokenException(
-                        "Selector did not match '" . Selector::SELECTOR_VALIDATION_RX . "'.",
+                        "Selector did not match '".Selector::SELECTOR_VALIDATION_RX."'.",
                         $selector,
                         'custom'
                     );
@@ -367,12 +374,12 @@ abstract class CSSList implements CSSElement, CSSListItem, Positionable
             }
         }
         foreach ($this->contents as $key => $item) {
-            if (!($item instanceof DeclarationBlock)) {
+            if (! ($item instanceof DeclarationBlock)) {
                 continue;
             }
             if ($item->getSelectors() == $selectors) {
                 unset($this->contents[$key]);
-                if (!$removeAll) {
+                if (! $removeAll) {
                     return;
                 }
             }
@@ -384,7 +391,7 @@ abstract class CSSList implements CSSElement, CSSListItem, Positionable
         $result = '';
         $isFirst = true;
         $nextLevelFormat = $outputFormat;
-        if (!$this->isRootList()) {
+        if (! $this->isRootList()) {
             $nextLevelFormat = $outputFormat->nextLevel();
         }
         $nextLevelFormatter = $nextLevelFormat->getFormatter();
@@ -405,7 +412,7 @@ abstract class CSSList implements CSSElement, CSSListItem, Positionable
             $result .= $renderedCss;
         }
 
-        if (!$isFirst) {
+        if (! $isFirst) {
             // Had some output
             $result .= $formatter->spaceAfterBlocks();
         }

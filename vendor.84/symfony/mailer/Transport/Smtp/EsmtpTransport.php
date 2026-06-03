@@ -29,24 +29,29 @@ use Symfony\Component\Mailer\Transport\Smtp\Stream\SocketStream;
 class EsmtpTransport extends SmtpTransport
 {
     private array $authenticators = [];
+
     private string $username = '';
+
     private string $password = '';
+
     private array $capabilities;
+
     private bool $autoTls = true;
+
     private bool $requireTls = false;
 
     public function __construct(string $host = 'localhost', int $port = 0, ?bool $tls = null, ?EventDispatcherInterface $dispatcher = null, ?LoggerInterface $logger = null, ?AbstractStream $stream = null, ?array $authenticators = null)
     {
         parent::__construct($stream, $dispatcher, $logger);
 
-        if (null === $authenticators) {
+        if ($authenticators === null) {
             // fallback to default authenticators
             // order is important here (roughly most secure and popular first)
             $authenticators = [
-                new Auth\CramMd5Authenticator(),
-                new Auth\LoginAuthenticator(),
-                new Auth\PlainAuthenticator(),
-                new Auth\XOAuth2Authenticator(),
+                new Auth\CramMd5Authenticator,
+                new Auth\LoginAuthenticator,
+                new Auth\PlainAuthenticator,
+                new Auth\XOAuth2Authenticator,
             ];
         }
         $this->setAuthenticators($authenticators);
@@ -54,17 +59,17 @@ class EsmtpTransport extends SmtpTransport
         /** @var SocketStream $stream */
         $stream = $this->getStream();
 
-        if (null === $tls) {
-            if (465 === $port) {
+        if ($tls === null) {
+            if ($port === 465) {
                 $tls = true;
             } else {
-                $tls = \defined('OPENSSL_VERSION_NUMBER') && 0 === $port && 'localhost' !== $host;
+                $tls = \defined('OPENSSL_VERSION_NUMBER') && $port === 0 && $host !== 'localhost';
             }
         }
-        if (!$tls) {
+        if (! $tls) {
             $stream->disableTls();
         }
-        if (0 === $port) {
+        if ($port === 0) {
             $port = $tls ? 465 : 25;
         }
 
@@ -163,7 +168,7 @@ class EsmtpTransport extends SmtpTransport
             try {
                 return parent::executeCommand(\sprintf("HELO %s\r\n", $this->getLocalDomain()), [250]);
             } catch (TransportExceptionInterface $ex) {
-                if (!$ex->getCode()) {
+                if (! $ex->getCode()) {
                     throw $e;
                 }
 
@@ -179,10 +184,10 @@ class EsmtpTransport extends SmtpTransport
         // WARNING: !$stream->isTLS() is right, 100% sure :)
         // if you think that the ! should be removed, read the code again
         // if doing so "fixes" your issue then it probably means your SMTP server behaves incorrectly or is wrongly configured
-        if ($this->autoTls && !$stream->isTLS() && \defined('OPENSSL_VERSION_NUMBER') && \array_key_exists('STARTTLS', $this->capabilities)) {
+        if ($this->autoTls && ! $stream->isTLS() && \defined('OPENSSL_VERSION_NUMBER') && \array_key_exists('STARTTLS', $this->capabilities)) {
             $this->executeCommand("STARTTLS\r\n", [220]);
 
-            if (!$stream->startTLS()) {
+            if (! $stream->startTLS()) {
                 throw new TransportException('Unable to connect with STARTTLS.');
             }
 
@@ -191,7 +196,7 @@ class EsmtpTransport extends SmtpTransport
             $this->capabilities = $this->parseCapabilities($response);
         }
 
-        if (!$tlsStarted && $this->isTlsRequired()) {
+        if (! $tlsStarted && $this->isTlsRequired()) {
             throw new TransportException('TLS required but neither TLS or STARTTLS are in use.');
         }
 
@@ -224,7 +229,7 @@ class EsmtpTransport extends SmtpTransport
 
     private function handleAuth(array $modes): void
     {
-        if (!$this->username) {
+        if (! $this->username) {
             return;
         }
 
@@ -233,7 +238,7 @@ class EsmtpTransport extends SmtpTransport
         $errors = [];
         $modes = array_map('strtolower', $modes);
         foreach ($this->authenticators as $authenticator) {
-            if (!\in_array(strtolower($authenticator->getAuthKeyword()), $modes, true)) {
+            if (! \in_array(strtolower($authenticator->getAuthKeyword()), $modes, true)) {
                 continue;
             }
 
@@ -257,7 +262,7 @@ class EsmtpTransport extends SmtpTransport
             }
         }
 
-        if (!$authNames) {
+        if (! $authNames) {
             throw new TransportException(\sprintf('Failed to find an authenticator supported by the SMTP server, which currently supports: "%s".', implode('", "', $modes)), $code ?: 504);
         }
 

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,12 +9,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Metadata\Parser;
+
+use PHPUnit\Metadata\MetadataCollection;
 
 use function assert;
 use function class_exists;
 use function method_exists;
-use PHPUnit\Metadata\MetadataCollection;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -44,7 +48,7 @@ final class CachingParser implements Parser
     }
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      */
     public function forClass(string $className): MetadataCollection
     {
@@ -60,15 +64,15 @@ final class CachingParser implements Parser
     }
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      */
     public function forMethod(string $className, string $methodName): MetadataCollection
     {
         assert(class_exists($className));
         assert(method_exists($className, $methodName));
 
-        $key = $className . '::' . $methodName;
+        $key = $className.'::'.$methodName;
 
         if (isset($this->methodCache[$key])) {
             return $this->methodCache[$key];
@@ -80,12 +84,12 @@ final class CachingParser implements Parser
     }
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      */
     public function forClassAndMethod(string $className, string $methodName): MetadataCollection
     {
-        $key = $className . '::' . $methodName;
+        $key = $className.'::'.$methodName;
 
         if (isset($this->classAndMethodCache[$key])) {
             return $this->classAndMethodCache[$key];

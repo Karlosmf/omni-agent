@@ -11,7 +11,7 @@ trait InteractsWithTableQuery
 
     protected ?Builder $query = null;
 
-    public function query(Builder | Closure | null $query): static
+    public function query(Builder|Closure|null $query): static
     {
         if ($query instanceof Builder || ($query === null)) {
             $this->query = $query;

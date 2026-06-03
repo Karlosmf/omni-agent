@@ -28,7 +28,7 @@ interface SortCombinator extends Sort
      * This method MUST retain the state of the current instance,
      * and return an instance that contains the specified changes.
      *
-     * @param Ordering ...$sorts
+     * @param  Ordering  ...$sorts
      */
     public function append(Sort|Closure ...$sorts): self;
 
@@ -39,7 +39,7 @@ interface SortCombinator extends Sort
      * This method MUST retain the state of the current instance,
      * and return an instance that contains the specified changes.
      *
-     * @param Ordering ...$sorts
+     * @param  Ordering  ...$sorts
      */
     public function prepend(Sort|Closure ...$sorts): self;
 }

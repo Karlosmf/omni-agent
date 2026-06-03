@@ -46,6 +46,7 @@ class Person extends \Faker\Provider\Person
     ];
 
     protected static $titleMale = ['先生', '博士', '教授'];
+
     protected static $titleFemale = ['小姐', '太太', '博士', '教授'];
 
     /**
@@ -143,7 +144,7 @@ class Person extends \Faker\Provider\Person
     {
         $name = '';
 
-        for ($i = 0; $i < $n; ++$i) {
+        for ($i = 0; $i < $n; $i++) {
             $name .= static::randomElement($pool);
         }
 
@@ -166,7 +167,7 @@ class Person extends \Faker\Provider\Person
     }
 
     /**
-     * @param string $gender Person::GENDER_MALE || Person::GENDER_FEMALE
+     * @param  string  $gender  Person::GENDER_MALE || Person::GENDER_FEMALE
      *
      * @see https://en.wikipedia.org/wiki/National_Identification_Card_(Republic_of_China)
      *
@@ -183,7 +184,7 @@ class Person extends \Faker\Provider\Person
 
         $randomNumberCode = self::randomNumber(7, true);
 
-        $codes = str_split($birthPlaceCode . $genderCode . $randomNumberCode);
+        $codes = str_split($birthPlaceCode.$genderCode.$randomNumberCode);
         $total = 0;
 
         foreach ($codes as $key => $code) {
@@ -196,6 +197,6 @@ class Person extends \Faker\Provider\Person
             $checkSumDigit = 0;
         }
 
-        return $birthPlace . $genderCode . $randomNumberCode . $checkSumDigit;
+        return $birthPlace.$genderCode.$randomNumberCode.$checkSumDigit;
     }
 }

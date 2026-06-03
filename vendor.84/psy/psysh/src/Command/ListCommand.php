@@ -36,12 +36,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ListCommand extends ReflectingCommand implements PresenterAware
 {
     protected Presenter $presenter;
+
     protected array $enumerators;
 
     /**
      * PresenterAware interface.
-     *
-     * @param Presenter $presenter
      */
     public function setPresenter(Presenter $presenter)
     {
@@ -53,7 +52,7 @@ class ListCommand extends ReflectingCommand implements PresenterAware
      */
     protected function configure(): void
     {
-        list($grep, $insensitive, $invert) = FilterOptions::getOptions();
+        [$grep, $insensitive, $invert] = FilterOptions::getOptions();
 
         $this
             ->setName('ls')
@@ -122,7 +121,7 @@ HELP
         $method = $input->getOption('long') ? 'writeLong' : 'write';
 
         if ($target = $input->getArgument('target')) {
-            list($target, $reflector) = $this->getTargetAndReflector($target, $output);
+            [$target, $reflector] = $this->getTargetAndReflector($target, $output);
         } else {
             $reflector = null;
         }
@@ -153,7 +152,7 @@ HELP
      */
     protected function initEnumerators()
     {
-        if (!isset($this->enumerators)) {
+        if (! isset($this->enumerators)) {
             $mgr = $this->presenter;
 
             $this->enumerators = [
@@ -172,8 +171,7 @@ HELP
     /**
      * Write the list items to $output.
      *
-     * @param OutputInterface $output
-     * @param array           $result List of enumerated items
+     * @param  array  $result  List of enumerated items
      */
     protected function write(OutputInterface $output, array $result)
     {
@@ -203,8 +201,7 @@ HELP
      *
      * Items are listed one per line, and include the item signature.
      *
-     * @param OutputInterface $output
-     * @param array           $result List of enumerated items
+     * @param  array  $result  List of enumerated items
      */
     protected function writeLong(OutputInterface $output, array $result)
     {
@@ -229,8 +226,6 @@ HELP
 
     /**
      * Format an item name given its visibility.
-     *
-     * @param array $item
      */
     private function formatItemName(array $item): string
     {
@@ -241,12 +236,10 @@ HELP
      * Validate that input options make sense, provide defaults when called without options.
      *
      * @throws RuntimeException if options are inconsistent
-     *
-     * @param InputInterface $input
      */
     private function validateInput(InputInterface $input)
     {
-        if (!$input->getArgument('target')) {
+        if (! $input->getArgument('target')) {
             // if no target is passed, there can be no properties or methods
             foreach (['properties', 'methods', 'no-inherit'] as $option) {
                 if ($input->getOption($option)) {

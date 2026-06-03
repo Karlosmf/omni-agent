@@ -18,6 +18,4 @@ namespace League\CommonMark\Node\Inline;
 
 use League\CommonMark\Node\Node;
 
-abstract class AbstractInline extends Node
-{
-}
+abstract class AbstractInline extends Node {}

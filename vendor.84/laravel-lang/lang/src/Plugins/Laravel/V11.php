@@ -19,9 +19,9 @@ class V11 extends Plugin
 
             'framework/extended.json' => '{locale}.json',
 
-            'framework/11.x/auth.php'       => '{locale}/auth.php',
+            'framework/11.x/auth.php' => '{locale}/auth.php',
             'framework/11.x/pagination.php' => '{locale}/pagination.php',
-            'framework/11.x/passwords.php'  => '{locale}/passwords.php',
+            'framework/11.x/passwords.php' => '{locale}/passwords.php',
             'framework/11.x/validation.php' => '{locale}/validation.php',
         ];
     }

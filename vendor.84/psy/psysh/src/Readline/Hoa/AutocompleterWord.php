@@ -60,8 +60,7 @@ class AutocompleterWord implements Autocompleter
      * Complete a word.
      * Returns null for no word, a full-word or an array of full-words.
      *
-     * @param string &$prefix Prefix to autocomplete
-     *
+     * @param  string  &$prefix  Prefix to autocomplete
      * @return mixed
      */
     public function complete(&$prefix)
@@ -79,7 +78,7 @@ class AutocompleterWord implements Autocompleter
             return null;
         }
 
-        if (1 === \count($out)) {
+        if (\count($out) === 1) {
             return $out[0];
         }
 
@@ -97,8 +96,7 @@ class AutocompleterWord implements Autocompleter
     /**
      * Set list of words.
      *
-     * @param array $words words
-     *
+     * @param  array  $words  words
      * @return array
      */
     public function setWords(array $words)

@@ -75,7 +75,7 @@ class ManageRelatedRecords extends Page implements Tables\Contracts\HasTable
     #[Url(as: 'tab')]
     public ?string $activeTab = null;
 
-    public static function getNavigationIcon(): string | BackedEnum | Htmlable | null
+    public static function getNavigationIcon(): string|BackedEnum|Htmlable|null
     {
         return static::$navigationIcon
             ?? (filled($relatedResource = static::getRelatedResource()) ? $relatedResource::getNavigationIcon() : null)
@@ -83,7 +83,7 @@ class ManageRelatedRecords extends Page implements Tables\Contracts\HasTable
             ?? Heroicon::OutlinedRectangleStack;
     }
 
-    public function mount(int | string $record): void
+    public function mount(int|string $record): void
     {
         $this->record = $this->resolveRecord($record);
 
@@ -179,7 +179,7 @@ class ManageRelatedRecords extends Page implements Tables\Contracts\HasTable
     {
         return [
             'fi-resource-manage-related-records-page',
-            'fi-resource-' . str_replace('/', '-', $this->getResource()::getSlug(Filament::getCurrentOrDefaultPanel())),
+            'fi-resource-'.str_replace('/', '-', $this->getResource()::getSlug(Filament::getCurrentOrDefaultPanel())),
             "fi-resource-record-{$this->getRecord()->getKey()}",
         ];
     }
@@ -329,7 +329,7 @@ class ManageRelatedRecords extends Page implements Tables\Contracts\HasTable
         return null;
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         if (filled(static::$title)) {
             return static::$title;

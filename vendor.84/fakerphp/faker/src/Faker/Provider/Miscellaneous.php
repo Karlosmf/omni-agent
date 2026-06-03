@@ -231,8 +231,7 @@ class Miscellaneous extends Base
     /**
      * Return a boolean, true or false.
      *
-     * @param int $chanceOfGettingTrue Between 0 (always get false) and 100 (always get true)
-     *
+     * @param  int  $chanceOfGettingTrue  Between 0 (always get false) and 100 (always get true)
      * @return bool
      *
      * @example true

@@ -23,7 +23,7 @@ final class InMemoryStrategy implements CachingStrategyInterface
     private bool $isCacheClosed = false;
 
     /**
-     * @param int $sharedStringsUniqueCount Number of unique shared strings
+     * @param  int  $sharedStringsUniqueCount  Number of unique shared strings
      */
     public function __construct(int $sharedStringsUniqueCount)
     {
@@ -33,12 +33,12 @@ final class InMemoryStrategy implements CachingStrategyInterface
     /**
      * Adds the given string to the cache.
      *
-     * @param string $sharedString      The string to be added to the cache
-     * @param int    $sharedStringIndex Index of the shared string in the sharedStrings.xml file
+     * @param  string  $sharedString  The string to be added to the cache
+     * @param  int  $sharedStringIndex  Index of the shared string in the sharedStrings.xml file
      */
     public function addStringForIndex(string $sharedString, int $sharedStringIndex): void
     {
-        if (!$this->isCacheClosed) {
+        if (! $this->isCacheClosed) {
             $this->inMemoryCache->offsetSet($sharedStringIndex, $sharedString);
         }
     }
@@ -55,8 +55,7 @@ final class InMemoryStrategy implements CachingStrategyInterface
     /**
      * Returns the string located at the given index from the cache.
      *
-     * @param int $sharedStringIndex Index of the shared string in the sharedStrings.xml file
-     *
+     * @param  int  $sharedStringIndex  Index of the shared string in the sharedStrings.xml file
      * @return string The shared string at the given index
      *
      * @throws SharedStringNotFoundException If no shared string found for the given index

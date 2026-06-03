@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * The interface definition for Rules to generate output.
@@ -19,18 +20,17 @@ interface RulesInterface
      *
      * Note, before the rules can be used a traverser must be registered.
      *
-     * @param mixed $output  The output stream to write output to.
-     * @param array $options An array of options.
+     * @param  mixed  $output  The output stream to write output to.
+     * @param  array  $options  An array of options.
      */
-    public function __construct($output, $options = array());
+    public function __construct($output, $options = []);
 
     /**
      * Register the traverser used in but the rules.
      *
      * Note, only one traverser can be used by the rules.
      *
-     * @param Traverser $traverser The traverser used in the rules.
-     *
+     * @param  Traverser  $traverser  The traverser used in the rules.
      * @return RulesInterface $this for the current object.
      */
     public function setTraverser(Traverser $traverser);
@@ -41,7 +41,7 @@ interface RulesInterface
      * Instead of returning the result write it to the output stream ($output)
      * that was passed into the constructor.
      *
-     * @param \DOMDocument $dom
+     * @param  \DOMDocument  $dom
      */
     public function document($dom);
 
@@ -51,7 +51,7 @@ interface RulesInterface
      * Instead of returning the result write it to the output stream ($output)
      * that was passed into the constructor.
      *
-     * @param mixed $ele
+     * @param  mixed  $ele
      */
     public function element($ele);
 
@@ -61,7 +61,7 @@ interface RulesInterface
      * Instead of returning the result write it to the output stream ($output)
      * that was passed into the constructor.
      *
-     * @param mixed $ele
+     * @param  mixed  $ele
      */
     public function text($ele);
 
@@ -71,7 +71,7 @@ interface RulesInterface
      * Instead of returning the result write it to the output stream ($output)
      * that was passed into the constructor.
      *
-     * @param mixed $ele
+     * @param  mixed  $ele
      */
     public function cdata($ele);
 
@@ -81,7 +81,7 @@ interface RulesInterface
      * Instead of returning the result write it to the output stream ($output)
      * that was passed into the constructor.
      *
-     * @param mixed $ele
+     * @param  mixed  $ele
      */
     public function comment($ele);
 
@@ -93,7 +93,7 @@ interface RulesInterface
      * Instead of returning the result write it to the output stream ($output)
      * that was passed into the constructor.
      *
-     * @param mixed $ele
+     * @param  mixed  $ele
      */
     public function processorInstruction($ele);
 }

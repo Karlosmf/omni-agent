@@ -16,6 +16,7 @@ class WebDriverOptions
      * @var ExecuteMethod
      */
     protected $executor;
+
     /**
      * @var bool
      */
@@ -31,7 +32,8 @@ class WebDriverOptions
      * Add a specific cookie.
      *
      * @see Cookie for description of possible cookie properties
-     * @param Cookie|array $cookie Cookie object. May be also created from array for compatibility reasons.
+     *
+     * @param  Cookie|array  $cookie  Cookie object. May be also created from array for compatibility reasons.
      * @return WebDriverOptions The current instance.
      */
     public function addCookie($cookie)
@@ -39,7 +41,7 @@ class WebDriverOptions
         if (is_array($cookie)) { // @todo @deprecated remove in 2.0
             $cookie = Cookie::createFromArray($cookie);
         }
-        if (!$cookie instanceof Cookie) {
+        if (! $cookie instanceof Cookie) {
             throw LogicException::forError('Cookie must be set from instance of Cookie class or from array.');
         }
 
@@ -66,7 +68,7 @@ class WebDriverOptions
     /**
      * Delete the cookie with the given name.
      *
-     * @param string $name
+     * @param  string  $name
      * @return WebDriverOptions The current instance.
      */
     public function deleteCookieNamed($name)
@@ -82,9 +84,10 @@ class WebDriverOptions
     /**
      * Get the cookie with a given name.
      *
-     * @param string $name
-     * @throws NoSuchCookieException In W3C compliant mode if no cookie with the given name is present
+     * @param  string  $name
      * @return Cookie|null The cookie, or null in JsonWire mode if no cookie with the given name is present
+     *
+     * @throws NoSuchCookieException In W3C compliant mode if no cookie with the given name is present
      */
     public function getCookieNamed($name)
     {
@@ -94,7 +97,7 @@ class WebDriverOptions
                 [':name' => $name]
             );
 
-            if (!is_array($cookieArray)) { // Microsoft Edge returns null even in W3C mode => emulate proper behavior
+            if (! is_array($cookieArray)) { // Microsoft Edge returns null even in W3C mode => emulate proper behavior
                 throw new NoSuchCookieException('no such cookie');
             }
 
@@ -119,7 +122,7 @@ class WebDriverOptions
     public function getCookies()
     {
         $cookieArrays = $this->executor->execute(DriverCommand::GET_ALL_COOKIES);
-        if (!is_array($cookieArrays)) { // Microsoft Edge returns null if there are no cookies...
+        if (! is_array($cookieArrays)) { // Microsoft Edge returns null if there are no cookies...
             return [];
         }
 
@@ -145,6 +148,7 @@ class WebDriverOptions
      * An abstraction allowing the driver to manipulate the browser's window
      *
      * @return WebDriverWindow
+     *
      * @see WebDriverWindow
      */
     public function window()
@@ -155,8 +159,9 @@ class WebDriverOptions
     /**
      * Get the log for a given log type. Log buffer is reset after each request.
      *
-     * @param string $log_type The log type.
+     * @param  string  $log_type  The log type.
      * @return array The list of log entries.
+     *
      * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#log-type
      */
     public function getLog($log_type)
@@ -171,6 +176,7 @@ class WebDriverOptions
      * Get available log types.
      *
      * @return array The list of available log types.
+     *
      * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#log-type
      */
     public function getAvailableLogTypes()

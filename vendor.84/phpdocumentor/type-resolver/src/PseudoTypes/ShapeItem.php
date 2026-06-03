@@ -13,15 +13,17 @@ abstract class ShapeItem
 {
     /** @var string|null */
     private $key;
+
     /** @var Type */
     private $value;
+
     /** @var bool */
     private $optional;
 
     public function __construct(?string $key, ?Type $value, bool $optional)
     {
         $this->key = $key;
-        $this->value = $value ?? new Mixed_();
+        $this->value = $value ?? new Mixed_;
         $this->optional = $optional;
     }
 

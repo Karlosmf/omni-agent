@@ -12,7 +12,7 @@ class Main extends Plugin
     {
         return [
             'numerical.php' => '{locale}/http-statuses.php',
-            'textual.json'  => '{locale}.json',
+            'textual.json' => '{locale}.json',
         ];
     }
 }

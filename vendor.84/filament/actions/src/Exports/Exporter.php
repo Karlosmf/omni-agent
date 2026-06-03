@@ -77,7 +77,7 @@ abstract class Exporter
     {
         return static::$model ?? (string) str(class_basename(static::class))
             ->beforeLast('Exporter')
-            ->prepend(app()->getNamespace() . 'Models\\');
+            ->prepend(app()->getNamespace().'Models\\');
     }
 
     abstract public static function getCompletedNotificationBody(Export $export): string;
@@ -105,7 +105,7 @@ abstract class Exporter
     /**
      * @return int | array<int> | null
      */
-    public function getJobBackoff(): int | array | null
+    public function getJobBackoff(): int|array|null
     {
         return [60, 120, 300, 600];
     }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,14 +9,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event;
 
 use const PHP_EOL;
+
+use Throwable;
+
 use function array_key_exists;
 use function dirname;
 use function sprintf;
 use function str_starts_with;
-use Throwable;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -51,7 +56,7 @@ final class DirectDispatcher implements SubscribableDispatcher
      */
     public function registerSubscriber(Subscriber $subscriber): void
     {
-        if (!$this->typeMap->isKnownSubscriberType($subscriber)) {
+        if (! $this->typeMap->isKnownSubscriberType($subscriber)) {
             throw new UnknownSubscriberTypeException(
                 sprintf(
                     'Subscriber "%s" does not implement any known interface - did you forget to register it?',
@@ -62,7 +67,7 @@ final class DirectDispatcher implements SubscribableDispatcher
 
         $eventClassName = $this->typeMap->map($subscriber);
 
-        if (!array_key_exists($eventClassName, $this->subscribers)) {
+        if (! array_key_exists($eventClassName, $this->subscribers)) {
             $this->subscribers[$eventClassName] = [];
         }
 
@@ -77,7 +82,7 @@ final class DirectDispatcher implements SubscribableDispatcher
     {
         $eventClassName = $event::class;
 
-        if (!$this->typeMap->isKnownEventType($event)) {
+        if (! $this->typeMap->isKnownEventType($event)) {
             throw new UnknownEventTypeException(
                 sprintf(
                     'Unknown event type "%s"',
@@ -96,7 +101,7 @@ final class DirectDispatcher implements SubscribableDispatcher
             // @codeCoverageIgnoreEnd
         }
 
-        if (!array_key_exists($eventClassName, $this->subscribers)) {
+        if (! array_key_exists($eventClassName, $this->subscribers)) {
             return;
         }
 
@@ -135,6 +140,6 @@ final class DirectDispatcher implements SubscribableDispatcher
 
     private function isThrowableFromThirdPartySubscriber(Throwable $t): bool
     {
-        return !str_starts_with($t->getFile(), dirname(__DIR__, 2));
+        return ! str_starts_with($t->getFile(), dirname(__DIR__, 2));
     }
 }

@@ -22,6 +22,7 @@ final class Color implements Extension\ColorExtension
         'purple', 'teal', 'lime', 'blue', 'silver',
         'gray', 'yellow', 'fuchsia', 'aqua', 'white',
     ];
+
     /**
      * @var string[]
      */
@@ -56,7 +57,7 @@ final class Color implements Extension\ColorExtension
 
     public function __construct(?Extension\NumberExtension $numberExtension = null)
     {
-        $this->numberExtension = $numberExtension ?: new Number();
+        $this->numberExtension = $numberExtension ?: new Number;
     }
 
     /**
@@ -64,7 +65,7 @@ final class Color implements Extension\ColorExtension
      */
     public function hexColor(): string
     {
-        return '#' . str_pad(dechex($this->numberExtension->numberBetween(1, 16777215)), 6, '0', STR_PAD_LEFT);
+        return '#'.str_pad(dechex($this->numberExtension->numberBetween(1, 16777215)), 6, '0', STR_PAD_LEFT);
     }
 
     /**

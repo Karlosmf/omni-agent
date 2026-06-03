@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,12 +9,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\MockObject;
 
-use function strtolower;
 use Exception;
 use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 use Throwable;
+
+use function strtolower;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -35,14 +39,15 @@ final class InvocationHandler
      * @var list<ConfigurableMethod>
      */
     private readonly array $configurableMethods;
+
     private readonly bool $returnValueGeneration;
 
     /**
-     * @param list<ConfigurableMethod> $configurableMethods
+     * @param  list<ConfigurableMethod>  $configurableMethods
      */
     public function __construct(array $configurableMethods, bool $returnValueGeneration)
     {
-        $this->configurableMethods   = $configurableMethods;
+        $this->configurableMethods = $configurableMethods;
         $this->returnValueGeneration = $returnValueGeneration;
     }
 
@@ -60,7 +65,7 @@ final class InvocationHandler
     /**
      * Looks up the match builder with identification $id and returns it.
      *
-     * @param non-empty-string $id
+     * @param  non-empty-string  $id
      */
     public function lookupMatcher(string $id): ?Matcher
     {
@@ -71,7 +76,7 @@ final class InvocationHandler
      * Registers a matcher with the identification $id. The matcher can later be
      * looked up using lookupMatcher() to figure out if it has been invoked.
      *
-     * @param non-empty-string $id
+     * @param  non-empty-string  $id
      *
      * @throws MatcherAlreadyRegisteredException
      */
@@ -102,17 +107,17 @@ final class InvocationHandler
      */
     public function invoke(Invocation $invocation): mixed
     {
-        $exception      = null;
+        $exception = null;
         $hasReturnValue = false;
-        $returnValue    = null;
+        $returnValue = null;
 
         foreach ($this->matchers as $match) {
             try {
                 if ($match->matches($invocation)) {
                     $value = $match->invoked($invocation);
 
-                    if (!$hasReturnValue) {
-                        $returnValue    = $value;
+                    if (! $hasReturnValue) {
+                        $returnValue = $value;
                         $hasReturnValue = true;
                     }
                 }
@@ -129,7 +134,7 @@ final class InvocationHandler
             return $returnValue;
         }
 
-        if (!$this->returnValueGeneration) {
+        if (! $this->returnValueGeneration) {
             if (strtolower($invocation->methodName()) === '__tostring') {
                 return '';
             }

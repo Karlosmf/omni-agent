@@ -2,25 +2,24 @@
 
 namespace PragmaRX\Google2FAQRCode\QRCode;
 
-use BaconQrCode\Renderer\ImageRenderer;
-use BaconQrCode\Writer as BaconQrCodeWriter;
-use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\Image\ImageBackEndInterface;
 use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
+use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
 
 class Bacon implements QRCodeServiceContract
 {
     /**
-     * @var ImageBackEndInterface|RendererInterface|null $imageBackEnd
+     * @var ImageBackEndInterface|RendererInterface|null
      */
     protected $imageBackEnd;
 
     /**
      * Google2FA constructor.
      *
-     * @param ImageBackEndInterface|RendererInterface|null $imageBackEnd
+     * @param  ImageBackEndInterface|RendererInterface|null  $imageBackEnd
      */
     public function __construct($imageBackEnd = null)
     {
@@ -30,10 +29,9 @@ class Bacon implements QRCodeServiceContract
     /**
      * Generates a QR code data url to display inline.
      *
-     * @param string $string
-     * @param int    $size
-     * @param string $encoding Default to UTF-8
-     *
+     * @param  string  $string
+     * @param  int  $size
+     * @param  string  $encoding  Default to UTF-8
      * @return string
      */
     public function getQRCodeInline($string, $size = 200, $encoding = 'utf-8')
@@ -48,7 +46,7 @@ class Bacon implements QRCodeServiceContract
         $data = $bacon->writeString($string, $encoding);
 
         if ($this->getImageBackEnd() instanceof ImagickImageBackEnd) {
-            return 'data:image/png;base64,' . base64_encode($data);
+            return 'data:image/png;base64,'.base64_encode($data);
         }
 
         return $data;
@@ -72,9 +70,9 @@ class Bacon implements QRCodeServiceContract
     public function getImageBackend()
     {
         if (empty($this->imageBackEnd)) {
-            $this->imageBackEnd = !$this->imagickIsAvailable()
-                ? new SvgImageBackEnd()
-                : new ImagickImageBackEnd();
+            $this->imageBackEnd = ! $this->imagickIsAvailable()
+                ? new SvgImageBackEnd
+                : new ImagickImageBackEnd;
         }
 
         $this->setImageBackEnd($this->imageBackEnd);
@@ -85,7 +83,6 @@ class Bacon implements QRCodeServiceContract
     /**
      * Set image backend
      *
-     * @param $imageBackEnd
      * @return $this
      */
     public function setImageBackend($imageBackEnd)

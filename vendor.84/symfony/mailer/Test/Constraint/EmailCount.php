@@ -20,8 +20,7 @@ final class EmailCount extends Constraint
         private int $expectedValue,
         private ?string $transport = null,
         private bool $queued = false,
-    ) {
-    }
+    ) {}
 
     public function toString(): string
     {
@@ -29,7 +28,7 @@ final class EmailCount extends Constraint
     }
 
     /**
-     * @param MessageEvents $events
+     * @param  MessageEvents  $events
      */
     protected function matches($events): bool
     {
@@ -37,7 +36,7 @@ final class EmailCount extends Constraint
     }
 
     /**
-     * @param MessageEvents $events
+     * @param  MessageEvents  $events
      */
     protected function failureDescription($events): string
     {
@@ -50,9 +49,9 @@ final class EmailCount extends Constraint
         foreach ($events->getEvents($this->transport) as $event) {
             if (
                 ($this->queued && $event->isQueued())
-                || (!$this->queued && !$event->isQueued())
+                || (! $this->queued && ! $event->isQueued())
             ) {
-                ++$count;
+                $count++;
             }
         }
 

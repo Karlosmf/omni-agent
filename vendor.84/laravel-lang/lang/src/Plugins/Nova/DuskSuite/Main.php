@@ -14,7 +14,7 @@ class Main extends Plugin
     {
         return [
             'nova/dusk-suite/master/dusk-suite.json' => '{locale}.json',
-            'nova/dusk-suite/master/en.json'         => '{locale}.json',
+            'nova/dusk-suite/master/en.json' => '{locale}.json',
         ];
     }
 }

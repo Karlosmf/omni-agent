@@ -115,7 +115,7 @@ trait CanGenerateResourceTables
                 PHP, [$recordTitleAttribute]);
         }
 
-        return implode(PHP_EOL . '        ', $columns);
+        return implode(PHP_EOL.'        ', $columns);
     }
 
     /**
@@ -144,7 +144,7 @@ trait CanGenerateResourceTables
             return '//';
         }
 
-        return implode(PHP_EOL . '        ', array_map(
+        return implode(PHP_EOL.'        ', array_map(
             fn (string $filter) => "{$this->simplifyFqn($filter)}::make(),",
             $filters,
         ));
@@ -188,7 +188,7 @@ trait CanGenerateResourceTables
             return null;
         }
 
-        return implode(PHP_EOL . '        ', array_map(
+        return implode(PHP_EOL.'        ', array_map(
             fn (string $action) => "{$this->simplifyFqn($action)}::make(),",
             $actions,
         ));
@@ -253,7 +253,7 @@ trait CanGenerateResourceTables
 
     public function outputTableActions(): string
     {
-        return implode(PHP_EOL . '        ', array_map(
+        return implode(PHP_EOL.'        ', array_map(
             fn (string $action) => "{$this->simplifyFqn($action)}::make(),",
             $this->getTableActions(),
         ));
@@ -290,7 +290,7 @@ trait CanGenerateResourceTables
 
     public function outputTableMethodBulkActions(): string
     {
-        return implode(PHP_EOL . '            ', array_map(
+        return implode(PHP_EOL.'            ', array_map(
             fn (string $action) => "{$this->simplifyFqn($action)}::make(),",
             $this->getTableBulkActions(),
         ));

@@ -29,7 +29,7 @@ class SessionFactory implements SessionFactoryInterface
         private SessionStorageFactoryInterface $storageFactory,
         ?callable $usageReporter = null,
     ) {
-        $this->usageReporter = null === $usageReporter ? null : $usageReporter(...);
+        $this->usageReporter = $usageReporter === null ? null : $usageReporter(...);
     }
 
     public function createSession(): SessionInterface

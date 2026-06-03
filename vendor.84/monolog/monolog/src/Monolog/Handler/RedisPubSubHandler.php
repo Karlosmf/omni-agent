@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -11,8 +13,8 @@
 
 namespace Monolog\Handler;
 
-use Monolog\Formatter\LineFormatter;
 use Monolog\Formatter\FormatterInterface;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Level;
 use Monolog\LogRecord;
 use Predis\Client as Predis;
@@ -33,11 +35,12 @@ class RedisPubSubHandler extends AbstractProcessingHandler
 {
     /** @var Predis<Predis>|Redis */
     private Predis|Redis $redisClient;
+
     private string $channelKey;
 
     /**
-     * @param Predis<Predis>|Redis $redis The redis instance
-     * @param string               $key   The channel key to publish records to
+     * @param  Predis<Predis>|Redis  $redis  The redis instance
+     * @param  string  $key  The channel key to publish records to
      */
     public function __construct(Predis|Redis $redis, string $key, int|string|Level $level = Level::Debug, bool $bubble = true)
     {
@@ -48,7 +51,7 @@ class RedisPubSubHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function write(LogRecord $record): void
     {
@@ -56,10 +59,10 @@ class RedisPubSubHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function getDefaultFormatter(): FormatterInterface
     {
-        return new LineFormatter();
+        return new LineFormatter;
     }
 }

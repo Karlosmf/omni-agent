@@ -5,9 +5,13 @@ namespace Faker\Provider\en_GB;
 class Company extends \Faker\Provider\Company
 {
     public const VAT_PREFIX = 'GB';
+
     public const VAT_TYPE_DEFAULT = 'vat';
+
     public const VAT_TYPE_BRANCH = 'branch';
+
     public const VAT_TYPE_GOVERNMENT = 'gov';
+
     public const VAT_TYPE_HEALTH_AUTHORITY = 'health';
 
     /**
@@ -53,7 +57,7 @@ class Company extends \Faker\Provider\Company
             static::VAT_PREFIX,
             $firstBlock,
             $secondBlock,
-            static::calculateModulus97($firstBlock . $secondBlock),
+            static::calculateModulus97($firstBlock.$secondBlock),
         );
     }
 
@@ -106,14 +110,14 @@ class Company extends \Faker\Provider\Company
         $digits = str_split($input);
 
         if (count($digits) !== 7) {
-            throw new \InvalidArgumentException();
+            throw new \InvalidArgumentException;
         }
         $multiplier = 8;
         $sum = 0;
 
         foreach ($digits as $digit) {
             $sum += (int) $digit * $multiplier;
-            --$multiplier ;
+            $multiplier--;
         }
 
         if ($use9755) {

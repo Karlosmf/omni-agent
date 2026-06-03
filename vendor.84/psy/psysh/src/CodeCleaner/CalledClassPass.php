@@ -29,8 +29,6 @@ class CalledClassPass extends CodeCleanerPass
     private bool $inClass = false;
 
     /**
-     * @param array $nodes
-     *
      * @return Node[]|null Array of nodes
      */
     public function beforeTraverse(array $nodes)
@@ -41,27 +39,25 @@ class CalledClassPass extends CodeCleanerPass
     }
 
     /**
-     * @throws ErrorException if get_class or get_called_class is called without an object from outside a class
-     *
-     * @param Node $node
-     *
      * @return int|Node|null Replacement node (or special return value)
+     *
+     * @throws ErrorException if get_class or get_called_class is called without an object from outside a class
      */
     public function enterNode(Node $node)
     {
         if ($node instanceof Class_ || $node instanceof Trait_) {
             $this->inClass = true;
-        } elseif ($node instanceof FuncCall && !$this->inClass) {
+        } elseif ($node instanceof FuncCall && ! $this->inClass) {
             // We'll give any args at all (besides null) a pass.
             // Technically we should be checking whether the args are objects, but this will do for now.
             //
             // @todo switch this to actually validate args when we get context-aware code cleaner passes.
-            if (!empty($node->args) && !$this->isNull($node->args[0])) {
+            if (! empty($node->args) && ! $this->isNull($node->args[0])) {
                 return null;
             }
 
             // We'll ignore name expressions as well (things like `$foo()`)
-            if (!($node->name instanceof Name)) {
+            if (! ($node->name instanceof Name)) {
                 return null;
             }
 
@@ -76,8 +72,6 @@ class CalledClassPass extends CodeCleanerPass
     }
 
     /**
-     * @param Node $node
-     *
      * @return int|Node|Node[]|null Replacement node (or special return value)
      */
     public function leaveNode(Node $node)
@@ -95,7 +89,7 @@ class CalledClassPass extends CodeCleanerPass
             return false;
         }
 
-        if (!\property_exists($node, 'value')) {
+        if (! \property_exists($node, 'value')) {
             return false;
         }
 

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,12 +9,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\Output\Default\ProgressPrinter;
 
-use function floor;
-use function sprintf;
-use function str_repeat;
-use function strlen;
 use PHPUnit\Event\Facade;
 use PHPUnit\Event\Test\DeprecationTriggered;
 use PHPUnit\Event\Test\Errored;
@@ -31,6 +30,11 @@ use PHPUnit\TextUI\Configuration\SourceFilter;
 use PHPUnit\TextUI\Output\Printer;
 use PHPUnit\Util\Color;
 
+use function floor;
+use function sprintf;
+use function str_repeat;
+use function strlen;
+
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  *
@@ -39,35 +43,46 @@ use PHPUnit\Util\Color;
 final class ProgressPrinter
 {
     private readonly Printer $printer;
+
     private readonly bool $colors;
+
     private readonly int $numberOfColumns;
+
     private readonly Source $source;
-    private int $column               = 0;
-    private int $numberOfTests        = 0;
-    private int $numberOfTestsWidth   = 0;
-    private int $maxColumn            = 0;
-    private int $numberOfTestsRun     = 0;
-    private ?TestStatus $status       = null;
-    private bool $prepared            = false;
+
+    private int $column = 0;
+
+    private int $numberOfTests = 0;
+
+    private int $numberOfTestsWidth = 0;
+
+    private int $maxColumn = 0;
+
+    private int $numberOfTestsRun = 0;
+
+    private ?TestStatus $status = null;
+
+    private bool $prepared = false;
+
     private bool $childProcessErrored = false;
 
     public function __construct(Printer $printer, Facade $facade, bool $colors, int $numberOfColumns, Source $source)
     {
-        $this->printer         = $printer;
-        $this->colors          = $colors;
+        $this->printer = $printer;
+        $this->colors = $colors;
         $this->numberOfColumns = $numberOfColumns;
-        $this->source          = $source;
+        $this->source = $source;
 
         $this->registerSubscribers($facade);
     }
 
     public function testRunnerExecutionStarted(ExecutionStarted $event): void
     {
-        $this->numberOfTestsRun   = 0;
-        $this->numberOfTests      = $event->testSuite()->count();
+        $this->numberOfTestsRun = 0;
+        $this->numberOfTests = $event->testSuite()->count();
         $this->numberOfTestsWidth = strlen((string) $this->numberOfTests);
-        $this->column             = 0;
-        $this->maxColumn          = $this->numberOfColumns - strlen('  /  (XXX%)') - (2 * $this->numberOfTestsWidth);
+        $this->column = 0;
+        $this->maxColumn = $this->numberOfColumns - strlen('  /  (XXX%)') - (2 * $this->numberOfTestsWidth);
     }
 
     public function beforeTestClassMethodErrored(): void
@@ -83,7 +98,7 @@ final class ProgressPrinter
 
     public function testSkipped(): void
     {
-        if (!$this->prepared) {
+        if (! $this->prepared) {
             $this->printProgressForSkipped();
         } else {
             $this->updateTestStatus(TestStatus::skipped());
@@ -102,11 +117,11 @@ final class ProgressPrinter
         }
 
         if ($this->source->restrictNotices() &&
-            !SourceFilter::instance()->includes($event->file())) {
+            ! SourceFilter::instance()->includes($event->file())) {
             return;
         }
 
-        if (!$this->source->ignoreSuppressionOfNotices() && $event->wasSuppressed()) {
+        if (! $this->source->ignoreSuppressionOfNotices() && $event->wasSuppressed()) {
             return;
         }
 
@@ -120,11 +135,11 @@ final class ProgressPrinter
         }
 
         if ($this->source->restrictNotices() &&
-            !SourceFilter::instance()->includes($event->file())) {
+            ! SourceFilter::instance()->includes($event->file())) {
             return;
         }
 
-        if (!$this->source->ignoreSuppressionOfPhpNotices() && $event->wasSuppressed()) {
+        if (! $this->source->ignoreSuppressionOfPhpNotices() && $event->wasSuppressed()) {
             return;
         }
 
@@ -150,7 +165,7 @@ final class ProgressPrinter
             return;
         }
 
-        if (!$this->source->ignoreSuppressionOfDeprecations() && $event->wasSuppressed()) {
+        if (! $this->source->ignoreSuppressionOfDeprecations() && $event->wasSuppressed()) {
             return;
         }
 
@@ -176,7 +191,7 @@ final class ProgressPrinter
             return;
         }
 
-        if (!$this->source->ignoreSuppressionOfPhpDeprecations() && $event->wasSuppressed()) {
+        if (! $this->source->ignoreSuppressionOfPhpDeprecations() && $event->wasSuppressed()) {
             return;
         }
 
@@ -205,11 +220,11 @@ final class ProgressPrinter
         }
 
         if ($this->source->restrictWarnings() &&
-            !SourceFilter::instance()->includes($event->file())) {
+            ! SourceFilter::instance()->includes($event->file())) {
             return;
         }
 
-        if (!$this->source->ignoreSuppressionOfWarnings() && $event->wasSuppressed()) {
+        if (! $this->source->ignoreSuppressionOfWarnings() && $event->wasSuppressed()) {
             return;
         }
 
@@ -223,11 +238,11 @@ final class ProgressPrinter
         }
 
         if ($this->source->restrictWarnings() &&
-            !SourceFilter::instance()->includes($event->file())) {
+            ! SourceFilter::instance()->includes($event->file())) {
             return;
         }
 
-        if (!$this->source->ignoreSuppressionOfPhpWarnings() && $event->wasSuppressed()) {
+        if (! $this->source->ignoreSuppressionOfPhpWarnings() && $event->wasSuppressed()) {
             return;
         }
 
@@ -245,7 +260,7 @@ final class ProgressPrinter
 
     public function testTriggeredError(ErrorTriggered $event): void
     {
-        if (!$this->source->ignoreSuppressionOfErrors() && $event->wasSuppressed()) {
+        if (! $this->source->ignoreSuppressionOfErrors() && $event->wasSuppressed()) {
             return;
         }
 
@@ -265,7 +280,7 @@ final class ProgressPrinter
             return;
         }
 
-        if (!$this->prepared) {
+        if (! $this->prepared) {
             $this->printProgressForError();
         } else {
             $this->updateTestStatus(TestStatus::error());
@@ -294,8 +309,8 @@ final class ProgressPrinter
             $this->printProgressForError();
         }
 
-        $this->status              = null;
-        $this->prepared            = false;
+        $this->status = null;
+        $this->prepared = false;
         $this->childProcessErrored = false;
     }
 
@@ -407,8 +422,8 @@ final class ProgressPrinter
 
             $this->printer->print(
                 sprintf(
-                    ' %' . $this->numberOfTestsWidth . 'd / %' .
-                    $this->numberOfTestsWidth . 'd (%3s%%)',
+                    ' %'.$this->numberOfTestsWidth.'d / %'.
+                    $this->numberOfTestsWidth.'d (%3s%%)',
                     $this->numberOfTestsRun,
                     $this->numberOfTests,
                     floor(($this->numberOfTestsRun / $this->numberOfTests) * 100),

@@ -22,8 +22,7 @@ interface ManualInterface
     /**
      * Get documentation for a given ID.
      *
-     * @param string $id Documentation ID (e.g., 'strlen', 'PDO::query')
-     *
+     * @param  string  $id  Documentation ID (e.g., 'strlen', 'PDO::query')
      * @return string|array|null Formatted string (v2) or structured data (v3), or null if not found
      */
     public function get(string $id);

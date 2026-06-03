@@ -35,9 +35,13 @@ class ResponseCacheStrategy implements ResponseCacheStrategyInterface
     private const INHERIT_DIRECTIVES = ['public', 'immutable'];
 
     private int $embeddedResponses = 0;
+
     private bool $isNotCacheableResponseEmbedded = false;
+
     private int $age = 0;
+
     private \DateTimeInterface|false|null $lastModified = null;
+
     private array $flagDirectives = [
         'no-cache' => null,
         'no-store' => null,
@@ -48,6 +52,7 @@ class ResponseCacheStrategy implements ResponseCacheStrategyInterface
         'private' => null,
         'immutable' => null,
     ];
+
     private array $ageDirectives = [
         'max-age' => null,
         's-maxage' => null,
@@ -56,7 +61,7 @@ class ResponseCacheStrategy implements ResponseCacheStrategyInterface
 
     public function add(Response $response): void
     {
-        ++$this->embeddedResponses;
+        $this->embeddedResponses++;
 
         foreach (self::OVERRIDE_DIRECTIVES as $directive) {
             if ($response->headers->hasCacheControlDirective($directive)) {
@@ -65,7 +70,7 @@ class ResponseCacheStrategy implements ResponseCacheStrategyInterface
         }
 
         foreach (self::INHERIT_DIRECTIVES as $directive) {
-            if (false !== $this->flagDirectives[$directive]) {
+            if ($this->flagDirectives[$directive] !== false) {
                 $this->flagDirectives[$directive] = $response->headers->hasCacheControlDirective($directive);
             }
         }
@@ -82,29 +87,29 @@ class ResponseCacheStrategy implements ResponseCacheStrategyInterface
         $maxAge = $response->headers->hasCacheControlDirective('max-age') ? (int) $response->headers->getCacheControlDirective('max-age') : null;
         $sharedMaxAge = $response->headers->hasCacheControlDirective('s-maxage') ? (int) $response->headers->getCacheControlDirective('s-maxage') : $maxAge;
         $expires = $response->getExpires();
-        $expires = null !== $expires ? (int) $expires->format('U') - (int) $response->getDate()->format('U') : null;
+        $expires = $expires !== null ? (int) $expires->format('U') - (int) $response->getDate()->format('U') : null;
 
         // See https://datatracker.ietf.org/doc/html/rfc7234#section-4.2.2
         // If a response is "public" but does not have maximum lifetime, heuristics might be applied.
         // Do not store NULL values so the final response can have more limiting value from other responses.
         $isHeuristicallyCacheable = $response->headers->hasCacheControlDirective('public')
-            && null === $maxAge
-            && null === $sharedMaxAge
-            && null === $expires;
+            && $maxAge === null
+            && $sharedMaxAge === null
+            && $expires === null;
 
-        if (!$isHeuristicallyCacheable || null !== $maxAge || null !== $expires) {
+        if (! $isHeuristicallyCacheable || $maxAge !== null || $expires !== null) {
             $this->storeRelativeAgeDirective('max-age', $maxAge, $expires, $age);
         }
 
-        if (!$isHeuristicallyCacheable || null !== $sharedMaxAge || null !== $expires) {
+        if (! $isHeuristicallyCacheable || $sharedMaxAge !== null || $expires !== null) {
             $this->storeRelativeAgeDirective('s-maxage', $sharedMaxAge, $expires, $age);
         }
 
-        if (null !== $expires) {
+        if ($expires !== null) {
             $this->ageDirectives['expires'] = true;
         }
 
-        if (false !== $this->lastModified) {
+        if ($this->lastModified !== false) {
             $lastModified = $response->getLastModified();
             $this->lastModified = $lastModified ? max($this->lastModified, $lastModified) : false;
         }
@@ -113,7 +118,7 @@ class ResponseCacheStrategy implements ResponseCacheStrategyInterface
     public function update(Response $response): void
     {
         // if we have no embedded Response, do nothing
-        if (0 === $this->embeddedResponses) {
+        if ($this->embeddedResponses === 0) {
             return;
         }
 
@@ -161,7 +166,7 @@ class ResponseCacheStrategy implements ResponseCacheStrategyInterface
             }
         }
 
-        if ($this->ageDirectives['expires'] && null !== $maxAge) {
+        if ($this->ageDirectives['expires'] && $maxAge !== null) {
             $date = clone $response->getDate();
             $date = $date->modify('+'.$maxAge.' seconds');
             $response->setExpires($date);
@@ -185,7 +190,7 @@ class ResponseCacheStrategy implements ResponseCacheStrategyInterface
 
         // Etag headers cannot be merged, they render the response uncacheable
         // by default (except if the response also has max-age etc.).
-        if (null === $response->getEtag() && \in_array($response->getStatusCode(), [200, 203, 300, 301, 410], true)) {
+        if ($response->getEtag() === null && \in_array($response->getStatusCode(), [200, 203, 300, 301, 410], true)) {
             return false;
         }
 
@@ -217,14 +222,14 @@ class ResponseCacheStrategy implements ResponseCacheStrategyInterface
      */
     private function storeRelativeAgeDirective(string $directive, ?int $value, ?int $expires, int $age): void
     {
-        if (null === $value && null === $expires) {
+        if ($value === null && $expires === null) {
             $this->ageDirectives[$directive] = false;
         }
 
-        if (false !== $this->ageDirectives[$directive]) {
+        if ($this->ageDirectives[$directive] !== false) {
             $value = min($value ?? \PHP_INT_MAX, $expires ?? \PHP_INT_MAX);
             $value -= $age;
-            $this->ageDirectives[$directive] = null !== $this->ageDirectives[$directive] ? min($this->ageDirectives[$directive], $value) : $value;
+            $this->ageDirectives[$directive] = $this->ageDirectives[$directive] !== null ? min($this->ageDirectives[$directive], $value) : $value;
         }
     }
 }

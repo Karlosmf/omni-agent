@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest;
 
 /*
@@ -11,7 +12,6 @@ use Hamcrest\Internal\SelfDescribingValue;
  */
 abstract class BaseDescription implements Description
 {
-
     public function appendText($text)
     {
         $this->append($text);
@@ -42,7 +42,7 @@ abstract class BaseDescription implements Description
             $this->append('>');
         } elseif (is_array($value) || $value instanceof \Iterator || $value instanceof \IteratorAggregate) {
             $this->appendValueList('[', ', ', ']', $value);
-        } elseif (is_object($value) && !method_exists($value, '__toString')) {
+        } elseif (is_object($value) && ! method_exists($value, '__toString')) {
             $this->append('<');
             $this->append(get_class($value));
             $this->append('>');
@@ -57,7 +57,7 @@ abstract class BaseDescription implements Description
 
     public function appendValueList($start, $separator, $end, $values)
     {
-        $list = array();
+        $list = [];
         foreach ($values as $v) {
             $list[] = new SelfDescribingValue($v);
         }
@@ -104,7 +104,7 @@ abstract class BaseDescription implements Description
     private function _toPhpSyntax($value)
     {
         $str = '"';
-        for ($i = 0, $len = strlen($value); $i < $len; ++$i) {
+        for ($i = 0, $len = strlen($value); $i < $len; $i++) {
             switch ($value[$i]) {
                 case '"':
                     $str .= '\\"';

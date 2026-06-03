@@ -19,6 +19,7 @@ class Company extends \Faker\Provider\Company
         'Маш', 'Наладка', 'Экспедиция', 'Пром', 'Комплекс', 'Машина', 'Снос', '-М', 'Лизинг', 'Траст', 'Снаб',
         '-H', 'Трест', 'Банк', 'Опт', 'Проф', 'Сбыт', 'Центр',
     ];
+
     /**
      * @note Words and parts of words that usually used in company names
      */
@@ -101,12 +102,11 @@ class Company extends \Faker\Provider\Company
     /**
      * Generates a Russian Taxpayer Personal Identification Number
      *
-     * @param string $area_code
-     *
+     * @param  string  $area_code
      * @return string
      *
      * @deprecated use {@link \Faker\Provider\ru_RU\Company::inn10()} instead
-     * @see \Faker\Provider\ru_RU\Company::inn10()
+     * @see Company::inn10()
      */
     public static function inn($area_code = '')
     {
@@ -116,22 +116,21 @@ class Company extends \Faker\Provider\Company
     /**
      * Generates a Russian Taxpayer Personal Identification Number
      *
-     * @param string $area_code
-     *
+     * @param  string  $area_code
      * @return string
      */
     public static function inn10($area_code = '')
     {
         if ($area_code === '' || (int) $area_code === 0) {
-            //Simple generation code for areas in Russian without check for valid
+            // Simple generation code for areas in Russian without check for valid
             $area_code = self::numberBetween(1, 91);
         } else {
             $area_code = (int) $area_code;
         }
         $area_code = str_pad($area_code, 2, '0', STR_PAD_LEFT);
-        $inn_base = $area_code . static::numerify('#######');
+        $inn_base = $area_code.static::numerify('#######');
 
-        return $inn_base . self::inn10Checksum($inn_base);
+        return $inn_base.self::inn10Checksum($inn_base);
     }
 
     public static function kpp($inn = '')
@@ -140,7 +139,7 @@ class Company extends \Faker\Provider\Company
             $inn = self::inn10();
         }
 
-        return substr($inn, 0, 4) . '01001';
+        return substr($inn, 0, 4).'01001';
     }
 
     /**
@@ -148,8 +147,7 @@ class Company extends \Faker\Provider\Company
      *
      * @see https://ru.wikipedia.org/wiki/%D0%98%D0%B4%D0%B5%D0%BD%D1%82%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D0%BE%D0%BD%D0%BD%D1%8B%D0%B9_%D0%BD%D0%BE%D0%BC%D0%B5%D1%80_%D0%BD%D0%B0%D0%BB%D0%BE%D0%B3%D0%BE%D0%BF%D0%BB%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D1%89%D0%B8%D0%BA%D0%B0
      *
-     * @param string $inn
-     *
+     * @param  string  $inn
      * @return string Checksum (one digit)
      */
     public static function inn10Checksum($inn)
@@ -157,7 +155,7 @@ class Company extends \Faker\Provider\Company
         $multipliers = [2, 4, 10, 3, 5, 9, 4, 6, 8];
         $sum = 0;
 
-        for ($i = 0; $i < 9; ++$i) {
+        for ($i = 0; $i < 9; $i++) {
             $sum += (int) $inn[$i] * $multipliers[$i];
         }
 
@@ -167,8 +165,7 @@ class Company extends \Faker\Provider\Company
     /**
      * Checks whether an INN has a valid checksum
      *
-     * @param string $inn
-     *
+     * @param  string  $inn
      * @return bool
      */
     public static function inn10IsValid($inn)

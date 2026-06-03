@@ -11,6 +11,4 @@
 
 namespace Symfony\Component\HttpFoundation\Exception;
 
-class UnexpectedValueException extends \UnexpectedValueException
-{
-}
+class UnexpectedValueException extends \UnexpectedValueException {}

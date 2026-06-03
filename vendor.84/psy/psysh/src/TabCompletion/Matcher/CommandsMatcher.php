@@ -29,7 +29,7 @@ class CommandsMatcher extends AbstractMatcher
     /**
      * CommandsMatcher constructor.
      *
-     * @param Command[] $commands
+     * @param  Command[]  $commands
      */
     public function __construct(array $commands)
     {
@@ -39,7 +39,7 @@ class CommandsMatcher extends AbstractMatcher
     /**
      * Set Commands for completion.
      *
-     * @param Command[] $commands
+     * @param  Command[]  $commands
      */
     public function setCommands(array $commands)
     {
@@ -53,8 +53,6 @@ class CommandsMatcher extends AbstractMatcher
 
     /**
      * Check whether a command $name is defined.
-     *
-     * @param string $name
      */
     protected function isCommand(string $name): bool
     {
@@ -63,8 +61,6 @@ class CommandsMatcher extends AbstractMatcher
 
     /**
      * Check whether input matches a defined command.
-     *
-     * @param string $name
      */
     protected function matchCommand(string $name): bool
     {
@@ -99,9 +95,9 @@ class CommandsMatcher extends AbstractMatcher
 
         switch (true) {
             case self::tokenIs($command, self::T_STRING) &&
-            !$this->isCommand($command[1]) &&
-            $this->matchCommand($command[1]) &&
-            empty($tokens):
+                ! $this->isCommand($command[1]) &&
+                $this->matchCommand($command[1]) &&
+                empty($tokens):
                 return true;
         }
 

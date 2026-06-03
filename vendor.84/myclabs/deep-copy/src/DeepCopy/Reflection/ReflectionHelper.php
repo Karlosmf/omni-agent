@@ -16,16 +16,15 @@ class ReflectionHelper
      * Standard \ReflectionClass->getProperties() does not return private properties from ancestor classes.
      *
      * @author muratyaman@gmail.com
-     * @see http://php.net/manual/en/reflectionclass.getproperties.php
      *
-     * @param ReflectionClass $ref
+     * @see http://php.net/manual/en/reflectionclass.getproperties.php
      *
      * @return ReflectionProperty[]
      */
     public static function getProperties(ReflectionClass $ref)
     {
         $props = $ref->getProperties();
-        $propsArr = array();
+        $propsArr = [];
 
         foreach ($props as $prop) {
             $propertyName = $prop->getName();
@@ -47,13 +46,12 @@ class ReflectionHelper
     /**
      * Retrieves property by name from object and all its ancestors.
      *
-     * @param object|string $object
-     * @param string $name
+     * @param  object|string  $object
+     * @param  string  $name
+     * @return ReflectionProperty
      *
      * @throws PropertyException
      * @throws ReflectionException
-     *
-     * @return ReflectionProperty
      */
     public static function getProperty($object, $name)
     {

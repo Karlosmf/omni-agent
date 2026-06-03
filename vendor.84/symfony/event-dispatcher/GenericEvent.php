@@ -28,14 +28,13 @@ class GenericEvent extends Event implements \ArrayAccess, \IteratorAggregate
     /**
      * Encapsulate an event with $subject and $arguments.
      *
-     * @param mixed $subject   The subject of the event, usually an object or a callable
-     * @param array $arguments Arguments to store in the event
+     * @param  mixed  $subject  The subject of the event, usually an object or a callable
+     * @param  array  $arguments  Arguments to store in the event
      */
     public function __construct(
         protected mixed $subject = null,
         protected array $arguments = [],
-    ) {
-    }
+    ) {}
 
     /**
      * Getter for subject property.
@@ -102,7 +101,7 @@ class GenericEvent extends Event implements \ArrayAccess, \IteratorAggregate
     /**
      * ArrayAccess for argument getter.
      *
-     * @param string $key Array key
+     * @param  string  $key  Array key
      *
      * @throws \InvalidArgumentException if key does not exist in $this->args
      */
@@ -114,7 +113,7 @@ class GenericEvent extends Event implements \ArrayAccess, \IteratorAggregate
     /**
      * ArrayAccess for argument setter.
      *
-     * @param string $key Array key to set
+     * @param  string  $key  Array key to set
      */
     public function offsetSet(mixed $key, mixed $value): void
     {
@@ -124,7 +123,7 @@ class GenericEvent extends Event implements \ArrayAccess, \IteratorAggregate
     /**
      * ArrayAccess for unset argument.
      *
-     * @param string $key Array key
+     * @param  string  $key  Array key
      */
     public function offsetUnset(mixed $key): void
     {
@@ -136,7 +135,7 @@ class GenericEvent extends Event implements \ArrayAccess, \IteratorAggregate
     /**
      * ArrayAccess has argument.
      *
-     * @param string $key Array key
+     * @param  string  $key  Array key
      */
     public function offsetExists(mixed $key): bool
     {

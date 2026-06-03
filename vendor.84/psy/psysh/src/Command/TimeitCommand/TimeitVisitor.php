@@ -111,8 +111,6 @@ class TimeitVisitor extends NodeVisitorAbstract
 
     /**
      * Get PhpParser AST nodes for a `markStart` call.
-     *
-     * @return \PhpParser\Node\Expr\StaticCall
      */
     private function getStartCall(): StaticCall
     {
@@ -123,8 +121,6 @@ class TimeitVisitor extends NodeVisitorAbstract
      * Get PhpParser AST nodes for a `markEnd` call.
      *
      * Optionally pass in a return value.
-     *
-     * @param Expr|null $arg
      */
     private function getEndCall(?Expr $arg = null): StaticCall
     {

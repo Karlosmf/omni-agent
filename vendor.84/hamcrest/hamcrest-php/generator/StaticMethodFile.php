@@ -19,7 +19,7 @@ class StaticMethodFile extends FactoryFile
 
     public function addCall(FactoryCall $call)
     {
-        $this->methods .= PHP_EOL . $this->generateFactoryCall($call);
+        $this->methods .= PHP_EOL.$this->generateFactoryCall($call);
     }
 
     public function getDeclarationModifiers()

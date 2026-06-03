@@ -90,14 +90,14 @@ class Xcallable
             return;
         }
 
-        if (!\is_string($able)) {
+        if (! \is_string($able)) {
             throw new Exception('Bad callback form; the able part must be a string.', 0);
         }
 
-        if ('' === $able) {
+        if ($able === '') {
             if (\is_string($call)) {
-                if (false === \strpos($call, '::')) {
-                    if (!\function_exists($call)) {
+                if (\strpos($call, '::') === false) {
+                    if (! \function_exists($call)) {
                         throw new Exception('Bad callback form; function %s does not exist.', 1, $call);
                     }
 
@@ -106,7 +106,7 @@ class Xcallable
                     return;
                 }
 
-                list($call, $able) = \explode('::', $call);
+                [$call, $able] = \explode('::', $call);
             } elseif (\is_object($call)) {
                 if ($call instanceof StreamOut) {
                     $able = null;
@@ -116,12 +116,14 @@ class Xcallable
                     throw new Exception('Bad callback form; an object but without a known '.'method.', 2);
                 }
             } elseif (\is_array($call) && isset($call[0])) {
-                if (!isset($call[1])) {
+                if (! isset($call[1])) {
                     $this->__construct($call[0]);
+
                     return;
                 }
 
                 $this->__construct($call[0], $call[1]);
+
                 return;
             } else {
                 throw new Exception('Bad callback form.', 3);
@@ -130,7 +132,6 @@ class Xcallable
 
         $this->_callback = [$call, $able];
 
-        return;
     }
 
     /**
@@ -157,16 +158,16 @@ class Xcallable
 
         // If method is undetermined, we find it (we understand event bucket and
         // stream).
-        if (null !== $head &&
+        if ($head !== null &&
             \is_array($callback) &&
-            null === $callback[1]) {
+            $callback[1] === null) {
             if ($head instanceof EventBucket) {
                 $head = $head->getData();
             }
 
             switch ($type = \gettype($head)) {
                 case 'string':
-                    if (1 === \strlen($head)) {
+                    if (\strlen($head) === 1) {
                         $method = 'writeCharacter';
                     } else {
                         $method = 'writeString';
@@ -208,7 +209,7 @@ class Xcallable
      */
     public function getHash(): string
     {
-        if (null !== $this->_hash) {
+        if ($this->_hash !== null) {
             return $this->_hash;
         }
 
@@ -226,7 +227,7 @@ class Xcallable
                           '#'.\get_class($_[0])
                         : 'class#'.$_[0]).
                     '::'.
-                    (null !== $_[1]
+                    ($_[1] !== null
                         ? $_[1]
                         : '???');
         }

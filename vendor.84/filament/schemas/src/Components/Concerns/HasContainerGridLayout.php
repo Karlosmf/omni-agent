@@ -14,7 +14,7 @@ trait HasContainerGridLayout
     /**
      * @param  array<string, int | Closure | null> | int | Closure | null  $columns
      */
-    public function grid(array | int | Closure | null $columns = 2): static
+    public function grid(array|int|Closure|null $columns = 2): static
     {
         if ($columns instanceof Closure) {
             $this->gridColumns[] = $columns;
@@ -39,7 +39,7 @@ trait HasContainerGridLayout
     /**
      * @return array<string, ?int> | int | null
      */
-    public function getGridColumns(?string $breakpoint = null): array | int | null
+    public function getGridColumns(?string $breakpoint = null): array|int|null
     {
         $columns = $this->gridColumns ?? [
             'default' => 1,

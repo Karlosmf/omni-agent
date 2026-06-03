@@ -25,7 +25,7 @@ final class Helper
      * Replaces all hash sign ('#') occurrences with a random number
      * Replaces all percentage sign ('%') occurrences with a non-zero number.
      *
-     * @param string $string String that needs to bet parsed
+     * @param  string  $string  String that needs to bet parsed
      */
     public static function numerify(string $string): string
     {
@@ -34,7 +34,7 @@ final class Helper
         $toReplace = [];
 
         if (($pos = strpos($string, '#')) !== false) {
-            for ($i = $pos, $last = strrpos($string, '#', $pos) + 1; $i < $last; ++$i) {
+            for ($i = $pos, $last = strrpos($string, '#', $pos) + 1; $i < $last; $i++) {
                 if ($string[$i] === '#') {
                     $toReplace[] = $i;
                 }
@@ -52,7 +52,7 @@ final class Helper
                 $i += $size;
             }
 
-            for ($i = 0; $i < $nbReplacements; ++$i) {
+            for ($i = 0; $i < $nbReplacements; $i++) {
                 $string[$toReplace[$i]] = $numbers[$i];
             }
         }
@@ -65,7 +65,7 @@ final class Helper
     /**
      * Replaces all question mark ('?') occurrences with a random letter.
      *
-     * @param string $string String that needs to bet parsed
+     * @param  string  $string  String that needs to bet parsed
      */
     public static function lexify(string $string): string
     {
@@ -78,7 +78,7 @@ final class Helper
      * Replaces hash signs ('#') and question marks ('?') with random numbers and letters
      * An asterisk ('*') is replaced with either a random number or a random letter.
      *
-     * @param string $string String that needs to bet parsed
+     * @param  string  $string  String that needs to bet parsed
      */
     public static function bothify(string $string): string
     {
@@ -95,7 +95,7 @@ final class Helper
             return $string;
         }
 
-        for ($i = $pos, $last = strrpos($string, $wildcard, $pos) + 1; $i < $last; ++$i) {
+        for ($i = $pos, $last = strrpos($string, $wildcard, $pos) + 1; $i < $last; $i++) {
             if ($string[$i] === $wildcard) {
                 $string[$i] = call_user_func($callback);
             }

@@ -2,15 +2,16 @@
 
 namespace Livewire\Features\SupportFormObjects;
 
-use Livewire\Features\SupportValidation\HandlesValidation;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\MessageBag;
-use function Livewire\invade;
 use Illuminate\Support\Arr;
-use Livewire\Drawer\Utils;
+use Illuminate\Support\MessageBag;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
+use Livewire\Drawer\Utils;
+use Livewire\Features\SupportValidation\HandlesValidation;
+
+use function Livewire\invade;
 
 class Form implements Arrayable
 {
@@ -19,13 +20,20 @@ class Form implements Arrayable
         validateOnly as parentValidateOnly;
     }
 
-    function __construct(
+    public function __construct(
         protected Component $component,
         protected $propertyName
     ) {}
 
-    public function getComponent() { return $this->component; }
-    public function getPropertyName() { return $this->propertyName; }
+    public function getComponent()
+    {
+        return $this->component;
+    }
+
+    public function getPropertyName()
+    {
+        return $this->propertyName;
+    }
 
     public function validate($rules = null, $messages = [], $attributes = [])
     {
@@ -76,7 +84,7 @@ class Form implements Arrayable
 
     public function addError($key, $message)
     {
-        $this->component->addError($this->propertyName . '.' . $key, $message);
+        $this->component->addError($this->propertyName.'.'.$key, $message);
     }
 
     public function resetErrorBag($field = null)
@@ -84,7 +92,7 @@ class Form implements Arrayable
         $fields = (array) $field;
 
         foreach ($fields as $idx => $field) {
-            $fields[$idx] = $this->propertyName . '.' . $field;
+            $fields[$idx] = $this->propertyName.'.'.$field;
         }
 
         $this->getComponent()->resetErrorBag($fields);
@@ -150,7 +158,9 @@ class Form implements Arrayable
             ? $properties[0]
             : $properties;
 
-        if (empty($properties)) $properties = array_keys($this->all());
+        if (empty($properties)) {
+            $properties = array_keys($this->all());
+        }
 
         $freshInstance = new static($this->getComponent(), $this->getPropertyName());
 
@@ -167,7 +177,7 @@ class Form implements Arrayable
 
         $keysToReset = array_diff(array_keys($this->all()), $properties);
 
-        if($keysToReset === []) {
+        if ($keysToReset === []) {
             return;
         }
 

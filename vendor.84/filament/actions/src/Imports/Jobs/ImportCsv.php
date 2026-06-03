@@ -44,7 +44,7 @@ class ImportCsv implements ShouldQueue
      */
     public function __construct(
         protected Import $import,
-        protected array | string $rows,
+        protected array|string $rows,
         protected array $columnMap,
         protected array $options = [],
     ) {
@@ -98,8 +98,8 @@ class ImportCsv implements ShouldQueue
                 ->whereKey($this->import)
                 ->lockForUpdate()
                 ->update([
-                    'processed_rows' => new Expression('processed_rows + ' . $processedRows),
-                    'successful_rows' => new Expression('successful_rows + ' . $successfulRows),
+                    'processed_rows' => new Expression('processed_rows + '.$processedRows),
+                    'successful_rows' => new Expression('successful_rows + '.$successfulRows),
                 ]);
 
             $this->import::query()
@@ -140,7 +140,7 @@ class ImportCsv implements ShouldQueue
     /**
      * @return int | array<int> | null
      */
-    public function backoff(): int | array | null
+    public function backoff(): int|array|null
     {
         return $this->importer->getJobBackoff();
     }

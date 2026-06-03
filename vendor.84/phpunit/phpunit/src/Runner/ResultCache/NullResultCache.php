@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner\ResultCache;
 
 use PHPUnit\Framework\TestStatus\TestStatus;
@@ -18,29 +21,21 @@ use PHPUnit\Framework\TestStatus\TestStatus;
  */
 final readonly class NullResultCache implements ResultCache
 {
-    public function setStatus(ResultCacheId $id, TestStatus $status): void
-    {
-    }
+    public function setStatus(ResultCacheId $id, TestStatus $status): void {}
 
     public function status(ResultCacheId $id): TestStatus
     {
         return TestStatus::unknown();
     }
 
-    public function setTime(ResultCacheId $id, float $time): void
-    {
-    }
+    public function setTime(ResultCacheId $id, float $time): void {}
 
     public function time(ResultCacheId $id): float
     {
         return 0;
     }
 
-    public function load(): void
-    {
-    }
+    public function load(): void {}
 
-    public function persist(): void
-    {
-    }
+    public function persist(): void {}
 }

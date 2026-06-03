@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,16 +9,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Logging\TeamCity;
 
-use function assert;
-use function getmypid;
-use function ini_get;
-use function is_a;
-use function round;
-use function sprintf;
-use function str_replace;
-use function stripos;
 use PHPUnit\Event\Code\TestMethod;
 use PHPUnit\Event\Code\Throwable;
 use PHPUnit\Event\Event;
@@ -39,6 +34,15 @@ use PHPUnit\Event\TestSuite\TestSuiteForTestMethodWithDataProvider;
 use PHPUnit\Framework\Exception as FrameworkException;
 use PHPUnit\TextUI\Output\Printer;
 
+use function assert;
+use function getmypid;
+use function ini_get;
+use function is_a;
+use function round;
+use function sprintf;
+use function str_replace;
+use function stripos;
+
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  *
@@ -47,9 +51,12 @@ use PHPUnit\TextUI\Output\Printer;
 final class TeamCityLogger
 {
     private readonly Printer $printer;
+
     private bool $isSummaryTestCountPrinted = false;
-    private ?HRTime $time                   = null;
-    private ?int $flowId                    = null;
+
+    private ?HRTime $time = null;
+
+    private ?int $flowId = null;
 
     public function __construct(Printer $printer, Facade $facade)
     {
@@ -63,7 +70,7 @@ final class TeamCityLogger
     {
         $testSuite = $event->testSuite();
 
-        if (!$this->isSummaryTestCountPrinted) {
+        if (! $this->isSummaryTestCountPrinted) {
             $this->isSummaryTestCountPrinted = true;
 
             $this->writeMessage(
@@ -150,9 +157,9 @@ final class TeamCityLogger
         $this->writeMessage(
             'testIgnored',
             [
-                'name'     => $event->test()->name(),
-                'message'  => $event->throwable()->message(),
-                'details'  => $this->details($event->throwable()),
+                'name' => $event->test()->name(),
+                'message' => $event->throwable()->message(),
+                'details' => $this->details($event->throwable()),
                 'duration' => $this->duration($event),
             ],
         );
@@ -168,7 +175,7 @@ final class TeamCityLogger
         }
 
         $parameters = [
-            'name'    => $event->test()->name(),
+            'name' => $event->test()->name(),
             'message' => $event->message(),
         ];
 
@@ -187,7 +194,7 @@ final class TeamCityLogger
         }
 
         $parameters = [
-            'name'    => $event->testSuite()->name(),
+            'name' => $event->testSuite()->name(),
             'message' => $event->message(),
         ];
 
@@ -207,9 +214,9 @@ final class TeamCityLogger
         }
 
         $parameters = [
-            'name'     => $event->testClassName(),
-            'message'  => $this->message($event->throwable()),
-            'details'  => $this->details($event->throwable()),
+            'name' => $event->testClassName(),
+            'message' => $this->message($event->throwable()),
+            'details' => $this->details($event->throwable()),
             'duration' => $this->duration($event),
         ];
 
@@ -229,9 +236,9 @@ final class TeamCityLogger
         $this->writeMessage(
             'testFailed',
             [
-                'name'     => $event->test()->name(),
-                'message'  => $this->message($event->throwable()),
-                'details'  => $this->details($event->throwable()),
+                'name' => $event->test()->name(),
+                'message' => $this->message($event->throwable()),
+                'details' => $this->details($event->throwable()),
                 'duration' => $this->duration($event),
             ],
         );
@@ -249,15 +256,15 @@ final class TeamCityLogger
         }
 
         $parameters = [
-            'name'     => $event->test()->name(),
-            'message'  => $this->message($event->throwable()),
-            'details'  => $this->details($event->throwable()),
+            'name' => $event->test()->name(),
+            'message' => $this->message($event->throwable()),
+            'details' => $this->details($event->throwable()),
             'duration' => $this->duration($event),
         ];
 
         if ($event->hasComparisonFailure()) {
-            $parameters['type']     = 'comparisonFailure';
-            $parameters['actual']   = $event->comparisonFailure()->actual();
+            $parameters['type'] = 'comparisonFailure';
+            $parameters['actual'] = $event->comparisonFailure()->actual();
             $parameters['expected'] = $event->comparisonFailure()->expected();
         }
 
@@ -278,9 +285,9 @@ final class TeamCityLogger
         $this->writeMessage(
             'testFailed',
             [
-                'name'     => $event->test()->name(),
-                'message'  => $event->message(),
-                'details'  => '',
+                'name' => $event->test()->name(),
+                'message' => $event->message(),
+                'details' => '',
                 'duration' => $this->duration($event),
             ],
         );
@@ -294,7 +301,7 @@ final class TeamCityLogger
         $this->writeMessage(
             'testFinished',
             [
-                'name'     => $event->test()->name(),
+                'name' => $event->test()->name(),
                 'duration' => $this->duration($event),
             ],
         );
@@ -333,7 +340,7 @@ final class TeamCityLogger
     }
 
     /**
-     * @param array<non-empty-string, int|string> $parameters
+     * @param  array<non-empty-string, int|string>  $parameters
      */
     private function writeMessage(string $eventName, array $parameters = []): void
     {
@@ -393,7 +400,7 @@ final class TeamCityLogger
         $buffer = $throwable->className();
 
         if ($throwable->message() !== '') {
-            $buffer .= ': ' . $throwable->message();
+            $buffer .= ': '.$throwable->message();
         }
 
         return $buffer;

@@ -59,11 +59,11 @@ final class ParallelisationResult
     public $availableCpus;
 
     /**
-     * @param positive-int|0    $passedReservedCpus
-     * @param non-zero-int|null $passedCountLimit
-     * @param non-zero-int|null $correctedCountLimit
-     * @param positive-int      $totalCoresCount
-     * @param positive-int      $availableCpus
+     * @param  positive-int|0  $passedReservedCpus
+     * @param  non-zero-int|null  $passedCountLimit
+     * @param  non-zero-int|null  $correctedCountLimit
+     * @param  positive-int  $totalCoresCount
+     * @param  positive-int  $availableCpus
      */
     public function __construct(
         int $passedReservedCpus,

@@ -9,58 +9,56 @@ declare(strict_types=1);
 
 namespace Nette\PhpGenerator;
 
-
 /**
  * Definition of a class constant.
  */
 final class Constant
 {
-	use Traits\NameAware;
-	use Traits\VisibilityAware;
-	use Traits\CommentAware;
-	use Traits\AttributeAware;
+    use Traits\AttributeAware;
+    use Traits\CommentAware;
+    use Traits\NameAware;
+    use Traits\VisibilityAware;
 
-	private mixed $value;
-	private bool $final = false;
-	private ?string $type = null;
+    private mixed $value;
 
+    private bool $final = false;
 
-	public function setValue(mixed $val): static
-	{
-		$this->value = $val;
-		return $this;
-	}
+    private ?string $type = null;
 
+    public function setValue(mixed $val): static
+    {
+        $this->value = $val;
 
-	public function getValue(): mixed
-	{
-		return $this->value;
-	}
+        return $this;
+    }
 
+    public function getValue(): mixed
+    {
+        return $this->value;
+    }
 
-	public function setFinal(bool $state = true): static
-	{
-		$this->final = $state;
-		return $this;
-	}
+    public function setFinal(bool $state = true): static
+    {
+        $this->final = $state;
 
+        return $this;
+    }
 
-	public function isFinal(): bool
-	{
-		return $this->final;
-	}
+    public function isFinal(): bool
+    {
+        return $this->final;
+    }
 
+    public function setType(?string $type): static
+    {
+        Helpers::validateType($type);
+        $this->type = $type;
 
-	public function setType(?string $type): static
-	{
-		Helpers::validateType($type);
-		$this->type = $type;
-		return $this;
-	}
+        return $this;
+    }
 
-
-	public function getType(): ?string
-	{
-		return $this->type;
-	}
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
 }

@@ -28,24 +28,25 @@ use Symfony\Component\CssSelector\XPath\XPathExpr;
 class NodeExtension extends AbstractExtension
 {
     public const ELEMENT_NAME_IN_LOWER_CASE = 1;
+
     public const ATTRIBUTE_NAME_IN_LOWER_CASE = 2;
+
     public const ATTRIBUTE_VALUE_IN_LOWER_CASE = 4;
 
     public function __construct(
         private int $flags = 0,
-    ) {
-    }
+    ) {}
 
     /**
      * @return $this
      */
     public function setFlag(int $flag, bool $on): static
     {
-        if ($on && !$this->hasFlag($flag)) {
+        if ($on && ! $this->hasFlag($flag)) {
             $this->flags += $flag;
         }
 
-        if (!$on && $this->hasFlag($flag)) {
+        if (! $on && $this->hasFlag($flag)) {
             $this->flags -= $flag;
         }
 
@@ -202,7 +203,7 @@ class NodeExtension extends AbstractExtension
 
         $xpath = new XPathExpr('', $element);
 
-        if (!$safe) {
+        if (! $safe) {
             $xpath->addNameTest();
         }
 
@@ -216,6 +217,6 @@ class NodeExtension extends AbstractExtension
 
     private function isSafeName(string $name): bool
     {
-        return 0 < preg_match('~^[a-zA-Z_][a-zA-Z0-9_.-]*$~', $name);
+        return preg_match('~^[a-zA-Z_][a-zA-Z0-9_.-]*$~', $name) > 0;
     }
 }

@@ -51,58 +51,58 @@ class SelectColumn extends Column implements Editable, HasEmbeddedView
         getOptions as getBaseOptions;
     }
 
-    protected bool | Closure $isNative = true;
+    protected bool|Closure $isNative = true;
 
-    protected bool | Closure $areOptionsPreloaded = false;
+    protected bool|Closure $areOptionsPreloaded = false;
 
-    protected bool | Closure $areOptionsSearchable = false;
+    protected bool|Closure $areOptionsSearchable = false;
 
-    protected string | Htmlable | Closure | null $noOptionsMessage = null;
+    protected string|Htmlable|Closure|null $noOptionsMessage = null;
 
-    protected string | Htmlable | Closure | null $noOptionsSearchResultsMessage = null;
+    protected string|Htmlable|Closure|null $noOptionsSearchResultsMessage = null;
 
-    protected int | Closure $optionsSearchDebounce = 1000;
+    protected int|Closure $optionsSearchDebounce = 1000;
 
-    protected string | Closure | null $optionsSearchingMessage = null;
+    protected string|Closure|null $optionsSearchingMessage = null;
 
-    protected string | Htmlable | Closure | null $optionsSearchPrompt = null;
+    protected string|Htmlable|Closure|null $optionsSearchPrompt = null;
 
     protected ?Closure $getOptionLabelUsing = null;
 
     protected ?Closure $getOptionsSearchResultsUsing = null;
 
-    protected bool | Closure $shouldSearchOptionLabels = true;
+    protected bool|Closure $shouldSearchOptionLabels = true;
 
-    protected bool | Closure $shouldSearchOptionValues = false;
+    protected bool|Closure $shouldSearchOptionValues = false;
 
     protected ?Closure $transformOptionsForJsUsing = null;
 
-    protected string | Closure | null $optionsLoadingMessage = null;
+    protected string|Closure|null $optionsLoadingMessage = null;
 
-    protected bool | Closure $canOptionLabelsWrap = true;
+    protected bool|Closure $canOptionLabelsWrap = true;
 
-    protected bool | Closure $isOptionsHtmlAllowed = false;
+    protected bool|Closure $isOptionsHtmlAllowed = false;
 
-    protected int | Closure $optionsLimit = 50;
+    protected int|Closure $optionsLimit = 50;
 
     /**
      * @var array<string> | null
      */
     protected ?array $optionsSearchColumns = null;
 
-    protected string | Closure | null $position = null;
+    protected string|Closure|null $position = null;
 
     protected ?Closure $getOptionLabelFromRecordUsing = null;
 
-    protected string | Closure | null $optionsRelationship = null;
+    protected string|Closure|null $optionsRelationship = null;
 
-    protected string | Closure | null $optionsRelationshipTitleAttribute = null;
+    protected string|Closure|null $optionsRelationshipTitleAttribute = null;
 
     protected ?Closure $modifyOptionsRelationshipQueryUsing = null;
 
-    protected bool | Closure | null $isOptionsSearchForcedCaseInsensitive = null;
+    protected bool|Closure|null $isOptionsSearchForcedCaseInsensitive = null;
 
-    protected bool | Closure | null $areOptionsRemembered = null;
+    protected bool|Closure|null $areOptionsRemembered = null;
 
     /**
      * @var ?array<string | array<string>>
@@ -127,7 +127,7 @@ class SelectColumn extends Column implements Editable, HasEmbeddedView
         });
     }
 
-    public function optionsLoadingMessage(string | Closure | null $message): static
+    public function optionsLoadingMessage(string|Closure|null $message): static
     {
         $this->optionsLoadingMessage = $message;
 
@@ -187,7 +187,7 @@ class SelectColumn extends Column implements Editable, HasEmbeddedView
         return $this;
     }
 
-    public function native(bool | Closure $condition = true): static
+    public function native(bool|Closure $condition = true): static
     {
         $this->isNative = $condition;
 
@@ -202,7 +202,7 @@ class SelectColumn extends Column implements Editable, HasEmbeddedView
     /**
      * @param  bool | array<string> | Closure  $condition
      */
-    public function searchableOptions(bool | array | Closure $condition = true): static
+    public function searchableOptions(bool|array|Closure $condition = true): static
     {
         if (is_array($condition)) {
             $this->areOptionsSearchable = true;
@@ -220,66 +220,66 @@ class SelectColumn extends Column implements Editable, HasEmbeddedView
         return (bool) $this->evaluate($this->areOptionsSearchable);
     }
 
-    public function noOptionsMessage(string | Htmlable | Closure | null $message): static
+    public function noOptionsMessage(string|Htmlable|Closure|null $message): static
     {
         $this->noOptionsMessage = $message;
 
         return $this;
     }
 
-    public function noOptionsSearchResultsMessage(string | Htmlable | Closure | null $message): static
+    public function noOptionsSearchResultsMessage(string|Htmlable|Closure|null $message): static
     {
         $this->noOptionsSearchResultsMessage = $message;
 
         return $this;
     }
 
-    public function optionsSearchDebounce(int | Closure $debounce): static
+    public function optionsSearchDebounce(int|Closure $debounce): static
     {
         $this->optionsSearchDebounce = $debounce;
 
         return $this;
     }
 
-    public function optionsSearchingMessage(string | Closure | null $message): static
+    public function optionsSearchingMessage(string|Closure|null $message): static
     {
         $this->optionsSearchingMessage = $message;
 
         return $this;
     }
 
-    public function optionsSearchPrompt(string | Htmlable | Closure | null $message): static
+    public function optionsSearchPrompt(string|Htmlable|Closure|null $message): static
     {
         $this->optionsSearchPrompt = $message;
 
         return $this;
     }
 
-    public function searchOptionLabels(bool | Closure | null $condition = true): static
+    public function searchOptionLabels(bool|Closure|null $condition = true): static
     {
         $this->shouldSearchOptionLabels = $condition;
 
         return $this;
     }
 
-    public function searchOptionValues(bool | Closure | null $condition = true): static
+    public function searchOptionValues(bool|Closure|null $condition = true): static
     {
         $this->shouldSearchOptionValues = $condition;
 
         return $this;
     }
 
-    public function getNoOptionsMessage(): string | Htmlable
+    public function getNoOptionsMessage(): string|Htmlable
     {
         return $this->evaluate($this->noOptionsMessage) ?? __('filament-tables::table.columns.select.no_options_message');
     }
 
-    public function getNoOptionsSearchResultsMessage(): string | Htmlable
+    public function getNoOptionsSearchResultsMessage(): string|Htmlable
     {
         return $this->evaluate($this->noOptionsSearchResultsMessage) ?? __('filament-tables::table.columns.select.no_search_results_message');
     }
 
-    public function getOptionsSearchPrompt(): string | Htmlable
+    public function getOptionsSearchPrompt(): string|Htmlable
     {
         return $this->evaluate($this->optionsSearchPrompt) ?? __('filament-tables::table.columns.select.search_prompt');
     }
@@ -310,7 +310,7 @@ class SelectColumn extends Column implements Editable, HasEmbeddedView
         return $this->evaluate($this->optionsSearchDebounce);
     }
 
-    public function wrapOptionLabels(bool | Closure $condition = true): static
+    public function wrapOptionLabels(bool|Closure $condition = true): static
     {
         $this->canOptionLabelsWrap = $condition;
 
@@ -327,7 +327,7 @@ class SelectColumn extends Column implements Editable, HasEmbeddedView
         return $this->evaluate($this->optionsSearchingMessage) ?? __('filament-tables::table.columns.select.searching_message');
     }
 
-    public function allowOptionsHtml(bool | Closure $condition = true): static
+    public function allowOptionsHtml(bool|Closure $condition = true): static
     {
         $this->isOptionsHtmlAllowed = $condition;
 
@@ -339,7 +339,7 @@ class SelectColumn extends Column implements Editable, HasEmbeddedView
         return (bool) $this->evaluate($this->isOptionsHtmlAllowed);
     }
 
-    public function optionsLimit(int | Closure $limit): static
+    public function optionsLimit(int|Closure $limit): static
     {
         $this->optionsLimit = $limit;
 
@@ -351,7 +351,7 @@ class SelectColumn extends Column implements Editable, HasEmbeddedView
         return $this->evaluate($this->optionsLimit);
     }
 
-    public function position(string | Closure | null $position): static
+    public function position(string|Closure|null $position): static
     {
         $this->position = $position;
 
@@ -432,7 +432,7 @@ class SelectColumn extends Column implements Editable, HasEmbeddedView
         return $label;
     }
 
-    public function rememberOptions(bool | Closure $condition = true): static
+    public function rememberOptions(bool|Closure $condition = true): static
     {
         $this->areOptionsRemembered = $condition;
 
@@ -541,7 +541,7 @@ class SelectColumn extends Column implements Editable, HasEmbeddedView
         );
     }
 
-    public function preloadOptions(bool | Closure $condition = true): static
+    public function preloadOptions(bool|Closure $condition = true): static
     {
         $this->areOptionsPreloaded = $condition;
 
@@ -572,7 +572,7 @@ class SelectColumn extends Column implements Editable, HasEmbeddedView
         return $columns;
     }
 
-    public function optionsRelationship(string | Closure $name, string | Closure | null $titleAttribute = null, ?Closure $modifyQueryUsing = null): static
+    public function optionsRelationship(string|Closure $name, string|Closure|null $titleAttribute = null, ?Closure $modifyQueryUsing = null): static
     {
         $this->optionsRelationship = $name;
         $this->optionsRelationshipTitleAttribute = $titleAttribute;
@@ -753,7 +753,7 @@ class SelectColumn extends Column implements Editable, HasEmbeddedView
         return $this->getBaseOptions();
     }
 
-    public function forceOptionsSearchCaseInsensitive(bool | Closure | null $condition = true): static
+    public function forceOptionsSearchCaseInsensitive(bool|Closure|null $condition = true): static
     {
         $this->isOptionsSearchForcedCaseInsensitive = $condition;
 
@@ -796,7 +796,7 @@ class SelectColumn extends Column implements Editable, HasEmbeddedView
         return $query;
     }
 
-    public function getOptionsRelationship(): BelongsTo | BelongsToMany | HasOneOrMany | HasOneOrManyThrough | BelongsToThrough | null
+    public function getOptionsRelationship(): BelongsTo|BelongsToMany|HasOneOrMany|HasOneOrManyThrough|BelongsToThrough|null
     {
         if (! $this->hasOptionsRelationship()) {
             return null;
@@ -893,7 +893,7 @@ class SelectColumn extends Column implements Editable, HasEmbeddedView
         return $relationship->getQualifiedOwnerKeyName();
     }
 
-    public function applyEagerLoading(EloquentBuilder | Relation $query): EloquentBuilder | Relation
+    public function applyEagerLoading(EloquentBuilder|Relation $query): EloquentBuilder|Relation
     {
         if ($this->hasOptionsRelationship()) {
             $relationshipName = $this->getOptionsRelationshipName();
@@ -922,48 +922,48 @@ class SelectColumn extends Column implements Editable, HasEmbeddedView
                 'x-load' => true,
                 'x-load-src' => FilamentAsset::getAlpineComponentSrc('columns/select', 'filament/tables'),
                 'x-data' => 'selectTableColumn({
-                    canOptionLabelsWrap: ' . Js::from($this->canOptionLabelsWrap()) . ',
-                    canSelectPlaceholder: ' . Js::from($canSelectPlaceholder) . ',
+                    canOptionLabelsWrap: '.Js::from($this->canOptionLabelsWrap()).',
+                    canSelectPlaceholder: '.Js::from($canSelectPlaceholder).',
                     getOptionLabelUsing: async () => {
-                        return await $wire.callTableColumnMethod(' . Js::from($name) . ', ' . Js::from($recordKey) . ', \'getOptionLabel\')
+                        return await $wire.callTableColumnMethod('.Js::from($name).', '.Js::from($recordKey).', \'getOptionLabel\')
                     },
                     getOptionsUsing: async () => {
                         return await $wire.callTableColumnMethod(
-                            ' . Js::from($name) . ',
-                            ' . Js::from($recordKey) . ',
+                            '.Js::from($name).',
+                            '.Js::from($recordKey).',
                             \'getOptionsForJs\',
                         )
                     },
                     getSearchResultsUsing: async (search) => {
                         return await $wire.callTableColumnMethod(
-                            ' . Js::from($name) . ',
-                            ' . Js::from($recordKey) . ',
+                            '.Js::from($name).',
+                            '.Js::from($recordKey).',
                             \'getOptionsSearchResultsForJs\',
                             { search },
                         )
                     },
-                    hasDynamicOptions: ' . Js::from($this->hasDynamicOptions()) . ',
-                    hasDynamicSearchResults: ' . Js::from($this->hasDynamicOptionsSearchResults()) . ',
-                    hasInitialNoOptionsMessage: ' . Js::from($this->hasInitialNoOptionsMessage()) . ',
-                    initialOptionLabel: ' . Js::from($this->getOptionLabel()) . ',
-                    isDisabled: ' . Js::from($isDisabled) . ',
-                    isHtmlAllowed: ' . Js::from($this->isOptionsHtmlAllowed()) . ',
-                    isNative: ' . Js::from($isNative) . ',
-                    isSearchable: ' . Js::from($this->areOptionsSearchable()) . ',
-                    loadingMessage: ' . Js::from($this->getOptionsLoadingMessage()) . ',
-                    name: ' . Js::from($name) . ',
-                    noOptionsMessage: ' . Js::from($this->getNoOptionsMessage()) . ',
-                    noSearchResultsMessage: ' . Js::from($this->getNoOptionsSearchResultsMessage()) . ',
-                    options: ' . Js::from($isNative ? [] : $this->getOptionsForJs()) . ',
-                    optionsLimit: ' . Js::from($this->getOptionsLimit()) . ',
-                    placeholder: ' . Js::from($placeholder) . ',
-                    position: ' . Js::from($this->getPosition()) . ',
-                    recordKey: ' . Js::from($recordKey) . ',
-                    searchableOptionFields: ' . Js::from($this->getSearchableOptionFields()) . ',
-                    searchDebounce: ' . Js::from($this->getOptionsSearchDebounce()) . ',
-                    searchingMessage: ' . Js::from($this->getOptionsSearchingMessage()) . ',
-                    searchPrompt: ' . Js::from($this->getOptionsSearchPrompt()) . ',
-                    state: ' . Js::from($state) . ',
+                    hasDynamicOptions: '.Js::from($this->hasDynamicOptions()).',
+                    hasDynamicSearchResults: '.Js::from($this->hasDynamicOptionsSearchResults()).',
+                    hasInitialNoOptionsMessage: '.Js::from($this->hasInitialNoOptionsMessage()).',
+                    initialOptionLabel: '.Js::from($this->getOptionLabel()).',
+                    isDisabled: '.Js::from($isDisabled).',
+                    isHtmlAllowed: '.Js::from($this->isOptionsHtmlAllowed()).',
+                    isNative: '.Js::from($isNative).',
+                    isSearchable: '.Js::from($this->areOptionsSearchable()).',
+                    loadingMessage: '.Js::from($this->getOptionsLoadingMessage()).',
+                    name: '.Js::from($name).',
+                    noOptionsMessage: '.Js::from($this->getNoOptionsMessage()).',
+                    noSearchResultsMessage: '.Js::from($this->getNoOptionsSearchResultsMessage()).',
+                    options: '.Js::from($isNative ? [] : $this->getOptionsForJs()).',
+                    optionsLimit: '.Js::from($this->getOptionsLimit()).',
+                    placeholder: '.Js::from($placeholder).',
+                    position: '.Js::from($this->getPosition()).',
+                    recordKey: '.Js::from($recordKey).',
+                    searchableOptionFields: '.Js::from($this->getSearchableOptionFields()).',
+                    searchDebounce: '.Js::from($this->getOptionsSearchDebounce()).',
+                    searchingMessage: '.Js::from($this->getOptionsSearchingMessage()).',
+                    searchPrompt: '.Js::from($this->getOptionsSearchPrompt()).',
+                    state: '.Js::from($state).',
                 })',
             ], escape: false)
             ->class([
@@ -979,9 +979,9 @@ class SelectColumn extends Column implements Editable, HasEmbeddedView
                 'x-bind:disabled' => $isDisabled ? null : 'isLoading',
                 'x-tooltip' => filled($tooltip = $this->getTooltip($state))
                     ? '{
-                        content: ' . Js::from($tooltip) . ',
+                        content: '.Js::from($tooltip).',
                         theme: $store.theme,
-                        allowHTML: ' . Js::from($tooltip instanceof Htmlable) . ',
+                        allowHTML: '.Js::from($tooltip instanceof Htmlable).',
                     }'
                     : null,
             ], escape: false)

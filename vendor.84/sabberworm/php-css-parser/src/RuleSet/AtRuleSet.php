@@ -26,8 +26,8 @@ class AtRuleSet extends RuleSet implements AtRule
     private $arguments;
 
     /**
-     * @param non-empty-string $type
-     * @param int<1, max>|null $lineNumber
+     * @param  non-empty-string  $type
+     * @param  int<1, max>|null  $lineNumber
      */
     public function __construct(string $type, string $arguments = '', ?int $lineNumber = null)
     {
@@ -58,11 +58,12 @@ class AtRuleSet extends RuleSet implements AtRule
         $result = $formatter->comments($this);
         $arguments = $this->arguments;
         if ($arguments !== '') {
-            $arguments = ' ' . $arguments;
+            $arguments = ' '.$arguments;
         }
         $result .= "@{$this->type}$arguments{$formatter->spaceBeforeOpeningBrace()}{";
         $result .= $this->renderRules($outputFormat);
         $result .= '}';
+
         return $result;
     }
 }

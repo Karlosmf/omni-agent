@@ -9,12 +9,11 @@ declare(strict_types=1);
 
 namespace Nette\PhpGenerator;
 
-
 /**
  * Property hook type.
  */
 enum PropertyHookType: string
 {
-	case Set = 'set';
-	case Get = 'get';
+    case Set = 'set';
+    case Get = 'get';
 }

@@ -17,7 +17,7 @@ trait CanBeSummarized
     /**
      * @param  array<Summarizer> | Summarizer  $summarizers
      */
-    public function summarize(array | Summarizer $summarizers): static
+    public function summarize(array|Summarizer $summarizers): static
     {
         foreach (Arr::wrap($summarizers) as $summarizer) {
             $summarizer->column($this);
@@ -40,7 +40,7 @@ trait CanBeSummarized
     /**
      * @return array<string | int, Summarizer>
      */
-    public function getSummarizers(Builder | Closure | null $query = null): array
+    public function getSummarizers(Builder|Closure|null $query = null): array
     {
         if ($query) {
             return array_filter(
@@ -52,7 +52,7 @@ trait CanBeSummarized
         return $this->summarizers;
     }
 
-    public function hasSummary(Builder | Closure | null $query = null): bool
+    public function hasSummary(Builder|Closure|null $query = null): bool
     {
         return (bool) count($this->getSummarizers($query));
     }

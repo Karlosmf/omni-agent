@@ -141,7 +141,7 @@ class JoinRelationship
                 $relationCallback
             );
 
-            if ($relation instanceof BelongsToMany && !is_array($alias)) {
+            if ($relation instanceof BelongsToMany && ! is_array($alias)) {
                 $extraAlias = $joinHelper->getAliasName(
                     $useAlias,
                     $relation,
@@ -280,7 +280,7 @@ class JoinRelationship
             $part = [];
             foreach ($relations as $relationName) {
                 $part[] = $relationName;
-                $fullRelationName = join('.', $part);
+                $fullRelationName = implode('.', $part);
 
                 $currentModel = $latestRelation ? $latestRelation->getModel() : $this->getModel();
                 $relation = $currentModel->{$relationName}();
@@ -302,7 +302,7 @@ class JoinRelationship
                     $relationCallback
                 );
 
-                if ($alias && $relation instanceof BelongsToMany && !is_array($alias)) {
+                if ($alias && $relation instanceof BelongsToMany && ! is_array($alias)) {
                     $extraAlias = $joinHelper->getAliasName(
                         $useAlias,
                         $relation,
@@ -566,7 +566,7 @@ class JoinRelationship
             foreach ($relations as $index => $relation) {
                 $relationName = $relation;
 
-                if (!$latestRelation) {
+                if (! $latestRelation) {
                     $relation = $this->getRelationWithoutConstraintsProxy($relation);
                 } else {
                     $relation = $latestRelation->getModel()->query()->getRelationWithoutConstraintsProxy($relation);

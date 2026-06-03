@@ -8,11 +8,11 @@ use Illuminate\Support\HtmlString;
 
 class Css extends Asset
 {
-    protected string | Htmlable | Closure | null $html = null;
+    protected string|Htmlable|Closure|null $html = null;
 
     protected ?string $relativePublicPath = null;
 
-    public function html(string | Htmlable | Closure | null $html): static
+    public function html(string|Htmlable|Closure|null $html): static
     {
         $this->html = $html;
 
@@ -32,7 +32,7 @@ class Css extends Asset
             return $this->getPath();
         }
 
-        return asset($this->getRelativePublicPath()) . '?v=' . $this->getVersion();
+        return asset($this->getRelativePublicPath()).'?v='.$this->getVersion();
     }
 
     public function getHtml(): Htmlable

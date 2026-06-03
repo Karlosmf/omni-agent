@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Brick\Math;
 
+use const E_USER_DEPRECATED;
+use const FILTER_VALIDATE_INT;
+
 use Brick\Math\Exception\DivisionByZeroException;
 use Brick\Math\Exception\IntegerOverflowException;
 use Brick\Math\Exception\MathException;
@@ -37,9 +40,6 @@ use function strtolower;
 use function substr;
 use function trigger_error;
 
-use const E_USER_DEPRECATED;
-use const FILTER_VALIDATE_INT;
-
 /**
  * An arbitrarily large integer number.
  *
@@ -58,7 +58,7 @@ final readonly class BigInteger extends BigNumber
     /**
      * Protected constructor. Use a factory method to obtain an instance.
      *
-     * @param string $value A string of digits, with optional leading minus sign.
+     * @param  string  $value  A string of digits, with optional leading minus sign.
      *
      * @pure
      */
@@ -78,10 +78,10 @@ final readonly class BigInteger extends BigNumber
      *
      * For bases greater than 36, and/or custom alphabets, use the fromArbitraryBase() method.
      *
-     * @param string $number The number to convert, in the given base.
-     * @param int    $base   The base of the number, between 2 and 36.
+     * @param  string  $number  The number to convert, in the given base.
+     * @param  int  $base  The base of the number, between 2 and 36.
      *
-     * @throws NumberFormatException    If the number is empty, or contains invalid chars for the given base.
+     * @throws NumberFormatException If the number is empty, or contains invalid chars for the given base.
      * @throws InvalidArgumentException If the base is out of range.
      *
      * @pure
@@ -119,10 +119,10 @@ final readonly class BigInteger extends BigNumber
 
         if ($number === '1') {
             // The result will be the same in any base, avoid further calculation.
-            return new BigInteger($sign . '1');
+            return new BigInteger($sign.'1');
         }
 
-        $pattern = '/[^' . substr(Calculator::ALPHABET, 0, $base) . ']/';
+        $pattern = '/[^'.substr(Calculator::ALPHABET, 0, $base).']/';
 
         if (preg_match($pattern, strtolower($number), $matches) === 1) {
             throw new NumberFormatException(sprintf('"%s" is not a valid character in base %d.', $matches[0], $base));
@@ -130,12 +130,12 @@ final readonly class BigInteger extends BigNumber
 
         if ($base === 10) {
             // The number is usable as is, avoid further calculation.
-            return new BigInteger($sign . $number);
+            return new BigInteger($sign.$number);
         }
 
         $result = CalculatorRegistry::get()->fromBase($number, $base);
 
-        return new BigInteger($sign . $result);
+        return new BigInteger($sign.$result);
     }
 
     /**
@@ -143,10 +143,10 @@ final readonly class BigInteger extends BigNumber
      *
      * Because this method accepts an alphabet with any character, including dash, it does not handle negative numbers.
      *
-     * @param string $number   The number to parse.
-     * @param string $alphabet The alphabet, for example '01' for base 2, or '01234567' for base 8.
+     * @param  string  $number  The number to parse.
+     * @param  string  $alphabet  The alphabet, for example '01' for base 2, or '01234567' for base 8.
      *
-     * @throws NumberFormatException    If the given number is empty or contains invalid chars for the given alphabet.
+     * @throws NumberFormatException If the given number is empty or contains invalid chars for the given alphabet.
      * @throws InvalidArgumentException If the alphabet does not contain at least 2 chars, or contains duplicates.
      *
      * @pure
@@ -167,7 +167,7 @@ final readonly class BigInteger extends BigNumber
             throw new InvalidArgumentException('The alphabet must not contain duplicate chars.');
         }
 
-        $pattern = '/[^' . preg_quote($alphabet, '/') . ']/';
+        $pattern = '/[^'.preg_quote($alphabet, '/').']/';
 
         if (preg_match($pattern, $number, $matches) === 1) {
             throw NumberFormatException::charNotInAlphabet($matches[0]);
@@ -189,9 +189,9 @@ final readonly class BigInteger extends BigNumber
      *
      * This method can be used to retrieve a number exported by `toBytes()`, as long as the `$signed` flags match.
      *
-     * @param string $value  The byte string.
-     * @param bool   $signed Whether to interpret as a signed number in two's-complement representation with a leading
-     *                       sign bit.
+     * @param  string  $value  The byte string.
+     * @param  bool  $signed  Whether to interpret as a signed number in two's-complement representation with a leading
+     *                        sign bit.
      *
      * @throws NumberFormatException If the string is empty.
      *
@@ -227,10 +227,10 @@ final readonly class BigInteger extends BigNumber
      *
      * Using the default random bytes generator, this method is suitable for cryptographic use.
      *
-     * @param int                          $numBits              The number of bits.
-     * @param (callable(int): string)|null $randomBytesGenerator A function that accepts a number of bytes, and returns
-     *                                                           a string of random bytes of the given length. Defaults
-     *                                                           to the `random_bytes()` function.
+     * @param  int  $numBits  The number of bits.
+     * @param  (callable(int): string)|null  $randomBytesGenerator  A function that accepts a number of bytes, and returns
+     *                                                              a string of random bytes of the given length. Defaults
+     *                                                              to the `random_bytes()` function.
      *
      * @throws InvalidArgumentException If $numBits is negative.
      */
@@ -265,11 +265,11 @@ final readonly class BigInteger extends BigNumber
      *
      * Using the default random bytes generator, this method is suitable for cryptographic use.
      *
-     * @param BigNumber|int|float|string   $min                  The lower bound. Must be convertible to a BigInteger.
-     * @param BigNumber|int|float|string   $max                  The upper bound. Must be convertible to a BigInteger.
-     * @param (callable(int): string)|null $randomBytesGenerator A function that accepts a number of bytes, and returns
-     *                                                           a string of random bytes of the given length. Defaults
-     *                                                           to the `random_bytes()` function.
+     * @param  BigNumber|int|float|string  $min  The lower bound. Must be convertible to a BigInteger.
+     * @param  BigNumber|int|float|string  $max  The upper bound. Must be convertible to a BigInteger.
+     * @param  (callable(int): string)|null  $randomBytesGenerator  A function that accepts a number of bytes, and returns
+     *                                                              a string of random bytes of the given length. Defaults
+     *                                                              to the `random_bytes()` function.
      *
      * @throws MathException If one of the parameters cannot be converted to a BigInteger,
      *                       or `$min` is greater than `$max`.
@@ -353,8 +353,8 @@ final readonly class BigInteger extends BigNumber
     }
 
     /**
-     * @param BigNumber|int|float|string $a    The first number. Must be convertible to a BigInteger.
-     * @param BigNumber|int|float|string ...$n The subsequent numbers. Must be convertible to BigInteger.
+     * @param  BigNumber|int|float|string  $a  The first number. Must be convertible to a BigInteger.
+     * @param  BigNumber|int|float|string  ...$n  The subsequent numbers. Must be convertible to BigInteger.
      *
      * @pure
      */
@@ -374,8 +374,8 @@ final readonly class BigInteger extends BigNumber
     }
 
     /**
-     * @param BigNumber|int|float|string $a    The first number. Must be convertible to a BigInteger.
-     * @param BigNumber|int|float|string ...$n The subsequent numbers. Must be convertible to BigInteger.
+     * @param  BigNumber|int|float|string  $a  The first number. Must be convertible to a BigInteger.
+     * @param  BigNumber|int|float|string  ...$n  The subsequent numbers. Must be convertible to BigInteger.
      *
      * @pure
      */
@@ -397,8 +397,8 @@ final readonly class BigInteger extends BigNumber
     /**
      * @deprecated Use gcdAll() instead.
      *
-     * @param BigNumber|int|float|string $a    The first number. Must be convertible to a BigInteger.
-     * @param BigNumber|int|float|string ...$n The subsequent numbers. Must be convertible to BigInteger.
+     * @param  BigNumber|int|float|string  $a  The first number. Must be convertible to a BigInteger.
+     * @param  BigNumber|int|float|string  ...$n  The subsequent numbers. Must be convertible to BigInteger.
      */
     public static function gcdMultiple(BigNumber|int|float|string $a, BigNumber|int|float|string ...$n): BigInteger
     {
@@ -413,7 +413,7 @@ final readonly class BigInteger extends BigNumber
     /**
      * Returns the sum of this number and the given one.
      *
-     * @param BigNumber|int|float|string $that The number to add. Must be convertible to a BigInteger.
+     * @param  BigNumber|int|float|string  $that  The number to add. Must be convertible to a BigInteger.
      *
      * @throws MathException If the number is not valid, or is not convertible to a BigInteger.
      *
@@ -439,7 +439,7 @@ final readonly class BigInteger extends BigNumber
     /**
      * Returns the difference of this number and the given one.
      *
-     * @param BigNumber|int|float|string $that The number to subtract. Must be convertible to a BigInteger.
+     * @param  BigNumber|int|float|string  $that  The number to subtract. Must be convertible to a BigInteger.
      *
      * @throws MathException If the number is not valid, or is not convertible to a BigInteger.
      *
@@ -461,7 +461,7 @@ final readonly class BigInteger extends BigNumber
     /**
      * Returns the product of this number and the given one.
      *
-     * @param BigNumber|int|float|string $that The multiplier. Must be convertible to a BigInteger.
+     * @param  BigNumber|int|float|string  $that  The multiplier. Must be convertible to a BigInteger.
      *
      * @throws MathException If the multiplier is not a valid number, or is not convertible to a BigInteger.
      *
@@ -487,8 +487,8 @@ final readonly class BigInteger extends BigNumber
     /**
      * Returns the result of the division of this number by the given one.
      *
-     * @param BigNumber|int|float|string $that         The divisor. Must be convertible to a BigInteger.
-     * @param RoundingMode               $roundingMode An optional rounding mode, defaults to Unnecessary.
+     * @param  BigNumber|int|float|string  $that  The divisor. Must be convertible to a BigInteger.
+     * @param  RoundingMode  $roundingMode  An optional rounding mode, defaults to Unnecessary.
      *
      * @throws MathException If the divisor is not a valid number, is not convertible to a BigInteger, is zero,
      *                       or RoundingMode::Unnecessary is used and the remainder is not zero.
@@ -519,10 +519,10 @@ final readonly class BigInteger extends BigNumber
      * If the number is greater than $max, returns a copy of $max.
      * Otherwise, returns this number unchanged.
      *
-     * @param BigNumber|int|float|string $min The minimum. Must be convertible to a BigInteger.
-     * @param BigNumber|int|float|string $max The maximum. Must be convertible to a BigInteger.
+     * @param  BigNumber|int|float|string  $min  The minimum. Must be convertible to a BigInteger.
+     * @param  BigNumber|int|float|string  $max  The maximum. Must be convertible to a BigInteger.
      *
-     * @throws MathException            If min/max are not convertible to a BigInteger.
+     * @throws MathException If min/max are not convertible to a BigInteger.
      * @throws InvalidArgumentException If min is greater than max.
      *
      * @pure
@@ -576,7 +576,7 @@ final readonly class BigInteger extends BigNumber
     /**
      * Returns the quotient of the division of this number by the given one.
      *
-     * @param BigNumber|int|float|string $that The divisor. Must be convertible to a BigInteger.
+     * @param  BigNumber|int|float|string  $that  The divisor. Must be convertible to a BigInteger.
      *
      * @throws DivisionByZeroException If the divisor is zero.
      *
@@ -604,7 +604,7 @@ final readonly class BigInteger extends BigNumber
      *
      * The remainder, when non-zero, has the same sign as the dividend.
      *
-     * @param BigNumber|int|float|string $that The divisor. Must be convertible to a BigInteger.
+     * @param  BigNumber|int|float|string  $that  The divisor. Must be convertible to a BigInteger.
      *
      * @throws DivisionByZeroException If the divisor is zero.
      *
@@ -630,8 +630,7 @@ final readonly class BigInteger extends BigNumber
     /**
      * Returns the quotient and remainder of the division of this number by the given one.
      *
-     * @param BigNumber|int|float|string $that The divisor. Must be convertible to a BigInteger.
-     *
+     * @param  BigNumber|int|float|string  $that  The divisor. Must be convertible to a BigInteger.
      * @return array{BigInteger, BigInteger} An array containing the quotient and the remainder.
      *
      * @throws DivisionByZeroException If the divisor is zero.
@@ -662,7 +661,7 @@ final readonly class BigInteger extends BigNumber
      *
      * The result of the modulo operation, when non-zero, has the same sign as the divisor.
      *
-     * @param BigNumber|int|float|string $that The divisor. Must be convertible to a BigInteger.
+     * @param  BigNumber|int|float|string  $that  The divisor. Must be convertible to a BigInteger.
      *
      * @throws DivisionByZeroException If the divisor is zero.
      *
@@ -692,12 +691,12 @@ final readonly class BigInteger extends BigNumber
     /**
      * Returns the modular multiplicative inverse of this BigInteger modulo $m.
      *
-     * @param BigNumber|int|float|string $m The modulus. Must be convertible to a BigInteger.
+     * @param  BigNumber|int|float|string  $m  The modulus. Must be convertible to a BigInteger.
      *
      * @throws DivisionByZeroException If $m is zero.
      * @throws NegativeNumberException If $m is negative.
-     * @throws MathException           If this BigInteger has no multiplicative inverse mod m (that is, this BigInteger
-     *                                 is not relatively prime to m).
+     * @throws MathException If this BigInteger has no multiplicative inverse mod m (that is, this BigInteger
+     *                       is not relatively prime to m).
      *
      * @pure
      */
@@ -731,8 +730,8 @@ final readonly class BigInteger extends BigNumber
      *
      * This operation requires a non-negative exponent and a strictly positive modulus.
      *
-     * @param BigNumber|int|float|string $exp The exponent. Must be positive or zero.
-     * @param BigNumber|int|float|string $mod The modulus. Must be strictly positive.
+     * @param  BigNumber|int|float|string  $exp  The exponent. Must be positive or zero.
+     * @param  BigNumber|int|float|string  $mod  The modulus. Must be strictly positive.
      *
      * @throws NegativeNumberException If the exponent or modulus is negative.
      * @throws DivisionByZeroException If the modulus is zero.
@@ -766,7 +765,7 @@ final readonly class BigInteger extends BigNumber
      *
      * The GCD is always positive, unless both operands are zero, in which case it is zero.
      *
-     * @param BigNumber|int|float|string $that The operand. Must be convertible to an integer number.
+     * @param  BigNumber|int|float|string  $that  The operand. Must be convertible to an integer number.
      *
      * @pure
      */
@@ -792,7 +791,7 @@ final readonly class BigInteger extends BigNumber
      *
      * The LCM is always positive, unless at least one operand is zero, in which case it is zero.
      *
-     * @param BigNumber|int|float|string $that The operand. Must be convertible to an integer number.
+     * @param  BigNumber|int|float|string  $that  The operand. Must be convertible to an integer number.
      *
      * @pure
      */
@@ -812,12 +811,12 @@ final readonly class BigInteger extends BigNumber
     /**
      * Returns the integer square root of this number, rounded according to the given rounding mode.
      *
-     * @param RoundingMode $roundingMode The rounding mode to use, defaults to Down.
-     *                                   ⚠️ WARNING: the default rounding mode was kept as Down for backward
-     *                                   compatibility, but will change to Unnecessary in version 0.15. Pass a rounding
-     *                                   mode explicitly to avoid this upcoming breaking change.
+     * @param  RoundingMode  $roundingMode  The rounding mode to use, defaults to Down.
+     *                                      ⚠️ WARNING: the default rounding mode was kept as Down for backward
+     *                                      compatibility, but will change to Unnecessary in version 0.15. Pass a rounding
+     *                                      mode explicitly to avoid this upcoming breaking change.
      *
-     * @throws NegativeNumberException    If this number is negative.
+     * @throws NegativeNumberException If this number is negative.
      * @throws RoundingNecessaryException If RoundingMode::Unnecessary is used, and the number is not a perfect square.
      *
      * @pure
@@ -827,7 +826,7 @@ final readonly class BigInteger extends BigNumber
         if (func_num_args() === 0) {
             // @phpstan-ignore-next-line
             trigger_error(
-                'The default rounding mode of BigInteger::sqrt() will change from Down to Unnecessary in version 0.15. ' .
+                'The default rounding mode of BigInteger::sqrt() will change from Down to Unnecessary in version 0.15. '.
                 'Pass a rounding mode explicitly to avoid this breaking change.',
                 E_USER_DEPRECATED,
             );
@@ -895,7 +894,7 @@ final readonly class BigInteger extends BigNumber
      *
      * This method returns a negative BigInteger if and only if both operands are negative.
      *
-     * @param BigNumber|int|float|string $that The operand. Must be convertible to an integer number.
+     * @param  BigNumber|int|float|string  $that  The operand. Must be convertible to an integer number.
      *
      * @pure
      */
@@ -911,7 +910,7 @@ final readonly class BigInteger extends BigNumber
      *
      * This method returns a negative BigInteger if and only if either of the operands is negative.
      *
-     * @param BigNumber|int|float|string $that The operand. Must be convertible to an integer number.
+     * @param  BigNumber|int|float|string  $that  The operand. Must be convertible to an integer number.
      *
      * @pure
      */
@@ -927,7 +926,7 @@ final readonly class BigInteger extends BigNumber
      *
      * This method returns a negative BigInteger if and only if exactly one of the operands is negative.
      *
-     * @param BigNumber|int|float|string $that The operand. Must be convertible to an integer number.
+     * @param  BigNumber|int|float|string  $that  The operand. Must be convertible to an integer number.
      *
      * @pure
      */
@@ -1059,7 +1058,7 @@ final readonly class BigInteger extends BigNumber
      *
      * Computes ((this & (1<<n)) != 0).
      *
-     * @param int $n The bit to test, 0-based.
+     * @param  int  $n  The bit to test, 0-based.
      *
      * @throws InvalidArgumentException If the bit to test is negative.
      *
@@ -1162,9 +1161,9 @@ final readonly class BigInteger extends BigNumber
      * Because this method accepts an alphabet with any character, including dash, it does not handle negative numbers;
      * a NegativeNumberException will be thrown when attempting to call this method on a negative number.
      *
-     * @param string $alphabet The alphabet, for example '01' for base 2, or '01234567' for base 8.
+     * @param  string  $alphabet  The alphabet, for example '01' for base 2, or '01234567' for base 8.
      *
-     * @throws NegativeNumberException  If this number is negative.
+     * @throws NegativeNumberException If this number is negative.
      * @throws InvalidArgumentException If the alphabet does not contain at least 2 chars, or contains duplicates.
      *
      * @pure
@@ -1182,7 +1181,7 @@ final readonly class BigInteger extends BigNumber
         }
 
         if ($this->value[0] === '-') {
-            throw new NegativeNumberException(__FUNCTION__ . '() does not support negative numbers.');
+            throw new NegativeNumberException(__FUNCTION__.'() does not support negative numbers.');
         }
 
         return CalculatorRegistry::get()->toArbitraryBase($this->value, $alphabet, $base);
@@ -1202,7 +1201,7 @@ final readonly class BigInteger extends BigNumber
      *
      * This representation is compatible with the `fromBytes()` factory method, as long as the `$signed` flags match.
      *
-     * @param bool $signed Whether to output a signed number in two's-complement representation with a leading sign bit.
+     * @param  bool  $signed  Whether to output a signed number in two's-complement representation with a leading sign bit.
      *
      * @throws NegativeNumberException If $signed is false, and the number is negative.
      *
@@ -1217,7 +1216,7 @@ final readonly class BigInteger extends BigNumber
         $hex = $this->abs()->toBase(16);
 
         if (strlen($hex) % 2 !== 0) {
-            $hex = '0' . $hex;
+            $hex = '0'.$hex;
         }
 
         $baseHexLength = strlen($hex);
@@ -1233,15 +1232,15 @@ final readonly class BigInteger extends BigNumber
                 $hexLength = strlen($hex);
 
                 if ($hexLength < $baseHexLength) {
-                    $hex = str_repeat('0', $baseHexLength - $hexLength) . $hex;
+                    $hex = str_repeat('0', $baseHexLength - $hexLength).$hex;
                 }
 
                 if ($hex[0] < '8') {
-                    $hex = 'FF' . $hex;
+                    $hex = 'FF'.$hex;
                 }
             } else {
                 if ($hex[0] >= '8') {
-                    $hex = '00' . $hex;
+                    $hex = '00'.$hex;
                 }
             }
         }
@@ -1279,7 +1278,7 @@ final readonly class BigInteger extends BigNumber
      *
      * @internal
      *
-     * @param array{value: string} $data
+     * @param  array{value: string}  $data
      *
      * @throws LogicException
      */

@@ -159,7 +159,7 @@ class AmqpCaster
     {
         $prefix = Caster::PREFIX_VIRTUAL;
 
-        $deliveryMode = new ConstStub($c->getDeliveryMode().(2 === $c->getDeliveryMode() ? ' (persistent)' : ' (non-persistent)'), $c->getDeliveryMode());
+        $deliveryMode = new ConstStub($c->getDeliveryMode().($c->getDeliveryMode() === 2 ? ' (persistent)' : ' (non-persistent)'), $c->getDeliveryMode());
 
         // Recent version of the extension already expose private properties
         if (isset($a["\x00AMQPEnvelope\x00body"])) {
@@ -168,7 +168,7 @@ class AmqpCaster
             return $a;
         }
 
-        if (!($filter & Caster::EXCLUDE_VERBOSE)) {
+        if (! ($filter & Caster::EXCLUDE_VERBOSE)) {
             $a += [$prefix.'body' => $c->getBody()];
         }
 
@@ -205,7 +205,7 @@ class AmqpCaster
             }
         }
 
-        if (!$flagsArray) {
+        if (! $flagsArray) {
             $flagsArray = ['AMQP_NOPARAM'];
         }
 

@@ -22,7 +22,7 @@ trait TranslationTrait
 {
     private function readLocalTranslations(array $locales, array $domains, array $transPaths): TranslatorBag
     {
-        $bag = new TranslatorBag();
+        $bag = new TranslatorBag;
 
         foreach ($locales as $locale) {
             $catalogue = new MessageCatalogue($locale);

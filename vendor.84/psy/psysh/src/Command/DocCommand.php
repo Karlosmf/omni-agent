@@ -38,8 +38,6 @@ class DocCommand extends ReflectingCommand
 
     /**
      * Set the configuration instance.
-     *
-     * @param \Psy\Configuration $config
      */
     public function setConfiguration(Configuration $config)
     {
@@ -90,7 +88,7 @@ HELP
         }
 
         $value = $input->getArgument('target');
-        if (!$value) {
+        if (! $value) {
             throw new RuntimeException('Not enough arguments (missing: "target").');
         }
 
@@ -98,7 +96,7 @@ HELP
             $reflector = new ReflectionLanguageConstruct($value);
             $doc = $this->getManualDocById($value);
         } else {
-            list($target, $reflector) = $this->getTargetAndReflector($value, $output);
+            [$target, $reflector] = $this->getTargetAndReflector($value, $output);
             $doc = $this->getManualDoc($reflector) ?: DocblockFormatter::format($reflector);
         }
 
@@ -116,7 +114,7 @@ HELP
         $output->writeln(SignatureFormatter::format($reflector));
         $output->writeln('');
 
-        if (empty($doc) && !$hasManual) {
+        if (empty($doc) && ! $hasManual) {
             $output->writeln('<warning>PHP manual not found</warning>');
             $output->writeln('    To document core PHP functionality, download the PHP reference manual:');
             $output->writeln('    https://github.com/bobthecow/psysh/wiki/PHP-manual');
@@ -159,14 +157,12 @@ HELP
     /**
      * Handle the manual update operation.
      *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
      *
      * @return int 0 if everything went fine, or an exit code
      */
     private function handleUpdateManual(InputInterface $input, OutputInterface $output): int
     {
-        if (!$this->config) {
+        if (! $this->config) {
             $output->writeln('<error>Configuration not available for manual updates.</error>');
 
             return 1;
@@ -254,14 +250,14 @@ HELP
             case \ReflectionClass::class:
             case \ReflectionObject::class:
                 foreach ($reflector->getTraits() as $trait) {
-                    if (!\in_array($trait->getName(), $seenClasses)) {
+                    if (! \in_array($trait->getName(), $seenClasses)) {
                         $seenClasses[] = $trait->getName();
                         yield $trait;
                     }
                 }
 
                 foreach ($reflector->getInterfaces() as $interface) {
-                    if (!\in_array($interface->getName(), $seenClasses)) {
+                    if (! \in_array($interface->getName(), $seenClasses)) {
                         $seenClasses[] = $interface->getName();
                         yield $interface;
                     }
@@ -271,14 +267,14 @@ HELP
                     yield $reflector;
 
                     foreach ($reflector->getTraits() as $trait) {
-                        if (!\in_array($trait->getName(), $seenClasses)) {
+                        if (! \in_array($trait->getName(), $seenClasses)) {
                             $seenClasses[] = $trait->getName();
                             yield $trait;
                         }
                     }
 
                     foreach ($reflector->getInterfaces() as $interface) {
-                        if (!\in_array($interface->getName(), $seenClasses)) {
+                        if (! \in_array($interface->getName(), $seenClasses)) {
                             $seenClasses[] = $interface->getName();
                             yield $interface;
                         }
@@ -291,7 +287,7 @@ HELP
                 foreach ($this->getParentReflectors($reflector->getDeclaringClass()) as $parent) {
                     if ($parent->hasMethod($reflector->getName())) {
                         $parentMethod = $parent->getMethod($reflector->getName());
-                        if (!\in_array($parentMethod->getDeclaringClass()->getName(), $seenClasses)) {
+                        if (! \in_array($parentMethod->getDeclaringClass()->getName(), $seenClasses)) {
                             $seenClasses[] = $parentMethod->getDeclaringClass()->getName();
                             yield $parentMethod;
                         }
@@ -304,7 +300,7 @@ HELP
                 foreach ($this->getParentReflectors($reflector->getDeclaringClass()) as $parent) {
                     if ($parent->hasProperty($reflector->getName())) {
                         $parentProperty = $parent->getProperty($reflector->getName());
-                        if (!\in_array($parentProperty->getDeclaringClass()->getName(), $seenClasses)) {
+                        if (! \in_array($parentProperty->getDeclaringClass()->getName(), $seenClasses)) {
                             $seenClasses[] = $parentProperty->getDeclaringClass()->getName();
                             yield $parentProperty;
                         }

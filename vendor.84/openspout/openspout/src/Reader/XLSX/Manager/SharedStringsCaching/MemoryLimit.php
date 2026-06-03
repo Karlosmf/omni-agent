@@ -24,11 +24,11 @@ final readonly class MemoryLimit
         $memoryLimitFormatted = strtolower(trim($this->memoryLimit));
 
         // No memory limit
-        if ('-1' === $memoryLimitFormatted) {
+        if ($memoryLimitFormatted === '-1') {
             return -1;
         }
 
-        if (1 === preg_match('/(\d+)([bkmgt])b?/', $memoryLimitFormatted, $matches)) {
+        if (preg_match('/(\d+)([bkmgt])b?/', $memoryLimitFormatted, $matches) === 1) {
             $amount = (int) $matches[1];
             $unit = $matches[2];
 

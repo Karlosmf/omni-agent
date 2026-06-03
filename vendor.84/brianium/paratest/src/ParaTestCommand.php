@@ -41,8 +41,8 @@ final class ParaTestCommand extends Command
     /** @param non-empty-string $cwd */
     public static function applicationFactory(string $cwd): Application
     {
-        $application = new Application();
-        $command     = new self($cwd, self::COMMAND_NAME);
+        $application = new Application;
+        $command = new self($cwd, self::COMMAND_NAME);
 
         $application->setName('ParaTest');
         $application->setVersion(PrettyVersions::getVersion('brianium/paratest')->getPrettyVersion());
@@ -69,9 +69,7 @@ final class ParaTestCommand extends Command
     /**
      * {@inheritDoc}
      */
-    public function mergeApplicationDefinition($mergeArgs = true): void
-    {
-    }
+    public function mergeApplicationDefinition($mergeArgs = true): void {}
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -101,7 +99,7 @@ final class ParaTestCommand extends Command
     {
         $app = $this->getApplication();
         assert($app !== null);
-        $help  = $app->find('help');
+        $help = $app->find('help');
         $input = new ArrayInput(['command_name' => $this->getName()]);
 
         return $help->run($input, $output);

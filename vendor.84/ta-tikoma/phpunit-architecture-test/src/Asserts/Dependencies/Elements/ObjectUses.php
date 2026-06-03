@@ -21,7 +21,7 @@ final class ObjectUses implements IteratorAggregate
     protected array $uses;
 
     /**
-     * @param string[] $uses
+     * @param  string[]  $uses
      */
     public function __construct(array $uses)
     {

@@ -25,21 +25,19 @@ class ProcessUtils
     /**
      * This class should not be instantiated.
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Validates and normalizes a Process input.
      *
-     * @param string $caller The name of method call that validates the input
-     * @param mixed  $input  The input to validate
+     * @param  string  $caller  The name of method call that validates the input
+     * @param  mixed  $input  The input to validate
      *
      * @throws InvalidArgumentException In case the input is not valid
      */
     public static function validateInput(string $caller, mixed $input): mixed
     {
-        if (null !== $input) {
+        if ($input !== null) {
             if (\is_resource($input)) {
                 return $input;
             }

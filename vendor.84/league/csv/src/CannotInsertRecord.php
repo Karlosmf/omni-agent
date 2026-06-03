@@ -20,6 +20,7 @@ class CannotInsertRecord extends Exception
 {
     /** The record submitted for insertion. */
     protected array $record = [];
+
     /** Validator which did not validate the data. */
     protected string $name = '';
 

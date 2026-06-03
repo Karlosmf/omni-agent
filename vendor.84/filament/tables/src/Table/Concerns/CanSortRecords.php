@@ -10,17 +10,17 @@ use Illuminate\Support\Str;
 
 trait CanSortRecords
 {
-    protected string | Closure | null $defaultSort = null;
+    protected string|Closure|null $defaultSort = null;
 
-    protected string | Closure | null $defaultSortDirection = null;
+    protected string|Closure|null $defaultSortDirection = null;
 
-    protected bool | Closure | null $persistsSortInSession = false;
+    protected bool|Closure|null $persistsSortInSession = false;
 
-    protected string | Htmlable | Closure | null $defaultSortOptionLabel = null;
+    protected string|Htmlable|Closure|null $defaultSortOptionLabel = null;
 
-    protected bool | Closure $hasDefaultKeySort = true;
+    protected bool|Closure $hasDefaultKeySort = true;
 
-    public function defaultSort(string | Closure | null $column, string | Closure | null $direction = 'asc'): static
+    public function defaultSort(string|Closure|null $column, string|Closure|null $direction = 'asc'): static
     {
         $this->defaultSort = $column;
         $this->defaultSortDirection = $direction;
@@ -28,21 +28,21 @@ trait CanSortRecords
         return $this;
     }
 
-    public function persistSortInSession(bool | Closure $condition = true): static
+    public function persistSortInSession(bool|Closure $condition = true): static
     {
         $this->persistsSortInSession = $condition;
 
         return $this;
     }
 
-    public function defaultSortOptionLabel(string | Htmlable | Closure | null $label): static
+    public function defaultSortOptionLabel(string|Htmlable|Closure|null $label): static
     {
         $this->defaultSortOptionLabel = $label;
 
         return $this;
     }
 
-    public function defaultKeySort(bool | Closure $condition = true): static
+    public function defaultKeySort(bool|Closure $condition = true): static
     {
         $this->hasDefaultKeySort = $condition;
 
@@ -68,7 +68,7 @@ trait CanSortRecords
         return $column;
     }
 
-    public function getDefaultSort(Builder $query, string $direction): string | Builder | null
+    public function getDefaultSort(Builder $query, string $direction): string|Builder|null
     {
         return $this->evaluate($this->defaultSort, [
             'direction' => $direction,
@@ -126,7 +126,7 @@ trait CanSortRecords
         return (bool) $this->evaluate($this->persistsSortInSession);
     }
 
-    public function getDefaultSortOptionLabel(): string | Htmlable | null
+    public function getDefaultSortOptionLabel(): string|Htmlable|null
     {
         return $this->evaluate($this->defaultSortOptionLabel) ?? '-';
     }

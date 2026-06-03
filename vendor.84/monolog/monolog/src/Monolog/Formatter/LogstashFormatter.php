@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -44,10 +46,10 @@ class LogstashFormatter extends NormalizerFormatter
     protected string $contextKey;
 
     /**
-     * @param string      $applicationName The application that sends the data, used as the "type" field of logstash
-     * @param string|null $systemName      The system/machine name, used as the "source" field of logstash, defaults to the hostname of the machine
-     * @param string      $extraKey        The key for extra keys inside logstash "fields", defaults to extra
-     * @param string      $contextKey      The key for context keys inside logstash "fields", defaults to context
+     * @param  string  $applicationName  The application that sends the data, used as the "type" field of logstash
+     * @param  string|null  $systemName  The system/machine name, used as the "source" field of logstash, defaults to the hostname of the machine
+     * @param  string  $extraKey  The key for extra keys inside logstash "fields", defaults to extra
+     * @param  string  $contextKey  The key for context keys inside logstash "fields", defaults to context
      */
     public function __construct(string $applicationName, ?string $systemName = null, string $extraKey = 'extra', string $contextKey = 'context')
     {
@@ -61,7 +63,7 @@ class LogstashFormatter extends NormalizerFormatter
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function format(LogRecord $record): string
     {
@@ -85,7 +87,7 @@ class LogstashFormatter extends NormalizerFormatter
         if (isset($recordData['level'])) {
             $message['monolog_level'] = $recordData['level'];
         }
-        if ('' !== $this->applicationName) {
+        if ($this->applicationName !== '') {
             $message['type'] = $this->applicationName;
         }
         if (\count($recordData['extra']) > 0) {
@@ -95,6 +97,6 @@ class LogstashFormatter extends NormalizerFormatter
             $message[$this->contextKey] = $recordData['context'];
         }
 
-        return $this->toJson($message) . "\n";
+        return $this->toJson($message)."\n";
     }
 }

@@ -149,7 +149,7 @@ class RuleBuilder extends Builder
     /**
      * @param  array<string, ?int> | int | null  $columns
      */
-    public function constraintPickerColumns(array | int | null $columns = 2): static
+    public function constraintPickerColumns(array|int|null $columns = 2): static
     {
         $this->blockPickerColumns($columns);
 

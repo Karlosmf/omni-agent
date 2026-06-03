@@ -17,6 +17,7 @@ class Version
     private bool $versionIsTagged;
 
     public const NO_VERSION_TEXT = '{no version}';
+
     public const NO_REFERENCE_TEXT = '{no reference}';
 
     public function __construct(string $packageName, ?string $prettyVersion = null, ?string $reference = null)
@@ -38,7 +39,7 @@ class Version
 
     public function getFullVersion(): string
     {
-        return $this->prettyVersion . '@' . $this->getReference();
+        return $this->prettyVersion.'@'.$this->getReference();
     }
 
     /**
@@ -51,7 +52,7 @@ class Version
 
     public function getVersionWithShortReference(): string
     {
-        return $this->prettyVersion . '@' . $this->getShortReference();
+        return $this->prettyVersion.'@'.$this->getShortReference();
     }
 
     public function getPackageName(): string

@@ -19,13 +19,13 @@ namespace Symfony\Component\Finder\Comparator;
 class DateComparator extends Comparator
 {
     /**
-     * @param string $test A comparison string
+     * @param  string  $test  A comparison string
      *
      * @throws \InvalidArgumentException If the test is not understood
      */
     public function __construct(string $test)
     {
-        if (!preg_match('#^\s*(==|!=|[<>]=?|after|since|before|until)?\s*(.+?)\s*$#i', $test, $matches)) {
+        if (! preg_match('#^\s*(==|!=|[<>]=?|after|since|before|until)?\s*(.+?)\s*$#i', $test, $matches)) {
             throw new \InvalidArgumentException(\sprintf('Don\'t understand "%s" as a date test.', $test));
         }
 
@@ -37,11 +37,11 @@ class DateComparator extends Comparator
         }
 
         $operator = $matches[1] ?: '==';
-        if ('since' === $operator || 'after' === $operator) {
+        if ($operator === 'since' || $operator === 'after') {
             $operator = '>';
         }
 
-        if ('until' === $operator || 'before' === $operator) {
+        if ($operator === 'until' || $operator === 'before') {
             $operator = '<';
         }
 

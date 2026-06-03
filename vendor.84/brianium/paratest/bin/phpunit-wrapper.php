@@ -18,9 +18,9 @@ use ParaTest\WrapperRunner\WrapperWorker;
     ]);
 
     $composerAutoloadFiles = [
-        dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'autoload.php',
-        dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php',
-        dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php',
+        dirname(__DIR__, 3).DIRECTORY_SEPARATOR.'autoload.php',
+        dirname(__DIR__, 2).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php',
+        dirname(__DIR__).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php',
     ];
 
     foreach ($composerAutoloadFiles as $file) {
@@ -39,9 +39,9 @@ use ParaTest\WrapperRunner\WrapperWorker;
     assert(isset($getopt['progress-file']) && is_string($getopt['progress-file']));
     assert(isset($getopt['unexpected-output-file']) && is_string($getopt['unexpected-output-file']));
     assert(isset($getopt['test-result-file']) && is_string($getopt['test-result-file']));
-    assert(!isset($getopt['result-cache-file']) || is_string($getopt['result-cache-file']));
-    assert(!isset($getopt['teamcity-file']) || is_string($getopt['teamcity-file']));
-    assert(!isset($getopt['testdox-file']) || is_string($getopt['testdox-file']));
+    assert(! isset($getopt['result-cache-file']) || is_string($getopt['result-cache-file']));
+    assert(! isset($getopt['teamcity-file']) || is_string($getopt['teamcity-file']));
+    assert(! isset($getopt['testdox-file']) || is_string($getopt['testdox-file']));
 
     assert(isset($getopt['phpunit-argv']) && is_string($getopt['phpunit-argv']));
     $phpunitArgv = unserialize($getopt['phpunit-argv'], ['allowed_classes' => false]);

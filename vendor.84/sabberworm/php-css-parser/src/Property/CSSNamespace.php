@@ -30,8 +30,8 @@ class CSSNamespace implements AtRule, Positionable
     private $prefix;
 
     /**
-     * @param CSSString|URL $url
-     * @param int<1, max>|null $lineNumber
+     * @param  CSSString|URL  $url
+     * @param  int<1, max>|null  $lineNumber
      */
     public function __construct($url, ?string $prefix = null, ?int $lineNumber = null)
     {
@@ -45,8 +45,8 @@ class CSSNamespace implements AtRule, Positionable
      */
     public function render(OutputFormat $outputFormat): string
     {
-        return '@namespace ' . ($this->prefix === null ? '' : $this->prefix . ' ')
-            . $this->url->render($outputFormat) . ';';
+        return '@namespace '.($this->prefix === null ? '' : $this->prefix.' ')
+            .$this->url->render($outputFormat).';';
     }
 
     /**
@@ -63,7 +63,7 @@ class CSSNamespace implements AtRule, Positionable
     }
 
     /**
-     * @param CSSString|URL $url
+     * @param  CSSString|URL  $url
      */
     public function setUrl($url): void
     {
@@ -92,6 +92,7 @@ class CSSNamespace implements AtRule, Positionable
         if (\is_string($this->prefix) && $this->prefix !== '') {
             \array_unshift($result, $this->prefix);
         }
+
         return $result;
     }
 }

@@ -26,17 +26,17 @@ interface WebDriverSelectInterface
     public function getAllSelectedOptions();
 
     /**
-     * @throws NoSuchElementException
-     *
      * @return WebDriverElement The first selected option in this select tag (or the currently selected option in a
-     * normal select)
+     *                          normal select)
+     *
+     * @throws NoSuchElementException
      */
     public function getFirstSelectedOption();
 
     /**
      * Select the option at the given index.
      *
-     * @param int $index The index of the option. (0-based)
+     * @param  int  $index  The index of the option. (0-based)
      *
      * @throws NoSuchElementException
      */
@@ -48,7 +48,7 @@ interface WebDriverSelectInterface
      *
      * `<option value="foo">Bar</option>`
      *
-     * @param string $value The value to match against.
+     * @param  string  $value  The value to match against.
      *
      * @throws NoSuchElementException
      */
@@ -60,7 +60,7 @@ interface WebDriverSelectInterface
      *
      * `<option value="foo">Bar</option>`
      *
-     * @param string $text The visible text to match against.
+     * @param  string  $text  The visible text to match against.
      *
      * @throws NoSuchElementException
      */
@@ -72,7 +72,7 @@ interface WebDriverSelectInterface
      *
      * `<option value="bar">Foo Bar Baz</option>`
      *
-     * @param string $text The visible text to match against.
+     * @param  string  $text  The visible text to match against.
      *
      * @throws NoSuchElementException
      */
@@ -88,7 +88,8 @@ interface WebDriverSelectInterface
     /**
      * Deselect the option at the given index.
      *
-     * @param int $index The index of the option. (0-based)
+     * @param  int  $index  The index of the option. (0-based)
+     *
      * @throws UnsupportedOperationException If the SELECT does not support multiple selections
      */
     public function deselectByIndex($index);
@@ -99,7 +100,8 @@ interface WebDriverSelectInterface
      *
      * `<option value="foo">Bar</option>`
      *
-     * @param string $value The value to match against.
+     * @param  string  $value  The value to match against.
+     *
      * @throws UnsupportedOperationException If the SELECT does not support multiple selections
      */
     public function deselectByValue($value);
@@ -110,7 +112,8 @@ interface WebDriverSelectInterface
      *
      * `<option value="foo">Bar</option>`
      *
-     * @param string $text The visible text to match against.
+     * @param  string  $text  The visible text to match against.
+     *
      * @throws UnsupportedOperationException If the SELECT does not support multiple selections
      */
     public function deselectByVisibleText($text);
@@ -121,7 +124,8 @@ interface WebDriverSelectInterface
      *
      * `<option value="foo">Foo Bar Baz</option>`
      *
-     * @param string $text The visible text to match against.
+     * @param  string  $text  The visible text to match against.
+     *
      * @throws UnsupportedOperationException If the SELECT does not support multiple selections
      */
     public function deselectByVisiblePartialText($text);

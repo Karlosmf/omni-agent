@@ -48,7 +48,7 @@ final class Self_ implements Type
     public function __toString(): string
     {
         if ($this->genericTypes) {
-            return 'self<' . implode(', ', $this->genericTypes) . '>';
+            return 'self<'.implode(', ', $this->genericTypes).'>';
         }
 
         return 'self';

@@ -2,9 +2,15 @@
 
 namespace App\Filament\Admin\Resources\Customers\Pages;
 
+use App\Enums\LeadStatus;
 use App\Enums\UserRole;
 use App\Filament\Admin\Resources\Customers\CustomerResource;
+use App\Models\Lead;
+use App\Services\BudgetGenerationService;
+use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Support\Enums\Width;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -12,9 +18,9 @@ class CreateCustomer extends CreateRecord
 {
     protected static string $resource = CustomerResource::class;
 
-    public function getMaxWidth(): \Filament\Support\Enums\Width|string|null
+    public function getMaxWidth(): Width|string|null
     {
-        return \Filament\Support\Enums\Width::Full;
+        return Width::Full;
     }
 
     public ?string $lead_id = null;
@@ -45,17 +51,17 @@ class CreateCustomer extends CreateRecord
     protected function afterCreate(): void
     {
         if ($this->lead_id) {
-            $lead = \App\Models\Lead::find($this->lead_id);
+            $lead = Lead::find($this->lead_id);
             if ($lead) {
                 $lead->customer_id = $this->record->id;
-                $lead->status = \App\Enums\LeadStatus::Closed;
+                $lead->status = LeadStatus::Closed;
                 $lead->save();
 
                 if ($lead->travel_package_id) {
-                    $service = app(\App\Services\BudgetGenerationService::class);
+                    $service = app(BudgetGenerationService::class);
                     $service->clonePackageToBudget($lead->travelPackage, $this->record, $lead->id);
 
-                    \Filament\Notifications\Notification::make()
+                    Notification::make()
                         ->title('Presupuesto Creado')
                         ->body('Se generó el presupuesto en base a la Idea de Viaje consultada por el lead.')
                         ->success()
@@ -75,14 +81,14 @@ class CreateCustomer extends CreateRecord
         return $data;
     }
 
-    protected function getCreateFormAction(): \Filament\Actions\Action
+    protected function getCreateFormAction(): Action
     {
         return parent::getCreateFormAction()
             ->label('Crear registro')
             ->icon('heroicon-o-plus');
     }
 
-    protected function getCancelFormAction(): \Filament\Actions\Action
+    protected function getCancelFormAction(): Action
     {
         return parent::getCancelFormAction()
             ->label('Cancelar')

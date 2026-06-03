@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -11,8 +13,8 @@
 
 namespace Monolog\Handler;
 
-use Throwable;
 use Monolog\LogRecord;
+use Throwable;
 
 /**
  * Forwards records to at most one handler
@@ -24,7 +26,7 @@ use Monolog\LogRecord;
 class FallbackGroupHandler extends GroupHandler
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function handle(LogRecord $record): bool
     {
@@ -40,11 +42,11 @@ class FallbackGroupHandler extends GroupHandler
             }
         }
 
-        return false === $this->bubble;
+        return $this->bubble === false;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function handleBatch(array $records): void
     {

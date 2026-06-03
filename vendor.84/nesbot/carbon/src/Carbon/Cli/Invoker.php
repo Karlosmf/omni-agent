@@ -19,7 +19,7 @@ class Invoker
 
     protected function runWithCli(string $className, array $parameters): bool
     {
-        $cli = new $className();
+        $cli = new $className;
 
         return $cli(...$parameters);
     }

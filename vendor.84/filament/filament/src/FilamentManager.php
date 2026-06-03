@@ -85,12 +85,12 @@ class FilamentManager
         return $this->getCurrentOrDefaultPanel()->getAuthPasswordBroker();
     }
 
-    public function getBrandName(): string | Htmlable
+    public function getBrandName(): string|Htmlable
     {
         return $this->getCurrentOrDefaultPanel()->getBrandName();
     }
 
-    public function getBrandLogo(): string | Htmlable | null
+    public function getBrandLogo(): string|Htmlable|null
     {
         return $this->getCurrentOrDefaultPanel()->getBrandLogo();
     }
@@ -118,7 +118,7 @@ class FilamentManager
         return $this->currentPanel;
     }
 
-    public function getDarkModeBrandLogo(): string | Htmlable | null
+    public function getDarkModeBrandLogo(): string|Htmlable|null
     {
         return $this->getCurrentOrDefaultPanel()->getDarkModeBrandLogo();
     }
@@ -296,12 +296,12 @@ class FilamentManager
         return $this->getCurrentOrDefaultPanel()->getLogoutUrl($parameters);
     }
 
-    public function getMaxContentWidth(): Width | string | null
+    public function getMaxContentWidth(): Width|string|null
     {
         return $this->getCurrentOrDefaultPanel()->getMaxContentWidth();
     }
 
-    public function getSimplePageMaxContentWidth(): Width | string | null
+    public function getSimplePageMaxContentWidth(): Width|string|null
     {
         return $this->getCurrentOrDefaultPanel()->getSimplePageMaxContentWidth();
     }
@@ -309,12 +309,12 @@ class FilamentManager
     /**
      * @param  class-string<Model>|Model  $model
      */
-    public function getModelResource(string | Model $model): ?string
+    public function getModelResource(string|Model $model): ?string
     {
         return $this->getCurrentOrDefaultPanel()->getModelResource($model);
     }
 
-    public function getNameForDefaultAvatar(Model | Authenticatable $record): string
+    public function getNameForDefaultAvatar(Model|Authenticatable $record): string
     {
         if ($this->getTenantModel() === $record::class) {
             return $this->getTenantName($record);
@@ -413,7 +413,7 @@ class FilamentManager
     /**
      * @param  array<mixed>  $parameters
      */
-    public function getResetPasswordUrl(string $token, CanResetPassword | Model | Authenticatable $user, array $parameters = []): string
+    public function getResetPasswordUrl(string $token, CanResetPassword|Model|Authenticatable $user, array $parameters = []): string
     {
         return $this->getCurrentOrDefaultPanel()->getResetPasswordUrl($token, $user, $parameters);
     }
@@ -429,7 +429,7 @@ class FilamentManager
     /**
      * @param  array<mixed>  $parameters
      */
-    public function getResourceUrl(string | Model $model, string $name = 'index', array $parameters = [], bool $isAbsolute = true, ?Model $tenant = null): string
+    public function getResourceUrl(string|Model $model, string $name = 'index', array $parameters = [], bool $isAbsolute = true, ?Model $tenant = null): string
     {
         return $this->getCurrentOrDefaultPanel()->getResourceUrl($model, $name, $parameters, $isAbsolute, $tenant);
     }
@@ -566,7 +566,7 @@ class FilamentManager
         return $this->getCurrentOrDefaultPanel()->getTheme();
     }
 
-    public function getUserAvatarUrl(Model | Authenticatable $user): string
+    public function getUserAvatarUrl(Model|Authenticatable $user): string
     {
         if ($user instanceof HasAvatar) {
             $avatar = $user->getFilamentAvatarUrl();
@@ -581,7 +581,7 @@ class FilamentManager
         return app($this->getDefaultAvatarProvider())->get($user);
     }
 
-    public function getUserDefaultTenant(HasTenants | Model | Authenticatable $user): ?Model
+    public function getUserDefaultTenant(HasTenants|Model|Authenticatable $user): ?Model
     {
         $tenant = null;
         $panel = $this->getCurrentOrDefaultPanel();
@@ -605,7 +605,7 @@ class FilamentManager
         return $this->getCurrentOrDefaultPanel()->getUserMenuItems();
     }
 
-    public function getUserName(Model | Authenticatable $user): string
+    public function getUserName(Model|Authenticatable $user): string
     {
         if ($user instanceof HasName) {
             return $user->getFilamentName();
@@ -617,7 +617,7 @@ class FilamentManager
     /**
      * @return array<Model>
      */
-    public function getUserTenants(HasTenants | Model | Authenticatable $user): array
+    public function getUserTenants(HasTenants|Model|Authenticatable $user): array
     {
         $tenants = $user->getTenants($this->getCurrentOrDefaultPanel());
 
@@ -636,7 +636,7 @@ class FilamentManager
     /**
      * @param  array<mixed>  $parameters
      */
-    public function getVerifyEmailUrl(MustVerifyEmail | Model | Authenticatable $user, array $parameters = []): string
+    public function getVerifyEmailUrl(MustVerifyEmail|Model|Authenticatable $user, array $parameters = []): string
     {
         return $this->getCurrentOrDefaultPanel()->getVerifyEmailUrl($user, $parameters);
     }
@@ -644,7 +644,7 @@ class FilamentManager
     /**
      * @param  array<mixed>  $parameters
      */
-    public function getVerifyEmailChangeUrl(MustVerifyEmail | Model | Authenticatable $user, string $newEmail, array $parameters = []): string
+    public function getVerifyEmailChangeUrl(MustVerifyEmail|Model|Authenticatable $user, string $newEmail, array $parameters = []): string
     {
         return $this->getCurrentOrDefaultPanel()->getVerifyEmailChangeUrl($user, $newEmail, $parameters);
     }
@@ -652,7 +652,7 @@ class FilamentManager
     /**
      * @param  array<mixed>  $parameters
      */
-    public function getBlockEmailChangeVerificationUrl(MustVerifyEmail | Model | Authenticatable $user, string $newEmail, string $verificationSignature, array $parameters = []): string
+    public function getBlockEmailChangeVerificationUrl(MustVerifyEmail|Model|Authenticatable $user, string $newEmail, string $verificationSignature, array $parameters = []): string
     {
         return $this->getCurrentOrDefaultPanel()->getBlockEmailChangeVerificationUrl($user, $newEmail, $verificationSignature, $parameters);
     }
@@ -871,7 +871,7 @@ class FilamentManager
         $this->currentDomain = $domain;
     }
 
-    public function setCurrentPanel(Panel | string | null $panel): void
+    public function setCurrentPanel(Panel|string|null $panel): void
     {
         if (is_string($panel)) {
             $panel = $this->getPanel($panel);
@@ -991,7 +991,7 @@ class FilamentManager
     /**
      * @deprecated Use the `theme()` method on the panel configuration instead.
      */
-    public function registerTheme(string | Htmlable | null $theme): void
+    public function registerTheme(string|Htmlable|null $theme): void
     {
         try {
             $this->getDefaultPanel()->theme($theme);
@@ -1005,7 +1005,7 @@ class FilamentManager
      *
      * @deprecated Use the `viteTheme()` method on the panel configuration instead.
      */
-    public function registerViteTheme(string | array $theme, ?string $buildDirectory = null): void
+    public function registerViteTheme(string|array $theme, ?string $buildDirectory = null): void
     {
         try {
             $this->getDefaultPanel()->viteTheme($theme, $buildDirectory);

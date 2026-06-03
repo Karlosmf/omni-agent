@@ -3,14 +3,15 @@
 namespace Livewire\Features\SupportFileUploads;
 
 use Facades\Livewire\Features\SupportFileUploads\GenerateSignedUploadUrl;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Renderless;
 
 trait WithFileUploads
 {
     #[Renderless]
-    function _startUpload($name, $fileInfo, $isMultiple)
+    public function _startUpload($name, $fileInfo, $isMultiple)
     {
         if (FileUploadConfiguration::isUsingS3()) {
             throw_if($isMultiple, S3DoesntSupportMultipleFileUploads::class);
@@ -25,7 +26,7 @@ trait WithFileUploads
         $this->dispatch('upload:generatedSignedUrl', name: $name, url: GenerateSignedUploadUrl::forLocal())->self();
     }
 
-    function _finishUpload($name, $tmpPath, $isMultiple, $append = false)
+    public function _finishUpload($name, $tmpPath, $isMultiple, $append = false)
     {
         if (FileUploadConfiguration::shouldCleanupOldUploads()) {
             $this->cleanupOldUploads();
@@ -39,7 +40,7 @@ trait WithFileUploads
 
             if ($append) {
                 $existing = $this->getPropertyValue($name);
-                if ($existing instanceof \Illuminate\Support\Collection) {
+                if ($existing instanceof Collection) {
                     $file = $existing->merge($file);
                 } elseif (is_array($existing)) {
                     $file = array_merge($existing, $file);
@@ -59,7 +60,8 @@ trait WithFileUploads
         app('livewire')->updateProperty($this, $name, $file);
     }
 
-    function _uploadErrored($name, $errorsInJson, $isMultiple) {
+    public function _uploadErrored($name, $errorsInJson, $isMultiple)
+    {
         $this->dispatch('upload:errored', name: $name)->self();
 
         if (is_null($errorsInJson)) {
@@ -67,10 +69,14 @@ trait WithFileUploads
             $translator = app()->make('translator');
 
             $attribute = $translator->get("validation.attributes.{$name}");
-            if ($attribute === "validation.attributes.{$name}") $attribute = $name;
+            if ($attribute === "validation.attributes.{$name}") {
+                $attribute = $name;
+            }
 
             $message = trans('validation.uploaded', ['attribute' => $attribute]);
-            if ($message === 'validation.uploaded') $message = "The {$name} failed to upload.";
+            if ($message === 'validation.uploaded') {
+                $message = "The {$name} failed to upload.";
+            }
 
             throw ValidationException::withMessages([$name => $message]);
         }
@@ -84,7 +90,7 @@ trait WithFileUploads
         throw (ValidationException::withMessages($errors));
     }
 
-    function _removeUpload($name, $tmpFilename)
+    public function _removeUpload($name, $tmpFilename)
     {
         $uploads = $this->getPropertyValue($name);
 
@@ -94,6 +100,7 @@ trait WithFileUploads
             app('livewire')->updateProperty($this, $name, array_values(array_filter($uploads, function ($upload) use ($tmpFilename) {
                 if ($upload->getFilename() === $tmpFilename) {
                     $upload->delete();
+
                     return false;
                 }
 
@@ -110,14 +117,18 @@ trait WithFileUploads
 
     protected function cleanupOldUploads()
     {
-        if (FileUploadConfiguration::isUsingS3()) return;
+        if (FileUploadConfiguration::isUsingS3()) {
+            return;
+        }
 
         $storage = FileUploadConfiguration::storage();
 
         foreach ($storage->allFiles(FileUploadConfiguration::path()) as $filePathname) {
             // On busy websites, this cleanup code can run in multiple threads causing part of the output
             // of allFiles() to have already been deleted by another thread.
-            if (! $storage->exists($filePathname)) continue;
+            if (! $storage->exists($filePathname)) {
+                continue;
+            }
 
             $yesterdaysStamp = now()->subDay()->timestamp;
             if ($yesterdaysStamp > $storage->lastModified($filePathname)) {

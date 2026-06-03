@@ -26,7 +26,9 @@ use function array_key_first;
  * the effort required to implement this interface.
  *
  * @template T
+ *
  * @extends AbstractArray<T>
+ *
  * @implements QueueInterface<T>
  */
 class Queue extends AbstractArray implements QueueInterface
@@ -38,8 +40,8 @@ class Queue extends AbstractArray implements QueueInterface
      * Constructs a queue object of the specified type, optionally with the
      * specified data.
      *
-     * @param string $queueType The type or class name associated with this queue.
-     * @param array<array-key, T> $data The initial items to store in the queue.
+     * @param  string  $queueType  The type or class name associated with this queue.
+     * @param  array<array-key, T>  $data  The initial items to store in the queue.
      */
     public function __construct(private readonly string $queueType, array $data = [])
     {
@@ -59,8 +61,8 @@ class Queue extends AbstractArray implements QueueInterface
     {
         if ($this->checkType($this->getType(), $value) === false) {
             throw new InvalidArgumentException(
-                'Value must be of type ' . $this->getType() . '; value is '
-                . $this->toolValueToString($value),
+                'Value must be of type '.$this->getType().'; value is '
+                .$this->toolValueToString($value),
             );
         }
 

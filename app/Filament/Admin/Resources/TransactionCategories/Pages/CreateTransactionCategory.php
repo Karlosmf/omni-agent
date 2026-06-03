@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\TransactionCategories\Pages;
 
 use App\Filament\Admin\Resources\TransactionCategories\TransactionCategoryResource;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateTransactionCategory extends CreateRecord
@@ -11,14 +12,14 @@ class CreateTransactionCategory extends CreateRecord
 
     protected static string $resource = TransactionCategoryResource::class;
 
-    protected function getCreateFormAction(): \Filament\Actions\Action
+    protected function getCreateFormAction(): Action
     {
         return parent::getCreateFormAction()
             ->label('Crear registro')
             ->icon('heroicon-o-plus');
     }
 
-    protected function getCancelFormAction(): \Filament\Actions\Action
+    protected function getCancelFormAction(): Action
     {
         return parent::getCancelFormAction()
             ->label('Cancelar')

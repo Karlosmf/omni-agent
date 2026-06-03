@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\XmlConfiguration;
 
 use DOMDocument;
@@ -32,7 +35,7 @@ final readonly class MoveWhitelistIncludesToCoverage implements Migration
 
         $coverage = $document->getElementsByTagName('coverage')->item(0);
 
-        if (!$coverage instanceof DOMElement) {
+        if (! $coverage instanceof DOMElement) {
             throw new MigrationException('Unexpected state - No coverage element');
         }
 
@@ -40,11 +43,11 @@ final readonly class MoveWhitelistIncludesToCoverage implements Migration
         $coverage->appendChild($include);
 
         foreach (SnapshotNodeList::fromNodeList($whitelist->childNodes) as $child) {
-            if (!$child instanceof DOMElement) {
+            if (! $child instanceof DOMElement) {
                 continue;
             }
 
-            if (!($child->nodeName === 'directory' || $child->nodeName === 'file')) {
+            if (! ($child->nodeName === 'directory' || $child->nodeName === 'file')) {
                 continue;
             }
 

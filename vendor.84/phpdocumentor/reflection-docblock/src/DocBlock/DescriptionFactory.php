@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace phpDocumentor\Reflection\DocBlock;
 
+use const PREG_SPLIT_DELIM_CAPTURE;
+
 use phpDocumentor\Reflection\DocBlock\Tags\Factory\Factory;
 use phpDocumentor\Reflection\Types\Context as TypeContext;
 use phpDocumentor\Reflection\Utils;
@@ -26,8 +28,6 @@ use function strlen;
 use function strpos;
 use function substr;
 use function trim;
-
-use const PREG_SPLIT_DELIM_CAPTURE;
 
 /**
  * Creates a new Description object given a body of text.
@@ -63,20 +63,20 @@ class DescriptionFactory
      */
     public function create(string $contents, ?TypeContext $context = null): Description
     {
-        $tokens   = $this->lex($contents);
-        $count    = count($tokens);
+        $tokens = $this->lex($contents);
+        $count = count($tokens);
         $tagCount = 0;
-        $tags     = [];
+        $tags = [];
 
         for ($i = 1; $i < $count; $i += 2) {
-            $tags[]     = $this->tagFactory->create($tokens[$i], $context);
-            $tokens[$i] = '%' . ++$tagCount . '$s';
+            $tags[] = $this->tagFactory->create($tokens[$i], $context);
+            $tokens[$i] = '%'.++$tagCount.'$s';
         }
 
-        //In order to allow "literal" inline tags, the otherwise invalid
-        //sequence "{@}" is changed to "@", and "{}" is changed to "}".
-        //"%" is escaped to "%%" because of vsprintf.
-        //See unit tests for examples.
+        // In order to allow "literal" inline tags, the otherwise invalid
+        // sequence "{@}" is changed to "@", and "{}" is changed to "}".
+        // "%" is escaped to "%%" because of vsprintf.
+        // See unit tests for examples.
         for ($i = 0; $i < $count; $i += 2) {
             $tokens[$i] = str_replace(['{@}', '{}', '%'], ['@', '}', '%%'], $tokens[$i]);
         }
@@ -155,7 +155,7 @@ class DescriptionFactory
 
         // determine how many whitespace characters need to be stripped
         $startingSpaceCount = 9999999;
-        for ($i = 1, $iMax = count($lines); $i < $iMax; ++$i) {
+        for ($i = 1, $iMax = count($lines); $i < $iMax; $i++) {
             // lines with a no length do not count as they are not indented at all
             if (trim($lines[$i]) === '') {
                 continue;
@@ -168,7 +168,7 @@ class DescriptionFactory
 
         // strip the number of spaces from each line
         if ($startingSpaceCount > 0) {
-            for ($i = 1, $iMax = count($lines); $i < $iMax; ++$i) {
+            for ($i = 1, $iMax = count($lines); $i < $iMax; $i++) {
                 $lines[$i] = substr($lines[$i], $startingSpaceCount);
             }
         }

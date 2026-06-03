@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 /**
@@ -23,6 +26,7 @@ final readonly class Class_
      * @var non-empty-string
      */
     private string $namespacedName;
+
     private string $namespace;
 
     /**
@@ -61,28 +65,28 @@ final readonly class Class_
     private array $methods;
 
     /**
-     * @param non-empty-string                $name
-     * @param non-empty-string                $namespacedName
-     * @param non-empty-string                $file
-     * @param non-negative-int                $startLine
-     * @param non-negative-int                $endLine
-     * @param ?non-empty-string               $parentClass
-     * @param list<non-empty-string>          $interfaces
-     * @param list<non-empty-string>          $traits
-     * @param array<non-empty-string, Method> $methods
+     * @param  non-empty-string  $name
+     * @param  non-empty-string  $namespacedName
+     * @param  non-empty-string  $file
+     * @param  non-negative-int  $startLine
+     * @param  non-negative-int  $endLine
+     * @param  ?non-empty-string  $parentClass
+     * @param  list<non-empty-string>  $interfaces
+     * @param  list<non-empty-string>  $traits
+     * @param  array<non-empty-string, Method>  $methods
      */
     public function __construct(string $name, string $namespacedName, string $namespace, string $file, int $startLine, int $endLine, ?string $parentClass, array $interfaces, array $traits, array $methods)
     {
-        $this->name           = $name;
+        $this->name = $name;
         $this->namespacedName = $namespacedName;
-        $this->namespace      = $namespace;
-        $this->file           = $file;
-        $this->startLine      = $startLine;
-        $this->endLine        = $endLine;
-        $this->parentClass    = $parentClass;
-        $this->interfaces     = $interfaces;
-        $this->traits         = $traits;
-        $this->methods        = $methods;
+        $this->namespace = $namespace;
+        $this->file = $file;
+        $this->startLine = $startLine;
+        $this->endLine = $endLine;
+        $this->parentClass = $parentClass;
+        $this->interfaces = $interfaces;
+        $this->traits = $traits;
+        $this->methods = $methods;
     }
 
     /**

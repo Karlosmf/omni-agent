@@ -19,7 +19,7 @@ namespace League\CommonMark\Extension\Embed;
 interface EmbedAdapterInterface
 {
     /**
-     * @param Embed[] $embeds
+     * @param  Embed[]  $embeds
      */
     public function updateEmbeds(array $embeds): void;
 }

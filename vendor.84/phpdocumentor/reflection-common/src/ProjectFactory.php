@@ -22,7 +22,7 @@ interface ProjectFactory
     /**
      * Creates a project from the set of files.
      *
-     * @param File[] $files
+     * @param  File[]  $files
      */
-    public function create(string $name, array $files) : Project;
+    public function create(string $name, array $files): Project;
 }

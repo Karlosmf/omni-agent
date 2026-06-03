@@ -71,8 +71,8 @@ class GuidStringCodec extends StringCodec
      */
     private function swapBytes(string $bytes): string
     {
-        return $bytes[3] . $bytes[2] . $bytes[1] . $bytes[0]
-            . $bytes[5] . $bytes[4] . $bytes[7] . $bytes[6]
-            . substr($bytes, 8);
+        return $bytes[3].$bytes[2].$bytes[1].$bytes[0]
+            .$bytes[5].$bytes[4].$bytes[7].$bytes[6]
+            .substr($bytes, 8);
     }
 }

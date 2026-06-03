@@ -26,8 +26,7 @@ class AddRequestFormatsListener implements EventSubscriberInterface
 {
     public function __construct(
         private array $formats,
-    ) {
-    }
+    ) {}
 
     /**
      * Adds request formats.

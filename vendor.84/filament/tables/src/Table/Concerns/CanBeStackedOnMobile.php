@@ -6,9 +6,9 @@ use Closure;
 
 trait CanBeStackedOnMobile
 {
-    protected bool | Closure $isStackedOnMobile = false;
+    protected bool|Closure $isStackedOnMobile = false;
 
-    public function stackedOnMobile(bool | Closure $condition = true): static
+    public function stackedOnMobile(bool|Closure $condition = true): static
     {
         $this->isStackedOnMobile = $condition;
 

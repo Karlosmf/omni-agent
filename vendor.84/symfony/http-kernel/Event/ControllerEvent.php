@@ -28,7 +28,9 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 final class ControllerEvent extends KernelEvent
 {
     private string|array|object $controller;
+
     private \ReflectionFunctionAbstract $controllerReflector;
+
     private array $attributes;
 
     public function __construct(HttpKernelInterface $kernel, callable $controller, Request $request, ?int $requestType)
@@ -49,11 +51,11 @@ final class ControllerEvent extends KernelEvent
     }
 
     /**
-     * @param array<class-string, list<object>>|null $attributes
+     * @param  array<class-string, list<object>>|null  $attributes
      */
     public function setController(callable $controller, ?array $attributes = null): void
     {
-        if (null !== $attributes) {
+        if ($attributes !== null) {
             $this->attributes = $attributes;
         }
 
@@ -63,7 +65,7 @@ final class ControllerEvent extends KernelEvent
             return;
         }
 
-        if (null === $attributes) {
+        if ($attributes === null) {
             unset($this->attributes);
         }
 
@@ -81,14 +83,13 @@ final class ControllerEvent extends KernelEvent
     /**
      * @template T of object
      *
-     * @param class-string<T>|null $className
-     *
+     * @param  class-string<T>|null  $className
      * @return ($className is null ? array<class-string, list<object>> : list<T>)
      */
     public function getAttributes(?string $className = null): array
     {
         if (isset($this->attributes)) {
-            return null === $className ? $this->attributes : $this->attributes[$className] ?? [];
+            return $className === null ? $this->attributes : $this->attributes[$className] ?? [];
         }
 
         if (\is_array($this->controller) && method_exists(...$this->controller)) {
@@ -106,6 +107,6 @@ final class ControllerEvent extends KernelEvent
             }
         }
 
-        return null === $className ? $this->attributes : $this->attributes[$className] ?? [];
+        return $className === null ? $this->attributes : $this->attributes[$className] ?? [];
     }
 }

@@ -13,6 +13,12 @@ declare(strict_types=1);
 
 namespace League\Csv;
 
+use const E_USER_WARNING;
+use const PSFS_ERR_FATAL;
+use const PSFS_PASS_ON;
+use const STREAM_FILTER_READ;
+use const STREAM_FILTER_WRITE;
+
 use Deprecated;
 use InvalidArgumentException;
 use php_user_filter;
@@ -32,12 +38,6 @@ use function stream_get_filters;
 use function strlen;
 use function trigger_error;
 
-use const E_USER_WARNING;
-use const PSFS_ERR_FATAL;
-use const PSFS_PASS_ON;
-use const STREAM_FILTER_READ;
-use const STREAM_FILTER_WRITE;
-
 /**
  * A stream filter to conform the CSV field to RFC4180.
  *
@@ -45,7 +45,6 @@ use const STREAM_FILTER_WRITE;
  *
  * @deprecated since version 9.2.0
  * @see AbstractCsv::setEscape
- *
  * @see https://tools.ietf.org/html/rfc4180#section-2
  */
 class RFC4180Field extends php_user_filter
@@ -85,7 +84,7 @@ class RFC4180Field extends php_user_filter
             'mode' => $csv instanceof Writer ? STREAM_FILTER_WRITE : STREAM_FILTER_READ,
         ];
 
-        if ($csv instanceof Writer && '' !== $whitespace_replace) {
+        if ($csv instanceof Writer && $whitespace_replace !== '') {
             self::addFormatterTo($csv, $whitespace_replace);
             $params['whitespace_replace'] = $whitespace_replace;
         }
@@ -100,7 +99,7 @@ class RFC4180Field extends php_user_filter
     #[Deprecated(message: 'use League\Csv\Reader::setEscape or League\Csv\Writer::setEscape instead', since: 'league/csv:9.2.0')]
     public static function addFormatterTo(Writer $csv, string $whitespace_replace): Writer
     {
-        if ('' == $whitespace_replace || strlen($whitespace_replace) !== strcspn($whitespace_replace, self::$force_enclosure)) {
+        if ($whitespace_replace == '' || strlen($whitespace_replace) !== strcspn($whitespace_replace, self::$force_enclosure)) {
             throw new InvalidArgumentException('The sequence contains a character that enforces enclosure or is a CSV control character or is an empty string.');
         }
 
@@ -116,7 +115,7 @@ class RFC4180Field extends php_user_filter
      */
     public static function register(): void
     {
-        if (!in_array(self::FILTERNAME, stream_get_filters(), true)) {
+        if (! in_array(self::FILTERNAME, stream_get_filters(), true)) {
             stream_filter_register(self::FILTERNAME, self::class);
         }
     }
@@ -130,9 +129,9 @@ class RFC4180Field extends php_user_filter
     }
 
     /**
-     * @param resource $in
-     * @param resource $out
-     * @param int $consumed
+     * @param  resource  $in
+     * @param  resource  $out
+     * @param  int  $consumed
      */
     public function filter($in, $out, &$consumed, bool $closing): int
     {
@@ -160,23 +159,23 @@ class RFC4180Field extends php_user_filter
     #[Deprecated(message: 'use League\Csv\Reader::setEscape or League\Csv\Writer::setEscape instead', since: 'league/csv:9.2.0')]
     public function onCreate(): bool
     {
-        if (!is_array($this->params)) {
+        if (! is_array($this->params)) {
             throw new TypeError('The filter parameters must be an array.');
         }
 
         static $mode_list = [STREAM_FILTER_READ => 1, STREAM_FILTER_WRITE => 1];
 
         $state = isset($this->params['enclosure'], $this->params['escape'], $this->params['mode'], $mode_list[$this->params['mode']])
-            && 1 === strlen($this->params['enclosure'])
-            && 1 === strlen($this->params['escape']);
+            && strlen($this->params['enclosure']) === 1
+            && strlen($this->params['escape']) === 1;
 
-        if (false === $state) {
+        if ($state === false) {
             return false;
         }
 
         $this->search = [$this->params['escape'].$this->params['enclosure']];
         $this->replace = [$this->params['enclosure'].$this->params['enclosure']];
-        if (STREAM_FILTER_WRITE !== $this->params['mode']) {
+        if ($this->params['mode'] !== STREAM_FILTER_WRITE) {
             return true;
         }
 
@@ -199,8 +198,8 @@ class RFC4180Field extends php_user_filter
         static $mode_list = [STREAM_FILTER_READ => 1, STREAM_FILTER_WRITE => 1];
 
         return isset($params['enclosure'], $params['escape'], $params['mode'], $mode_list[$params['mode']])
-            && 1 === strlen($params['enclosure'])
-            && 1 === strlen($params['escape']);
+            && strlen($params['enclosure']) === 1
+            && strlen($params['escape']) === 1;
     }
 
     /**

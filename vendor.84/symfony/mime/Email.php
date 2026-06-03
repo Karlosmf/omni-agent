@@ -26,9 +26,13 @@ use Symfony\Component\Mime\Part\TextPart;
 class Email extends Message
 {
     public const PRIORITY_HIGHEST = 1;
+
     public const PRIORITY_HIGH = 2;
+
     public const PRIORITY_NORMAL = 3;
+
     public const PRIORITY_LOW = 4;
+
     public const PRIORITY_LOWEST = 5;
 
     private const PRIORITY_MAP = [
@@ -52,7 +56,9 @@ class Email extends Message
     private $html;
 
     private ?string $htmlCharset = null;
+
     private array $attachments = [];
+
     private ?AbstractPart $cachedBody = null; // Used to avoid wrong body hash in DKIM signatures with multiple parts (e.g. HTML + TEXT) due to multiple boundaries.
 
     /**
@@ -120,7 +126,7 @@ class Email extends Message
      */
     public function from(Address|string ...$addresses): static
     {
-        if (!$addresses) {
+        if (! $addresses) {
             throw new LogicException('"from()" must be called with at least one address.');
         }
 
@@ -263,13 +269,12 @@ class Email extends Message
     }
 
     /**
-     * @param resource|string|null $body
-     *
+     * @param  resource|string|null  $body
      * @return $this
      */
     public function text($body, string $charset = 'utf-8'): static
     {
-        if (null !== $body && !\is_string($body) && !\is_resource($body)) {
+        if ($body !== null && ! \is_string($body) && ! \is_resource($body)) {
             throw new \TypeError(\sprintf('The body must be a string, a resource or null (got "%s").', get_debug_type($body)));
         }
 
@@ -294,13 +299,12 @@ class Email extends Message
     }
 
     /**
-     * @param resource|string|null $body
-     *
+     * @param  resource|string|null  $body
      * @return $this
      */
     public function html($body, string $charset = 'utf-8'): static
     {
-        if (null !== $body && !\is_string($body) && !\is_resource($body)) {
+        if ($body !== null && ! \is_string($body) && ! \is_resource($body)) {
             throw new \TypeError(\sprintf('The body must be a string, a resource or null (got "%s").', get_debug_type($body)));
         }
 
@@ -325,8 +329,7 @@ class Email extends Message
     }
 
     /**
-     * @param resource|string $body
-     *
+     * @param  resource|string  $body
      * @return $this
      */
     public function attach($body, ?string $name = null, ?string $contentType = null): static
@@ -343,8 +346,7 @@ class Email extends Message
     }
 
     /**
-     * @param resource|string $body
-     *
+     * @param  resource|string  $body
      * @return $this
      */
     public function embed($body, ?string $name = null, ?string $contentType = null): static
@@ -392,7 +394,7 @@ class Email extends Message
     {
         $this->ensureBodyValid();
 
-        if ('1' === $this->getHeaders()->getHeaderBody('X-Unsent')) {
+        if ($this->getHeaders()->getHeaderBody('X-Unsent') === '1') {
             throw new LogicException('Cannot send messages marked as "draft".');
         }
 
@@ -401,7 +403,7 @@ class Email extends Message
 
     private function ensureBodyValid(): void
     {
-        if (null === $this->text && null === $this->html && !$this->attachments && null === parent::getBody()) {
+        if ($this->text === null && $this->html === null && ! $this->attachments && parent::getBody() === null) {
             throw new LogicException('A message must have a text or an HTML part or attachments.');
         }
     }
@@ -428,7 +430,7 @@ class Email extends Message
      */
     private function generateBody(): AbstractPart
     {
-        if (null !== $this->cachedBody) {
+        if ($this->cachedBody !== null) {
             return $this->cachedBody;
         }
 
@@ -436,9 +438,9 @@ class Email extends Message
 
         [$htmlPart, $otherParts, $relatedParts] = $this->prepareParts();
 
-        $part = null === $this->text ? null : new TextPart($this->text, $this->textCharset);
-        if (null !== $htmlPart) {
-            if (null !== $part) {
+        $part = $this->text === null ? null : new TextPart($this->text, $this->textCharset);
+        if ($htmlPart !== null) {
+            if ($part !== null) {
                 $part = new AlternativePart($part, $htmlPart);
             } else {
                 $part = $htmlPart;
@@ -465,7 +467,7 @@ class Email extends Message
         $names = [];
         $htmlPart = null;
         $html = $this->html;
-        if (null !== $html) {
+        if ($html !== null) {
             $htmlPart = new TextPart($html, $this->htmlCharset, 'html');
             $html = $htmlPart->getBody();
 
@@ -484,7 +486,7 @@ class Email extends Message
         $otherParts = $relatedParts = [];
         foreach ($this->attachments as $part) {
             foreach ($names as $name) {
-                if ($name !== $part->getName() && (!$part->hasContentId() || $name !== $part->getContentId())) {
+                if ($name !== $part->getName() && (! $part->hasContentId() || $name !== $part->getContentId())) {
                     continue;
                 }
                 if (isset($relatedParts[$name])) {
@@ -502,7 +504,7 @@ class Email extends Message
 
             $otherParts[] = $part;
         }
-        if (null !== $htmlPart) {
+        if ($htmlPart !== null) {
             $htmlPart = new TextPart($html, $this->htmlCharset, 'html');
         }
 
@@ -524,7 +526,7 @@ class Email extends Message
      */
     private function addListAddressHeaderBody(string $name, array $addresses): static
     {
-        if (!$header = $this->getHeaders()->get($name)) {
+        if (! $header = $this->getHeaders()->get($name)) {
             return $this->setListAddressHeaderBody($name, $addresses);
         }
         $header->addAddresses(Address::createArray($addresses));

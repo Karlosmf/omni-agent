@@ -21,7 +21,7 @@ class FieldFactory implements FieldFactoryInterface
     /**
      * Get an instance of a field object for a cron expression position.
      *
-     * @param int $position CRON expression position value to retrieve
+     * @param  int  $position  CRON expression position value to retrieve
      *
      * @throws InvalidArgumentException if a position is not valid
      */
@@ -34,19 +34,19 @@ class FieldFactory implements FieldFactoryInterface
     {
         switch ($position) {
             case CronExpression::MINUTE:
-                return new MinutesField();
+                return new MinutesField;
             case CronExpression::HOUR:
-                return new HoursField();
+                return new HoursField;
             case CronExpression::DAY:
-                return new DayOfMonthField();
+                return new DayOfMonthField;
             case CronExpression::MONTH:
-                return new MonthField();
+                return new MonthField;
             case CronExpression::WEEKDAY:
-                return new DayOfWeekField();
+                return new DayOfWeekField;
         }
 
         throw new InvalidArgumentException(
-            ($position + 1) . ' is not a valid position'
+            ($position + 1).' is not a valid position'
         );
     }
 }

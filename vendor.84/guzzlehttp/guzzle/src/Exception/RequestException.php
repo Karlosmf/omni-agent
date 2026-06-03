@@ -4,6 +4,7 @@ namespace GuzzleHttp\Exception;
 
 use GuzzleHttp\BodySummarizer;
 use GuzzleHttp\BodySummarizerInterface;
+use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Client\RequestExceptionInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -54,11 +55,11 @@ class RequestException extends TransferException implements RequestExceptionInte
     /**
      * Factory method to create a new exception with a normalized error message
      *
-     * @param RequestInterface             $request        Request sent
-     * @param ResponseInterface            $response       Response received
-     * @param \Throwable|null              $previous       Previous exception
-     * @param array                        $handlerContext Optional handler context
-     * @param BodySummarizerInterface|null $bodySummarizer Optional body summarizer
+     * @param  RequestInterface  $request  Request sent
+     * @param  ResponseInterface  $response  Response received
+     * @param  \Throwable|null  $previous  Previous exception
+     * @param  array  $handlerContext  Optional handler context
+     * @param  BodySummarizerInterface|null  $bodySummarizer  Optional body summarizer
      */
     public static function create(
         RequestInterface $request,
@@ -67,7 +68,7 @@ class RequestException extends TransferException implements RequestExceptionInte
         array $handlerContext = [],
         ?BodySummarizerInterface $bodySummarizer = null
     ): self {
-        if (!$response) {
+        if (! $response) {
             return new self(
                 'Error completing request',
                 $request,
@@ -89,7 +90,7 @@ class RequestException extends TransferException implements RequestExceptionInte
             $className = __CLASS__;
         }
 
-        $uri = \GuzzleHttp\Psr7\Utils::redactUserInfo($request->getUri());
+        $uri = Utils::redactUserInfo($request->getUri());
 
         // Client Error: `GET /` resulted in a `404 Not Found` response:
         // <html> ... (truncated)
@@ -102,7 +103,7 @@ class RequestException extends TransferException implements RequestExceptionInte
             $response->getReasonPhrase()
         );
 
-        $summary = ($bodySummarizer ?? new BodySummarizer())->summarize($response);
+        $summary = ($bodySummarizer ?? new BodySummarizer)->summarize($response);
 
         if ($summary !== null) {
             $message .= ":\n{$summary}\n";

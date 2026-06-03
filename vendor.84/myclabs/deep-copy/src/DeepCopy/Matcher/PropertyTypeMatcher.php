@@ -21,7 +21,7 @@ class PropertyTypeMatcher implements Matcher
     private $propertyType;
 
     /**
-     * @param string $propertyType Property type
+     * @param  string  $propertyType  Property type
      */
     public function __construct($propertyType)
     {
@@ -44,7 +44,7 @@ class PropertyTypeMatcher implements Matcher
         }
 
         // Uninitialized properties (for PHP >7.4)
-        if (method_exists($reflectionProperty, 'isInitialized') && !$reflectionProperty->isInitialized($object)) {
+        if (method_exists($reflectionProperty, 'isInitialized') && ! $reflectionProperty->isInitialized($object)) {
             // null instanceof $this->propertyType
             return false;
         }

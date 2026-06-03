@@ -309,7 +309,7 @@ class AssetManager
     /**
      * @param  array<int | string, string | int>  $palette
      */
-    protected function resolveColorShadeFromPalette(array $palette, string | int $shade): string
+    protected function resolveColorShadeFromPalette(array $palette, string|int $shade): string
     {
         $color = $palette[$shade];
 

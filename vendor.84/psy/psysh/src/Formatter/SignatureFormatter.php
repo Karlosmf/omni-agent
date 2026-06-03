@@ -39,7 +39,7 @@ class SignatureFormatter implements ReflectorFormatter
      *
      * @deprecated Use LinkFormatter::setStyles() instead
      *
-     * @param array $styles Map of style name to inline style string
+     * @param  array  $styles  Map of style name to inline style string
      */
     public static function setStyles(array $styles): void
     {
@@ -51,8 +51,6 @@ class SignatureFormatter implements ReflectorFormatter
      * Set the manual database for generating hyperlinks.
      *
      * @deprecated Manual database is now set via Configuration::setManual()
-     *
-     * @param \PDO|null $db
      */
     public static function setManualDb(?\PDO $db): void
     {
@@ -65,7 +63,6 @@ class SignatureFormatter implements ReflectorFormatter
      * Defers to subclasses to do the actual formatting.
      * Automatically generates hyperlinks if manual database is set.
      *
-     * @param \Reflector $reflector
      *
      * @return string Formatted signature
      */
@@ -106,8 +103,7 @@ class SignatureFormatter implements ReflectorFormatter
     /**
      * Print the signature name.
      *
-     * @param \ReflectionClass|\ReflectionClassConstant|\ReflectionFunctionAbstract $reflector
-     *
+     * @param  \ReflectionClass|\ReflectionClassConstant|\ReflectionFunctionAbstract  $reflector
      * @return string Formatted name
      */
     public static function formatName(\Reflector $reflector): string
@@ -118,8 +114,7 @@ class SignatureFormatter implements ReflectorFormatter
     /**
      * Print the method, property or class modifiers.
      *
-     * @param \ReflectionMethod|\ReflectionProperty|\ReflectionClass $reflector
-     *
+     * @param  \ReflectionMethod|\ReflectionProperty|\ReflectionClass  $reflector
      * @return string Formatted modifiers
      */
     private static function formatModifiers(\Reflector $reflector): string
@@ -132,7 +127,6 @@ class SignatureFormatter implements ReflectorFormatter
     /**
      * Format a class signature.
      *
-     * @param \ReflectionClass $reflector
      *
      * @return string Formatted signature
      */
@@ -159,7 +153,7 @@ class SignatureFormatter implements ReflectorFormatter
         }
 
         $interfaces = $reflector->getInterfaceNames();
-        if (!empty($interfaces)) {
+        if (! empty($interfaces)) {
             \sort($interfaces);
 
             $chunks[] = $reflector->isInterface() ? 'extends' : 'implements';
@@ -180,8 +174,7 @@ class SignatureFormatter implements ReflectorFormatter
     /**
      * Format a constant signature.
      *
-     * @param \ReflectionClassConstant $reflector
-     *
+     * @param  \ReflectionClassConstant  $reflector
      * @return string Formatted signature
      */
     private static function formatClassConstant($reflector): string
@@ -201,7 +194,6 @@ class SignatureFormatter implements ReflectorFormatter
     /**
      * Format a constant signature.
      *
-     * @param ReflectionConstant $reflector
      *
      * @return string Formatted signature
      */
@@ -222,7 +214,7 @@ class SignatureFormatter implements ReflectorFormatter
     /**
      * Helper for getting output style for a given value's type.
      *
-     * @param mixed $value
+     * @param  mixed  $value
      */
     private static function getTypeStyle($value): string
     {
@@ -240,7 +232,6 @@ class SignatureFormatter implements ReflectorFormatter
     /**
      * Format a property signature.
      *
-     * @param \ReflectionProperty $reflector
      *
      * @return string Formatted signature
      */
@@ -256,8 +247,7 @@ class SignatureFormatter implements ReflectorFormatter
     /**
      * Format a function signature.
      *
-     * @param \ReflectionFunction $reflector
-     *
+     * @param  \ReflectionFunction  $reflector
      * @return string Formatted signature
      */
     private static function formatFunction(\ReflectionFunctionAbstract $reflector): string
@@ -274,13 +264,12 @@ class SignatureFormatter implements ReflectorFormatter
     /**
      * Format a function signature's return type (if available).
      *
-     * @param \ReflectionFunctionAbstract $reflector
      *
      * @return string Formatted return type
      */
     private static function formatFunctionReturnType(\ReflectionFunctionAbstract $reflector): string
     {
-        if (!\method_exists($reflector, 'hasReturnType') || !$reflector->hasReturnType()) {
+        if (! \method_exists($reflector, 'hasReturnType') || ! $reflector->hasReturnType()) {
             return '';
         }
 
@@ -290,7 +279,6 @@ class SignatureFormatter implements ReflectorFormatter
     /**
      * Format a method signature.
      *
-     * @param \ReflectionMethod $reflector
      *
      * @return string Formatted signature
      */
@@ -306,7 +294,6 @@ class SignatureFormatter implements ReflectorFormatter
     /**
      * Format a magic method signature.
      *
-     * @param ReflectionMagicMethod $reflector
      *
      * @return string Formatted signature
      */
@@ -339,7 +326,6 @@ class SignatureFormatter implements ReflectorFormatter
     /**
      * Format a magic property signature.
      *
-     * @param ReflectionMagicProperty $reflector
      *
      * @return string Formatted signature
      */
@@ -367,10 +353,6 @@ class SignatureFormatter implements ReflectorFormatter
 
     /**
      * Print the function params.
-     *
-     * @param \ReflectionFunctionAbstract $reflector
-     *
-     * @return array
      */
     private static function formatFunctionParams(\ReflectionFunctionAbstract $reflector): array
     {
@@ -381,7 +363,7 @@ class SignatureFormatter implements ReflectorFormatter
                 if (\method_exists($param, 'getType')) {
                     // Only include the inquisitive nullable type iff param default value is not null.
                     $defaultIsNull = $param->isOptional() && $param->isDefaultValueAvailable() && @$param->getDefaultValue() === null;
-                    $hint = self::formatReflectionType($param->getType(), !$defaultIsNull);
+                    $hint = self::formatReflectionType($param->getType(), ! $defaultIsNull);
                 } else {
                     if ($param->isArray()) {
                         $hint = '<keyword>array</keyword>';
@@ -406,7 +388,7 @@ class SignatureFormatter implements ReflectorFormatter
             }
 
             if ($param->isOptional()) {
-                if (!$param->isDefaultValueAvailable()) {
+                if (! $param->isDefaultValueAvailable()) {
                     $value = 'unknown';
                     $typeStyle = 'urgent';
                 } else {
@@ -434,8 +416,6 @@ class SignatureFormatter implements ReflectorFormatter
 
     /**
      * Print function param or return type(s).
-     *
-     * @param \ReflectionType|null $type
      */
     private static function formatReflectionType(?\ReflectionType $type, bool $indicateNullable): string
     {
@@ -488,10 +468,9 @@ class SignatureFormatter implements ReflectorFormatter
      *
      * @deprecated use LinkFormatter::styleWithHref directly
      *
-     * @param string      $style The style name (e.g., 'class', 'function')
-     * @param string      $text  The text to wrap
-     * @param string|null $href  Optional hyperlink URL
-     *
+     * @param  string  $style  The style name (e.g., 'class', 'function')
+     * @param  string  $text  The text to wrap
+     * @param  string|null  $href  Optional hyperlink URL
      * @return string Formatted text with style and optional href
      */
     private static function styleWithHref(string $style, string $text, ?string $href = null): string
@@ -502,14 +481,13 @@ class SignatureFormatter implements ReflectorFormatter
     /**
      * Get a hyperlink URL for a reflector if it's in the PHP manual.
      *
-     * @param \Reflector $reflector
      *
      * @return string|null URL to php.net or null if not in manual
      */
     private static function getManualHref(\Reflector $reflector): ?string
     {
         // If it's not in the manual, assume it's not on php.net
-        if (!self::getManualDoc($reflector)) {
+        if (! self::getManualDoc($reflector)) {
             return null;
         }
 
@@ -540,13 +518,12 @@ class SignatureFormatter implements ReflectorFormatter
     /**
      * Get manual documentation for a reflector.
      *
-     * @param \Reflector $reflector
      *
      * @return string|array|false Documentation string or structured data, or false if not found
      */
     private static function getManualDoc(\Reflector $reflector)
     {
-        if (!self::$manual) {
+        if (! self::$manual) {
             return false;
         }
 

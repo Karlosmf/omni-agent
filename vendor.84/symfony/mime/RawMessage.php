@@ -21,12 +21,11 @@ class RawMessage
     private bool $isGeneratorClosed;
 
     /**
-     * @param iterable<string>|string|resource $message
+     * @param  iterable<string>|string|resource  $message
      */
     public function __construct(
         private $message,
-    ) {
-    }
+    ) {}
 
     public function __destruct()
     {
@@ -80,7 +79,7 @@ class RawMessage
                 fwrite($message, $chunk);
                 yield $chunk;
             }
-            $this->isGeneratorClosed = !$this->message->valid();
+            $this->isGeneratorClosed = ! $this->message->valid();
             $this->message = $message;
 
             return;
@@ -94,9 +93,7 @@ class RawMessage
     /**
      * @throws LogicException if the message is not valid
      */
-    public function ensureValidity(): void
-    {
-    }
+    public function ensureValidity(): void {}
 
     public function __serialize(): array
     {

@@ -28,7 +28,7 @@ class UuidV6 extends Uuid implements TimeBasedUidInterface
 
     public function __construct(?string $uuid = null)
     {
-        if (null === $uuid) {
+        if ($uuid === null) {
             $this->uid = static::generate();
         } else {
             parent::__construct($uuid, true);
@@ -49,7 +49,7 @@ class UuidV6 extends Uuid implements TimeBasedUidInterface
     {
         $uuid = $this->uid;
         $time = BinaryUtil::hexToNumericString('0'.substr($uuid, 0, 8).substr($uuid, 9, 4).substr($uuid, 15, 3));
-        if ('-' === $time[0]) {
+        if ($time[0] === '-') {
             throw new InvalidArgumentException('Cannot convert UUID to v7: its timestamp is before the Unix epoch.');
         }
 
@@ -84,7 +84,7 @@ class UuidV6 extends Uuid implements TimeBasedUidInterface
         // uuid_create() returns a stable "node" that can leak the MAC of the host, but
         // UUIDv6 prefers a truly random number here, let's XOR both to preserve the entropy
 
-        if (!isset(self::$node)) {
+        if (! isset(self::$node)) {
             $seed = [random_int(0, 0xFFFFFF), random_int(0, 0xFFFFFF)];
             $node = unpack('N2', hex2bin('00'.substr($uuidV1, 24, 6)).hex2bin('00'.substr($uuidV1, 30)));
             self::$node = \sprintf('%06x%06x', ($seed[0] ^ $node[1]) | 0x010000, $seed[1] ^ $node[2]);

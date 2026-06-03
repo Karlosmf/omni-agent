@@ -14,7 +14,7 @@ trait HasInfolist
      *
      * @param  array<Component | Action | ActionGroup> | Closure | null  $infolist
      */
-    public function infolist(array | Closure | null $infolist): static
+    public function infolist(array|Closure|null $infolist): static
     {
         $this->schema($infolist);
 

@@ -16,17 +16,17 @@ trait HasRelationship
 {
     protected ?Closure $modifyRelationshipQueryUsing = null;
 
-    protected bool | Closure $isPreloaded = false;
+    protected bool|Closure $isPreloaded = false;
 
-    protected string | Closure | null $relationship = null;
+    protected string|Closure|null $relationship = null;
 
-    protected string | Closure | null $relationshipTitleAttribute = null;
+    protected string|Closure|null $relationshipTitleAttribute = null;
 
-    protected bool | Closure $hasEmptyRelationshipOption = false;
+    protected bool|Closure $hasEmptyRelationshipOption = false;
 
-    protected string | Closure | null $emptyRelationshipOptionLabel = null;
+    protected string|Closure|null $emptyRelationshipOptionLabel = null;
 
-    public function relationship(string | Closure | null $name, string | Closure | null $titleAttribute, ?Closure $modifyQueryUsing = null, bool | Closure $hasEmptyOption = false): static
+    public function relationship(string|Closure|null $name, string|Closure|null $titleAttribute, ?Closure $modifyQueryUsing = null, bool|Closure $hasEmptyOption = false): static
     {
         $this->relationship = $name;
         $this->relationshipTitleAttribute = $titleAttribute;
@@ -36,7 +36,7 @@ trait HasRelationship
         return $this;
     }
 
-    public function preload(bool | Closure $condition = true): static
+    public function preload(bool|Closure $condition = true): static
     {
         $this->isPreloaded = $condition;
 
@@ -53,7 +53,7 @@ trait HasRelationship
         return filled($this->getRelationshipName());
     }
 
-    public function getRelationship(): Relation | Builder
+    public function getRelationship(): Relation|Builder
     {
         $model = $this->getTable()->getModel();
 
@@ -152,7 +152,7 @@ trait HasRelationship
         return (bool) $this->evaluate($this->hasEmptyRelationshipOption);
     }
 
-    public function emptyRelationshipOptionLabel(string | Closure | null $label): static
+    public function emptyRelationshipOptionLabel(string|Closure|null $label): static
     {
         $this->emptyRelationshipOptionLabel = $label;
 

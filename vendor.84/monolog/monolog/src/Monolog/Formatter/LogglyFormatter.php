@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -33,14 +35,14 @@ class LogglyFormatter extends JsonFormatter
      * Appends the 'timestamp' parameter for indexing by Loggly.
      *
      * @see https://www.loggly.com/docs/automated-parsing/#json
-     * @see \Monolog\Formatter\JsonFormatter::format()
+     * @see JsonFormatter::format()
      */
     protected function normalizeRecord(LogRecord $record): array
     {
         $recordData = parent::normalizeRecord($record);
 
-        $recordData["timestamp"] = $record->datetime->format("Y-m-d\TH:i:s.uO");
-        unset($recordData["datetime"]);
+        $recordData['timestamp'] = $record->datetime->format("Y-m-d\TH:i:s.uO");
+        unset($recordData['datetime']);
 
         return $recordData;
     }

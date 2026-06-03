@@ -2,31 +2,40 @@
 
 namespace Livewire\Mechanisms\PersistentMiddleware;
 
+use App\Http\Middleware\RedirectIfAuthenticated;
+use Illuminate\Auth\Middleware\Authenticate;
+use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
+use Illuminate\Auth\Middleware\Authorize;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Routing\Router;
-use Livewire\Mechanisms\Mechanism;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use function Livewire\on;
 use Illuminate\Support\Str;
+use Laravel\Jetstream\Http\Middleware\AuthenticateSession;
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 use Livewire\Drawer\Utils;
 use Livewire\Mechanisms\HandleRequests\HandleRequests;
+use Livewire\Mechanisms\Mechanism;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
+use function Livewire\on;
 
 class PersistentMiddleware extends Mechanism
 {
     protected static $persistentMiddleware = [
-        \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-        \Laravel\Jetstream\Http\Middleware\AuthenticateSession::class,
-        \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        \App\Http\Middleware\RedirectIfAuthenticated::class,
-        \Illuminate\Auth\Middleware\Authenticate::class,
-        \Illuminate\Auth\Middleware\Authorize::class,
+        EnsureFrontendRequestsAreStateful::class,
+        AuthenticateSession::class,
+        AuthenticateWithBasicAuth::class,
+        SubstituteBindings::class,
+        RedirectIfAuthenticated::class,
+        Authenticate::class,
+        Authorize::class,
         \App\Http\Middleware\Authenticate::class,
     ];
 
     protected $path;
+
     protected $method;
 
-    function boot()
+    public function boot()
     {
         on('dehydrate', function ($component, $context) {
             [$path, $method] = $this->extractPathAndMethodFromRequest();
@@ -37,31 +46,33 @@ class PersistentMiddleware extends Mechanism
 
         on('snapshot-verified', function ($snapshot) {
             // Only apply middleware to requests hitting the Livewire update endpoint, and not any fake requests such as a test.
-            if (! app(HandleRequests::class)->isLivewireRoute()) return;
+            if (! app(HandleRequests::class)->isLivewireRoute()) {
+                return;
+            }
 
             $this->extractPathAndMethodFromSnapshot($snapshot);
 
             $this->applyPersistentMiddleware();
         });
 
-        on('flush-state', function() {
+        on('flush-state', function () {
             // Only flush these at the end of a full request, so that child components have access to this data.
             $this->path = null;
             $this->method = null;
         });
     }
 
-    function addPersistentMiddleware($middleware)
+    public function addPersistentMiddleware($middleware)
     {
         static::$persistentMiddleware = Router::uniqueMiddleware(array_merge(static::$persistentMiddleware, (array) $middleware));
     }
 
-    function setPersistentMiddleware($middleware)
+    public function setPersistentMiddleware($middleware)
     {
         static::$persistentMiddleware = Router::uniqueMiddleware((array) $middleware);
     }
 
-    function getPersistentMiddleware()
+    public function getPersistentMiddleware()
     {
         return static::$persistentMiddleware;
     }
@@ -80,7 +91,9 @@ class PersistentMiddleware extends Mechanism
         if (
             ! isset($snapshot['memo']['path'])
             || ! isset($snapshot['memo']['method'])
-        ) return;
+        ) {
+            return;
+        }
 
         // Store these locally, so dynamically added child components can use this data.
         $this->path = $snapshot['memo']['path'];
@@ -94,7 +107,9 @@ class PersistentMiddleware extends Mechanism
         $middleware = $this->getApplicablePersistentMiddleware($request);
 
         // Only send through pipeline if there are middleware found
-        if (is_null($middleware)) return;
+        if (is_null($middleware)) {
+            return;
+        }
 
         Utils::applyMiddleware($request, $middleware);
     }
@@ -131,14 +146,16 @@ class PersistentMiddleware extends Mechanism
 
     protected function formatPath($path)
     {
-        return '/' . ltrim($path, '/');
+        return '/'.ltrim($path, '/');
     }
 
     protected function getApplicablePersistentMiddleware($request)
     {
         $route = $this->getRouteFromRequest($request);
 
-        if (! $route) return [];
+        if (! $route) {
+            return [];
+        }
 
         $middleware = app('router')->gatherRouteMiddleware($route);
 
@@ -149,8 +166,8 @@ class PersistentMiddleware extends Mechanism
     {
         try {
             $route = app('router')->getRoutes()->match($request);
-            $request->setRouteResolver(fn() => $route);
-        } catch (NotFoundHttpException $e){
+            $request->setRouteResolver(fn () => $route);
+        } catch (NotFoundHttpException $e) {
             return null;
         }
 
@@ -165,9 +182,11 @@ class PersistentMiddleware extends Mechanism
 
         return $middleware
             ->filter(function ($value, $key) use ($persistentMiddleware) {
-                return $persistentMiddleware->contains(function($iValue, $iKey) use ($value) {
+                return $persistentMiddleware->contains(function ($iValue, $iKey) use ($value) {
                     // Some middlewares can be closures.
-                    if (! is_string($value)) return false;
+                    if (! is_string($value)) {
+                        return false;
+                    }
 
                     // Ensure any middleware arguments aren't included in the comparison
                     return Str::before($value, ':') == $iValue;

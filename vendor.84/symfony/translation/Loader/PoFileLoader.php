@@ -74,9 +74,9 @@ class PoFileLoader extends FileLoader
         while ($line = fgets($stream)) {
             $line = trim($line);
 
-            if ('' === $line) {
+            if ($line === '') {
                 // Whitespace indicated current item is done
-                if (!\in_array('fuzzy', $flags, true)) {
+                if (! \in_array('fuzzy', $flags, true)) {
                     $this->addMessage($messages, $item);
                 }
                 $item = $defaults;
@@ -91,7 +91,7 @@ class PoFileLoader extends FileLoader
                 $item['ids']['singular'] = substr($line, 7, -1);
             } elseif (str_starts_with($line, 'msgstr "')) {
                 $item['translated'] = substr($line, 8, -1);
-            } elseif ('"' === $line[0]) {
+            } elseif ($line[0] === '"') {
                 $continues = isset($item['translated']) ? 'translated' : 'ids';
 
                 if (\is_array($item[$continues])) {
@@ -108,7 +108,7 @@ class PoFileLoader extends FileLoader
             }
         }
         // save last item
-        if (!\in_array('fuzzy', $flags, true)) {
+        if (! \in_array('fuzzy', $flags, true)) {
             $this->addMessage($messages, $item);
         }
         fclose($stream);
@@ -124,7 +124,7 @@ class PoFileLoader extends FileLoader
      */
     private function addMessage(array &$messages, array $item): void
     {
-        if (!empty($item['ids']['singular'])) {
+        if (! empty($item['ids']['singular'])) {
             $id = stripcslashes($item['ids']['singular']);
             if (isset($item['ids']['plural'])) {
                 $id .= '|'.stripcslashes($item['ids']['plural']);

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ParaTest;
 
+use const PHP_BINARY;
+
 use Fidry\CpuCoreCounter\CpuCoreCounter;
 use Fidry\CpuCoreCounter\NumberOfCpuCoreNotFound;
 use InvalidArgumentException;
@@ -40,8 +42,6 @@ use function sys_get_temp_dir;
 use function uniqid;
 use function unserialize;
 
-use const PHP_BINARY;
-
 /**
  * @internal
  *
@@ -49,7 +49,8 @@ use const PHP_BINARY;
  */
 final readonly class Options
 {
-    public const ENV_KEY_TOKEN        = 'TEST_TOKEN';
+    public const ENV_KEY_TOKEN = 'TEST_TOKEN';
+
     public const ENV_KEY_UNIQUE_TOKEN = 'UNIQUE_TEST_TOKEN';
 
     private const OPTIONS_TO_KEEP_FOR_PHPUNIT_IN_WORKER = [
@@ -86,15 +87,16 @@ final readonly class Options
     ];
 
     public bool $needsTeamcity;
+
     public bool $needsTestdox;
 
     /**
-     * @param non-empty-string                                                      $phpunit
-     * @param non-empty-string                                                      $cwd
-     * @param list<non-empty-string>|null                                           $passthruPhp
-     * @param array<non-empty-string, non-empty-string|true|list<non-empty-string>> $phpunitOptions
-     * @param non-empty-string                                                      $runner
-     * @param non-empty-string                                                      $tmpDir
+     * @param  non-empty-string  $phpunit
+     * @param  non-empty-string  $cwd
+     * @param  list<non-empty-string>|null  $passthruPhp
+     * @param  array<non-empty-string, non-empty-string|true|list<non-empty-string>>  $phpunitOptions
+     * @param  non-empty-string  $runner
+     * @param  non-empty-string  $tmpDir
      */
     public function __construct(
         public Configuration $configuration,
@@ -113,7 +115,7 @@ final readonly class Options
         public int $totalShards,
     ) {
         $this->needsTeamcity = $configuration->outputIsTeamCity() || $configuration->hasLogfileTeamcity();
-        $this->needsTestdox  = $configuration->outputIsTestDox() || $configuration->hasLogfileTestdoxText() || $configuration->hasLogfileTestdoxHtml();
+        $this->needsTestdox = $configuration->outputIsTestDox() || $configuration->hasLogfileTestdoxText() || $configuration->hasLogfileTestdoxHtml();
     }
 
     /** @param non-empty-string $cwd */
@@ -146,7 +148,7 @@ final readonly class Options
 
         if ($processes === null) {
             $numberOfCPUCores = self::getNumberOfCPUCores();
-            $processes        = $maxProcesses === null ? $numberOfCPUCores : min($numberOfCPUCores, $maxProcesses);
+            $processes = $maxProcesses === null ? $numberOfCPUCores : min($numberOfCPUCores, $maxProcesses);
         }
 
         assert(is_string($options['runner']) && $options['runner'] !== '');
@@ -181,24 +183,24 @@ final readonly class Options
         unset($options['shard']);
         $currentShard = $totalShards = 0;
         if (is_string($shard)) {
-            $parts     = [];
+            $parts = [];
             $pregMatch = preg_match('/^(?<current>\d+)\/(?<total>\d+)$/', $shard, $parts);
             if ($pregMatch !== 1) {
-                throw new InvalidArgumentException('Invalid shard parameter format: ' . $shard);
+                throw new InvalidArgumentException('Invalid shard parameter format: '.$shard);
             }
 
             $currentShard = (int) $parts['current'];
-            $totalShards  = (int) $parts['total'];
+            $totalShards = (int) $parts['total'];
             if ($currentShard <= 0) {
-                throw new InvalidArgumentException('Current shard must be a positive integer: ' . $shard);
+                throw new InvalidArgumentException('Current shard must be a positive integer: '.$shard);
             }
 
             if ($totalShards <= 1) {
-                throw new InvalidArgumentException('Total shards must be an integer greater than 1: ' . $shard);
+                throw new InvalidArgumentException('Total shards must be an integer greater than 1: '.$shard);
             }
 
             if ($currentShard > $totalShards) {
-                throw new InvalidArgumentException('Current shard must be less or equal to total shards: ' . $shard);
+                throw new InvalidArgumentException('Current shard must be less or equal to total shards: '.$shard);
             }
         }
 
@@ -217,6 +219,7 @@ final readonly class Options
 
             if ($value === true) {
                 $phpunitArgv[] = "--{$key}";
+
                 continue;
             }
 
@@ -238,7 +241,7 @@ final readonly class Options
         $phpunitOptions = array_intersect_key($options, self::OPTIONS_TO_KEEP_FOR_PHPUNIT_IN_WORKER);
         $phpunitOptions = array_filter($phpunitOptions);
 
-        $configuration = (new Builder())->build($phpunitArgv);
+        $configuration = (new Builder)->build($phpunitArgv);
 
         return new self(
             $configuration,
@@ -292,7 +295,7 @@ final readonly class Options
                 'passthru-php',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Pass the given arguments verbatim to the underlying php process. Example: --passthru-php="\'-d\' ' .
+                'Pass the given arguments verbatim to the underlying php process. Example: --passthru-php="\'-d\' '.
                 '\'pcov.enabled=1\'"',
             ),
             new InputOption(
@@ -340,347 +343,347 @@ final readonly class Options
                 'bootstrap',
                 null,
                 InputOption::VALUE_REQUIRED,
-                '@see PHPUnit guide, chapter: ' . $chapter = 'Configuration',
+                '@see PHPUnit guide, chapter: '.$chapter = 'Configuration',
             ),
             new InputOption(
                 'configuration',
                 'c',
                 InputOption::VALUE_REQUIRED,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'no-configuration',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'cache-directory',
                 null,
                 InputOption::VALUE_REQUIRED,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'testsuite',
                 null,
                 InputOption::VALUE_REQUIRED,
-                '@see PHPUnit guide, chapter: ' . $chapter = 'Selection',
+                '@see PHPUnit guide, chapter: '.$chapter = 'Selection',
             ),
             new InputOption(
                 'exclude-testsuite',
                 null,
                 InputOption::VALUE_REQUIRED,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'group',
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'exclude-group',
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'filter',
                 null,
                 InputOption::VALUE_REQUIRED,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'process-isolation',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter = 'Execution',
+                '@see PHPUnit guide, chapter: '.$chapter = 'Execution',
             ),
             new InputOption(
                 'strict-coverage',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'strict-global-state',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'disallow-test-output',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'enforce-time-limit',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'default-time-limit',
                 null,
                 InputOption::VALUE_REQUIRED,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
                 '0',
             ),
             new InputOption(
                 'do-not-report-useless-tests',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'stop-on-defect',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'stop-on-error',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'stop-on-failure',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'stop-on-warning',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'stop-on-risky',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'stop-on-skipped',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'stop-on-incomplete',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'fail-on-incomplete',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'fail-on-risky',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'fail-on-skipped',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'fail-on-warning',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'fail-on-deprecation',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'order-by',
                 null,
                 InputOption::VALUE_REQUIRED,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'random-order-seed',
                 null,
                 InputOption::VALUE_REQUIRED,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'colors',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                '@see PHPUnit guide, chapter: ' . $chapter = 'Reporting',
+                '@see PHPUnit guide, chapter: '.$chapter = 'Reporting',
                 Configuration::COLOR_DEFAULT,
             ),
             new InputOption(
                 'no-progress',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'display-incomplete',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'display-skipped',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'display-deprecations',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'display-errors',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'display-notices',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'display-warnings',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'teamcity',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'testdox',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'testdox-summary',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'log-junit',
                 null,
                 InputOption::VALUE_REQUIRED,
-                '@see PHPUnit guide, chapter: ' . $chapter = 'Logging',
+                '@see PHPUnit guide, chapter: '.$chapter = 'Logging',
             ),
             new InputOption(
                 'log-teamcity',
                 null,
                 InputOption::VALUE_REQUIRED,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'testdox-text',
                 null,
                 InputOption::VALUE_REQUIRED,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'testdox-html',
                 null,
                 InputOption::VALUE_REQUIRED,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'coverage-clover',
                 null,
                 InputOption::VALUE_REQUIRED,
-                '@see PHPUnit guide, chapter: ' . $chapter = 'Code Coverage',
+                '@see PHPUnit guide, chapter: '.$chapter = 'Code Coverage',
             ),
             new InputOption(
                 'coverage-openclover',
                 null,
                 InputOption::VALUE_REQUIRED,
-                '@see PHPUnit guide, chapter: ' . $chapter = 'Code Coverage',
+                '@see PHPUnit guide, chapter: '.$chapter = 'Code Coverage',
             ),
             new InputOption(
                 'coverage-cobertura',
                 null,
                 InputOption::VALUE_REQUIRED,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'coverage-crap4j',
                 null,
                 InputOption::VALUE_REQUIRED,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'coverage-html',
                 null,
                 InputOption::VALUE_REQUIRED,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'coverage-php',
                 null,
                 InputOption::VALUE_REQUIRED,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'coverage-text',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
                 false,
             ),
             new InputOption(
                 'only-summary-for-coverage-text',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
                 null,
             ),
             new InputOption(
                 'coverage-xml',
                 null,
                 InputOption::VALUE_REQUIRED,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'exclude-source-from-xml-coverage',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'coverage-filter',
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
             new InputOption(
                 'no-coverage',
                 null,
                 InputOption::VALUE_NONE,
-                '@see PHPUnit guide, chapter: ' . $chapter,
+                '@see PHPUnit guide, chapter: '.$chapter,
             ),
         ]);
     }
@@ -689,9 +692,9 @@ final readonly class Options
     private static function getPhpunitBinary(): string
     {
         $tryPaths = [
-            dirname(__DIR__, 3) . '/bin/phpunit',
-            dirname(__DIR__, 3) . '/phpunit/phpunit/phpunit',
-            dirname(__DIR__) . '/vendor/phpunit/phpunit/phpunit',
+            dirname(__DIR__, 3).'/bin/phpunit',
+            dirname(__DIR__, 3).'/phpunit/phpunit/phpunit',
+            dirname(__DIR__).'/vendor/phpunit/phpunit/phpunit',
         ];
 
         foreach ($tryPaths as $path) {
@@ -706,7 +709,7 @@ final readonly class Options
     public static function getNumberOfCPUCores(): int
     {
         try {
-            return (new CpuCoreCounter())->getCount();
+            return (new CpuCoreCounter)->getCount();
         } catch (NumberOfCpuCoreNotFound) {
             return 2;
         }
@@ -745,8 +748,8 @@ final readonly class Options
     {
         $env = ['PARATEST' => 1];
         if (! $this->noTestTokens) {
-            $env[self::ENV_KEY_TOKEN]        = $inc;
-            $env[self::ENV_KEY_UNIQUE_TOKEN] = uniqid($inc . '_');
+            $env[self::ENV_KEY_TOKEN] = $inc;
+            $env[self::ENV_KEY_UNIQUE_TOKEN] = uniqid($inc.'_');
         }
 
         return $env;

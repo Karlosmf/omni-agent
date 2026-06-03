@@ -29,13 +29,13 @@ class ClassConstantEnumerator extends Enumerator
         }
 
         // We can only list constants on actual class (or object) reflectors.
-        if (!$reflector instanceof \ReflectionClass) {
+        if (! $reflector instanceof \ReflectionClass) {
             // @todo handle ReflectionExtension as well
             return [];
         }
 
         // only list constants if we are specifically asked
-        if (!$input->getOption('constants')) {
+        if (! $input->getOption('constants')) {
             return [];
         }
 
@@ -55,10 +55,7 @@ class ClassConstantEnumerator extends Enumerator
     /**
      * Get defined constants for the given class or object Reflector.
      *
-     * @param \ReflectionClass $reflector
-     * @param bool             $noInherit Exclude inherited constants
-     *
-     * @return array
+     * @param  bool  $noInherit  Exclude inherited constants
      */
     protected function getConstants(\ReflectionClass $reflector, bool $noInherit = false): array
     {
@@ -82,10 +79,6 @@ class ClassConstantEnumerator extends Enumerator
 
     /**
      * Prepare formatted constant array.
-     *
-     * @param array $constants
-     *
-     * @return array
      */
     protected function prepareConstants(array $constants): array
     {
@@ -95,7 +88,7 @@ class ClassConstantEnumerator extends Enumerator
         foreach ($constants as $name => $constant) {
             if ($this->showItem($name)) {
                 $ret[$name] = [
-                    'name'  => $name,
+                    'name' => $name,
                     'style' => self::IS_CONSTANT,
                     'value' => $this->presentRef($constant->getValue()),
                 ];
@@ -107,8 +100,6 @@ class ClassConstantEnumerator extends Enumerator
 
     /**
      * Get a label for the particular kind of "class" represented.
-     *
-     * @param \ReflectionClass $reflector
      */
     protected function getKindLabel(\ReflectionClass $reflector): string
     {

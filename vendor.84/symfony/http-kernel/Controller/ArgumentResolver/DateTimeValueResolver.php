@@ -28,24 +28,23 @@ final class DateTimeValueResolver implements ValueResolverInterface
 {
     public function __construct(
         private readonly ?ClockInterface $clock = null,
-    ) {
-    }
+    ) {}
 
     public function resolve(Request $request, ArgumentMetadata $argument): array
     {
-        if (!is_a($argument->getType(), \DateTimeInterface::class, true) || !$request->attributes->has($argument->getName())) {
+        if (! is_a($argument->getType(), \DateTimeInterface::class, true) || ! $request->attributes->has($argument->getName())) {
             return [];
         }
 
         $value = $request->attributes->get($argument->getName());
-        $class = \DateTimeInterface::class === $argument->getType() ? \DateTimeImmutable::class : $argument->getType();
+        $class = $argument->getType() === \DateTimeInterface::class ? \DateTimeImmutable::class : $argument->getType();
 
-        if (!$value) {
+        if (! $value) {
             if ($argument->isNullable()) {
                 return [null];
             }
-            if (!$this->clock) {
-                return [new $class()];
+            if (! $this->clock) {
+                return [new $class];
             }
             $value = $this->clock->now();
         }
@@ -61,14 +60,14 @@ final class DateTimeValueResolver implements ValueResolverInterface
             $format = $attribute->format;
         }
 
-        if (null !== $format) {
+        if ($format !== null) {
             $date = $class::createFromFormat($format, $value, $this->clock?->now()->getTimeZone());
 
             if (($class::getLastErrors() ?: ['warning_count' => 0])['warning_count']) {
                 $date = false;
             }
         } else {
-            if (false !== filter_var($value, \FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]])) {
+            if (filter_var($value, \FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) !== false) {
                 $value = '@'.$value;
             }
             try {
@@ -78,7 +77,7 @@ final class DateTimeValueResolver implements ValueResolverInterface
             }
         }
 
-        if (!$date) {
+        if (! $date) {
             throw new NotFoundHttpException(\sprintf('Invalid date given for parameter "%s".', $argument->getName()));
         }
 

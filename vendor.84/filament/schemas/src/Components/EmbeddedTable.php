@@ -12,7 +12,7 @@ class EmbeddedTable extends Component
     /**
      * @param  array<string, mixed> | Closure  $livewireComponentData
      */
-    public static function make(string | Closure | null $livewireComponent = null, array | Closure $livewireComponentData = []): static | Livewire
+    public static function make(string|Closure|null $livewireComponent = null, array|Closure $livewireComponentData = []): static|Livewire
     {
         if (filled($livewireComponent)) {
             return Livewire::make($livewireComponent, $livewireComponentData);
@@ -29,7 +29,7 @@ class EmbeddedTable extends Component
         $livewire = $this->getLivewire();
 
         if (! ($livewire instanceof HasTable)) {
-            throw new LogicException('The [' . $livewire::class . '] component must have a table defined.');
+            throw new LogicException('The ['.$livewire::class.'] component must have a table defined.');
         }
 
         return $livewire->getTable()->render();

@@ -24,12 +24,19 @@ class ManualWrapper
     // Full-width character ranges
     // via http://www.localizingjapan.com/blog/2012/01/20/regular-expressions-for-japanese-text/
     private const HIRAGANA = '\p{Hiragana}';
+
     private const KATAKANA = '\p{Katakana}';
+
     private const HAN = '\p{Han}';
+
     private const HANGUL = '\p{Hangul}';
+
     private const RADICALS = '\x{2E80}-\x{2FD5}';
+
     private const PUNCTUATION = '\x{3000}-\x{303F}';
+
     private const SYMBOLS = '\x{31F0}-\x{31FF}\x{3220}-\x{3243}\x{3280}-\x{337F}';
+
     private const ASCII = '\x{FF01}-\x{FF5E}';
 
     private static $fullWidthRanges = [
@@ -93,11 +100,10 @@ class ManualWrapper
     /**
      * A tag-aware, CJK friendly version of wordwrap().
      *
-     * @param string $text  The input string
-     * @param int    $width The number of characters at which the string will be wrapped
-     * @param string $break The line break character
-     * @param bool   $cut   Wrap at or before the specified width (unused)
-     *
+     * @param  string  $text  The input string
+     * @param  int  $width  The number of characters at which the string will be wrapped
+     * @param  string  $break  The line break character
+     * @param  bool  $cut  Wrap at or before the specified width (unused)
      * @return string The wrapped text
      */
     public function wrap(string $text, int $width = 100, string $break = "\n", bool $cut = false): string
@@ -107,6 +113,7 @@ class ManualWrapper
         foreach (\explode($break, $text) as $line) {
             if (self::len($line) <= $width) {
                 $lines[] = $line;
+
                 continue;
             }
 
@@ -114,6 +121,7 @@ class ManualWrapper
             foreach ($this->words($line) as $word) {
                 if (self::len($buf.$word) <= $width) {
                     $buf .= $word;
+
                     continue;
                 }
 
@@ -135,8 +143,7 @@ class ManualWrapper
      * Full-width CJK characters count as 2 characters wide.
      * Tags are ignored for width calculation.
      *
-     * @param string $text The text to measure
-     *
+     * @param  string  $text  The text to measure
      * @return int The apparent width
      */
     public static function len(string $text): int
@@ -154,8 +161,7 @@ class ManualWrapper
      * Returns actual (space delimited) words. It also returns CJK characters as "words", as long as they can be split
      * between lines.
      *
-     * @param string $line The line to split into words
-     *
+     * @param  string  $line  The line to split into words
      * @return \Generator<string>
      */
     private function words(string $line): \Generator
@@ -181,7 +187,7 @@ class ManualWrapper
                     break;
 
                 case ' ':
-                    if (!$inTag) {
+                    if (! $inTag) {
                         yield \rtrim(\mb_substr($line, 0, $i)).' ';
                         $line = \mb_substr($line, $i + 1);
                         $len = \mb_strlen($line);
@@ -191,12 +197,12 @@ class ManualWrapper
 
                 default:
                     // if this is a CJK character...
-                    if (!$inTag && \preg_match($isCJK, $char)) {
+                    if (! $inTag && \preg_match($isCJK, $char)) {
                         // … and it can end a line
-                        if (!\preg_match($notEnd, $char)) {
+                        if (! \preg_match($notEnd, $char)) {
                             // … and the next one can start a line
                             $next = \mb_substr($line, $i + 1, 1);
-                            if (!\preg_match($notStart, $next)) {
+                            if (! \preg_match($notStart, $next)) {
                                 // we'll pretend it's a word :)
                                 yield \rtrim(\mb_substr($line, 0, $i + 1));
                                 $line = \mb_substr($line, $i + 1);

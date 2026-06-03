@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,18 +9,20 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TestRunner\TestResult;
 
-use function array_merge;
-use function assert;
-use function explode;
-use function in_array;
 use PHPUnit\Event\Code\TestMethod;
 use PHPUnit\Framework\TestSize\Known;
 use PHPUnit\Framework\TestSize\TestSize;
 use PHPUnit\Metadata\Api\Groups;
 use ReflectionMethod;
 use ReflectionNamedType;
+
+use function array_merge;
+use function assert;
+use function explode;
+use function in_array;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -51,7 +55,7 @@ final class PassedTests
     }
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      */
     public function testClassPassed(string $className): void
     {
@@ -65,9 +69,9 @@ final class PassedTests
             $test->methodName(),
         );
 
-        $this->passedTestMethods[$test->className() . '::' . $test->methodName()] = [
+        $this->passedTestMethods[$test->className().'::'.$test->methodName()] = [
             'returnValue' => $returnValue,
-            'size'        => $size,
+            'size' => $size,
         ];
     }
 
@@ -85,7 +89,7 @@ final class PassedTests
     }
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      */
     public function hasTestClassPassed(string $className): bool
     {
@@ -120,7 +124,7 @@ final class PassedTests
     {
         $returnType = (new ReflectionMethod(...explode('::', $method)))->getReturnType();
 
-        return !$returnType instanceof ReflectionNamedType || !in_array($returnType->getName(), ['never', 'void'], true);
+        return ! $returnType instanceof ReflectionNamedType || ! in_array($returnType->getName(), ['never', 'void'], true);
     }
 
     public function returnValue(string $method): mixed

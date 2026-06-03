@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 trait CanBeSortable
 {
-    protected bool | Closure $isSortable = false;
+    protected bool|Closure $isSortable = false;
 
     /**
      * @var array<string> | null
@@ -19,7 +19,7 @@ trait CanBeSortable
     /**
      * @param  bool | array<string> | Closure  $condition
      */
-    public function sortable(bool | array | Closure $condition = true, ?Closure $query = null): static
+    public function sortable(bool|array|Closure $condition = true, ?Closure $query = null): static
     {
         if (is_array($condition)) {
             $this->isSortable = true;

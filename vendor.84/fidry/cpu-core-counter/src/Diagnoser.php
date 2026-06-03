@@ -13,13 +13,15 @@ declare(strict_types=1);
 
 namespace Fidry\CpuCoreCounter;
 
+use const PHP_EOL;
+
 use Fidry\CpuCoreCounter\Finder\CpuCoreFinder;
+
 use function array_map;
 use function explode;
 use function implode;
 use function max;
 use function str_repeat;
-use const PHP_EOL;
 
 /**
  * Utility to debug.
@@ -31,7 +33,7 @@ final class Diagnoser
     /**
      * Provides an aggregated diagnosis based on each finders diagnosis.
      *
-     * @param list<CpuCoreFinder> $finders
+     * @param  list<CpuCoreFinder>  $finders
      */
     public static function diagnose(array $finders): string
     {
@@ -48,7 +50,7 @@ final class Diagnoser
     /**
      * Executes each finders.
      *
-     * @param list<CpuCoreFinder> $finders
+     * @param  list<CpuCoreFinder>  $finders
      */
     public static function execute(array $finders): string
     {
@@ -61,7 +63,7 @@ final class Diagnoser
                     [
                         $finder->toString(),
                         ': ',
-                        null === $coresCount ? 'NULL' : $coresCount,
+                        $coresCount === null ? 'NULL' : $coresCount,
                     ]
                 );
             },
@@ -95,7 +97,5 @@ final class Diagnoser
         );
     }
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 }

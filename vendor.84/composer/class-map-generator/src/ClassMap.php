@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of Composer.
@@ -78,24 +80,23 @@ class ClassMap implements \Countable
      * If you want to get these back as well you can pass false to $duplicatesFilter. Or
      * you can pass your own pattern to exclude if you need to change the default.
      *
-     * @param non-empty-string|false $duplicatesFilter
-     *
+     * @param  non-empty-string|false  $duplicatesFilter
      * @return array<class-string, array<non-empty-string>>
      */
     public function getAmbiguousClasses($duplicatesFilter = '{/(test|fixture|example|stub)s?/}i'): array
     {
-        if (false === $duplicatesFilter) {
+        if ($duplicatesFilter === false) {
             return $this->ambiguousClasses;
         }
 
-        if (true === $duplicatesFilter) {
+        if ($duplicatesFilter === true) {
             throw new \InvalidArgumentException('$duplicatesFilter should be false or a string with a valid regex, got true.');
         }
 
         $ambiguousClasses = [];
         foreach ($this->ambiguousClasses as $class => $paths) {
             $paths = array_filter($paths, function ($path) use ($duplicatesFilter): bool {
-                return !Preg::isMatch($duplicatesFilter, strtr($path, '\\', '/'));
+                return ! Preg::isMatch($duplicatesFilter, strtr($path, '\\', '/'));
             });
             if (\count($paths) > 0) {
                 $ambiguousClasses[$class] = array_values($paths);
@@ -114,8 +115,8 @@ class ClassMap implements \Countable
     }
 
     /**
-     * @param class-string $className
-     * @param non-empty-string $path
+     * @param  class-string  $className
+     * @param  non-empty-string  $path
      */
     public function addClass(string $className, string $path): void
     {
@@ -125,12 +126,12 @@ class ClassMap implements \Countable
     }
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      * @return non-empty-string
      */
     public function getClassPath(string $className): string
     {
-        if (!isset($this->map[$className])) {
+        if (! isset($this->map[$className])) {
             throw new \OutOfBoundsException('Class '.$className.' is not present in the map');
         }
 
@@ -138,7 +139,7 @@ class ClassMap implements \Countable
     }
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      */
     public function hasClass(string $className): bool
     {
@@ -157,15 +158,15 @@ class ClassMap implements \Countable
         $pathPrefix = rtrim(strtr($pathPrefix, '\\', '/'), '/');
 
         foreach ($this->psrViolations as $path => $violations) {
-            if ($path === $pathPrefix || 0 === \strpos($path, $pathPrefix.'/')) {
+            if ($path === $pathPrefix || \strpos($path, $pathPrefix.'/') === 0) {
                 unset($this->psrViolations[$path]);
             }
         }
     }
 
     /**
-     * @param class-string $className
-     * @param non-empty-string $path
+     * @param  class-string  $className
+     * @param  non-empty-string  $path
      */
     public function addAmbiguousClass(string $className, string $path): void
     {
@@ -182,6 +183,7 @@ class ClassMap implements \Countable
      *
      * This is a map of filepath to an associative array of the warning string
      * and the offending class name.
+     *
      * @return array<string, array<array{warning: string, className: string}>>
      */
     public function getRawPsrViolations(): array

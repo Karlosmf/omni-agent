@@ -19,7 +19,9 @@ namespace Symfony\Component\Clock;
 final class MonotonicClock implements ClockInterface
 {
     private int $sOffset;
+
     private int $usOffset;
+
     private \DateTimeZone $timezone;
 
     /**
@@ -43,14 +45,14 @@ final class MonotonicClock implements ClockInterface
         [$s, $us] = hrtime();
 
         if (1000000 <= $us = (int) ($us / 1000) + $this->usOffset) {
-            ++$s;
+            $s++;
             $us -= 1000000;
-        } elseif (0 > $us) {
-            --$s;
+        } elseif ($us < 0) {
+            $s--;
             $us += 1000000;
         }
 
-        if (6 !== \strlen($now = (string) $us)) {
+        if (\strlen($now = (string) $us) !== 6) {
             $now = str_pad($now, 6, '0', \STR_PAD_LEFT);
         }
 

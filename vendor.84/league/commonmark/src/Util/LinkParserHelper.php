@@ -72,7 +72,7 @@ final class LinkParserHelper
      */
     public static function parseLinkTitle(Cursor $cursor): ?string
     {
-        if ($title = $cursor->match('/' . RegexHelper::PARTIAL_LINK_TITLE . '/')) {
+        if ($title = $cursor->match('/'.RegexHelper::PARTIAL_LINK_TITLE.'/')) {
             // Chop off quotes from title and unescape
             return RegexHelper::unescape(\substr($title, 1, -1));
         }
@@ -83,7 +83,7 @@ final class LinkParserHelper
     public static function parsePartialLinkTitle(Cursor $cursor, string $endDelimiter): ?string
     {
         $endDelimiter = \preg_quote($endDelimiter, '/');
-        $regex        = \sprintf('/(%s|[^%s\x00])*(?:%s)?/', RegexHelper::PARTIAL_ESCAPED_CHAR, $endDelimiter, $endDelimiter);
+        $regex = \sprintf('/(%s|[^%s\x00])*(?:%s)?/', RegexHelper::PARTIAL_ESCAPED_CHAR, $endDelimiter, $endDelimiter);
         if (($partialTitle = $cursor->match($regex)) === null) {
             return null;
         }
@@ -93,9 +93,9 @@ final class LinkParserHelper
 
     private static function manuallyParseLinkDestination(Cursor $cursor): ?string
     {
-        $remainder  = $cursor->getRemainder();
+        $remainder = $cursor->getRemainder();
         $openParens = 0;
-        $len        = \strlen($remainder);
+        $len = \strlen($remainder);
         for ($i = 0; $i < $len; $i++) {
             $c = $remainder[$i];
             if ($c === '\\' && $i + 1 < $len && RegexHelper::isEscapable($remainder[$i + 1])) {
@@ -132,7 +132,8 @@ final class LinkParserHelper
     }
 
     /** @var \WeakReference<Cursor>|null */
-    private static ?\WeakReference $lastCursor       = null;
+    private static ?\WeakReference $lastCursor = null;
+
     private static bool $lastCursorLacksClosingBrace = false;
 
     private static function parseDestinationBraces(Cursor $cursor): ?string

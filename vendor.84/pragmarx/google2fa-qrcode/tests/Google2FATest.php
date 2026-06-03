@@ -2,14 +2,13 @@
 
 namespace PragmaRX\Google2FAQRCode\Tests;
 
+use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use PHPUnit\Framework\TestCase;
+use PragmaRX\Google2FAQRCode\Exceptions\MissingQrCodeServiceException;
+use PragmaRX\Google2FAQRCode\Google2FA;
 use PragmaRX\Google2FAQRCode\QRCode\Bacon;
 use PragmaRX\Google2FAQRCode\QRCode\Chillerlan;
-use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
-use BaconQrCode\Renderer\Image\Png;
-use PHPUnit\Framework\TestCase;
-use PragmaRX\Google2FAQRCode\Google2FA;
 use Zxing\QrReader;
-use PragmaRX\Google2FAQRCode\Exceptions\MissingQrCodeServiceException;
 
 class Google2FATest extends TestCase
 {
@@ -17,9 +16,9 @@ class Google2FATest extends TestCase
 
     const OTP_URL = 'otpauth://totp/PragmaRX:acr+pragmarx@antoniocarlosribeiro.com?secret=ADUMJO5634NPDEKW&issuer=PragmaRX&algorithm=SHA1&digits=6&period=30';
 
-    public function setUp(): void
+    protected function setUp(): void
     {
-        $this->google2fa = new Google2FA();
+        $this->google2fa = new Google2FA;
     }
 
     public function readQRCode($data)
@@ -36,7 +35,7 @@ class Google2FATest extends TestCase
         );
     }
 
-    public function testQrcodeServiceMissing()
+    public function test_qrcode_service_missing()
     {
         $this->expectException(MissingQrCodeServiceException::class);
 
@@ -45,22 +44,22 @@ class Google2FATest extends TestCase
         $this->getQrCode();
     }
 
-    public function testQrcodeInlineBacon()
+    public function test_qrcode_inline_bacon()
     {
-        if (!(new Bacon())->imagickIsAvailable()) {
+        if (! (new Bacon)->imagickIsAvailable()) {
             $this->assertTrue(true);
 
             return;
         }
 
-        $this->google2fa->setQrcodeService(new Bacon());
+        $this->google2fa->setQrcodeService(new Bacon);
 
         $this->assertEquals(
             static::OTP_URL,
             $this->readQRCode($this->getQRCode())
         );
 
-        $google2fa = new Google2FA(null, new Bacon(new \BaconQrCode\Renderer\Image\SvgImageBackEnd()));
+        $google2fa = new Google2FA(null, new Bacon(new SvgImageBackEnd));
 
         $this->assertEquals(
             static::OTP_URL,
@@ -68,9 +67,9 @@ class Google2FATest extends TestCase
         );
     }
 
-    public function testQrcodeInlineChillerlan()
+    public function test_qrcode_inline_chillerlan()
     {
-        $this->google2fa->setQrcodeService(new Chillerlan());
+        $this->google2fa->setQrcodeService(new Chillerlan);
 
         $this->assertStringStartsWith(
             'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMj',

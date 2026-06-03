@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Core;
 
 /*
@@ -14,7 +15,6 @@ use Hamcrest\Util;
  */
 class IsCollectionContaining extends TypeSafeMatcher
 {
-
     private $_elementMatcher;
 
     public function __construct(Matcher $elementMatcher)
@@ -43,9 +43,8 @@ class IsCollectionContaining extends TypeSafeMatcher
     public function describeTo(Description $description)
     {
         $description
-                ->appendText('a collection containing ')
-                ->appendDescriptionOf($this->_elementMatcher)
-                ;
+            ->appendText('a collection containing ')
+            ->appendDescriptionOf($this->_elementMatcher);
     }
 
     /**
@@ -82,7 +81,7 @@ class IsCollectionContaining extends TypeSafeMatcher
     public static function hasItems(/* args... */)
     {
         $args = func_get_args();
-        $matchers = array();
+        $matchers = [];
 
         foreach ($args as $arg) {
             $matchers[] = self::hasItem($arg);

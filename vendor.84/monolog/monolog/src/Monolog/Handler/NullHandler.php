@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -12,9 +14,9 @@
 namespace Monolog\Handler;
 
 use Monolog\Level;
-use Psr\Log\LogLevel;
 use Monolog\Logger;
 use Monolog\LogRecord;
+use Psr\Log\LogLevel;
 
 /**
  * Blackhole
@@ -29,7 +31,7 @@ class NullHandler extends Handler
     private Level $level;
 
     /**
-     * @param string|int|Level $level The minimum logging level at which this handler will be triggered
+     * @param  string|int|Level  $level  The minimum logging level at which this handler will be triggered
      *
      * @phpstan-param value-of<Level::VALUES>|value-of<Level::NAMES>|Level|LogLevel::* $level
      */
@@ -39,7 +41,7 @@ class NullHandler extends Handler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function isHandling(LogRecord $record): bool
     {
@@ -47,7 +49,7 @@ class NullHandler extends Handler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function handle(LogRecord $record): bool
     {

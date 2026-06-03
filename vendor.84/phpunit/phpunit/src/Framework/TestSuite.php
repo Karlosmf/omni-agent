@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,24 +9,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework;
 
 use const PHP_EOL;
-use function array_merge;
-use function array_pop;
-use function array_reverse;
-use function assert;
-use function call_user_func;
-use function class_exists;
-use function count;
-use function implode;
-use function is_callable;
-use function is_file;
-use function is_subclass_of;
-use function sprintf;
-use function str_ends_with;
-use function str_starts_with;
-use function trim;
+
 use Iterator;
 use IteratorAggregate;
 use PHPUnit\Event;
@@ -48,6 +37,22 @@ use ReflectionMethod;
 use SebastianBergmann\CodeCoverage\InvalidArgumentException;
 use SebastianBergmann\CodeCoverage\UnintentionallyCoveredCodeException;
 use Throwable;
+
+use function array_merge;
+use function array_pop;
+use function array_reverse;
+use function assert;
+use function call_user_func;
+use function class_exists;
+use function count;
+use function implode;
+use function is_callable;
+use function is_file;
+use function is_subclass_of;
+use function sprintf;
+use function str_ends_with;
+use function str_starts_with;
+use function trim;
 
 /**
  * @template-implements IteratorAggregate<non-negative-int, Test>
@@ -81,12 +86,14 @@ class TestSuite implements IteratorAggregate, Reorderable, Test
     /**
      * @var ?list<ExecutionOrderDependency>
      */
-    private ?array $providedTests    = null;
+    private ?array $providedTests = null;
+
     private ?Factory $iteratorFilter = null;
-    private bool $wasRun             = false;
+
+    private bool $wasRun = false;
 
     /**
-     * @param non-empty-string $name
+     * @param  non-empty-string  $name
      */
     public static function empty(string $name): static
     {
@@ -94,15 +101,15 @@ class TestSuite implements IteratorAggregate, Reorderable, Test
     }
 
     /**
-     * @param ReflectionClass<TestCase> $class
-     * @param list<non-empty-string>    $groups
+     * @param  ReflectionClass<TestCase>  $class
+     * @param  list<non-empty-string>  $groups
      */
     public static function fromClassReflector(ReflectionClass $class, array $groups = []): static
     {
         $testSuite = new static($class->getName());
 
         foreach (Reflection::publicMethodsDeclaredDirectlyInTestClass($class) as $method) {
-            if (!TestUtil::isTestMethod($method)) {
+            if (! TestUtil::isTestMethod($method)) {
                 continue;
             }
 
@@ -134,7 +141,7 @@ class TestSuite implements IteratorAggregate, Reorderable, Test
     }
 
     /**
-     * @param non-empty-string $name
+     * @param  non-empty-string  $name
      */
     final private function __construct(string $name)
     {
@@ -144,7 +151,7 @@ class TestSuite implements IteratorAggregate, Reorderable, Test
     /**
      * Adds a test to the suite.
      *
-     * @param list<non-empty-string> $groups
+     * @param  list<non-empty-string>  $groups
      */
     public function addTest(Test $test, array $groups = []): void
     {
@@ -175,7 +182,7 @@ class TestSuite implements IteratorAggregate, Reorderable, Test
         }
 
         foreach ($groups as $group) {
-            if (!isset($this->groups[$group])) {
+            if (! isset($this->groups[$group])) {
                 $this->groups[$group] = [$id];
             } else {
                 $this->groups[$group][] = $id;
@@ -186,8 +193,8 @@ class TestSuite implements IteratorAggregate, Reorderable, Test
     /**
      * Adds the tests from the given class to the suite.
      *
-     * @param ReflectionClass<TestCase> $testClass
-     * @param list<non-empty-string>    $groups
+     * @param  ReflectionClass<TestCase>  $testClass
+     * @param  list<non-empty-string>  $groups
      *
      * @throws Exception
      */
@@ -202,7 +209,7 @@ class TestSuite implements IteratorAggregate, Reorderable, Test
             );
         }
 
-        if (!$testClass->isSubclassOf(TestCase::class)) {
+        if (! $testClass->isSubclassOf(TestCase::class)) {
             throw new Exception(
                 sprintf(
                     'Class %s is not a subclass of %s',
@@ -223,7 +230,7 @@ class TestSuite implements IteratorAggregate, Reorderable, Test
      * added, a <code>PHPUnit\Framework\WarningTestCase</code> will be created instead,
      * leaving the current test run untouched.
      *
-     * @param list<non-empty-string> $groups
+     * @param  list<non-empty-string>  $groups
      *
      * @throws Exception
      */
@@ -248,7 +255,7 @@ class TestSuite implements IteratorAggregate, Reorderable, Test
     /**
      * Wrapper for addTestFile() that adds multiple test files.
      *
-     * @param iterable<string> $fileNames
+     * @param  iterable<string>  $fileNames
      *
      * @throws Exception
      */
@@ -343,12 +350,12 @@ class TestSuite implements IteratorAggregate, Reorderable, Test
             return;
         }
 
-        $emitter                       = Event\Facade::emitter();
+        $emitter = Event\Facade::emitter();
         $testSuiteValueObjectForEvents = Event\TestSuite\TestSuiteBuilder::from($this);
 
         $emitter->testSuiteStarted($testSuiteValueObjectForEvents);
 
-        if (!$this->invokeMethodsBeforeFirstTest($emitter, $testSuiteValueObjectForEvents)) {
+        if (! $this->invokeMethodsBeforeFirstTest($emitter, $testSuiteValueObjectForEvents)) {
             return;
         }
 
@@ -361,7 +368,7 @@ class TestSuite implements IteratorAggregate, Reorderable, Test
 
         $tests = array_reverse($tests);
 
-        $this->tests  = [];
+        $this->tests = [];
         $this->groups = [];
 
         while (($test = array_pop($tests)) !== null) {
@@ -392,7 +399,7 @@ class TestSuite implements IteratorAggregate, Reorderable, Test
     /**
      * Set tests of the test suite.
      *
-     * @param list<Test> $tests
+     * @param  list<Test>  $tests
      */
     public function setTests(array $tests): void
     {
@@ -447,7 +454,7 @@ class TestSuite implements IteratorAggregate, Reorderable, Test
             }
 
             foreach ($this->tests as $test) {
-                if (!$test instanceof Reorderable) {
+                if (! $test instanceof Reorderable) {
                     // @codeCoverageIgnoreStart
                     continue;
                     // @codeCoverageIgnoreEnd
@@ -469,7 +476,7 @@ class TestSuite implements IteratorAggregate, Reorderable, Test
             $this->requiredTests = [];
 
             foreach ($this->tests as $test) {
-                if (!$test instanceof Reorderable) {
+                if (! $test instanceof Reorderable) {
                     // @codeCoverageIgnoreStart
                     continue;
                     // @codeCoverageIgnoreEnd
@@ -489,7 +496,7 @@ class TestSuite implements IteratorAggregate, Reorderable, Test
 
     public function sortId(): string
     {
-        return $this->name() . '::class';
+        return $this->name().'::class';
     }
 
     /**
@@ -501,14 +508,14 @@ class TestSuite implements IteratorAggregate, Reorderable, Test
     }
 
     /**
-     * @param ReflectionClass<TestCase> $class
-     * @param list<non-empty-string>    $groups
+     * @param  ReflectionClass<TestCase>  $class
+     * @param  list<non-empty-string>  $groups
      *
      * @throws Exception
      */
     protected function addTestMethod(ReflectionClass $class, ReflectionMethod $method, array $groups): void
     {
-        $className  = $class->getName();
+        $className = $class->getName();
         $methodName = $method->getName();
 
         try {
@@ -572,12 +579,12 @@ class TestSuite implements IteratorAggregate, Reorderable, Test
     }
 
     /**
-     * @param list<non-empty-string> $groups
+     * @param  list<non-empty-string>  $groups
      */
     private function containsOnlyVirtualGroups(array $groups): bool
     {
         foreach ($groups as $group) {
-            if (!str_starts_with($group, '__phpunit_')) {
+            if (! str_starts_with($group, '__phpunit_')) {
                 return false;
             }
         }
@@ -589,7 +596,7 @@ class TestSuite implements IteratorAggregate, Reorderable, Test
     {
         $reflector = new ReflectionClass($this->name);
 
-        return !$reflector->hasMethod($methodName) ||
+        return ! $reflector->hasMethod($methodName) ||
                $reflector->getMethod($methodName)->getDeclaringClass()->getName() === TestCase::class;
     }
 
@@ -617,14 +624,14 @@ class TestSuite implements IteratorAggregate, Reorderable, Test
      */
     private function invokeMethodsBeforeFirstTest(Event\Emitter $emitter, Event\TestSuite\TestSuite $testSuiteValueObjectForEvents): bool
     {
-        if (!$this->isForTestClass()) {
+        if (! $this->isForTestClass()) {
             return true;
         }
 
-        $methods         = (new HookMethods)->hookMethods($this->name)['beforeClass']->methodNamesSortedByPriority();
-        $calledMethods   = [];
+        $methods = (new HookMethods)->hookMethods($this->name)['beforeClass']->methodNamesSortedByPriority();
+        $calledMethods = [];
         $emitCalledEvent = true;
-        $result          = true;
+        $result = true;
 
         foreach ($methods as $method) {
             if ($this->methodDoesNotExistOrIsDeclaredInTestCase($method)) {
@@ -693,7 +700,7 @@ class TestSuite implements IteratorAggregate, Reorderable, Test
             );
         }
 
-        if (!$result) {
+        if (! $result) {
             $emitter->testSuiteFinished($testSuiteValueObjectForEvents);
         }
 
@@ -702,11 +709,11 @@ class TestSuite implements IteratorAggregate, Reorderable, Test
 
     private function invokeMethodsAfterLastTest(Event\Emitter $emitter): void
     {
-        if (!$this->isForTestClass()) {
+        if (! $this->isForTestClass()) {
             return;
         }
 
-        $methods       = (new HookMethods)->hookMethods($this->name)['afterClass']->methodNamesSortedByPriority();
+        $methods = (new HookMethods)->hookMethods($this->name)['afterClass']->methodNamesSortedByPriority();
         $calledMethods = [];
 
         foreach ($methods as $method) {

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\MockObject;
 
 use PHPUnit\Framework\Constraint\Constraint;
@@ -19,8 +22,7 @@ interface InvocationStubber
     /**
      * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
      *
-     * @param Constraint|non-empty-string|PropertyHook $constraint
-     *
+     * @param  Constraint|non-empty-string|PropertyHook  $constraint
      * @return $this
      */
     public function method(Constraint|PropertyHook|string $constraint): self;
@@ -28,8 +30,7 @@ interface InvocationStubber
     /**
      * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
      *
-     * @param non-empty-string $id
-     *
+     * @param  non-empty-string  $id
      * @return $this
      */
     public function id(string $id): self;
@@ -37,8 +38,7 @@ interface InvocationStubber
     /**
      * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
      *
-     * @param non-empty-string $id
-     *
+     * @param  non-empty-string  $id
      * @return $this
      */
     public function after(string $id): self;
@@ -79,8 +79,7 @@ interface InvocationStubber
     /**
      * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
      *
-     * @param array<int, array<int, mixed>> $valueMap
-     *
+     * @param  array<int, array<int, mixed>>  $valueMap
      * @return $this
      */
     public function willReturnMap(array $valueMap): self;

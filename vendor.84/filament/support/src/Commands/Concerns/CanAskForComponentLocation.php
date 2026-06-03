@@ -23,14 +23,14 @@ trait CanAskForComponentLocation
 
         if (blank($locations)) {
             return [
-                app()->getNamespace() . "Filament\\{$pathNamespace}",
-                app_path('Filament' . DIRECTORY_SEPARATOR . $path),
+                app()->getNamespace()."Filament\\{$pathNamespace}",
+                app_path('Filament'.DIRECTORY_SEPARATOR.$path),
                 '',
             ];
         }
 
         $options = [
-            '' => app()->getNamespace() . "Filament\\{$pathNamespace}",
+            '' => app()->getNamespace()."Filament\\{$pathNamespace}",
             ...array_map(
                 fn (string $namespace): string => "{$namespace}\\{$pathNamespace}",
                 array_combine(
@@ -47,15 +47,15 @@ trait CanAskForComponentLocation
 
         if (blank($namespace)) {
             return [
-                app()->getNamespace() . "Filament\\{$pathNamespace}",
-                app_path('Filament' . DIRECTORY_SEPARATOR . $path),
+                app()->getNamespace()."Filament\\{$pathNamespace}",
+                app_path('Filament'.DIRECTORY_SEPARATOR.$path),
                 '',
             ];
         }
 
         return [
             "{$namespace}\\{$pathNamespace}",
-            $locations[$namespace]['path'] . '/' . $path,
+            $locations[$namespace]['path'].'/'.$path,
             $locations[$namespace]['viewNamespace'] ?? null,
         ];
     }

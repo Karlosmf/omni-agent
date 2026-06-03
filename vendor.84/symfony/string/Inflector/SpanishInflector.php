@@ -88,7 +88,7 @@ final class SpanishInflector implements InflectorInterface
         foreach (self::SINGULARIZE_REGEXP as $rule) {
             [$regexp, $replace] = $rule;
 
-            if (1 === preg_match($regexp, $plural)) {
+            if (preg_match($regexp, $plural) === 1) {
                 return [preg_replace($regexp, $replace, $plural)];
             }
         }
@@ -105,7 +105,7 @@ final class SpanishInflector implements InflectorInterface
         foreach (self::PLURALIZE_REGEXP as $rule) {
             [$regexp, $replace] = $rule;
 
-            if (1 === preg_match($regexp, $singular)) {
+            if (preg_match($regexp, $singular) === 1) {
                 return [preg_replace($regexp, $replace, $singular)];
             }
         }
@@ -116,11 +116,11 @@ final class SpanishInflector implements InflectorInterface
     private function isInflectedWord(string $word): bool
     {
         foreach (self::UNINFLECTED_RULES as $rule) {
-            if (1 === preg_match($rule, $word)) {
+            if (preg_match($rule, $word) === 1) {
                 return true;
             }
         }
 
-        return 1 === preg_match(self::UNINFLECTED, $word);
+        return preg_match(self::UNINFLECTED, $word) === 1;
     }
 }

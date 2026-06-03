@@ -11,45 +11,41 @@ namespace Nette\Schema;
 
 use Nette;
 
-
 /**
  * Validation error.
  */
 class ValidationException extends Nette\InvalidStateException
 {
-	/** @var Message[] */
-	private array $messages;
+    /** @var Message[] */
+    private array $messages;
 
+    /**
+     * @param  Message[]  $messages
+     */
+    public function __construct(?string $message, array $messages = [])
+    {
+        parent::__construct($message ?: $messages[0]->toString());
+        $this->messages = $messages;
+    }
 
-	/**
-	 * @param  Message[]  $messages
-	 */
-	public function __construct(?string $message, array $messages = [])
-	{
-		parent::__construct($message ?: $messages[0]->toString());
-		$this->messages = $messages;
-	}
+    /**
+     * @return string[]
+     */
+    public function getMessages(): array
+    {
+        $res = [];
+        foreach ($this->messages as $message) {
+            $res[] = $message->toString();
+        }
 
+        return $res;
+    }
 
-	/**
-	 * @return string[]
-	 */
-	public function getMessages(): array
-	{
-		$res = [];
-		foreach ($this->messages as $message) {
-			$res[] = $message->toString();
-		}
-
-		return $res;
-	}
-
-
-	/**
-	 * @return Message[]
-	 */
-	public function getMessageObjects(): array
-	{
-		return $this->messages;
-	}
+    /**
+     * @return Message[]
+     */
+    public function getMessageObjects(): array
+    {
+        return $this->messages;
+    }
 }

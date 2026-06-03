@@ -28,12 +28,12 @@ class YamlFileLoader extends FileLoader
 
     protected function loadResource(string $resource): array
     {
-        if (!isset($this->yamlParser)) {
-            if (!class_exists(YamlParser::class)) {
+        if (! isset($this->yamlParser)) {
+            if (! class_exists(YamlParser::class)) {
                 throw new LogicException('Loading translations from the YAML format requires the Symfony Yaml component.');
             }
 
-            $this->yamlParser = new YamlParser();
+            $this->yamlParser = new YamlParser;
         }
 
         try {
@@ -42,7 +42,7 @@ class YamlFileLoader extends FileLoader
             throw new InvalidResourceException(\sprintf('The file "%s" does not contain valid YAML: ', $resource).$e->getMessage(), 0, $e);
         }
 
-        if (null !== $messages && !\is_array($messages)) {
+        if ($messages !== null && ! \is_array($messages)) {
             throw new InvalidResourceException(\sprintf('Unable to load file "%s".', $resource));
         }
 

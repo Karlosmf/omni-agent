@@ -14,7 +14,7 @@ use function Filament\Support\generate_search_term_expression;
 
 trait InteractsWithTableQuery
 {
-    public function applyRelationshipAggregates(EloquentBuilder | Relation $query): EloquentBuilder | Relation
+    public function applyRelationshipAggregates(EloquentBuilder|Relation $query): EloquentBuilder|Relation
     {
         return $query->when(
             filled([$this->getRelationshipToAvg(), $this->getColumnToAvg()]),
@@ -37,7 +37,7 @@ trait InteractsWithTableQuery
         );
     }
 
-    public function applyEagerLoading(EloquentBuilder | Relation $query): EloquentBuilder | Relation
+    public function applyEagerLoading(EloquentBuilder|Relation $query): EloquentBuilder|Relation
     {
         if (! $this->hasRelationship($query->getModel())) {
             return $query;

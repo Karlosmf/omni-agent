@@ -17,7 +17,7 @@ class Grid extends Component implements CanEntangleWithSingularRelationships
     /**
      * @param  array<string, ?int> | int | null  $columns
      */
-    final public function __construct(array | int | null $columns)
+    final public function __construct(array|int|null $columns)
     {
         $this->columns($columns);
     }
@@ -25,7 +25,7 @@ class Grid extends Component implements CanEntangleWithSingularRelationships
     /**
      * @param  array<string, ?int> | int | null  $columns
      */
-    public static function make(array | int | null $columns = 2): static
+    public static function make(array|int|null $columns = 2): static
     {
         $static = app(static::class, ['columns' => $columns]);
         $static->configure();

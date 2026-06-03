@@ -17,7 +17,7 @@ trait PropertiesAsserts
     /**
      * Search public properties in layerA
      *
-     * @param Layer|Layer[] $layerA
+     * @param  Layer|Layer[]  $layerA
      */
     public function assertHasNotPublicProperties($layerA): void
     {
@@ -38,7 +38,7 @@ trait PropertiesAsserts
         self::assertEquals(
             0,
             count($result),
-            'Found public property: ' . implode("\n", $result)
+            'Found public property: '.implode("\n", $result)
         );
     }
 }

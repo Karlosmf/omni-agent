@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest;
 
 /*
@@ -10,7 +11,6 @@ namespace Hamcrest;
  */
 class NullDescription implements Description
 {
-
     public function appendText($text)
     {
         return $this;

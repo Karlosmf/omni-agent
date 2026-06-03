@@ -15,7 +15,7 @@ class ReplaceFilter implements Filter
     protected $callback;
 
     /**
-     * @param callable $callable Will be called to get the new value for each property to replace
+     * @param  callable  $callable  Will be called to get the new value for each property to replace
      */
     public function __construct(callable $callable)
     {

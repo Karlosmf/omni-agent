@@ -37,7 +37,7 @@ final class MultiSort implements SortCombinator
     private readonly array $sorts;
 
     /**
-     * @param OrderingExtended ...$sorts
+     * @param  OrderingExtended  ...$sorts
      */
     private function __construct(Sort|Closure|callable ...$sorts)
     {
@@ -48,7 +48,7 @@ final class MultiSort implements SortCombinator
     }
 
     /**
-     * @param OrderingExtended ...$sorts
+     * @param  OrderingExtended  ...$sorts
      */
     public static function all(Sort|Closure|callable ...$sorts): self
     {
@@ -56,11 +56,11 @@ final class MultiSort implements SortCombinator
     }
 
     /**
-     * @param OrderingExtended ...$sorts
+     * @param  OrderingExtended  ...$sorts
      */
     public function append(Sort|Closure|callable ...$sorts): self
     {
-        if ([] === $sorts) {
+        if ($sorts === []) {
             return $this;
         }
 
@@ -68,11 +68,11 @@ final class MultiSort implements SortCombinator
     }
 
     /**
-     * @param OrderingExtended ...$sorts
+     * @param  OrderingExtended  ...$sorts
      */
     public function prepend(Sort|Closure|callable ...$sorts): self
     {
-        if ([] === $sorts) {
+        if ($sorts === []) {
             return $this;
         }
 
@@ -92,11 +92,12 @@ final class MultiSort implements SortCombinator
 
     public function sort(iterable $value): Iterator
     {
-        if ([] === $this->sorts) {
+        if ($this->sorts === []) {
             return MapIterator::toIterator($value);
         }
 
-        $class = new class () extends ArrayIterator {
+        $class = new class extends ArrayIterator
+        {
             public function seek(int $offset): void
             {
                 try {
@@ -107,7 +108,7 @@ final class MultiSort implements SortCombinator
             }
         };
 
-        $it = new $class(!is_array($value) ? iterator_to_array($value) : $value);
+        $it = new $class(! is_array($value) ? iterator_to_array($value) : $value);
         $it->uasort($this);
 
         return $it;

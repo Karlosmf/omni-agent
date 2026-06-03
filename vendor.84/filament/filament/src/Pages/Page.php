@@ -42,15 +42,15 @@ abstract class Page extends BasePage
 
     protected static bool $isDiscovered = true;
 
-    protected static string | UnitEnum | null $navigationGroup = null;
+    protected static string|UnitEnum|null $navigationGroup = null;
 
-    protected static string | Htmlable | null $navigationBadgeTooltip = null;
+    protected static string|Htmlable|null $navigationBadgeTooltip = null;
 
     protected static ?string $navigationParentItem = null;
 
-    protected static string | BackedEnum | null $navigationIcon = null;
+    protected static string|BackedEnum|null $navigationIcon = null;
 
-    protected static string | BackedEnum | null $activeNavigationIcon = null;
+    protected static string|BackedEnum|null $activeNavigationIcon = null;
 
     protected static ?string $navigationLabel = null;
 
@@ -140,7 +140,7 @@ abstract class Page extends BasePage
     /**
      * @return string | array<string>
      */
-    public static function getNavigationItemActiveRoutePattern(): string | array
+    public static function getNavigationItemActiveRoutePattern(): string|array
     {
         return static::getRouteName();
     }
@@ -149,7 +149,7 @@ abstract class Page extends BasePage
     {
         $panel ??= Filament::getCurrentOrDefaultPanel();
 
-        $routeName = 'pages.' . static::getRelativeRouteName($panel);
+        $routeName = 'pages.'.static::getRelativeRouteName($panel);
         $routeName = static::prependClusterRouteBaseName($panel, $routeName);
 
         return $panel->generateRouteName($routeName);
@@ -167,7 +167,7 @@ abstract class Page extends BasePage
         return [];
     }
 
-    public static function getNavigationGroup(): string | UnitEnum | null
+    public static function getNavigationGroup(): string|UnitEnum|null
     {
         return static::$navigationGroup;
     }
@@ -177,12 +177,12 @@ abstract class Page extends BasePage
         return static::$navigationParentItem;
     }
 
-    public static function getActiveNavigationIcon(): string | BackedEnum | Htmlable | null
+    public static function getActiveNavigationIcon(): string|BackedEnum|Htmlable|null
     {
         return static::$activeNavigationIcon ?? static::getNavigationIcon();
     }
 
-    public static function getNavigationIcon(): string | BackedEnum | Htmlable | null
+    public static function getNavigationIcon(): string|BackedEnum|Htmlable|null
     {
         return static::$navigationIcon;
     }
@@ -203,12 +203,12 @@ abstract class Page extends BasePage
     /**
      * @return string | array<string> | null
      */
-    public static function getNavigationBadgeColor(): string | array | null
+    public static function getNavigationBadgeColor(): string|array|null
     {
         return null;
     }
 
-    public static function getNavigationBadgeTooltip(): string | Htmlable | null
+    public static function getNavigationBadgeTooltip(): string|Htmlable|null
     {
         return static::$navigationBadgeTooltip;
     }
@@ -254,7 +254,7 @@ abstract class Page extends BasePage
     /**
      * @return int | array<string, ?int>
      */
-    public function getHeaderWidgetsColumns(): int | array
+    public function getHeaderWidgetsColumns(): int|array
     {
         return 2;
     }
@@ -285,14 +285,14 @@ abstract class Page extends BasePage
      */
     protected function filterVisibleWidgets(array $widgets): array
     {
-        return array_filter($widgets, fn (string | WidgetConfiguration $widget): bool => $this->normalizeWidgetClass($widget)::canView());
+        return array_filter($widgets, fn (string|WidgetConfiguration $widget): bool => $this->normalizeWidgetClass($widget)::canView());
     }
 
     /**
      * @param  class-string<Widget> | WidgetConfiguration  $widget
      * @return class-string<Widget>
      */
-    protected function normalizeWidgetClass(string | WidgetConfiguration $widget): string
+    protected function normalizeWidgetClass(string|WidgetConfiguration $widget): string
     {
         if ($widget instanceof WidgetConfiguration) {
             return $widget->widget;
@@ -304,7 +304,7 @@ abstract class Page extends BasePage
     /**
      * @return int | array<string, ?int>
      */
-    public function getFooterWidgetsColumns(): int | array
+    public function getFooterWidgetsColumns(): int|array
     {
         return 2;
     }
@@ -375,8 +375,8 @@ abstract class Page extends BasePage
     {
         return collect($widgets)
             ->values()
-            ->filter(fn (string | WidgetConfiguration $widget): bool => $this->normalizeWidgetClass($widget)::canView())
-            ->map(fn (string | WidgetConfiguration $widget, int $widgetKey): Livewire => Livewire::make(
+            ->filter(fn (string|WidgetConfiguration $widget): bool => $this->normalizeWidgetClass($widget)::canView())
+            ->map(fn (string|WidgetConfiguration $widget, int $widgetKey): Livewire => Livewire::make(
                 $widgetClass = $this->normalizeWidgetClass($widget),
                 fn (): array => [
                     ...$this->getWidgetData(),

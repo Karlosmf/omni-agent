@@ -42,7 +42,7 @@ final class See extends BaseTag implements Factory\StaticMethod
      */
     public function __construct(Reference $refers, ?Description $description = null)
     {
-        $this->refers      = $refers;
+        $this->refers = $refers;
         $this->description = $description;
     }
 
@@ -59,10 +59,10 @@ final class See extends BaseTag implements Factory\StaticMethod
 
         // https://tools.ietf.org/html/rfc2396#section-3
         if (preg_match('#\w://\w#', $parts[0])) {
-            return new static(new Url($parts[0]), $description);
+            return new self(new Url($parts[0]), $description);
         }
 
-        return new static(new FqsenRef(self::resolveFqsen($parts[0], $typeResolver, $context)), $description);
+        return new self(new FqsenRef(self::resolveFqsen($parts[0], $typeResolver, $context)), $description);
     }
 
     private static function resolveFqsen(string $parts, ?FqsenResolver $fqsenResolver, ?TypeContext $context): Fqsen
@@ -71,11 +71,11 @@ final class See extends BaseTag implements Factory\StaticMethod
         $fqsenParts = explode('::', $parts);
         $resolved = $fqsenResolver->resolve($fqsenParts[0], $context);
 
-        if (!array_key_exists(1, $fqsenParts)) {
+        if (! array_key_exists(1, $fqsenParts)) {
             return $resolved;
         }
 
-        return new Fqsen($resolved . '::' . $fqsenParts[1]);
+        return new Fqsen($resolved.'::'.$fqsenParts[1]);
     }
 
     /**
@@ -99,6 +99,6 @@ final class See extends BaseTag implements Factory\StaticMethod
 
         $refers = (string) $this->refers;
 
-        return $refers . ($description !== '' ? ($refers !== '' ? ' ' : '') . $description : '');
+        return $refers.($description !== '' ? ($refers !== '' ? ' ' : '').$description : '');
     }
 }

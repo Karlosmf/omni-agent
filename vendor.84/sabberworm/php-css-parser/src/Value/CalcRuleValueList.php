@@ -9,7 +9,7 @@ use Sabberworm\CSS\OutputFormat;
 class CalcRuleValueList extends RuleValueList
 {
     /**
-     * @param int<1, max>|null $lineNumber
+     * @param  int<1, max>|null  $lineNumber
      */
     public function __construct(?int $lineNumber = null)
     {

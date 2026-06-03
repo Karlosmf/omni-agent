@@ -34,7 +34,9 @@ use Symfony\Component\Mime\RawMessage;
 class SendmailTransport extends AbstractTransport
 {
     private string $command = '/usr/sbin/sendmail -bs';
+
     private ProcessStream $stream;
+
     private ?SmtpTransport $transport = null;
 
     /**
@@ -53,15 +55,15 @@ class SendmailTransport extends AbstractTransport
     {
         parent::__construct($dispatcher, $logger);
 
-        if (null !== $command) {
-            if (!str_contains($command, ' -bs') && !str_contains($command, ' -t')) {
+        if ($command !== null) {
+            if (! str_contains($command, ' -bs') && ! str_contains($command, ' -t')) {
                 throw new \InvalidArgumentException(\sprintf('Unsupported sendmail command flags "%s"; must be one of "-bs" or "-t" but can include additional flags.', $command));
             }
 
             $this->command = $command;
         }
 
-        $this->stream = new ProcessStream();
+        $this->stream = new ProcessStream;
         if (str_contains($this->command, ' -bs')) {
             $this->stream->setCommand($this->command);
             $this->stream->setInteractive(true);
@@ -97,13 +99,13 @@ class SendmailTransport extends AbstractTransport
             $command = str_replace(' -t', '', $command);
         }
 
-        if (!str_contains($command, ' -f')) {
+        if (! str_contains($command, ' -f')) {
             $command .= ' -f'.escapeshellarg($message->getEnvelope()->getSender()->getEncodedAddress());
         }
 
         $chunks = AbstractStream::replace("\r\n", "\n", $message->toIterable());
 
-        if (!str_contains($command, ' -i') && !str_contains($command, ' -oi')) {
+        if (! str_contains($command, ' -i') && ! str_contains($command, ' -oi')) {
             $chunks = AbstractStream::replace("\n.", "\n..", $chunks);
         }
 

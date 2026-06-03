@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,15 +9,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Report;
 
 use const DIRECTORY_SEPARATOR;
-use function basename;
-use function count;
-use function preg_match;
-use function range;
-use function str_replace;
-use function time;
+
 use DOMImplementation;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Node\File;
@@ -23,10 +21,17 @@ use SebastianBergmann\CodeCoverage\Util\Filesystem;
 use SebastianBergmann\CodeCoverage\Util\Xml;
 use SebastianBergmann\CodeCoverage\WriteOperationFailedException;
 
+use function basename;
+use function count;
+use function preg_match;
+use function range;
+use function str_replace;
+use function time;
+
 final class Cobertura
 {
     /**
-     * @param null|non-empty-string $target
+     * @param  null|non-empty-string  $target
      *
      * @throws WriteOperationFailedException
      */
@@ -44,20 +49,20 @@ final class Cobertura
             'http://cobertura.sourceforge.net/xml/coverage-04.dtd',
         );
 
-        $document             = $implementation->createDocument('', '', $documentType);
+        $document = $implementation->createDocument('', '', $documentType);
         $document->xmlVersion = '1.0';
-        $document->encoding   = 'UTF-8';
+        $document->encoding = 'UTF-8';
 
         $coverageElement = $document->createElement('coverage');
 
-        $linesValid   = $report->numberOfExecutableLines();
+        $linesValid = $report->numberOfExecutableLines();
         $linesCovered = $report->numberOfExecutedLines();
-        $lineRate     = $linesValid === 0 ? 0 : ($linesCovered / $linesValid);
+        $lineRate = $linesValid === 0 ? 0 : ($linesCovered / $linesValid);
         $coverageElement->setAttribute('line-rate', (string) $lineRate);
 
-        $branchesValid   = $report->numberOfExecutableBranches();
+        $branchesValid = $report->numberOfExecutableBranches();
         $branchesCovered = $report->numberOfExecutedBranches();
-        $branchRate      = $branchesValid === 0 ? 0 : ($branchesCovered / $branchesValid);
+        $branchRate = $branchesValid === 0 ? 0 : ($branchesCovered / $branchesValid);
         $coverageElement->setAttribute('branch-rate', (string) $branchRate);
 
         $coverageElement->setAttribute('lines-covered', (string) $report->numberOfExecutedLines());
@@ -82,24 +87,24 @@ final class Cobertura
         $complexity = 0;
 
         foreach ($report as $item) {
-            if (!$item instanceof File) {
+            if (! $item instanceof File) {
                 continue;
             }
 
-            $packageElement    = $document->createElement('package');
+            $packageElement = $document->createElement('package');
             $packageComplexity = 0;
 
-            $packageElement->setAttribute('name', str_replace($report->pathAsString() . DIRECTORY_SEPARATOR, '', $item->pathAsString()));
+            $packageElement->setAttribute('name', str_replace($report->pathAsString().DIRECTORY_SEPARATOR, '', $item->pathAsString()));
 
-            $linesValid   = $item->numberOfExecutableLines();
+            $linesValid = $item->numberOfExecutableLines();
             $linesCovered = $item->numberOfExecutedLines();
-            $lineRate     = $linesValid === 0 ? 0 : ($linesCovered / $linesValid);
+            $lineRate = $linesValid === 0 ? 0 : ($linesCovered / $linesValid);
 
             $packageElement->setAttribute('line-rate', (string) $lineRate);
 
-            $branchesValid   = $item->numberOfExecutableBranches();
+            $branchesValid = $item->numberOfExecutableBranches();
             $branchesCovered = $item->numberOfExecutedBranches();
-            $branchRate      = $branchesValid === 0 ? 0 : ($branchesCovered / $branchesValid);
+            $branchRate = $branchesValid === 0 ? 0 : ($branchesCovered / $branchesValid);
 
             $packageElement->setAttribute('branch-rate', (string) $branchRate);
 
@@ -110,25 +115,25 @@ final class Cobertura
 
             $packageElement->appendChild($classesElement);
 
-            $classes      = $item->classesAndTraits();
+            $classes = $item->classesAndTraits();
             $coverageData = $item->lineCoverageData();
 
             foreach ($classes as $className => $class) {
-                $complexity        += $class->ccn;
+                $complexity += $class->ccn;
                 $packageComplexity += $class->ccn;
 
-                $linesValid   = $class->executableLines;
+                $linesValid = $class->executableLines;
                 $linesCovered = $class->executedLines;
-                $lineRate     = $linesValid === 0 ? 0 : ($linesCovered / $linesValid);
+                $lineRate = $linesValid === 0 ? 0 : ($linesCovered / $linesValid);
 
-                $branchesValid   = $class->executableBranches;
+                $branchesValid = $class->executableBranches;
                 $branchesCovered = $class->executedBranches;
-                $branchRate      = $branchesValid === 0 ? 0 : ($branchesCovered / $branchesValid);
+                $branchRate = $branchesValid === 0 ? 0 : ($branchesCovered / $branchesValid);
 
                 $classElement = $document->createElement('class');
 
                 $classElement->setAttribute('name', $className);
-                $classElement->setAttribute('filename', str_replace($report->pathAsString() . DIRECTORY_SEPARATOR, '', $item->pathAsString()));
+                $classElement->setAttribute('filename', str_replace($report->pathAsString().DIRECTORY_SEPARATOR, '', $item->pathAsString()));
                 $classElement->setAttribute('line-rate', (string) $lineRate);
                 $classElement->setAttribute('branch-rate', (string) $branchRate);
                 $classElement->setAttribute('complexity', (string) $class->ccn);
@@ -150,13 +155,13 @@ final class Cobertura
 
                     preg_match("/\((.*?)\)/", $method->signature, $signature);
 
-                    $linesValid   = $method->executableLines;
+                    $linesValid = $method->executableLines;
                     $linesCovered = $method->executedLines;
-                    $lineRate     = $linesCovered / $linesValid;
+                    $lineRate = $linesCovered / $linesValid;
 
-                    $branchesValid   = $method->executableBranches;
+                    $branchesValid = $method->executableBranches;
                     $branchesCovered = $method->executedBranches;
-                    $branchRate      = $branchesValid === 0 ? 0 : ($branchesCovered / $branchesValid);
+                    $branchRate = $branchesValid === 0 ? 0 : ($branchesCovered / $branchesValid);
 
                     $methodElement = $document->createElement('method');
 
@@ -171,7 +176,7 @@ final class Cobertura
                     $methodElement->appendChild($methodLinesElement);
 
                     foreach (range($method->startLine, $method->endLine) as $line) {
-                        if (!isset($coverageData[$line])) {
+                        if (! isset($coverageData[$line])) {
                             continue;
                         }
                         $methodLineElement = $document->createElement('line');
@@ -196,15 +201,15 @@ final class Cobertura
                 continue;
             }
 
-            $functionsComplexity      = 0;
-            $functionsLinesValid      = 0;
-            $functionsLinesCovered    = 0;
-            $functionsBranchesValid   = 0;
+            $functionsComplexity = 0;
+            $functionsLinesValid = 0;
+            $functionsLinesCovered = 0;
+            $functionsBranchesValid = 0;
             $functionsBranchesCovered = 0;
 
             $classElement = $document->createElement('class');
             $classElement->setAttribute('name', basename($item->pathAsString()));
-            $classElement->setAttribute('filename', str_replace($report->pathAsString() . DIRECTORY_SEPARATOR, '', $item->pathAsString()));
+            $classElement->setAttribute('filename', str_replace($report->pathAsString().DIRECTORY_SEPARATOR, '', $item->pathAsString()));
 
             $methodsElement = $document->createElement('methods');
 
@@ -221,22 +226,22 @@ final class Cobertura
                     continue;
                 }
 
-                $complexity          += $function->ccn;
-                $packageComplexity   += $function->ccn;
+                $complexity += $function->ccn;
+                $packageComplexity += $function->ccn;
                 $functionsComplexity += $function->ccn;
 
-                $linesValid   = $function->executableLines;
+                $linesValid = $function->executableLines;
                 $linesCovered = $function->executedLines;
-                $lineRate     = $linesCovered / $linesValid;
+                $lineRate = $linesCovered / $linesValid;
 
-                $functionsLinesValid   += $linesValid;
+                $functionsLinesValid += $linesValid;
                 $functionsLinesCovered += $linesCovered;
 
-                $branchesValid   = $function->executableBranches;
+                $branchesValid = $function->executableBranches;
                 $branchesCovered = $function->executedBranches;
-                $branchRate      = $branchesValid === 0 ? 0 : ($branchesCovered / $branchesValid);
+                $branchRate = $branchesValid === 0 ? 0 : ($branchesCovered / $branchesValid);
 
-                $functionsBranchesValid   += $branchesValid;
+                $functionsBranchesValid += $branchesValid;
                 $functionsBranchesCovered += $branchesValid;
 
                 $methodElement = $document->createElement('method');
@@ -252,7 +257,7 @@ final class Cobertura
                 $methodElement->appendChild($methodLinesElement);
 
                 foreach (range($function->startLine, $function->endLine) as $line) {
-                    if (!isset($coverageData[$line])) {
+                    if (! isset($coverageData[$line])) {
                         continue;
                     }
                     $methodLineElement = $document->createElement('line');
@@ -276,7 +281,7 @@ final class Cobertura
                 continue;
             }
 
-            $lineRate   = $functionsLinesCovered / $functionsLinesValid;
+            $lineRate = $functionsLinesCovered / $functionsLinesValid;
             $branchRate = $functionsBranchesValid === 0 ? 0 : ($functionsBranchesCovered / $functionsBranchesValid);
 
             $classElement->setAttribute('line-rate', (string) $lineRate);

@@ -21,14 +21,14 @@ class SelectAction extends Action implements HasEmbeddedView
     /**
      * @var array<string> | Arrayable | string | Closure
      */
-    protected array | Arrayable | string | Closure $options = [];
+    protected array|Arrayable|string|Closure $options = [];
 
     protected ?string $placeholder = null;
 
     /**
      * @param  array<string> | Arrayable | string | Closure  $options
      */
-    public function options(array | Arrayable | string | Closure $options): static
+    public function options(array|Arrayable|string|Closure $options): static
     {
         $this->options = $options;
 
@@ -54,7 +54,7 @@ class SelectAction extends Action implements HasEmbeddedView
             enum_exists($enum = $options)
         ) {
             if (is_a($enum, LabelInterface::class, allow_string: true)) {
-                return array_reduce($enum::cases(), function (array $carry, LabelInterface & UnitEnum $case): array {
+                return array_reduce($enum::cases(), function (array $carry, LabelInterface&UnitEnum $case): array {
                     $carry[$case->value ?? $case->name] = $case->getLabel() ?? $case->name;
 
                     return $carry;

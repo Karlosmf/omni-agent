@@ -50,7 +50,9 @@ final class Color
     ];
 
     private string $foreground;
+
     private string $background;
+
     private array $options = [];
 
     public function __construct(string $foreground = '', string $background = '', array $options = [])
@@ -59,7 +61,7 @@ final class Color
         $this->background = $this->parseColor($background, true);
 
         foreach ($options as $option) {
-            if (!isset(self::AVAILABLE_OPTIONS[$option])) {
+            if (! isset(self::AVAILABLE_OPTIONS[$option])) {
                 throw new InvalidArgumentException(\sprintf('Invalid option specified: "%s". Expected one of (%s).', $option, implode(', ', array_keys(self::AVAILABLE_OPTIONS))));
             }
 
@@ -75,16 +77,16 @@ final class Color
     public function set(): string
     {
         $setCodes = [];
-        if ('' !== $this->foreground) {
+        if ($this->foreground !== '') {
             $setCodes[] = $this->foreground;
         }
-        if ('' !== $this->background) {
+        if ($this->background !== '') {
             $setCodes[] = $this->background;
         }
         foreach ($this->options as $option) {
             $setCodes[] = $option['set'];
         }
-        if (0 === \count($setCodes)) {
+        if (\count($setCodes) === 0) {
             return '';
         }
 
@@ -94,16 +96,16 @@ final class Color
     public function unset(): string
     {
         $unsetCodes = [];
-        if ('' !== $this->foreground) {
+        if ($this->foreground !== '') {
             $unsetCodes[] = 39;
         }
-        if ('' !== $this->background) {
+        if ($this->background !== '') {
             $unsetCodes[] = 49;
         }
         foreach ($this->options as $option) {
             $unsetCodes[] = $option['unset'];
         }
-        if (0 === \count($unsetCodes)) {
+        if (\count($unsetCodes) === 0) {
             return '';
         }
 
@@ -112,11 +114,11 @@ final class Color
 
     private function parseColor(string $color, bool $background = false): string
     {
-        if ('' === $color) {
+        if ($color === '') {
             return '';
         }
 
-        if ('#' === $color[0]) {
+        if ($color[0] === '#') {
             return ($background ? '4' : '3').Terminal::getColorMode()->convertFromHexToAnsiColorCode($color);
         }
 

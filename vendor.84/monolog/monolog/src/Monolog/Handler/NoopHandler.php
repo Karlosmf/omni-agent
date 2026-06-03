@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -25,7 +27,7 @@ use Monolog\LogRecord;
 class NoopHandler extends Handler
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function isHandling(LogRecord $record): bool
     {
@@ -33,7 +35,7 @@ class NoopHandler extends Handler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function handle(LogRecord $record): bool
     {

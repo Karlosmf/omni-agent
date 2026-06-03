@@ -9,11 +9,11 @@ use Illuminate\Support\Arr;
 
 trait HasIndicators
 {
-    protected string | Closure | null $indicateUsing = null;
+    protected string|Closure|null $indicateUsing = null;
 
-    protected Indicator | string | Htmlable | Closure | null $indicator = null;
+    protected Indicator|string|Htmlable|Closure|null $indicator = null;
 
-    public function indicator(Indicator | string | Htmlable | Closure | null $indicator): static
+    public function indicator(Indicator|string|Htmlable|Closure|null $indicator): static
     {
         $this->indicator = $indicator;
 
@@ -60,7 +60,7 @@ trait HasIndicators
         return $indicators;
     }
 
-    public function getIndicator(): Indicator | string | Htmlable
+    public function getIndicator(): Indicator|string|Htmlable
     {
         $state = $this->getState();
 

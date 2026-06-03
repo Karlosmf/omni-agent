@@ -33,67 +33,67 @@ final class StyleMerger
     }
 
     /**
-     * @param Style $styleToUpdate (passed as reference)
+     * @param  Style  $styleToUpdate  (passed as reference)
      */
     private function mergeFontStyles(Style $styleToUpdate, Style $style, Style $baseStyle): void
     {
-        if (!$style->hasSetFontBold() && $baseStyle->isFontBold()) {
+        if (! $style->hasSetFontBold() && $baseStyle->isFontBold()) {
             $styleToUpdate->setFontBold();
         }
-        if (!$style->hasSetFontItalic() && $baseStyle->isFontItalic()) {
+        if (! $style->hasSetFontItalic() && $baseStyle->isFontItalic()) {
             $styleToUpdate->setFontItalic();
         }
-        if (!$style->hasSetFontUnderline() && $baseStyle->isFontUnderline()) {
+        if (! $style->hasSetFontUnderline() && $baseStyle->isFontUnderline()) {
             $styleToUpdate->setFontUnderline();
         }
-        if (!$style->hasSetFontStrikethrough() && $baseStyle->isFontStrikethrough()) {
+        if (! $style->hasSetFontStrikethrough() && $baseStyle->isFontStrikethrough()) {
             $styleToUpdate->setFontStrikethrough();
         }
     }
 
     /**
-     * @param Style $styleToUpdate Style to update (passed as reference)
+     * @param  Style  $styleToUpdate  Style to update (passed as reference)
      */
     private function mergeOtherFontProperties(Style $styleToUpdate, Style $style, Style $baseStyle): void
     {
-        if (!$style->hasSetFontSize() && Style::DEFAULT_FONT_SIZE !== $baseStyle->getFontSize()) {
+        if (! $style->hasSetFontSize() && $baseStyle->getFontSize() !== Style::DEFAULT_FONT_SIZE) {
             $styleToUpdate->setFontSize($baseStyle->getFontSize());
         }
-        if (!$style->hasSetFontColor() && Style::DEFAULT_FONT_COLOR !== $baseStyle->getFontColor()) {
+        if (! $style->hasSetFontColor() && $baseStyle->getFontColor() !== Style::DEFAULT_FONT_COLOR) {
             $styleToUpdate->setFontColor($baseStyle->getFontColor());
         }
-        if (!$style->hasSetFontName() && Style::DEFAULT_FONT_NAME !== $baseStyle->getFontName()) {
+        if (! $style->hasSetFontName() && $baseStyle->getFontName() !== Style::DEFAULT_FONT_NAME) {
             $styleToUpdate->setFontName($baseStyle->getFontName());
         }
     }
 
     /**
-     * @param Style $styleToUpdate Style to update (passed as reference)
+     * @param  Style  $styleToUpdate  Style to update (passed as reference)
      */
     private function mergeCellProperties(Style $styleToUpdate, Style $style, Style $baseStyle): void
     {
-        if (!$style->hasSetWrapText() && $baseStyle->hasSetWrapText()) {
+        if (! $style->hasSetWrapText() && $baseStyle->hasSetWrapText()) {
             $styleToUpdate->setShouldWrapText($baseStyle->shouldWrapText());
         }
-        if (!$style->hasSetTextRotation() && $baseStyle->hasSetTextRotation()) {
+        if (! $style->hasSetTextRotation() && $baseStyle->hasSetTextRotation()) {
             $styleToUpdate->setTextRotation($baseStyle->textRotation());
         }
-        if (!$style->hasSetShrinkToFit() && $baseStyle->shouldShrinkToFit()) {
+        if (! $style->hasSetShrinkToFit() && $baseStyle->shouldShrinkToFit()) {
             $styleToUpdate->setShouldShrinkToFit();
         }
-        if (!$style->hasSetCellAlignment() && $baseStyle->shouldApplyCellAlignment()) {
+        if (! $style->hasSetCellAlignment() && $baseStyle->shouldApplyCellAlignment()) {
             $styleToUpdate->setCellAlignment($baseStyle->getCellAlignment());
         }
-        if (!$style->hasSetCellVerticalAlignment() && $baseStyle->shouldApplyCellVerticalAlignment()) {
+        if (! $style->hasSetCellVerticalAlignment() && $baseStyle->shouldApplyCellVerticalAlignment()) {
             $styleToUpdate->setCellVerticalAlignment($baseStyle->getCellVerticalAlignment());
         }
-        if (null === $style->getBorder() && null !== ($border = $baseStyle->getBorder())) {
+        if ($style->getBorder() === null && null !== ($border = $baseStyle->getBorder())) {
             $styleToUpdate->setBorder($border);
         }
-        if (null === $style->getFormat() && null !== ($format = $baseStyle->getFormat())) {
+        if ($style->getFormat() === null && null !== ($format = $baseStyle->getFormat())) {
             $styleToUpdate->setFormat($format);
         }
-        if (null === $style->getBackgroundColor() && null !== ($bgColor = $baseStyle->getBackgroundColor())) {
+        if ($style->getBackgroundColor() === null && null !== ($bgColor = $baseStyle->getBackgroundColor())) {
             $styleToUpdate->setBackgroundColor($bgColor);
         }
     }

@@ -22,8 +22,11 @@ use Symfony\Component\Console\Input\InputOption;
 class FilterOptions
 {
     private bool $filter = false;
+
     private ?string $pattern = null;
+
     private bool $insensitive = false;
+
     private bool $invert = false;
 
     /**
@@ -42,20 +45,18 @@ class FilterOptions
 
     /**
      * Bind input and prepare filter.
-     *
-     * @param InputInterface $input
      */
     public function bind(InputInterface $input)
     {
         $this->validateInput($input);
 
-        if (!$pattern = $input->getOption('grep')) {
+        if (! $pattern = $input->getOption('grep')) {
             $this->filter = false;
 
             return;
         }
 
-        if (!$this->stringIsRegex($pattern)) {
+        if (! $this->stringIsRegex($pattern)) {
             $pattern = '/'.\preg_quote($pattern, '/').'/';
         }
 
@@ -81,9 +82,6 @@ class FilterOptions
 
     /**
      * Check whether a string matches the current filter options.
-     *
-     * @param string     $string
-     * @param array|null $matches
      */
     public function match(string $string, ?array &$matches = null): bool
     {
@@ -98,12 +96,10 @@ class FilterOptions
      * Validate that grep, invert and insensitive input options are consistent.
      *
      * @throws RuntimeException if input is invalid
-     *
-     * @param InputInterface $input
      */
     private function validateInput(InputInterface $input)
     {
-        if (!$input->getOption('grep')) {
+        if (! $input->getOption('grep')) {
             foreach (['invert', 'insensitive'] as $option) {
                 if ($input->getOption($option)) {
                     throw new RuntimeException('--'.$option.' does not make sense without --grep');
@@ -114,8 +110,6 @@ class FilterOptions
 
     /**
      * Check whether a string appears to be a regular expression.
-     *
-     * @param string $string
      */
     private function stringIsRegex(string $string): bool
     {
@@ -126,8 +120,6 @@ class FilterOptions
      * Validate that $pattern is a valid regular expression.
      *
      * @throws RuntimeException if pattern is invalid
-     *
-     * @param string $pattern
      */
     private function validateRegex(string $pattern)
     {

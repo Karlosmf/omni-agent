@@ -40,7 +40,7 @@ class PhpFileLoader extends FileLoader
         $this->setCurrentDir(\dirname($path));
 
         // Expose RoutesReference::config() as Routes::config()
-        if (!class_exists(Routes::class)) {
+        if (! class_exists(Routes::class)) {
             class_alias(RoutesReference::class, Routes::class);
         }
 
@@ -69,11 +69,11 @@ class PhpFileLoader extends FileLoader
         if (\is_object($result) && \is_callable($result)) {
             $collection = $this->callConfigurator($result, $path, $file);
         } elseif (\is_array($result)) {
-            $collection = new RouteCollection();
+            $collection = new RouteCollection;
             $loader = new YamlFileLoader($this->locator, $this->env);
             $loader->setResolver($this->resolver ?? new LoaderResolver([$this]));
             (new \ReflectionMethod(YamlFileLoader::class, 'loadContent'))->invoke($loader, $collection, $result, $path, $file);
-        } elseif (!($collection = $result) instanceof RouteCollection) {
+        } elseif (! ($collection = $result) instanceof RouteCollection) {
             throw new InvalidArgumentException(\sprintf('The return value in config file "%s" is expected to be a RouteCollection, an array or a configurator callable, but got "%s".', $path, get_debug_type($result)));
         }
 
@@ -84,12 +84,12 @@ class PhpFileLoader extends FileLoader
 
     public function supports(mixed $resource, ?string $type = null): bool
     {
-        return \is_string($resource) && 'php' === pathinfo($resource, \PATHINFO_EXTENSION) && (!$type || 'php' === $type);
+        return \is_string($resource) && pathinfo($resource, \PATHINFO_EXTENSION) === 'php' && (! $type || $type === 'php');
     }
 
     protected function callConfigurator(callable $callback, string $path, string $file): RouteCollection
     {
-        $collection = new RouteCollection();
+        $collection = new RouteCollection;
 
         $callback(new RoutingConfigurator($collection, $this, $path, $file, $this->env));
 
@@ -100,6 +100,4 @@ class PhpFileLoader extends FileLoader
 /**
  * @internal
  */
-final class ProtectedPhpFileLoader extends PhpFileLoader
-{
-}
+final class ProtectedPhpFileLoader extends PhpFileLoader {}

@@ -22,7 +22,7 @@ interface CanEntangleWithSingularRelationships
      */
     public function getRelatedModel(): ?string;
 
-    public function getRelationship(): BelongsTo | HasOne | MorphOne | null;
+    public function getRelationship(): BelongsTo|HasOne|MorphOne|null;
 
     public function getRelationshipName(): ?string;
 

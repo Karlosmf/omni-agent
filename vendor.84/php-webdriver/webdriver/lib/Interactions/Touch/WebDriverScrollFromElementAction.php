@@ -8,11 +8,12 @@ use Facebook\WebDriver\WebDriverElement;
 class WebDriverScrollFromElementAction extends WebDriverTouchAction implements WebDriverAction
 {
     private $x;
+
     private $y;
 
     /**
-     * @param int $x
-     * @param int $y
+     * @param  int  $x
+     * @param  int  $y
      */
     public function __construct(
         WebDriverTouchScreen $touch_screen,

@@ -10,21 +10,21 @@ trait CanFormatState
 {
     protected ?Closure $formatStateUsing = null;
 
-    protected int | Closure | null $characterLimit = null;
+    protected int|Closure|null $characterLimit = null;
 
-    protected string | Closure | null $characterLimitEnd = null;
+    protected string|Closure|null $characterLimitEnd = null;
 
-    protected int | Closure | null $wordLimit = null;
+    protected int|Closure|null $wordLimit = null;
 
-    protected string | Closure | null $wordLimitEnd = null;
+    protected string|Closure|null $wordLimitEnd = null;
 
-    protected string | Closure | null $prefix = null;
+    protected string|Closure|null $prefix = null;
 
-    protected string | Closure | null $suffix = null;
+    protected string|Closure|null $suffix = null;
 
     protected bool $isListedAsJson = false;
 
-    public function limit(int | Closure | null $length = 100, string | Closure | null $end = '...'): static
+    public function limit(int|Closure|null $length = 100, string|Closure|null $end = '...'): static
     {
         $this->characterLimit = $length;
         $this->characterLimitEnd = $end;
@@ -32,7 +32,7 @@ trait CanFormatState
         return $this;
     }
 
-    public function words(int | Closure | null $words = 100, string | Closure | null $end = '...'): static
+    public function words(int|Closure|null $words = 100, string|Closure|null $end = '...'): static
     {
         $this->wordLimit = $words;
         $this->wordLimitEnd = $end;
@@ -40,14 +40,14 @@ trait CanFormatState
         return $this;
     }
 
-    public function prefix(string | Closure | null $prefix): static
+    public function prefix(string|Closure|null $prefix): static
     {
         $this->prefix = $prefix;
 
         return $this;
     }
 
-    public function suffix(string | Closure | null $suffix): static
+    public function suffix(string|Closure|null $suffix): static
     {
         $this->suffix = $suffix;
 
@@ -83,7 +83,7 @@ trait CanFormatState
         $suffix = $this->getSuffix();
 
         if (filled($prefix)) {
-            $state = $prefix . $state;
+            $state = $prefix.$state;
         }
 
         if (filled($suffix)) {

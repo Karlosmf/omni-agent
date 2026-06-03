@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,11 +9,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\Constraint;
 
-use function sprintf;
 use PHPUnit\Util\Filter;
 use Throwable;
+
+use function sprintf;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -67,8 +71,8 @@ final class Exception extends Constraint
         $message = '';
 
         if ($other instanceof Throwable) {
-            $message = '. Message was: "' . $other->getMessage() . '" at'
-                . "\n" . Filter::stackTraceFromThrowableAsString($other);
+            $message = '. Message was: "'.$other->getMessage().'" at'
+                ."\n".Filter::stackTraceFromThrowableAsString($other);
         }
 
         return sprintf(

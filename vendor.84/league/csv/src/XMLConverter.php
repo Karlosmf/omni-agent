@@ -39,28 +39,32 @@ class XMLConverter
 {
     /** XML Root name. */
     protected string $root_name = 'csv';
+
     /** XML Node name. */
     protected string $record_name = 'row';
+
     /** XML Item name. */
     protected ?string $field_name = 'cell';
+
     /** XML column attribute name. */
     protected string $column_attr = '';
+
     /** XML offset attribute name. */
     protected string $offset_attr = '';
+
     /** @var ?Closure(array, array-key): array */
     protected ?Closure $formatter = null;
 
     /**
-     *
      * @throws RuntimeException If the extension is not present
      * @throws ValueError If the XML class used is invalid
      */
     private static function newXmlDocument(string $xml_class): DOMDocument|XMLDocument
     {
         return match (true) {
-            !extension_loaded('dom') => throw new RuntimeException('The DOM extension is not loaded.'),
-            !in_array($xml_class, [XMLDocument::class , DOMDocument::class], true) => throw new ValueError('The xml class is invalid.'),
-            XMLDocument::class === $xml_class && class_exists(XMLDocument::class) => XMLDocument::createEmpty(),
+            ! extension_loaded('dom') => throw new RuntimeException('The DOM extension is not loaded.'),
+            ! in_array($xml_class, [XMLDocument::class, DOMDocument::class], true) => throw new ValueError('The xml class is invalid.'),
+            $xml_class === XMLDocument::class && class_exists(XMLDocument::class) => XMLDocument::createEmpty(),
             default => new DOMDocument(encoding: 'UTF-8'),
         };
     }
@@ -76,12 +80,10 @@ class XMLConverter
             }
         }
 
-        return [] !== $header;
+        return $header !== [];
     }
 
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     /**
      * XML root element setter.
@@ -127,12 +129,12 @@ class XMLConverter
     /**
      * Set a callback to format each item before json encode.
      *
-     * @param ?callable(array, array-key): array $formatter
+     * @param  ?callable(array, array-key): array  $formatter
      */
     public function formatter(?callable $formatter): self
     {
         $clone = clone $this;
-        $clone->formatter = ($formatter instanceof Closure || null === $formatter) ? $formatter : $formatter(...);
+        $clone->formatter = ($formatter instanceof Closure || $formatter === null) ? $formatter : $formatter(...);
 
         return $clone;
     }
@@ -149,7 +151,7 @@ class XMLConverter
         /** @var XMLDocument|DOMDocument $document */
         $document = self::newXmlDocument(XMLDocument::class);
         $document->appendChild($this->import($records, $document));
-        if (null !== $filename) {
+        if ($filename !== null) {
             HttpHeaders::forFileDownload($filename, 'application/xml; charset='.strtolower($encoding));
         }
 
@@ -178,7 +180,7 @@ class XMLConverter
             $records = $records->getRecords();
         }
 
-        if (null !== $this->formatter) {
+        if ($this->formatter !== null) {
             $records = MapIterator::fromIterable($records, $this->formatter);
         }
 
@@ -201,7 +203,7 @@ class XMLConverter
             $node->appendChild($this->fieldToElement($document, (string) $value, $node_name));
         }
 
-        if ('' !== $this->offset_attr) {
+        if ($this->offset_attr !== '') {
             $node->setAttribute($this->offset_attr, (string) $offset);
         }
 
@@ -220,7 +222,7 @@ class XMLConverter
         $item = $document->createElement($this->field_name ?? $node_name);
         $item->appendChild($document->createTextNode($value));
 
-        if ('' !== $this->column_attr) {
+        if ($this->column_attr !== '') {
             $item->setAttribute($this->column_attr, $node_name);
         }
 
@@ -230,19 +232,19 @@ class XMLConverter
     /**
      * Apply the callback if the given "condition" is (or resolves to) true.
      *
-     * @param (callable($this): bool)|bool $condition
-     * @param callable($this): (self|null) $onSuccess
-     * @param ?callable($this): (self|null) $onFail
+     * @param  (callable($this): bool)|bool  $condition
+     * @param  callable($this): (self|null)  $onSuccess
+     * @param  ?callable($this): (self|null)  $onFail
      */
     public function when(callable|bool $condition, callable $onSuccess, ?callable $onFail = null): self
     {
-        if (!is_bool($condition)) {
+        if (! is_bool($condition)) {
             $condition = $condition($this);
         }
 
         return match (true) {
             $condition => $onSuccess($this),
-            null !== $onFail => $onFail($this),
+            $onFail !== null => $onFail($this),
             default => $this,
         } ?? $this;
     }
@@ -254,7 +256,7 @@ class XMLConverter
      */
     protected function filterElementName(?string $value): ?string
     {
-        if (null === $value) {
+        if ($value === null) {
             return null;
         }
 
@@ -264,13 +266,13 @@ class XMLConverter
     /**
      * Filters XML attribute name.
      *
-     * @param string $value Element name
+     * @param  string  $value  Element name
      *
      * @throws DOMException If the Element attribute name is invalid
      */
     protected function filterAttributeName(string $value): string
     {
-        if ('' === $value) {
+        if ($value === '') {
             return $value;
         }
 
@@ -285,11 +287,12 @@ class XMLConverter
      *
      * @see XMLConverter::import()
      * @deprecated Since version 9.22.0
+     *
      * @codeCoverageIgnore
      *
      * Converts a Record collection into a DOMDocument.
      */
-    #[Deprecated(message:'use League\Csv\XMLConverter::impoprt()', since:'league/csv:9.22.0')]
+    #[Deprecated(message: 'use League\Csv\XMLConverter::impoprt()', since: 'league/csv:9.22.0')]
     public function convert(TabularDataProvider|TabularData|iterable $records): DOMDocument
     {
         $document = new DOMDocument(encoding: 'UTF-8');
@@ -303,13 +306,14 @@ class XMLConverter
      *
      * @see XMLConverter::__construct()
      * @deprecated Since version 9.22.0
+     *
      * @codeCoverageIgnore
      *
      * Returns an new instance.
      */
-    #[Deprecated(message:'use League\Csv\XMLConverter::__construct()', since:'league/csv:9.22.0')]
+    #[Deprecated(message: 'use League\Csv\XMLConverter::__construct()', since: 'league/csv:9.22.0')]
     public static function create(): self
     {
-        return new self();
+        return new self;
     }
 }

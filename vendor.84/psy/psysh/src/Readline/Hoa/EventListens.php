@@ -53,7 +53,7 @@ trait EventListens
     {
         $listener = $this->getListener();
 
-        if (null === $listener) {
+        if ($listener === null) {
             throw new EventException('Cannot attach a callable to the listener %s because '.'it has not been initialized yet.', 0, static::class);
         }
 

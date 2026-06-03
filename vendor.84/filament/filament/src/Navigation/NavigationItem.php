@@ -17,48 +17,48 @@ class NavigationItem extends Component
     use HasBadgeTooltip;
     use HasExtraAttributes;
 
-    protected string | UnitEnum | Closure | null $group = null;
+    protected string|UnitEnum|Closure|null $group = null;
 
-    protected string | Closure | null $parentItem = null;
+    protected string|Closure|null $parentItem = null;
 
-    protected bool | Closure | null $isActive = null;
+    protected bool|Closure|null $isActive = null;
 
-    protected string | BackedEnum | Htmlable | Closure | null $icon = null;
+    protected string|BackedEnum|Htmlable|Closure|null $icon = null;
 
-    protected string | BackedEnum | Htmlable | Closure | null $activeIcon = null;
+    protected string|BackedEnum|Htmlable|Closure|null $activeIcon = null;
 
-    protected string | Closure $label;
+    protected string|Closure $label;
 
-    protected string | Closure | null $badge = null;
+    protected string|Closure|null $badge = null;
 
     /**
      * @var string | array<string> | Closure | null
      */
-    protected string | array | Closure | null $badgeColor = null;
+    protected string|array|Closure|null $badgeColor = null;
 
-    protected bool | Closure $shouldOpenUrlInNewTab = false;
+    protected bool|Closure $shouldOpenUrlInNewTab = false;
 
-    protected int | Closure | null $sort = null;
+    protected int|Closure|null $sort = null;
 
-    protected string | Closure | null $url = null;
+    protected string|Closure|null $url = null;
 
-    protected bool | Closure $isHidden = false;
+    protected bool|Closure $isHidden = false;
 
-    protected bool | Closure $isVisible = true;
+    protected bool|Closure $isVisible = true;
 
     /**
      * @var array<NavigationItem> | Arrayable
      */
-    protected array | Arrayable $childItems = [];
+    protected array|Arrayable $childItems = [];
 
-    final public function __construct(string | Closure | null $label = null)
+    final public function __construct(string|Closure|null $label = null)
     {
         if (filled($label)) {
             $this->label($label);
         }
     }
 
-    public static function make(string | Closure | null $label = null): static
+    public static function make(string|Closure|null $label = null): static
     {
         $static = app(static::class, ['label' => $label]);
         $static->configure();
@@ -69,7 +69,7 @@ class NavigationItem extends Component
     /**
      * @param  string | array<int | string, string | int> | Closure | null  $color
      */
-    public function badge(string | Closure | null $badge, string | array | Closure | null $color = null): static
+    public function badge(string|Closure|null $badge, string|array|Closure|null $color = null): static
     {
         $this->badge = $badge;
         $this->badgeColor = $color;
@@ -77,42 +77,42 @@ class NavigationItem extends Component
         return $this;
     }
 
-    public function group(string | UnitEnum | Closure | null $group): static
+    public function group(string|UnitEnum|Closure|null $group): static
     {
         $this->group = $group;
 
         return $this;
     }
 
-    public function parentItem(string | Closure | null $group): static
+    public function parentItem(string|Closure|null $group): static
     {
         $this->parentItem = $group;
 
         return $this;
     }
 
-    public function icon(string | BackedEnum | Htmlable | Closure | null $icon): static
+    public function icon(string|BackedEnum|Htmlable|Closure|null $icon): static
     {
         $this->icon = $icon;
 
         return $this;
     }
 
-    public function visible(bool | Closure $condition = true): static
+    public function visible(bool|Closure $condition = true): static
     {
         $this->isVisible = $condition;
 
         return $this;
     }
 
-    public function hidden(bool | Closure $condition = true): static
+    public function hidden(bool|Closure $condition = true): static
     {
         $this->isHidden = $condition;
 
         return $this;
     }
 
-    public function activeIcon(string | BackedEnum | Htmlable | Closure | null $activeIcon): static
+    public function activeIcon(string|BackedEnum|Htmlable|Closure|null $activeIcon): static
     {
         $this->activeIcon = $activeIcon;
 
@@ -126,28 +126,28 @@ class NavigationItem extends Component
         return $this;
     }
 
-    public function label(string | Closure $label): static
+    public function label(string|Closure $label): static
     {
         $this->label = $label;
 
         return $this;
     }
 
-    public function openUrlInNewTab(bool | Closure $condition = true): static
+    public function openUrlInNewTab(bool|Closure $condition = true): static
     {
         $this->shouldOpenUrlInNewTab = $condition;
 
         return $this;
     }
 
-    public function sort(int | Closure | null $sort): static
+    public function sort(int|Closure|null $sort): static
     {
         $this->sort = $sort;
 
         return $this;
     }
 
-    public function url(string | Closure | null $url, bool | Closure | null $shouldOpenInNewTab = null): static
+    public function url(string|Closure|null $url, bool|Closure|null $shouldOpenInNewTab = null): static
     {
         $this->url = $url;
 
@@ -166,12 +166,12 @@ class NavigationItem extends Component
     /**
      * @return string | array<string> | null
      */
-    public function getBadgeColor(): string | array | null
+    public function getBadgeColor(): string|array|null
     {
         return $this->evaluate($this->badgeColor);
     }
 
-    public function getGroup(): string | UnitEnum | null
+    public function getGroup(): string|UnitEnum|null
     {
         return $this->evaluate($this->group);
     }
@@ -181,7 +181,7 @@ class NavigationItem extends Component
         return $this->evaluate($this->parentItem);
     }
 
-    public function getIcon(): string | BackedEnum | Htmlable | null
+    public function getIcon(): string|BackedEnum|Htmlable|null
     {
         $icon = $this->evaluate($this->icon);
 
@@ -206,7 +206,7 @@ class NavigationItem extends Component
         return ! $this->evaluate($this->isVisible);
     }
 
-    public function getActiveIcon(): string | BackedEnum | Htmlable | null
+    public function getActiveIcon(): string|BackedEnum|Htmlable|null
     {
         return $this->evaluate($this->activeIcon);
     }
@@ -254,7 +254,7 @@ class NavigationItem extends Component
     /**
      * @param  array<NavigationItem> | Arrayable  $items
      */
-    public function childItems(array | Arrayable $items): static
+    public function childItems(array|Arrayable $items): static
     {
         $this->childItems = $items;
 
@@ -264,7 +264,7 @@ class NavigationItem extends Component
     /**
      * @return array<NavigationItem> | Arrayable
      */
-    public function getChildItems(): array | Arrayable
+    public function getChildItems(): array|Arrayable
     {
         return $this->childItems;
     }

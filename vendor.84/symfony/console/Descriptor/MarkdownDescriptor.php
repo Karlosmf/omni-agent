@@ -143,7 +143,7 @@ class MarkdownDescriptor extends Descriptor
         $this->write($title."\n".str_repeat('=', Helper::width($title)));
 
         foreach ($description->getNamespaces() as $namespace) {
-            if (ApplicationDescription::GLOBAL_NAMESPACE !== $namespace['id']) {
+            if ($namespace['id'] !== ApplicationDescription::GLOBAL_NAMESPACE) {
                 $this->write("\n\n");
                 $this->write('**'.$namespace['id'].':**');
             }
@@ -160,8 +160,8 @@ class MarkdownDescriptor extends Descriptor
 
     private function getApplicationTitle(Application $application): string
     {
-        if ('UNKNOWN' !== $application->getName()) {
-            if ('UNKNOWN' !== $application->getVersion()) {
+        if ($application->getName() !== 'UNKNOWN') {
+            if ($application->getVersion() !== 'UNKNOWN') {
                 return \sprintf('%s %s', $application->getName(), $application->getVersion());
             }
 

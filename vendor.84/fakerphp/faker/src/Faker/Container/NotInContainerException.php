@@ -9,6 +9,4 @@ use Psr\Container\NotFoundExceptionInterface;
 /**
  * @experimental This class is experimental and does not fall under our BC promise
  */
-final class NotInContainerException extends \RuntimeException implements NotFoundExceptionInterface
-{
-}
+final class NotInContainerException extends \RuntimeException implements NotFoundExceptionInterface {}

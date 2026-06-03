@@ -7,18 +7,25 @@ use Faker\Provider\DateTime;
 class Person extends \Faker\Provider\Person
 {
     public const GENDER_MALE = 0;
+
     public const GENDER_FEMALE = 1;
 
     public const CENTURY_19TH = 0;
+
     public const CENTURY_20TH = 1;
+
     public const CENTURY_21ST = 2;
 
     public const MALE_CENTURY_19TH = 1;
+
     public const MALE_CENTURY_20TH = 3;
+
     public const MALE_CENTURY_21ST = 5;
 
     public const FEMALE_CENTURY_19TH = 2;
+
     public const FEMALE_CENTURY_20TH = 4;
+
     public const FEMALE_CENTURY_21ST = 6;
 
     /**
@@ -180,8 +187,7 @@ class Person extends \Faker\Provider\Person
      *   2000-01-01 - 2000-12-31 counts as 21th century
      *   1900-01-01 - 1900-12-31 counts as 20th century
      *
-     * @param int $year
-     *
+     * @param  int  $year
      * @return int
      */
     private static function getCenturyByYear($year)
@@ -207,13 +213,12 @@ class Person extends \Faker\Provider\Person
      * @see   http://egov.kz/wps/portal/Content?contentPath=%2Fegovcontent%2Fcitizen_migration%2Fpassport_id_card%2Farticle%2Fiin_info&lang=en
      * @see   https://ru.wikipedia.org/wiki/%D0%98%D0%BD%D0%B4%D0%B8%D0%B2%D0%B8%D0%B4%D1%83%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9_%D0%B8%D0%B4%D0%B5%D0%BD%D1%82%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D0%BE%D0%BD%D0%BD%D1%8B%D0%B9_%D0%BD%D0%BE%D0%BC%D0%B5%D1%80
      *
-     * @param int $gender
-     *
+     * @param  int  $gender
      * @return string 12 digits, like 780322300455
      */
     public static function individualIdentificationNumber(?\DateTime $birthDate = null, $gender = self::GENDER_MALE)
     {
-        if (!$birthDate) {
+        if (! $birthDate) {
             $birthDate = DateTime::dateTimeBetween();
         }
 
@@ -227,12 +232,11 @@ class Person extends \Faker\Provider\Person
             $checksum = self::checkSum($iin);
         } while ($checksum === 10);
 
-        return $iin . (string) $checksum;
+        return $iin.(string) $checksum;
     }
 
     /**
-     * @param string $iinValue
-     *
+     * @param  string  $iinValue
      * @return int
      */
     public static function checkSum($iinValue)
@@ -247,16 +251,15 @@ class Person extends \Faker\Provider\Person
     }
 
     /**
-     * @param string $iinValue
-     * @param array  $sequence
-     *
+     * @param  string  $iinValue
+     * @param  array  $sequence
      * @return int
      */
     protected static function getControlDigit($iinValue, $sequence)
     {
         $sum = 0;
 
-        for ($i = 0; $i <= 10; ++$i) {
+        for ($i = 0; $i <= 10; $i++) {
             $sum += (int) $iinValue[$i] * $sequence[$i];
         }
 

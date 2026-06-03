@@ -104,7 +104,7 @@ class ExporterClassGenerator extends ClassGenerator
             return '//';
         }
 
-        return implode(PHP_EOL . '    ', $columns);
+        return implode(PHP_EOL.'    ', $columns);
     }
 
     /**
@@ -174,7 +174,7 @@ class ExporterClassGenerator extends ClassGenerator
                 $column = (string) new Literal("{$this->simplifyFqn(ExportColumn::class)}::make(?)", [$columnName]);
 
                 foreach ($columnData as $methodName => $parameters) {
-                    $column .= new Literal(PHP_EOL . "        ->{$methodName}(...?:)", [$parameters]);
+                    $column .= new Literal(PHP_EOL."        ->{$methodName}(...?:)", [$parameters]);
                 }
 
                 return "{$column},";

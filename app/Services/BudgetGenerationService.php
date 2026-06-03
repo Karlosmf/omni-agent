@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\BookingStatus;
 use App\Models\Booking;
 use App\Models\BookingItem;
+use App\Models\ServiceType;
 use App\Models\TravelPackage;
 use App\Models\User;
 
@@ -40,7 +41,7 @@ class BudgetGenerationService
             foreach ($travelPackage->services as $service) {
                 BookingItem::create([
                     'booking_id' => $booking->id,
-                    'service_type_id' => $service['service_type_id'] ?? \App\Models\ServiceType::where('key', 'other')->value('id') ?? 1,
+                    'service_type_id' => $service['service_type_id'] ?? ServiceType::where('key', 'other')->value('id') ?? 1,
                     'description' => $service['description'],
                     'supplier_id' => $service['supplier_id'] ?? null,
                     'currency' => $service['currency'] ?? $travelPackage->currency,
@@ -55,7 +56,7 @@ class BudgetGenerationService
         if (! $hasDetailedServices) {
             BookingItem::create([
                 'booking_id' => $booking->id,
-                'service_type_id' => \App\Models\ServiceType::where('key', 'other')->value('id') ?? 1,
+                'service_type_id' => ServiceType::where('key', 'other')->value('id') ?? 1,
                 'description' => 'Servicios integrales del paquete: '.$travelPackage->title,
                 'currency' => $travelPackage->currency,
                 'exchange_rate' => 1.00,

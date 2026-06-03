@@ -28,20 +28,18 @@ class IssetPass extends CodeCleanerPass
     const EXCEPTION_MSG = 'Cannot use isset() on the result of an expression (you can use "null !== expression" instead)';
 
     /**
-     * @throws FatalErrorException
-     *
-     * @param Node $node
-     *
      * @return int|Node|null Replacement node (or special return value)
+     *
+     * @throws FatalErrorException
      */
     public function enterNode(Node $node)
     {
-        if (!$node instanceof Isset_) {
+        if (! $node instanceof Isset_) {
             return null;
         }
 
         foreach ($node->vars as $var) {
-            if (!$var instanceof Variable && !$var instanceof ArrayDimFetch && !$var instanceof PropertyFetch && !$var instanceof NullsafePropertyFetch) {
+            if (! $var instanceof Variable && ! $var instanceof ArrayDimFetch && ! $var instanceof PropertyFetch && ! $var instanceof NullsafePropertyFetch) {
                 throw new FatalErrorException(self::EXCEPTION_MSG, 0, \E_ERROR, null, $node->getStartLine());
             }
         }

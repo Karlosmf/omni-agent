@@ -15,7 +15,7 @@ trait CanGenerateGetHeaderActionsMethod
             $this->getHeaderActions(),
         );
 
-        $actionsOutput = implode(PHP_EOL . '    ', $actions);
+        $actionsOutput = implode(PHP_EOL.'    ', $actions);
 
         $method = $class->addMethod('getHeaderActions')
             ->setProtected()

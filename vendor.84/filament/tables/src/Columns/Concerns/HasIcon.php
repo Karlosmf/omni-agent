@@ -11,11 +11,11 @@ use Illuminate\Contracts\Support\Htmlable;
 
 trait HasIcon
 {
-    protected string | BackedEnum | Htmlable | bool | Closure | null $icon = null;
+    protected string|BackedEnum|Htmlable|bool|Closure|null $icon = null;
 
-    protected IconPosition | string | Closure | null $iconPosition = null;
+    protected IconPosition|string|Closure|null $iconPosition = null;
 
-    public function icon(string | BackedEnum | Htmlable | bool | Closure | null $icon): static
+    public function icon(string|BackedEnum|Htmlable|bool|Closure|null $icon): static
     {
         $this->icon = $icon;
 
@@ -25,7 +25,7 @@ trait HasIcon
     /**
      * @param  array<mixed> | Closure  $icons
      */
-    public function icons(array | Closure $icons): static
+    public function icons(array|Closure $icons): static
     {
         $this->icon(function (Column $column, $state) use ($icons) {
             $icons = $column->evaluate($icons);
@@ -48,14 +48,14 @@ trait HasIcon
         return $this;
     }
 
-    public function iconPosition(IconPosition | string | Closure | null $iconPosition): static
+    public function iconPosition(IconPosition|string|Closure|null $iconPosition): static
     {
         $this->iconPosition = $iconPosition;
 
         return $this;
     }
 
-    public function getIcon(mixed $state): string | BackedEnum | Htmlable | null
+    public function getIcon(mixed $state): string|BackedEnum|Htmlable|null
     {
         $icon = $this->evaluate($this->icon, [
             'state' => $state,

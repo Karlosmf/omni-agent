@@ -21,29 +21,29 @@ class ConstantEnumerator extends Enumerator
 {
     // Because `Json` is ugly.
     private const CATEGORY_LABELS = [
-        'libxml'   => 'libxml',
-        'openssl'  => 'OpenSSL',
-        'pcre'     => 'PCRE',
-        'sqlite3'  => 'SQLite3',
-        'curl'     => 'cURL',
-        'dom'      => 'DOM',
-        'ftp'      => 'FTP',
-        'gd'       => 'GD',
-        'gmp'      => 'GMP',
-        'iconv'    => 'iconv',
-        'json'     => 'JSON',
-        'ldap'     => 'LDAP',
+        'libxml' => 'libxml',
+        'openssl' => 'OpenSSL',
+        'pcre' => 'PCRE',
+        'sqlite3' => 'SQLite3',
+        'curl' => 'cURL',
+        'dom' => 'DOM',
+        'ftp' => 'FTP',
+        'gd' => 'GD',
+        'gmp' => 'GMP',
+        'iconv' => 'iconv',
+        'json' => 'JSON',
+        'ldap' => 'LDAP',
         'mbstring' => 'mbstring',
-        'odbc'     => 'ODBC',
-        'pcntl'    => 'PCNTL',
-        'pgsql'    => 'pgsql',
-        'posix'    => 'POSIX',
-        'mysqli'   => 'mysqli',
-        'soap'     => 'SOAP',
-        'exif'     => 'EXIF',
-        'sysvmsg'  => 'sysvmsg',
-        'xml'      => 'XML',
-        'xsl'      => 'XSL',
+        'odbc' => 'ODBC',
+        'pcntl' => 'PCNTL',
+        'pgsql' => 'pgsql',
+        'posix' => 'POSIX',
+        'mysqli' => 'mysqli',
+        'soap' => 'SOAP',
+        'exif' => 'EXIF',
+        'sysvmsg' => 'sysvmsg',
+        'xml' => 'XML',
+        'xsl' => 'XSL',
     ];
 
     /**
@@ -52,12 +52,12 @@ class ConstantEnumerator extends Enumerator
     protected function listItems(InputInterface $input, ?\Reflector $reflector = null, $target = null): array
     {
         // if we have a reflector, ensure that it's a namespace reflector
-        if (($target !== null || $reflector !== null) && !$reflector instanceof ReflectionNamespace) {
+        if (($target !== null || $reflector !== null) && ! $reflector instanceof ReflectionNamespace) {
             return [];
         }
 
         // only list constants if we are specifically asked
-        if (!$input->getOption('constants')) {
+        if (! $input->getOption('constants')) {
             return [];
         }
 
@@ -93,7 +93,7 @@ class ConstantEnumerator extends Enumerator
             $ret[$label] = $this->getConstants($category);
         }
 
-        if (!$user && !$internal && !$category) {
+        if (! $user && ! $internal && ! $category) {
             $ret['Constants'] = $this->getConstants();
         }
 
@@ -117,14 +117,10 @@ class ConstantEnumerator extends Enumerator
      *
      * Optionally restrict constants to a given category, e.g. "date". If the
      * category is "internal", include all non-user-defined constants.
-     *
-     * @param string|null $category
-     *
-     * @return array
      */
     protected function getConstants(?string $category = null): array
     {
-        if (!$category) {
+        if (! $category) {
             return \get_defined_constants();
         }
 
@@ -148,10 +144,6 @@ class ConstantEnumerator extends Enumerator
 
     /**
      * Prepare formatted constant array.
-     *
-     * @param array $constants
-     *
-     * @return array
      */
     protected function prepareConstants(array $constants): array
     {
@@ -164,7 +156,7 @@ class ConstantEnumerator extends Enumerator
         foreach ($names as $name) {
             if ($this->showItem($name)) {
                 $ret[$name] = [
-                    'name'  => $name,
+                    'name' => $name,
                     'style' => self::IS_CONSTANT,
                     'value' => $this->presentRef($constants[$name]),
                 ];

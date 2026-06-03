@@ -5,10 +5,13 @@ namespace Database\Factories;
 use App\Enums\Currency;
 use App\Enums\TransactionType;
 use App\Models\Booking;
+use App\Models\FinancialAccount;
+use App\Models\Transaction;
+use App\Models\TransactionCategory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Transaction>
+ * @extends Factory<Transaction>
  */
 class TransactionFactory extends Factory
 {
@@ -26,8 +29,8 @@ class TransactionFactory extends Factory
 
         return [
             'booking_id' => Booking::factory(),
-            'financial_account_id' => \App\Models\FinancialAccount::inRandomOrder()->first()?->id,
-            'transaction_category_id' => \App\Models\TransactionCategory::inRandomOrder()->first()?->id,
+            'financial_account_id' => FinancialAccount::inRandomOrder()->first()?->id,
+            'transaction_category_id' => TransactionCategory::inRandomOrder()->first()?->id,
             'type' => fake()->randomElement(TransactionType::cases()),
             'currency' => $currency, // Eloquent handles Enum casting if defined in model
             'amount' => $amount,

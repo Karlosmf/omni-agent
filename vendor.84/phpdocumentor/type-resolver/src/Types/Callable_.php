@@ -24,11 +24,12 @@ final class Callable_ implements Type
 {
     /** @var Type|null */
     private $returnType;
+
     /** @var CallableParameter[] */
     private $parameters;
 
     /**
-     * @param CallableParameter[] $parameters
+     * @param  CallableParameter[]  $parameters
      */
     public function __construct(array $parameters = [], ?Type $returnType = null)
     {

@@ -6,7 +6,7 @@ use App\Models\AgencySetting;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\AgencySetting>
+ * @extends Factory<AgencySetting>
  */
 class AgencySettingFactory extends Factory
 {

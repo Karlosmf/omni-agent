@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner\Extension;
 
 use PHPUnit\Event\EventFacadeIsSealedException;
@@ -20,9 +23,12 @@ use PHPUnit\Event\UnknownSubscriberTypeException;
  */
 final class Facade
 {
-    private bool $replacesOutput                 = false;
-    private bool $replacesProgressOutput         = false;
-    private bool $replacesResultOutput           = false;
+    private bool $replacesOutput = false;
+
+    private bool $replacesProgressOutput = false;
+
+    private bool $replacesResultOutput = false;
+
     private bool $requiresCodeCoverageCollection = false;
 
     /**

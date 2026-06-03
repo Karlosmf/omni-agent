@@ -38,10 +38,10 @@ abstract class AbstractWriter implements WriterInterface
 
         $resource = fopen($this->outputFilePath, 'w');
         restore_error_handler();
-        if (null !== $errorMessage) {
+        if ($errorMessage !== null) {
             throw new IOException("Unable to open file {$this->outputFilePath}: {$errorMessage}");
         }
-        \assert(false !== $resource);
+        \assert($resource !== false);
         $this->filePointer = $resource;
 
         $this->openWriter();
@@ -51,14 +51,14 @@ abstract class AbstractWriter implements WriterInterface
     /**
      * @codeCoverageIgnore
      *
-     * @param mixed $outputFileName
+     * @param  mixed  $outputFileName
      */
     final public function openToBrowser($outputFileName): void
     {
         $this->outputFilePath = basename($outputFileName);
 
         $resource = fopen('php://output', 'w');
-        \assert(false !== $resource);
+        \assert($resource !== false);
         $this->filePointer = $resource;
 
         // Clear any previous output (otherwise the generated file will be corrupted)
@@ -104,12 +104,12 @@ abstract class AbstractWriter implements WriterInterface
 
     final public function addRow(Row $row): void
     {
-        if (!$this->isWriterOpened) {
+        if (! $this->isWriterOpened) {
             throw new WriterNotOpenedException('The writer needs to be opened before adding row.');
         }
 
         $this->addRowToWriter($row);
-        ++$this->writtenRowCount;
+        $this->writtenRowCount++;
     }
 
     final public function addRows(array $rows): void
@@ -126,7 +126,7 @@ abstract class AbstractWriter implements WriterInterface
 
     final public function close(): void
     {
-        if (!$this->isWriterOpened) {
+        if (! $this->isWriterOpened) {
             return;
         }
 
@@ -147,10 +147,10 @@ abstract class AbstractWriter implements WriterInterface
     /**
      * Adds a row to the currently opened writer.
      *
-     * @param Row $row The row containing cells and styles
+     * @param  Row  $row  The row containing cells and styles
      *
      * @throws WriterNotOpenedException If the workbook is not created yet
-     * @throws IOException              If unable to write data
+     * @throws IOException If unable to write data
      */
     abstract protected function addRowToWriter(Row $row): void;
 

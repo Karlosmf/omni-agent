@@ -45,14 +45,12 @@ class LoopContextPass extends CodeCleanerPass
     }
 
     /**
+     * @return int|Node|null Replacement node (or special return value)
+     *
      * @throws FatalErrorException if the node is a break or continue in a non-loop or switch context
      * @throws FatalErrorException if the node is trying to break out of more nested structures than exist
      * @throws FatalErrorException if the node is a break or continue and has a non-numeric argument
      * @throws FatalErrorException if the node is a break or continue and has an argument less than 1
-     *
-     * @param Node $node
-     *
-     * @return int|Node|null Replacement node (or special return value)
      */
     public function enterNode(Node $node)
     {
@@ -102,8 +100,6 @@ class LoopContextPass extends CodeCleanerPass
     }
 
     /**
-     * @param Node $node
-     *
      * @return int|Node|Node[]|null Replacement node (or special return value)
      */
     public function leaveNode(Node $node)

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Composer\Pcre\PHPStan;
 
@@ -15,8 +17,8 @@ use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Php\RegexArrayShapeMatcher;
 use PHPStan\Type\StaticMethodParameterClosureTypeExtension;
 use PHPStan\Type\StringType;
-use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\Type;
+use PHPStan\Type\TypeCombinator;
 
 final class PregReplaceCallbackClosureTypeExtension implements StaticMethodParameterClosureTypeExtension
 {
@@ -63,6 +65,7 @@ final class PregReplaceCallbackClosureTypeExtension implements StaticMethodParam
                 array_map(static function (Type $valueType): Type {
                     if (count($valueType->getConstantArrays()) === 1) {
                         $valueTypeArray = $valueType->getConstantArrays()[0];
+
                         return new ConstantArrayType(
                             $valueTypeArray->getKeyTypes(),
                             array_map(static function (Type $valueType): Type {
@@ -73,6 +76,7 @@ final class PregReplaceCallbackClosureTypeExtension implements StaticMethodParam
                             $valueTypeArray->isList()
                         );
                     }
+
                     return TypeCombinator::removeNull($valueType);
                 }, $matchesType->getValueTypes()),
                 $matchesType->getNextAutoIndexes(),
@@ -85,7 +89,7 @@ final class PregReplaceCallbackClosureTypeExtension implements StaticMethodParam
             [
                 new NativeParameterReflection($parameter->getName(), $parameter->isOptional(), $matchesType, $parameter->passedByReference(), $parameter->isVariadic(), $parameter->getDefaultValue()),
             ],
-            new StringType()
+            new StringType
         );
     }
 }

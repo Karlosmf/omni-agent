@@ -7,6 +7,7 @@ class Address extends \Faker\Provider\Address
     protected static $cityPrefix = ['miestas'];
 
     protected static $regionSuffix = ['regionas'];
+
     protected static $streetSuffix = [
         'g.', 'gatvė', 'prospektas', 'alėja',
     ];

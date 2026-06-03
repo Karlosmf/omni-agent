@@ -5,8 +5,7 @@ namespace Facebook\WebDriver\Remote;
 class LocalFileDetector implements FileDetector
 {
     /**
-     * @param string $file
-     *
+     * @param  string  $file
      * @return null|string
      */
     public function getLocalFile($file)

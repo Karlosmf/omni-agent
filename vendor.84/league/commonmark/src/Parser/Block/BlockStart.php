@@ -116,7 +116,7 @@ final class BlockStart
      */
     public static function abort(): self
     {
-        $ret             = new self();
+        $ret = new self;
         $ret->isAborting = true;
 
         return $ret;

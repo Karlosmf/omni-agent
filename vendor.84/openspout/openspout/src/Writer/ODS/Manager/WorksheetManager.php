@@ -49,14 +49,14 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
     /**
      * Prepares the worksheet to accept data.
      *
-     * @param Worksheet $worksheet The worksheet to start
+     * @param  Worksheet  $worksheet  The worksheet to start
      *
      * @throws IOException If the sheet data file cannot be opened for writing
      */
     public function startSheet(Worksheet $worksheet): void
     {
         $sheetFilePointer = fopen($worksheet->getFilePath(), 'w');
-        \assert(false !== $sheetFilePointer);
+        \assert($sheetFilePointer !== false);
 
         $worksheet->setFilePointer($sheetFilePointer);
     }
@@ -106,11 +106,11 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
     /**
      * Adds a row to the given worksheet.
      *
-     * @param Worksheet $worksheet The worksheet to add the row to
-     * @param Row       $row       The row to be added
+     * @param  Worksheet  $worksheet  The worksheet to add the row to
+     * @param  Row  $row  The row to be added
      *
      * @throws InvalidArgumentException If a cell value's type is not supported
-     * @throws IOException              If the data cannot be written
+     * @throws IOException If the data cannot be written
      */
     public function addRow(Worksheet $worksheet, Row $row): void
     {
@@ -122,14 +122,14 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
         $currentCellIndex = 0;
         $nextCellIndex = 1;
 
-        for ($i = 0; $i < $row->getNumCells(); ++$i) {
+        for ($i = 0; $i < $row->getNumCells(); $i++) {
             /** @var Cell $cell */
             $cell = $cells[$currentCellIndex];
 
             /** @var null|Cell $nextCell */
             $nextCell = $cells[$nextCellIndex] ?? null;
 
-            if (null === $nextCell || $cell->getValue() !== $nextCell->getValue()) {
+            if ($nextCell === null || $cell->getValue() !== $nextCell->getValue()) {
                 $registeredStyle = $this->applyStyleAndRegister($cell, $rowStyle);
                 $cellStyle = $registeredStyle->getStyle();
                 if ($registeredStyle->isMatchingRowStyle()) {
@@ -140,13 +140,13 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
                 $currentCellIndex = $nextCellIndex;
             }
 
-            ++$nextCellIndex;
+            $nextCellIndex++;
         }
 
         $data .= '</table:table-row>';
 
         $wasWriteSuccessful = fwrite($worksheet->getFilePointer(), $data);
-        if (false === $wasWriteSuccessful) {
+        if ($wasWriteSuccessful === false) {
             throw new IOException("Unable to write data in {$worksheet->getFilePath()}");
         }
 
@@ -211,10 +211,9 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
     /**
      * Returns the cell XML content, given its value.
      *
-     * @param Cell $cell                  The cell to be written
-     * @param int  $styleIndex            Index of the used style
-     * @param int  $numTimesValueRepeated Number of times the value is consecutively repeated
-     *
+     * @param  Cell  $cell  The cell to be written
+     * @param  int  $styleIndex  Index of the used style
+     * @param  int  $numTimesValueRepeated  Number of times the value is consecutively repeated
      * @return string The cell XML content
      *
      * @throws InvalidArgumentException If a cell value's type is not supported
@@ -223,7 +222,7 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
     {
         $data = '<table:table-cell table:style-name="ce'.$styleIndex.'"';
 
-        if (1 !== $numTimesValueRepeated) {
+        if ($numTimesValueRepeated !== 1) {
             $data .= ' table:number-columns-repeated="'.$numTimesValueRepeated.'"';
         }
 

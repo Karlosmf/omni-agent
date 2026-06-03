@@ -22,16 +22,16 @@ use Illuminate\Validation\Rules\Unique;
 
 trait CanBeValidated
 {
-    protected bool | Closure $isRequired = false;
+    protected bool|Closure $isRequired = false;
 
-    protected string | Closure | null $regexPattern = null;
+    protected string|Closure|null $regexPattern = null;
 
     /**
      * @var array<string> | Arrayable | string | Closure | null
      */
-    protected array | Arrayable | string | Closure | null $inValidationRuleValues = null;
+    protected array|Arrayable|string|Closure|null $inValidationRuleValues = null;
 
-    protected bool | Closure $shouldUniqueValidationIgnoreRecordByDefault = true;
+    protected bool|Closure $shouldUniqueValidationIgnoreRecordByDefault = true;
 
     /**
      * @var array<mixed>
@@ -43,48 +43,48 @@ trait CanBeValidated
      */
     protected array $validationMessages = [];
 
-    protected bool | Closure $areHtmlValidationMessagesAllowed = false;
+    protected bool|Closure $areHtmlValidationMessagesAllowed = false;
 
-    protected string | Closure | null $validationAttribute = null;
+    protected string|Closure|null $validationAttribute = null;
 
-    protected bool | Closure $shouldShowAllValidationMessages = false;
+    protected bool|Closure $shouldShowAllValidationMessages = false;
 
-    public function activeUrl(bool | Closure $condition = true): static
+    public function activeUrl(bool|Closure $condition = true): static
     {
         $this->rule('active_url', $condition);
 
         return $this;
     }
 
-    public function alpha(bool | Closure $condition = true): static
+    public function alpha(bool|Closure $condition = true): static
     {
         $this->rule('alpha', $condition);
 
         return $this;
     }
 
-    public function alphaDash(bool | Closure $condition = true): static
+    public function alphaDash(bool|Closure $condition = true): static
     {
         $this->rule('alpha_dash', $condition);
 
         return $this;
     }
 
-    public function alphaNum(bool | Closure $condition = true): static
+    public function alphaNum(bool|Closure $condition = true): static
     {
         $this->rule('alpha_num', $condition);
 
         return $this;
     }
 
-    public function ascii(bool | Closure $condition = true): static
+    public function ascii(bool|Closure $condition = true): static
     {
         $this->rule('ascii', $condition);
 
         return $this;
     }
 
-    public function confirmed(bool | Closure $condition = true): static
+    public function confirmed(bool|Closure $condition = true): static
     {
         $this->rule('confirmed', $condition);
 
@@ -94,7 +94,7 @@ trait CanBeValidated
     /**
      * @param  array<scalar> | Arrayable | string | Closure  $values
      */
-    public function doesntStartWith(array | Arrayable | string | Closure $values, bool | Closure $condition = true): static
+    public function doesntStartWith(array|Arrayable|string|Closure $values, bool|Closure $condition = true): static
     {
         $this->rule(static function (Field $component) use ($values) {
             $values = $component->evaluate($values);
@@ -107,7 +107,7 @@ trait CanBeValidated
                 $values = implode(',', $values);
             }
 
-            return 'doesnt_start_with:' . $values;
+            return 'doesnt_start_with:'.$values;
         }, $condition);
 
         return $this;
@@ -116,7 +116,7 @@ trait CanBeValidated
     /**
      * @param  array<scalar> | Arrayable | string | Closure  $values
      */
-    public function doesntEndWith(array | Arrayable | string | Closure $values, bool | Closure $condition = true): static
+    public function doesntEndWith(array|Arrayable|string|Closure $values, bool|Closure $condition = true): static
     {
         $this->rule(static function (Field $component) use ($values) {
             $values = $component->evaluate($values);
@@ -129,7 +129,7 @@ trait CanBeValidated
                 $values = implode(',', $values);
             }
 
-            return 'doesnt_end_with:' . $values;
+            return 'doesnt_end_with:'.$values;
         }, $condition);
 
         return $this;
@@ -138,7 +138,7 @@ trait CanBeValidated
     /**
      * @param  array<scalar> | Arrayable | string | Closure  $values
      */
-    public function endsWith(array | Arrayable | string | Closure $values, bool | Closure $condition = true): static
+    public function endsWith(array|Arrayable|string|Closure $values, bool|Closure $condition = true): static
     {
         $this->rule(static function (Field $component) use ($values) {
             $values = $component->evaluate($values);
@@ -151,13 +151,13 @@ trait CanBeValidated
                 $values = implode(',', $values);
             }
 
-            return 'ends_with:' . $values;
+            return 'ends_with:'.$values;
         }, $condition);
 
         return $this;
     }
 
-    public function exists(string | Closure | null $table = null, string | Closure | null $column = null, ?Closure $modifyRuleUsing = null): static
+    public function exists(string|Closure|null $table = null, string|Closure|null $column = null, ?Closure $modifyRuleUsing = null): static
     {
         $this->rule(static function (Field $component, ?string $model) use ($column, $modifyRuleUsing, $table) {
             $table = $component->evaluate($table) ?? $model;
@@ -200,7 +200,7 @@ trait CanBeValidated
         return $this;
     }
 
-    public function scopedExists(string | Closure | null $model = null, string | Closure | null $column = null, ?Closure $modifyQueryUsing = null): static
+    public function scopedExists(string|Closure|null $model = null, string|Closure|null $column = null, ?Closure $modifyQueryUsing = null): static
     {
         $this->rule(static function (Field $component) use ($column, $modifyQueryUsing, $model) {
             $model = $component->evaluate($model) ?? $component->getModel();
@@ -226,14 +226,14 @@ trait CanBeValidated
         return $this;
     }
 
-    public function filled(bool | Closure $condition = true): static
+    public function filled(bool|Closure $condition = true): static
     {
         $this->rule('filled', $condition);
 
         return $this;
     }
 
-    public function hexColor(bool | Closure $condition = true): static
+    public function hexColor(bool|Closure $condition = true): static
     {
         $this->rule('hex_color', $condition);
 
@@ -243,12 +243,12 @@ trait CanBeValidated
     /**
      * @param  array<scalar> | Arrayable | string | Closure  $values
      */
-    public function in(array | Arrayable | string | Closure | null $values, bool | Closure $condition = true): static
+    public function in(array|Arrayable|string|Closure|null $values, bool|Closure $condition = true): static
     {
         if (! $condition) {
             $values = null;
         } elseif ($condition instanceof Closure) {
-            $values = fn (Component $component): array | Arrayable | string | Closure | null => $component->evaluate($condition) ? $values : null;
+            $values = fn (Component $component): array|Arrayable|string|Closure|null => $component->evaluate($condition) ? $values : null;
         }
 
         $this->inValidationRuleValues = $values;
@@ -256,7 +256,7 @@ trait CanBeValidated
         match ($condition) {
             true => $this->inValidationRuleValues = $values,
             false => null,
-            default => $this->inValidationRuleValues = fn (Component $component): array | Arrayable | string | Closure | null => $component->evaluate($condition) ?
+            default => $this->inValidationRuleValues = fn (Component $component): array|Arrayable|string|Closure|null => $component->evaluate($condition) ?
                 $values :
                 null,
         };
@@ -264,45 +264,45 @@ trait CanBeValidated
         return $this;
     }
 
-    public function ip(bool | Closure $condition = true): static
+    public function ip(bool|Closure $condition = true): static
     {
         $this->rule('ip', $condition);
 
         return $this;
     }
 
-    public function ipv4(bool | Closure $condition = true): static
+    public function ipv4(bool|Closure $condition = true): static
     {
         $this->rule('ipv4', $condition);
 
         return $this;
     }
 
-    public function ipv6(bool | Closure $condition = true): static
+    public function ipv6(bool|Closure $condition = true): static
     {
         $this->rule('ipv6', $condition);
 
         return $this;
     }
 
-    public function json(bool | Closure $condition = true): static
+    public function json(bool|Closure $condition = true): static
     {
         $this->rule('json', $condition);
 
         return $this;
     }
 
-    public function macAddress(bool | Closure $condition = true): static
+    public function macAddress(bool|Closure $condition = true): static
     {
         $this->rule('mac_address', $condition);
 
         return $this;
     }
 
-    public function multipleOf(int | float | Closure $value): static
+    public function multipleOf(int|float|Closure $value): static
     {
         $this->rule(static function (Field $component) use ($value) {
-            return 'multiple_of:' . $component->evaluate($value);
+            return 'multiple_of:'.$component->evaluate($value);
         }, static fn (Field $component): bool => filled($component->evaluate($value)));
 
         return $this;
@@ -311,7 +311,7 @@ trait CanBeValidated
     /**
      * @param  array<scalar> | Arrayable | string | Closure  $values
      */
-    public function notIn(array | Arrayable | string | Closure $values, bool | Closure $condition = true): static
+    public function notIn(array|Arrayable|string|Closure $values, bool|Closure $condition = true): static
     {
         $this->rule(static function (Field $component) use ($values) {
             $values = $component->evaluate($values);
@@ -330,16 +330,16 @@ trait CanBeValidated
         return $this;
     }
 
-    public function notRegex(string | Closure | null $pattern): static
+    public function notRegex(string|Closure|null $pattern): static
     {
         $this->rule(static function (Field $component) use ($pattern) {
-            return 'not_regex:' . $component->evaluate($pattern);
+            return 'not_regex:'.$component->evaluate($pattern);
         }, static fn (Field $component): bool => filled($component->evaluate($pattern)));
 
         return $this;
     }
 
-    public function nullable(bool | Closure $condition = true): static
+    public function nullable(bool|Closure $condition = true): static
     {
         $this->required(static function (Field $component) use ($condition): bool {
             return ! $component->evaluate($condition);
@@ -348,19 +348,19 @@ trait CanBeValidated
         return $this;
     }
 
-    public function prohibited(bool | Closure $condition = true): static
+    public function prohibited(bool|Closure $condition = true): static
     {
         $this->rule('prohibited', $condition);
 
         return $this;
     }
 
-    public function prohibitedIf(string | Closure $statePath, mixed $stateValues, bool $isStatePathAbsolute = false): static
+    public function prohibitedIf(string|Closure $statePath, mixed $stateValues, bool $isStatePathAbsolute = false): static
     {
         return $this->multiFieldValueComparisonRule('prohibited_if', $statePath, $stateValues, $isStatePathAbsolute);
     }
 
-    public function prohibitedUnless(string | Closure $statePath, mixed $stateValues, bool $isStatePathAbsolute = false): static
+    public function prohibitedUnless(string|Closure $statePath, mixed $stateValues, bool $isStatePathAbsolute = false): static
     {
         return $this->multiFieldValueComparisonRule('prohibited_unless', $statePath, $stateValues, $isStatePathAbsolute);
     }
@@ -368,34 +368,34 @@ trait CanBeValidated
     /**
      * @param  array<string> | string | Closure  $statePaths
      */
-    public function prohibits(array | string | Closure $statePaths, bool $isStatePathAbsolute = false): static
+    public function prohibits(array|string|Closure $statePaths, bool $isStatePathAbsolute = false): static
     {
         return $this->multiFieldComparisonRule('prohibits', $statePaths, $isStatePathAbsolute);
     }
 
-    public function required(bool | Closure $condition = true): static
+    public function required(bool|Closure $condition = true): static
     {
         $this->isRequired = $condition;
 
         return $this;
     }
 
-    public function requiredIf(string | Closure $statePath, mixed $stateValues, bool $isStatePathAbsolute = false): static
+    public function requiredIf(string|Closure $statePath, mixed $stateValues, bool $isStatePathAbsolute = false): static
     {
         return $this->multiFieldValueComparisonRule('required_if', $statePath, $stateValues, $isStatePathAbsolute);
     }
 
-    public function requiredIfAccepted(string | Closure $statePath, bool $isStatePathAbsolute = false): static
+    public function requiredIfAccepted(string|Closure $statePath, bool $isStatePathAbsolute = false): static
     {
         return $this->fieldComparisonRule('required_if_accepted', $statePath, $isStatePathAbsolute);
     }
 
-    public function requiredIfDeclined(string | Closure $statePath, bool $isStatePathAbsolute = false): static
+    public function requiredIfDeclined(string|Closure $statePath, bool $isStatePathAbsolute = false): static
     {
         return $this->fieldComparisonRule('required_if_declined', $statePath, $isStatePathAbsolute);
     }
 
-    public function requiredUnless(string | Closure $statePath, mixed $stateValues, bool $isStatePathAbsolute = false): static
+    public function requiredUnless(string|Closure $statePath, mixed $stateValues, bool $isStatePathAbsolute = false): static
     {
         return $this->multiFieldValueComparisonRule('required_unless', $statePath, $stateValues, $isStatePathAbsolute);
     }
@@ -403,7 +403,7 @@ trait CanBeValidated
     /**
      * @param  string | array<string> | Closure  $statePaths
      */
-    public function requiredWith(string | array | Closure $statePaths, bool $isStatePathAbsolute = false): static
+    public function requiredWith(string|array|Closure $statePaths, bool $isStatePathAbsolute = false): static
     {
         return $this->multiFieldComparisonRule('required_with', $statePaths, $isStatePathAbsolute);
     }
@@ -411,7 +411,7 @@ trait CanBeValidated
     /**
      * @param  string | array<string> | Closure  $statePaths
      */
-    public function requiredWithAll(string | array | Closure $statePaths, bool $isStatePathAbsolute = false): static
+    public function requiredWithAll(string|array|Closure $statePaths, bool $isStatePathAbsolute = false): static
     {
         return $this->multiFieldComparisonRule('required_with_all', $statePaths, $isStatePathAbsolute);
     }
@@ -419,7 +419,7 @@ trait CanBeValidated
     /**
      * @param  string | array<string> | Closure  $statePaths
      */
-    public function requiredWithout(string | array | Closure $statePaths, bool $isStatePathAbsolute = false): static
+    public function requiredWithout(string|array|Closure $statePaths, bool $isStatePathAbsolute = false): static
     {
         return $this->multiFieldComparisonRule('required_without', $statePaths, $isStatePathAbsolute);
     }
@@ -427,12 +427,12 @@ trait CanBeValidated
     /**
      * @param  string | array<string> | Closure  $statePaths
      */
-    public function requiredWithoutAll(string | array | Closure $statePaths, bool $isStatePathAbsolute = false): static
+    public function requiredWithoutAll(string|array|Closure $statePaths, bool $isStatePathAbsolute = false): static
     {
         return $this->multiFieldComparisonRule('required_without_all', $statePaths, $isStatePathAbsolute);
     }
 
-    public function regex(string | Closure | null $pattern): static
+    public function regex(string|Closure|null $pattern): static
     {
         $this->regexPattern = $pattern;
 
@@ -442,7 +442,7 @@ trait CanBeValidated
     /**
      * @param  array<scalar> | Arrayable | string | Closure  $values
      */
-    public function startsWith(array | Arrayable | string | Closure $values, bool | Closure $condition = true): static
+    public function startsWith(array|Arrayable|string|Closure $values, bool|Closure $condition = true): static
     {
         $this->rule(static function (Field $component) use ($values) {
             $values = $component->evaluate($values);
@@ -455,34 +455,34 @@ trait CanBeValidated
                 $values = implode(',', $values);
             }
 
-            return 'starts_with:' . $values;
+            return 'starts_with:'.$values;
         }, $condition);
 
         return $this;
     }
 
-    public function string(bool | Closure $condition = true): static
+    public function string(bool|Closure $condition = true): static
     {
         $this->rule('string', $condition);
 
         return $this;
     }
 
-    public function ulid(bool | Closure $condition = true): static
+    public function ulid(bool|Closure $condition = true): static
     {
         $this->rule('ulid', $condition);
 
         return $this;
     }
 
-    public function uuid(bool | Closure $condition = true): static
+    public function uuid(bool|Closure $condition = true): static
     {
         $this->rule('uuid', $condition);
 
         return $this;
     }
 
-    public function rule(mixed $rule, bool | Closure $condition = true): static
+    public function rule(mixed $rule, bool|Closure $condition = true): static
     {
         $this->rules = [
             ...$this->rules,
@@ -495,7 +495,7 @@ trait CanBeValidated
     /**
      * @param  string | array<mixed> | Closure  $rules
      */
-    public function rules(string | array | Closure $rules, bool | Closure $condition = true): static
+    public function rules(string|array|Closure $rules, bool|Closure $condition = true): static
     {
         if ($rules instanceof Closure) {
             $this->rules = [
@@ -512,63 +512,63 @@ trait CanBeValidated
 
         $this->rules = [
             ...$this->rules,
-            ...array_map(static fn (string | object $rule): array => [$rule, $condition], $rules),
+            ...array_map(static fn (string|object $rule): array => [$rule, $condition], $rules),
         ];
 
         return $this;
     }
 
-    public function after(string | Closure $date, bool $isStatePathAbsolute = false): static
+    public function after(string|Closure $date, bool $isStatePathAbsolute = false): static
     {
         return $this->dateComparisonRule('after', $date, $isStatePathAbsolute);
     }
 
-    public function afterOrEqual(string | Closure $date, bool $isStatePathAbsolute = false): static
+    public function afterOrEqual(string|Closure $date, bool $isStatePathAbsolute = false): static
     {
         return $this->dateComparisonRule('after_or_equal', $date, $isStatePathAbsolute);
     }
 
-    public function before(string | Closure $date, bool $isStatePathAbsolute = false): static
+    public function before(string|Closure $date, bool $isStatePathAbsolute = false): static
     {
         return $this->dateComparisonRule('before', $date, $isStatePathAbsolute);
     }
 
-    public function beforeOrEqual(string | Closure $date, bool $isStatePathAbsolute = false): static
+    public function beforeOrEqual(string|Closure $date, bool $isStatePathAbsolute = false): static
     {
         return $this->dateComparisonRule('before_or_equal', $date, $isStatePathAbsolute);
     }
 
-    public function different(string | Closure $statePath, bool $isStatePathAbsolute = false): static
+    public function different(string|Closure $statePath, bool $isStatePathAbsolute = false): static
     {
         return $this->fieldComparisonRule('different', $statePath, $isStatePathAbsolute);
     }
 
-    public function gt(string | Closure $statePath, bool $isStatePathAbsolute = false): static
+    public function gt(string|Closure $statePath, bool $isStatePathAbsolute = false): static
     {
         return $this->fieldComparisonRule('gt', $statePath, $isStatePathAbsolute);
     }
 
-    public function gte(string | Closure $statePath, bool $isStatePathAbsolute = false): static
+    public function gte(string|Closure $statePath, bool $isStatePathAbsolute = false): static
     {
         return $this->fieldComparisonRule('gte', $statePath, $isStatePathAbsolute);
     }
 
-    public function lt(string | Closure $statePath, bool $isStatePathAbsolute = false): static
+    public function lt(string|Closure $statePath, bool $isStatePathAbsolute = false): static
     {
         return $this->fieldComparisonRule('lt', $statePath, $isStatePathAbsolute);
     }
 
-    public function lte(string | Closure $statePath, bool $isStatePathAbsolute = false): static
+    public function lte(string|Closure $statePath, bool $isStatePathAbsolute = false): static
     {
         return $this->fieldComparisonRule('lte', $statePath, $isStatePathAbsolute);
     }
 
-    public function same(string | Closure $statePath, bool $isStatePathAbsolute = false): static
+    public function same(string|Closure $statePath, bool $isStatePathAbsolute = false): static
     {
         return $this->fieldComparisonRule('same', $statePath, $isStatePathAbsolute);
     }
 
-    public function unique(string | Closure | null $table = null, string | Closure | null $column = null, Model | Closure | null $ignorable = null, ?bool $ignoreRecord = null, ?Closure $modifyRuleUsing = null): static
+    public function unique(string|Closure|null $table = null, string|Closure|null $column = null, Model|Closure|null $ignorable = null, ?bool $ignoreRecord = null, ?Closure $modifyRuleUsing = null): static
     {
         $this->rule(static function (Field $component, ?string $model) use ($column, $ignorable, $ignoreRecord, $modifyRuleUsing, $table) {
             $ignoreRecord ??= $component->shouldUniqueValidationIgnoreRecordByDefault();
@@ -600,7 +600,7 @@ trait CanBeValidated
         return $this;
     }
 
-    public function scopedUnique(string | Closure | null $model = null, string | Closure | null $column = null, Model | Closure | null $ignorable = null, ?bool $ignoreRecord = null, ?Closure $modifyQueryUsing = null): static
+    public function scopedUnique(string|Closure|null $model = null, string|Closure|null $column = null, Model|Closure|null $ignorable = null, ?bool $ignoreRecord = null, ?Closure $modifyQueryUsing = null): static
     {
         $this->rule(static function (Field $component) use ($column, $ignorable, $ignoreRecord, $modifyQueryUsing, $model) {
             $ignoreRecord ??= $component->shouldUniqueValidationIgnoreRecordByDefault();
@@ -634,7 +634,7 @@ trait CanBeValidated
         return $this;
     }
 
-    public function uniqueValidationIgnoresRecordByDefault(bool | Closure $condition = true): static
+    public function uniqueValidationIgnoresRecordByDefault(bool|Closure $condition = true): static
     {
         $this->shouldUniqueValidationIgnoreRecordByDefault = $condition;
 
@@ -646,7 +646,7 @@ trait CanBeValidated
         return (bool) $this->evaluate($this->shouldUniqueValidationIgnoreRecordByDefault);
     }
 
-    public function distinct(bool | Closure $condition = true): static
+    public function distinct(bool|Closure $condition = true): static
     {
         $this->rule(static function (Field $component, mixed $rawState) {
             return function (string $attribute, mixed $value, Closure $fail) use ($component, $rawState): void {
@@ -727,7 +727,7 @@ trait CanBeValidated
         return $this;
     }
 
-    public function validationAttribute(string | Closure | null $label): static
+    public function validationAttribute(string|Closure|null $label): static
     {
         $this->validationAttribute = $label;
 
@@ -744,14 +744,14 @@ trait CanBeValidated
         return $this;
     }
 
-    public function allowHtmlValidationMessages(bool | Closure $condition = true): static
+    public function allowHtmlValidationMessages(bool|Closure $condition = true): static
     {
         $this->areHtmlValidationMessagesAllowed = $condition;
 
         return $this;
     }
 
-    public function showAllValidationMessages(bool | Closure $condition = true): static
+    public function showAllValidationMessages(bool|Closure $condition = true): static
     {
         $this->shouldShowAllValidationMessages = $condition;
 
@@ -763,7 +763,7 @@ trait CanBeValidated
         return $this->evaluate($this->regexPattern);
     }
 
-    public function getRequiredValidationRule(): string | Closure
+    public function getRequiredValidationRule(): string|Closure
     {
         return $this->isRequired() ? 'required' : 'nullable';
     }
@@ -807,7 +807,7 @@ trait CanBeValidated
         return (bool) $this->evaluate($this->shouldShowAllValidationMessages);
     }
 
-    public function getInValidationRule(): In | Enum | null
+    public function getInValidationRule(): In|Enum|null
     {
         $values = $this->getInValidationRuleValues();
 
@@ -946,7 +946,7 @@ trait CanBeValidated
         return (bool) $this->evaluate($this->isRequired);
     }
 
-    public function dateComparisonRule(string $rule, string | Closure $date, bool $isStatePathAbsolute = false): static
+    public function dateComparisonRule(string $rule, string|Closure $date, bool $isStatePathAbsolute = false): static
     {
         $this->rule(static function (Field $component) use ($date, $isStatePathAbsolute, $rule): string {
             $date = $component->evaluate($date);
@@ -961,7 +961,7 @@ trait CanBeValidated
         return $this;
     }
 
-    public function fieldComparisonRule(string $rule, string | Closure $statePath, bool $isStatePathAbsolute = false): static
+    public function fieldComparisonRule(string $rule, string|Closure $statePath, bool $isStatePathAbsolute = false): static
     {
         $this->rule(static function (Field $component) use ($isStatePathAbsolute, $rule, $statePath): string {
             $statePath = $component->evaluate($statePath);
@@ -979,7 +979,7 @@ trait CanBeValidated
     /**
      * @param  array<string> | string | Closure  $statePaths
      */
-    public function multiFieldComparisonRule(string $rule, array | string | Closure $statePaths, bool $isStatePathAbsolute = false): static
+    public function multiFieldComparisonRule(string $rule, array|string|Closure $statePaths, bool $isStatePathAbsolute = false): static
     {
         $this->rule(static function (Field $component) use ($isStatePathAbsolute, $rule, $statePaths): string {
             $statePaths = $component->evaluate($statePaths);
@@ -1005,7 +1005,7 @@ trait CanBeValidated
         return $this;
     }
 
-    public function multiFieldValueComparisonRule(string $rule, string | Closure $statePath, mixed $stateValues, bool $isStatePathAbsolute = false): static
+    public function multiFieldValueComparisonRule(string $rule, string|Closure $statePath, mixed $stateValues, bool $isStatePathAbsolute = false): static
     {
         $this->rule(static function (Field $component) use ($isStatePathAbsolute, $rule, $statePath, $stateValues): string {
             $statePath = $component->evaluate($statePath);

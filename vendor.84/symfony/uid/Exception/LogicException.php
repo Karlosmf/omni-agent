@@ -11,6 +11,4 @@
 
 namespace Symfony\Component\Uid\Exception;
 
-class LogicException extends \LogicException
-{
-}
+class LogicException extends \LogicException {}

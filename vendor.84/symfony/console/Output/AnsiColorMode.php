@@ -46,11 +46,11 @@ enum AnsiColorMode
     {
         $hexColor = str_replace('#', '', $hexColor);
 
-        if (3 === \strlen($hexColor)) {
+        if (\strlen($hexColor) === 3) {
             $hexColor = $hexColor[0].$hexColor[0].$hexColor[1].$hexColor[1].$hexColor[2].$hexColor[2];
         }
 
-        if (6 !== \strlen($hexColor)) {
+        if (\strlen($hexColor) !== 6) {
             throw new InvalidArgumentException(\sprintf('Invalid "#%s" color.', $hexColor));
         }
 

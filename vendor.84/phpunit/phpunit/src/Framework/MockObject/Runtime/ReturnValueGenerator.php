@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,7 +9,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\MockObject;
+
+use PHPUnit\Framework\MockObject\Generator\Generator;
+use ReflectionClass;
+use ReflectionObject;
+use stdClass;
+use Throwable;
 
 use function array_map;
 use function explode;
@@ -18,11 +27,6 @@ use function str_contains;
 use function str_ends_with;
 use function str_starts_with;
 use function substr;
-use PHPUnit\Framework\MockObject\Generator\Generator;
-use ReflectionClass;
-use ReflectionObject;
-use stdClass;
-use Throwable;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -32,15 +36,15 @@ use Throwable;
 final class ReturnValueGenerator
 {
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      *
      * @throws Exception
      */
     public function generate(string $className, string $methodName, StubInternal $testStub, string $returnType): mixed
     {
         $intersection = false;
-        $union        = false;
+        $union = false;
 
         if (str_contains($returnType, '|')) {
             $types = explode('|', $returnType);
@@ -52,13 +56,13 @@ final class ReturnValueGenerator
                 }
             }
         } elseif (str_contains($returnType, '&')) {
-            $types        = explode('&', $returnType);
+            $types = explode('&', $returnType);
             $intersection = true;
         } else {
             $types = [$returnType];
         }
 
-        if (!$intersection) {
+        if (! $intersection) {
             $lowerTypes = array_map('strtolower', $types);
 
             if (in_array('', $lowerTypes, true) ||
@@ -103,23 +107,20 @@ final class ReturnValueGenerator
 
             if (in_array('callable', $lowerTypes, true) ||
                 in_array('closure', $lowerTypes, true)) {
-                return static function (): void
-                {
-                };
+                return static function (): void {};
             }
 
             if (in_array('traversable', $lowerTypes, true) ||
                 in_array('generator', $lowerTypes, true) ||
                 in_array('iterable', $lowerTypes, true)) {
-                $generator = static function (): \Generator
-                {
+                $generator = static function (): \Generator {
                     yield from [];
                 };
 
                 return $generator();
             }
 
-            if (!$union) {
+            if (! $union) {
                 return $this->testDoubleFor($returnType, $className, $methodName);
             }
         }
@@ -159,12 +160,12 @@ final class ReturnValueGenerator
     }
 
     /**
-     * @param non-empty-list<string> $types
+     * @param  non-empty-list<string>  $types
      */
     private function onlyInterfaces(array $types): bool
     {
         foreach ($types as $type) {
-            if (!interface_exists($type)) {
+            if (! interface_exists($type)) {
                 return false;
             }
         }
@@ -173,15 +174,15 @@ final class ReturnValueGenerator
     }
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      *
      * @throws RuntimeException
      */
     private function newInstanceOf(StubInternal $testStub, string $className, string $methodName): Stub
     {
         try {
-            $object    = (new ReflectionClass($testStub::class))->newInstanceWithoutConstructor();
+            $object = (new ReflectionClass($testStub::class))->newInstanceWithoutConstructor();
             $reflector = new ReflectionObject($object);
 
             $reflector->getProperty('__phpunit_state')->setValue(
@@ -208,9 +209,9 @@ final class ReturnValueGenerator
     }
 
     /**
-     * @param class-string     $type
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $type
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      *
      * @throws RuntimeException
      */
@@ -233,9 +234,9 @@ final class ReturnValueGenerator
     }
 
     /**
-     * @param non-empty-list<string> $types
-     * @param class-string           $className
-     * @param non-empty-string       $methodName
+     * @param  non-empty-list<string>  $types
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      *
      * @throws RuntimeException
      */

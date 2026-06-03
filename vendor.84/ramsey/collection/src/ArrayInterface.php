@@ -22,13 +22,11 @@ use IteratorAggregate;
  * `ArrayInterface` provides traversable array functionality to data types.
  *
  * @template T
+ *
  * @extends ArrayAccess<array-key, T>
  * @extends IteratorAggregate<array-key, T>
  */
-interface ArrayInterface extends
-    ArrayAccess,
-    Countable,
-    IteratorAggregate
+interface ArrayInterface extends ArrayAccess, Countable, IteratorAggregate
 {
     /**
      * Removes all items from this array.

@@ -20,6 +20,4 @@ namespace Ramsey\Uuid\Converter\Number;
  *
  * @immutable
  */
-class DegradedNumberConverter extends BigNumberConverter
-{
-}
+class DegradedNumberConverter extends BigNumberConverter {}

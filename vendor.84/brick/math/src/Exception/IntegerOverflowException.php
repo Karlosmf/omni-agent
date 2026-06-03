@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Brick\Math\Exception;
 
+use const PHP_INT_MAX;
+use const PHP_INT_MIN;
+
 use Brick\Math\BigInteger;
 
 use function sprintf;
-
-use const PHP_INT_MAX;
-use const PHP_INT_MIN;
 
 /**
  * Exception thrown when an integer overflow occurs.

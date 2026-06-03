@@ -5,9 +5,11 @@ namespace Faker\Provider\he_IL;
 class Address extends \Faker\Provider\Address
 {
     protected static $buildingNumber = ['%', '%#', '%##'];
+
     protected static $streetSuffix = [
         'רחוב', 'שדרות', 'סמטאת',
     ];
+
     protected static $postcode = ['#####', '#######'];
 
     /**
@@ -96,20 +98,25 @@ class Address extends \Faker\Provider\Address
         'קובה', 'קולומביה', 'קומורו', 'קונגו', 'קוסטה ריקה', 'קוריאה הדרומית', 'קוריאה הצפונית', 'קזחסטן', 'קטאר', 'קירגיזסטן', 'קיריבטי', 'קמבודיה', 'קמרון', 'קנדה', 'קניה', 'קפריסין',
         'קרואטיה', 'קריית הוותיקן', 'רואנדה', 'רומניה', 'רוסיה', 'הרפובליקה הדומיניקנית', 'הרפובליקה המרכז אפריקאית', 'הרפובליקה הסינית', 'שוודיה', 'שווייץ', 'תאילנד', 'תוניסיה', 'תימן',
     ];
+
     protected static $cityFormats = [
         '{{citySuffix}}',
     ];
+
     protected static $streetNameFormats = [
         '{{streetSuffix}} {{firstName}}',
         '{{streetSuffix}} {{lastName}}',
     ];
+
     protected static $streetAddressFormats = [
         '{{streetName}} {{buildingNumber}} ',
         '{{streetName}} {{buildingNumber}} {{secondaryAddress}}',
     ];
+
     protected static $addressFormats = [
         "{{streetAddress}}\n{{city}}, {{postcode}}",
     ];
+
     protected static $secondaryAddressFormats = ['דירה ##', 'קומה ##'];
 
     /**

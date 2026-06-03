@@ -24,13 +24,21 @@ use Symfony\Component\HttpFoundation\Request;
 class RequestContext
 {
     private string $baseUrl;
+
     private string $pathInfo;
+
     private string $method;
+
     private string $host;
+
     private string $scheme;
+
     private int $httpPort;
+
     private int $httpsPort;
+
     private string $queryString;
+
     private array $parameters = [];
 
     public function __construct(string $baseUrl = '', string $method = 'GET', string $host = 'localhost', string $scheme = 'http', int $httpPort = 80, int $httpsPort = 443, string $path = '/', string $queryString = '', ?array $parameters = null)
@@ -51,7 +59,7 @@ class RequestContext
         if (false !== ($i = strpos($uri, '\\')) && $i < strcspn($uri, '?#')) {
             $uri = '';
         }
-        if ('' !== $uri && (\ord($uri[0]) <= 32 || \ord($uri[-1]) <= 32 || \strlen($uri) !== strcspn($uri, "\r\n\t"))) {
+        if ($uri !== '' && (\ord($uri[0]) <= 32 || \ord($uri[-1]) <= 32 || \strlen($uri) !== strcspn($uri, "\r\n\t"))) {
             $uri = '';
         }
 
@@ -60,9 +68,9 @@ class RequestContext
         $host = $uri['host'] ?? $host;
 
         if (isset($uri['port'])) {
-            if ('http' === $scheme) {
+            if ($scheme === 'http') {
                 $httpPort = $uri['port'];
-            } elseif ('https' === $scheme) {
+            } elseif ($scheme === 'https') {
                 $httpsPort = $uri['port'];
             }
         }
@@ -82,8 +90,8 @@ class RequestContext
         $this->setMethod($request->getMethod());
         $this->setHost($request->getHost());
         $this->setScheme($request->getScheme());
-        $this->setHttpPort($request->isSecure() || null === $request->getPort() ? $this->httpPort : $request->getPort());
-        $this->setHttpsPort($request->isSecure() && null !== $request->getPort() ? $request->getPort() : $this->httpsPort);
+        $this->setHttpPort($request->isSecure() || $request->getPort() === null ? $this->httpPort : $request->getPort());
+        $this->setHttpsPort($request->isSecure() && $request->getPort() !== null ? $request->getPort() : $this->httpsPort);
         $this->setQueryString($request->server->get('QUERY_STRING', ''));
 
         return $this;
@@ -265,8 +273,7 @@ class RequestContext
     /**
      * Sets the parameters.
      *
-     * @param array $parameters The parameters
-     *
+     * @param  array  $parameters  The parameters
      * @return $this
      */
     public function setParameters(array $parameters): static
@@ -306,6 +313,6 @@ class RequestContext
 
     public function isSecure(): bool
     {
-        return 'https' === $this->scheme;
+        return $this->scheme === 'https';
     }
 }

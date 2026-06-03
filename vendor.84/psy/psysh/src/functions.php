@@ -25,7 +25,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputOption;
 
-if (!\function_exists('Psy\\sh')) {
+if (! \function_exists('Psy\\sh')) {
     /**
      * Command to return the eval-able code to startup PsySH.
      *
@@ -52,7 +52,7 @@ EOS;
     }
 }
 
-if (!\function_exists('Psy\\debug')) {
+if (! \function_exists('Psy\\debug')) {
     /**
      * Invoke a Psy Shell from the current context.
      *
@@ -90,16 +90,15 @@ if (!\function_exists('Psy\\debug')) {
      *         }
      *     }
      *
-     * @param array         $vars   Scope variables from the calling context (default: [])
-     * @param object|string $bindTo Bound object ($this) or class (self) value for the shell
-     *
+     * @param  array  $vars  Scope variables from the calling context (default: [])
+     * @param  object|string  $bindTo  Bound object ($this) or class (self) value for the shell
      * @return array Scope variables from the debugger session
      */
     function debug(array $vars = [], $bindTo = null): array
     {
         echo \PHP_EOL;
 
-        $sh = new Shell();
+        $sh = new Shell;
         $sh->setScopeVariables($vars);
 
         // Show a couple of lines of call context for the debug session.
@@ -121,7 +120,7 @@ if (!\function_exists('Psy\\debug')) {
     }
 }
 
-if (!\function_exists('Psy\\info')) {
+if (! \function_exists('Psy\\info')) {
     /**
      * Get a bunch of debugging info about the current PsySH environment and
      * configuration.
@@ -129,7 +128,6 @@ if (!\function_exists('Psy\\info')) {
      * If a Configuration param is passed, that configuration is stored and
      * used for the current shell session, and no debugging info is returned.
      *
-     * @param Configuration|null $config
      *
      * @return array|null
      */
@@ -142,7 +140,7 @@ if (!\function_exists('Psy\\info')) {
             return null;
         }
 
-        $config = $lastConfig ?: new Configuration();
+        $config = $lastConfig ?: new Configuration;
         $configEnv = (isset($_SERVER['PSYSH_CONFIG']) && $_SERVER['PSYSH_CONFIG']) ? $_SERVER['PSYSH_CONFIG'] : false;
         if ($configEnv === false && \PHP_SAPI === 'cli-server') {
             $configEnv = \getenv('PSYSH_CONFIG');
@@ -153,16 +151,16 @@ if (!\function_exists('Psy\\info')) {
         ];
 
         $core = [
-            'PHP version'         => \PHP_VERSION,
-            'OS'                  => \PHP_OS,
-            'default includes'    => $config->getDefaultIncludes(),
-            'require semicolons'  => $config->requireSemicolons(),
-            'strict types'        => $config->strictTypes(),
+            'PHP version' => \PHP_VERSION,
+            'OS' => \PHP_OS,
+            'default includes' => $config->getDefaultIncludes(),
+            'require semicolons' => $config->requireSemicolons(),
+            'strict types' => $config->strictTypes(),
             'error logging level' => $config->errorLoggingLevel(),
-            'config file'         => [
+            'config file' => [
                 'default config file' => ConfigPaths::prettyPath($config->getConfigFile()),
-                'local config file'   => ConfigPaths::prettyPath($config->getLocalConfigFile()),
-                'PSYSH_CONFIG env'    => ConfigPaths::prettyPath($configEnv),
+                'local config file' => ConfigPaths::prettyPath($config->getLocalConfigFile()),
+                'PSYSH_CONFIG env' => ConfigPaths::prettyPath($configEnv),
             ],
             // 'config dir'  => $config->getConfigDir(),
             // 'data dir'    => $config->getDataDir(),
@@ -170,26 +168,26 @@ if (!\function_exists('Psy\\info')) {
         ];
 
         // Use an explicit, fresh update check here, rather than relying on whatever is in $config.
-        $checker = new GitHubChecker();
+        $checker = new GitHubChecker;
         $updateAvailable = null;
         $latest = null;
         try {
-            $updateAvailable = !$checker->isLatest();
+            $updateAvailable = ! $checker->isLatest();
             $latest = $checker->getLatest();
         } catch (\Throwable $e) {
         }
 
         $updates = [
-            'update available'       => $updateAvailable,
+            'update available' => $updateAvailable,
             'latest release version' => $latest,
-            'update check interval'  => $config->getUpdateCheck(),
-            'update cache file'      => ConfigPaths::prettyPath($config->getUpdateCheckCacheFile()),
+            'update check interval' => $config->getUpdateCheck(),
+            'update cache file' => ConfigPaths::prettyPath($config->getUpdateCheckCacheFile()),
         ];
 
         $input = [
-            'interactive mode'  => $config->interactiveMode(),
+            'interactive mode' => $config->interactiveMode(),
             'input interactive' => $config->getInputInteractive(),
-            'yolo'              => $config->yolo(),
+            'yolo' => $config->yolo(),
         ];
 
         if ($config->hasReadline()) {
@@ -197,8 +195,8 @@ if (!\function_exists('Psy\\info')) {
 
             $readline = [
                 'readline available' => true,
-                'readline enabled'   => $config->useReadline(),
-                'readline service'   => \get_class($config->getReadline()),
+                'readline enabled' => $config->useReadline(),
+                'readline service' => \get_class($config->getReadline()),
             ];
 
             if (isset($info['library_version'])) {
@@ -215,20 +213,20 @@ if (!\function_exists('Psy\\info')) {
         }
 
         $output = [
-            'color mode'       => $config->colorMode(),
+            'color mode' => $config->colorMode(),
             'output decorated' => $config->getOutputDecorated(),
             'output verbosity' => $config->verbosity(),
-            'output pager'     => $config->getPager(),
+            'output pager' => $config->getPager(),
         ];
 
         $theme = $config->theme();
         // @todo show styles (but only if they're different than default?)
         $output['theme'] = [
-            'compact'      => $theme->compact(),
-            'prompt'       => $theme->prompt(),
+            'compact' => $theme->compact(),
+            'prompt' => $theme->prompt(),
             'bufferPrompt' => $theme->bufferPrompt(),
             'replayPrompt' => $theme->replayPrompt(),
-            'returnValue'  => $theme->returnValue(),
+            'returnValue' => $theme->returnValue(),
         ];
 
         $pcntl = [
@@ -247,8 +245,8 @@ if (!\function_exists('Psy\\info')) {
         $pcntl['use pcntl'] = $config->usePcntl();
 
         $history = [
-            'history file'     => ConfigPaths::prettyPath($config->getHistoryFile()),
-            'history size'     => $config->getHistorySize(),
+            'history file' => ConfigPaths::prettyPath($config->getHistoryFile()),
+            'history size' => $config->getHistorySize(),
             'erase duplicates' => $config->getEraseDuplicates(),
         ];
 
@@ -263,7 +261,7 @@ if (!\function_exists('Psy\\info')) {
         }
 
         // If we have a manual but no db file path, it's bundled in the PHAR
-        if ($manual && !$manualDbFile && \Phar::running(false)) {
+        if ($manual && ! $manualDbFile && \Phar::running(false)) {
             $docs = [
                 'manual db file' => '<bundled>',
             ];
@@ -292,16 +290,16 @@ if (!\function_exists('Psy\\info')) {
 
         $autocomplete = [
             'tab completion enabled' => $config->useTabCompletion(),
-            'bracketed paste'        => $config->useBracketedPaste(),
+            'bracketed paste' => $config->useBracketedPaste(),
         ];
 
         $warmers = $config->getAutoloadWarmers();
         $autoload = [
-            'autoload warming enabled' => !empty($warmers),
-            'warmers configured'       => \count($warmers),
+            'autoload warming enabled' => ! empty($warmers),
+            'warmers configured' => \count($warmers),
         ];
 
-        if (!empty($warmers)) {
+        if (! empty($warmers)) {
             $autoload['warmer types'] = \array_map('get_class', $warmers);
 
             // Add extended info for ComposerAutoloadWarmer
@@ -310,9 +308,9 @@ if (!\function_exists('Psy\\info')) {
                     try {
                         $autoload['composer warmer config'] = [
                             'include vendor' => Sudo::fetchProperty($warmer, 'includeVendor'),
-                            'include tests'  => Sudo::fetchProperty($warmer, 'includeTests'),
-                            'vendor dir'     => Sudo::fetchProperty($warmer, 'vendorDir'),
-                            'phar prefix'    => Sudo::fetchProperty($warmer, 'pharPrefix'),
+                            'include tests' => Sudo::fetchProperty($warmer, 'includeTests'),
+                            'vendor dir' => Sudo::fetchProperty($warmer, 'vendorDir'),
+                            'phar prefix' => Sudo::fetchProperty($warmer, 'pharPrefix'),
                         ];
 
                         $includeNamespaces = Sudo::fetchProperty($warmer, 'includeNamespaces');
@@ -320,16 +318,16 @@ if (!\function_exists('Psy\\info')) {
                         $includeVendorNamespaces = Sudo::fetchProperty($warmer, 'includeVendorNamespaces');
                         $excludeVendorNamespaces = Sudo::fetchProperty($warmer, 'excludeVendorNamespaces');
 
-                        if (!empty($includeNamespaces)) {
+                        if (! empty($includeNamespaces)) {
                             $autoload['composer warmer config']['include namespaces'] = $includeNamespaces;
                         }
-                        if (!empty($excludeNamespaces)) {
+                        if (! empty($excludeNamespaces)) {
                             $autoload['composer warmer config']['exclude namespaces'] = $excludeNamespaces;
                         }
-                        if (!empty($includeVendorNamespaces)) {
+                        if (! empty($includeVendorNamespaces)) {
                             $autoload['composer warmer config']['include vendor namespaces'] = $includeVendorNamespaces;
                         }
-                        if (!empty($excludeVendorNamespaces)) {
+                        if (! empty($excludeVendorNamespaces)) {
                             $autoload['composer warmer config']['exclude vendor namespaces'] = $excludeVendorNamespaces;
                         }
                     } catch (\ReflectionException $e) {
@@ -343,10 +341,10 @@ if (!\function_exists('Psy\\info')) {
         $implicitUse = [];
         $implicitUseConfig = $config->getImplicitUse();
         if (\is_array($implicitUseConfig)) {
-            if (!empty($implicitUseConfig['includeNamespaces'])) {
+            if (! empty($implicitUseConfig['includeNamespaces'])) {
                 $implicitUse['include namespaces'] = $implicitUseConfig['includeNamespaces'];
             }
-            if (!empty($implicitUseConfig['excludeNamespaces'])) {
+            if (! empty($implicitUseConfig['excludeNamespaces'])) {
                 $implicitUse['exclude namespaces'] = $implicitUseConfig['excludeNamespaces'];
             }
         }
@@ -361,7 +359,7 @@ if (!\function_exists('Psy\\info')) {
                 if ($shellClass !== 'Psy\\Shell') {
                     $shellInfo = [
                         'PsySH version' => $shell::VERSION,
-                        'Shell class'   => $shellClass,
+                        'Shell class' => $shellClass,
                     ];
                 }
 
@@ -406,11 +404,9 @@ if (!\function_exists('Psy\\info')) {
     }
 }
 
-if (!\function_exists('Psy\\bin')) {
+if (! \function_exists('Psy\\bin')) {
     /**
      * `psysh` command line executable.
-     *
-     * @return \Closure
      */
     function bin(): \Closure
     {
@@ -420,7 +416,7 @@ if (!\function_exists('Psy\\bin')) {
                 \uopz_allow_exit(true);
             }
 
-            if (!isset($_SERVER['PSYSH_IGNORE_ENV']) || !$_SERVER['PSYSH_IGNORE_ENV']) {
+            if (! isset($_SERVER['PSYSH_IGNORE_ENV']) || ! $_SERVER['PSYSH_IGNORE_ENV']) {
                 if (\defined('HHVM_VERSION_ID')) {
                     \fwrite(\STDERR, 'PsySH v0.11 and higher does not support HHVM. Install an older version, or set the environment variable PSYSH_IGNORE_ENV=1 to override this restriction and proceed anyway.'.\PHP_EOL);
                     exit(1);
@@ -436,12 +432,12 @@ if (!\function_exists('Psy\\bin')) {
                     exit(1);
                 }
 
-                if (!\function_exists('json_encode')) {
+                if (! \function_exists('json_encode')) {
                     \fwrite(\STDERR, 'The JSON extension is required. Please install it. You can set the environment variable PSYSH_IGNORE_ENV=1 to override this restriction and proceed anyway.'.\PHP_EOL);
                     exit(1);
                 }
 
-                if (!\function_exists('token_get_all')) {
+                if (! \function_exists('token_get_all')) {
                     \fwrite(\STDERR, 'The Tokenizer extension is required. Please install it. You can set the environment variable PSYSH_IGNORE_ENV=1 to override this restriction and proceed anyway.'.\PHP_EOL);
                     exit(1);
                 }
@@ -450,7 +446,7 @@ if (!\function_exists('Psy\\bin')) {
             $usageException = null;
             $shellIsPhar = Shell::isPhar();
 
-            $input = new ArgvInput();
+            $input = new ArgvInput;
             try {
                 $input->bind(new InputDefinition(\array_merge(Configuration::getInputOptions(), [
                     new InputOption('help', 'h', InputOption::VALUE_NONE),
@@ -474,7 +470,7 @@ if (!\function_exists('Psy\\bin')) {
                     $cwd = $input->getParameterOption('--cwd', null, true);
                 }
                 if ($cwd !== null && $cwd !== '') {
-                    if (!@\chdir($cwd)) {
+                    if (! @\chdir($cwd)) {
                         \fwrite(\STDERR, 'Invalid --cwd directory: '.$cwd.\PHP_EOL);
                         exit(1);
                     }
@@ -488,12 +484,12 @@ if (!\function_exists('Psy\\bin')) {
             }
 
             // Handle --help
-            if (!isset($config) || $usageException !== null || $input->getOption('help')) {
+            if (! isset($config) || $usageException !== null || $input->getOption('help')) {
                 // Determine if we should use colors
                 $useColors = true;
                 if ($input->hasParameterOption(['--no-color'])) {
                     $useColors = false;
-                } elseif (!$input->hasParameterOption(['--color']) && !\stream_isatty(\STDOUT)) {
+                } elseif (! $input->hasParameterOption(['--color']) && ! \stream_isatty(\STDOUT)) {
                     $useColors = false;
                 }
 
@@ -589,11 +585,11 @@ EOL;
 
             // Handle --self-update
             if ($input->getOption('self-update')) {
-                if (!$shellIsPhar) {
+                if (! $shellIsPhar) {
                     \fwrite(\STDERR, 'The --self-update option can only be used with with a phar based install.'.\PHP_EOL);
                     exit(1);
                 }
-                $selfUpdate = new SelfUpdate(new GitHubChecker(), new Installer());
+                $selfUpdate = new SelfUpdate(new GitHubChecker, new Installer);
                 $result = $selfUpdate->run($input, $config->getOutput());
                 exit($result);
             }

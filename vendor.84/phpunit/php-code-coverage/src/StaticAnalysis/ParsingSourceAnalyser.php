@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,10 +9,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use const T_COMMENT;
 use const T_DOC_COMMENT;
+
+use PhpParser\Error;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor\NameResolver;
+use PhpParser\ParserFactory;
+use SebastianBergmann\CodeCoverage\ParserException;
+use SebastianBergmann\LinesOfCode\LineCountingVisitor;
+
 use function array_merge;
 use function array_unique;
 use function assert;
@@ -22,12 +33,6 @@ use function sprintf;
 use function substr_count;
 use function token_get_all;
 use function trim;
-use PhpParser\Error;
-use PhpParser\NodeTraverser;
-use PhpParser\NodeVisitor\NameResolver;
-use PhpParser\ParserFactory;
-use SebastianBergmann\CodeCoverage\ParserException;
-use SebastianBergmann\LinesOfCode\LineCountingVisitor;
 
 /**
  * @internal This interface is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -35,7 +40,7 @@ use SebastianBergmann\LinesOfCode\LineCountingVisitor;
 final readonly class ParsingSourceAnalyser implements SourceAnalyser
 {
     /**
-     * @param non-empty-string $sourceCodeFile
+     * @param  non-empty-string  $sourceCodeFile
      */
     public function analyse(string $sourceCodeFile, string $sourceCode, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode): AnalysisResult
     {
@@ -54,10 +59,10 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
 
             assert($nodes !== null);
 
-            $traverser                     = new NodeTraverser;
-            $codeUnitFindingVisitor        = new CodeUnitFindingVisitor($sourceCodeFile);
-            $lineCountingVisitor           = new LineCountingVisitor($linesOfCode);
-            $ignoredLinesFindingVisitor    = new IgnoredLinesFindingVisitor($useAnnotationsForIgnoringCode, $ignoreDeprecatedCode);
+            $traverser = new NodeTraverser;
+            $codeUnitFindingVisitor = new CodeUnitFindingVisitor($sourceCodeFile);
+            $lineCountingVisitor = new LineCountingVisitor($linesOfCode);
+            $ignoredLinesFindingVisitor = new IgnoredLinesFindingVisitor($useAnnotationsForIgnoringCode, $ignoreDeprecatedCode);
             $executableLinesFindingVisitor = new ExecutableLinesFindingVisitor($sourceCode);
 
             $traverser->addVisitor(new NameResolver);
@@ -116,16 +121,16 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
      */
     private function findLinesIgnoredByLineBasedAnnotations(string $filename, string $source, bool $useAnnotationsForIgnoringCode): array
     {
-        if (!$useAnnotationsForIgnoringCode) {
+        if (! $useAnnotationsForIgnoringCode) {
             return [];
         }
 
         $result = [];
-        $start  = false;
+        $start = false;
 
         foreach (token_get_all($source) as $token) {
-            if (!is_array($token) ||
-                !(T_COMMENT === $token[0] || T_DOC_COMMENT === $token[0])) {
+            if (! is_array($token) ||
+                ! ($token[0] === T_COMMENT || $token[0] === T_DOC_COMMENT)) {
                 continue;
             }
 
@@ -147,7 +152,7 @@ final readonly class ParsingSourceAnalyser implements SourceAnalyser
 
             if ($comment === '// @codeCoverageIgnoreEnd' ||
                 $comment === '//@codeCoverageIgnoreEnd') {
-                if (false === $start) {
+                if ($start === false) {
                     $start = $token[2];
                 }
 

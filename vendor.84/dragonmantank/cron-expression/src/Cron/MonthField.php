@@ -42,9 +42,9 @@ class MonthField extends AbstractField
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
-     * @param \DateTime|\DateTimeImmutable $date
+     * @param  \DateTime|\DateTimeImmutable  $date
      */
     public function increment(DateTimeInterface &$date, $invert = false, $parts = null): FieldInterface
     {

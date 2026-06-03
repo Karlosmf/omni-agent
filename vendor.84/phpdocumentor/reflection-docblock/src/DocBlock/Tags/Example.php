@@ -26,14 +26,14 @@ use function trim;
 /**
  * Reflection class for a {@}example tag in a Docblock.
  */
-final class Example implements Tag, Factory\StaticMethod
+final class Example implements Factory\StaticMethod, Tag
 {
     /** @var string Path to a file to use as an example. May also be an absolute URI. */
     private string $filePath;
 
     /**
      * @var bool Whether the file path component represents an URI. This determines how the file portion
-     *     appears at {@link getContent()}.
+     *           appears at {@link getContent()}.
      */
     private bool $isURI;
 
@@ -54,9 +54,9 @@ final class Example implements Tag, Factory\StaticMethod
         Assert::greaterThanEq($startingLine, 1);
         Assert::greaterThanEq($lineCount, 0);
 
-        $this->filePath     = $filePath;
+        $this->filePath = $filePath;
         $this->startingLine = $startingLine;
-        $this->lineCount    = $lineCount;
+        $this->lineCount = $lineCount;
         if ($content !== null) {
             $this->content = trim($content);
         }
@@ -88,12 +88,12 @@ final class Example implements Tag, Factory\StaticMethod
     public static function create(string $body): ?Tag
     {
         // File component: File path in quotes or File URI / Source information
-        if (!preg_match('/^\s*(?:(\"[^\"]+\")|(\S+))(?:\s+(.*))?$/sux', $body, $matches)) {
+        if (! preg_match('/^\s*(?:(\"[^\"]+\")|(\S+))(?:\s+(.*))?$/sux', $body, $matches)) {
             return null;
         }
 
         $filePath = null;
-        $fileUri  = null;
+        $fileUri = null;
         if (array_key_exists(1, $matches) && $matches[1] !== '') {
             $filePath = $matches[1];
         } else {
@@ -101,8 +101,8 @@ final class Example implements Tag, Factory\StaticMethod
         }
 
         $startingLine = 1;
-        $lineCount    = 0;
-        $description  = null;
+        $lineCount = 0;
+        $description = null;
 
         if (array_key_exists(3, $matches)) {
             $description = $matches[3];
@@ -120,7 +120,7 @@ final class Example implements Tag, Factory\StaticMethod
             }
         }
 
-        return new static(
+        return new self(
             $filePath ?? ($fileUri ?? ''),
             $fileUri !== null,
             $startingLine,
@@ -133,7 +133,7 @@ final class Example implements Tag, Factory\StaticMethod
      * Returns the file path.
      *
      * @return string Path to a file to use as an example.
-     *     May also be an absolute URI.
+     *                May also be an absolute URI.
      */
     public function getFilePath(): string
     {
@@ -147,19 +147,19 @@ final class Example implements Tag, Factory\StaticMethod
     {
         $filePath = $this->filePath;
         $isDefaultLine = $this->startingLine === 1 && $this->lineCount === 0;
-        $startingLine = !$isDefaultLine ? (string) $this->startingLine : '';
-        $lineCount = !$isDefaultLine ? (string) $this->lineCount : '';
+        $startingLine = ! $isDefaultLine ? (string) $this->startingLine : '';
+        $lineCount = ! $isDefaultLine ? (string) $this->lineCount : '';
         $content = (string) $this->content;
 
         return $filePath
-            . ($startingLine !== ''
-                ? ($filePath !== '' ? ' ' : '') . $startingLine
+            .($startingLine !== ''
+                ? ($filePath !== '' ? ' ' : '').$startingLine
                 : '')
-            . ($lineCount !== ''
-                ? ($filePath !== '' || $startingLine !== '' ? ' ' : '') . $lineCount
+            .($lineCount !== ''
+                ? ($filePath !== '' || $startingLine !== '' ? ' ' : '').$lineCount
                 : '')
-            . ($content !== ''
-                ? ($filePath !== '' || $startingLine !== '' || $lineCount !== '' ? ' ' : '') . $content
+            .($content !== ''
+                ? ($filePath !== '' || $startingLine !== '' || $lineCount !== '' ? ' ' : '').$content
                 : '');
     }
 
@@ -189,7 +189,7 @@ final class Example implements Tag, Factory\StaticMethod
     public function render(?Formatter $formatter = null): string
     {
         if ($formatter === null) {
-            $formatter = new Formatter\PassthroughFormatter();
+            $formatter = new Formatter\PassthroughFormatter;
         }
 
         return $formatter->format($this);

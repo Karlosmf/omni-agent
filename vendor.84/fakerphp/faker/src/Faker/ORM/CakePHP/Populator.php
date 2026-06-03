@@ -2,20 +2,25 @@
 
 namespace Faker\ORM\CakePHP;
 
+use Faker\Generator;
+
 class Populator
 {
     protected $generator;
+
     protected $entities = [];
+
     protected $quantities = [];
+
     protected $guessers = [];
 
-    public function __construct(\Faker\Generator $generator)
+    public function __construct(Generator $generator)
     {
         $this->generator = $generator;
     }
 
     /**
-     * @return \Faker\Generator
+     * @return Generator
      */
     public function getGenerator()
     {
@@ -43,18 +48,18 @@ class Populator
     }
 
     /**
-     * @throws \Exception
-     *
      * @return $this
+     *
+     * @throws \Exception
      */
     public function addGuesser($class)
     {
-        if (!is_object($class)) {
+        if (! is_object($class)) {
             $class = new $class($this->generator);
         }
 
-        if (!method_exists($class, 'guessFormat')) {
-            throw new \Exception('Missing required custom guesser method: ' . get_class($class) . '::guessFormat()');
+        if (! method_exists($class, 'guessFormat')) {
+            throw new \Exception('Missing required custom guesser method: '.get_class($class).'::guessFormat()');
         }
 
         $this->guessers[get_class($class)] = $class;
@@ -63,14 +68,13 @@ class Populator
     }
 
     /**
-     * @param array $customColumnFormatters
-     * @param array $customModifiers
-     *
+     * @param  array  $customColumnFormatters
+     * @param  array  $customModifiers
      * @return $this
      */
     public function addEntity($entity, $number, $customColumnFormatters = [], $customModifiers = [])
     {
-        if (!$entity instanceof EntityPopulator) {
+        if (! $entity instanceof EntityPopulator) {
             $entity = new EntityPopulator($entity);
         }
 
@@ -94,8 +98,7 @@ class Populator
     }
 
     /**
-     * @param array $options
-     *
+     * @param  array  $options
      * @return array
      */
     public function execute($options = [])
@@ -103,7 +106,7 @@ class Populator
         $insertedEntities = [];
 
         foreach ($this->quantities as $class => $number) {
-            for ($i = 0; $i < $number; ++$i) {
+            for ($i = 0; $i < $number; $i++) {
                 $insertedEntities[$class][] = $this->entities[$class]->execute($class, $insertedEntities, $options);
             }
         }

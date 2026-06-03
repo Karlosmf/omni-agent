@@ -6,9 +6,11 @@ use Dompdf\Adapter\CPDF;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Exception;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Contracts\View\Factory as ViewFactory;
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\Factory as ViewFactory;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -17,7 +19,6 @@ use Symfony\Component\HttpFoundation\HeaderUtils;
 /**
  * A Laravel wrapper for Dompdf
  *
- * @package laravel-dompdf
  * @author Barry vd. Heuvel
  *
  * @method PDF setBaseHost(string $baseHost)
@@ -48,16 +49,16 @@ use Symfony\Component\HttpFoundation\HeaderUtils;
  */
 class PDF
 {
-    /** @var Dompdf  */
+    /** @var Dompdf */
     protected $dompdf;
 
-    /** @var \Illuminate\Contracts\Config\Repository  */
+    /** @var Repository */
     protected $config;
 
-    /** @var \Illuminate\Filesystem\Filesystem  */
+    /** @var Filesystem */
     protected $files;
 
-    /** @var \Illuminate\Contracts\View\Factory  */
+    /** @var Factory */
     protected $view;
 
     /** @var bool */
@@ -93,19 +94,21 @@ class PDF
     public function setWarnings(bool $warnings): self
     {
         $this->showWarnings = $warnings;
+
         return $this;
     }
 
     /**
      * Load a HTML string
      *
-     * @param string|null $encoding Not used yet
+     * @param  string|null  $encoding  Not used yet
      */
     public function loadHTML(string $string, ?string $encoding = null): self
     {
         $string = $this->convertEntities($string);
         $this->dompdf->loadHtml($string, $encoding);
         $this->rendered = false;
+
         return $this;
     }
 
@@ -116,49 +119,55 @@ class PDF
     {
         $this->dompdf->loadHtmlFile($file);
         $this->rendered = false;
+
         return $this;
     }
 
     /**
      * Add metadata info
-     * @param array<string, string> $info
+     *
+     * @param  array<string, string>  $info
      */
     public function addInfo(array $info): self
     {
         foreach ($info as $name => $value) {
             $this->dompdf->add_info($name, $value);
         }
+
         return $this;
     }
 
     /**
      * Load a View and convert to HTML
-     * @param array<string, mixed> $data
-     * @param array<string, mixed> $mergeData
-     * @param string|null $encoding Not used yet
+     *
+     * @param  array<string, mixed>  $data
+     * @param  array<string, mixed>  $mergeData
+     * @param  string|null  $encoding  Not used yet
      */
     public function loadView(string $view, array $data = [], array $mergeData = [], ?string $encoding = null): self
     {
         $html = $this->view->make($view, $data, $mergeData)->render();
+
         return $this->loadHTML($html, $encoding);
     }
 
     /**
      * Set/Change an option (or array of options) in Dompdf
      *
-     * @param array<string, mixed>|string $attribute
-     * @param null|mixed $value
+     * @param  array<string, mixed>|string  $attribute
+     * @param  null|mixed  $value
      */
     public function setOption($attribute, $value = null): self
     {
         $this->dompdf->getOptions()->set($attribute, $value);
+
         return $this;
     }
 
     /**
      * Replace all the Options from DomPDF
      *
-     * @param array<string, mixed> $options
+     * @param  array<string, mixed>  $options
      */
     public function setOptions(array $options, bool $mergeWithDefaults = false): self
     {
@@ -167,6 +176,7 @@ class PDF
         }
 
         $this->dompdf->setOptions(new Options($options));
+
         return $this;
     }
 
@@ -178,15 +188,15 @@ class PDF
      * 'compress' = > 1 or 0 - apply content stream compression, this is
      *    on (1) by default
      *
-     * @param array<string, int> $options
-     *
+     * @param  array<string, int>  $options
      * @return string The rendered PDF as string
      */
     public function output(array $options = []): string
     {
-        if (!$this->rendered) {
+        if (! $this->rendered) {
             $this->render();
         }
+
         return (string) $this->dompdf->output($options);
     }
 
@@ -199,10 +209,12 @@ class PDF
 
         if (! is_null($disk)) {
             Storage::disk($disk)->put($filename, $this->output());
+
             return $this;
         }
 
         $this->files->put($filename, $this->output());
+
         return $this;
     }
 
@@ -229,7 +241,6 @@ class PDF
         $output = $this->output();
         $fallback = $this->fallbackName($filename);
 
-
         return new Response($output, 200, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => HeaderUtils::makeDisposition('inline', $filename, $fallback),
@@ -245,13 +256,13 @@ class PDF
 
         if ($this->showWarnings) {
             global $_dompdf_warnings;
-            if (!empty($_dompdf_warnings) && count($_dompdf_warnings)) {
+            if (! empty($_dompdf_warnings) && count($_dompdf_warnings)) {
                 $warnings = '';
                 foreach ($_dompdf_warnings as $msg) {
-                    $warnings .= $msg . "\n";
+                    $warnings .= $msg."\n";
                 }
                 // $warnings .= $this->dompdf->get_canvas()->get_cpdf()->messages;
-                if (!empty($warnings)) {
+                if (! empty($warnings)) {
                     throw new Exception($warnings);
                 }
             }
@@ -272,7 +283,7 @@ class PDF
 
     protected function convertEntities(string $subject): string
     {
-        if (false === $this->config->get('dompdf.convert_entities', true)) {
+        if ($this->config->get('dompdf.convert_entities', true) === false) {
             return $subject;
         }
 
@@ -284,14 +295,15 @@ class PDF
         foreach ($entities as $search => $replace) {
             $subject = str_replace($search, $replace, $subject);
         }
+
         return $subject;
     }
 
     /**
      * Dynamically handle calls into the dompdf instance.
      *
-     * @param string $method
-     * @param array<mixed> $parameters
+     * @param  string  $method
+     * @param  array<mixed>  $parameters
      * @return $this|mixed
      */
     public function __call($method, $parameters)

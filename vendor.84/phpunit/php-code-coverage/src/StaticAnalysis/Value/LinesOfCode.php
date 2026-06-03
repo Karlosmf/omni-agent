@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 /**
@@ -30,14 +33,14 @@ final readonly class LinesOfCode
     private int $nonCommentLinesOfCode;
 
     /**
-     * @param non-negative-int $linesOfCode
-     * @param non-negative-int $commentLinesOfCode
-     * @param non-negative-int $nonCommentLinesOfCode
+     * @param  non-negative-int  $linesOfCode
+     * @param  non-negative-int  $commentLinesOfCode
+     * @param  non-negative-int  $nonCommentLinesOfCode
      */
     public function __construct(int $linesOfCode, int $commentLinesOfCode, int $nonCommentLinesOfCode)
     {
-        $this->linesOfCode           = $linesOfCode;
-        $this->commentLinesOfCode    = $commentLinesOfCode;
+        $this->linesOfCode = $linesOfCode;
+        $this->commentLinesOfCode = $commentLinesOfCode;
         $this->nonCommentLinesOfCode = $nonCommentLinesOfCode;
     }
 

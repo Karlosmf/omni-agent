@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace PhpParser\Internal;
 
@@ -9,33 +11,37 @@ namespace PhpParser\Internal;
  * Algorithmica 1.1 (1986): 251-266.
  *
  * @template T
+ *
  * @internal
  */
-class Differ {
+class Differ
+{
     /** @var callable(T, T): bool */
     private $isEqual;
 
     /**
      * Create differ over the given equality relation.
      *
-     * @param callable(T, T): bool $isEqual Equality relation
+     * @param  callable(T, T): bool  $isEqual  Equality relation
      */
-    public function __construct(callable $isEqual) {
+    public function __construct(callable $isEqual)
+    {
         $this->isEqual = $isEqual;
     }
 
     /**
      * Calculate diff (edit script) from $old to $new.
      *
-     * @param T[] $old Original array
-     * @param T[] $new New array
-     *
+     * @param  T[]  $old  Original array
+     * @param  T[]  $new  New array
      * @return DiffElem[] Diff (edit script)
      */
-    public function diff(array $old, array $new): array {
+    public function diff(array $old, array $new): array
+    {
         $old = \array_values($old);
         $new = \array_values($new);
-        list($trace, $x, $y) = $this->calculateTrace($old, $new);
+        [$trace, $x, $y] = $this->calculateTrace($old, $new);
+
         return $this->extractDiff($trace, $x, $y, $old, $new);
     }
 
@@ -45,21 +51,22 @@ class Differ {
      * If a sequence of remove operations is followed by the same number of add operations, these
      * will be coalesced into replace operations.
      *
-     * @param T[] $old Original array
-     * @param T[] $new New array
-     *
+     * @param  T[]  $old  Original array
+     * @param  T[]  $new  New array
      * @return DiffElem[] Diff (edit script), including replace operations
      */
-    public function diffWithReplacements(array $old, array $new): array {
+    public function diffWithReplacements(array $old, array $new): array
+    {
         return $this->coalesceReplacements($this->diff($old, $new));
     }
 
     /**
-     * @param T[] $old
-     * @param T[] $new
+     * @param  T[]  $old
+     * @param  T[]  $new
      * @return array{array<int, array<int, int>>, int, int}
      */
-    private function calculateTrace(array $old, array $new): array {
+    private function calculateTrace(array $old, array $new): array
+    {
         $n = \count($old);
         $m = \count($new);
         $max = $n + $m;
@@ -90,12 +97,13 @@ class Differ {
     }
 
     /**
-     * @param array<int, array<int, int>> $trace
-     * @param T[] $old
-     * @param T[] $new
+     * @param  array<int, array<int, int>>  $trace
+     * @param  T[]  $old
+     * @param  T[]  $new
      * @return DiffElem[]
      */
-    private function extractDiff(array $trace, int $x, int $y, array $old, array $new): array {
+    private function extractDiff(array $trace, int $x, int $y, array $old, array $new): array
+    {
         $result = [];
         for ($d = \count($trace) - 1; $d >= 0; $d--) {
             $v = $trace[$d];
@@ -130,22 +138,25 @@ class Differ {
                 $y--;
             }
         }
+
         return array_reverse($result);
     }
 
     /**
      * Coalesce equal-length sequences of remove+add into a replace operation.
      *
-     * @param DiffElem[] $diff
+     * @param  DiffElem[]  $diff
      * @return DiffElem[]
      */
-    private function coalesceReplacements(array $diff): array {
+    private function coalesceReplacements(array $diff): array
+    {
         $newDiff = [];
         $c = \count($diff);
         for ($i = 0; $i < $c; $i++) {
             $diffType = $diff[$i]->type;
             if ($diffType !== DiffElem::TYPE_REMOVE) {
                 $newDiff[] = $diff[$i];
+
                 continue;
             }
 
@@ -173,6 +184,7 @@ class Differ {
             }
             $i = $k - 1;
         }
+
         return $newDiff;
     }
 }

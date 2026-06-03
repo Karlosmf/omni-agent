@@ -11,10 +11,11 @@ use function Livewire\on;
 
 class SupportAutoInjectedAssets extends ComponentHook
 {
-    static $hasRenderedAComponentThisRequest = false;
-    static $forceAssetInjection = false;
+    public static $hasRenderedAComponentThisRequest = false;
 
-    static function provide()
+    public static $forceAssetInjection = false;
+
+    public static function provide()
     {
         on('flush-state', function () {
             static::$hasRenderedAComponentThisRequest = false;
@@ -23,8 +24,12 @@ class SupportAutoInjectedAssets extends ComponentHook
 
         app('events')->listen(RequestHandled::class, function ($handled) {
             // If this is a successful HTML response...
-            if (! str($handled->response->headers->get('content-type'))->contains('text/html')) return;
-            if (! method_exists($handled->response, 'status') || $handled->response->status() !== 200) return;
+            if (! str($handled->response->headers->get('content-type'))->contains('text/html')) {
+                return;
+            }
+            if (! method_exists($handled->response, 'status') || $handled->response->status() !== 200) {
+                return;
+            }
 
             $assetsHead = '';
             $assetsBody = '';
@@ -48,7 +53,9 @@ class SupportAutoInjectedAssets extends ComponentHook
                 $assetsBody .= FrontendAssets::scripts()."\n";
             }
 
-            if ($assetsHead === '' && $assetsBody === '') return;
+            if ($assetsHead === '' && $assetsBody === '') {
+                return;
+            }
 
             $html = $handled->response->getContent();
 
@@ -62,9 +69,15 @@ class SupportAutoInjectedAssets extends ComponentHook
 
     protected static function shouldInjectLivewireAssets()
     {
-        if (! static::$forceAssetInjection && config('livewire.inject_assets', true) === false) return false;
-        if ((! static::$hasRenderedAComponentThisRequest) && (! static::$forceAssetInjection)) return false;
-        if (app(FrontendAssets::class)->hasRenderedScripts) return false;
+        if (! static::$forceAssetInjection && config('livewire.inject_assets', true) === false) {
+            return false;
+        }
+        if ((! static::$hasRenderedAComponentThisRequest) && (! static::$forceAssetInjection)) {
+            return false;
+        }
+        if (app(FrontendAssets::class)->hasRenderedScripts) {
+            return false;
+        }
 
         return true;
     }
@@ -80,7 +93,7 @@ class SupportAutoInjectedAssets extends ComponentHook
         static::$hasRenderedAComponentThisRequest = true;
     }
 
-    static function injectAssets($html, $assetsHead, $assetsBody)
+    public static function injectAssets($html, $assetsHead, $assetsBody)
     {
         $html = str($html);
 

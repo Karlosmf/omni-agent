@@ -1,21 +1,27 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace PhpParser\Lexer\TokenEmulator;
 
 use PhpParser\PhpVersion;
 use PhpParser\Token;
 
-class VoidCastEmulator extends TokenEmulator {
-    public function getPhpVersion(): PhpVersion {
+class VoidCastEmulator extends TokenEmulator
+{
+    public function getPhpVersion(): PhpVersion
+    {
         return PhpVersion::fromComponents(8, 5);
     }
 
-    public function isEmulationNeeded(string $code): bool {
-        return (bool)\preg_match('/\([ \t]*void[ \t]*\)/i', $code);
+    public function isEmulationNeeded(string $code): bool
+    {
+        return (bool) \preg_match('/\([ \t]*void[ \t]*\)/i', $code);
     }
 
-    public function emulate(string $code, array $tokens): array {
-        for ($i = 0, $c = count($tokens); $i < $c; ++$i) {
+    public function emulate(string $code, array $tokens): array
+    {
+        for ($i = 0, $c = count($tokens); $i < $c; $i++) {
             $token = $tokens[$i];
             if ($token->text !== '(') {
                 continue;
@@ -54,17 +60,19 @@ class VoidCastEmulator extends TokenEmulator {
             ]);
             $c -= $numTokens - 1;
         }
+
         return $tokens;
     }
 
-    public function reverseEmulate(string $code, array $tokens): array {
-        for ($i = 0, $c = count($tokens); $i < $c; ++$i) {
+    public function reverseEmulate(string $code, array $tokens): array
+    {
+        for ($i = 0, $c = count($tokens); $i < $c; $i++) {
             $token = $tokens[$i];
             if ($token->id !== \T_VOID_CAST) {
                 continue;
             }
 
-            if (!preg_match('/^\(([ \t]*)(void)([ \t]*)\)$/i', $token->text, $match)) {
+            if (! preg_match('/^\(([ \t]*)(void)([ \t]*)\)$/i', $token->text, $match)) {
                 throw new \LogicException('Unexpected T_VOID_CAST contents');
             }
 
@@ -93,6 +101,7 @@ class VoidCastEmulator extends TokenEmulator {
             $i += \count($newTokens) - 1;
             $c += \count($newTokens) - 1;
         }
+
         return $tokens;
     }
 }

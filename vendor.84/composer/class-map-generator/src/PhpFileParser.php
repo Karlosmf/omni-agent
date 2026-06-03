@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of Composer.
@@ -12,8 +14,8 @@
 
 namespace Composer\ClassMapGenerator;
 
-use RuntimeException;
 use Composer\Pcre\Preg;
+use RuntimeException;
 
 /**
  * @author Jordi Boggiano <j.boggiano@seld.be>
@@ -23,27 +25,28 @@ class PhpFileParser
     /**
      * Extract the classes in the given file
      *
-     * @param  string            $path The file to check
-     * @throws RuntimeException
+     * @param  string  $path  The file to check
      * @return list<class-string> The found classes
+     *
+     * @throws RuntimeException
      */
     public static function findClasses(string $path): array
     {
         $extraTypes = self::getExtraTypes();
 
-        if (!function_exists('php_strip_whitespace')) {
+        if (! function_exists('php_strip_whitespace')) {
             throw new RuntimeException('Classmap generation relies on the php_strip_whitespace function, but it has been disabled by the disable_functions directive.');
         }
 
         // Use @ here instead of Silencer to actively suppress 'unhelpful' output
         // @link https://github.com/composer/composer/pull/4886
         $contents = @php_strip_whitespace($path);
-        if ('' === $contents) {
-            if (!file_exists($path)) {
+        if ($contents === '') {
+            if (! file_exists($path)) {
                 $message = 'File at "%s" does not exist, check your classmap definitions';
-            } elseif (!self::isReadable($path)) {
+            } elseif (! self::isReadable($path)) {
                 $message = 'File at "%s" is not readable, check its permissions';
-            } elseif ('' === trim((string) file_get_contents($path))) {
+            } elseif (trim((string) file_get_contents($path)) === '') {
                 // The input file was really empty and thus contains no classes
                 return [];
             } else {
@@ -52,7 +55,7 @@ class PhpFileParser
 
             $error = error_get_last();
             if (isset($error['message'])) {
-                $message .= PHP_EOL . 'The following message may be helpful:' . PHP_EOL . $error['message'];
+                $message .= PHP_EOL.'The following message may be helpful:'.PHP_EOL.$error['message'];
             }
 
             throw new RuntimeException(sprintf($message, $path));
@@ -60,7 +63,7 @@ class PhpFileParser
 
         // return early if there is no chance of matching anything in this file
         Preg::matchAllStrictGroups('{\b(?:class|interface|trait'.$extraTypes.')\s}i', $contents, $matches);
-        if ([] === $matches[0]) {
+        if ($matches[0] === []) {
             return [];
         }
 
@@ -78,9 +81,9 @@ class PhpFileParser
         $classes = [];
         $namespace = '';
 
-        for ($i = 0, $len = count($matches['type']); $i < $len; ++$i) {
+        for ($i = 0, $len = count($matches['type']); $i < $len; $i++) {
             if (isset($matches['ns'][$i]) && $matches['ns'][$i] !== '') {
-                $namespace = str_replace([' ', "\t", "\r", "\n"], '', (string) $matches['nsname'][$i]) . '\\';
+                $namespace = str_replace([' ', "\t", "\r", "\n"], '', (string) $matches['nsname'][$i]).'\\';
             } else {
                 $name = $matches['name'][$i];
                 assert(is_string($name));
@@ -105,13 +108,13 @@ class PhpFileParser
                     // The regex above captures the colon and type, which isn't part of
                     // the class name.
                     $colonPos = strrpos($name, ':');
-                    if (false !== $colonPos) {
+                    if ($colonPos !== false) {
                         $name = substr($name, 0, $colonPos);
                     }
                 }
 
                 /** @var class-string */
-                $className = ltrim($namespace . $name, '\\');
+                $className = ltrim($namespace.$name, '\\');
                 $classes[] = $className;
             }
         }
@@ -123,7 +126,7 @@ class PhpFileParser
     {
         static $extraTypes = null;
 
-        if (null === $extraTypes) {
+        if ($extraTypes === null) {
             $extraTypes = '';
             $extraTypesArray = [];
             if (PHP_VERSION_ID >= 80100 || (defined('HHVM_VERSION') && version_compare(HHVM_VERSION, '3.3', '>='))) {
@@ -154,7 +157,7 @@ class PhpFileParser
         }
 
         if (is_file($path)) {
-            return false !== @file_get_contents($path, false, null, 0, 1);
+            return @file_get_contents($path, false, null, 0, 1) !== false;
         }
 
         // assume false otherwise

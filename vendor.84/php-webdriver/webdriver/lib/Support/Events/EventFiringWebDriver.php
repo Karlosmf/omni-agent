@@ -14,7 +14,7 @@ use Facebook\WebDriver\WebDriverOptions;
 use Facebook\WebDriver\WebDriverTargetLocator;
 use Facebook\WebDriver\WebDriverWait;
 
-class EventFiringWebDriver implements WebDriver, JavaScriptExecutor
+class EventFiringWebDriver implements JavaScriptExecutor, WebDriver
 {
     /**
      * @var WebDriver
@@ -28,8 +28,8 @@ class EventFiringWebDriver implements WebDriver, JavaScriptExecutor
 
     public function __construct(WebDriver $driver, ?WebDriverDispatcher $dispatcher = null)
     {
-        $this->dispatcher = $dispatcher ?: new WebDriverDispatcher();
-        if (!$this->dispatcher->getDefaultDriver()) {
+        $this->dispatcher = $dispatcher ?: new WebDriverDispatcher;
+        if (! $this->dispatcher->getDefaultDriver()) {
             $this->dispatcher->setDefaultDriver($this);
         }
         $this->driver = $driver;
@@ -52,9 +52,10 @@ class EventFiringWebDriver implements WebDriver, JavaScriptExecutor
     }
 
     /**
-     * @param mixed $url
-     * @throws WebDriverException
+     * @param  mixed  $url
      * @return $this
+     *
+     * @throws WebDriverException
      */
     public function get($url)
     {
@@ -72,8 +73,9 @@ class EventFiringWebDriver implements WebDriver, JavaScriptExecutor
     }
 
     /**
-     * @throws WebDriverException
      * @return array
+     *
+     * @throws WebDriverException
      */
     public function findElements(WebDriverBy $by)
     {
@@ -95,8 +97,9 @@ class EventFiringWebDriver implements WebDriver, JavaScriptExecutor
     }
 
     /**
-     * @throws WebDriverException
      * @return EventFiringWebElement
+     *
+     * @throws WebDriverException
      */
     public function findElement(WebDriverBy $by)
     {
@@ -115,13 +118,14 @@ class EventFiringWebDriver implements WebDriver, JavaScriptExecutor
     }
 
     /**
-     * @param string $script
-     * @throws WebDriverException
+     * @param  string  $script
      * @return mixed
+     *
+     * @throws WebDriverException
      */
     public function executeScript($script, array $arguments = [])
     {
-        if (!$this->driver instanceof JavaScriptExecutor) {
+        if (! $this->driver instanceof JavaScriptExecutor) {
             throw new UnsupportedOperationException(
                 'driver does not implement JavaScriptExecutor'
             );
@@ -142,13 +146,14 @@ class EventFiringWebDriver implements WebDriver, JavaScriptExecutor
     }
 
     /**
-     * @param string $script
-     * @throws WebDriverException
+     * @param  string  $script
      * @return mixed
+     *
+     * @throws WebDriverException
      */
     public function executeAsyncScript($script, array $arguments = [])
     {
-        if (!$this->driver instanceof JavaScriptExecutor) {
+        if (! $this->driver instanceof JavaScriptExecutor) {
             throw new UnsupportedOperationException(
                 'driver does not implement JavaScriptExecutor'
             );
@@ -168,8 +173,9 @@ class EventFiringWebDriver implements WebDriver, JavaScriptExecutor
     }
 
     /**
-     * @throws WebDriverException
      * @return $this
+     *
+     * @throws WebDriverException
      */
     public function close()
     {
@@ -184,8 +190,9 @@ class EventFiringWebDriver implements WebDriver, JavaScriptExecutor
     }
 
     /**
-     * @throws WebDriverException
      * @return string
+     *
+     * @throws WebDriverException
      */
     public function getCurrentURL()
     {
@@ -198,8 +205,9 @@ class EventFiringWebDriver implements WebDriver, JavaScriptExecutor
     }
 
     /**
-     * @throws WebDriverException
      * @return string
+     *
+     * @throws WebDriverException
      */
     public function getPageSource()
     {
@@ -212,8 +220,9 @@ class EventFiringWebDriver implements WebDriver, JavaScriptExecutor
     }
 
     /**
-     * @throws WebDriverException
      * @return string
+     *
+     * @throws WebDriverException
      */
     public function getTitle()
     {
@@ -226,8 +235,9 @@ class EventFiringWebDriver implements WebDriver, JavaScriptExecutor
     }
 
     /**
-     * @throws WebDriverException
      * @return string
+     *
+     * @throws WebDriverException
      */
     public function getWindowHandle()
     {
@@ -240,8 +250,9 @@ class EventFiringWebDriver implements WebDriver, JavaScriptExecutor
     }
 
     /**
-     * @throws WebDriverException
      * @return array
+     *
+     * @throws WebDriverException
      */
     public function getWindowHandles()
     {
@@ -267,9 +278,10 @@ class EventFiringWebDriver implements WebDriver, JavaScriptExecutor
     }
 
     /**
-     * @param null|string $save_as
-     * @throws WebDriverException
+     * @param  null|string  $save_as
      * @return string
+     *
+     * @throws WebDriverException
      */
     public function takeScreenshot($save_as = null)
     {
@@ -282,10 +294,11 @@ class EventFiringWebDriver implements WebDriver, JavaScriptExecutor
     }
 
     /**
-     * @param int $timeout_in_second
-     * @param int $interval_in_millisecond
-     * @throws WebDriverException
+     * @param  int  $timeout_in_second
+     * @param  int  $interval_in_millisecond
      * @return WebDriverWait
+     *
+     * @throws WebDriverException
      */
     public function wait($timeout_in_second = 30, $interval_in_millisecond = 250)
     {
@@ -298,8 +311,9 @@ class EventFiringWebDriver implements WebDriver, JavaScriptExecutor
     }
 
     /**
-     * @throws WebDriverException
      * @return WebDriverOptions
+     *
+     * @throws WebDriverException
      */
     public function manage()
     {
@@ -312,8 +326,9 @@ class EventFiringWebDriver implements WebDriver, JavaScriptExecutor
     }
 
     /**
-     * @throws WebDriverException
      * @return EventFiringWebDriverNavigation
+     *
+     * @throws WebDriverException
      */
     public function navigate()
     {
@@ -329,8 +344,9 @@ class EventFiringWebDriver implements WebDriver, JavaScriptExecutor
     }
 
     /**
-     * @throws WebDriverException
      * @return WebDriverTargetLocator
+     *
+     * @throws WebDriverException
      */
     public function switchTo()
     {
@@ -343,8 +359,9 @@ class EventFiringWebDriver implements WebDriver, JavaScriptExecutor
     }
 
     /**
-     * @throws WebDriverException
      * @return WebDriverTouchScreen
+     *
+     * @throws WebDriverException
      */
     public function getTouch()
     {
@@ -375,12 +392,12 @@ class EventFiringWebDriver implements WebDriver, JavaScriptExecutor
     }
 
     /**
-     * @param mixed $method
-     * @param mixed ...$arguments
+     * @param  mixed  $method
+     * @param  mixed  ...$arguments
      */
     protected function dispatch($method, ...$arguments)
     {
-        if (!$this->dispatcher) {
+        if (! $this->dispatcher) {
             return;
         }
 

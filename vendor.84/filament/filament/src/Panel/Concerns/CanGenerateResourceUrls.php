@@ -10,7 +10,7 @@ trait CanGenerateResourceUrls
     /**
      * @param  array<mixed>  $parameters
      */
-    public function getResourceUrl(string | Model $model, string $name = 'index', array $parameters = [], bool $isAbsolute = true, ?Model $tenant = null): string
+    public function getResourceUrl(string|Model $model, string $name = 'index', array $parameters = [], bool $isAbsolute = true, ?Model $tenant = null): string
     {
         $modelClass = is_string($model) ? $model : $model::class;
 

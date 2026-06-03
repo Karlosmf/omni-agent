@@ -26,6 +26,7 @@ final class ParameterizedHeader extends UnstructuredHeader
     public const TOKEN_REGEX = '(?:[\x21\x23-\x27\x2A\x2B\x2D\x2E\x30-\x39\x41-\x5A\x5E-\x7E]+)';
 
     private ?Rfc2231Encoder $encoder = null;
+
     private array $parameters = [];
 
     public function __construct(string $name, string $value, array $parameters = [])
@@ -36,8 +37,8 @@ final class ParameterizedHeader extends UnstructuredHeader
             $this->setParameter($k, $v);
         }
 
-        if ('content-type' !== strtolower($name)) {
-            $this->encoder = new Rfc2231Encoder();
+        if (strtolower($name) !== 'content-type') {
+            $this->encoder = new Rfc2231Encoder;
         }
     }
 
@@ -52,7 +53,7 @@ final class ParameterizedHeader extends UnstructuredHeader
     }
 
     /**
-     * @param string[] $parameters
+     * @param  string[]  $parameters
      */
     public function setParameters(array $parameters): void
     {
@@ -71,7 +72,7 @@ final class ParameterizedHeader extends UnstructuredHeader
     {
         $body = parent::getBodyAsString();
         foreach ($this->parameters as $name => $value) {
-            if (null !== $value) {
+            if ($value !== null) {
                 $body .= '; '.$this->createParameter($name, $value);
             }
         }
@@ -91,7 +92,7 @@ final class ParameterizedHeader extends UnstructuredHeader
 
         // Try creating any parameters
         foreach ($this->parameters as $name => $value) {
-            if (null !== $value) {
+            if ($value !== null) {
                 // Add the semi-colon separator
                 $tokens[\count($tokens) - 1] .= ';';
                 $tokens = array_merge($tokens, $this->generateTokenLines(' '.$this->createParameter($name, $value)));
@@ -114,17 +115,17 @@ final class ParameterizedHeader extends UnstructuredHeader
         $firstLineOffset = 0;
 
         // If it's not already a valid parameter value...
-        if (!preg_match('/^'.self::TOKEN_REGEX.'$/D', $value)) {
+        if (! preg_match('/^'.self::TOKEN_REGEX.'$/D', $value)) {
             // TODO: text, or something else??
             // ... and it's not ascii
-            if (!preg_match('/^[\x00-\x08\x0B\x0C\x0E-\x7F]*$/D', $value)) {
+            if (! preg_match('/^[\x00-\x08\x0B\x0C\x0E-\x7F]*$/D', $value)) {
                 $encoded = true;
                 // Allow space for the indices, charset and language
                 $maxValueLength = $this->getMaxLineLength() - \strlen($name.'*N*="";') - 1;
                 $firstLineOffset = \strlen($this->getCharset()."'".$this->getLanguage()."'");
             }
 
-            if (\in_array($name, ['name', 'filename'], true) && 'form-data' === $this->getValue() && 'content-disposition' === strtolower($this->getName()) && preg_match('//u', $value)) {
+            if (\in_array($name, ['name', 'filename'], true) && $this->getValue() === 'form-data' && strtolower($this->getName()) === 'content-disposition' && preg_match('//u', $value)) {
                 // WHATWG HTML living standard 4.10.21.8 2 specifies:
                 // For field names and filenames for file fields, the result of the
                 // encoding in the previous bullet point must be escaped by replacing
@@ -143,7 +144,7 @@ final class ParameterizedHeader extends UnstructuredHeader
 
         // Encode if we need to
         if ($encoded || \strlen($value) > $maxValueLength) {
-            if (null !== $this->encoder) {
+            if ($this->encoder !== null) {
                 $value = $this->encoder->encodeString($origValue, $this->getCharset(), $firstLineOffset, $maxValueLength);
             } else {
                 // We have to go against RFC 2183/2231 in some areas for interoperability
@@ -158,7 +159,7 @@ final class ParameterizedHeader extends UnstructuredHeader
         if (\count($valueLines) > 1) {
             $paramLines = [];
             foreach ($valueLines as $i => $line) {
-                $paramLines[] = $name.'*'.$i.$this->getEndOfParameterValue($line, true, 0 === $i);
+                $paramLines[] = $name.'*'.$i.$this->getEndOfParameterValue($line, true, $i === 0);
             }
 
             return implode(";\r\n ", $paramLines);
@@ -170,12 +171,12 @@ final class ParameterizedHeader extends UnstructuredHeader
     /**
      * Returns the parameter value from the "=" and beyond.
      *
-     * @param string $value to append
+     * @param  string  $value  to append
      */
     private function getEndOfParameterValue(string $value, bool $encoded = false, bool $firstLine = false): string
     {
-        $forceHttpQuoting = 'form-data' === $this->getValue() && 'content-disposition' === strtolower($this->getName());
-        if ($forceHttpQuoting || !preg_match('/^'.self::TOKEN_REGEX.'$/D', $value)) {
+        $forceHttpQuoting = $this->getValue() === 'form-data' && strtolower($this->getName()) === 'content-disposition';
+        if ($forceHttpQuoting || ! preg_match('/^'.self::TOKEN_REGEX.'$/D', $value)) {
             $value = '"'.$value.'"';
         }
         $prepend = '=';

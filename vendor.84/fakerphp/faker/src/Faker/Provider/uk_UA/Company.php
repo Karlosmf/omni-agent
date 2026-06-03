@@ -17,6 +17,7 @@ class Company extends \Faker\Provider\Company
     ];
 
     protected static $companyPrefix = ['ТОВ', 'ПП', 'ПАТ', 'ПрАТ'];
+
     protected static $companySuffix = ['Сервіс', 'Плюс', 'Груп', 'Стиль', 'Дизайн'];
 
     protected static $companyName = [

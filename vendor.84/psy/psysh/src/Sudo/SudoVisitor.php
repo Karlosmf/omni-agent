@@ -36,12 +36,19 @@ use Psy\Sudo;
 class SudoVisitor extends NodeVisitorAbstract
 {
     const PROPERTY_FETCH = 'fetchProperty';
+
     const PROPERTY_ASSIGN = 'assignProperty';
+
     const METHOD_CALL = 'callMethod';
+
     const STATIC_PROPERTY_FETCH = 'fetchStaticProperty';
+
     const STATIC_PROPERTY_ASSIGN = 'assignStaticProperty';
+
     const STATIC_CALL = 'callStatic';
+
     const CLASS_CONST_FETCH = 'fetchClassConst';
+
     const NEW_INSTANCE = 'newInstance';
 
     /**

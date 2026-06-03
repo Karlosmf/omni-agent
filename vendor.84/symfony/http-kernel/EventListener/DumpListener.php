@@ -27,36 +27,35 @@ use Symfony\Component\VarDumper\VarDumper;
 class DumpListener implements EventSubscriberInterface
 {
     /**
-     * @param ?DataDumperInterface $profilerDumper The dumper to use when CLI profiling is enabled.
-     *                                             If null, the default $dumper will be used instead.
+     * @param  ?DataDumperInterface  $profilerDumper  The dumper to use when CLI profiling is enabled.
+     *                                                If null, the default $dumper will be used instead.
      */
     public function __construct(
         private ClonerInterface $cloner,
         private DataDumperInterface $dumper,
         private ?Connection $connection = null,
         private ?DataDumperInterface $profilerDumper = null,
-    ) {
-    }
+    ) {}
 
     /**
-     * @param ?ConsoleCommandEvent $event
+     * @param  ?ConsoleCommandEvent  $event
      */
     public function configure(/* ?ConsoleCommandEvent $event = null */): void
     {
-        $event = 1 <= \func_num_args() ? func_get_arg(0) : null;
+        $event = \func_num_args() >= 1 ? func_get_arg(0) : null;
         $input = $event?->getInput();
 
         $cloner = $this->cloner;
-        $dumper = !$this->profilerDumper || !$input?->hasOption('profile') || !$input?->getOption('profile') ? $this->dumper : $this->profilerDumper;
+        $dumper = ! $this->profilerDumper || ! $input?->hasOption('profile') || ! $input?->getOption('profile') ? $this->dumper : $this->profilerDumper;
         $connection = $this->connection;
 
         VarDumper::setHandler(static function ($var, ?string $label = null) use ($cloner, $dumper, $connection) {
             $data = $cloner->cloneVar($var);
-            if (null !== $label) {
+            if ($label !== null) {
                 $data = $data->withContext(['label' => $label]);
             }
 
-            if (!$connection || !$connection->write($data)) {
+            if (! $connection || ! $connection->write($data)) {
                 $dumper->dump($data);
             }
         });
@@ -64,7 +63,7 @@ class DumpListener implements EventSubscriberInterface
 
     public static function getSubscribedEvents(): array
     {
-        if (!class_exists(ConsoleEvents::class)) {
+        if (! class_exists(ConsoleEvents::class)) {
             return [];
         }
 

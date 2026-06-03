@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Customers\RelationManagers;
 
 use App\Filament\Admin\Resources\Bookings\BookingResource;
+use App\Filament\Admin\Resources\Transactions\TransactionResource;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -54,7 +55,7 @@ class BookingsRelationManager extends RelationManager
                     ->label('Pago')
                     ->icon('heroicon-o-currency-dollar')
                     ->color('success')
-                    ->url(fn ($record) => \App\Filament\Admin\Resources\Transactions\TransactionResource::getUrl('create', ['booking_id' => $record->id])),
+                    ->url(fn ($record) => TransactionResource::getUrl('create', ['booking_id' => $record->id])),
                 Action::make('view')
                     ->label('Ver')
                     ->icon('heroicon-m-eye')

@@ -37,11 +37,7 @@ abstract class AbstractBlockContinueParser implements BlockContinueParserInterfa
         return false;
     }
 
-    public function addLine(string $line): void
-    {
-    }
+    public function addLine(string $line): void {}
 
-    public function closeBlock(): void
-    {
-    }
+    public function closeBlock(): void {}
 }

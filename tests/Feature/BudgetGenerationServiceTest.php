@@ -6,13 +6,14 @@ use App\Models\ServiceType;
 use App\Models\TravelPackage;
 use App\Models\User;
 use App\Services\BudgetGenerationService;
+use Database\Seeders\ServiceTypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 it('clones a travel package with services into a new budget', function () {
     // Arrange
-    $this->seed(\Database\Seeders\ServiceTypeSeeder::class);
+    $this->seed(ServiceTypeSeeder::class);
     $customer = User::factory()->create(['name' => 'John Doe', 'role' => UserRole::Customer]);
 
     $package = TravelPackage::factory()->create([
@@ -58,7 +59,7 @@ it('clones a travel package with services into a new budget', function () {
 });
 
 it('clones package info into an empty general item if services are empty', function () {
-    $this->seed(\Database\Seeders\ServiceTypeSeeder::class);
+    $this->seed(ServiceTypeSeeder::class);
     $customer = User::factory()->create(['role' => UserRole::Customer]);
     $package = TravelPackage::factory()->create([
         'services' => [],

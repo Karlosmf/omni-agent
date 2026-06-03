@@ -15,6 +15,4 @@ namespace League\Csv;
 
 use Throwable;
 
-interface UnableToProcessCsv extends Throwable
-{
-}
+interface UnableToProcessCsv extends Throwable {}

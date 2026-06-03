@@ -23,6 +23,4 @@ use Ramsey\Uuid\UuidInterface as BaseUuidInterface;
  *
  * @immutable
  */
-interface UuidInterface extends BaseUuidInterface
-{
-}
+interface UuidInterface extends BaseUuidInterface {}

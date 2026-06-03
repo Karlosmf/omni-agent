@@ -43,7 +43,7 @@ class ColumnConsistency
     public function __invoke(array $record): bool
     {
         $count = count($record);
-        if (-1 === $this->columns_count) {
+        if ($this->columns_count === -1) {
             $this->columns_count = $count;
 
             return true;

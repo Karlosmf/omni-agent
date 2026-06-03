@@ -23,24 +23,33 @@ final readonly class CellValueFormatter
      * Definition of all possible cell types.
      */
     public const CELL_TYPE_INLINE_STRING = 'inlineStr';
+
     public const CELL_TYPE_STR = 'str';
+
     public const CELL_TYPE_SHARED_STRING = 's';
+
     public const CELL_TYPE_BOOLEAN = 'b';
+
     public const CELL_TYPE_NUMERIC = 'n';
+
     public const CELL_TYPE_DATE = 'd';
+
     public const CELL_TYPE_ERROR = 'e';
 
     /**
      * Definition of XML nodes names used to parse data.
      */
     public const XML_NODE_VALUE = 'v';
+
     public const XML_NODE_INLINE_STRING_VALUE = 't';
+
     public const XML_NODE_FORMULA = 'f';
 
     /**
      * Definition of XML attributes used to parse data.
      */
     public const XML_ATTRIBUTE_TYPE = 't';
+
     public const XML_ATTRIBUTE_STYLE_ID = 's';
 
     /**
@@ -64,11 +73,11 @@ final readonly class CellValueFormatter
     private XLSX $escaper;
 
     /**
-     * @param SharedStringsManager  $sharedStringsManager Manages shared strings
-     * @param StyleManagerInterface $styleManager         Manages styles
-     * @param bool                  $shouldFormatDates    Whether date/time values should be returned as PHP objects or be formatted as strings
-     * @param bool                  $shouldUse1904Dates   Whether date/time values should use a calendar starting in 1904 instead of 1900
-     * @param XLSX                  $escaper              Used to unescape XML data
+     * @param  SharedStringsManager  $sharedStringsManager  Manages shared strings
+     * @param  StyleManagerInterface  $styleManager  Manages styles
+     * @param  bool  $shouldFormatDates  Whether date/time values should be returned as PHP objects or be formatted as strings
+     * @param  bool  $shouldUse1904Dates  Whether date/time values should use a calendar starting in 1904 instead of 1900
+     * @param  XLSX  $escaper  Used to unescape XML data
      */
     public function __construct(
         SharedStringsManager $sharedStringsManager,
@@ -91,13 +100,13 @@ final readonly class CellValueFormatter
     {
         // Default cell type is "n"
         $cellType = $node->getAttribute(self::XML_ATTRIBUTE_TYPE);
-        if ('' === $cellType) {
+        if ($cellType === '') {
             $cellType = self::CELL_TYPE_NUMERIC;
         }
         $vNodeValue = $this->getVNodeValue($node);
 
         $fNodeValue = $node->getElementsByTagName(self::XML_NODE_FORMULA)->item(0)?->nodeValue;
-        if (null !== $fNodeValue) {
+        if ($fNodeValue !== null) {
             $computedValue = $this->formatRawValueForCellType($cellType, $node, $vNodeValue);
 
             return new Cell\FormulaCell(
@@ -107,7 +116,7 @@ final readonly class CellValueFormatter
             );
         }
 
-        if ('' === $vNodeValue && self::CELL_TYPE_INLINE_STRING !== $cellType) {
+        if ($vNodeValue === '' && $cellType !== self::CELL_TYPE_INLINE_STRING) {
             return Cell::fromValue($vNodeValue);
         }
 
@@ -146,9 +155,9 @@ final readonly class CellValueFormatter
         $tNodes = $node->getElementsByTagName(self::XML_NODE_INLINE_STRING_VALUE);
 
         $cellValue = '';
-        for ($i = 0; $i < $tNodes->count(); ++$i) {
+        for ($i = 0; $i < $tNodes->count(); $i++) {
             $nodeValue = $tNodes->item($i)->nodeValue;
-            \assert(null !== $nodeValue);
+            \assert($nodeValue !== null);
             $cellValue .= $this->escaper->unescape($nodeValue);
         }
 
@@ -186,7 +195,7 @@ final readonly class CellValueFormatter
      * Returns the cell Numeric value from string of nodeValue.
      * The value can also represent a timestamp and a DateTime will be returned.
      *
-     * @param int $cellStyleId 0 being the default style
+     * @param  int  $cellStyleId  0 being the default style
      */
     private function formatNumericCellValue(float|int|string $nodeValue, int $cellStyleId): DateInterval|DateTimeImmutable|float|int|string
     {
@@ -223,7 +232,7 @@ final readonly class CellValueFormatter
      *       Dec 30th 1899, 1900 or Jan 1st, 1904, depending on the Workbook setting.
      * NOTE: The timestamp can also represent a time, if it is a value between 0 and 1.
      *
-     * @param int $cellStyleId 0 being the default style
+     * @param  int  $cellStyleId  0 being the default style
      *
      * @throws InvalidValueException If the value is not a valid timestamp
      *
@@ -231,7 +240,7 @@ final readonly class CellValueFormatter
      */
     private function formatExcelTimestampValue(float $nodeValue, int $cellStyleId): DateTimeImmutable|string
     {
-        if (!$this->isValidTimestampValue($nodeValue)) {
+        if (! $this->isValidTimestampValue($nodeValue)) {
             throw new InvalidValueException((string) $nodeValue);
         }
 
@@ -248,7 +257,7 @@ final readonly class CellValueFormatter
         // @NOTE: some versions of Excel don't support negative dates (e.g. Excel for Mac 2011)
         return
             $this->shouldUse1904Dates && $timestampValue >= -695055 && $timestampValue <= 2957003.9999884
-            || !$this->shouldUse1904Dates && $timestampValue >= -693593 && $timestampValue <= 2958465.9999884;
+            || ! $this->shouldUse1904Dates && $timestampValue >= -693593 && $timestampValue <= 2958465.9999884;
     }
 
     /**
@@ -256,7 +265,7 @@ final readonly class CellValueFormatter
      * Only the time value matters. The date part is set to the base Excel date:
      * Dec 30th 1899, 1900 or Jan 1st, 1904, depending on the Workbook setting.
      *
-     * @param int $cellStyleId 0 being the default style
+     * @param  int  $cellStyleId  0 being the default style
      */
     private function formatExcelTimestampValueAsDateTimeValue(float $nodeValue, int $cellStyleId): DateTimeImmutable|string
     {
@@ -277,7 +286,7 @@ final readonly class CellValueFormatter
         }
 
         $dateObj = DateTimeImmutable::createFromFormat('|Y-m-d', $baseDate);
-        \assert(false !== $dateObj);
+        \assert($dateObj !== false);
         $dateObj = $dateObj->modify($daysSign.$daysSinceBaseDate.'days');
         $dateObj = $dateObj->modify($secondsSign.$secondsRemainder.'seconds');
 
@@ -307,7 +316,7 @@ final readonly class CellValueFormatter
      *
      * @see ECMA-376 Part 1 - §18.17.4
      *
-     * @param string $nodeValue ISO 8601 Date string
+     * @param  string  $nodeValue  ISO 8601 Date string
      */
     private function formatDateCellValue(string $nodeValue): Cell\ErrorCell|DateTimeImmutable|string
     {

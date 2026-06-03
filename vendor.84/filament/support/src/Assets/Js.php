@@ -23,7 +23,7 @@ class Js extends Asset
      */
     protected array $extraAttributes = [];
 
-    protected string | Htmlable | null $html = null;
+    protected string|Htmlable|null $html = null;
 
     public function async(bool $condition = true): static
     {
@@ -60,7 +60,7 @@ class Js extends Asset
         return $this;
     }
 
-    public function html(string | Htmlable | null $html): static
+    public function html(string|Htmlable|null $html): static
     {
         $this->html = $html;
 
@@ -162,7 +162,7 @@ class Js extends Asset
             return $this->getPath();
         }
 
-        return asset($this->getRelativePublicPath()) . '?v=' . $this->getVersion();
+        return asset($this->getRelativePublicPath()).'?v='.$this->getVersion();
     }
 
     public function getRelativePublicPath(): string

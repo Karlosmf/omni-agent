@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Ramsey\Uuid\Provider\Node;
 
+use const STR_PAD_LEFT;
+
 use Ramsey\Uuid\Exception\InvalidArgumentException;
 use Ramsey\Uuid\Provider\NodeProviderInterface;
 use Ramsey\Uuid\Type\Hexadecimal;
@@ -22,8 +24,6 @@ use function dechex;
 use function hexdec;
 use function str_pad;
 use function substr;
-
-use const STR_PAD_LEFT;
 
 /**
  * StaticNodeProvider provides a static node value with the multicast bit set
@@ -35,7 +35,7 @@ class StaticNodeProvider implements NodeProviderInterface
     private Hexadecimal $node;
 
     /**
-     * @param Hexadecimal $node The static node value to use
+     * @param  Hexadecimal  $node  The static node value to use
      */
     public function __construct(Hexadecimal $node)
     {
@@ -60,6 +60,6 @@ class StaticNodeProvider implements NodeProviderInterface
         $firstOctet = substr($nodeHex, 0, 2);
         $firstOctet = str_pad(dechex(hexdec($firstOctet) | 0x01), 2, '0', STR_PAD_LEFT);
 
-        return new Hexadecimal($firstOctet . substr($nodeHex, 2));
+        return new Hexadecimal($firstOctet.substr($nodeHex, 2));
     }
 }

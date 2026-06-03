@@ -14,9 +14,9 @@ class DoctrineEmptyCollectionFilter implements Filter
     /**
      * Sets the object property to an empty doctrine collection.
      *
-     * @param object   $object
-     * @param string   $property
-     * @param callable $objectCopier
+     * @param  object  $object
+     * @param  string  $property
+     * @param  callable  $objectCopier
      */
     public function apply($object, $property, $objectCopier)
     {
@@ -25,6 +25,6 @@ class DoctrineEmptyCollectionFilter implements Filter
             $reflectionProperty->setAccessible(true);
         }
 
-        $reflectionProperty->setValue($object, new ArrayCollection());
+        $reflectionProperty->setValue($object, new ArrayCollection);
     }
-} 
+}

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,7 +9,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Report;
+
+use DOMDocument;
+use DOMElement;
+use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\Node\File;
+use SebastianBergmann\CodeCoverage\Util\Filesystem;
+use SebastianBergmann\CodeCoverage\Util\Xml;
+use SebastianBergmann\CodeCoverage\Version;
+use SebastianBergmann\CodeCoverage\WriteOperationFailedException;
 
 use function assert;
 use function basename;
@@ -18,14 +30,6 @@ use function max;
 use function range;
 use function str_replace;
 use function time;
-use DOMDocument;
-use DOMElement;
-use SebastianBergmann\CodeCoverage\CodeCoverage;
-use SebastianBergmann\CodeCoverage\Node\File;
-use SebastianBergmann\CodeCoverage\Util\Filesystem;
-use SebastianBergmann\CodeCoverage\Util\Xml;
-use SebastianBergmann\CodeCoverage\Version;
-use SebastianBergmann\CodeCoverage\WriteOperationFailedException;
 
 final class OpenClover
 {
@@ -36,7 +40,7 @@ final class OpenClover
     {
         $time = (string) time();
 
-        $xmlDocument               = new DOMDocument('1.0', 'UTF-8');
+        $xmlDocument = new DOMDocument('1.0', 'UTF-8');
         $xmlDocument->formatOutput = true;
 
         $xmlCoverage = $xmlDocument->createElement('coverage');
@@ -55,10 +59,10 @@ final class OpenClover
 
         /** @var array<non-empty-string, DOMElement> $packages */
         $packages = [];
-        $report   = $coverage->getReport();
+        $report = $coverage->getReport();
 
         foreach ($report as $item) {
-            if (!$item instanceof File) {
+            if (! $item instanceof File) {
                 continue;
             }
 
@@ -66,16 +70,16 @@ final class OpenClover
             $xmlFile->setAttribute('name', basename($item->pathAsString()));
             $xmlFile->setAttribute('path', $item->pathAsString());
 
-            $classes      = $item->classesAndTraits();
+            $classes = $item->classesAndTraits();
             $coverageData = $item->lineCoverageData();
-            $lines        = [];
-            $namespace    = 'global';
+            $lines = [];
+            $namespace = 'global';
 
             foreach ($classes as $className => $class) {
-                $classStatements        = 0;
+                $classStatements = 0;
                 $coveredClassStatements = 0;
-                $coveredMethods         = 0;
-                $classMethods           = 0;
+                $coveredMethods = 0;
+                $classMethods = 0;
 
                 // Assumption: one namespace per file
                 if ($class->namespace !== '') {
@@ -89,7 +93,7 @@ final class OpenClover
                     }
 
                     $classMethods++;
-                    $classStatements        += $method->executableLines;
+                    $classStatements += $method->executableLines;
                     $coveredClassStatements += $method->executedLines;
 
                     /** @phpstan-ignore equal.notAllowed */
@@ -106,16 +110,16 @@ final class OpenClover
                     }
 
                     $lines[$method->startLine] = [
-                        'ccn'        => $method->ccn,
-                        'count'      => $methodCount,
-                        'type'       => 'method',
-                        'signature'  => $method->signature,
+                        'ccn' => $method->ccn,
+                        'count' => $methodCount,
+                        'type' => 'method',
+                        'signature' => $method->signature,
                         'visibility' => $method->visibility,
                     ];
                 }
 
                 $xmlClass = $xmlDocument->createElement('class');
-                $xmlClass->setAttribute('name', str_replace($class->namespace . '\\', '', $className));
+                $xmlClass->setAttribute('name', str_replace($class->namespace.'\\', '', $className));
 
                 $xmlFile->appendChild($xmlClass);
 
@@ -139,7 +143,7 @@ final class OpenClover
 
                 $lines[$line] = [
                     'count' => count($data),
-                    'type'  => 'stmt',
+                    'type' => 'stmt',
                 ];
             }
 
@@ -184,7 +188,7 @@ final class OpenClover
             $xmlMetrics->setAttribute('coveredmethods', (string) $item->numberOfTestedMethods());
             $xmlFile->insertBefore($xmlMetrics, $xmlFile->firstChild);
 
-            if (!isset($packages[$namespace])) {
+            if (! isset($packages[$namespace])) {
                 $packages[$namespace] = $xmlDocument->createElement('package');
                 $packages[$namespace]->setAttribute('name', $namespace);
 

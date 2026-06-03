@@ -1,6 +1,13 @@
 <?php
+
 declare(strict_types=1);
+
 namespace ParagonIE\ConstantTime;
+
+use const SODIUM_BASE64_VARIANT_ORIGINAL;
+use const SODIUM_BASE64_VARIANT_ORIGINAL_NO_PADDING;
+use const SODIUM_BASE64_VARIANT_URLSAFE;
+use const SODIUM_BASE64_VARIANT_URLSAFE_NO_PADDING;
 
 use InvalidArgumentException;
 use Override;
@@ -8,6 +15,7 @@ use RangeException;
 use SensitiveParameter;
 use SodiumException;
 use TypeError;
+
 use function extension_loaded;
 use function pack;
 use function rtrim;
@@ -16,10 +24,6 @@ use function sodium_bin2base64;
 use function strlen;
 use function substr;
 use function unpack;
-use const SODIUM_BASE64_VARIANT_ORIGINAL;
-use const SODIUM_BASE64_VARIANT_ORIGINAL_NO_PADDING;
-use const SODIUM_BASE64_VARIANT_URLSAFE;
-use const SODIUM_BASE64_VARIANT_URLSAFE_NO_PADDING;
 
 /**
  *  Copyright (c) 2016 - 2022 Paragon Initiative Enterprises.
@@ -47,8 +51,6 @@ use const SODIUM_BASE64_VARIANT_URLSAFE_NO_PADDING;
 /**
  * Class Base64
  * [A-Z][a-z][0-9]+/
- *
- * @package ParagonIE\ConstantTime
  */
 abstract class Base64 implements EncoderInterface
 {
@@ -57,8 +59,6 @@ abstract class Base64 implements EncoderInterface
      *
      * Base64 character set "[A-Z][a-z][0-9]+/"
      *
-     * @param string $binString
-     * @return string
      *
      * @throws TypeError
      */
@@ -68,7 +68,7 @@ abstract class Base64 implements EncoderInterface
         string $binString
     ): string {
         if (extension_loaded('sodium')) {
-            $variant = match(static::class) {
+            $variant = match (static::class) {
                 Base64::class => SODIUM_BASE64_VARIANT_ORIGINAL,
                 Base64UrlSafe::class => SODIUM_BASE64_VARIANT_URLSAFE,
                 default => 0,
@@ -81,6 +81,7 @@ abstract class Base64 implements EncoderInterface
                 }
             }
         }
+
         return static::doEncode($binString, true);
     }
 
@@ -89,10 +90,9 @@ abstract class Base64 implements EncoderInterface
      *
      * Base64 character set "[A-Z][a-z][0-9]+/"
      *
-     * @param string $src
-     * @return string
      *
      * @throws TypeError
+     *
      * @api
      */
     public static function encodeUnpadded(
@@ -100,7 +100,7 @@ abstract class Base64 implements EncoderInterface
         string $src
     ): string {
         if (extension_loaded('sodium')) {
-            $variant = match(static::class) {
+            $variant = match (static::class) {
                 Base64::class => SODIUM_BASE64_VARIANT_ORIGINAL_NO_PADDING,
                 Base64UrlSafe::class => SODIUM_BASE64_VARIANT_URLSAFE_NO_PADDING,
                 default => 0,
@@ -113,13 +113,12 @@ abstract class Base64 implements EncoderInterface
                 }
             }
         }
+
         return static::doEncode($src, false);
     }
 
     /**
-     * @param string $src
-     * @param bool $pad   Include = padding?
-     * @return string
+     * @param  bool  $pad  Include = padding?
      *
      * @throws TypeError
      */
@@ -139,10 +138,10 @@ abstract class Base64 implements EncoderInterface
             $b2 = $chunk[3];
 
             $dest .=
-                static::encode6Bits(               $b0 >> 2       ) .
-                static::encode6Bits((($b0 << 4) | ($b1 >> 4)) & 63) .
-                static::encode6Bits((($b1 << 2) | ($b2 >> 6)) & 63) .
-                static::encode6Bits(  $b2                     & 63);
+                static::encode6Bits($b0 >> 2).
+                static::encode6Bits((($b0 << 4) | ($b1 >> 4)) & 63).
+                static::encode6Bits((($b1 << 2) | ($b2 >> 6)) & 63).
+                static::encode6Bits($b2 & 63);
         }
         // The last chunk, which may have padding:
         if ($i < $srcLen) {
@@ -152,21 +151,22 @@ abstract class Base64 implements EncoderInterface
             if ($i + 1 < $srcLen) {
                 $b1 = $chunk[2];
                 $dest .=
-                    static::encode6Bits($b0 >> 2) .
-                    static::encode6Bits((($b0 << 4) | ($b1 >> 4)) & 63) .
+                    static::encode6Bits($b0 >> 2).
+                    static::encode6Bits((($b0 << 4) | ($b1 >> 4)) & 63).
                     static::encode6Bits(($b1 << 2) & 63);
                 if ($pad) {
                     $dest .= '=';
                 }
             } else {
                 $dest .=
-                    static::encode6Bits( $b0 >> 2) .
+                    static::encode6Bits($b0 >> 2).
                     static::encode6Bits(($b0 << 4) & 63);
                 if ($pad) {
                     $dest .= '==';
                 }
             }
         }
+
         return $dest;
     }
 
@@ -175,9 +175,6 @@ abstract class Base64 implements EncoderInterface
      *
      * Base64 character set "./[A-Z][a-z][0-9]"
      *
-     * @param string $encodedString
-     * @param bool $strictPadding
-     * @return string
      *
      * @throws RangeException
      * @throws TypeError
@@ -214,7 +211,7 @@ abstract class Base64 implements EncoderInterface
                 );
             }
             if (extension_loaded('sodium')) {
-                $variant = match(static::class) {
+                $variant = match (static::class) {
                     Base64::class => SODIUM_BASE64_VARIANT_ORIGINAL_NO_PADDING,
                     Base64UrlSafe::class => SODIUM_BASE64_VARIANT_URLSAFE_NO_PADDING,
                     default => 0,
@@ -246,9 +243,9 @@ abstract class Base64 implements EncoderInterface
 
             $dest .= pack(
                 'CCC',
-                ((($c0 << 2) | ($c1 >> 4)) & 0xff),
-                ((($c1 << 4) | ($c2 >> 2)) & 0xff),
-                ((($c2 << 6) |  $c3      ) & 0xff)
+                ((($c0 << 2) | ($c1 >> 4)) & 0xFF),
+                ((($c1 << 4) | ($c2 >> 2)) & 0xFF),
+                ((($c2 << 6) | $c3) & 0xFF)
             );
             $err |= ($c0 | $c1 | $c2 | $c3) >> 8;
         }
@@ -263,39 +260,38 @@ abstract class Base64 implements EncoderInterface
                 $c2 = static::decode6Bits($chunk[3]);
                 $dest .= pack(
                     'CC',
-                    ((($c0 << 2) | ($c1 >> 4)) & 0xff),
-                    ((($c1 << 4) | ($c2 >> 2)) & 0xff)
+                    ((($c0 << 2) | ($c1 >> 4)) & 0xFF),
+                    ((($c1 << 4) | ($c2 >> 2)) & 0xFF)
                 );
                 $err |= ($c0 | $c1 | $c2) >> 8;
                 if ($strictPadding) {
-                    $err |= ($c2 << 6) & 0xff;
+                    $err |= ($c2 << 6) & 0xFF;
                 }
             } elseif ($i + 1 < $srcLen) {
                 $c1 = static::decode6Bits($chunk[2]);
                 $dest .= pack(
                     'C',
-                    ((($c0 << 2) | ($c1 >> 4)) & 0xff)
+                    ((($c0 << 2) | ($c1 >> 4)) & 0xFF)
                 );
                 $err |= ($c0 | $c1) >> 8;
                 if ($strictPadding) {
-                    $err |= ($c1 << 4) & 0xff;
+                    $err |= ($c1 << 4) & 0xFF;
                 }
             } elseif ($strictPadding) {
                 $err |= 1;
             }
         }
         $check = ($err === 0);
-        if (!$check) {
+        if (! $check) {
             throw new RangeException(
                 'Base64::decode() only expects characters in the correct base64 alphabet'
             );
         }
+
         return $dest;
     }
 
     /**
-     * @param string $encodedString
-     * @return string
      * @api
      */
     public static function decodeNoPadding(
@@ -314,6 +310,7 @@ abstract class Base64 implements EncoderInterface
                 );
             }
         }
+
         return static::decode(
             $encodedString,
             true
@@ -327,28 +324,25 @@ abstract class Base64 implements EncoderInterface
      * Base64 character set:
      * [A-Z]      [a-z]      [0-9]      +     /
      * 0x41-0x5a, 0x61-0x7a, 0x30-0x39, 0x2b, 0x2f
-     *
-     * @param int $src
-     * @return int
      */
     protected static function decode6Bits(int $src): int
     {
         $ret = -1;
 
         // if ($src > 0x40 && $src < 0x5b) $ret += $src - 0x41 + 1; // -64
-        $ret += (((0x40 - $src) & ($src - 0x5b)) >> 8) & ($src - 64);
+        $ret += (((0x40 - $src) & ($src - 0x5B)) >> 8) & ($src - 64);
 
         // if ($src > 0x60 && $src < 0x7b) $ret += $src - 0x61 + 26 + 1; // -70
-        $ret += (((0x60 - $src) & ($src - 0x7b)) >> 8) & ($src - 70);
+        $ret += (((0x60 - $src) & ($src - 0x7B)) >> 8) & ($src - 70);
 
         // if ($src > 0x2f && $src < 0x3a) $ret += $src - 0x30 + 52 + 1; // 5
-        $ret += (((0x2f - $src) & ($src - 0x3a)) >> 8) & ($src + 5);
+        $ret += (((0x2F - $src) & ($src - 0x3A)) >> 8) & ($src + 5);
 
         // if ($src == 0x2b) $ret += 62 + 1;
-        $ret += (((0x2a - $src) & ($src - 0x2c)) >> 8) & 63;
+        $ret += (((0x2A - $src) & ($src - 0x2C)) >> 8) & 63;
 
         // if ($src == 0x2f) ret += 63 + 1;
-        $ret += (((0x2e - $src) & ($src - 0x30)) >> 8) & 64;
+        $ret += (((0x2E - $src) & ($src - 0x30)) >> 8) & 64;
 
         return $ret;
     }
@@ -356,9 +350,6 @@ abstract class Base64 implements EncoderInterface
     /**
      * Uses bitwise operators instead of table-lookups to turn 8-bit integers
      * into 6-bit integers.
-     *
-     * @param int $src
-     * @return string
      */
     protected static function encode6Bits(int $src): string
     {

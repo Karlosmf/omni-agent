@@ -6,18 +6,18 @@ use Closure;
 
 trait HasAction
 {
-    protected Closure | string | null $action = null;
+    protected Closure|string|null $action = null;
 
-    protected bool | Closure | null $isLivewireClickHandlerEnabled = null;
+    protected bool|Closure|null $isLivewireClickHandlerEnabled = null;
 
-    public function action(Closure | string | null $action): static
+    public function action(Closure|string|null $action): static
     {
         $this->action = $action;
 
         return $this;
     }
 
-    public function livewireClickHandlerEnabled(bool | Closure | null $condition = true): static
+    public function livewireClickHandlerEnabled(bool|Closure|null $condition = true): static
     {
         $this->isLivewireClickHandlerEnabled = $condition;
 

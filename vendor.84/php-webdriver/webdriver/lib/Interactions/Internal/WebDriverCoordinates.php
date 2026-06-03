@@ -12,25 +12,29 @@ class WebDriverCoordinates
 {
     /**
      * @var mixed
+     *
      * @todo remove in next major version (if it is unused)
      */
     private $onScreen;
+
     /**
      * @var callable
      */
     private $inViewPort;
+
     /**
      * @var callable
      */
     private $onPage;
+
     /**
      * @var string
      */
     private $auxiliary;
 
     /**
-     * @param mixed $on_screen
-     * @param string $auxiliary
+     * @param  mixed  $on_screen
+     * @param  string  $auxiliary
      */
     public function __construct($on_screen, callable $in_view_port, callable $on_page, $auxiliary)
     {
@@ -41,8 +45,9 @@ class WebDriverCoordinates
     }
 
     /**
-     * @throws UnsupportedOperationException
      * @return WebDriverPoint
+     *
+     * @throws UnsupportedOperationException
      */
     public function onScreen()
     {

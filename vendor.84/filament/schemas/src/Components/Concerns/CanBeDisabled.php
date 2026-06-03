@@ -11,9 +11,9 @@ use Livewire\Component as LivewireComponent;
 
 trait CanBeDisabled
 {
-    protected bool | Closure $isDisabled = false;
+    protected bool|Closure $isDisabled = false;
 
-    public function disabled(bool | Closure $condition = true): static
+    public function disabled(bool|Closure $condition = true): static
     {
         $this->isDisabled = $condition;
         $this->saved(fn (Component $component): bool => ! $component->evaluate($condition));
@@ -24,9 +24,9 @@ trait CanBeDisabled
     /**
      * @param  string | Operation | array<string | Operation>  $operations
      */
-    public function disabledOn(string | Operation | array $operations): static
+    public function disabledOn(string|Operation|array $operations): static
     {
-        $this->disabled(static function (LivewireComponent & HasSchemas $livewire, string $operation) use ($operations): bool {
+        $this->disabled(static function (LivewireComponent&HasSchemas $livewire, string $operation) use ($operations): bool {
             foreach (Arr::wrap($operations) as $disabledOperation) {
                 if ($disabledOperation instanceof Operation) {
                     $disabledOperation = $disabledOperation->value;

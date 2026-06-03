@@ -4,18 +4,21 @@ use App\Enums\Currency;
 use App\Enums\TransactionType;
 use App\Enums\UserRole;
 use App\Filament\Admin\Resources\Transactions\Pages\CreateTransaction;
+use App\Filament\Admin\Resources\Transactions\TransactionResource;
 use App\Models\Booking;
+use App\Models\FinancialAccount;
 use App\Models\Transaction;
 use App\Models\TransactionCategory;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
 test('can render create transaction page', function () {
     $this->actingAs(User::factory()->create(['role' => UserRole::Admin]));
-    $this->get(App\Filament\Admin\Resources\Transactions\TransactionResource::getUrl('create'))
+    $this->get(TransactionResource::getUrl('create'))
         ->assertStatus(403); // Skipping 200 check for now as test env has auth issues.
 })->skip();
 
@@ -24,16 +27,16 @@ test('can create a transaction', function () {
     $this->actingAs($user);
 
     $booking = Booking::factory()->create();
-    
+
     // Seed local rates to ensure USD exists as a valid option
-    Illuminate\Support\Facades\Storage::put('currency_rates.json', json_encode([
+    Storage::put('currency_rates.json', json_encode([
         'currencies' => [
             'USD' => ['name' => 'Dólar Oficial', 'buy' => 800, 'sell' => 850],
         ],
         'updated_at' => now()->toDateTimeString(),
     ]));
 
-    $account = \App\Models\FinancialAccount::create([
+    $account = FinancialAccount::create([
         'name' => 'Caja',
         'currency' => Currency::USD->value,
         'balance' => 0,

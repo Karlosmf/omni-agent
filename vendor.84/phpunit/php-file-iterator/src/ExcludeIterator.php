@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-file-iterator.
  *
@@ -7,13 +9,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\FileIterator;
 
-use function assert;
-use function str_starts_with;
 use RecursiveDirectoryIterator;
 use RecursiveFilterIterator;
 use SplFileInfo;
+
+use function assert;
+use function str_starts_with;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-file-iterator
@@ -26,7 +30,7 @@ final class ExcludeIterator extends RecursiveFilterIterator
     private array $exclude;
 
     /**
-     * @param list<string> $exclude
+     * @param  list<string>  $exclude
      */
     public function __construct(RecursiveDirectoryIterator $iterator, array $exclude)
     {

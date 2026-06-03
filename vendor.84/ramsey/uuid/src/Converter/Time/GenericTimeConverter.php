@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Ramsey\Uuid\Converter\Time;
 
+use const STR_PAD_LEFT;
+
 use Ramsey\Uuid\Converter\TimeConverterInterface;
 use Ramsey\Uuid\Math\CalculatorInterface;
 use Ramsey\Uuid\Math\RoundingMode;
@@ -23,8 +25,6 @@ use Ramsey\Uuid\Type\Time;
 
 use function explode;
 use function str_pad;
-
-use const STR_PAD_LEFT;
 
 /**
  * GenericTimeConverter uses the provided calculator to calculate and convert time values
@@ -48,9 +48,7 @@ class GenericTimeConverter implements TimeConverterInterface
      */
     private const MICROSECOND_INTERVALS = '10';
 
-    public function __construct(private CalculatorInterface $calculator)
-    {
-    }
+    public function __construct(private CalculatorInterface $calculator) {}
 
     public function calculateTime(string $seconds, string $microseconds): Hexadecimal
     {
@@ -75,6 +73,7 @@ class GenericTimeConverter implements TimeConverterInterface
          * the Gregorian calendar epoch for the given seconds and microseconds.
          *
          * @var IntegerObject $uuidTime
+         *
          * @phpstan-ignore possiblyImpure.new
          */
         $uuidTime = $this->calculator->add($sec, $usec, new IntegerObject(self::GREGORIAN_TO_UNIX_INTERVALS));

@@ -17,22 +17,27 @@ class ChromeOptions implements JsonSerializable
      * The key of chromeOptions in desired capabilities
      */
     public const CAPABILITY = 'goog:chromeOptions';
+
     /**
      * @deprecated Use CAPABILITY instead
      */
     public const CAPABILITY_W3C = self::CAPABILITY;
+
     /**
      * @var array
      */
     private $arguments = [];
+
     /**
      * @var string
      */
     private $binary = '';
+
     /**
      * @var array
      */
     private $extensions = [];
+
     /**
      * @var array
      */
@@ -53,7 +58,7 @@ class ChromeOptions implements JsonSerializable
      * Sets the path of the Chrome executable. The path should be either absolute
      * or relative to the location running ChromeDriver server.
      *
-     * @param string $path
+     * @param  string  $path
      * @return ChromeOptions
      */
     public function setBinary($path)
@@ -89,7 +94,7 @@ class ChromeOptions implements JsonSerializable
     }
 
     /**
-     * @param array $encoded_extensions An array of base64 encoded of the extensions.
+     * @param  array  $encoded_extensions  An array of base64 encoded of the extensions.
      * @return ChromeOptions
      */
     public function addEncodedExtensions(array $encoded_extensions)
@@ -107,8 +112,8 @@ class ChromeOptions implements JsonSerializable
      * When using "prefs" to set Chrome preferences, please be aware they are so far not supported by
      * Chrome running in headless mode, see https://bugs.chromium.org/p/chromium/issues/detail?id=775911
      *
-     * @param string $name
-     * @param mixed $value
+     * @param  string  $name
+     * @param  mixed  $value
      * @return ChromeOptions
      */
     public function setExperimentalOption($name, $value)
@@ -140,15 +145,15 @@ class ChromeOptions implements JsonSerializable
         // with `ArrayObject`
         $options = new \ArrayObject($this->experimentalOptions);
 
-        if (!empty($this->binary)) {
+        if (! empty($this->binary)) {
             $options['binary'] = $this->binary;
         }
 
-        if (!empty($this->arguments)) {
+        if (! empty($this->arguments)) {
             $options['args'] = $this->arguments;
         }
 
-        if (!empty($this->extensions)) {
+        if (! empty($this->extensions)) {
             $options['extensions'] = $this->extensions;
         }
 
@@ -159,7 +164,7 @@ class ChromeOptions implements JsonSerializable
      * Add a Chrome extension to install on browser startup. Each path should be a
      * packed Chrome extension.
      *
-     * @param string $path
+     * @param  string  $path
      * @return ChromeOptions
      */
     private function addExtension($path)
@@ -170,7 +175,7 @@ class ChromeOptions implements JsonSerializable
     }
 
     /**
-     * @param string $encoded_extension Base64 encoded of the extension.
+     * @param  string  $encoded_extension  Base64 encoded of the extension.
      * @return ChromeOptions
      */
     private function addEncodedExtension($encoded_extension)

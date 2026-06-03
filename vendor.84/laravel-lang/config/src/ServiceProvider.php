@@ -24,13 +24,13 @@ class ServiceProvider extends BaseServiceProvider
     protected function bootPublishes(): void
     {
         $this->publishes([
-            __DIR__ . '/../config/public.php' => $this->app->configPath(Name::Shared() . '.php'),
+            __DIR__.'/../config/public.php' => $this->app->configPath(Name::Shared().'.php'),
         ], ['config', Name::Shared()]);
     }
 
     protected function registerConfig(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/public.php', Name::Shared());
-        $this->mergeConfigFrom(__DIR__ . '/../config/private.php', Name::Hidden());
+        $this->mergeConfigFrom(__DIR__.'/../config/public.php', Name::Shared());
+        $this->mergeConfigFrom(__DIR__.'/../config/private.php', Name::Hidden());
     }
 }

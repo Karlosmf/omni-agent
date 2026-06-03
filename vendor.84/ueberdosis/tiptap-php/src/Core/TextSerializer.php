@@ -31,7 +31,7 @@ class TextSerializer
             $html[] = $this->renderNode($node);
         }
 
-        return join($this->configuration['blockSeparator'], $html);
+        return implode($this->configuration['blockSeparator'], $html);
     }
 
     private function renderNode($node): string
@@ -46,6 +46,6 @@ class TextSerializer
             $text[] = htmlspecialchars($node->text, ENT_QUOTES, 'UTF-8');
         }
 
-        return join($this->configuration['blockSeparator'], $text);
+        return implode($this->configuration['blockSeparator'], $text);
     }
 }

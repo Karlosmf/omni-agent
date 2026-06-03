@@ -1,22 +1,23 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Composer\Pcre\PHPStan;
 
+use PhpParser\Node\Arg;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantIntegerType;
 use PHPStan\Type\IntersectionType;
-use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\Type;
-use PhpParser\Node\Arg;
-use PHPStan\Type\Php\RegexArrayShapeMatcher;
+use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\UnionType;
 
 final class PregMatchFlags
 {
-    static public function getType(?Arg $flagsArg, Scope $scope): ?Type
+    public static function getType(?Arg $flagsArg, Scope $scope): ?Type
     {
         if ($flagsArg === null) {
             return new ConstantIntegerType(PREG_UNMATCHED_AS_NULL);
@@ -31,16 +32,17 @@ final class PregMatchFlags
 
         $internalFlagsTypes = [];
         foreach ($flagsType->getConstantScalarValues() as $constantScalarValue) {
-            if (!is_int($constantScalarValue)) {
+            if (! is_int($constantScalarValue)) {
                 return null;
             }
 
             $internalFlagsTypes[] = new ConstantIntegerType($constantScalarValue | PREG_UNMATCHED_AS_NULL);
         }
+
         return TypeCombinator::union(...$internalFlagsTypes);
     }
 
-    static public function removeNullFromMatches(Type $matchesType): Type
+    public static function removeNullFromMatches(Type $matchesType): Type
     {
         return TypeTraverser::map($matchesType, static function (Type $type, callable $traverse): Type {
             if ($type instanceof UnionType || $type instanceof IntersectionType) {
@@ -66,5 +68,4 @@ final class PregMatchFlags
             return TypeCombinator::removeNull($type);
         });
     }
-
 }

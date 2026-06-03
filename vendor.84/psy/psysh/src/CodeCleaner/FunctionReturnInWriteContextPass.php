@@ -30,18 +30,19 @@ use Psy\Exception\FatalErrorException;
 class FunctionReturnInWriteContextPass extends CodeCleanerPass
 {
     const ISSET_MESSAGE = 'Cannot use isset() on the result of an expression (you can use "null !== expression" instead)';
+
     const EXCEPTION_MESSAGE = "Can't use function return value in write context";
 
     /**
      * Validate that the functions are used correctly.
      *
+     *
+     *
+     * @return int|Node|null Replacement node (or special return value)
+     *
      * @throws FatalErrorException if a function is passed as an argument reference
      * @throws FatalErrorException if a function is used as an argument in the isset
      * @throws FatalErrorException if a value is assigned to a function
-     *
-     * @param Node $node
-     *
-     * @return int|Node|null Replacement node (or special return value)
      */
     public function enterNode(Node $node)
     {
@@ -58,7 +59,7 @@ class FunctionReturnInWriteContextPass extends CodeCleanerPass
             }
         } elseif ($node instanceof Isset_ || $node instanceof Unset_) {
             foreach ($node->vars as $var) {
-                if (!$this->isCallNode($var)) {
+                if (! $this->isCallNode($var)) {
                     continue;
                 }
 

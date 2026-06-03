@@ -13,5 +13,5 @@ interface HasTenants
     /**
      * @return array<Model> | Collection
      */
-    public function getTenants(Panel $panel): array | Collection;
+    public function getTenants(Panel $panel): array|Collection;
 }

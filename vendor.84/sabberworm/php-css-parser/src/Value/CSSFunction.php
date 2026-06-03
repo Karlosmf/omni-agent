@@ -24,10 +24,10 @@ class CSSFunction extends ValueList
     protected $name;
 
     /**
-     * @param non-empty-string $name
-     * @param RuleValueList|array<Value|string> $arguments
-     * @param non-empty-string $separator
-     * @param int<1, max>|null $lineNumber
+     * @param  non-empty-string  $name
+     * @param  RuleValueList|array<Value|string>  $arguments
+     * @param  non-empty-string  $separator
+     * @param  int<1, max>|null  $lineNumber
      */
     public function __construct(string $name, $arguments, string $separator = ',', ?int $lineNumber = null)
     {
@@ -90,7 +90,7 @@ class CSSFunction extends ValueList
     }
 
     /**
-     * @param non-empty-string $name
+     * @param  non-empty-string  $name
      */
     public function setName(string $name): void
     {
@@ -111,6 +111,7 @@ class CSSFunction extends ValueList
     public function render(OutputFormat $outputFormat): string
     {
         $arguments = parent::render($outputFormat);
+
         return "{$this->name}({$arguments})";
     }
 }

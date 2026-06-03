@@ -56,19 +56,24 @@ final class CharacterStream
     ];
 
     private string $data = '';
+
     private int $dataSize = 0;
+
     private array $map = [];
+
     private int $charCount = 0;
+
     private int $currentPos = 0;
+
     private int $fixedWidth = 0;
 
     /**
-     * @param resource|string $input
+     * @param  resource|string  $input
      */
     public function __construct($input, ?string $charset = 'utf-8')
     {
         $charset = strtolower(trim($charset)) ?: 'utf-8';
-        if ('utf-8' === $charset || 'utf8' === $charset) {
+        if ($charset === 'utf-8' || $charset === 'utf8') {
             $this->fixedWidth = 0;
             $this->map = ['p' => [], 'i' => []];
         } else {
@@ -118,7 +123,7 @@ final class CharacterStream
                 $start = $this->map['p'][$this->currentPos - 1];
             }
             $to = $start;
-            for (; $this->currentPos < $end; ++$this->currentPos) {
+            for (; $this->currentPos < $end; $this->currentPos++) {
                 if (isset($this->map['i'][$this->currentPos])) {
                     $ret .= substr($this->data, $start, $to - $start).'?';
                     $start = $this->map['p'][$this->currentPos];
@@ -170,12 +175,13 @@ final class CharacterStream
         $charPos = \count($this->map['p']);
         $foundChars = 0;
         $invalid = false;
-        for ($i = 0; $i < $strlen; ++$i) {
+        for ($i = 0; $i < $strlen; $i++) {
             $char = $string[$i];
             $size = self::UTF8_LENGTH_MAP[$char];
-            if (0 == $size) {
+            if ($size == 0) {
                 /* char is invalid, we must wait for a resync */
                 $invalid = true;
+
                 continue;
             }
 
@@ -183,27 +189,28 @@ final class CharacterStream
                 /* We mark the chars as invalid and start a new char */
                 $this->map['p'][$charPos + $foundChars] = $startOffset + $i;
                 $this->map['i'][$charPos + $foundChars] = true;
-                ++$foundChars;
+                $foundChars++;
                 $invalid = false;
             }
             if (($i + $size) > $strlen) {
                 $ignoredChars = substr($string, $i);
                 break;
             }
-            for ($j = 1; $j < $size; ++$j) {
+            for ($j = 1; $j < $size; $j++) {
                 $char = $string[$i + $j];
                 if ($char > "\x7F" && $char < "\xC0") {
                     // Valid - continue parsing
                 } else {
                     /* char is invalid, we must wait for a resync */
                     $invalid = true;
+
                     continue 2;
                 }
             }
             /* Ok we got a complete char here */
             $this->map['p'][$charPos + $foundChars] = $startOffset + $i + $size;
             $i += $j - 1;
-            ++$foundChars;
+            $foundChars++;
         }
 
         return $foundChars;

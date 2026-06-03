@@ -55,7 +55,7 @@ trait InteractsWithRelationshipTable
         return static::$shouldSkipAuthorization;
     }
 
-    public function getRelationship(): Relation | Builder
+    public function getRelationship(): Relation|Builder
     {
         return $this->getOwnerRecord()->{static::getRelationshipName()}();
     }
@@ -100,7 +100,7 @@ trait InteractsWithRelationshipTable
     protected function makeTable(): Table
     {
         $table = $this->makeBaseTable()
-            ->relationship(fn (): Relation | Builder => $this->getRelationship())
+            ->relationship(fn (): Relation|Builder => $this->getRelationship())
             ->modifyQueryUsing($this->modifyQueryWithActiveTab(...))
             ->queryStringIdentifier(Str::lcfirst(class_basename(static::class)))
             ->recordAction(function (Model $record, Table $table): ?string {
@@ -369,7 +369,7 @@ trait InteractsWithRelationshipTable
             ($relatedResource = static::getRelatedResource()) &&
             (blank($record) || ($record::class === $relatedResource::getModel()))
         ) {
-            $method = 'get' . Str::lcfirst($action) . 'AuthorizationResponse';
+            $method = 'get'.Str::lcfirst($action).'AuthorizationResponse';
 
             return method_exists($relatedResource, $method)
                 ? $relatedResource::{$method}($record)

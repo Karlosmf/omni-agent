@@ -241,7 +241,7 @@ trait HasFilters
         }
 
         if (filled($tenantKey)) {
-            $namespace .= '|' . $tenantKey;
+            $namespace .= '|'.$tenantKey;
         }
 
         $table = md5($namespace);

@@ -131,7 +131,6 @@ class Readline
         $this->_mapping["\n"] = [$this, '_bindNewline'];
         $this->_mapping["\t"] = [$this, '_bindTab'];
 
-        return;
     }
 
     /**
@@ -141,23 +140,23 @@ class Readline
     {
         $input = Console::getInput();
 
-        if (true === $input->eof()) {
+        if ($input->eof() === true) {
             return false;
         }
 
         $direct = Console::isDirect($input->getStream()->getStream());
         $output = Console::getOutput();
 
-        if (false === $direct || \defined('PHP_WINDOWS_VERSION_PLATFORM')) {
+        if ($direct === false || \defined('PHP_WINDOWS_VERSION_PLATFORM')) {
             $out = $input->readLine();
 
-            if (false === $out) {
+            if ($out === false) {
                 return false;
             }
 
             $out = \substr($out, 0, -1);
 
-            if (true === $direct) {
+            if ($direct === true) {
                 $output->writeAll($prefix);
             } else {
                 $output->writeAll($prefix.$out."\n");
@@ -211,7 +210,7 @@ class Readline
 
         if (isset($this->_mapping[$char])) {
             $this->_buffer = $this->_mapping[$char];
-        } elseif (false === Ustring::isCharPrintable($char)) {
+        } elseif (Ustring::isCharPrintable($char) === false) {
             ConsoleCursor::bip();
 
             return static::STATE_CONTINUE | static::STATE_NO_ECHO;
@@ -257,9 +256,9 @@ class Readline
      */
     public function addMapping(string $key, $mapping)
     {
-        if ('\e[' === \substr($key, 0, 3)) {
+        if (\substr($key, 0, 3) === '\e[') {
             $this->_mapping["\033[".\substr($key, 3)] = $mapping;
-        } elseif ('\C-' === \substr($key, 0, 3)) {
+        } elseif (\substr($key, 0, 3) === '\C-') {
             $_key = \ord(\strtolower(\substr($key, 3))) - 96;
             $this->_mapping[\chr($_key)] = $mapping;
         } else {
@@ -296,11 +295,11 @@ class Readline
      */
     public function getHistory(?int $i = null)
     {
-        if (null === $i) {
+        if ($i === null) {
             $i = $this->_historyCurrent;
         }
 
-        if (!isset($this->_history[$i])) {
+        if (! isset($this->_history[$i])) {
             return null;
         }
 
@@ -312,7 +311,7 @@ class Readline
      */
     public function previousHistory()
     {
-        if (0 >= $this->_historyCurrent) {
+        if ($this->_historyCurrent <= 0) {
             return $this->getHistory(0);
         }
 
@@ -364,7 +363,6 @@ class Readline
         $this->_lineLength = \mb_strlen($this->_line);
         $this->_lineCurrent += \mb_strlen($insert);
 
-        return;
     }
 
     /**
@@ -387,8 +385,6 @@ class Readline
 
     /**
      * Get current line length.
-     *
-     * @return int
      */
     public function getLineLength(): int
     {
@@ -541,7 +537,7 @@ class Readline
      */
     public function _bindArrowLeft(self $self): int
     {
-        if (0 < $self->getLineCurrent()) {
+        if ($self->getLineCurrent() > 0) {
             if (0 === (static::STATE_CONTINUE & static::STATE_NO_ECHO)) {
                 ConsoleCursor::move('←');
             }
@@ -562,7 +558,7 @@ class Readline
     {
         $buffer = '';
 
-        if (0 < $self->getLineCurrent()) {
+        if ($self->getLineCurrent() > 0) {
             if (0 === (static::STATE_CONTINUE & static::STATE_NO_ECHO)) {
                 ConsoleCursor::move('←');
                 ConsoleCursor::clear('→');
@@ -591,7 +587,7 @@ class Readline
      */
     public function _bindControlA(self $self): int
     {
-        for ($i = $self->getLineCurrent() - 1; 0 <= $i; --$i) {
+        for ($i = $self->getLineCurrent() - 1; $i >= 0; $i--) {
             $self->_bindArrowLeft($self);
         }
 
@@ -606,7 +602,7 @@ class Readline
     {
         $current = $self->getLineCurrent();
 
-        if (0 === $current) {
+        if ($current === 0) {
             return static::STATE_CONTINUE;
         }
 
@@ -620,11 +616,10 @@ class Readline
         for (
             $i = 0, $max = \count($words) - 1;
             $i < $max && $words[$i + 1][1] < $current;
-            ++$i
-        ) {
+            $i++) {
         }
 
-        for ($j = $words[$i][1] + 1; $current >= $j; ++$j) {
+        for ($j = $words[$i][1] + 1; $current >= $j; $j++) {
             $self->_bindArrowLeft($self);
         }
 
@@ -640,8 +635,7 @@ class Readline
         for (
             $i = $self->getLineCurrent(), $max = $self->getLineLength();
             $i < $max;
-            ++$i
-        ) {
+            $i++) {
             $self->_bindArrowRight($self);
         }
 
@@ -670,15 +664,14 @@ class Readline
         for (
             $i = 0, $max = \count($words) - 1;
             $i < $max && $words[$i][1] < $current;
-            ++$i
-        ) {
+            $i++) {
         }
 
-        if (!isset($words[$i + 1])) {
+        if (! isset($words[$i + 1])) {
             $words[$i + 1] = [1 => $self->getLineLength()];
         }
 
-        for ($j = $words[$i + 1][1]; $j > $current; --$j) {
+        for ($j = $words[$i + 1][1]; $j > $current; $j--) {
             $self->_bindArrowRight($self);
         }
 
@@ -693,7 +686,7 @@ class Readline
     {
         $current = $self->getLineCurrent();
 
-        if (0 === $current) {
+        if ($current === 0) {
             return static::STATE_CONTINUE;
         }
 
@@ -707,11 +700,10 @@ class Readline
         for (
             $i = 0, $max = \count($words) - 1;
             $i < $max && $words[$i + 1][1] < $current;
-            ++$i
-        ) {
+            $i++) {
         }
 
-        for ($j = $words[$i][1] + 1; $current >= $j; ++$j) {
+        for ($j = $words[$i][1] + 1; $current >= $j; $j++) {
             $self->_bindBackspace($self);
         }
 
@@ -737,14 +729,14 @@ class Readline
         $autocompleter = $self->getAutocompleter();
         $state = static::STATE_CONTINUE | static::STATE_NO_ECHO;
 
-        if (null === $autocompleter) {
+        if ($autocompleter === null) {
             return $state;
         }
 
         $current = $self->getLineCurrent();
         $line = $self->getLine();
 
-        if (0 === $current) {
+        if ($current === 0) {
             return $state;
         }
 
@@ -754,20 +746,20 @@ class Readline
             $words
         );
 
-        if (0 === $matches) {
+        if ($matches === 0) {
             return $state;
         }
 
         $word = $words[0][0];
 
-        if ('' === \trim($word)) {
+        if (\trim($word) === '') {
             return $state;
         }
 
         $solution = $autocompleter->complete($word);
         $length = \mb_strlen($word);
 
-        if (null === $solution) {
+        if ($solution === null) {
             return $state;
         }
 
@@ -786,7 +778,6 @@ class Readline
                     $cWidth = $handle;
                 }
 
-                return;
             });
             \array_walk($_solution, function (&$value) use (&$cWidth) {
                 $handle = \mb_strlen($value);
@@ -797,12 +788,11 @@ class Readline
 
                 $value .= \str_repeat(' ', $cWidth - $handle);
 
-                return;
             });
 
             $mColumns = (int) \floor($wWidth / ($cWidth + 2));
             $mLines = (int) \ceil(($count + 1) / $mColumns);
-            --$mColumns;
+            $mColumns--;
             $i = 0;
 
             if (0 > $window['y'] - $cursor['y'] - $mLines) {
@@ -832,7 +822,7 @@ class Readline
             ConsoleCursor::restore();
             ConsoleCursor::show();
 
-            ++$mColumns;
+            $mColumns++;
             $input = Console::getInput();
             $read = [$input->getStream()->getStream()];
             $write = $except = [];
@@ -856,7 +846,6 @@ class Readline
                 ConsoleCursor::restore();
                 ConsoleCursor::show();
 
-                return;
             };
             $select = function () use (
                 &$mColumn,
@@ -875,7 +864,6 @@ class Readline
                 ConsoleCursor::restore();
                 ConsoleCursor::show();
 
-                return;
             };
             $init = function () use (
                 &$mColumn,
@@ -888,7 +876,6 @@ class Readline
                 $coord = 0;
                 $select();
 
-                return;
             };
 
             while (true) {
@@ -902,7 +889,7 @@ class Readline
 
                 switch ($char = $self->_read()) {
                     case "\033[A":
-                        if (-1 === $mColumn && -1 === $mLine) {
+                        if ($mColumn === -1 && $mLine === -1) {
                             $init();
 
                             break;
@@ -917,7 +904,7 @@ class Readline
                         break;
 
                     case "\033[B":
-                        if (-1 === $mColumn && -1 === $mLine) {
+                        if ($mColumn === -1 && $mLine === -1) {
                             $init();
 
                             break;
@@ -933,7 +920,7 @@ class Readline
 
                     case "\t":
                     case "\033[C":
-                        if (-1 === $mColumn && -1 === $mLine) {
+                        if ($mColumn === -1 && $mLine === -1) {
                             $init();
 
                             break;
@@ -948,7 +935,7 @@ class Readline
                         break;
 
                     case "\033[D":
-                        if (-1 === $mColumn && -1 === $mLine) {
+                        if ($mColumn === -1 && $mLine === -1) {
                             $init();
 
                             break;
@@ -963,7 +950,7 @@ class Readline
                         break;
 
                     case "\n":
-                        if (-1 !== $mColumn && -1 !== $mLine) {
+                        if ($mColumn !== -1 && $mLine !== -1) {
                             $tail = \mb_substr($line, $current);
                             $current -= $length;
                             $self->setLine(
@@ -992,7 +979,7 @@ class Readline
                         ConsoleCursor::clear('↓');
                         ConsoleCursor::restore();
 
-                        if ("\033" !== $char && "\n" !== $char) {
+                        if ($char !== "\033" && $char !== "\n") {
                             $self->setBuffer($char);
 
                             return $self->_readLine($char);

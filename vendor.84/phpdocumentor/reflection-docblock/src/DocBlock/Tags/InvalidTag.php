@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace phpDocumentor\Reflection\DocBlock\Tags;
 
+use const PHP_VERSION_ID;
+
 use Closure;
 use Exception;
 use phpDocumentor\Reflection\DocBlock\Tag;
@@ -19,8 +21,6 @@ use function is_array;
 use function is_object;
 use function is_resource;
 use function sprintf;
-
-use const PHP_VERSION_ID;
 
 /**
  * This class represents an exception during the tag creation
@@ -64,7 +64,7 @@ final class InvalidTag implements Tag
     public function withError(Throwable $exception): self
     {
         $this->flattenExceptionBacktrace($exception);
-        $tag            = new self($this->name, $this->body);
+        $tag = new self($this->name, $this->body);
         $tag->throwable = $exception;
 
         return $tag;
@@ -108,8 +108,7 @@ final class InvalidTag implements Tag
     }
 
     /**
-     * @param mixed $value
-     *
+     * @param  mixed  $value
      * @return mixed
      *
      * @throws ReflectionException
@@ -118,7 +117,7 @@ final class InvalidTag implements Tag
     {
         if ($value instanceof Closure) {
             $closureReflection = new ReflectionFunction($value);
-            $value             = sprintf(
+            $value = sprintf(
                 '(Closure at %s:%s)',
                 $closureReflection->getFileName(),
                 $closureReflection->getStartLine()
@@ -137,7 +136,7 @@ final class InvalidTag implements Tag
     public function render(?Formatter $formatter = null): string
     {
         if ($formatter === null) {
-            $formatter = new Formatter\PassthroughFormatter();
+            $formatter = new Formatter\PassthroughFormatter;
         }
 
         return $formatter->format($this);

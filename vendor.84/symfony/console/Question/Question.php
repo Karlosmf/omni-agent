@@ -22,33 +22,40 @@ use Symfony\Component\Console\Exception\LogicException;
 class Question
 {
     private ?int $attempts = null;
+
     private bool $hidden = false;
+
     private bool $hiddenFallback = true;
+
     /**
      * @var (\Closure(string):string[])|null
      */
     private ?\Closure $autocompleterCallback = null;
+
     /**
      * @var (\Closure(mixed):mixed)|null
      */
     private ?\Closure $validator = null;
+
     /**
      * @var (\Closure(mixed):mixed)|null
      */
     private ?\Closure $normalizer = null;
+
     private bool $trimmable = true;
+
     private bool $multiline = false;
+
     private ?int $timeout = null;
 
     /**
-     * @param string                     $question The question to ask to the user
-     * @param string|bool|int|float|null $default  The default answer to return if the user enters nothing
+     * @param  string  $question  The question to ask to the user
+     * @param  string|bool|int|float|null  $default  The default answer to return if the user enters nothing
      */
     public function __construct(
         private string $question,
         private string|bool|int|float|null $default = null,
-    ) {
-    }
+    ) {}
 
     /**
      * Returns the question.
@@ -204,17 +211,16 @@ class Question
      *
      * The callback is passed the user input as argument and should return an iterable of corresponding suggestions.
      *
-     * @param (callable(string):string[])|null $callback
-     *
+     * @param  (callable(string):string[])|null  $callback
      * @return $this
      */
     public function setAutocompleterCallback(?callable $callback): static
     {
-        if ($this->hidden && null !== $callback) {
+        if ($this->hidden && $callback !== null) {
             throw new LogicException('A hidden question cannot use the autocompleter.');
         }
 
-        $this->autocompleterCallback = null === $callback ? null : $callback(...);
+        $this->autocompleterCallback = $callback === null ? null : $callback(...);
 
         return $this;
     }
@@ -222,13 +228,12 @@ class Question
     /**
      * Sets a validator for the question.
      *
-     * @param (callable(mixed):mixed)|null $validator
-     *
+     * @param  (callable(mixed):mixed)|null  $validator
      * @return $this
      */
     public function setValidator(?callable $validator): static
     {
-        $this->validator = null === $validator ? null : $validator(...);
+        $this->validator = $validator === null ? null : $validator(...);
 
         return $this;
     }
@@ -254,7 +259,7 @@ class Question
      */
     public function setMaxAttempts(?int $attempts): static
     {
-        if (null !== $attempts && $attempts < 1) {
+        if ($attempts !== null && $attempts < 1) {
             throw new InvalidArgumentException('Maximum number of attempts must be a positive value.');
         }
 
@@ -276,8 +281,7 @@ class Question
     /**
      * Sets a normalizer for the response.
      *
-     * @param callable(mixed):mixed $normalizer
-     *
+     * @param  callable(mixed):mixed  $normalizer
      * @return $this
      */
     public function setNormalizer(callable $normalizer): static

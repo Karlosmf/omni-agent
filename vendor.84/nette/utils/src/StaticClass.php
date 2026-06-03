@@ -9,16 +9,13 @@ declare(strict_types=1);
 
 namespace Nette;
 
-
 /**
  * Prevents instantiation.
  */
 trait StaticClass
 {
-	/**
-	 * Class is static and cannot be instantiated.
-	 */
-	private function __construct()
-	{
-	}
+    /**
+     * Class is static and cannot be instantiated.
+     */
+    private function __construct() {}
 }

@@ -72,7 +72,7 @@ class DatabaseNotifications extends Component implements HasActions, HasSchemas
         $this->getUnreadNotificationsQuery()->update(['read_at' => now()]);
     }
 
-    public function getNotifications(): DatabaseNotificationCollection | Paginator
+    public function getNotifications(): DatabaseNotificationCollection|Paginator
     {
         if (! $this->isPaginated()) {
             /** @phpstan-ignore-next-line */
@@ -87,7 +87,7 @@ class DatabaseNotifications extends Component implements HasActions, HasSchemas
         return static::$isPaginated;
     }
 
-    public function getNotificationsQuery(): Builder | Relation
+    public function getNotificationsQuery(): Builder|Relation
     {
         $user = $this->getUser();
 
@@ -99,7 +99,7 @@ class DatabaseNotifications extends Component implements HasActions, HasSchemas
         return $user->notifications()->where('data->format', 'filament');
     }
 
-    public function getUnreadNotificationsQuery(): Builder | Relation
+    public function getUnreadNotificationsQuery(): Builder|Relation
     {
         /** @phpstan-ignore-next-line */
         return $this->getNotificationsQuery()->unread();
@@ -146,7 +146,7 @@ class DatabaseNotifications extends Component implements HasActions, HasSchemas
             ->close();
     }
 
-    public function getUser(): Model | Authenticatable | null
+    public function getUser(): Model|Authenticatable|null
     {
         return auth(static::$authGuard)->user();
     }
@@ -209,6 +209,6 @@ class DatabaseNotifications extends Component implements HasActions, HasSchemas
 
     public function placeholder(): string
     {
-        return '<div>' . $this->getTrigger()?->with(['unreadNotificationsCount' => $this->getUnreadNotificationsCount()])->render() . '</div>';
+        return '<div>'.$this->getTrigger()?->with(['unreadNotificationsCount' => $this->getUnreadNotificationsCount()])->render().'</div>';
     }
 }

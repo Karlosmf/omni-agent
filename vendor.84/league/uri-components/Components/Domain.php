@@ -46,6 +46,7 @@ final class Domain extends Component implements DomainHostInterface
     private const SEPARATOR = '.';
 
     private readonly HostInterface $host;
+
     /** @var string[] */
     private readonly array $labels;
 
@@ -57,7 +58,7 @@ final class Domain extends Component implements DomainHostInterface
             default => Host::new($host),
         };
 
-        if (!$host->isDomain()) {
+        if (! $host->isDomain()) {
             throw new SyntaxError(sprintf('`%s` is an invalid domain name.', $host->value() ?? 'null'));
         }
 
@@ -199,12 +200,12 @@ final class Domain extends Component implements DomainHostInterface
 
     public function contains(BackedEnum|Stringable|string $label): bool
     {
-        return [] !== $this->keys($label);
+        return $this->keys($label) !== [];
     }
 
     public function isEmpty(): bool
     {
-        return null === $this->host->value();
+        return $this->host->value() === null;
     }
 
     public function get(int $offset): ?string
@@ -230,7 +231,7 @@ final class Domain extends Component implements DomainHostInterface
 
     public function isAbsolute(): bool
     {
-        return count($this->labels) > 1 && '' === $this->labels[array_key_first($this->labels)];
+        return count($this->labels) > 1 && $this->labels[array_key_first($this->labels)] === '';
     }
 
     public function isSubdomainOf(BackedEnum|Stringable|string|null $parentHost): bool
@@ -239,35 +240,35 @@ final class Domain extends Component implements DomainHostInterface
             return false;
         }
 
-        if (!$parentHost instanceof self) {
+        if (! $parentHost instanceof self) {
             $parentHost = self::tryNew($parentHost);
         }
 
-        return null !== $parentHost
-            && !$parentHost->isEmpty()
+        return $parentHost !== null
+            && ! $parentHost->isEmpty()
             && count($this) > count($parentHost)
             && str_ends_with(''.$this->withoutRootLabel()->toAscii(), '.'.$parentHost->withoutRootLabel()->toAscii());
     }
 
     public function hasSubdomain(BackedEnum|Stringable|string|null $childHost): bool
     {
-        if (!$childHost instanceof self) {
+        if (! $childHost instanceof self) {
             $childHost = self::tryNew($childHost);
         }
 
-        return ($childHost?->isSubdomainOf($this)) ?? false;
+        return $childHost?->isSubdomainOf($this) ?? false;
     }
 
     public function isSiblingOf(BackedEnum|Stringable|string|null $siblingHost): bool
     {
-        if (!$siblingHost instanceof self) {
+        if (! $siblingHost instanceof self) {
             $siblingHost = self::tryNew($siblingHost);
         }
 
-        return null !== $siblingHost
-            && !$this->isEmpty()
-            && !$siblingHost->isEmpty()
-            && !$this->equals($siblingHost)
+        return $siblingHost !== null
+            && ! $this->isEmpty()
+            && ! $siblingHost->isEmpty()
+            && ! $this->equals($siblingHost)
             && $this->parentHost()->equals($siblingHost->parentHost());
     }
 
@@ -278,11 +279,11 @@ final class Domain extends Component implements DomainHostInterface
 
     public function commonAncestorWith(BackedEnum|Stringable|string|null $other): DomainHostInterface
     {
-        if (!$other instanceof self) {
+        if (! $other instanceof self) {
             $other = self::tryNew($other);
         }
 
-        if (null === $other) {
+        if ($other === null) {
             return Domain::new();
         }
 
@@ -307,8 +308,8 @@ final class Domain extends Component implements DomainHostInterface
         $value = $this->value();
 
         return match (true) {
-            null === $label => $this,
-            null === $value => new self($label),
+            $label === null => $this,
+            $value === null => new self($label),
             str_ends_with($label, self::SEPARATOR) => new self($label.$value),
             default => new self($label.self::SEPARATOR.$value),
         };
@@ -320,9 +321,9 @@ final class Domain extends Component implements DomainHostInterface
         $value = $this->value();
 
         return match (true) {
-            null === $label => $this,
-            null === $value => new self($label),
-            !$this->isAbsolute() => new self($value.self::SEPARATOR.$label),
+            $label === null => $this,
+            $value === null => new self($label),
+            ! $this->isAbsolute() => new self($value.self::SEPARATOR.$label),
             str_ends_with($label, self::SEPARATOR) => new self($value.$label),
             default => new self($value.$label.self::SEPARATOR),
         };
@@ -356,7 +357,7 @@ final class Domain extends Component implements DomainHostInterface
     public function withoutRootLabel(): DomainHostInterface
     {
         $key = array_key_first($this->labels);
-        if ('' !== $this->labels[$key]) {
+        if ($this->labels[$key] !== '') {
             return $this;
         }
 
@@ -372,11 +373,11 @@ final class Domain extends Component implements DomainHostInterface
     public function withLabel(int $key, BackedEnum|Stringable|string|int|null $label): DomainHostInterface
     {
         $nbLabels = count($this->labels);
-        if ($key < - $nbLabels - 1 || $key > $nbLabels) {
+        if ($key < -$nbLabels - 1 || $key > $nbLabels) {
             throw new OffsetOutOfBounds(sprintf('No label can be added with the submitted key : `%s`.', $key));
         }
 
-        if (0 > $key) {
+        if ($key < 0) {
             $key += $nbLabels;
         }
 
@@ -384,11 +385,11 @@ final class Domain extends Component implements DomainHostInterface
             return $this->append($label);
         }
 
-        if (-1 === $key) {
+        if ($key === -1) {
             return $this->prepend($label);
         }
 
-        if (!$label instanceof HostInterface && null !== $label) {
+        if (! $label instanceof HostInterface && $label !== null) {
             if (is_int($label)) {
                 $label = (string) $label;
             }
@@ -408,24 +409,24 @@ final class Domain extends Component implements DomainHostInterface
 
     public function withoutLabel(int ...$keys): DomainHostInterface
     {
-        if ([] === $keys) {
+        if ($keys === []) {
             return $this;
         }
 
         $nb_labels = count($this->labels);
         foreach ($keys as &$offset) {
-            if (- $nb_labels > $offset || $nb_labels - 1 < $offset) {
+            if (-$nb_labels > $offset || $nb_labels - 1 < $offset) {
                 throw new OffsetOutOfBounds(sprintf('No label can be removed with the submitted key : `%s`.', $offset));
             }
 
-            if (0 > $offset) {
+            if ($offset < 0) {
                 $offset += $nb_labels;
             }
         }
         unset($offset);
 
         $deleted_keys = array_keys(array_count_values($keys));
-        $filter = static fn ($key): bool => !in_array($key, $deleted_keys, true);
+        $filter = static fn ($key): bool => ! in_array($key, $deleted_keys, true);
 
         return self::fromLabels(...array_filter($this->labels, $filter, ARRAY_FILTER_USE_KEY));
     }
@@ -440,7 +441,7 @@ final class Domain extends Component implements DomainHostInterface
      *
      * Returns a new instance from a string or a stringable object.
      */
-    #[Deprecated(message:'use League\Uri\Components\Domain::getIterator() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Domain::getIterator() instead', since: 'league/uri-components:7.0.0')]
     public function labels(): array
     {
         return $this->labels;
@@ -456,7 +457,7 @@ final class Domain extends Component implements DomainHostInterface
      *
      * Returns a new instance from a string or a stringable object.
      */
-    #[Deprecated(message:'use League\Uri\Components\Domain::new() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Domain::new() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromString(Stringable|string $host): self
     {
         return self::new($host);
@@ -474,7 +475,7 @@ final class Domain extends Component implements DomainHostInterface
      *
      * @throws TypeError If a label is the null value
      */
-    #[Deprecated(message:'use League\Uri\Components\Domain::fromLabels() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Domain::fromLabels() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromLabels(iterable $labels): self
     {
         return self::fromLabels(...$labels);
@@ -490,7 +491,7 @@ final class Domain extends Component implements DomainHostInterface
      *
      * Create a new instance from a URI object.
      */
-    #[Deprecated(message:'use League\Uri\Components\Domain::fromUri() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Domain::fromUri() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromUri(Psr7UriInterface|UriInterface $uri): self
     {
         return self::fromUri($uri);
@@ -506,7 +507,7 @@ final class Domain extends Component implements DomainHostInterface
      *
      * Create a new instance from an Authority object.
      */
-    #[Deprecated(message:'use League\Uri\Components\Domain::fromAuthority() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Domain::fromAuthority() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromAuthority(AuthorityInterface|Stringable|string $authority): self
     {
         return self::fromAuthority($authority);
@@ -522,7 +523,7 @@ final class Domain extends Component implements DomainHostInterface
      *
      * Returns a new instance from an iterable structure.
      */
-    #[Deprecated(message:'use League\Uri\Components\Domain::new() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Domain::new() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromHost(HostInterface $host): self
     {
         return self::new($host);

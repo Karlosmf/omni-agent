@@ -28,7 +28,7 @@ final class DescriptionListContinueParser extends AbstractBlockContinueParser
 
     public function __construct()
     {
-        $this->block = new DescriptionList();
+        $this->block = new DescriptionList;
     }
 
     public function getBlock(): DescriptionList

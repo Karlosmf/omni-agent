@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest;
 
 /*
@@ -12,7 +13,6 @@ namespace Hamcrest;
  */
 abstract class BaseMatcher implements Matcher
 {
-
     public function describeMismatch($item, Description $description)
     {
         $description->appendText('was ')->appendValue($item);
@@ -25,6 +25,6 @@ abstract class BaseMatcher implements Matcher
 
     public function __invoke()
     {
-        return call_user_func_array(array($this, 'matches'), func_get_args());
+        return call_user_func_array([$this, 'matches'], func_get_args());
     }
 }

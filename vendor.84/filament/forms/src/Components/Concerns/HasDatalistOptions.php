@@ -10,12 +10,12 @@ trait HasDatalistOptions
     /**
      * @var array<string> | Arrayable | Closure | null
      */
-    protected array | Arrayable | Closure | null $datalistOptions = null;
+    protected array|Arrayable|Closure|null $datalistOptions = null;
 
     /**
      * @param  array<string> | Arrayable | Closure | null  $options
      */
-    public function datalist(array | Arrayable | Closure | null $options): static
+    public function datalist(array|Arrayable|Closure|null $options): static
     {
         $this->datalistOptions = $options;
 

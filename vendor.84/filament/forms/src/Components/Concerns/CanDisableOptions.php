@@ -14,7 +14,7 @@ trait CanDisableOptions
      */
     protected array $isOptionDisabled = [];
 
-    public function disableOptionWhen(bool | Closure | null $callback, bool $merge = false): static
+    public function disableOptionWhen(bool|Closure|null $callback, bool $merge = false): static
     {
         if ($merge) {
             $this->isOptionDisabled[] = $callback;
@@ -52,7 +52,7 @@ trait CanDisableOptions
     /**
      * @param  array-key  $value
      */
-    public function isOptionDisabled($value, string | Htmlable $label): bool
+    public function isOptionDisabled($value, string|Htmlable $label): bool
     {
         foreach ($this->isOptionDisabled as $isOptionDisabled) {
             if ($this->evaluate($isOptionDisabled, [

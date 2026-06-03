@@ -35,7 +35,7 @@ final class CmiCmdletLogicalFinder extends ProcOpenBasedFinder
 
     protected function countCpuCores(string $process): ?int
     {
-        if (0 === preg_match(self::CPU_CORE_COUNT_REGEX, $process, $matches)) {
+        if (preg_match(self::CPU_CORE_COUNT_REGEX, $process, $matches) === 0) {
             return parent::countCpuCores($process);
         }
 

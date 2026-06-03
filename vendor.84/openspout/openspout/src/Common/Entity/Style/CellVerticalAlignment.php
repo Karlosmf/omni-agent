@@ -10,11 +10,17 @@ namespace OpenSpout\Common\Entity\Style;
 final class CellVerticalAlignment
 {
     public const AUTO = 'auto';
+
     public const BASELINE = 'baseline';
+
     public const BOTTOM = 'bottom';
+
     public const CENTER = 'center';
+
     public const DISTRIBUTED = 'distributed';
+
     public const JUSTIFY = 'justify';
+
     public const TOP = 'top';
 
     private const VALID_ALIGNMENTS = [

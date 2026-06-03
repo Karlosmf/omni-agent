@@ -33,19 +33,19 @@ class ListPass extends CodeCleanerPass
     /**
      * Validate use of list assignment.
      *
-     * @throws ParseErrorException if the user used empty with anything but a variable
      *
-     * @param Node $node
      *
      * @return int|Node|null Replacement node (or special return value)
+     *
+     * @throws ParseErrorException if the user used empty with anything but a variable
      */
     public function enterNode(Node $node)
     {
-        if (!$node instanceof Assign) {
+        if (! $node instanceof Assign) {
             return null;
         }
 
-        if (!$node->var instanceof Array_ && !$node->var instanceof List_) {
+        if (! $node->var instanceof Array_ && ! $node->var instanceof List_) {
             return null;
         }
 
@@ -64,13 +64,13 @@ class ListPass extends CodeCleanerPass
 
             $itemFound = true;
 
-            if (!self::isValidArrayItem($item)) {
+            if (! self::isValidArrayItem($item)) {
                 $msg = 'Assignments can only happen to writable values';
                 throw new ParseErrorException($msg, ['startLine' => $item->getStartLine(), 'endLine' => $item->getEndLine()]);
             }
         }
 
-        if (!$itemFound) {
+        if (! $itemFound) {
             throw new ParseErrorException('Cannot use empty list');
         }
 
@@ -79,8 +79,6 @@ class ListPass extends CodeCleanerPass
 
     /**
      * Validate whether a given item in an array is valid for short assignment.
-     *
-     * @param Node $item
      */
     private static function isValidArrayItem(Node $item): bool
     {

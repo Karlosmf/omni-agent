@@ -20,7 +20,7 @@ final class StrikethroughExtension implements ExtensionInterface
 {
     public function register(EnvironmentBuilderInterface $environment): void
     {
-        $environment->addDelimiterProcessor(new StrikethroughDelimiterProcessor());
-        $environment->addRenderer(Strikethrough::class, new StrikethroughRenderer());
+        $environment->addDelimiterProcessor(new StrikethroughDelimiterProcessor);
+        $environment->addRenderer(Strikethrough::class, new StrikethroughRenderer);
     }
 }

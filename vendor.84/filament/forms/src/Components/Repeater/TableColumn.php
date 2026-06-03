@@ -19,13 +19,13 @@ class TableColumn extends Component
 
     protected string $evaluationIdentifier = 'column';
 
-    protected bool | Closure $isHeaderLabelHidden = false;
+    protected bool|Closure $isHeaderLabelHidden = false;
 
-    protected bool | Closure $isMarkedAsRequired = false;
+    protected bool|Closure $isMarkedAsRequired = false;
 
-    public function __construct(protected string | Htmlable | Closure $label) {}
+    public function __construct(protected string|Htmlable|Closure $label) {}
 
-    public static function make(string | Htmlable | Closure $label): static
+    public static function make(string|Htmlable|Closure $label): static
     {
         $static = app(static::class, ['label' => $label]);
 
@@ -34,14 +34,14 @@ class TableColumn extends Component
         return $static;
     }
 
-    public function hiddenHeaderLabel(bool | Closure $condition = true): static
+    public function hiddenHeaderLabel(bool|Closure $condition = true): static
     {
         $this->isHeaderLabelHidden = $condition;
 
         return $this;
     }
 
-    public function getLabel(): string | Htmlable
+    public function getLabel(): string|Htmlable
     {
         return $this->evaluate($this->label);
     }
@@ -51,7 +51,7 @@ class TableColumn extends Component
         return (bool) $this->evaluate($this->isHeaderLabelHidden);
     }
 
-    public function markAsRequired(bool | Closure $condition = true): static
+    public function markAsRequired(bool|Closure $condition = true): static
     {
         $this->isMarkedAsRequired = $condition;
 

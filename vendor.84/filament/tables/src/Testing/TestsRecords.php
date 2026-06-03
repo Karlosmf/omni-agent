@@ -19,7 +19,7 @@ class TestsRecords
 {
     public function assertCanSeeTableRecords(): Closure
     {
-        return function (array | Collection $records, bool $inOrder = false): static {
+        return function (array|Collection $records, bool $inOrder = false): static {
             $html = array_map(
                 function ($record) {
                     if ($record instanceof Model) {
@@ -43,7 +43,7 @@ class TestsRecords
 
     public function assertCanNotSeeTableRecords(): Closure
     {
-        return function (array | Collection $records): static {
+        return function (array|Collection $records): static {
             $html = array_map(
                 function ($record) {
                     if ($record instanceof Model) {

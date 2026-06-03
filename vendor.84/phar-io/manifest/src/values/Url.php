@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PharIo\Manifest.
  *
@@ -8,29 +10,35 @@
  * file that was distributed with this source code.
  *
  */
+
 namespace PharIo\Manifest;
 
 use const FILTER_VALIDATE_URL;
+
 use function filter_var;
 
-class Url {
+class Url
+{
     /** @var string */
     private $url;
 
-    public function __construct(string $url) {
+    public function __construct(string $url)
+    {
         $this->ensureUrlIsValid($url);
 
         $this->url = $url;
     }
 
-    public function asString(): string {
+    public function asString(): string
+    {
         return $this->url;
     }
 
     /**
      * @throws InvalidUrlException
      */
-    private function ensureUrlIsValid(string $url): void {
+    private function ensureUrlIsValid(string $url): void
+    {
         if (filter_var($url, FILTER_VALIDATE_URL) === false) {
             throw new InvalidUrlException;
         }

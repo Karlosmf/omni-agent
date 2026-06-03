@@ -31,7 +31,7 @@ class FilamentColor extends Facade
     /**
      * @param  array<string, array<int | string, string | int> | string> | Closure  $colors
      */
-    public static function register(array | Closure $colors): void
+    public static function register(array|Closure $colors): void
     {
         static::resolved(function (ColorManager $colorManager) use ($colors): void {
             $colorManager->register($colors);

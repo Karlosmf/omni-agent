@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\MockObject\Runtime;
 
 /**
@@ -20,7 +23,7 @@ abstract readonly class PropertyHook
     private string $propertyName;
 
     /**
-     * @param non-empty-string $propertyName
+     * @param  non-empty-string  $propertyName
      */
     public static function get(string $propertyName): PropertyGetHook
     {
@@ -28,7 +31,7 @@ abstract readonly class PropertyHook
     }
 
     /**
-     * @param non-empty-string $propertyName
+     * @param  non-empty-string  $propertyName
      */
     public static function set(string $propertyName): PropertySetHook
     {
@@ -36,7 +39,7 @@ abstract readonly class PropertyHook
     }
 
     /**
-     * @param non-empty-string $propertyName
+     * @param  non-empty-string  $propertyName
      */
     protected function __construct(string $propertyName)
     {

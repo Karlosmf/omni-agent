@@ -30,6 +30,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ThrowUpCommand extends Command
 {
     private CodeArgumentParser $parser;
+
     private Printer $printer;
 
     /**
@@ -37,8 +38,8 @@ class ThrowUpCommand extends Command
      */
     public function __construct($name = null)
     {
-        $this->parser = new CodeArgumentParser();
-        $this->printer = new Printer();
+        $this->parser = new CodeArgumentParser;
+        $this->printer = new Printer;
 
         parent::__construct($name);
     }
@@ -83,7 +84,7 @@ HELP
         $throwCode = $this->printer->prettyPrint([$throwStmt]);
 
         $shell = $this->getShell();
-        $shell->addCode($throwCode, !$shell->hasCode());
+        $shell->addCode($throwCode, ! $shell->hasCode());
 
         return 0;
     }
@@ -93,15 +94,15 @@ HELP
      *
      * If no argument was given, this falls back to `$_e`
      *
-     * @throws \InvalidArgumentException if there is no exception to throw
      *
-     * @param string|null $code
      *
      * @return Arg[]
+     *
+     * @throws \InvalidArgumentException if there is no exception to throw
      */
     private function prepareArgs(?string $code = null): array
     {
-        if (!$code) {
+        if (! $code) {
             // Default to last exception if nothing else was supplied
             return [new Arg(new Variable('_e'))];
         }

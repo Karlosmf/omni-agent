@@ -37,17 +37,21 @@ use Symfony\Component\Yaml\Yaml;
 class LintCommand extends Command
 {
     private Parser $parser;
+
     private ?string $format = null;
+
     private bool $displayCorrectFiles;
+
     private ?\Closure $directoryIteratorProvider;
+
     private ?\Closure $isReadableProvider;
 
     public function __construct(?string $name = null, ?callable $directoryIteratorProvider = null, ?callable $isReadableProvider = null)
     {
         parent::__construct($name);
 
-        $this->directoryIteratorProvider = null === $directoryIteratorProvider ? null : $directoryIteratorProvider(...);
-        $this->isReadableProvider = null === $isReadableProvider ? null : $isReadableProvider(...);
+        $this->directoryIteratorProvider = $directoryIteratorProvider === null ? null : $directoryIteratorProvider(...);
+        $this->isReadableProvider = $isReadableProvider === null ? null : $isReadableProvider(...);
     }
 
     protected function configure(): void
@@ -57,7 +61,7 @@ class LintCommand extends Command
             ->addOption('format', null, InputOption::VALUE_REQUIRED, \sprintf('The output format ("%s")', implode('", "', $this->getAvailableFormatOptions())))
             ->addOption('exclude', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Path(s) to exclude')
             ->addOption('parse-tags', null, InputOption::VALUE_NEGATABLE, 'Parse custom tags', null)
-            ->setHelp(<<<EOF
+            ->setHelp(<<<'EOF'
                 The <info>%command.name%</info> command lints a YAML file and outputs to STDOUT
                 the first encountered syntax error.
 
@@ -82,8 +86,7 @@ class LintCommand extends Command
                   <info>php %command.full_name% dirname --exclude="dirname/foo.yaml" --exclude="dirname/bar.yaml"</info>
 
                 EOF
-            )
-        ;
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -94,7 +97,7 @@ class LintCommand extends Command
         $this->format = $input->getOption('format');
         $flags = $input->getOption('parse-tags');
 
-        if (null === $this->format) {
+        if ($this->format === null) {
             // Autodetect format according to CI environment
             $this->format = class_exists(GithubActionReporter::class) && GithubActionReporter::isGithubActionEnvironment() ? 'github' : 'txt';
         }
@@ -107,18 +110,18 @@ class LintCommand extends Command
             return $this->display($io, [$this->validate(file_get_contents('php://stdin'), $flags)]);
         }
 
-        if (!$filenames) {
+        if (! $filenames) {
             throw new RuntimeException('Please provide a filename or pipe file content to STDIN.');
         }
 
         $filesInfo = [];
         foreach ($filenames as $filename) {
-            if (!$this->isReadable($filename)) {
+            if (! $this->isReadable($filename)) {
                 throw new RuntimeException(\sprintf('File or directory "%s" is not readable.', $filename));
             }
 
             foreach ($this->getFiles($filename) as $file) {
-                if (!\in_array($file->getPathname(), $excludes, true)) {
+                if (! \in_array($file->getPathname(), $excludes, true)) {
                     $filesInfo[] = $this->validate(file_get_contents($file), $flags, $file);
                 }
             }
@@ -130,7 +133,7 @@ class LintCommand extends Command
     private function validate(string $content, int $flags, ?string $file = null): array
     {
         $prevErrorHandler = set_error_handler(function ($level, $message, $file, $line) use (&$prevErrorHandler) {
-            if (\E_USER_DEPRECATED === $level) {
+            if ($level === \E_USER_DEPRECATED) {
                 throw new ParseException($message, $this->getParser()->getRealCurrentLineNb() + 1);
             }
 
@@ -171,8 +174,8 @@ class LintCommand extends Command
         foreach ($filesInfo as $info) {
             if ($info['valid'] && $this->displayCorrectFiles) {
                 $io->comment('<info>OK</info>'.($info['file'] ? \sprintf(' in %s', $info['file']) : ''));
-            } elseif (!$info['valid']) {
-                ++$erroredFiles;
+            } elseif (! $info['valid']) {
+                $erroredFiles++;
                 $io->text('<error> ERROR </error>'.($info['file'] ? \sprintf(' in %s', $info['file']) : ''));
                 $io->text(\sprintf('<error> >> %s</error>', $info['message']));
 
@@ -186,7 +189,7 @@ class LintCommand extends Command
             }
         }
 
-        if (0 === $erroredFiles) {
+        if ($erroredFiles === 0) {
             $io->success(\sprintf('All %d YAML files contain valid syntax.', $countFiles));
         } else {
             $io->warning(\sprintf('%d YAML files have valid syntax and %d contain errors.%s', $countFiles - $erroredFiles, $erroredFiles, $suggestTagOption ? ' Use the --parse-tags option if you want parse custom tags.' : ''));
@@ -201,8 +204,8 @@ class LintCommand extends Command
 
         array_walk($filesInfo, function (&$v) use (&$errors) {
             $v['file'] = (string) $v['file'];
-            if (!$v['valid']) {
-                ++$errors;
+            if (! $v['valid']) {
+                $errors++;
             }
 
             if (isset($v['message']) && str_contains($v['message'], 'PARSE_CUSTOM_TAGS')) {
@@ -224,7 +227,7 @@ class LintCommand extends Command
         }
 
         foreach ($this->getDirectoryIterator($fileOrDirectory) as $file) {
-            if (!\in_array($file->getExtension(), ['yml', 'yaml'], true)) {
+            if (! \in_array($file->getExtension(), ['yml', 'yaml'], true)) {
                 continue;
             }
 
@@ -234,7 +237,7 @@ class LintCommand extends Command
 
     private function getParser(): Parser
     {
-        return $this->parser ??= new Parser();
+        return $this->parser ??= new Parser;
     }
 
     private function getDirectoryIterator(string $directory): iterable
@@ -244,7 +247,7 @@ class LintCommand extends Command
             \RecursiveIteratorIterator::LEAVES_ONLY
         );
 
-        if (null !== $this->directoryIteratorProvider) {
+        if ($this->directoryIteratorProvider !== null) {
             return ($this->directoryIteratorProvider)($directory, $default);
         }
 
@@ -255,7 +258,7 @@ class LintCommand extends Command
     {
         $default = is_readable(...);
 
-        if (null !== $this->isReadableProvider) {
+        if ($this->isReadableProvider !== null) {
             return ($this->isReadableProvider)($fileOrDirectory, $default);
         }
 

@@ -41,9 +41,9 @@ final class DocBlock
     private bool $isTemplateEnd;
 
     /**
-     * @param DocBlock\Tag[] $tags
-     * @param Types\Context  $context  The context in which the DocBlock occurs.
-     * @param Location       $location The location within the file that this DocBlock occurs in.
+     * @param  Tag[]  $tags
+     * @param  Types\Context  $context  The context in which the DocBlock occurs.
+     * @param  Location  $location  The location within the file that this DocBlock occurs in.
      */
     public function __construct(
         string $summary = '',
@@ -56,16 +56,16 @@ final class DocBlock
     ) {
         Assert::allIsInstanceOf($tags, Tag::class);
 
-        $this->summary     = $summary;
+        $this->summary = $summary;
         $this->description = $description ?: new DocBlock\Description('');
         foreach ($tags as $tag) {
             $this->addTag($tag);
         }
 
-        $this->context  = $context;
+        $this->context = $context;
         $this->location = $location;
 
-        $this->isTemplateEnd   = $isTemplateEnd;
+        $this->isTemplateEnd = $isTemplateEnd;
         $this->isTemplateStart = $isTemplateStart;
     }
 
@@ -143,8 +143,7 @@ final class DocBlock
      * Returns an array of tags matching the given name. If no tags are found
      * an empty array is returned.
      *
-     * @param string $name String to search by.
-     *
+     * @param  string  $name  String to search by.
      * @return Tag[]
      */
     public function getTagsByName(string $name): array
@@ -166,8 +165,7 @@ final class DocBlock
      * Returns an array of tags with type matching the given name. If no tags are found
      * an empty array is returned.
      *
-     * @param string $name String to search by.
-     *
+     * @param  string  $name  String to search by.
      * @return TagWithType[]
      */
     public function getTagsWithTypeByName(string $name): array
@@ -175,7 +173,7 @@ final class DocBlock
         $result = [];
 
         foreach ($this->getTagsByName($name) as $tag) {
-            if (!$tag instanceof TagWithType) {
+            if (! $tag instanceof TagWithType) {
                 continue;
             }
 
@@ -188,7 +186,7 @@ final class DocBlock
     /**
      * Checks if a tag of a certain type is present in this DocBlock.
      *
-     * @param string $name Tag name to check for.
+     * @param  string  $name  Tag name to check for.
      */
     public function hasTag(string $name): bool
     {
@@ -204,7 +202,7 @@ final class DocBlock
     /**
      * Remove a tag from this DocBlock.
      *
-     * @param Tag $tagToRemove The tag to remove.
+     * @param  Tag  $tagToRemove  The tag to remove.
      */
     public function removeTag(Tag $tagToRemove): void
     {
@@ -219,7 +217,7 @@ final class DocBlock
     /**
      * Adds a tag to this DocBlock.
      *
-     * @param Tag $tag The tag to add.
+     * @param  Tag  $tag  The tag to add.
      */
     private function addTag(Tag $tag): void
     {

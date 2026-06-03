@@ -50,7 +50,7 @@ class IsBeforeOperator extends Operator
                     'filament-query-builder::query-builder.operators.date.is_before.summary.direct',
                 [
                     'attribute' => $constraint->getAttributeLabel(),
-                    'date' => $hasTime && $isTimeBasedFilter ? $parsedDate->toFormattedDayDateString() . ' ' . $parsedDate->format('H:i:s') : $parsedDate->toFormattedDateString(),
+                    'date' => $hasTime && $isTimeBasedFilter ? $parsedDate->toFormattedDayDateString().' '.$parsedDate->format('H:i:s') : $parsedDate->toFormattedDateString(),
                 ],
             );
         }
@@ -63,7 +63,7 @@ class IsBeforeOperator extends Operator
                 'filament-query-builder::query-builder.operators.date.is_before.summary.direct',
             [
                 'attribute' => $constraint->getAttributeLabel(),
-                'date' => $hasTime ? $parsedDate->toFormattedDayDateString() . ' ' . $parsedDate->format('H:i:s') : $parsedDate->toFormattedDateString(),
+                'date' => $hasTime ? $parsedDate->toFormattedDayDateString().' '.$parsedDate->format('H:i:s') : $parsedDate->toFormattedDateString(),
             ],
         );
     }
@@ -279,14 +279,14 @@ class IsBeforeOperator extends Operator
         $method = $tense === 'future' ? 'add' : 'sub';
 
         return match ($unit) {
-            DateUnit::Second->value => Carbon::now()->{$method . 'Seconds'}($value)->toDateTimeString(),
-            DateUnit::Minute->value => Carbon::now()->{$method . 'Minutes'}($value)->toDateTimeString(),
-            DateUnit::Hour->value => Carbon::now()->{$method . 'Hours'}($value)->toDateTimeString(),
-            DateUnit::Day->value => Carbon::now()->{$method . 'Days'}($value)->toDateString(),
-            DateUnit::Week->value => Carbon::now()->{$method . 'Weeks'}($value)->toDateString(),
-            DateUnit::Month->value => Carbon::now()->{$method . 'Months'}($value)->toDateString(),
-            DateUnit::Quarter->value => Carbon::now()->{$method . 'Quarters'}($value)->toDateString(),
-            DateUnit::Year->value => Carbon::now()->{$method . 'Years'}($value)->toDateString(),
+            DateUnit::Second->value => Carbon::now()->{$method.'Seconds'}($value)->toDateTimeString(),
+            DateUnit::Minute->value => Carbon::now()->{$method.'Minutes'}($value)->toDateTimeString(),
+            DateUnit::Hour->value => Carbon::now()->{$method.'Hours'}($value)->toDateTimeString(),
+            DateUnit::Day->value => Carbon::now()->{$method.'Days'}($value)->toDateString(),
+            DateUnit::Week->value => Carbon::now()->{$method.'Weeks'}($value)->toDateString(),
+            DateUnit::Month->value => Carbon::now()->{$method.'Months'}($value)->toDateString(),
+            DateUnit::Quarter->value => Carbon::now()->{$method.'Quarters'}($value)->toDateString(),
+            DateUnit::Year->value => Carbon::now()->{$method.'Years'}($value)->toDateString(),
             default => Carbon::today()->toDateString(),
         };
     }

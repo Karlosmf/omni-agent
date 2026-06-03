@@ -34,7 +34,7 @@ class TaskItem extends Node
     {
         return [
             [
-                'tag' => 'li[data-type="' . self::$name . '"]',
+                'tag' => 'li[data-type="'.self::$name.'"]',
             ],
         ];
     }

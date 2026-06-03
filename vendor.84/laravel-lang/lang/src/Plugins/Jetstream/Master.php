@@ -16,7 +16,7 @@ class Master extends Plugin
     {
         return [
             'jetstream/master/jetstream.json' => '{locale}.json',
-            'jetstream/extended.json'         => '{locale}.json',
+            'jetstream/extended.json' => '{locale}.json',
         ];
     }
 }

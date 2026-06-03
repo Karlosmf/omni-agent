@@ -21,8 +21,7 @@ final class EmailAddressContains extends Constraint
     public function __construct(
         private string $headerName,
         private string $expectedValue,
-    ) {
-    }
+    ) {}
 
     public function toString(): string
     {
@@ -30,11 +29,11 @@ final class EmailAddressContains extends Constraint
     }
 
     /**
-     * @param RawMessage $message
+     * @param  RawMessage  $message
      */
     protected function matches($message): bool
     {
-        if (RawMessage::class === $message::class) {
+        if ($message::class === RawMessage::class) {
             throw new \LogicException('Unable to test a message address on a RawMessage instance.');
         }
 
@@ -55,7 +54,7 @@ final class EmailAddressContains extends Constraint
     }
 
     /**
-     * @param RawMessage $message
+     * @param  RawMessage  $message
      */
     protected function failureDescription($message): string
     {

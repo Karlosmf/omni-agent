@@ -16,6 +16,4 @@ namespace Symfony\Component\Routing\Exception;
  *
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class NoConfigurationException extends ResourceNotFoundException
-{
-}
+class NoConfigurationException extends ResourceNotFoundException {}

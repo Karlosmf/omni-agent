@@ -8,8 +8,7 @@ class ChangeDefaultLayoutView extends UpgradeStep
 {
     public function handle(UpgradeCommand $console, \Closure $next)
     {
-        if($this->hasOldLayout())
-        {
+        if ($this->hasOldLayout()) {
             $console->line('<fg=#FB70A9;bg=black;options=bold,reverse> The Livewire default layout has changed. </>');
             $console->newLine();
 
@@ -20,7 +19,7 @@ class ChangeDefaultLayoutView extends UpgradeStep
                 'keep',
             ], 'migrate');
 
-            if($choice == 'keep') {
+            if ($choice == 'keep') {
                 $console->line('Keeping the old default layout...');
 
                 $this->publishConfigIfMissing($console);

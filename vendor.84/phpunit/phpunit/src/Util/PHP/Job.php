@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Util\PHP;
 
 /**
@@ -42,25 +45,27 @@ final readonly class Job
      * @var ?non-empty-string
      */
     private ?string $input;
+
     private bool $redirectErrors;
+
     private bool $requiresXdebug;
 
     /**
-     * @param non-empty-string       $code
-     * @param list<string>           $phpSettings
-     * @param array<string, string>  $environmentVariables
-     * @param list<non-empty-string> $arguments
-     * @param ?non-empty-string      $input
+     * @param  non-empty-string  $code
+     * @param  list<string>  $phpSettings
+     * @param  array<string, string>  $environmentVariables
+     * @param  list<non-empty-string>  $arguments
+     * @param  ?non-empty-string  $input
      */
     public function __construct(string $code, array $phpSettings = [], array $environmentVariables = [], array $arguments = [], ?string $input = null, bool $redirectErrors = false, bool $requiresXdebug = false)
     {
-        $this->code                 = $code;
-        $this->phpSettings          = $phpSettings;
+        $this->code = $code;
+        $this->phpSettings = $phpSettings;
         $this->environmentVariables = $environmentVariables;
-        $this->arguments            = $arguments;
-        $this->input                = $input;
-        $this->redirectErrors       = $redirectErrors;
-        $this->requiresXdebug       = $requiresXdebug;
+        $this->arguments = $arguments;
+        $this->input = $input;
+        $this->redirectErrors = $redirectErrors;
+        $this->requiresXdebug = $requiresXdebug;
     }
 
     /**
@@ -120,9 +125,9 @@ final readonly class Job
     }
 
     /**
-     * @throws PhpProcessException
-     *
      * @return non-empty-string
+     *
+     * @throws PhpProcessException
      */
     public function input(): string
     {

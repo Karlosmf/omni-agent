@@ -21,9 +21,9 @@ namespace League\Csv\Serializer;
 interface TypeCasting
 {
     /**
-     * @throws TypeCastingFailed
-     *
      * @return TValue
+     *
+     * @throws TypeCastingFailed
      */
     public function toVariable(mixed $value): mixed;
 

@@ -16,8 +16,8 @@ trait HasValues
     {
         $key = $this->resolveKey($key);
 
-        $main    = $this->key . '.' . $key;
-        $default = $this->default ? $this->default . '.' . $key : null;
+        $main = $this->key.'.'.$key;
+        $default = $this->default ? $this->default.'.'.$key : null;
 
         if ($this->default) {
             return $this->value($main, $default) ?? $this->value($this->default);

@@ -42,7 +42,7 @@ final class BorderHelper
 
     public static function serializeBorderPart(?BorderPart $borderPart): string
     {
-        if (null === $borderPart) {
+        if ($borderPart === null) {
             return '';
         }
 

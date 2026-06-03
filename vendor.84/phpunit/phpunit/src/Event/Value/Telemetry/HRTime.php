@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,10 +9,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\Telemetry;
 
-use function sprintf;
 use PHPUnit\Event\InvalidArgumentException;
+
+use function sprintf;
 
 /**
  * @immutable
@@ -20,6 +24,7 @@ use PHPUnit\Event\InvalidArgumentException;
 final readonly class HRTime
 {
     private int $seconds;
+
     private int $nanoseconds;
 
     /**
@@ -42,7 +47,7 @@ final readonly class HRTime
         $this->ensureNotNegative($nanoseconds, 'nanoseconds');
         $this->ensureNanoSecondsInRange($nanoseconds);
 
-        $this->seconds     = $seconds;
+        $this->seconds = $seconds;
         $this->nanoseconds = $nanoseconds;
     }
 
@@ -58,7 +63,7 @@ final readonly class HRTime
 
     public function duration(self $start): Duration
     {
-        $seconds     = $this->seconds - $start->seconds();
+        $seconds = $this->seconds - $start->seconds();
         $nanoseconds = $this->nanoseconds - $start->nanoseconds();
 
         if ($nanoseconds < 0) {

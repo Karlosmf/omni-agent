@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Metadata;
 
 /**
@@ -27,16 +30,16 @@ final readonly class RequiresSetting extends Metadata
     private string $value;
 
     /**
-     * @param int<0, 1>        $level
-     * @param non-empty-string $setting
-     * @param non-empty-string $value
+     * @param  int<0, 1>  $level
+     * @param  non-empty-string  $setting
+     * @param  non-empty-string  $value
      */
     protected function __construct(int $level, string $setting, string $value)
     {
         parent::__construct($level);
 
         $this->setting = $setting;
-        $this->value   = $value;
+        $this->value = $value;
     }
 
     public function isRequiresSetting(): true

@@ -14,14 +14,14 @@ use Livewire\Attributes\Locked;
 trait InteractsWithRecord
 {
     #[Locked]
-    public Model | int | string | null $record;
+    public Model|int|string|null $record;
 
     public function mountCanAuthorizeAccess(): void
     {
         abort_unless(static::canAccess(['record' => $this->getRecord()]), 403);
     }
 
-    protected function resolveRecord(int | string $key): Model
+    protected function resolveRecord(int|string $key): Model
     {
         $this->mountParentRecord();
 
@@ -57,7 +57,7 @@ trait InteractsWithRecord
         return filled($this->record);
     }
 
-    public function getRecordTitle(): string | Htmlable
+    public function getRecordTitle(): string|Htmlable
     {
         $resource = static::getResource();
 
@@ -138,7 +138,7 @@ trait InteractsWithRecord
     /**
      * @return Model|class-string<Model>|null
      */
-    protected function getMountedActionSchemaModel(): Model | string | null
+    protected function getMountedActionSchemaModel(): Model|string|null
     {
         return $this->getRecord();
     }

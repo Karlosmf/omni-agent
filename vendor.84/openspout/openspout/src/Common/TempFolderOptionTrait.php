@@ -15,7 +15,7 @@ trait TempFolderOptionTrait
 
     final public function setTempFolder(string $tempFolder): void
     {
-        if (!is_dir($tempFolder) || !is_writable($tempFolder)) {
+        if (! is_dir($tempFolder) || ! is_writable($tempFolder)) {
             throw new InvalidArgumentException("{$tempFolder} is not a writable folder");
         }
 
@@ -24,7 +24,7 @@ trait TempFolderOptionTrait
 
     final public function getTempFolder(): string
     {
-        if (!isset($this->tempFolder)) {
+        if (! isset($this->tempFolder)) {
             $this->setTempFolder(sys_get_temp_dir());
         }
 

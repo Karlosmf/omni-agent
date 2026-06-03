@@ -13,12 +13,12 @@ trait HasActions
     /**
      * @var array<Action | ActionGroup> | ActionGroup | Closure
      */
-    protected array | ActionGroup | Closure $actions = [];
+    protected array|ActionGroup|Closure $actions = [];
 
     /**
      * @param  array<Action | ActionGroup> | ActionGroup | Closure  $actions
      */
-    public function actions(array | ActionGroup | Closure $actions): static
+    public function actions(array|ActionGroup|Closure $actions): static
     {
         $this->actions = $actions;
 

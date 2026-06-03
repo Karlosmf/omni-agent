@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of phpDocumentor.
  *
@@ -42,11 +43,11 @@ class ArrayShape implements PseudoType
 
     public function underlyingType(): Type
     {
-        return new Array_(new Mixed_(), new ArrayKey());
+        return new Array_(new Mixed_, new ArrayKey);
     }
 
     public function __toString(): string
     {
-        return 'array{' . implode(', ', $this->items) . '}';
+        return 'array{'.implode(', ', $this->items).'}';
     }
 }

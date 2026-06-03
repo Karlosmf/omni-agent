@@ -26,8 +26,7 @@ final class NotTaggedControllerValueResolver implements ValueResolverInterface
 {
     public function __construct(
         private ContainerInterface $container,
-    ) {
-    }
+    ) {}
 
     public function resolve(Request $request, ArgumentMetadata $argument): array
     {
@@ -35,15 +34,15 @@ final class NotTaggedControllerValueResolver implements ValueResolverInterface
 
         if (\is_array($controller) && \is_callable($controller, true) && \is_string($controller[0])) {
             $controller = $controller[0].'::'.$controller[1];
-        } elseif (!\is_string($controller) || '' === $controller) {
+        } elseif (! \is_string($controller) || $controller === '') {
             return [];
         }
 
-        if ('\\' === $controller[0]) {
+        if ($controller[0] === '\\') {
             $controller = ltrim($controller, '\\');
         }
 
-        if (!$this->container->has($controller)) {
+        if (! $this->container->has($controller)) {
             $controller = (false !== $i = strrpos($controller, ':'))
                 ? substr($controller, 0, $i).strtolower(substr($controller, $i))
                 : $controller.'::__invoke';

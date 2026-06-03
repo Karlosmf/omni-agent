@@ -1,10 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace PhpParser\Node\Stmt;
 
 use PhpParser\Node\PropertyItem;
 
-require __DIR__ . '/../PropertyItem.php';
+require __DIR__.'/../PropertyItem.php';
 
 if (false) {
     /**
@@ -12,6 +14,5 @@ if (false) {
      *
      * @deprecated use \PhpParser\Node\PropertyItem instead.
      */
-    class PropertyProperty extends PropertyItem {
-    }
+    class PropertyProperty extends PropertyItem {}
 }

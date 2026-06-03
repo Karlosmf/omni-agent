@@ -24,7 +24,7 @@ Route::name('filament.')
             foreach ((empty($domains) ? [null] : $domains) as $domain) {
                 Route::domain($domain)
                     ->middleware($panel->getMiddleware())
-                    ->name("{$panelId}." . ((filled($domain) && (count($domains) > 1)) ? "{$domain}." : ''))
+                    ->name("{$panelId}.".((filled($domain) && (count($domains) > 1)) ? "{$domain}." : ''))
                     ->prefix($panel->getPath())
                     ->group(function () use ($panel, $hasTenancy, $tenantDomain, $tenantRoutePrefix, $tenantSlugAttribute): void {
                         foreach ($panel->getRoutes() as $routes) {
@@ -125,11 +125,11 @@ Route::name('filament.')
                                                 filled($tenantRoutePrefix) ?
                                                     "{$tenantRoutePrefix}/" :
                                                     ''
-                                            ) . ('{tenant' . (
+                                            ).('{tenant'.(
                                                 filled($tenantSlugAttribute) ?
                                                     ":{$tenantSlugAttribute}" :
                                                     ''
-                                            ) . '}') :
+                                            ).'}') :
                                             '',
                                     );
                                 }
@@ -178,11 +178,11 @@ Route::name('filament.')
                                         filled($tenantRoutePrefix) ?
                                             "{$tenantRoutePrefix}/" :
                                             ''
-                                    ) . '{tenant' . (
+                                    ).'{tenant'.(
                                         filled($tenantSlugAttribute) ?
                                             ":{$tenantSlugAttribute}" :
                                             ''
-                                    ) . '}',
+                                    ).'}',
                                 );
                             }
 

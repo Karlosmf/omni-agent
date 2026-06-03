@@ -9,7 +9,7 @@ use Livewire\Features\SupportRedirects\Redirector;
 
 class LogoutResponse implements Responsable
 {
-    public function toResponse($request): RedirectResponse | Redirector
+    public function toResponse($request): RedirectResponse|Redirector
     {
         return redirect()->to(
             Filament::hasLogin() ? Filament::getLoginUrl() : Filament::getUrl(),

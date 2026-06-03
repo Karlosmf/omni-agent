@@ -28,12 +28,12 @@ final class List_ extends Array_ implements PseudoType
 {
     public function underlyingType(): Type
     {
-        return new Array_();
+        return new Array_;
     }
 
     public function __construct(?Type $valueType = null)
     {
-        parent::__construct($valueType, new Integer());
+        parent::__construct($valueType, new Integer);
     }
 
     /**
@@ -45,6 +45,6 @@ final class List_ extends Array_ implements PseudoType
             return 'list';
         }
 
-        return 'list<' . $this->valueType . '>';
+        return 'list<'.$this->valueType.'>';
     }
 }

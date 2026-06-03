@@ -31,8 +31,7 @@ final class TypeCastingInfo
         public readonly string $targetName,
         public readonly ?string $targetMethodName,
         public readonly ?string $targetClassName,
-    ) {
-    }
+    ) {}
 
     public static function fromAccessor(ReflectionMethod|ReflectionProperty|ReflectionParameter $accessor): self
     {
@@ -46,7 +45,7 @@ final class TypeCastingInfo
     public static function fromMethod(ReflectionMethod $accessor): self
     {
         $accessor = $accessor->getParameters()[0] ?? null;
-        if (null === $accessor) {
+        if ($accessor === null) {
             throw new ValueError('The method must contain at least one parameter in its signature.');
         }
 
@@ -71,7 +70,7 @@ final class TypeCastingInfo
     public static function fromProperty(ReflectionProperty $accessor): self
     {
         $attributes = $accessor->getAttributes(MapCell::class, ReflectionAttribute::IS_INSTANCEOF);
-        $source = [] === $attributes ? $accessor->getName() : ($attributes[0]->newInstance()->column ?? $accessor->getName());
+        $source = $attributes === [] ? $accessor->getName() : ($attributes[0]->newInstance()->column ?? $accessor->getName());
 
         $className = $accessor->getDeclaringClass()->getName();
 
@@ -87,12 +86,12 @@ final class TypeCastingInfo
     private static function resolveSource(ReflectionFunctionAbstract $method): int|string
     {
         $attributes = $method->getAttributes(MapCell::class, ReflectionAttribute::IS_INSTANCEOF);
-        if ([] === $attributes) {
+        if ($attributes === []) {
             return self::getColumnName($method);
         }
 
         $name = $attributes[0]->newInstance()->column;
-        if (null !== $name) {
+        if ($name !== null) {
             return $name;
         }
 
@@ -102,7 +101,7 @@ final class TypeCastingInfo
     private static function getColumnName(ReflectionFunctionAbstract $method): string
     {
         $name = $method->getName();
-        if (!str_starts_with($name, 'set')) {
+        if (! str_starts_with($name, 'set')) {
             throw new ValueError('The method `'.$name.'` has no Mapping information and does not start with `set`.');
         }
 

@@ -38,7 +38,7 @@ class NodeProviderCollection extends AbstractCollection
     /**
      * Re-constructs the object from its serialized form
      *
-     * @param string $serialized The serialized PHP string to unserialize into a UuidInterface instance
+     * @param  string  $serialized  The serialized PHP string to unserialize into a UuidInterface instance
      */
     public function unserialize($serialized): void
     {

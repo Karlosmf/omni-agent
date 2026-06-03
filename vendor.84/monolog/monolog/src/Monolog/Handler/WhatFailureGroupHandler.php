@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -23,7 +25,7 @@ use Throwable;
 class WhatFailureGroupHandler extends GroupHandler
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function handle(LogRecord $record): bool
     {
@@ -39,11 +41,11 @@ class WhatFailureGroupHandler extends GroupHandler
             }
         }
 
-        return false === $this->bubble;
+        return $this->bubble === false;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function handleBatch(array $records): void
     {
@@ -72,7 +74,7 @@ class WhatFailureGroupHandler extends GroupHandler
         foreach ($this->handlers as $handler) {
             try {
                 $handler->close();
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 // What failure?
             }
         }

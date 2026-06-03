@@ -33,7 +33,7 @@ class FilterAction extends Action
 
         $this->fillForm(function (Component $livewire): ?array {
             if (! property_exists($livewire, 'filters')) {
-                throw new LogicException('The [' . $livewire::class . '] page must implement the [' . Dashboard\Concerns\HasFilters::class . '] trait.');
+                throw new LogicException('The ['.$livewire::class.'] page must implement the ['.Dashboard\Concerns\HasFilters::class.'] trait.');
             }
 
             return $livewire->filters;

@@ -10,7 +10,7 @@ trait CanStripCharactersFromState
     /**
      * @var string | array<string> | Closure | null
      */
-    protected string | array | Closure | null $stripCharacters = null;
+    protected string|array|Closure|null $stripCharacters = null;
 
     /**
      * @var array<string>
@@ -20,7 +20,7 @@ trait CanStripCharactersFromState
     /**
      * @param  string | array<string> | Closure | null  $characters
      */
-    public function stripCharacters(string | array | Closure | null $characters): static
+    public function stripCharacters(string|array|Closure|null $characters): static
     {
         $this->stripCharacters = $characters;
 

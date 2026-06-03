@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Logging\TestDox;
 
 use function sprintf;
@@ -19,18 +22,18 @@ use function sprintf;
 final readonly class PlainTextRenderer
 {
     /**
-     * @param array<string, TestResultCollection> $tests
+     * @param  array<string, TestResultCollection>  $tests
      */
     public function render(array $tests): string
     {
         $buffer = '';
 
         foreach ($tests as $prettifiedClassName => $_tests) {
-            $buffer .= $prettifiedClassName . "\n";
+            $buffer .= $prettifiedClassName."\n";
 
             foreach ($this->reduce($_tests) as $prettifiedMethodName => $outcome) {
                 $buffer .= sprintf(
-                    ' [%s] %s' . "\n",
+                    ' [%s] %s'."\n",
                     $outcome,
                     $prettifiedMethodName,
                 );
@@ -61,7 +64,7 @@ final readonly class PlainTextRenderer
                 $success = false;
             }
 
-            if (!isset($result[$prettifiedMethodName])) {
+            if (! isset($result[$prettifiedMethodName])) {
                 $result[$prettifiedMethodName] = $success ? 'x' : ' ';
 
                 continue;

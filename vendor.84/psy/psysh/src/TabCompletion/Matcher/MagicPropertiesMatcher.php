@@ -57,7 +57,7 @@ class MagicPropertiesMatcher extends AbstractContextAwareMatcher
     private function getInstanceMatches(array $tokens, string $input): array
     {
         $objectToken = \array_pop($tokens);
-        if (!\is_array($objectToken)) {
+        if (! \is_array($objectToken)) {
             return [];
         }
         $objectName = \str_replace('$', '', $objectToken[1]);
@@ -68,7 +68,7 @@ class MagicPropertiesMatcher extends AbstractContextAwareMatcher
             return [];
         }
 
-        if (!\is_object($object)) {
+        if (! \is_object($object)) {
             return [];
         }
 

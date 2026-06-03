@@ -15,6 +15,4 @@ namespace League\CommonMark\Extension\TableOfContents\Node;
 
 use League\CommonMark\Extension\CommonMark\Node\Block\ListBlock;
 
-final class TableOfContents extends ListBlock
-{
-}
+final class TableOfContents extends ListBlock {}

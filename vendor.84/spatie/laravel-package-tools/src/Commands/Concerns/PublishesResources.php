@@ -39,7 +39,7 @@ trait PublishesResources
             $name = str_replace('-', ' ', $tag);
             $this->comment("Publishing {$name}...");
 
-            $this->callSilently("vendor:publish", [
+            $this->callSilently('vendor:publish', [
                 '--tag' => "{$this->package->shortName()}-{$tag}",
             ]);
         }

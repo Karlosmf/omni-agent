@@ -21,8 +21,7 @@ final class TextNode implements NodeInterface
     public function __construct(
         private NodeInterface $parentNode,
         private string $text,
-    ) {
-    }
+    ) {}
 
     public function addChild(NodeInterface $node): void
     {

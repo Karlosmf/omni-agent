@@ -11,6 +11,7 @@
 
 namespace Psy;
 
+use Psr\Log\LoggerInterface;
 use Psy\Logger\CallbackLogger;
 
 /**
@@ -21,11 +22,12 @@ use Psy\Logger\CallbackLogger;
 class ShellLogger
 {
     private $logger;
+
     private array $levels;
 
     /**
-     * @param \Psr\Log\LoggerInterface|CallbackLogger $logger Logger instance
-     * @param array                                   $levels Log levels for each event type (input, command, execute)
+     * @param  LoggerInterface|CallbackLogger  $logger  Logger instance
+     * @param  array  $levels  Log levels for each event type (input, command, execute)
      */
     public function __construct($logger, array $levels)
     {
@@ -36,11 +38,11 @@ class ShellLogger
     /**
      * Log user input.
      *
-     * @param string $input User code input
+     * @param  string  $input  User code input
      */
     public function logInput(string $input): void
     {
-        if (!$this->isInputDisabled()) {
+        if (! $this->isInputDisabled()) {
             $this->logger->log($this->levels['input'], 'PsySH input', [
                 'input' => $input,
             ]);
@@ -50,11 +52,11 @@ class ShellLogger
     /**
      * Log a PsySH command.
      *
-     * @param string $command Command string (e.g., "ls", "doc array_map")
+     * @param  string  $command  Command string (e.g., "ls", "doc array_map")
      */
     public function logCommand(string $command): void
     {
-        if (!$this->isCommandDisabled()) {
+        if (! $this->isCommandDisabled()) {
             $this->logger->log($this->levels['command'], 'PsySH command', [
                 'command' => $command,
             ]);
@@ -64,11 +66,11 @@ class ShellLogger
     /**
      * Log code about to be executed.
      *
-     * @param string $code Cleaned PHP code
+     * @param  string  $code  Cleaned PHP code
      */
     public function logExecute(string $code): void
     {
-        if (!$this->isExecuteDisabled()) {
+        if (! $this->isExecuteDisabled()) {
             $this->logger->log($this->levels['execute'], 'PsySH execute', [
                 'code' => $code,
             ]);

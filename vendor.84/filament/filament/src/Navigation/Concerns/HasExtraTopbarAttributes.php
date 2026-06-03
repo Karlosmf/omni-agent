@@ -15,7 +15,7 @@ trait HasExtraTopbarAttributes
     /**
      * @param  array<mixed> | Closure  $attributes
      */
-    public function extraTopbarAttributes(array | Closure $attributes, bool $merge = false): static
+    public function extraTopbarAttributes(array|Closure $attributes, bool $merge = false): static
     {
         if ($merge) {
             $this->extraTopbarAttributes[] = $attributes;

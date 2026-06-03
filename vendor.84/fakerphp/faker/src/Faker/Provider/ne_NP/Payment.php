@@ -285,7 +285,7 @@ class Payment extends \Faker\Provider\Payment
     {
         $suffix = ' Laghubitta Bittiya Sanstha';
 
-        return static::randomElement(static::$microFinances) . $suffix;
+        return static::randomElement(static::$microFinances).$suffix;
     }
 
     /**

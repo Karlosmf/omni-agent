@@ -22,7 +22,7 @@ final class WorkerCrashedException extends RuntimeException
         }
 
         $error = sprintf(
-            'The test "%s%s" failed.' . "\n\nExit Code: %s(%s)\n\nWorking directory: %s",
+            'The test "%s%s" failed.'."\n\nExit Code: %s(%s)\n\nWorking directory: %s",
             $envs,
             $test,
             (string) $process->getExitCode(),

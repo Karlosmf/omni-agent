@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
+
 namespace ParagonIE\ConstantTime;
 
 use SensitiveParameter;
 use TypeError;
+
 use function strlen;
 use function substr;
 
@@ -35,8 +38,6 @@ use function substr;
  *
  * Binary string operators that don't choke on
  * mbstring.func_overload
- *
- * @package ParagonIE\ConstantTime
  */
 abstract class Binary
 {
@@ -44,9 +45,6 @@ abstract class Binary
      * Safe string length
      *
      * @ref mbstring.func_overload
-     *
-     * @param string $str
-     * @return int
      */
     public static function safeStrlen(
         #[SensitiveParameter]
@@ -61,10 +59,6 @@ abstract class Binary
      * @ref mbstring.func_overload
      *
      * @staticvar boolean $exists
-     * @param string $str
-     * @param int $start
-     * @param ?int $length
-     * @return string
      *
      * @throws TypeError
      */

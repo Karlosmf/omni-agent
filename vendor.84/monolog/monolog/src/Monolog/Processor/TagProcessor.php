@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -24,7 +26,7 @@ class TagProcessor implements ProcessorInterface
     private array $tags;
 
     /**
-     * @param string[] $tags
+     * @param  string[]  $tags
      */
     public function __construct(array $tags = [])
     {
@@ -32,7 +34,7 @@ class TagProcessor implements ProcessorInterface
     }
 
     /**
-     * @param  string[] $tags
+     * @param  string[]  $tags
      * @return $this
      */
     public function addTags(array $tags = []): self
@@ -43,7 +45,7 @@ class TagProcessor implements ProcessorInterface
     }
 
     /**
-     * @param  string[] $tags
+     * @param  string[]  $tags
      * @return $this
      */
     public function setTags(array $tags = []): self
@@ -54,7 +56,7 @@ class TagProcessor implements ProcessorInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __invoke(LogRecord $record): LogRecord
     {

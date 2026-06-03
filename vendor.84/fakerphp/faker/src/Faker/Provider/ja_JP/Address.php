@@ -31,6 +31,7 @@ class Address extends \Faker\Provider\Address
         'イエメン',
         'ザンビア', 'ジンバブエ',
     ];
+
     protected static $prefecture = [
         '北海道',
         '青森県', '岩手県', '宮城県', '秋田県', '山形県', '福島県',
@@ -42,26 +43,34 @@ class Address extends \Faker\Provider\Address
         '福岡県', '佐賀県', '長崎県', '熊本県', '大分県', '宮崎県', '鹿児島県',
         '沖縄県',
     ];
+
     protected static $ward = ['中央', '北', '東', '南', '西'];
 
     protected static $citySuffix = ['市'];
+
     protected static $wardSuffix = ['区'];
+
     protected static $streetSuffix = ['町'];
 
     protected static $postcodeFormats = ['{{postcode1}}{{postcode2}}'];
+
     protected static $cityFormats = [
         '{{lastName}}{{citySuffix}}',
     ];
+
     protected static $streetNameFormats = [
         '{{lastName}}{{streetSuffix}}',
     ];
+
     protected static $streetAddressFormats = [
         '{{streetName}}{{lastName}}{{areaNumber}}-{{areaNumber}}-{{areaNumber}}',
     ];
+
     protected static $addressFormats = [
         '{{postcode}}  {{prefecture}}{{city}}{{ward}}{{streetAddress}}',
         '{{postcode}}  {{prefecture}}{{city}}{{ward}}{{streetAddress}} {{secondaryAddress}}',
     ];
+
     protected static $secondaryAddressFormats = [
         'ハイツ{{lastName}}{{buildingNumber}}号',
         'コーポ{{lastName}}{{buildingNumber}}号',
@@ -91,7 +100,7 @@ class Address extends \Faker\Provider\Address
         $postcode1 = static::postcode1();
         $postcode2 = static::postcode2();
 
-        return $postcode1 . $postcode2;
+        return $postcode1.$postcode2;
     }
 
     /**
@@ -110,7 +119,7 @@ class Address extends \Faker\Provider\Address
         $ward = static::randomElement(static::$ward);
         $suffix = static::randomElement(static::$wardSuffix);
 
-        return $ward . $suffix;
+        return $ward.$suffix;
     }
 
     /**

@@ -13,6 +13,10 @@ declare(strict_types=1);
 
 namespace League\Uri\IPv4;
 
+use const FILTER_FLAG_IPV4;
+use const FILTER_FLAG_IPV6;
+use const FILTER_VALIDATE_IP;
+
 use BackedEnum;
 use League\Uri\Exceptions\MissingFeature;
 use League\Uri\FeatureDetection;
@@ -29,10 +33,6 @@ use function preg_match;
 use function str_ends_with;
 use function substr;
 
-use const FILTER_FLAG_IPV4;
-use const FILTER_FLAG_IPV6;
-use const FILTER_VALIDATE_IP;
-
 final class Converter
 {
     private const REGEXP_IPV4_HOST = '/
@@ -44,6 +44,7 @@ final class Converter
         )
         ^(?:(?&ipv4_part)\.){0,3}(?&ipv4_part)\.?$
     /x';
+
     private const REGEXP_IPV4_NUMBER_PER_BASE = [
         '/^0x(?<number>[[:xdigit:]]*)$/' => 16,
         '/^0(?<number>[0-7]*)$/' => 8,
@@ -51,6 +52,7 @@ final class Converter
     ];
 
     private const IPV6_6TO4_PREFIX = '2002:';
+
     private const IPV4_MAPPED_PREFIX = '::ffff:';
 
     private readonly mixed $maxIPv4Number;
@@ -66,7 +68,7 @@ final class Converter
      */
     public static function fromGMP(): self
     {
-        return new self(new GMPCalculator());
+        return new self(new GMPCalculator);
     }
 
     /**
@@ -74,7 +76,7 @@ final class Converter
      */
     public static function fromBCMath(): self
     {
-        return new self(new BCMathCalculator());
+        return new self(new BCMathCalculator);
     }
 
     /**
@@ -82,7 +84,7 @@ final class Converter
      */
     public static function fromNative(): self
     {
-        return new self(new NativeCalculator());
+        return new self(new NativeCalculator);
     }
 
     /**
@@ -109,25 +111,25 @@ final class Converter
             $host = (string) $host->value;
         }
 
-        if (null === $host) {
+        if ($host === null) {
             return false;
         }
 
-        if (null !== $this->toDecimal($host)) {
+        if ($this->toDecimal($host) !== null) {
             return true;
         }
 
         $host = (string) $host;
-        if (false === filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+        if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
             return false;
         }
 
         $ipAddress = strtolower((string) inet_ntop((string) inet_pton($host)));
         if (str_starts_with($ipAddress, self::IPV4_MAPPED_PREFIX)) {
-            return false !== filter_var(substr($ipAddress, 7), FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
+            return filter_var(substr($ipAddress, 7), FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false;
         }
 
-        if (!str_starts_with($ipAddress, self::IPV6_6TO4_PREFIX)) {
+        if (! str_starts_with($ipAddress, self::IPV6_6TO4_PREFIX)) {
             return false;
         }
 
@@ -138,13 +140,13 @@ final class Converter
 
         $ipAddress = long2ip((int) hexdec($hexParts[0]) * 65536 + (int) hexdec($hexParts[1]));
 
-        return '' !== ''.$ipAddress;
+        return ''.$ipAddress !== '';
     }
 
     public function toIPv6Using6to4(BackedEnum|Stringable|string|null $host): ?string
     {
         $host = $this->toDecimal($host);
-        if (null === $host) {
+        if ($host === null) {
             return null;
         }
 
@@ -160,7 +162,7 @@ final class Converter
     public function toIPv6UsingMapping(BackedEnum|Stringable|string|null $host): ?string
     {
         $host = $this->toDecimal($host);
-        if (null === $host) {
+        if ($host === null) {
             return null;
         }
 
@@ -208,7 +210,7 @@ final class Converter
         $host = (string) $host;
         if (str_starts_with($host, '[') && str_ends_with($host, ']')) {
             $host = substr($host, 1, -1);
-            if (false === filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
                 return null;
             }
 
@@ -217,7 +219,7 @@ final class Converter
                 return substr($ipAddress, 7);
             }
 
-            if (!str_starts_with($ipAddress, self::IPV6_6TO4_PREFIX)) {
+            if (! str_starts_with($ipAddress, self::IPV6_6TO4_PREFIX)) {
                 return null;
             }
 
@@ -229,7 +231,7 @@ final class Converter
             };
         }
 
-        if (1 !== preg_match(self::REGEXP_IPV4_HOST, $host)) {
+        if (preg_match(self::REGEXP_IPV4_HOST, $host) !== 1) {
             return null;
         }
 
@@ -240,7 +242,7 @@ final class Converter
         $numbers = [];
         foreach (explode('.', $host) as $label) {
             $number = $this->labelToNumber($label);
-            if (null === $number) {
+            if ($number === null) {
                 return null;
             }
 
@@ -277,17 +279,17 @@ final class Converter
     private function labelToNumber(string $label): mixed
     {
         foreach (self::REGEXP_IPV4_NUMBER_PER_BASE as $regexp => $base) {
-            if (1 !== preg_match($regexp, $label, $matches)) {
+            if (preg_match($regexp, $label, $matches) !== 1) {
                 continue;
             }
 
             $number = ltrim($matches['number'], '0');
-            if ('' === $number) {
+            if ($number === '') {
                 return 0;
             }
 
             $number = $this->calculator->baseConvert($number, $base);
-            if (0 <= $this->calculator->compare($number, 0) && 0 >= $this->calculator->compare($number, $this->maxIPv4Number)) {
+            if ($this->calculator->compare($number, 0) >= 0 && $this->calculator->compare($number, $this->maxIPv4Number) <= 0) {
                 return $number;
             }
         }
@@ -300,7 +302,7 @@ final class Converter
      *
      * @see https://url.spec.whatwg.org/#concept-ipv4-parser
      *
-     * @param mixed $ipAddress the number representation of the IPV4address
+     * @param  mixed  $ipAddress  the number representation of the IPV4address
      */
     private function long2Ip(mixed $ipAddress): string
     {

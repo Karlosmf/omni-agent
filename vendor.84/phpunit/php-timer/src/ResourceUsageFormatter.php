@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-timer.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\Timer;
 
 use function is_float;
@@ -39,13 +42,13 @@ final class ResourceUsageFormatter
      */
     public function resourceUsageSinceStartOfRequest(): string
     {
-        if (!isset($_SERVER['REQUEST_TIME_FLOAT'])) {
+        if (! isset($_SERVER['REQUEST_TIME_FLOAT'])) {
             throw new TimeSinceStartOfRequestNotAvailableException(
                 'Cannot determine time at which the request started because $_SERVER[\'REQUEST_TIME_FLOAT\'] is not available',
             );
         }
 
-        if (!is_float($_SERVER['REQUEST_TIME_FLOAT'])) {
+        if (! is_float($_SERVER['REQUEST_TIME_FLOAT'])) {
             throw new TimeSinceStartOfRequestNotAvailableException(
                 'Cannot determine time at which the request started because $_SERVER[\'REQUEST_TIME_FLOAT\'] is not of type float',
             );
@@ -67,7 +70,7 @@ final class ResourceUsageFormatter
         }
 
         // @codeCoverageIgnoreStart
-        return $bytes . ' byte' . ($bytes !== 1 ? 's' : '');
+        return $bytes.' byte'.($bytes !== 1 ? 's' : '');
         // @codeCoverageIgnoreEnd
     }
 }

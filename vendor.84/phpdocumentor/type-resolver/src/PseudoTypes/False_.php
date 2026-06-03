@@ -28,7 +28,7 @@ final class False_ extends Boolean implements PseudoType
 {
     public function underlyingType(): Type
     {
-        return new Boolean();
+        return new Boolean;
     }
 
     public function __toString(): string

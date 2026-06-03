@@ -21,9 +21,8 @@ class NotLocaleAwareException extends BaseInvalidArgumentException implements In
     /**
      * Constructor.
      *
-     * @param mixed          $object
-     * @param int            $code
-     * @param Throwable|null $previous
+     * @param  mixed  $object
+     * @param  int  $code
      */
     public function __construct($object, $code = 0, ?Throwable $previous = null)
     {

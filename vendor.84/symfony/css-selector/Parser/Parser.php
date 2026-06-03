@@ -31,7 +31,7 @@ class Parser implements ParserInterface
 
     public function __construct(?Tokenizer $tokenizer = null)
     {
-        $this->tokenizer = $tokenizer ?? new Tokenizer();
+        $this->tokenizer = $tokenizer ?? new Tokenizer;
     }
 
     public function parse(string $source): array
@@ -45,7 +45,7 @@ class Parser implements ParserInterface
     /**
      * Parses the arguments for ":nth-child()" and friends.
      *
-     * @param Token[] $tokens
+     * @param  Token[]  $tokens
      *
      * @throws SyntaxErrorException
      */
@@ -60,7 +60,7 @@ class Parser implements ParserInterface
         $joined = trim(implode('', array_map(fn (Token $token) => $token->getValue(), $tokens)));
 
         $int = function ($string) {
-            if (!is_numeric($string)) {
+            if (! is_numeric($string)) {
                 throw SyntaxErrorException::stringAsFunctionArgument();
             }
 
@@ -68,13 +68,13 @@ class Parser implements ParserInterface
         };
 
         switch (true) {
-            case 'odd' === $joined:
+            case $joined === 'odd':
                 return [2, 1];
-            case 'even' === $joined:
+            case $joined === 'even':
                 return [2, 0];
-            case 'n' === $joined:
+            case $joined === 'n':
                 return [1, 0];
-            case !str_contains($joined, 'n'):
+            case ! str_contains($joined, 'n'):
                 return [0, $int($joined)];
         }
 
@@ -82,7 +82,7 @@ class Parser implements ParserInterface
         $first = $split[0] ?? null;
 
         return [
-            $first ? ('-' === $first || '+' === $first ? $int($first.'1') : $int($first)) : 1,
+            $first ? ($first === '-' || $first === '+' ? $int($first.'1') : $int($first)) : 1,
             isset($split[1]) && $split[1] ? $int($split[1]) : 0,
         ];
     }
@@ -126,7 +126,7 @@ class Parser implements ParserInterface
                 break;
             }
 
-            if (null !== $pseudoElement) {
+            if ($pseudoElement !== null) {
                 throw SyntaxErrorException::pseudoElementFound($pseudoElement, 'not at the end of a selector');
             }
 
@@ -167,7 +167,7 @@ class Parser implements ParserInterface
                 break;
             }
 
-            if (null !== $pseudoElement) {
+            if ($pseudoElement !== null) {
                 throw SyntaxErrorException::pseudoElementFound($pseudoElement, 'not at the end of a selector');
             }
 
@@ -198,12 +198,12 @@ class Parser implements ParserInterface
                     continue;
                 }
 
-                if (!$stream->getPeek()->isDelimiter(['('])) {
+                if (! $stream->getPeek()->isDelimiter(['('])) {
                     $result = new Node\PseudoNode($result, $identifier);
-                    if ('Pseudo[Element[*]:scope]' === $result->__toString()) {
+                    if ($result->__toString() === 'Pseudo[Element[*]:scope]') {
                         $used = \count($stream->getUsed());
-                        if (!(2 === $used
-                           || 3 === $used && $stream->getUsed()[0]->isWhiteSpace()
+                        if (! ($used === 2
+                           || $used === 3 && $stream->getUsed()[0]->isWhiteSpace()
                            || $used >= 3 && $stream->getUsed()[$used - 3]->isDelimiter([','])
                            || $used >= 4
                                 && $stream->getUsed()[$used - 3]->isWhiteSpace()
@@ -212,13 +212,14 @@ class Parser implements ParserInterface
                             throw SyntaxErrorException::notAtTheStartOfASelector('scope');
                         }
                     }
+
                     continue;
                 }
 
                 $stream->getNext();
                 $stream->skipWhitespace();
 
-                if ('not' === strtolower($identifier)) {
+                if (strtolower($identifier) === 'not') {
                     if ($insideNegation) {
                         throw SyntaxErrorException::nestedNot();
                     }
@@ -226,29 +227,29 @@ class Parser implements ParserInterface
                     [$argument, $argumentPseudoElement] = $this->parseSimpleSelector($stream, true, true);
                     $next = $stream->getNext();
 
-                    if (null !== $argumentPseudoElement) {
+                    if ($argumentPseudoElement !== null) {
                         throw SyntaxErrorException::pseudoElementFound($argumentPseudoElement, 'inside ::not()');
                     }
 
-                    if (!$next->isDelimiter([')'])) {
+                    if (! $next->isDelimiter([')'])) {
                         throw SyntaxErrorException::unexpectedToken('")"', $next);
                     }
 
                     $result = new Node\NegationNode($result, $argument);
-                } elseif ('is' === strtolower($identifier)) {
+                } elseif (strtolower($identifier) === 'is') {
                     $selectors = $this->parseSelectorList($stream, true);
 
                     $next = $stream->getNext();
-                    if (!$next->isDelimiter([')'])) {
+                    if (! $next->isDelimiter([')'])) {
                         throw SyntaxErrorException::unexpectedToken('")"', $next);
                     }
 
                     $result = new Node\MatchingNode($result, $selectors);
-                } elseif ('where' === strtolower($identifier)) {
+                } elseif (strtolower($identifier) === 'where') {
                     $selectors = $this->parseSelectorList($stream, true);
 
                     $next = $stream->getNext();
-                    if (!$next->isDelimiter([')'])) {
+                    if (! $next->isDelimiter([')'])) {
                         throw SyntaxErrorException::unexpectedToken('")"', $next);
                     }
 
@@ -274,7 +275,7 @@ class Parser implements ParserInterface
                         }
                     }
 
-                    if (!$arguments) {
+                    if (! $arguments) {
                         throw SyntaxErrorException::unexpectedToken('at least one argument', $next);
                     }
 
@@ -323,7 +324,7 @@ class Parser implements ParserInterface
         $stream->skipWhitespace();
         $attribute = $stream->getNextIdentifierOrStar();
 
-        if (null === $attribute && !$stream->getPeek()->isDelimiter(['|'])) {
+        if ($attribute === null && ! $stream->getPeek()->isDelimiter(['|'])) {
             throw SyntaxErrorException::unexpectedToken('"|"', $stream->getPeek());
         }
 
@@ -343,7 +344,7 @@ class Parser implements ParserInterface
             $namespace = $operator = null;
         }
 
-        if (null === $operator) {
+        if ($operator === null) {
             $stream->skipWhitespace();
             $next = $stream->getNext();
 
@@ -369,14 +370,14 @@ class Parser implements ParserInterface
             $value = new Token(Token::TYPE_STRING, (string) $value->getValue(), $value->getPosition());
         }
 
-        if (!($value->isIdentifier() || $value->isString())) {
+        if (! ($value->isIdentifier() || $value->isString())) {
             throw SyntaxErrorException::unexpectedToken('string or identifier', $value);
         }
 
         $stream->skipWhitespace();
         $next = $stream->getNext();
 
-        if (!$next->isDelimiter([']'])) {
+        if (! $next->isDelimiter([']'])) {
             throw SyntaxErrorException::unexpectedToken('"]"', $next);
         }
 

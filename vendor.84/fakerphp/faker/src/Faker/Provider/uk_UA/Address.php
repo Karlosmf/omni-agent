@@ -5,12 +5,17 @@ namespace Faker\Provider\uk_UA;
 class Address extends \Faker\Provider\Address
 {
     protected static $cityPrefix = ['місто'];
+
     protected static $regionSuffix = ['область'];
+
     protected static $streetPrefix = [
         'вул.', 'пров.', 'пл.', 'просп.',
     ];
+
     protected static $buildingNumber = ['%#'];
+
     protected static $postcode = ['#####'];
+
     protected static $country = [
         'Афганістан',
         'Албанія',

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -23,10 +25,13 @@ use Monolog\LogRecord;
 class SyslogFormatter extends LineFormatter
 {
     private const SYSLOG_FACILITY_USER = 1;
+
     private const FORMAT = "<%extra.priority%>1 %datetime% %extra.hostname% %extra.app-name% %extra.procid% %channel% %extra.structured-data% %level_name%: %message% %context% %extra%\n";
+
     private const NILVALUE = '-';
 
     private string $hostname;
+
     private int $procid;
 
     public function __construct(private string $applicationName = self::NILVALUE)

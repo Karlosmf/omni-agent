@@ -23,9 +23,6 @@ class ExecutionLoggingListener extends AbstractListener
 {
     private ShellLogger $logger;
 
-    /**
-     * @param ShellLogger $logger
-     */
     public function __construct(ShellLogger $logger)
     {
         $this->logger = $logger;

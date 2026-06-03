@@ -24,13 +24,12 @@ namespace Symfony\Component\CssSelector\Node;
 class SpecificityAdjustmentNode extends AbstractNode
 {
     /**
-     * @param array<NodeInterface> $arguments
+     * @param  array<NodeInterface>  $arguments
      */
     public function __construct(
         public readonly NodeInterface $selector,
         public readonly array $arguments = [],
-    ) {
-    }
+    ) {}
 
     public function getSpecificity(): Specificity
     {

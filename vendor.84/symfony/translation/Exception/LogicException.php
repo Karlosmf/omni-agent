@@ -16,6 +16,4 @@ namespace Symfony\Component\Translation\Exception;
  *
  * @author Abdellatif Ait boudad <a.aitboudad@gmail.com>
  */
-class LogicException extends \LogicException implements ExceptionInterface
-{
-}
+class LogicException extends \LogicException implements ExceptionInterface {}

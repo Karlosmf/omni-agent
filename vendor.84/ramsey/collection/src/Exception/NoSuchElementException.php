@@ -19,6 +19,4 @@ use RuntimeException;
 /**
  * Thrown when attempting to access an element that does not exist.
  */
-class NoSuchElementException extends RuntimeException implements CollectionException
-{
-}
+class NoSuchElementException extends RuntimeException implements CollectionException {}

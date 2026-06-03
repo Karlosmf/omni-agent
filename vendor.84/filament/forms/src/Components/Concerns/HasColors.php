@@ -12,12 +12,12 @@ trait HasColors
     /**
      * @var array<string | array<int | string, string | int> | null> | Arrayable | Closure | null
      */
-    protected array | Arrayable | Closure | null $colors = null;
+    protected array|Arrayable|Closure|null $colors = null;
 
     /**
      * @param  array<string | array<int | string, string | int> | null> | Arrayable | Closure | null  $colors
      */
-    public function colors(array | Arrayable | Closure | null $colors): static
+    public function colors(array|Arrayable|Closure|null $colors): static
     {
         $this->colors = $colors;
 
@@ -27,7 +27,7 @@ trait HasColors
     /**
      * @return string | array<int | string, string | int> | null
      */
-    public function getColor(mixed $value): string | array | null
+    public function getColor(mixed $value): string|array|null
     {
         return $this->getColors()[$value] ?? null;
     }
@@ -48,7 +48,7 @@ trait HasColors
             filled($enum = $this->getEnum()) &&
             is_a($enum, ColorInterface::class, allow_string: true)
         ) {
-            return array_reduce($enum::cases(), function (array $carry, ColorInterface & UnitEnum $case): array {
+            return array_reduce($enum::cases(), function (array $carry, ColorInterface&UnitEnum $case): array {
                 $carry[$case->value ?? $case->name] = $case->getColor();
 
                 return $carry;

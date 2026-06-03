@@ -21,7 +21,7 @@ use League\CommonMark\Node\Node;
 interface ChildNodeRendererInterface
 {
     /**
-     * @param Node[] $nodes
+     * @param  Node[]  $nodes
      */
     public function renderNodes(iterable $nodes): string;
 

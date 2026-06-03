@@ -41,18 +41,26 @@ use Psy\CodeCleaner;
 class ImplicitUsePass extends CodeCleanerPass
 {
     private ?array $shortNameMap = null;
+
     private array $implicitUses = [];
+
     private array $seenNames = [];
+
     private array $existingAliases = [];
+
     private array $includeNamespaces = [];
+
     private array $excludeNamespaces = [];
+
     private ?string $currentNamespace = null;
+
     private ?CodeCleaner $cleaner = null;
+
     private ?PrettyPrinter $printer = null;
 
     /**
-     * @param array            $config  Configuration array with 'includeNamespaces' and/or 'excludeNamespaces'
-     * @param CodeCleaner|null $cleaner CodeCleaner instance for logging
+     * @param  array  $config  Configuration array with 'includeNamespaces' and/or 'excludeNamespaces'
+     * @param  CodeCleaner|null  $cleaner  CodeCleaner instance for logging
      */
     public function __construct(array $config = [], ?CodeCleaner $cleaner = null)
     {
@@ -94,7 +102,7 @@ class ImplicitUsePass extends CodeCleanerPass
                     $this->collectNamesInNodes($node->stmts, $perNamespaceSeen, $perNamespaceAliases, $perNamespaceUses);
                 }
 
-                if (!empty($perNamespaceUses)) {
+                if (! empty($perNamespaceUses)) {
                     $this->logAddedUses($perNamespaceUses);
                     $node->stmts = \array_merge($this->createUseStatements($perNamespaceUses), $node->stmts ?? []);
                     $modified = true;
@@ -111,7 +119,7 @@ class ImplicitUsePass extends CodeCleanerPass
         }
 
         // Collect use statements and seen names for top-level namespace
-        if (!$hasNamespace) {
+        if (! $hasNamespace) {
             $this->currentNamespace = null;
             $topLevelAliases = [];
             $topLevelUses = [];
@@ -120,7 +128,7 @@ class ImplicitUsePass extends CodeCleanerPass
             $this->collectAliasesInNodes($nodes, $topLevelAliases);
             $this->collectNamesInNodes($nodes, $topLevelSeen, $topLevelAliases, $topLevelUses);
 
-            if (!empty($topLevelUses)) {
+            if (! empty($topLevelUses)) {
                 $this->logAddedUses($topLevelUses);
 
                 return \array_merge($this->createUseStatements($topLevelUses), $nodes);
@@ -133,8 +141,8 @@ class ImplicitUsePass extends CodeCleanerPass
     /**
      * Collect aliases in a set of nodes.
      *
-     * @param array $nodes   Array of Node objects
-     * @param array $aliases Associative array mapping lowercase alias names to true
+     * @param  array  $nodes  Array of Node objects
+     * @param  array  $aliases  Associative array mapping lowercase alias names to true
      */
     private function collectAliasesInNodes(array $nodes, array &$aliases): void
     {
@@ -156,20 +164,20 @@ class ImplicitUsePass extends CodeCleanerPass
     /**
      * Collect unqualified names in nodes.
      *
-     * @param array $nodes   Array of Node objects to traverse
-     * @param array $seen    Lowercase short names already processed
-     * @param array $aliases Lowercase alias names that exist in this namespace
-     * @param array $uses    Map of short names to FQNs for implicit use statements
+     * @param  array  $nodes  Array of Node objects to traverse
+     * @param  array  $seen  Lowercase short names already processed
+     * @param  array  $aliases  Lowercase alias names that exist in this namespace
+     * @param  array  $uses  Map of short names to FQNs for implicit use statements
      */
     private function collectNamesInNodes(array $nodes, array &$seen, array $aliases, array &$uses): void
     {
         foreach ($nodes as $node) {
-            if (!$node instanceof Node || $node instanceof Use_) {
+            if (! $node instanceof Node || $node instanceof Use_) {
                 continue;
             }
 
-            if ($node instanceof Name && !$node instanceof FullyQualifiedName) {
-                if (!$this->isQualified($node)) {
+            if ($node instanceof Name && ! $node instanceof FullyQualifiedName) {
+                if (! $this->isQualified($node)) {
                     $shortName = $this->getShortName($node);
                     $shortNameLower = \strtolower($shortName);
 
@@ -202,8 +210,7 @@ class ImplicitUsePass extends CodeCleanerPass
     /**
      * Create Use_ statement nodes from uses array.
      *
-     * @param array $uses Associative array mapping short names to FQNs
-     *
+     * @param  array  $uses  Associative array mapping short names to FQNs
      * @return Use_[]
      */
     private function createUseStatements(array $uses): array
@@ -222,9 +229,9 @@ class ImplicitUsePass extends CodeCleanerPass
     /**
      * Check if we should add an implicit use statement for this name in current context.
      *
-     * @param string $shortName      Original case short name
-     * @param string $shortNameLower Lowercase short name for comparison
-     * @param array  $aliases        Lowercase alias names that exist in this namespace
+     * @param  string  $shortName  Original case short name
+     * @param  string  $shortNameLower  Lowercase short name for comparison
+     * @param  array  $aliases  Lowercase alias names that exist in this namespace
      */
     private function shouldAddImplicitUseInContext(string $shortName, string $shortNameLower, array $aliases): bool
     {
@@ -239,7 +246,7 @@ class ImplicitUsePass extends CodeCleanerPass
         }
 
         // Rule 3: Exactly one matching short class/interface/trait in configured namespaces
-        if (!isset($this->shortNameMap[$shortNameLower]) || $this->shortNameMap[$shortNameLower] === null) {
+        if (! isset($this->shortNameMap[$shortNameLower]) || $this->shortNameMap[$shortNameLower] === null) {
             return false;
         }
 
@@ -276,14 +283,14 @@ class ImplicitUsePass extends CodeCleanerPass
         // First pass: collect all matching classes
         $candidatesByShortName = [];
         foreach ($allClasses as $fqn) {
-            if (!$this->shouldIncludeClass($fqn)) {
+            if (! $this->shouldIncludeClass($fqn)) {
                 continue;
             }
 
             $parts = \explode('\\', $fqn);
             $shortName = \strtolower(\end($parts));
 
-            if (!isset($candidatesByShortName[$shortName])) {
+            if (! isset($candidatesByShortName[$shortName])) {
                 $candidatesByShortName[$shortName] = [];
             }
             $candidatesByShortName[$shortName][] = $fqn;
@@ -300,7 +307,7 @@ class ImplicitUsePass extends CodeCleanerPass
     /**
      * Check if a class should be aliased based on namespace filters.
      *
-     * @param string $fqn Fully-qualified class name
+     * @param  string  $fqn  Fully-qualified class name
      */
     private function shouldIncludeClass(string $fqn): bool
     {
@@ -336,8 +343,7 @@ class ImplicitUsePass extends CodeCleanerPass
      *
      * Removes leading backslash and ensures trailing backslash.
      *
-     * @param string[] $namespaces
-     *
+     * @param  string[]  $namespaces
      * @return string[]
      */
     private function normalizeNamespaces(array $namespaces): array
@@ -378,7 +384,7 @@ class ImplicitUsePass extends CodeCleanerPass
     /**
      * Log added use statements to the CodeCleaner.
      *
-     * @param array $uses Associative array mapping short names to FQNs
+     * @param  array  $uses  Associative array mapping short names to FQNs
      */
     private function logAddedUses(array $uses): void
     {
@@ -387,7 +393,7 @@ class ImplicitUsePass extends CodeCleanerPass
         }
 
         if ($this->printer === null) {
-            $this->printer = new PrettyPrinter();
+            $this->printer = new PrettyPrinter;
         }
 
         $useStmts = $this->createUseStatements($uses);

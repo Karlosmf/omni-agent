@@ -19,7 +19,7 @@ use League\Config\ConfigurationInterface;
 /**
  * Creates URL-friendly strings based on the given string input
  */
-final class SlugNormalizer implements TextNormalizerInterface, ConfigurationAwareInterface
+final class SlugNormalizer implements ConfigurationAwareInterface, TextNormalizerInterface
 {
     /** @psalm-allow-private-mutation */
     private int $defaultMaxLength = 255;
@@ -37,7 +37,7 @@ final class SlugNormalizer implements TextNormalizerInterface, ConfigurationAwar
     public function normalize(string $text, array $context = []): string
     {
         // Add any requested prefix
-        $slug = ($context['prefix'] ?? '') . $text;
+        $slug = ($context['prefix'] ?? '').$text;
         // Trim whitespace
         $slug = \trim($slug);
         // Convert to lowercase

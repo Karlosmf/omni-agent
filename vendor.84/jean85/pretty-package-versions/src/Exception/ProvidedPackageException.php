@@ -8,6 +8,6 @@ class ProvidedPackageException extends \Exception implements VersionMissingExcep
 {
     public static function create(string $packageName): VersionMissingExceptionInterface
     {
-        return new self('Cannot retrieve a version for package ' . $packageName . ' since it is provided, probably a metapackage');
+        return new self('Cannot retrieve a version for package '.$packageName.' since it is provided, probably a metapackage');
     }
 }

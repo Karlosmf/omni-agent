@@ -22,12 +22,11 @@ use Symfony\Component\Console\Exception\CommandNotFoundException;
 class FactoryCommandLoader implements CommandLoaderInterface
 {
     /**
-     * @param callable[] $factories Indexed by command names
+     * @param  callable[]  $factories  Indexed by command names
      */
     public function __construct(
         private array $factories,
-    ) {
-    }
+    ) {}
 
     public function has(string $name): bool
     {
@@ -36,7 +35,7 @@ class FactoryCommandLoader implements CommandLoaderInterface
 
     public function get(string $name): Command
     {
-        if (!isset($this->factories[$name])) {
+        if (! isset($this->factories[$name])) {
             throw new CommandNotFoundException(\sprintf('Command "%s" does not exist.', $name));
         }
 

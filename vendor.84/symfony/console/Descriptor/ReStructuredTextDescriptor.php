@@ -24,14 +24,19 @@ class ReStructuredTextDescriptor extends Descriptor
 {
     // <h1>
     private string $partChar = '=';
+
     // <h2>
     private string $chapterChar = '-';
+
     // <h3>
     private string $sectionChar = '~';
+
     // <h4>
     private string $subsectionChar = '.';
+
     // <h5>
     private string $subsubsectionChar = '^';
+
     // <h6>
     private string $paragraphsChar = '"';
 
@@ -163,10 +168,10 @@ class ReStructuredTextDescriptor extends Descriptor
 
     private function getApplicationTitle(Application $application): string
     {
-        if ('UNKNOWN' === $application->getName()) {
+        if ($application->getName() === 'UNKNOWN') {
             return 'Console Tool';
         }
-        if ('UNKNOWN' !== $application->getVersion()) {
+        if ($application->getVersion() !== 'UNKNOWN') {
             return \sprintf('%s %s', $application->getName(), $application->getVersion());
         }
 
@@ -178,7 +183,7 @@ class ReStructuredTextDescriptor extends Descriptor
         $title = 'Commands';
         $this->write("\n\n$title\n".str_repeat($this->chapterChar, Helper::width($title))."\n\n");
         foreach ($this->visibleNamespaces as $namespace) {
-            if ('_global' === $namespace) {
+            if ($namespace === '_global') {
                 $commands = $application->all('');
                 $this->write('Global'."\n".str_repeat($this->sectionChar, Helper::width('Global'))."\n\n");
             } else {
@@ -199,7 +204,7 @@ class ReStructuredTextDescriptor extends Descriptor
         $chapterTitle = 'Table of Contents';
         $this->write("\n\n$chapterTitle\n".str_repeat($this->chapterChar, Helper::width($chapterTitle))."\n\n");
         foreach ($this->visibleNamespaces as $namespace) {
-            if ('_global' === $namespace) {
+            if ($namespace === '_global') {
                 $commands = $application->all('');
             } else {
                 $commands = $application->all($namespace);
@@ -227,7 +232,7 @@ class ReStructuredTextDescriptor extends Descriptor
         $nonDefaultOptions = [];
         foreach ($definition->getOptions() as $option) {
             // Skip global options.
-            if (!\in_array($option->getName(), $globalOptions, true)) {
+            if (! \in_array($option->getName(), $globalOptions, true)) {
                 $nonDefaultOptions[] = $option;
             }
         }
@@ -242,14 +247,14 @@ class ReStructuredTextDescriptor extends Descriptor
             try {
                 $namespaceCommands = $namespace['commands'];
                 foreach ($namespaceCommands as $key => $commandName) {
-                    if (!\array_key_exists($commandName, $commands)) {
+                    if (! \array_key_exists($commandName, $commands)) {
                         // If the array key does not exist, then this is an alias.
                         unset($namespaceCommands[$key]);
                     } elseif ($commands[$commandName]->isHidden()) {
                         unset($namespaceCommands[$key]);
                     }
                 }
-                if (!$namespaceCommands) {
+                if (! $namespaceCommands) {
                     // If the namespace contained only aliases or hidden commands, skip the namespace.
                     continue;
                 }

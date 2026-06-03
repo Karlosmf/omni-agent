@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * The rules for generating output in the serializer.
@@ -36,13 +37,13 @@ class OutputRules implements RulesInterface
      *
      * @var array
      */
-    protected $implicitNamespaces = array(
+    protected $implicitNamespaces = [
         self::NAMESPACE_HTML,
         self::NAMESPACE_SVG,
         self::NAMESPACE_MATHML,
         self::NAMESPACE_XML,
         self::NAMESPACE_XMLNS,
-    );
+    ];
 
     const IM_IN_HTML = 1;
 
@@ -67,7 +68,7 @@ class OutputRules implements RulesInterface
 
     private $xpath;
 
-    protected $nonBooleanAttributes = array(
+    protected $nonBooleanAttributes = [
         /*
         array(
             'nodeNamespace'=>'http://www.w3.org/1999/xhtml',
@@ -77,9 +78,9 @@ class OutputRules implements RulesInterface
             'attrName'=>'alt', 'attrName'=>array('title', 'alt'),
         ),
         */
-        array(
+        [
             'nodeNamespace' => 'http://www.w3.org/1999/xhtml',
-            'attrName' => array('href',
+            'attrName' => ['href',
                 'hreflang',
                 'http-equiv',
                 'icon',
@@ -149,17 +150,17 @@ class OutputRules implements RulesInterface
                 'align',
                 'alt',
                 'bgcolor',
-            ),
-        ),
-        array(
+            ],
+        ],
+        [
             'nodeNamespace' => 'http://www.w3.org/1999/xhtml',
             'xpath' => 'starts-with(local-name(), \'data-\')',
-        ),
-    );
+        ],
+    ];
 
     const DOCTYPE = '<!DOCTYPE html>';
 
-    public function __construct($output, $options = array())
+    public function __construct($output, $options = [])
     {
         if (isset($options['encode_entities'])) {
             $this->encode = $options['encode_entities'];
@@ -207,7 +208,7 @@ class OutputRules implements RulesInterface
     }
 
     /**
-     * @param \DOMElement $ele
+     * @param  \DOMElement  $ele
      */
     public function element($ele)
     {
@@ -222,16 +223,16 @@ class OutputRules implements RulesInterface
 
         // If we are in SVG or MathML there is special handling.
         // Using if/elseif instead of switch because it's faster in PHP.
-        if ('svg' == $name) {
+        if ($name == 'svg') {
             $this->outputMode = static::IM_IN_SVG;
             $name = Elements::normalizeSvgElement($name);
-        } elseif ('math' == $name) {
+        } elseif ($name == 'math') {
             $this->outputMode = static::IM_IN_MATHML;
         }
 
         $this->openTag($ele);
         // The tag is already self-closed (`<svg />` or `<math />`) in `openTag` if there are no child nodes.
-        $handledAsVoidTag = $this->outputMode !== static::IM_IN_HTML && !$ele->hasChildNodes();
+        $handledAsVoidTag = $this->outputMode !== static::IM_IN_HTML && ! $ele->hasChildNodes();
 
         if (Elements::isA($name, Elements::TEXT_RAW)) {
             foreach ($ele->childNodes as $child) {
@@ -248,13 +249,13 @@ class OutputRules implements RulesInterface
             }
 
             // Close out the SVG or MathML special handling.
-            if ('svg' == $name || 'math' == $name) {
+            if ($name == 'svg' || $name == 'math') {
                 $this->outputMode = static::IM_IN_HTML;
             }
         }
 
         // If not unary, add a closing tag.
-        if (!$handledAsVoidTag && !Elements::isA($name, Elements::VOID_TAG)) {
+        if (! $handledAsVoidTag && ! Elements::isA($name, Elements::VOID_TAG)) {
             $this->closeTag($ele);
         }
     }
@@ -262,7 +263,7 @@ class OutputRules implements RulesInterface
     /**
      * Write a text node.
      *
-     * @param \DOMText $ele The text node to write.
+     * @param  \DOMText  $ele  The text node to write.
      */
     public function text($ele)
     {
@@ -301,16 +302,16 @@ class OutputRules implements RulesInterface
     /**
      * Write the namespace attributes.
      *
-     * @param \DOMNode $ele The element being written.
+     * @param  \DOMNode  $ele  The element being written.
      */
     protected function namespaceAttrs($ele)
     {
-        if (!$this->xpath || $this->xpath->document !== $ele->ownerDocument) {
+        if (! $this->xpath || $this->xpath->document !== $ele->ownerDocument) {
             $this->xpath = new \DOMXPath($ele->ownerDocument);
         }
 
         foreach ($this->xpath->query('namespace::*[not(.=../../namespace::*)]', $ele) as $nsNode) {
-            if (!in_array($nsNode->nodeValue, $this->implicitNamespaces)) {
+            if (! in_array($nsNode->nodeValue, $this->implicitNamespaces)) {
                 $this->wr(' ')->wr($nsNode->nodeName)->wr('="')->wr($nsNode->nodeValue)->wr('"');
             }
         }
@@ -322,7 +323,7 @@ class OutputRules implements RulesInterface
      * Tags for HTML, MathML, and SVG are in the local name. Otherwise, use the
      * qualified name (8.3).
      *
-     * @param \DOMNode $ele The element being written.
+     * @param  \DOMNode  $ele  The element being written.
      */
     protected function openTag($ele)
     {
@@ -347,7 +348,7 @@ class OutputRules implements RulesInterface
     protected function attrs($ele)
     {
         // FIXME: Needs support for xml, xmlns, xlink, and namespaced elements.
-        if (!$ele->hasAttributes()) {
+        if (! $ele->hasAttributes()) {
             return $this;
         }
 
@@ -355,7 +356,7 @@ class OutputRules implements RulesInterface
         // value-less attributes.
         $map = $ele->attributes;
         $len = $map->length;
-        for ($i = 0; $i < $len; ++$i) {
+        for ($i = 0; $i < $len; $i++) {
             $node = $map->item($i);
             $val = $this->enc($node->value, true);
 
@@ -375,7 +376,7 @@ class OutputRules implements RulesInterface
 
             $this->wr(' ')->wr($name);
 
-            if ((isset($val) && '' !== $val) || $this->nonBooleanAttribute($node)) {
+            if ((isset($val) && $val !== '') || $this->nonBooleanAttribute($node)) {
                 $this->wr('="')->wr($val)->wr('"');
             }
         }
@@ -391,16 +392,16 @@ class OutputRules implements RulesInterface
             if (isset($rule['attNamespace']) && $rule['attNamespace'] !== $attr->namespaceURI) {
                 continue;
             }
-            if (isset($rule['nodeName']) && !is_array($rule['nodeName']) && $rule['nodeName'] !== $ele->localName) {
+            if (isset($rule['nodeName']) && ! is_array($rule['nodeName']) && $rule['nodeName'] !== $ele->localName) {
                 continue;
             }
-            if (isset($rule['nodeName']) && is_array($rule['nodeName']) && !in_array($ele->localName, $rule['nodeName'], true)) {
+            if (isset($rule['nodeName']) && is_array($rule['nodeName']) && ! in_array($ele->localName, $rule['nodeName'], true)) {
                 continue;
             }
-            if (isset($rule['attrName']) && !is_array($rule['attrName']) && $rule['attrName'] !== $attr->localName) {
+            if (isset($rule['attrName']) && ! is_array($rule['attrName']) && $rule['attrName'] !== $attr->localName) {
                 continue;
             }
-            if (isset($rule['attrName']) && is_array($rule['attrName']) && !in_array($attr->localName, $rule['attrName'], true)) {
+            if (isset($rule['attrName']) && is_array($rule['attrName']) && ! in_array($attr->localName, $rule['attrName'], true)) {
                 continue;
             }
             if (isset($rule['xpath'])) {
@@ -410,7 +411,7 @@ class OutputRules implements RulesInterface
                         $xp->registerNamespace($nsPrefix, $ns);
                     }
                 }
-                if (!$xp->evaluate($rule['xpath'], $attr)) {
+                if (! $xp->evaluate($rule['xpath'], $attr)) {
                     continue;
                 }
             }
@@ -423,7 +424,7 @@ class OutputRules implements RulesInterface
 
     private function getXPath(\DOMNode $node)
     {
-        if (!$this->xpath) {
+        if (! $this->xpath) {
             $this->xpath = new \DOMXPath($node->ownerDocument);
         }
 
@@ -436,7 +437,7 @@ class OutputRules implements RulesInterface
      * Tags for HTML, MathML, and SVG are in the local name. Otherwise, use the
      * qualified name (8.3).
      *
-     * @param \DOMNode $ele The element being written.
+     * @param  \DOMNode  $ele  The element being written.
      */
     protected function closeTag($ele)
     {
@@ -448,8 +449,7 @@ class OutputRules implements RulesInterface
     /**
      * Write to the output.
      *
-     * @param string $text The string to put into the output
-     *
+     * @param  string  $text  The string to put into the output
      * @return $this
      */
     protected function wr($text)
@@ -493,15 +493,14 @@ class OutputRules implements RulesInterface
      *
      * @todo Use the Entities class in php 5.3 to have html5 entities.
      *
-     * @param string $text      Text to encode.
-     * @param bool   $attribute True if we are encoding an attrubute, false otherwise.
-     *
+     * @param  string  $text  Text to encode.
+     * @param  bool  $attribute  True if we are encoding an attrubute, false otherwise.
      * @return string The encoded text.
      */
     protected function enc($text, $attribute = false)
     {
         // Escape the text rather than convert to named character references.
-        if (!$this->encode) {
+        if (! $this->encode) {
             return $this->escape($text, $attribute);
         }
 
@@ -531,8 +530,8 @@ class OutputRules implements RulesInterface
      *
      * @see http://www.w3.org/TR/2013/CR-html5-20130806/syntax.html#escapingString
      *
-     * @param string $text      Text to escape.
-     * @param bool   $attribute True if we are escaping an attrubute, false otherwise.
+     * @param  string  $text  Text to escape.
+     * @param  bool  $attribute  True if we are escaping an attrubute, false otherwise.
      */
     protected function escape($text, $attribute = false)
     {
@@ -540,18 +539,18 @@ class OutputRules implements RulesInterface
         // match the requirements of section 8.5. For example, it doesn't handle
         // non-breaking spaces.
         if ($attribute) {
-            $replace = array(
+            $replace = [
                 '"' => '&quot;',
                 '&' => '&amp;',
                 "\xc2\xa0" => '&nbsp;',
-            );
+            ];
         } else {
-            $replace = array(
+            $replace = [
                 '<' => '&lt;',
                 '>' => '&gt;',
                 '&' => '&amp;',
                 "\xc2\xa0" => '&nbsp;',
-            );
+            ];
         }
 
         return strtr($text, $replace);

@@ -15,7 +15,7 @@ namespace League\CommonMark\Output;
 
 use League\CommonMark\Node\Block\Document;
 
-class RenderedContent implements RenderedContentInterface, \Stringable
+class RenderedContent implements \Stringable, RenderedContentInterface
 {
     /** @psalm-readonly */
     private Document $document;
@@ -26,7 +26,7 @@ class RenderedContent implements RenderedContentInterface, \Stringable
     public function __construct(Document $document, string $content)
     {
         $this->document = $document;
-        $this->content  = $content;
+        $this->content = $content;
     }
 
     public function getDocument(): Document

@@ -23,6 +23,7 @@ class Presenter
     const VERBOSE = 1;
 
     private Cloner $cloner;
+
     private Dumper $dumper;
 
     private const IMPORTANT_EXCEPTIONS = [
@@ -34,20 +35,20 @@ class Presenter
     ];
 
     private const STYLES = [
-        'num'       => 'number',
-        'integer'   => 'integer',
-        'float'     => 'float',
-        'const'     => 'const',
-        'str'       => 'string',
-        'cchr'      => 'default',
-        'note'      => 'class',
-        'ref'       => 'default',
-        'public'    => 'public',
+        'num' => 'number',
+        'integer' => 'integer',
+        'float' => 'float',
+        'const' => 'const',
+        'str' => 'string',
+        'cchr' => 'default',
+        'note' => 'class',
+        'ref' => 'default',
+        'public' => 'public',
         'protected' => 'protected',
-        'private'   => 'private',
-        'meta'      => 'comment',
-        'key'       => 'comment',
-        'index'     => 'number',
+        'private' => 'private',
+        'meta' => 'comment',
+        'key' => 'comment',
+        'index' => 'number',
     ];
 
     public function __construct(OutputFormatter $formatter, $forceArrayIndexes = false)
@@ -62,7 +63,7 @@ class Presenter
         // Now put the locale back
         \setlocale(\LC_NUMERIC, $oldLocale);
 
-        $this->cloner = new Cloner();
+        $this->cloner = new Cloner;
         $this->cloner->addCasters(['*' => function ($obj, array $a, Stub $stub, $isNested, $filter = 0) {
             if ($filter || $isNested) {
                 if ($obj instanceof \Throwable) {
@@ -81,7 +82,7 @@ class Presenter
      *
      * @see http://symfony.com/doc/current/components/var_dumper/advanced.html#casters
      *
-     * @param callable[] $casters A map of casters
+     * @param  callable[]  $casters  A map of casters
      */
     public function addCasters(array $casters)
     {
@@ -91,7 +92,7 @@ class Presenter
     /**
      * Present a reference to the value.
      *
-     * @param mixed $value
+     * @param  mixed  $value
      */
     public function presentRef($value): string
     {
@@ -103,15 +104,15 @@ class Presenter
      *
      * If $depth is 0, the value will be presented as a ref instead.
      *
-     * @param mixed    $value
-     * @param int|null $depth   (default: null)
-     * @param int      $options One of Presenter constants
+     * @param  mixed  $value
+     * @param  int|null  $depth  (default: null)
+     * @param  int  $options  One of Presenter constants
      */
     public function present($value, ?int $depth = null, int $options = 0): string
     {
-        $data = $this->cloner->cloneVar($value, !($options & self::VERBOSE) ? Caster::EXCLUDE_VERBOSE : 0);
+        $data = $this->cloner->cloneVar($value, ! ($options & self::VERBOSE) ? Caster::EXCLUDE_VERBOSE : 0);
 
-        if (null !== $depth) {
+        if ($depth !== null) {
             $data = $data->withMaxDepth($depth);
         }
 
@@ -122,7 +123,7 @@ class Presenter
         $output = '';
         $this->dumper->dump($data, function ($line, $depth) use (&$output) {
             if ($depth >= 0) {
-                if ('' !== $output) {
+                if ($output !== '') {
                     $output .= \PHP_EOL;
                 }
                 $output .= \str_repeat('  ', $depth).$line;

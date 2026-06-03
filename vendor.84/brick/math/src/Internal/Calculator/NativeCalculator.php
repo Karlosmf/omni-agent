@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Brick\Math\Internal\Calculator;
 
+use const PHP_INT_SIZE;
+use const STR_PAD_LEFT;
+
 use Brick\Math\Internal\Calculator;
 use Override;
 
@@ -17,9 +20,6 @@ use function str_repeat;
 use function strcmp;
 use function strlen;
 use function substr;
-
-use const PHP_INT_SIZE;
-use const STR_PAD_LEFT;
 
 /**
  * Calculator implementation using only native PHP code.
@@ -325,12 +325,12 @@ final readonly class NativeCalculator extends Calculator
                 $carry = 1;
             } else {
                 if ($sumLength < $blockLength) {
-                    $sum = str_repeat('0', $blockLength - $sumLength) . $sum;
+                    $sum = str_repeat('0', $blockLength - $sumLength).$sum;
                 }
                 $carry = 0;
             }
 
-            $result = $sum . $result;
+            $result = $sum.$result;
 
             if ($i === 0) {
                 break;
@@ -338,7 +338,7 @@ final readonly class NativeCalculator extends Calculator
         }
 
         if ($carry === 1) {
-            $result = '1' . $result;
+            $result = '1'.$result;
         }
 
         return $result;
@@ -400,10 +400,10 @@ final readonly class NativeCalculator extends Calculator
             $sumLength = strlen($sum);
 
             if ($sumLength < $blockLength) {
-                $sum = str_repeat('0', $blockLength - $sumLength) . $sum;
+                $sum = str_repeat('0', $blockLength - $sumLength).$sum;
             }
 
-            $result = $sum . $result;
+            $result = $sum.$result;
 
             if ($i === 0) {
                 break;
@@ -467,7 +467,7 @@ final readonly class NativeCalculator extends Calculator
                 $value = (string) $value;
                 $value = str_pad($value, $maxDigits, '0', STR_PAD_LEFT);
 
-                $line = $value . $line;
+                $line = $value.$line;
 
                 if ($j === 0) {
                     break;
@@ -475,7 +475,7 @@ final readonly class NativeCalculator extends Calculator
             }
 
             if ($carry !== 0) {
-                $line = $carry . $line;
+                $line = $carry.$line;
             }
 
             $line = ltrim($line, '0');
@@ -548,8 +548,8 @@ final readonly class NativeCalculator extends Calculator
 
             $zeros = str_repeat('0', $x - $z);
 
-            $q = $this->add($q, '1' . $zeros);
-            $a = $this->sub($a, $b . $zeros);
+            $q = $this->add($q, '1'.$zeros);
+            $a = $this->sub($a, $b.$zeros);
 
             $r = $a;
 
@@ -605,13 +605,13 @@ final readonly class NativeCalculator extends Calculator
         $y = strlen($b);
 
         if ($x > $y) {
-            $b = str_repeat('0', $x - $y) . $b;
+            $b = str_repeat('0', $x - $y).$b;
 
             return [$a, $b, $x];
         }
 
         if ($x < $y) {
-            $a = str_repeat('0', $y - $x) . $a;
+            $a = str_repeat('0', $y - $x).$a;
 
             return [$a, $b, $y];
         }

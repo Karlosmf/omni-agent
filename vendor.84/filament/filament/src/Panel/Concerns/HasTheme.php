@@ -10,12 +10,12 @@ use Illuminate\Foundation\Vite;
 
 trait HasTheme
 {
-    protected string | Htmlable | Theme | null $theme = null;
+    protected string|Htmlable|Theme|null $theme = null;
 
     /**
      * @var string | array<string>
      */
-    protected string | array | null $viteTheme = null;
+    protected string|array|null $viteTheme = null;
 
     protected ?string $viteThemeBuildDirectory = null;
 
@@ -24,7 +24,7 @@ trait HasTheme
     /**
      * @param  string | array<string>  $theme
      */
-    public function viteTheme(string | array $theme, ?string $buildDirectory = null): static
+    public function viteTheme(string|array $theme, ?string $buildDirectory = null): static
     {
         $this->viteTheme = $theme;
         $this->viteThemeBuildDirectory = $buildDirectory;
@@ -35,12 +35,12 @@ trait HasTheme
     /**
      * @return string | array<string> | null
      */
-    public function getViteTheme(): string | array | null
+    public function getViteTheme(): string|array|null
     {
         return $this->viteTheme;
     }
 
-    public function theme(string | Htmlable | Theme $theme): static
+    public function theme(string|Htmlable|Theme $theme): static
     {
         $this->theme = $theme;
 

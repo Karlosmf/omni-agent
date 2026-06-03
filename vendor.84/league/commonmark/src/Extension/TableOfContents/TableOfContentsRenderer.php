@@ -24,9 +24,9 @@ final class TableOfContentsRenderer implements NodeRendererInterface, XmlNodeRen
     private $innerRenderer;
 
     /**
-     * @psalm-param NodeRendererInterface&XmlNodeRendererInterface $innerRenderer
-     *
      * @phpstan-param NodeRendererInterface&XmlNodeRendererInterface $innerRenderer
+     *
+     * @psalm-param NodeRendererInterface&XmlNodeRendererInterface $innerRenderer
      */
     public function __construct(NodeRendererInterface $innerRenderer)
     {

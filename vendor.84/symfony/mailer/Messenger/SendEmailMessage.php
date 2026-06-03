@@ -22,8 +22,7 @@ class SendEmailMessage
     public function __construct(
         private RawMessage $message,
         private ?Envelope $envelope = null,
-    ) {
-    }
+    ) {}
 
     public function getMessage(): RawMessage
     {

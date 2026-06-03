@@ -22,7 +22,7 @@ trait HasRecords
      */
     protected bool $allowsDuplicates = false;
 
-    protected Collection | Paginator | CursorPaginator | null $cachedTableRecords = null;
+    protected Collection|Paginator|CursorPaginator|null $cachedTableRecords = null;
 
     public function getFilteredTableQuery(): ?Builder
     {
@@ -80,7 +80,7 @@ trait HasRecords
         return $query;
     }
 
-    protected function hydratePivotRelationForTableRecords(EloquentCollection | Paginator | CursorPaginator $records): EloquentCollection | Paginator | CursorPaginator
+    protected function hydratePivotRelationForTableRecords(EloquentCollection|Paginator|CursorPaginator $records): EloquentCollection|Paginator|CursorPaginator
     {
         $table = $this->getTable();
         $relationship = $table->getRelationship();
@@ -92,7 +92,7 @@ trait HasRecords
         return $records;
     }
 
-    public function getTableRecords(): Collection | Paginator | CursorPaginator
+    public function getTableRecords(): Collection|Paginator|CursorPaginator
     {
         if (! $this->getTable()->hasQuery()) {
             if ($this->cachedTableRecords) {
@@ -102,8 +102,8 @@ trait HasRecords
             $records = $this->getTable()->evaluate($this->getTable()->getDataSource(), [
                 'columnSearches' => fn (): array => $this->getTableColumnSearches(),
                 'filters' => fn (): ?array => $this->tableFilters,
-                'page' => fn (): int | string => $this->getTablePage(),
-                'recordsPerPage' => fn (): int | string => $this->getTableRecordsPerPage(),
+                'page' => fn (): int|string => $this->getTablePage(),
+                'recordsPerPage' => fn (): int|string => $this->getTableRecordsPerPage(),
                 'search' => fn (): ?string => $this->getTableSearch(),
                 'sort' => fn (): array => [$this->getTableSortColumn(), $this->getTableSortDirection()],
                 'sortColumn' => fn (): ?string => $this->getTableSortColumn(),
@@ -121,7 +121,7 @@ trait HasRecords
                 $collection = $records;
             }
 
-            $collection = $collection->mapWithKeys(function (array | Model $record, string | int $key): array {
+            $collection = $collection->mapWithKeys(function (array|Model $record, string|int $key): array {
                 if ($record instanceof Model) {
                     return [$record->getKey() => $record];
                 }
@@ -147,13 +147,13 @@ trait HasRecords
         }
 
         if ($translatableContentDriver = $this->makeFilamentTranslatableContentDriver()) {
-            $setRecordLocales = function (EloquentCollection | Paginator | CursorPaginator $records) use ($translatableContentDriver): EloquentCollection | Paginator | CursorPaginator {
+            $setRecordLocales = function (EloquentCollection|Paginator|CursorPaginator $records) use ($translatableContentDriver): EloquentCollection|Paginator|CursorPaginator {
                 $records->transform(fn (Model $record) => $translatableContentDriver->setRecordLocale($record));
 
                 return $records;
             };
         } else {
-            $setRecordLocales = fn (EloquentCollection | Paginator | CursorPaginator $records): EloquentCollection | Paginator | CursorPaginator => $records;
+            $setRecordLocales = fn (EloquentCollection|Paginator|CursorPaginator $records): EloquentCollection|Paginator|CursorPaginator => $records;
         }
 
         if ($this->cachedTableRecords) {
@@ -181,7 +181,7 @@ trait HasRecords
     /**
      * @return Model | array<string, mixed> | null
      */
-    protected function resolveTableRecord(?string $key): Model | array | null
+    protected function resolveTableRecord(?string $key): Model|array|null
     {
         if ($key === null) {
             return null;
@@ -232,7 +232,7 @@ trait HasRecords
     /**
      * @return Model | array<string, mixed> | null
      */
-    public function getTableRecord(?string $key): Model | array | null
+    public function getTableRecord(?string $key): Model|array|null
     {
         $record = $this->resolveTableRecord($key);
 
@@ -246,7 +246,7 @@ trait HasRecords
     /**
      * @param  Model | array<string, mixed>  $record
      */
-    public function getTableRecordKey(Model | array $record): string
+    public function getTableRecordKey(Model|array $record): string
     {
         if (is_array($record)) {
             return $record[ArrayRecord::getKeyName()] ?? throw new LogicException('Record arrays must have a unique [key] entry for identification.');

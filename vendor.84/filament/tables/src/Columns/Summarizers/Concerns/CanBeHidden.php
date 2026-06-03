@@ -8,16 +8,16 @@ use Illuminate\Support\Arr;
 
 trait CanBeHidden
 {
-    protected bool | Closure $isHidden = false;
+    protected bool|Closure $isHidden = false;
 
-    protected bool | Closure $isVisible = true;
+    protected bool|Closure $isVisible = true;
 
     /**
      * @var array<string, bool>
      */
     protected array $visibilityCache = [];
 
-    public function hidden(bool | Closure $condition = true): static
+    public function hidden(bool|Closure $condition = true): static
     {
         $this->isHidden = $condition;
 
@@ -27,7 +27,7 @@ trait CanBeHidden
     /**
      * @param  string | array<string>  $livewireComponents
      */
-    public function hiddenOn(string | array $livewireComponents): static
+    public function hiddenOn(string|array $livewireComponents): static
     {
         $this->hidden(static function (HasTable $livewire) use ($livewireComponents): bool {
             foreach (Arr::wrap($livewireComponents) as $livewireComponent) {
@@ -42,7 +42,7 @@ trait CanBeHidden
         return $this;
     }
 
-    public function visible(bool | Closure $condition = true): static
+    public function visible(bool|Closure $condition = true): static
     {
         $this->isVisible = $condition;
 
@@ -52,7 +52,7 @@ trait CanBeHidden
     /**
      * @param  string | array<string>  $livewireComponents
      */
-    public function visibleOn(string | array $livewireComponents): static
+    public function visibleOn(string|array $livewireComponents): static
     {
         $this->visible(static function (HasTable $livewire) use ($livewireComponents): bool {
             foreach (Arr::wrap($livewireComponents) as $livewireComponent) {

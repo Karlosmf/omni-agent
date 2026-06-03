@@ -5,8 +5,11 @@ namespace App\Filament\Admin\Resources\Transactions\Schemas;
 use App\Enums\Currency;
 use App\Enums\TransactionType;
 use App\Models\SupplierAccount;
+use App\Services\CurrencyService;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
@@ -181,7 +184,7 @@ class TransactionForm
                                 Select::make('currency')
                                     ->label('Moneda')
                                     ->options(function () {
-                                        $service = app(\App\Services\CurrencyService::class);
+                                        $service = app(CurrencyService::class);
                                         $data = $service->getAllData();
 
                                         $options = ['ARS' => 'Pesos Argentinos (ARS)'];
@@ -198,7 +201,7 @@ class TransactionForm
                                     ->live()
                                     ->afterStateUpdated(function (Set $set, Get $get) {
                                         $currency = $get('currency');
-                                        $service = app(\App\Services\CurrencyService::class);
+                                        $service = app(CurrencyService::class);
 
                                         if ($currency === 'ARS') {
                                             $rate = $service->getRate('USD', 'sell');
@@ -260,11 +263,11 @@ class TransactionForm
 
                         Grid::make(1)
                             ->schema([
-                                \Filament\Forms\Components\Textarea::make('notes')
+                                Textarea::make('notes')
                                     ->label('Notas')
                                     ->rows(2),
 
-                                \Filament\Forms\Components\FileUpload::make('attachment_path')
+                                FileUpload::make('attachment_path')
                                     ->label('Comprobante')
                                     ->directory('transactions')
                                     ->columnSpanFull(),
@@ -287,7 +290,7 @@ class TransactionForm
             return;
         }
 
-        $service = app(\App\Services\CurrencyService::class);
+        $service = app(CurrencyService::class);
         $usdRate = $service->getRate('USD', 'sell');
 
         if ($currency === 'USD') {

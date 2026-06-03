@@ -34,7 +34,7 @@ use Symfony\Component\HttpKernel\Log\DebugLoggerConfigurator;
 class ErrorListener implements EventSubscriberInterface
 {
     /**
-     * @param array<class-string, array{log_level: string|null, status_code: int<100,599>|null, log_channel: string|null}> $exceptionsMapping
+     * @param  array<class-string, array{log_level: string|null, status_code: int<100,599>|null, log_channel: string|null}>  $exceptionsMapping
      */
     public function __construct(
         protected string|object|array|null $controller,
@@ -42,8 +42,7 @@ class ErrorListener implements EventSubscriberInterface
         protected bool $debug = false,
         protected array $exceptionsMapping = [],
         protected array $loggers = [],
-    ) {
-    }
+    ) {}
 
     public function logKernelException(ExceptionEvent $event): void
     {
@@ -52,10 +51,10 @@ class ErrorListener implements EventSubscriberInterface
         $logChannel = $this->resolveLogChannel($throwable);
 
         foreach ($this->exceptionsMapping as $class => $config) {
-            if (!$throwable instanceof $class || !$config['status_code']) {
+            if (! $throwable instanceof $class || ! $config['status_code']) {
                 continue;
             }
-            if (!$throwable instanceof HttpExceptionInterface || $throwable->getStatusCode() !== $config['status_code']) {
+            if (! $throwable instanceof HttpExceptionInterface || $throwable->getStatusCode() !== $config['status_code']) {
                 $headers = $throwable instanceof HttpExceptionInterface ? $throwable->getHeaders() : [];
                 $throwable = HttpException::fromStatusCode($config['status_code'], $throwable->getMessage(), $throwable, $headers);
                 $event->setThrowable($throwable);
@@ -64,7 +63,7 @@ class ErrorListener implements EventSubscriberInterface
         }
 
         // There's no specific status code defined in the configuration for this exception
-        if (!$throwable instanceof HttpExceptionInterface && $withHttpStatus = $this->getInheritedAttribute($throwable::class, WithHttpStatus::class)) {
+        if (! $throwable instanceof HttpExceptionInterface && $withHttpStatus = $this->getInheritedAttribute($throwable::class, WithHttpStatus::class)) {
             $throwable = HttpException::fromStatusCode($withHttpStatus->statusCode, $throwable->getMessage(), $throwable, $withHttpStatus->headers);
             $event->setThrowable($throwable);
         }
@@ -76,11 +75,11 @@ class ErrorListener implements EventSubscriberInterface
 
     public function onKernelException(ExceptionEvent $event): void
     {
-        if (null === $this->controller) {
+        if ($this->controller === null) {
             return;
         }
 
-        if (!$this->debug && $event->isKernelTerminating()) {
+        if (! $this->debug && $event->isKernelTerminating()) {
             return;
         }
 
@@ -133,14 +132,14 @@ class ErrorListener implements EventSubscriberInterface
     {
         $e = $event->getRequest()->attributes->get('exception');
 
-        if (!$e instanceof \Throwable || false === $k = array_search($e, $event->getArguments(), true)) {
+        if (! $e instanceof \Throwable || false === $k = array_search($e, $event->getArguments(), true)) {
             return;
         }
 
         $r = new \ReflectionFunction($event->getController()(...));
         $r = $r->getParameters()[$k] ?? null;
 
-        if ($r && (!($r = $r->getType()) instanceof \ReflectionNamedType || FlattenException::class === $r->getName())) {
+        if ($r && (! ($r = $r->getType()) instanceof \ReflectionNamedType || $r->getName() === FlattenException::class)) {
             $arguments = $event->getArguments();
             $arguments[$k] = FlattenException::createFromThrowable($e);
             $event->setArguments($arguments);
@@ -162,15 +161,15 @@ class ErrorListener implements EventSubscriberInterface
     /**
      * Logs an exception.
      *
-     * @param ?string $logChannel
+     * @param  ?string  $logChannel
      */
     protected function logException(\Throwable $exception, string $message, ?string $logLevel = null/* , ?string $logChannel = null */): void
     {
-        $logChannel = (3 < \func_num_args() ? func_get_arg(3) : null) ?? $this->resolveLogChannel($exception);
+        $logChannel = (\func_num_args() > 3 ? func_get_arg(3) : null) ?? $this->resolveLogChannel($exception);
 
         $logLevel ??= $this->resolveLogLevel($exception);
 
-        if (!$logger = $this->getLogger($logChannel)) {
+        if (! $logger = $this->getLogger($logChannel)) {
             return;
         }
 
@@ -192,7 +191,7 @@ class ErrorListener implements EventSubscriberInterface
             return $withLogLevel->level;
         }
 
-        if (!$throwable instanceof HttpExceptionInterface || $throwable->getStatusCode() >= 500) {
+        if (! $throwable instanceof HttpExceptionInterface || $throwable->getStatusCode() >= 500) {
             return LogLevel::CRITICAL;
         }
 
@@ -229,8 +228,7 @@ class ErrorListener implements EventSubscriberInterface
     /**
      * @template T
      *
-     * @param class-string<T> $attribute
-     *
+     * @param  class-string<T>  $attribute
      * @return T|null
      */
     private function getInheritedAttribute(string $class, string $attribute): ?object

@@ -16,15 +16,16 @@ use function ltrim;
 final class SheetMergeCellsReader
 {
     public const XML_NODE_MERGE_CELL = 'mergeCell';
+
     public const XML_ATTRIBUTE_REF = 'ref';
 
     /** @var list<string> Merged cells list */
     private array $mergeCells = [];
 
     /**
-     * @param string       $filePath             Path of the XLSX file being read
-     * @param string       $sheetDataXMLFilePath Path of the sheet data XML file as in [Content_Types].xml
-     * @param XMLProcessor $xmlProcessor         Helper to process XML files
+     * @param  string  $filePath  Path of the XLSX file being read
+     * @param  string  $sheetDataXMLFilePath  Path of the sheet data XML file as in [Content_Types].xml
+     * @param  XMLProcessor  $xmlProcessor  Helper to process XML files
      */
     public function __construct(
         string $filePath,
@@ -38,7 +39,7 @@ final class SheetMergeCellsReader
         $xmlProcessor->registerCallback(self::XML_NODE_MERGE_CELL, XMLProcessor::NODE_TYPE_START, [$this, 'processMergeCellsStartingNode']);
         $xmlReader->close();
 
-        if (false === $xmlReader->openFileInZip($filePath, $sheetDataXMLFilePath)) {
+        if ($xmlReader->openFileInZip($filePath, $sheetDataXMLFilePath) === false) {
             throw new IOException("Could not open \"{$sheetDataXMLFilePath}\".");
         }
 
@@ -56,8 +57,7 @@ final class SheetMergeCellsReader
     }
 
     /**
-     * @param XMLReader $xmlReader XMLReader object, positioned on a "<mergeCells>" starting node
-     *
+     * @param  XMLReader  $xmlReader  XMLReader object, positioned on a "<mergeCells>" starting node
      * @return int A return code that indicates what action should the processor take next
      */
     private function processMergeCellsStartingNode(XMLReader $xmlReader): int

@@ -21,7 +21,7 @@ class Person extends \Faker\Provider\Person
      * @see https://en.wikipedia.org/wiki/Malaysian_names
      */
     protected static $maleNameFormats = [
-        //Malay
+        // Malay
         '{{muhammadName}}{{haji}}{{titleMaleMalay}}{{firstNameMaleMalay}} {{lastNameMalay}} bin {{titleMaleMalay}}{{firstNameMaleMalay}} {{lastNameMalay}}',
         '{{muhammadName}}{{haji}}{{titleMaleMalay}}{{firstNameMaleMalay}} {{lastNameMalay}} bin {{titleMaleMalay}}{{firstNameMaleMalay}}',
         '{{muhammadName}}{{haji}}{{titleMaleMalay}}{{firstNameMaleMalay}} {{lastNameMalay}} bin {{titleMaleMalay}}{{lastNameMalay}}',
@@ -29,14 +29,14 @@ class Person extends \Faker\Provider\Person
         '{{muhammadName}}{{haji}}{{titleMaleMalay}}{{firstNameMaleMalay}} bin {{titleMaleMalay}}{{firstNameMaleMalay}} {{lastNameMalay}}',
         '{{muhammadName}}{{haji}}{{titleMaleMalay}}{{firstNameMaleMalay}} bin {{titleMaleMalay}}{{firstNameMaleMalay}}',
         '{{muhammadName}}{{haji}}{{titleMaleMalay}}{{firstNameMaleMalay}} bin {{titleMaleMalay}}{{lastNameMalay}}',
-        //Chinese
+        // Chinese
         '{{lastNameChinese}} {{firstNameMaleChinese}}',
         '{{lastNameChinese}} {{firstNameMaleChinese}}',
         '{{lastNameChinese}} {{firstNameMaleChinese}}',
         '{{lastNameChinese}} {{firstNameMaleChinese}}',
         '{{lastNameChinese}} {{firstNameMaleChinese}}',
         '{{firstNameMaleChristian}} {{lastNameChinese}} {{firstNameMaleChinese}}',
-        //Indian
+        // Indian
         '{{initialIndian}} {{firstNameMaleIndian}}',
         '{{initialIndian}} {{lastNameIndian}}',
         '{{firstNameMaleIndian}} a/l {{firstNameMaleIndian}}',
@@ -50,7 +50,7 @@ class Person extends \Faker\Provider\Person
      * @see https://en.wikipedia.org/wiki/Malaysian_names
      */
     protected static $femaleNameFormats = [
-        //Malay
+        // Malay
         '{{nurName}}{{hajjah}}{{firstNameFemaleMalay}} {{lastNameMalay}} binti {{titleMaleMalay}}{{firstNameMaleMalay}} {{lastNameMalay}}',
         '{{nurName}}{{hajjah}}{{firstNameFemaleMalay}} {{lastNameMalay}} binti {{titleMaleMalay}}{{firstNameMaleMalay}}',
         '{{nurName}}{{hajjah}}{{firstNameFemaleMalay}} {{lastNameMalay}} binti {{titleMaleMalay}}{{lastNameMalay}}',
@@ -58,14 +58,14 @@ class Person extends \Faker\Provider\Person
         '{{nurName}}{{hajjah}}{{firstNameFemaleMalay}} binti {{titleMaleMalay}}{{firstNameMaleMalay}} {{lastNameMalay}}',
         '{{nurName}}{{hajjah}}{{firstNameFemaleMalay}} binti {{titleMaleMalay}}{{firstNameMaleMalay}}',
         '{{nurName}}{{hajjah}}{{firstNameFemaleMalay}} binti {{titleMaleMalay}}{{lastNameMalay}}',
-        //Chinese
+        // Chinese
         '{{lastNameChinese}} {{firstNameFemaleChinese}}',
         '{{lastNameChinese}} {{firstNameFemaleChinese}}',
         '{{lastNameChinese}} {{firstNameFemaleChinese}}',
         '{{lastNameChinese}} {{firstNameFemaleChinese}}',
         '{{lastNameChinese}} {{firstNameFemaleChinese}}',
         '{{firstNameFemaleChristian}} {{lastNameChinese}} {{firstNameFemaleChinese}}',
-        //Indian
+        // Indian
         '{{initialIndian}}{{firstNameFemaleIndian}}',
         '{{initialIndian}}{{lastNameIndian}}',
         '{{firstNameFemaleIndian}} a/l {{firstNameMaleIndian}}',
@@ -106,6 +106,7 @@ class Person extends \Faker\Provider\Person
         'Yani', 'Yaqzan', 'Yazid', 'Yunos', 'Yusaini', 'Yusfaisal', 'Yushafiq', 'Yusni', 'Yusof', 'Yusoff', 'Yusri', 'Yussof', 'Yusuf',
         'Zabayudin', 'Zabidi', 'Zahari', 'Zahid', 'Zahiruddin', 'Zahrul', 'Zaid', 'Zaidi', 'Zainal', 'Zaini', 'Zainodin', 'Zainordin', 'Zainuddin', 'Zainul', 'Zairy', 'Zaiyon', 'Zakaria', 'Zaki', 'Zakii', 'Zakri', 'Zakwan', 'Zambri', 'Zamre', 'Zamri', 'Zamrul', 'Zan', 'Zaqiyuddin', 'Zar\'ai', 'Zarif', 'Zariq', 'Zarith', 'Zarul', 'Zaukepli', 'Zawawi', 'Zharaubi', 'Zikri', 'Zikril', 'Zikry', 'Zizi', 'Zol', 'Zolkifle', 'Zubair', 'Zubir', 'Zufayri', 'Zufrie', 'Zuheeryrizal', 'Zuhri', 'Zuki', 'Zul', 'Zulfadhli', 'Zulfadli', 'Zulfahmi', 'Zulfaqar', 'Zulfaqqar', 'Zulfikar', 'Zulhaikal', 'Zulhakim', 'Zulhakimi', 'Zulhelmi', 'Zulhilmi', 'Zulkapli', 'Zulkarnain', 'Zulkefli', 'Zulkfli', 'Zulkifli', 'Zulkipli', 'Zulman', 'Zuri',
     ];
+
     protected static $firstNameFemaleMalay = [
         '\'Abidah', '\'Alyaa', '\'Aqilah', '\'Atiqah', '\'Afiqah', '\'Alia', '\'Aqilah', 'A\'ishah', 'A\'in', 'A\'zizah', 'Abdah', 'Abiatul', 'Adani', 'Adawiyah', 'Adha', 'Adharina', 'Adhwa', 'Adibah', 'Adilah', 'Adilla', 'Adina', 'Adini', 'Adira', 'Adlina', 'Adlyna', 'Adriana', 'Adzlyana', 'Afifa', 'Afifah', 'Afina', 'Afiqah', 'Afiza', 'Afrina', 'Afzan', 'Ahda', 'Aida', 'Aidatul', 'Aidila', 'Aifa', 'Aiman', 'Aimi', 'Aimuni', 'Ain', 'Aina', 'Ainaa', 'Ainaanasuha', 'Aini', 'Ainin', 'Ainn', 'Ainnaziha', 'Ainul', 'Ainun', 'Ainur', 'Airin', 'Aishah', 'Aisya', 'Aisyah', 'Aiza', 'Akmal', 'Aleeya', 'Aleeza', 'Aleya', 'Aleza', 'Alia', 'Aliaa', 'Aliah', 'Aliffa', 'Aliffatus', 'Alina', 'Alis', 'Alisya', 'Aliya', 'Alkubra', 'Alleisya', 'Ally', 'Alya', 'Alyaa', 'Amalia', 'Amalien', 'Amalin', 'Amalina', 'Amani', 'Amanina', 'Amiera', 'Aminy', 'Amira', 'Amirah', 'Amisha', 'Amrina', 'Amylia', 'Amyra', 'An-nur', 'Anas', 'Andani', 'Andi', 'Anesha', 'Ani', 'Aninafishah', 'Anis', 'Anisah', 'Anisha', 'Anissa', 'Aniza', 'Anna', 'Anne', 'Antaza', 'Aqeem', 'Aqeera', 'Aqila', 'Aqilah', 'Arfahrina', 'Ariana', 'Ariena', 'Ariessa', 'Arifah', 'Arina', 'Ariqah', 'Arissa', 'Arisya', 'Armira', 'Arwina', 'Aryani', 'Ashika', 'Ashriyana', 'Asiah', 'Asma\'rauha', 'Asmaa\'', 'Asmaleana', 'Asniati', 'Asnie', 'Asniza', 'Aswana', 'Asy', 'Asyiqin', 'Asykin', 'Athirah', 'Atifa', 'Atifah', 'Atifahajar', 'Atikah', 'Atiqa', 'Atiqah', 'Atirah', 'Atyqah', 'Auni', 'Awatif', 'Awatiff', 'Ayesha', 'Ayu', 'Ayuni', 'Ayunie', 'Az', 'Azashahira', 'Aziah', 'Aziemah', 'Azika', 'Azira', 'Azizah', 'Azliah', 'Azliatul', 'Azlin', 'Azlina', 'Azmina', 'Azni', 'Azrah', 'Azrina', 'Azua', 'Azuin', 'Azwa', 'Azwani', 'Azyan', 'Azyyati',
         'Badrina', 'Bahirah', 'Balqis', 'Basyirah', 'Batrisya', 'Batrisyia', 'Bilqis', 'Bismillah',
@@ -131,6 +132,7 @@ class Person extends \Faker\Provider\Person
         'Yasmeen', 'Yasmin', 'Yetri', 'Yunalis', 'Yusra', 'Yusrinaa', 'Yusyilaaida',
         'Zaffan', 'Zafirah', 'Zaharah', 'Zahirah', 'Zahrah', 'Zahrak', 'Zaidalina', 'Zaidatulkhoiriyah', 'Zainab', 'Zainatul', 'Zakdatul', 'Zatalini', 'Zati', 'Zayani', 'Zeqafazri', 'Zilhaiza', 'Zubaidah', 'Zulaika', 'Zulaikha',
     ];
+
     protected static $lastNameMalay = [
         '\'Aizat', 'A\'liyyuddin', 'Abas', 'Abdillah', 'Abdullah', 'Abidin', 'Adam', 'Adha', 'Adham', 'Adi', 'Adieka', 'Adip', 'Adli', 'Adnan', 'Adrus', 'Afandi', 'Afiq', 'Afizi', 'Afnan', 'Afsyal', 'Ahmad', 'Ahwali', 'Aidi', 'Aidil', 'Aiman', 'Aizad', 'Aizam', 'Aizat', 'Ajllin', 'Ajmal', 'Akashah', 'Akasyah', 'Akbar', 'Akhmal', 'Akid', 'Akif', 'Akmal', 'Al-amin', 'Al-hakim', 'Albukhary', 'Ali', 'Alias', 'Alif', 'Alimi', 'Aliuddin', 'Amaluddin', 'Amin', 'Aminnudin', 'Aminrullah', 'Aminuddin', 'Amiran', 'Amiruddin', 'Amirul', 'Amirullah', 'Ammar', 'Ammer', 'Amni', 'Amran', 'Amri', 'Amry', 'Amsyar', 'Amzah', 'Anam', 'Anaqi', 'Andalis', 'Anuar', 'Anwar', 'Apizan', 'Aqashah', 'Aqil', 'Arfan', 'Arfandi', 'Arias', 'Arief', 'Arif', 'Ariff', 'Ariffin', 'Arifin', 'Arifuddin', 'Arman', 'Arshad', 'Arziman', 'As', 'Asa', 'Ashraf', 'Ashraff', 'Asmadi', 'Asmar', 'Asmawi', 'Asri', 'Asyraf', 'Asyran', 'Asyrani', 'Aszahari', 'Awal', 'Awalluddin', 'Awaluddin', 'Awaludin', 'Awira', 'Ayyadi', 'Azahar', 'Azahari', 'Azam', 'Azhan', 'Azhar', 'Azhari', 'Azim', 'Aziz', 'Azizan', 'Azizi', 'Azizy', 'Azlan', 'Azlansyhah', 'Azli', 'Azlim', 'Azman', 'Azmee', 'Azmi', 'Azmin', 'Aznai', 'Azni', 'Azraai', 'Azrai', 'Azri', 'Azril', 'Azrin', 'Azriq', 'Azrul', 'Azuan',
         'Badrulhisham', 'Baha', 'Bahaman', 'Bahari', 'Baharin', 'Baharruddin', 'Baharuddin', 'Baharudin', 'Bahri', 'Bahrin', 'Bahrodin', 'Bakar', 'Bakri', 'Bakry', 'Bakti', 'Basaruddin', 'Bashah', 'Basri', 'Basyir', 'Batisah', 'Bella', 'Berman', 'Borhan', 'Buhari', 'Bukhari',
@@ -164,6 +166,7 @@ class Person extends \Faker\Provider\Person
      * @see https://en.wikipedia.org/wiki/Muhammad_(name)
      */
     protected static $muhammadName = ['', '', '', '', 'Mohamad ', 'Mohamed ', 'Mohammad ', 'Mohammed ', 'Muhamad ', 'Muhamed ', 'Muhammad ', 'Muhammed ', 'Muhammet ', 'Mohd '];
+
     /**
      * @see https://en.wikipedia.org/wiki/Noor_(name)
      */
@@ -173,6 +176,7 @@ class Person extends \Faker\Provider\Person
      * @see https://en.wikipedia.org/wiki/Malaysian_names#Haji_or_Hajjah
      */
     protected static $haji = ['', '', '', '', 'Haji ', 'Hj '];
+
     protected static $hajjah = ['', '', '', '', 'Hajjah ', 'Hjh '];
 
     /**
@@ -404,6 +408,7 @@ class Person extends \Faker\Provider\Person
         'Victor', 'Vince', 'Vincent',
         'Welson', 'William', 'Willie',
     ];
+
     protected static $firstNameFemaleChristian = [
         'Alice', 'Alyssa', 'Amber', 'Amy', 'Andrea', 'Angelica', 'Angie', 'Apple', 'Aslina',
         'Bernice', 'Betty', 'Boey', 'Bonnie',
@@ -536,6 +541,7 @@ class Person extends \Faker\Provider\Person
      * @see https://en.wikipedia.org/wiki/Malay_styles_and_titles
      */
     protected static $titleMale = ['En.', 'Dr.', 'Prof.', 'Datuk', 'Dato\'', 'Datuk Seri', 'Dato\' Sri', 'Tan Sri', 'Tun'];
+
     protected static $titleFemale = ['Pn.', 'Cik', 'Dr.', 'Prof.', 'Datin', 'Datin Paduka', 'Datin Paduka Seri', 'Puan Sri', 'Toh Puan'];
 
     /**
@@ -655,7 +661,7 @@ class Person extends \Faker\Provider\Person
      */
     public static function firstNameMaleChinese()
     {
-        return static::randomElement(static::$firstNameChinese) . ' ' . static::randomElement(static::$firstNameMaleChinese);
+        return static::randomElement(static::$firstNameChinese).' '.static::randomElement(static::$firstNameMaleChinese);
     }
 
     /**
@@ -667,7 +673,7 @@ class Person extends \Faker\Provider\Person
      */
     public static function firstNameFemaleChinese()
     {
-        return static::randomElement(static::$firstNameChinese) . ' ' . static::randomElement(static::$firstNameFemaleChinese);
+        return static::randomElement(static::$firstNameChinese).' '.static::randomElement(static::$firstNameFemaleChinese);
     }
 
     /**
@@ -767,9 +773,8 @@ class Person extends \Faker\Provider\Person
      *
      * @see https://en.wikipedia.org/wiki/Malaysian_identity_card#Structure_of_the_National_Registration_Identity_Card_Number_(NRIC)
      *
-     * @param string|null      $gender 'male', 'female' or null for any
-     * @param bool|string|null $hyphen true, false, or any separator characters
-     *
+     * @param  string|null  $gender  'male', 'female' or null for any
+     * @param  bool|string|null  $hyphen  true, false, or any separator characters
      * @return string
      */
     public static function myKadNumber($gender = null, $hyphen = false)
@@ -793,7 +798,7 @@ class Person extends \Faker\Provider\Person
         // gender digit. Odd = MALE, Even = FEMALE
         $g = self::numberBetween(0, 9);
 
-        //Credit: https://gist.github.com/mauris/3629548
+        // Credit: https://gist.github.com/mauris/3629548
         if ($gender === static::GENDER_MALE) {
             $g = $g | 1;
         } elseif ($gender === static::GENDER_FEMALE) {

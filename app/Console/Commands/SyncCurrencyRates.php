@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\CurrencyService;
 use Illuminate\Console\Command;
 
 class SyncCurrencyRates extends Command
@@ -23,7 +24,7 @@ class SyncCurrencyRates extends Command
     /**
      * Execute the console command.
      */
-    public function handle(\App\Services\CurrencyService $service)
+    public function handle(CurrencyService $service)
     {
         $this->info('Fetching currency rates from BNA...');
 

@@ -23,20 +23,21 @@ if (\PHP_VERSION_ID < 80400) {
         public $name;
 
         private $value;
+
         private $deprecated;
 
         private static $persistentConstants = [];
 
         public function __construct(string $name)
         {
-            if (!defined($name) || false !== strpos($name, '::')) {
+            if (! defined($name) || strpos($name, '::') !== false) {
                 throw new ReflectionException("Constant \"$name\" does not exist");
             }
 
             $this->name = ltrim($name, '\\');
             $deprecated = false;
             $eh = set_error_handler(static function ($type, $msg, $file, $line) use ($name, &$deprecated, &$eh) {
-                if (\E_DEPRECATED === $type && "Constant $name is deprecated" === $msg) {
+                if ($type === \E_DEPRECATED && "Constant $name is deprecated" === $msg) {
                     return $deprecated = true;
                 }
 
@@ -90,7 +91,7 @@ if (\PHP_VERSION_ID < 80400) {
             // being defined by users. If we got here, we know that it *is*
             // defined, so we just need to figure out if it is defined by the
             // user or not
-            if (!self::$persistentConstants) {
+            if (! self::$persistentConstants) {
                 $persistentConstants = get_defined_constants(true);
                 unset($persistentConstants['user']);
                 foreach ($persistentConstants as $constants) {
@@ -124,7 +125,7 @@ if (\PHP_VERSION_ID < 80400) {
                 $result .= 'int';
             } elseif (is_float($this->value)) {
                 $result .= 'float';
-            } elseif (null === $this->value) {
+            } elseif ($this->value === null) {
                 $result .= 'null';
             } else {
                 $result .= gettype($this->value);

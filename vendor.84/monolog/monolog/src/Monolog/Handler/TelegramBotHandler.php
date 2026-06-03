@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -11,10 +13,10 @@
 
 namespace Monolog\Handler;
 
-use RuntimeException;
 use Monolog\Level;
-use Monolog\Utils;
 use Monolog\LogRecord;
+use Monolog\Utils;
+use RuntimeException;
 
 /**
  * Handler sends logs to Telegram using Telegram Bot API.
@@ -69,17 +71,17 @@ class TelegramBotHandler extends AbstractProcessingHandler
      * See available options at https://core.telegram.org/bots/api#formatting-options
      * or in AVAILABLE_PARSE_MODES
      */
-    private string|null $parseMode;
+    private ?string $parseMode;
 
     /**
      * Disables link previews for links in the message.
      */
-    private bool|null $disableWebPagePreview;
+    private ?bool $disableWebPagePreview;
 
     /**
      * Sends the message silently. Users will receive a notification with no sound.
      */
-    private bool|null $disableNotification;
+    private ?bool $disableNotification;
 
     /**
      * True - split a message longer than MAX_MESSAGE_LENGTH into parts and send in multiple messages.
@@ -96,29 +98,30 @@ class TelegramBotHandler extends AbstractProcessingHandler
      * Telegram message thread id, unique identifier for the target message thread (topic) of the forum; for forum supergroups only
      * See how to get the `message_thread_id` https://stackoverflow.com/a/75178418
      */
-    private int|null $topic;
+    private ?int $topic;
 
     /**
-     * @param  string                    $apiKey               Telegram bot access token provided by BotFather
-     * @param  string                    $channel              Telegram channel name
-     * @param  bool                      $splitLongMessages    Split a message longer than MAX_MESSAGE_LENGTH into parts and send in multiple messages
-     * @param  bool                      $delayBetweenMessages Adds delay between sending a split message according to Telegram API
-     * @param  int                       $topic                Telegram message thread id, unique identifier for the target message thread (topic) of the forum
+     * @param  string  $apiKey  Telegram bot access token provided by BotFather
+     * @param  string  $channel  Telegram channel name
+     * @param  bool  $splitLongMessages  Split a message longer than MAX_MESSAGE_LENGTH into parts and send in multiple messages
+     * @param  bool  $delayBetweenMessages  Adds delay between sending a split message according to Telegram API
+     * @param  int  $topic  Telegram message thread id, unique identifier for the target message thread (topic) of the forum
+     *
      * @throws MissingExtensionException If the curl extension is missing
      */
     public function __construct(
         string $apiKey,
         string $channel,
         $level = Level::Debug,
-        bool   $bubble = true,
+        bool $bubble = true,
         ?string $parseMode = null,
-        ?bool   $disableWebPagePreview = null,
-        ?bool   $disableNotification = null,
-        bool   $splitLongMessages = false,
-        bool   $delayBetweenMessages = false,
-        ?int   $topic = null
+        ?bool $disableWebPagePreview = null,
+        ?bool $disableNotification = null,
+        bool $splitLongMessages = false,
+        bool $delayBetweenMessages = false,
+        ?int $topic = null
     ) {
-        if (!\extension_loaded('curl')) {
+        if (! \extension_loaded('curl')) {
             throw new MissingExtensionException('The curl extension is needed to use the TelegramBotHandler');
         }
 
@@ -137,10 +140,10 @@ class TelegramBotHandler extends AbstractProcessingHandler
     /**
      * @return $this
      */
-    public function setParseMode(string|null $parseMode = null): self
+    public function setParseMode(?string $parseMode = null): self
     {
-        if ($parseMode !== null && !\in_array($parseMode, self::AVAILABLE_PARSE_MODES, true)) {
-            throw new \InvalidArgumentException('Unknown parseMode, use one of these: ' . implode(', ', self::AVAILABLE_PARSE_MODES) . '.');
+        if ($parseMode !== null && ! \in_array($parseMode, self::AVAILABLE_PARSE_MODES, true)) {
+            throw new \InvalidArgumentException('Unknown parseMode, use one of these: '.implode(', ', self::AVAILABLE_PARSE_MODES).'.');
         }
 
         $this->parseMode = $parseMode;
@@ -151,7 +154,7 @@ class TelegramBotHandler extends AbstractProcessingHandler
     /**
      * @return $this
      */
-    public function disableWebPagePreview(bool|null $disableWebPagePreview = null): self
+    public function disableWebPagePreview(?bool $disableWebPagePreview = null): self
     {
         $this->disableWebPagePreview = $disableWebPagePreview;
 
@@ -161,7 +164,7 @@ class TelegramBotHandler extends AbstractProcessingHandler
     /**
      * @return $this
      */
-    public function disableNotification(bool|null $disableNotification = null): self
+    public function disableNotification(?bool $disableNotification = null): self
     {
         $this->disableNotification = $disableNotification;
 
@@ -204,14 +207,14 @@ class TelegramBotHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function handleBatch(array $records): void
     {
         $messages = [];
 
         foreach ($records as $record) {
-            if (!$this->isHandling($record)) {
+            if (! $this->isHandling($record)) {
                 continue;
             }
 
@@ -228,7 +231,7 @@ class TelegramBotHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function write(LogRecord $record): void
     {
@@ -253,12 +256,12 @@ class TelegramBotHandler extends AbstractProcessingHandler
 
     protected function sendCurl(string $message): void
     {
-        if ('' === trim($message)) {
+        if (trim($message) === '') {
             return;
         }
-        
+
         $ch = curl_init();
-        $url = self::BOT_API . $this->apiKey . '/SendMessage';
+        $url = self::BOT_API.$this->apiKey.'/SendMessage';
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
@@ -275,25 +278,26 @@ class TelegramBotHandler extends AbstractProcessingHandler
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
 
         $result = Curl\Util::execute($ch);
-        if (!\is_string($result)) {
+        if (! \is_string($result)) {
             throw new RuntimeException('Telegram API error. Description: No response');
         }
         $result = json_decode($result, true);
 
         if ($result['ok'] === false) {
-            throw new RuntimeException('Telegram API error. Description: ' . $result['description']);
+            throw new RuntimeException('Telegram API error. Description: '.$result['description']);
         }
     }
 
     /**
      * Handle a message that is too long: truncates or splits into several
+     *
      * @return string[]
      */
     private function handleMessageLength(string $message): array
     {
         $truncatedMarker = ' (…truncated)';
-        if (!$this->splitLongMessages && \strlen($message) > self::MAX_MESSAGE_LENGTH) {
-            return [Utils::substr($message, 0, self::MAX_MESSAGE_LENGTH - \strlen($truncatedMarker)) . $truncatedMarker];
+        if (! $this->splitLongMessages && \strlen($message) > self::MAX_MESSAGE_LENGTH) {
+            return [Utils::substr($message, 0, self::MAX_MESSAGE_LENGTH - \strlen($truncatedMarker)).$truncatedMarker];
         }
 
         return str_split($message, self::MAX_MESSAGE_LENGTH);

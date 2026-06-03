@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\Runtime;
 
 use const PHP_OS;
@@ -20,11 +23,12 @@ use const PHP_OS_FAMILY;
 final readonly class OperatingSystem
 {
     private string $operatingSystem;
+
     private string $operatingSystemFamily;
 
     public function __construct()
     {
-        $this->operatingSystem       = PHP_OS;
+        $this->operatingSystem = PHP_OS;
         $this->operatingSystemFamily = PHP_OS_FAMILY;
     }
 

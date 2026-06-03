@@ -26,8 +26,7 @@ class PhpBridgeSessionStorageFactory implements SessionStorageFactoryInterface
         private AbstractProxy|\SessionHandlerInterface|null $handler = null,
         private ?MetadataBag $metaBag = null,
         private bool $secure = false,
-    ) {
-    }
+    ) {}
 
     public function createStorage(?Request $request): SessionStorageInterface
     {

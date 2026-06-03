@@ -14,16 +14,14 @@ namespace Psy\TabCompletion\Matcher;
 abstract class AbstractDefaultParametersMatcher extends AbstractContextAwareMatcher
 {
     /**
-     * @param \ReflectionParameter[] $reflectionParameters
-     *
-     * @return array
+     * @param  \ReflectionParameter[]  $reflectionParameters
      */
     public function getDefaultParameterCompletion(array $reflectionParameters): array
     {
         $parametersProcessed = [];
 
         foreach ($reflectionParameters as $parameter) {
-            if (!$parameter->isDefaultValueAvailable()) {
+            if (! $parameter->isDefaultValueAvailable()) {
                 return [];
             }
 
@@ -44,11 +42,11 @@ abstract class AbstractDefaultParametersMatcher extends AbstractContextAwareMatc
      *  string representation that fits inline.
      * This is not 100% true to the original (newlines are inlined, for example).
      *
-     * @param mixed $value
+     * @param  mixed  $value
      */
     private function valueToShortString($value): string
     {
-        if (!\is_array($value)) {
+        if (! \is_array($value)) {
             return \json_encode($value);
         }
 

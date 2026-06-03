@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of Composer.
@@ -25,7 +27,7 @@ class FileList
     public $files = [];
 
     /**
-     * @param non-empty-string $path
+     * @param  non-empty-string  $path
      */
     public function add(string $path): void
     {
@@ -33,7 +35,7 @@ class FileList
     }
 
     /**
-     * @param non-empty-string $path
+     * @param  non-empty-string  $path
      */
     public function contains(string $path): bool
     {

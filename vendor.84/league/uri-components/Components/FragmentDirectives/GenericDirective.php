@@ -26,13 +26,12 @@ use function str_replace;
 final class GenericDirective implements FragmentDirective
 {
     /**
-     * @param non-empty-string $name
+     * @param  non-empty-string  $name
      */
     private function __construct(
         private readonly string $name,
         private readonly ?string $value = null,
-    ) {
-    }
+    ) {}
 
     /**
      * Create a new instance from a string without the Directive delimiter (:~:) or a separator (&).
@@ -44,14 +43,14 @@ final class GenericDirective implements FragmentDirective
         }
 
         [$name, $value] = explode('=', (string) $value, 2) + [1 => null];
-        (null !== $name && '' !== $name && !str_contains($name, '&')) || throw new SyntaxError('The submitted text is not a valid directive.');
+        ($name !== null && $name !== '' && ! str_contains($name, '&')) || throw new SyntaxError('The submitted text is not a valid directive.');
 
         return new self($name, $value);
     }
 
     private static function decode(?string $value): ?string
     {
-        return null !== $value ? str_replace('%20', ' ', (string) Encoder::decodeFragment($value)) : null;
+        return $value !== null ? str_replace('%20', ' ', (string) Encoder::decodeFragment($value)) : null;
     }
 
     public function name(): string
@@ -70,7 +69,7 @@ final class GenericDirective implements FragmentDirective
     public function toString(): string
     {
         $str = $this->name;
-        if (null === $this->value) {
+        if ($this->value === null) {
             return $str;
         }
 
@@ -89,11 +88,11 @@ final class GenericDirective implements FragmentDirective
 
     public function equals(mixed $directive): bool
     {
-        if (!$directive instanceof Stringable && !is_string($directive)) {
+        if (! $directive instanceof Stringable && ! is_string($directive)) {
             return false;
         }
 
-        if (!$directive instanceof FragmentDirective) {
+        if (! $directive instanceof FragmentDirective) {
             try {
                 $directive = self::fromString($directive);
             } catch (Throwable) {

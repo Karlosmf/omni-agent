@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,15 +9,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\Configuration;
 
 use const PHP_EOL;
-use function assert;
-use function count;
-use function is_dir;
-use function is_file;
-use function realpath;
-use function str_ends_with;
+
 use PHPUnit\Event\Facade as EventFacade;
 use PHPUnit\Exception;
 use PHPUnit\Framework\TestSuite;
@@ -25,6 +23,13 @@ use PHPUnit\TextUI\TestDirectoryNotFoundException;
 use PHPUnit\TextUI\TestFileNotFoundException;
 use PHPUnit\TextUI\XmlConfiguration\TestSuiteMapper;
 use SebastianBergmann\FileIterator\Facade as FileIteratorFacade;
+
+use function assert;
+use function count;
+use function is_dir;
+use function is_file;
+use function realpath;
+use function str_ends_with;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -47,7 +52,7 @@ final readonly class TestSuiteBuilder
             foreach ($configuration->cliArguments() as $cliArgument) {
                 $argument = realpath($cliArgument);
 
-                if (!$argument) {
+                if (! $argument) {
                     throw new TestFileNotFoundException($cliArgument);
                 }
 
@@ -67,7 +72,7 @@ final readonly class TestSuiteBuilder
             }
         }
 
-        if (!isset($testSuite)) {
+        if (! isset($testSuite)) {
             $xmlConfigurationFile = $configuration->hasConfigurationFile() ? $configuration->configurationFile() : 'Root Test Suite';
 
             assert($xmlConfigurationFile !== '');
@@ -86,8 +91,8 @@ final readonly class TestSuiteBuilder
     }
 
     /**
-     * @param non-empty-string       $path
-     * @param list<non-empty-string> $suffixes
+     * @param  non-empty-string  $path
+     * @param  list<non-empty-string>  $suffixes
      *
      * @throws \PHPUnit\Framework\Exception
      */
@@ -118,7 +123,7 @@ final readonly class TestSuiteBuilder
         try {
             $testClass = (new TestSuiteLoader)->load($path);
         } catch (Exception $e) {
-            print $e->getMessage() . PHP_EOL;
+            echo $e->getMessage().PHP_EOL;
 
             exit(1);
         }
@@ -133,8 +138,8 @@ final readonly class TestSuiteBuilder
     }
 
     /**
-     * @param list<non-empty-string> $paths
-     * @param list<non-empty-string> $suffixes
+     * @param  list<non-empty-string>  $paths
+     * @param  list<non-empty-string>  $suffixes
      *
      * @throws \PHPUnit\Framework\Exception
      */

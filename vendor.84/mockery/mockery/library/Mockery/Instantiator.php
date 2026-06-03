@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -31,12 +32,11 @@ final class Instantiator
     /**
      * @template TClass of object
      *
-     * @param class-string<TClass> $className
+     * @param  class-string<TClass>  $className
+     * @return TClass
      *
      * @throws InvalidArgumentException
      * @throws UnexpectedValueException
-     *
-     * @return TClass
      */
     public function instantiate($className): object
     {

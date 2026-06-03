@@ -34,14 +34,14 @@ final class SharedStringsManager
     private readonly Escaper\XLSX $stringsEscaper;
 
     /**
-     * @param string       $xlFolder       Path to the "xl" folder
-     * @param Escaper\XLSX $stringsEscaper Strings escaper
+     * @param  string  $xlFolder  Path to the "xl" folder
+     * @param  Escaper\XLSX  $stringsEscaper  Strings escaper
      */
     public function __construct(string $xlFolder, Escaper\XLSX $stringsEscaper)
     {
         $sharedStringsFilePath = $xlFolder.\DIRECTORY_SEPARATOR.self::SHARED_STRINGS_FILE_NAME;
         $resource = fopen($sharedStringsFilePath, 'w');
-        \assert(false !== $resource);
+        \assert($resource !== false);
         $this->sharedStringsFilePointer = $resource;
 
         // the headers is split into different parts so that we can fseek and put in the correct count and uniqueCount later
@@ -60,7 +60,7 @@ final class SharedStringsManager
     public function writeString(string $string): int
     {
         fwrite($this->sharedStringsFilePointer, '<si><t xml:space="preserve">'.$this->stringsEscaper->escape($string).'</t></si>');
-        ++$this->numSharedStrings;
+        $this->numSharedStrings++;
 
         // Shared string ID is zero-based
         return $this->numSharedStrings - 1;

@@ -11,6 +11,8 @@
 
 namespace Symfony\Component\HttpKernel\Attribute;
 
+use Symfony\Component\HttpFoundation\Exception\SignedUriException;
+
 /**
  * Validates the request signature for specific HTTP methods.
  *
@@ -19,7 +21,7 @@ namespace Symfony\Component\HttpKernel\Attribute;
  * of the specified methods (or if no methods are specified), the signature
  * is checked.
  *
- * If the signature is invalid, a {@see \Symfony\Component\HttpFoundation\Exception\SignedUriException}
+ * If the signature is invalid, a {@see SignedUriException}
  * is thrown during validation.
  *
  * @author Santiago San Martin <sanmartindev@gmail.com>
@@ -31,7 +33,7 @@ final class IsSignatureValid
     public readonly array $methods;
 
     /**
-     * @param string[]|string $methods HTTP methods that require signature validation. An empty array means that no method filtering is done
+     * @param  string[]|string  $methods  HTTP methods that require signature validation. An empty array means that no method filtering is done
      */
     public function __construct(
         array|string $methods = [],

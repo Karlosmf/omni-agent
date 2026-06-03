@@ -27,17 +27,19 @@ use Symfony\Component\CssSelector\XPath\Translator;
 class CssSelectorConverter
 {
     private Translator $translator;
+
     private array $cache;
 
     private static array $xmlCache = [];
+
     private static array $htmlCache = [];
 
     /**
-     * @param bool $html Whether HTML support should be enabled. Disable it for XML documents
+     * @param  bool  $html  Whether HTML support should be enabled. Disable it for XML documents
      */
     public function __construct(bool $html = true)
     {
-        $this->translator = new Translator();
+        $this->translator = new Translator;
 
         if ($html) {
             $this->translator->registerExtension(new HtmlExtension($this->translator));
@@ -47,11 +49,10 @@ class CssSelectorConverter
         }
 
         $this->translator
-            ->registerParserShortcut(new EmptyStringParser())
-            ->registerParserShortcut(new ElementParser())
-            ->registerParserShortcut(new ClassParser())
-            ->registerParserShortcut(new HashParser())
-        ;
+            ->registerParserShortcut(new EmptyStringParser)
+            ->registerParserShortcut(new ElementParser)
+            ->registerParserShortcut(new ClassParser)
+            ->registerParserShortcut(new HashParser);
     }
 
     /**

@@ -14,18 +14,18 @@ trait CanBeAuthorized
 {
     protected mixed $authorization = null;
 
-    protected string | Closure | null $authorizationMessage = null;
+    protected string|Closure|null $authorizationMessage = null;
 
-    protected bool | Closure $hasAuthorizationTooltip = false;
+    protected bool|Closure $hasAuthorizationTooltip = false;
 
-    protected bool | Closure $hasAuthorizationNotification = false;
+    protected bool|Closure $hasAuthorizationNotification = false;
 
-    protected bool | string | Closure | null $authorizeIndividualRecords = null;
+    protected bool|string|Closure|null $authorizeIndividualRecords = null;
 
     /**
      * @param  Model | class-string | array<mixed> | null  $arguments
      */
-    public function authorize(mixed $abilities, Model | string | array | null $arguments = null): static
+    public function authorize(mixed $abilities, Model|string|array|null $arguments = null): static
     {
         if ($abilities instanceof BackedEnum) {
             $abilities = $abilities->value;
@@ -48,7 +48,7 @@ trait CanBeAuthorized
      * @param  string | BackedEnum | array<string>  $abilities
      * @param  Model | array<mixed> | null  $arguments
      */
-    public function authorizeAny(string | BackedEnum | array $abilities, Model | array | null $arguments = null): static
+    public function authorizeAny(string|BackedEnum|array $abilities, Model|array|null $arguments = null): static
     {
         if ($abilities instanceof BackedEnum) {
             $abilities = $abilities->value;
@@ -162,7 +162,7 @@ trait CanBeAuthorized
         return $response;
     }
 
-    public function authorizationMessage(string | Closure | null $message): static
+    public function authorizationMessage(string|Closure|null $message): static
     {
         $this->authorizationMessage = $message;
 
@@ -174,14 +174,14 @@ trait CanBeAuthorized
         return $this->evaluate($this->authorizationMessage);
     }
 
-    public function authorizationTooltip(bool | Closure $condition = true): static
+    public function authorizationTooltip(bool|Closure $condition = true): static
     {
         $this->hasAuthorizationTooltip = $condition;
 
         return $this;
     }
 
-    public function authorizationNotification(bool | Closure $condition = true): static
+    public function authorizationNotification(bool|Closure $condition = true): static
     {
         $this->hasAuthorizationNotification = $condition;
 
@@ -211,7 +211,7 @@ trait CanBeAuthorized
         return $this->isAuthorized();
     }
 
-    public function authorizeIndividualRecords(bool | string | Closure | null $callback = true): static
+    public function authorizeIndividualRecords(bool|string|Closure|null $callback = true): static
     {
         $this->authorizeIndividualRecords = $callback;
 

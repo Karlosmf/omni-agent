@@ -7,13 +7,16 @@ class Address extends \Faker\Provider\Address
     protected static $cityPrefix = ['ქალაქი', 'ქ.'];
 
     protected static $regionSuffix = ['რაიონი'];
+
     protected static $streetSuffix = [
         'ჩიხი', 'ქ.', 'გამზირი', 'ქუჩა', 'გზატკეცილი', 'მოედანი', 'ბულვარი',
         'აღმართი', 'ხეივანი',
     ];
 
     protected static $buildingNumber = ['%#'];
+
     protected static $postcode = ['####'];
+
     protected static $country = [
         'ავსტრალია', 'ავსტრია', 'ავღანეთი', 'აზერბაიჯანი', 'ალანდის კუნძულები', 'ალბანეთი',
         'ალჟირი', 'ამერიკის სამოა', 'ანგილია', 'ანგოლა', 'ანდორა', 'ანტარქტიდა', 'ანტიგუა და ბარბუდა',

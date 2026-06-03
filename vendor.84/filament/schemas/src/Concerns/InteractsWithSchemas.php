@@ -179,7 +179,7 @@ trait InteractsWithSchemas
     /**
      * @param  array<Component>  $skipComponentsChildContainersWhileSearching
      */
-    public function getSchemaComponent(string $key, bool $withHidden = false, array $skipComponentsChildContainersWhileSearching = []): Component | Action | ActionGroup | null
+    public function getSchemaComponent(string $key, bool $withHidden = false, array $skipComponentsChildContainersWhileSearching = []): Component|Action|ActionGroup|null
     {
         if (! str($key)->contains('.')) {
             return null;
@@ -192,7 +192,7 @@ trait InteractsWithSchemas
         return $schema?->getComponent($key, withHidden: $withHidden, isAbsoluteKey: true, skipComponentsChildContainersWhileSearching: $skipComponentsChildContainersWhileSearching);
     }
 
-    protected function cacheSchema(string $name, Schema | Closure | null $schema = null): ?Schema
+    protected function cacheSchema(string $name, Schema|Closure|null $schema = null): ?Schema
     {
         $this->isCachingSchemas = true;
 
@@ -250,8 +250,8 @@ trait InteractsWithSchemas
                     $this->discoveredSchemaNames[] = $name;
                 }
 
-                if (method_exists($this, 'default' . ucfirst($name))) {
-                    $this->{'default' . ucfirst($name)}($schema);
+                if (method_exists($this, 'default'.ucfirst($name))) {
+                    $this->{'default'.ucfirst($name)}($schema);
                 }
 
                 return $this->cachedSchemas[$name] = ($this->{$methodName}())->key($name);
@@ -291,8 +291,8 @@ trait InteractsWithSchemas
 
             $schema = $this->makeSchema();
 
-            if (method_exists($this, 'default' . ucfirst($name))) {
-                $schema = $this->{'default' . ucfirst($name)}($schema);
+            if (method_exists($this, 'default'.ucfirst($name))) {
+                $schema = $this->{'default'.ucfirst($name)}($schema);
             }
 
             return $this->cachedSchemas[$name] = $this->{$methodName}($schema)->key($name);

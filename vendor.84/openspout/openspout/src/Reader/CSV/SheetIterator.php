@@ -18,7 +18,7 @@ final class SheetIterator implements SheetIteratorInterface
     private bool $hasReadUniqueSheet = false;
 
     /**
-     * @param Sheet $sheet Corresponding unique sheet
+     * @param  Sheet  $sheet  Corresponding unique sheet
      */
     public function __construct(Sheet $sheet)
     {
@@ -42,7 +42,7 @@ final class SheetIterator implements SheetIteratorInterface
      */
     public function valid(): bool
     {
-        return !$this->hasReadUniqueSheet;
+        return ! $this->hasReadUniqueSheet;
     }
 
     /**

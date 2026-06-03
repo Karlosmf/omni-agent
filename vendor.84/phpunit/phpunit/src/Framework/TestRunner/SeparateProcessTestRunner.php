@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,7 +9,18 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework;
+
+use PHPUnit\Event\NoPreviousThrowableException;
+use PHPUnit\Runner\CodeCoverage;
+use PHPUnit\TextUI\Configuration\Registry as ConfigurationRegistry;
+use PHPUnit\Util\GlobalState;
+use PHPUnit\Util\PHP\Job;
+use PHPUnit\Util\PHP\JobRunnerRegistry;
+use ReflectionClass;
+use SebastianBergmann\Template\InvalidArgumentException;
+use SebastianBergmann\Template\Template;
 
 use function assert;
 use function defined;
@@ -19,15 +32,6 @@ use function tempnam;
 use function unlink;
 use function unserialize;
 use function var_export;
-use PHPUnit\Event\NoPreviousThrowableException;
-use PHPUnit\Runner\CodeCoverage;
-use PHPUnit\TextUI\Configuration\Registry as ConfigurationRegistry;
-use PHPUnit\Util\GlobalState;
-use PHPUnit\Util\PHP\Job;
-use PHPUnit\Util\PHP\JobRunnerRegistry;
-use ReflectionClass;
-use SebastianBergmann\Template\InvalidArgumentException;
-use SebastianBergmann\Template\Template;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -50,29 +54,29 @@ final class SeparateProcessTestRunner implements IsolatedTestRunner
 
         if ($runEntireClass) {
             $template = new Template(
-                __DIR__ . '/templates/class.tpl',
+                __DIR__.'/templates/class.tpl',
             );
         } else {
             $template = new Template(
-                __DIR__ . '/templates/method.tpl',
+                __DIR__.'/templates/method.tpl',
             );
         }
 
-        $bootstrap     = '';
-        $constants     = '';
-        $globals       = '';
+        $bootstrap = '';
+        $constants = '';
+        $globals = '';
         $includedFiles = '';
-        $iniSettings   = '';
+        $iniSettings = '';
 
         if (ConfigurationRegistry::get()->hasBootstrap()) {
             $bootstrap = ConfigurationRegistry::get()->bootstrap();
         }
 
         if ($preserveGlobalState) {
-            $constants     = GlobalState::getConstantsAsString();
-            $globals       = GlobalState::getGlobalsAsString();
+            $constants = GlobalState::getConstantsAsString();
+            $globals = GlobalState::getGlobalsAsString();
             $includedFiles = GlobalState::getIncludedFilesAsString();
-            $iniSettings   = GlobalState::getIniSettingsAsString();
+            $iniSettings = GlobalState::getIniSettingsAsString();
         }
 
         $coverage = CodeCoverage::instance()->isActive() ? 'true' : 'false';
@@ -89,47 +93,47 @@ final class SeparateProcessTestRunner implements IsolatedTestRunner
             $phar = '\'\'';
         }
 
-        $data            = var_export(serialize($test->providedData()), true);
-        $dataName        = var_export($test->dataName(), true);
+        $data = var_export(serialize($test->providedData()), true);
+        $dataName = var_export($test->dataName(), true);
         $dependencyInput = var_export(serialize($test->dependencyInput()), true);
-        $includePath     = var_export(get_include_path(), true);
+        $includePath = var_export(get_include_path(), true);
         // must do these fixes because TestCaseMethod.tpl has unserialize('{data}') in it, and we can't break BC
         // the lines above used to use addcslashes() rather than var_export(), which breaks null byte escape sequences
-        $data                    = "'." . $data . ".'";
-        $dataName                = "'.(" . $dataName . ").'";
-        $dependencyInput         = "'." . $dependencyInput . ".'";
-        $includePath             = "'." . $includePath . ".'";
-        $offset                  = hrtime();
+        $data = "'.".$data.".'";
+        $dataName = "'.(".$dataName.").'";
+        $dependencyInput = "'.".$dependencyInput.".'";
+        $includePath = "'.".$includePath.".'";
+        $offset = hrtime();
         $serializedConfiguration = $this->saveConfigurationForChildProcess();
-        $processResultFile       = tempnam(sys_get_temp_dir(), 'phpunit_');
+        $processResultFile = tempnam(sys_get_temp_dir(), 'phpunit_');
 
         $file = $class->getFileName();
 
         assert($file !== false);
 
         $var = [
-            'bootstrap'                      => $bootstrap,
-            'composerAutoload'               => $composerAutoload,
-            'phar'                           => $phar,
-            'filename'                       => $file,
-            'className'                      => $class->getName(),
+            'bootstrap' => $bootstrap,
+            'composerAutoload' => $composerAutoload,
+            'phar' => $phar,
+            'filename' => $file,
+            'className' => $class->getName(),
             'collectCodeCoverageInformation' => $coverage,
-            'data'                           => $data,
-            'dataName'                       => $dataName,
-            'dependencyInput'                => $dependencyInput,
-            'constants'                      => $constants,
-            'globals'                        => $globals,
-            'include_path'                   => $includePath,
-            'included_files'                 => $includedFiles,
-            'iniSettings'                    => $iniSettings,
-            'name'                           => $test->name(),
-            'offsetSeconds'                  => (string) $offset[0],
-            'offsetNanoseconds'              => (string) $offset[1],
-            'serializedConfiguration'        => $serializedConfiguration,
-            'processResultFile'              => $processResultFile,
+            'data' => $data,
+            'dataName' => $dataName,
+            'dependencyInput' => $dependencyInput,
+            'constants' => $constants,
+            'globals' => $globals,
+            'include_path' => $includePath,
+            'included_files' => $includedFiles,
+            'iniSettings' => $iniSettings,
+            'name' => $test->name(),
+            'offsetSeconds' => (string) $offset[0],
+            'offsetNanoseconds' => (string) $offset[1],
+            'serializedConfiguration' => $serializedConfiguration,
+            'processResultFile' => $processResultFile,
         ];
 
-        if (!$runEntireClass) {
+        if (! $runEntireClass) {
             $var['methodName'] = $test->name();
         }
 
@@ -155,7 +159,7 @@ final class SeparateProcessTestRunner implements IsolatedTestRunner
             throw new ProcessIsolationException;
         }
 
-        if (!ConfigurationRegistry::saveTo($path)) {
+        if (! ConfigurationRegistry::saveTo($path)) {
             throw new ProcessIsolationException;
         }
 

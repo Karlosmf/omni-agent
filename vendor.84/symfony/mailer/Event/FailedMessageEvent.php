@@ -22,8 +22,7 @@ final class FailedMessageEvent extends Event
     public function __construct(
         private RawMessage $message,
         private \Throwable $error,
-    ) {
-    }
+    ) {}
 
     public function getMessage(): RawMessage
     {

@@ -10,7 +10,7 @@ use ValueError;
 trait Metadata
 {
     /** Try to get the first case with this meta property value. */
-    public static function tryFromMeta(MetaProperty $metaProperty): static|null
+    public static function tryFromMeta(MetaProperty $metaProperty): ?static
     {
         foreach (static::cases() as $case) {
             if (Meta\Reflection::metaValue($metaProperty::class, $case) === $metaProperty->value) {
@@ -25,8 +25,8 @@ trait Metadata
     public static function fromMeta(MetaProperty $metaProperty): static
     {
         return static::tryFromMeta($metaProperty) ?? throw new ValueError(
-            'Enum ' . static::class . ' does not have a case with a meta property "' .
-            $metaProperty::class . '" of value "' . $metaProperty->value . '"'
+            'Enum '.static::class.' does not have a case with a meta property "'.
+            $metaProperty::class.'" of value "'.$metaProperty->value.'"'
         );
     }
 

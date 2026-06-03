@@ -34,6 +34,7 @@ class Logger extends AbstractLogger implements DebugLoggerInterface
         LogLevel::ALERT => 6,
         LogLevel::EMERGENCY => 7,
     ];
+
     private const PRIORITIES = [
         LogLevel::DEBUG => 100,
         LogLevel::INFO => 200,
@@ -46,16 +47,20 @@ class Logger extends AbstractLogger implements DebugLoggerInterface
     ];
 
     private int $minLevelIndex;
+
     private \Closure $formatter;
+
     private bool $debug = false;
+
     private array $logs = [];
+
     private array $errorCount = [];
 
     /** @var resource|null */
     private $handle;
 
     /**
-     * @param string|resource|null $output
+     * @param  string|resource|null  $output
      */
     public function __construct(?string $minLevel = null, $output = null, ?callable $formatter = null, private readonly ?RequestStack $requestStack = null, bool $debug = false)
     {
@@ -64,15 +69,15 @@ class Logger extends AbstractLogger implements DebugLoggerInterface
             1 => LogLevel::NOTICE,
             2 => LogLevel::INFO,
             3 => LogLevel::DEBUG,
-            default => null === $output || 'php://stdout' === $output || 'php://stderr' === $output ? LogLevel::ERROR : LogLevel::WARNING,
+            default => $output === null || $output === 'php://stdout' || $output === 'php://stderr' ? LogLevel::ERROR : LogLevel::WARNING,
         };
 
-        if (!isset(self::LEVELS[$minLevel])) {
+        if (! isset(self::LEVELS[$minLevel])) {
             throw new InvalidArgumentException(\sprintf('The log level "%s" does not exist.', $minLevel));
         }
 
         $this->minLevelIndex = self::LEVELS[$minLevel];
-        $this->formatter = null !== $formatter ? $formatter(...) : $this->format(...);
+        $this->formatter = $formatter !== null ? $formatter(...) : $this->format(...);
         if ($output && false === $this->handle = \is_string($output) ? @fopen($output, 'a') : $output) {
             throw new InvalidArgumentException(\sprintf('Unable to open "%s".', $output));
         }
@@ -86,7 +91,7 @@ class Logger extends AbstractLogger implements DebugLoggerInterface
 
     public function log($level, $message, array $context = []): void
     {
-        if (!isset(self::LEVELS[$level])) {
+        if (! isset(self::LEVELS[$level])) {
             throw new InvalidArgumentException(\sprintf('The log level "%s" does not exist.', $level));
         }
 
@@ -135,7 +140,7 @@ class Logger extends AbstractLogger implements DebugLoggerInterface
         if (str_contains($message, '{')) {
             $replacements = [];
             foreach ($context as $key => $val) {
-                if (null === $val || \is_scalar($val) || $val instanceof \Stringable) {
+                if ($val === null || \is_scalar($val) || $val instanceof \Stringable) {
                     $replacements["{{$key}}"] = $val;
                 } elseif ($val instanceof \DateTimeInterface) {
                     $replacements["{{$key}}"] = $val->format(\DateTimeInterface::RFC3339);

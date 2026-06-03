@@ -1,6 +1,8 @@
 <?php
+
 /**
  * Whoops - php errors for cool kids
+ *
  * @author Filipe Dobreira <http://github.com/filp>
  */
 
@@ -19,9 +21,7 @@ class SystemFacade
     }
 
     /**
-     * @param callable $handler
-     * @param int      $types
-     *
+     * @param  int  $types
      * @return callable|null
      */
     public function setErrorHandler(callable $handler, $types = 'use-php-defaults')
@@ -30,12 +30,11 @@ class SystemFacade
         if ($types === 'use-php-defaults') {
             $types = E_ALL;
         }
+
         return set_error_handler($handler, $types);
     }
 
     /**
-     * @param callable $handler
-     *
      * @return callable|null
      */
     public function setExceptionHandler(callable $handler)
@@ -60,8 +59,6 @@ class SystemFacade
     }
 
     /**
-     * @param callable $function
-     *
      * @return void
      */
     public function registerShutdownFunction(callable $function)
@@ -118,13 +115,12 @@ class SystemFacade
     }
 
     /**
-     * @param int $httpCode
-     *
+     * @param  int  $httpCode
      * @return int
      */
     public function setHttpResponseCode($httpCode)
     {
-        if (!headers_sent()) {
+        if (! headers_sent()) {
             // Ensure that no 'location' header is present as otherwise this
             // will override the HTTP code being set here, and mask the
             // expected error page.
@@ -135,7 +131,7 @@ class SystemFacade
     }
 
     /**
-     * @param int $exitStatus
+     * @param  int  $exitStatus
      */
     public function stopExecution($exitStatus)
     {

@@ -19,7 +19,7 @@ class Person extends \Faker\Provider\Person
         '{{titleFemale}} {{firstNameFemale}} {{lastName}}',
     ];
 
-    //http://ro.wikipedia.org/wiki/List%C4%83_de_prenume_rom%C3%A2ne%C8%99ti#Feminine
+    // http://ro.wikipedia.org/wiki/List%C4%83_de_prenume_rom%C3%A2ne%C8%99ti#Feminine
     protected static $firstNameFemale = [
         'Ada', 'Adela', 'Adelaida', 'Adelina', 'Adina', 'Adriana', 'Agata', 'Aglaia', 'Agripina', 'Aida', 'Alberta', 'Albertina', 'Alexandra', 'Alexandrina', 'Alida', 'Alina', 'Alice', 'Alis', 'Alma',
         'Amalia', 'Amelia', 'Amanda', 'Ana', 'Anabela', 'Anaida', 'Anamaria', 'Anastasia', 'Anca', 'Ancuța', 'Anda', 'Andra', 'Andrada', 'Andreea', 'Anemona', 'Aneta', 'Angela', 'Anghelina', 'Anica',
@@ -44,7 +44,7 @@ class Person extends \Faker\Provider\Person
         'Veronica', 'Veta', 'Vicenția', 'Victoria', 'Violeta', 'Viorela', 'Viorica', 'Virginia', 'Viviana', 'Voichița', 'Xenia', 'Zaharia', 'Zamfira', 'Zaraza', 'Zenobia', 'Zenovia', 'Zina', 'Zoe',
     ];
 
-    //http://ro.wikipedia.org/wiki/List%C4%83_de_prenume_rom%C3%A2ne%C8%99ti#Feminine
+    // http://ro.wikipedia.org/wiki/List%C4%83_de_prenume_rom%C3%A2ne%C8%99ti#Feminine
     protected static $firstNameMale = [
         'Achim', 'Adam', 'Adelin', 'Adonis', 'Adrian', 'Adi', 'Agnos', 'Albert', 'Alex', 'Alexandru', 'Alexe', 'Aleodor', 'Alin', 'Alistar', 'Amedeu', 'Amza', 'Anatolie', 'Andrei', 'Angel', 'Anghel', 'Antim',
         'Anton', 'Antonie', 'Antoniu', 'Arian', 'Aristide', 'Arsenie', 'Augustin', 'Aurel', 'Aurelian', 'Aurică', 'Avram', 'Axinte', 'Barbu', 'Bartolomeu', 'Basarab', 'Bănel', 'Bebe', 'Beniamin', 'Benone',
@@ -63,7 +63,7 @@ class Person extends \Faker\Provider\Person
         'Traian', 'Tudor', 'Valentin', 'Valeriu', 'Valter', 'Vasile', 'Vasilică', 'Veniamin', 'Vicențiu', 'Victor', 'Vincențiu', 'Viorel', 'Visarion', 'Vlad', 'Vladimir', 'Vlaicu', 'Voicu', 'Zamfir', 'Zeno',
     ];
 
-    //courtesy of Florin LIPAN, at nume.ottomotor.ro
+    // courtesy of Florin LIPAN, at nume.ottomotor.ro
     protected static $lastName = [
         'Achim', 'Adam', 'Albu', 'Aldea', 'Alexa', 'Alexandrescu', 'Alexandru', 'Alexe', 'Andrei', 'Anghel', 'Antal', 'Anton', 'Apostol', 'Ardelean', 'Ardeleanu', 'Avram',
         'Baciu', 'Badea', 'Balan', 'Balint', 'Banica', 'Banu', 'Barbu', 'Barbulescu', 'Bejan', 'Biro', 'Blaga', 'Boboc', 'Bodea', 'Bogdan', 'Bota', 'Botezatu', 'Bratu', 'Bucur', 'Buda', 'Bunea', 'Burlacu',
@@ -87,6 +87,7 @@ class Person extends \Faker\Provider\Person
     ];
 
     protected static $titleMale = ['dl.', 'ing.', 'dr.'];
+
     protected static $titleFemale = ['d-na.', 'd-șoara', 'ing.', 'dr.'];
 
     protected static $cnpCountyCodes = [
@@ -108,11 +109,10 @@ class Person extends \Faker\Provider\Person
      *
      * @example 1111111111118
      *
-     * @param string|null $gender      Person::GENDER_MALE or Person::GENDER_FEMALE
-     * @param string|null $dateOfBirth (1800-2099) 'Y-m-d', 'Y-m', 'Y'  I.E. '1981-06-16', '2085-03', '1900'
-     * @param string|null $county      county code where the CNP was issued
-     * @param bool|null   $isResident  flag if the person resides in Romania
-     *
+     * @param  string|null  $gender  Person::GENDER_MALE or Person::GENDER_FEMALE
+     * @param  string|null  $dateOfBirth  (1800-2099) 'Y-m-d', 'Y-m', 'Y'  I.E. '1981-06-16', '2085-03', '1900'
+     * @param  string|null  $county  county code where the CNP was issued
+     * @param  bool|null  $isResident  flag if the person resides in Romania
      * @return string 13 digits CNP code
      */
     public function cnp($gender = null, $dateOfBirth = null, $county = null, $isResident = true)
@@ -121,34 +121,32 @@ class Person extends \Faker\Provider\Person
 
         if (empty($gender)) {
             $gender = static::randomElement($genders);
-        } elseif (!in_array($gender, $genders, false)) {
+        } elseif (! in_array($gender, $genders, false)) {
             throw new \InvalidArgumentException("Gender must be '{Person::GENDER_MALE}' or '{Person::GENDER_FEMALE}'");
         }
 
         $date = $this->getDateOfBirth($dateOfBirth);
 
-        if (null === $county) {
+        if ($county === null) {
             $countyCode = static::randomElement(array_values(static::$cnpCountyCodes));
-        } elseif (!array_key_exists($county, static::$cnpCountyCodes)) {
+        } elseif (! array_key_exists($county, static::$cnpCountyCodes)) {
             throw new \InvalidArgumentException("Invalid county code '{$county}' received");
         } else {
             $countyCode = static::$cnpCountyCodes[$county];
         }
 
         $cnp = (string) $this->getGenderDigit($date, $gender, $isResident)
-            . $date->format('ymd')
-            . $countyCode
-            . static::numerify('##%')
-        ;
+            .$date->format('ymd')
+            .$countyCode
+            .static::numerify('##%');
 
         $checksum = $this->getChecksumDigit($cnp);
 
-        return $cnp . $checksum;
+        return $cnp.$checksum;
     }
 
     /**
-     * @param string|null $dateOfBirth
-     *
+     * @param  string|null  $dateOfBirth
      * @return \DateTime
      */
     protected function getDateOfBirth($dateOfBirth)
@@ -163,11 +161,11 @@ class Person extends \Faker\Provider\Person
         switch (count($dateOfBirthParts)) {
             case 1:
                 $dateOfBirthParts[] = $baseDate->format('m');
-                //don't break, we need the day also
+                // don't break, we need the day also
                 // no break
             case 2:
                 $dateOfBirthParts[] = $baseDate->format('d');
-                //don't break, next line will
+                // don't break, next line will
                 // no break
             case 3:
                 break;
@@ -183,7 +181,7 @@ class Person extends \Faker\Provider\Person
         $dateOfBirthFinal = implode('-', $dateOfBirthParts);
         $date = \DateTime::createFromFormat('Y-m-d', $dateOfBirthFinal);
 
-        //a full (invalid) date might have been supplied, check if it converts
+        // a full (invalid) date might have been supplied, check if it converts
         if ($date->format('Y-m-d') !== $dateOfBirthFinal) {
             throw new \InvalidArgumentException("Invalid date of birth - '{$date->format('Y-m-d')}' generated based on '{$dateOfBirth}' received");
         }
@@ -194,14 +192,13 @@ class Person extends \Faker\Provider\Person
     /**
      * https://ro.wikipedia.org/wiki/Cod_numeric_personal#S
      *
-     * @param bool   $isResident
-     * @param string $gender
-     *
+     * @param  bool  $isResident
+     * @param  string  $gender
      * @return int
      */
     protected static function getGenderDigit(\DateTime $dateOfBirth, $gender, $isResident)
     {
-        if (!$isResident) {
+        if (! $isResident) {
             return 9;
         }
 
@@ -231,8 +228,7 @@ class Person extends \Faker\Provider\Person
     /**
      * Calculates a checksum for the Personal Numerical Code (CNP).
      *
-     * @param string $value 12 digit CNP
-     *
+     * @param  string  $value  12 digit CNP
      * @return int checksum digit
      */
     protected function getChecksumDigit($value)

@@ -18,7 +18,7 @@ class GlobalSearchResult
      * @param  array<Action>  $actions
      */
     public function __construct(
-        public readonly string | Htmlable $title,
+        public readonly string|Htmlable $title,
         public readonly string $url,
         public readonly array $details = [],
         array $actions = [],

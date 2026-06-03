@@ -1,4 +1,9 @@
 <?php
+
+use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Facade;
+
 // 1. FORZAR DIAGNÓSTICO
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -129,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
                 require_once $autoload;
                 $app = require_once $bootstrap;
-                \Illuminate\Support\Facades\Facade::setFacadeApplication($app);
+                Facade::setFacadeApplication($app);
 
                 // Asegurar directorios antes de cualquier comando de Artisan
                 $requiredDirs = [
@@ -150,18 +155,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     }
                 }
 
-                $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+                $kernel = $app->make(Kernel::class);
 
                 if ($action === 'migrate') {
                     $exitCode = $kernel->call('migrate', ['--force' => true]);
-                    $cmdOutput = \Illuminate\Support\Facades\Artisan::output();
+                    $cmdOutput = Artisan::output();
                     $output .= "MIGRACIONES (Código: $exitCode):\n".($cmdOutput ?: 'Ejecutado correctamente (sin cambios pendientes o salida vacía).');
                 }
 
                 if ($action === 'optimize') {
                     $output .= "Solicitando optimización de caches...\n";
                     $exitCode = $kernel->call('optimize');
-                    $cmdOutput = \Illuminate\Support\Facades\Artisan::output();
+                    $cmdOutput = Artisan::output();
                     $output .= "OPTIMIZACIÓN (Código: $exitCode):\n".($cmdOutput ?: '¡Éxito! La configuración y rutas han sido cacheadas (Laravel no devolvió texto extra, pero el proceso terminó bien).');
                 }
 

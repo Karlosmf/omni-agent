@@ -31,8 +31,6 @@ class DumpCommand extends ReflectingCommand implements PresenterAware
 
     /**
      * PresenterAware interface.
-     *
-     * @param Presenter $presenter
      */
     public function setPresenter(Presenter $presenter)
     {
@@ -73,7 +71,7 @@ HELP
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (!$output instanceof ShellOutput) {
+        if (! $output instanceof ShellOutput) {
             throw new RuntimeException('DumpCommand requires a ShellOutput');
         }
 

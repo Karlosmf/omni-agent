@@ -17,6 +17,7 @@ namespace League\CommonMark\Normalizer;
 final class UniqueSlugNormalizer implements UniqueSlugNormalizerInterface
 {
     private TextNormalizerInterface $innerNormalizer;
+
     /** @var array<string, bool> */
     private array $alreadyUsed = [];
 
@@ -43,7 +44,7 @@ final class UniqueSlugNormalizer implements UniqueSlugNormalizerInterface
         if (\array_key_exists($normalized, $this->alreadyUsed)) {
             $suffix = 0;
             do {
-                ++$suffix;
+                $suffix++;
             } while (\array_key_exists("$normalized-$suffix", $this->alreadyUsed));
 
             $normalized = "$normalized-$suffix";

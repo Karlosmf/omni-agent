@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of phpunit/php-code-coverage.
@@ -8,12 +10,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
+
+use PhpParser\Node;
+use PhpParser\NodeVisitor;
 
 use function array_pop;
 use function count;
-use PhpParser\Node;
-use PhpParser\NodeVisitor;
 
 /**
  * Visitor that connects a child node to its parent node optimized for Attribute nodes.

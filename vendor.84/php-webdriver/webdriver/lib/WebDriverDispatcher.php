@@ -10,6 +10,7 @@ class WebDriverDispatcher
      * @var array
      */
     protected $listeners = [];
+
     /**
      * @var EventFiringWebDriver
      */
@@ -60,8 +61,8 @@ class WebDriverDispatcher
     }
 
     /**
-     * @param mixed $method
-     * @param mixed $arguments
+     * @param  mixed  $method
+     * @param  mixed  $arguments
      * @return $this
      */
     public function dispatch($method, $arguments)

@@ -20,8 +20,7 @@ final class BlockedNode implements NodeInterface
 
     public function __construct(
         private NodeInterface $parentNode,
-    ) {
-    }
+    ) {}
 
     public function addChild(NodeInterface $node): void
     {

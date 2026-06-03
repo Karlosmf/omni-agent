@@ -6,18 +6,18 @@ use Closure;
 
 trait HasParentActions
 {
-    protected bool | string | Closure | null $cancelParentActions = null;
+    protected bool|string|Closure|null $cancelParentActions = null;
 
-    protected bool | Closure $shouldOverlayParentActions = false;
+    protected bool|Closure $shouldOverlayParentActions = false;
 
-    public function cancelParentActions(bool | string | Closure | null $toAction = true): static
+    public function cancelParentActions(bool|string|Closure|null $toAction = true): static
     {
         $this->cancelParentActions = $toAction;
 
         return $this;
     }
 
-    public function overlayParentActions(bool | Closure $condition = true): static
+    public function overlayParentActions(bool|Closure $condition = true): static
     {
         $this->shouldOverlayParentActions = $condition;
 

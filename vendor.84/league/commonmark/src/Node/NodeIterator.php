@@ -23,11 +23,12 @@ final class NodeIterator implements \IteratorAggregate
     public const FLAG_BLOCKS_ONLY = 1;
 
     private Node $node;
+
     private bool $blocksOnly;
 
     public function __construct(Node $node, int $flags = 0)
     {
-        $this->node       = $node;
+        $this->node = $node;
         $this->blocksOnly = ($flags & self::FLAG_BLOCKS_ONLY) === self::FLAG_BLOCKS_ONLY;
     }
 

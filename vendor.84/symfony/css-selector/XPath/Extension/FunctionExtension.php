@@ -58,7 +58,7 @@ class FunctionExtension extends AbstractExtension
             $xpath->addNameTest();
         }
 
-        if (0 === $a) {
+        if ($a === 0) {
             return $xpath->addCondition('position() = '.($last ? 'last() - '.($b - 1) : $b));
         }
 
@@ -76,16 +76,16 @@ class FunctionExtension extends AbstractExtension
 
         if ($last) {
             $expr = 'last() - '.$expr;
-            --$b;
+            $b--;
         }
 
-        if (0 !== $b) {
+        if ($b !== 0) {
             $expr .= ' - '.$b;
         }
 
         $conditions = [\sprintf('%s %s 0', $expr, $sign)];
 
-        if (1 !== $a && -1 !== $a) {
+        if ($a !== 1 && $a !== -1) {
             $conditions[] = \sprintf('(%s) mod %d = 0', $expr, $a);
         }
 
@@ -115,7 +115,7 @@ class FunctionExtension extends AbstractExtension
      */
     public function translateNthLastOfType(XPathExpr $xpath, FunctionNode $function): XPathExpr
     {
-        if ('*' === $xpath->getElement()) {
+        if ($xpath->getElement() === '*') {
             throw new ExpressionErrorException('"*:nth-of-type()" is not implemented.');
         }
 
@@ -129,7 +129,7 @@ class FunctionExtension extends AbstractExtension
     {
         $arguments = $function->getArguments();
         foreach ($arguments as $token) {
-            if (!($token->isString() || $token->isIdentifier())) {
+            if (! ($token->isString() || $token->isIdentifier())) {
                 throw new ExpressionErrorException('Expected a single string or identifier for :contains(), got '.implode(', ', $arguments));
             }
         }
@@ -147,7 +147,7 @@ class FunctionExtension extends AbstractExtension
     {
         $arguments = $function->getArguments();
         foreach ($arguments as $token) {
-            if (!($token->isString() || $token->isIdentifier())) {
+            if (! ($token->isString() || $token->isIdentifier())) {
                 throw new ExpressionErrorException('Expected a single string or identifier for :lang(), got '.implode(', ', $arguments));
             }
         }

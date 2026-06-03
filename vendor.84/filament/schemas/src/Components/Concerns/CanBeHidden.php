@@ -12,13 +12,13 @@ use Livewire\Component as LivewireComponent;
 
 trait CanBeHidden
 {
-    protected bool | Closure $isHidden = false;
+    protected bool|Closure $isHidden = false;
 
-    protected bool | Closure $isVisible = true;
+    protected bool|Closure $isVisible = true;
 
-    protected string | Closure | null $visibleJs = null;
+    protected string|Closure|null $visibleJs = null;
 
-    protected string | Closure | null $hiddenJs = null;
+    protected string|Closure|null $hiddenJs = null;
 
     protected static bool $isCachingVisibility = false;
 
@@ -27,7 +27,7 @@ trait CanBeHidden
      */
     protected static array $visibilityCache = [];
 
-    public function hidden(bool | Closure $condition = true): static
+    public function hidden(bool|Closure $condition = true): static
     {
         $this->isHidden = $condition;
 
@@ -37,9 +37,9 @@ trait CanBeHidden
     /**
      * @param  string | Operation | array<string | Operation>  $operations
      */
-    public function hiddenOn(string | Operation | array $operations): static
+    public function hiddenOn(string|Operation|array $operations): static
     {
-        $this->hidden(static function (LivewireComponent & HasSchemas $livewire, string $operation) use ($operations): bool {
+        $this->hidden(static function (LivewireComponent&HasSchemas $livewire, string $operation) use ($operations): bool {
             foreach (Arr::wrap($operations) as $hiddenOperation) {
                 if ($hiddenOperation instanceof Operation) {
                     $hiddenOperation = $hiddenOperation->value;
@@ -74,7 +74,7 @@ trait CanBeHidden
     /**
      * @param  string | array<string>  $paths
      */
-    public function whenTruthy(string | array $paths): static
+    public function whenTruthy(string|array $paths): static
     {
         $paths = Arr::wrap($paths);
 
@@ -94,7 +94,7 @@ trait CanBeHidden
     /**
      * @param  string | array<string>  $paths
      */
-    public function whenFalsy(string | array $paths): static
+    public function whenFalsy(string|array $paths): static
     {
         $paths = Arr::wrap($paths);
 
@@ -111,7 +111,7 @@ trait CanBeHidden
         return $this;
     }
 
-    public function visible(bool | Closure $condition = true): static
+    public function visible(bool|Closure $condition = true): static
     {
         $this->isVisible = $condition;
 
@@ -121,9 +121,9 @@ trait CanBeHidden
     /**
      * @param  string | Operation | array<string | Operation>  $operations
      */
-    public function visibleOn(string | Operation | array $operations): static
+    public function visibleOn(string|Operation|array $operations): static
     {
-        $this->visible(static function (LivewireComponent & HasSchemas $livewire, string $operation) use ($operations): bool {
+        $this->visible(static function (LivewireComponent&HasSchemas $livewire, string $operation) use ($operations): bool {
             foreach (Arr::wrap($operations) as $visibleOperation) {
                 if ($visibleOperation instanceof Operation) {
                     $visibleOperation = $visibleOperation->value;
@@ -146,7 +146,7 @@ trait CanBeHidden
             $componentKey = $this->getKey() ?? spl_object_id($this);
 
             if ($this->isHidden instanceof Closure) {
-                $hiddenClosureKey = $componentKey . '.hidden.' . spl_object_id($this->isHidden);
+                $hiddenClosureKey = $componentKey.'.hidden.'.spl_object_id($this->isHidden);
 
                 if (! static::hasVisibilityCacheKey($hiddenClosureKey)) {
                     static::setVisibilityCacheValue(
@@ -163,7 +163,7 @@ trait CanBeHidden
             }
 
             if ($this->isVisible instanceof Closure) {
-                $visibleClosureKey = $componentKey . '.visible.' . spl_object_id($this->isVisible);
+                $visibleClosureKey = $componentKey.'.visible.'.spl_object_id($this->isVisible);
 
                 if (! static::hasVisibilityCacheKey($visibleClosureKey)) {
                     static::setVisibilityCacheValue(
@@ -190,14 +190,14 @@ trait CanBeHidden
         return ! $this->isHidden();
     }
 
-    public function visibleJs(string | Closure | null $condition): static
+    public function visibleJs(string|Closure|null $condition): static
     {
         $this->visibleJs = $condition;
 
         return $this;
     }
 
-    public function hiddenJs(string | Closure | null $condition): static
+    public function hiddenJs(string|Closure|null $condition): static
     {
         $this->hiddenJs = $condition;
 

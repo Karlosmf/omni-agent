@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pest\Plugin\Commands;
 
 use Composer\Command\BaseCommand;
+use Composer\Package\PackageInterface;
 use Pest\Plugin\Manager;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -35,7 +36,7 @@ final class DumpCommand extends BaseCommand
 
         $packages[] = $composer->getPackage();
 
-        /** @var \Composer\Package\PackageInterface $package */
+        /** @var PackageInterface $package */
         foreach ($packages as $package) {
             $extra = $package->getExtra();
             // @phpstan-ignore-next-line

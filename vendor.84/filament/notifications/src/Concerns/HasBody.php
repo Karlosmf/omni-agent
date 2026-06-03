@@ -6,9 +6,9 @@ use Closure;
 
 trait HasBody
 {
-    protected string | Closure | null $body = null;
+    protected string|Closure|null $body = null;
 
-    public function body(string | Closure | null $body): static
+    public function body(string|Closure|null $body): static
     {
         $this->body = $body;
 

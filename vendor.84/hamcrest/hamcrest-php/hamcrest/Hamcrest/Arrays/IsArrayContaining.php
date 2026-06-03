@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Arrays;
 
 /*
@@ -14,7 +15,6 @@ use Hamcrest\Util;
  */
 class IsArrayContaining extends TypeSafeMatcher
 {
-
     private $_elementMatcher;
 
     public function __construct(Matcher $elementMatcher)
@@ -43,17 +43,16 @@ class IsArrayContaining extends TypeSafeMatcher
     public function describeTo(Description $description)
     {
         $description
-                 ->appendText('an array containing ')
-                 ->appendDescriptionOf($this->_elementMatcher)
-        ;
+            ->appendText('an array containing ')
+            ->appendDescriptionOf($this->_elementMatcher);
     }
 
     /**
      * Evaluates to true if any item in an array satisfies the given matcher.
      *
-     * @param mixed $item as a {@link Hamcrest\Matcher} or a value.
+     * @param  mixed  $item  as a {@link Hamcrest\Matcher} or a value.
+     * @return IsArrayContaining
      *
-     * @return \Hamcrest\Arrays\IsArrayContaining
      * @factory hasValue
      */
     public static function hasItemInArray($item)

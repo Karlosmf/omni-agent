@@ -71,7 +71,7 @@ final class CommentsManager
     private readonly Escaper\XLSX $stringsEscaper;
 
     /**
-     * @param string $xlFolder Path to the "xl" folder
+     * @param  string  $xlFolder  Path to the "xl" folder
      */
     public function __construct(string $xlFolder, Escaper\XLSX $stringsEscaper)
     {
@@ -86,10 +86,10 @@ final class CommentsManager
     {
         $sheetId = $sheet->getId();
         $commentFp = fopen($this->getCommentsFilePath($sheet), 'w');
-        \assert(false !== $commentFp);
+        \assert($commentFp !== false);
 
         $drawingFp = fopen($this->getDrawingFilePath($sheet), 'w');
-        \assert(false !== $drawingFp);
+        \assert($drawingFp !== false);
 
         fwrite($commentFp, self::COMMENTS_XML_FILE_HEADER);
         fwrite($drawingFp, self::DRAWINGS_VML_FILE_HEADER);
@@ -119,7 +119,7 @@ final class CommentsManager
     {
         $rowIndexZeroBased = 0 + $worksheet->getLastWrittenRowIndex();
         foreach ($row->getCells() as $columnIndexZeroBased => $cell) {
-            if (null === $cell->comment) {
+            if ($cell->comment === null) {
                 continue;
             }
 
@@ -147,10 +147,10 @@ final class CommentsManager
     /**
      * Add a comment to the commentsX.xml file.
      *
-     * @param int     $sheetId              The id of the sheet (starting with 1)
-     * @param int     $rowIndexZeroBased    The row index, starting at 0, of the cell with the comment
-     * @param int     $columnIndexZeroBased The column index, starting at 0, of the cell with the comment
-     * @param Comment $comment              The actual comment
+     * @param  int  $sheetId  The id of the sheet (starting with 1)
+     * @param  int  $rowIndexZeroBased  The row index, starting at 0, of the cell with the comment
+     * @param  int  $columnIndexZeroBased  The column index, starting at 0, of the cell with the comment
+     * @param  Comment  $comment  The actual comment
      */
     private function addXmlComment(int $sheetId, int $rowIndexZeroBased, int $columnIndexZeroBased, Comment $comment): void
     {
@@ -184,22 +184,22 @@ final class CommentsManager
     /**
      * Add a comment to the vmlDrawingX.vml file.
      *
-     * @param int     $sheetId              The id of the sheet (starting with 1)
-     * @param int     $rowIndexZeroBased    The row index, starting at 0, of the cell with the comment
-     * @param int     $columnIndexZeroBased The column index, starting at 0, of the cell with the comment
-     * @param Comment $comment              The actual comment
+     * @param  int  $sheetId  The id of the sheet (starting with 1)
+     * @param  int  $rowIndexZeroBased  The row index, starting at 0, of the cell with the comment
+     * @param  int  $columnIndexZeroBased  The column index, starting at 0, of the cell with the comment
+     * @param  Comment  $comment  The actual comment
      */
     private function addVmlComment(int $sheetId, int $rowIndexZeroBased, int $columnIndexZeroBased, Comment $comment): void
     {
         $drawingFilePointer = $this->drawingFilePointers[$sheetId];
-        ++$this->shapeId;
+        $this->shapeId++;
 
         $style = 'position:absolute;z-index:1';
         $style .= ';margin-left:'.$comment->marginLeft;
         $style .= ';margin-top:'.$comment->marginTop;
         $style .= ';width:'.$comment->width;
         $style .= ';height:'.$comment->height;
-        if (!$comment->visible) {
+        if (! $comment->visible) {
             $style .= ';visibility:hidden';
         }
 

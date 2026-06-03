@@ -11,7 +11,7 @@ class OptionStateCast implements StateCast
         protected bool $isNullable = true,
     ) {}
 
-    public function get(mixed $state): string | int | null
+    public function get(mixed $state): string|int|null
     {
         if ($this->isNullable && blank($state)) {
             return null;

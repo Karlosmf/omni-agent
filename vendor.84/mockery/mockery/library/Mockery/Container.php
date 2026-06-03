@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -111,7 +112,7 @@ class Container
     {
         $this->_generator = $generator instanceof Generator ? $generator : Mockery::getDefaultGenerator();
         $this->_loader = $loader instanceof LoaderInterface ? $loader : Mockery::getDefaultLoader();
-        $this->instantiator = $instantiator instanceof Instantiator ? $instantiator : new Instantiator();
+        $this->instantiator = $instantiator instanceof Instantiator ? $instantiator : new Instantiator;
     }
 
     /**
@@ -120,8 +121,7 @@ class Container
      *
      * @template TMock of object
      *
-     * @param class-string<TMock> $reference
-     *
+     * @param  class-string<TMock>  $reference
      * @return null|(LegacyMockInterface&MockInterface&TMock)
      */
     public function fetchMock($reference)
@@ -138,16 +138,15 @@ class Container
     }
 
     /**
-     * @param string $method
-     * @param string $parent
-     *
+     * @param  string  $method
+     * @param  string  $parent
      * @return null|string
      */
     public function getKeyOfDemeterMockFor($method, $parent)
     {
         $keys = array_keys($this->_mocks);
 
-        $match = preg_grep('/__demeter_' . md5($parent) . sprintf('_%s$/', $method), $keys);
+        $match = preg_grep('/__demeter_'.md5($parent).sprintf('_%s$/', $method), $keys);
         if ($match === false) {
             return null;
         }
@@ -169,6 +168,7 @@ class Container
 
     /**
      * @template TMock of object
+     *
      * @return array<class-string<LegacyMockInterface&MockInterface&TMockObject>|array-key,LegacyMockInterface&MockInterface&TMockObject>
      */
     public function getMocks()
@@ -179,15 +179,12 @@ class Container
     /**
      * @return void
      */
-    public function instanceMock()
-    {
-    }
+    public function instanceMock() {}
 
     /**
      * see http://php.net/manual/en/language.oop5.basic.php
      *
-     * @param string $className
-     *
+     * @param  string  $className
      * @return bool
      */
     public function isValidClassName($className)
@@ -215,11 +212,10 @@ class Container
      *
      * @template TMock of object
      *
-     * @param array<class-string<TMock>|TMock|Closure(LegacyMockInterface&MockInterface&TMock):LegacyMockInterface&MockInterface&TMock|array<TMock>> $args
+     * @param  array<class-string<TMock>|TMock|Closure(LegacyMockInterface&MockInterface&TMock):LegacyMockInterface&MockInterface&TMock|array<TMock>>  $args
+     * @return LegacyMockInterface&MockInterface&TMock
      *
      * @throws ReflectionException|RuntimeException
-     *
-     * @return LegacyMockInterface&MockInterface&TMock
      */
     public function mock(...$args)
     {
@@ -252,7 +248,7 @@ class Container
 
         reset($args);
 
-        $builder = $builder ?? new MockConfigurationBuilder();
+        $builder = $builder ?? new MockConfigurationBuilder;
         $mockeryConfiguration = Mockery::getConfiguration();
         $builder->setParameterOverrides($mockeryConfiguration->getInternalClassMethodParamMaps());
         $builder->setConstantsMap($mockeryConfiguration->getConstantsMap());
@@ -268,7 +264,7 @@ class Container
                         continue;
                     }
 
-                    if (strpos($type, ',') && !strpos($type, ']')) {
+                    if (strpos($type, ',') && ! strpos($type, ']')) {
                         $interfaces = explode(',', str_replace(' ', '', $type));
 
                         $builder->addTargets($interfaces);
@@ -353,7 +349,7 @@ class Container
             }
 
             if (is_array($arg)) {
-                if ([] !== $arg && array_keys($arg) !== range(0, count($arg) - 1)) {
+                if ($arg !== [] && array_keys($arg) !== range(0, count($arg) - 1)) {
                     // if associative array
                     if (array_key_exists(self::BLOCKS, $arg)) {
                         $blocks = $arg[self::BLOCKS];
@@ -486,8 +482,7 @@ class Container
     /**
      * Set current ordered number
      *
-     * @param int $order
-     *
+     * @param  int  $order
      * @return int The current order number that was set
      */
     public function mockery_setCurrentOrder($order)
@@ -498,9 +493,8 @@ class Container
     /**
      * Set ordering for a group
      *
-     * @param string $group
-     * @param int    $order
-     *
+     * @param  string  $group
+     * @param  int  $order
      * @return void
      */
     public function mockery_setGroup($group, $order)
@@ -546,8 +540,8 @@ class Container
     /**
      * Validate the current mock's ordering
      *
-     * @param string $method
-     * @param int    $order
+     * @param  string  $method
+     * @param  int  $order
      *
      * @throws Exception
      */
@@ -589,8 +583,7 @@ class Container
      *
      * @template TRememberMock of object
      *
-     * @param LegacyMockInterface&MockInterface&TRememberMock $mock
-     *
+     * @param  LegacyMockInterface&MockInterface&TRememberMock  $mock
      * @return LegacyMockInterface&MockInterface&TRememberMock
      */
     public function rememberMock(LegacyMockInterface $mock)
@@ -619,6 +612,7 @@ class Container
     {
         $mocks = array_values($this->_mocks);
         $index = count($mocks) - 1;
+
         return $mocks[$index];
     }
 
@@ -626,9 +620,8 @@ class Container
      * @template TMock of object
      * @template TMixed
      *
-     * @param class-string<TMock> $mockName
-     * @param null|array<TMixed>  $constructorArgs
-     *
+     * @param  class-string<TMock>  $mockName
+     * @param  null|array<TMixed>  $constructorArgs
      * @return TMock
      */
     protected function _getInstance($mockName, $constructorArgs = null)
@@ -641,7 +634,7 @@ class Container
             $instance = $this->instantiator->instantiate($mockName);
         } catch (PHPException $phpException) {
             /** @var class-string<TMock> $internalMockName */
-            $internalMockName = $mockName . '_Internal';
+            $internalMockName = $mockName.'_Internal';
 
             if (! class_exists($internalMockName)) {
                 eval(sprintf(
@@ -651,7 +644,7 @@ class Container
                 ));
             }
 
-            $instance = new $internalMockName();
+            $instance = new $internalMockName;
         }
 
         return $instance;

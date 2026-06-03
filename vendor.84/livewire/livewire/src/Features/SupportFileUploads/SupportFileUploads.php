@@ -2,19 +2,24 @@
 
 namespace Livewire\Features\SupportFileUploads;
 
-use function Livewire\on;
-use Livewire\ComponentHook;
-use Illuminate\Support\Facades\Route;
 use Facades\Livewire\Features\SupportFileUploads\GenerateSignedUploadUrl as GenerateSignedUploadUrlFacade;
+use Illuminate\Support\Facades\Route;
+use Livewire\ComponentHook;
+
+use function Livewire\on;
 
 class SupportFileUploads extends ComponentHook
 {
-    static function provide()
+    public static function provide()
     {
         if (app()->runningUnitTests()) {
             // Don't actually generate S3 signedUrls during testing.
-            GenerateSignedUploadUrlFacade::swap(new class extends GenerateSignedUploadUrl {
-                public function forS3($file, $visibility = '') { return []; }
+            GenerateSignedUploadUrlFacade::swap(new class extends GenerateSignedUploadUrl
+            {
+                public function forS3($file, $visibility = '')
+                {
+                    return [];
+                }
             });
         }
 

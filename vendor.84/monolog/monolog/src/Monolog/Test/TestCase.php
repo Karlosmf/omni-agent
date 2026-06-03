@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -18,6 +20,4 @@ namespace Monolog\Test;
  *
  * @deprecated use MonologTestCase instead.
  */
-class TestCase extends MonologTestCase
-{
-}
+class TestCase extends MonologTestCase {}

@@ -43,7 +43,7 @@ trait ValueToStringTrait
      * - object: `'(className Object)'`
      * - anonymous function: same as object
      *
-     * @param mixed $value the value to return as a string.
+     * @param  mixed  $value  the value to return as a string.
      */
     protected function toolValueToString(mixed $value): string
     {
@@ -69,7 +69,7 @@ trait ValueToStringTrait
 
         // resource
         if (is_resource($value)) {
-            return '(' . get_resource_type($value) . ' resource #' . (int) $value . ')';
+            return '('.get_resource_type($value).' resource #'.(int) $value.')';
         }
 
         // From here, $value should be an object.
@@ -87,6 +87,6 @@ trait ValueToStringTrait
         }
 
         // unknown type
-        return '(' . $value::class . ' Object)';
+        return '('.$value::class.' Object)';
     }
 }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Composer\Pcre\PHPStan;
 
@@ -11,10 +13,8 @@ use PHPStan\Analyser\TypeSpecifierAwareExtension;
 use PHPStan\Analyser\TypeSpecifierContext;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\TrinaryLogic;
-use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Php\RegexArrayShapeMatcher;
 use PHPStan\Type\StaticMethodTypeSpecifyingExtension;
-use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\Type;
 
 final class PregMatchTypeSpecifyingExtension implements StaticMethodTypeSpecifyingExtension, TypeSpecifierAwareExtension
@@ -47,10 +47,10 @@ final class PregMatchTypeSpecifyingExtension implements StaticMethodTypeSpecifyi
     public function isStaticMethodSupported(MethodReflection $methodReflection, StaticCall $node, TypeSpecifierContext $context): bool
     {
         return in_array($methodReflection->getName(), [
-                'match', 'isMatch', 'matchStrictGroups', 'isMatchStrictGroups',
-                'matchAll', 'isMatchAll', 'matchAllStrictGroups', 'isMatchAllStrictGroups'
-            ], true)
-            && !$context->null();
+            'match', 'isMatch', 'matchStrictGroups', 'isMatchStrictGroups',
+            'matchAll', 'isMatchAll', 'matchAllStrictGroups', 'isMatchAllStrictGroups',
+        ], true)
+            && ! $context->null();
     }
 
     public function specifyTypes(MethodReflection $methodReflection, StaticCall $node, Scope $scope, TypeSpecifierContext $context): SpecifiedTypes
@@ -63,12 +63,12 @@ final class PregMatchTypeSpecifyingExtension implements StaticMethodTypeSpecifyi
         if (
             $patternArg === null || $matchesArg === null
         ) {
-            return new SpecifiedTypes();
+            return new SpecifiedTypes;
         }
 
         $flagsType = PregMatchFlags::getType($flagsArg, $scope);
         if ($flagsType === null) {
-            return new SpecifiedTypes();
+            return new SpecifiedTypes;
         }
 
         if (stripos($methodReflection->getName(), 'matchAll') !== false) {
@@ -78,7 +78,7 @@ final class PregMatchTypeSpecifyingExtension implements StaticMethodTypeSpecifyi
         }
 
         if ($matchedType === null) {
-            return new SpecifiedTypes();
+            return new SpecifiedTypes;
         }
 
         if (

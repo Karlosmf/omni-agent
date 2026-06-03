@@ -31,7 +31,7 @@ use function is_bool;
 use function preg_match;
 use function sprintf;
 
-abstract class Component implements UriComponentInterface, Conditionable, Transformable
+abstract class Component implements Conditionable, Transformable, UriComponentInterface
 {
     protected const REGEXP_INVALID_URI_CHARS = '/[\x00-\x1f\x7f]/';
 
@@ -65,7 +65,7 @@ abstract class Component implements UriComponentInterface, Conditionable, Transf
 
         if ($uri instanceof Rfc3986Uri
             || $uri instanceof WhatWgUrl
-            || $uri instanceof PSR7UriInterface
+            || $uri instanceof Psr7UriInterface
             || $uri instanceof UriInterface
         ) {
             return $uri;
@@ -98,21 +98,21 @@ abstract class Component implements UriComponentInterface, Conditionable, Transf
         }
 
         return match (true) {
-            null === $component => null,
-            1 === preg_match(self::REGEXP_INVALID_URI_CHARS, (string) $component) => throw new SyntaxError(sprintf('Invalid component string: %s.', $component)),
+            $component === null => null,
+            preg_match(self::REGEXP_INVALID_URI_CHARS, (string) $component) === 1 => throw new SyntaxError(sprintf('Invalid component string: %s.', $component)),
             default => (string) $component,
         };
     }
 
     final public function when(callable|bool $condition, callable $onSuccess, ?callable $onFail = null): static
     {
-        if (!is_bool($condition)) {
+        if (! is_bool($condition)) {
             $condition = $condition($this);
         }
 
         return match (true) {
             $condition => $onSuccess($this),
-            null !== $onFail => $onFail($this),
+            $onFail !== null => $onFail($this),
             default => $this,
         } ?? $this;
     }

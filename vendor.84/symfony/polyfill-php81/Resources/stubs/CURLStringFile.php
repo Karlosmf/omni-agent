@@ -25,13 +25,13 @@ if (\PHP_VERSION_ID >= 70400 && extension_loaded('curl')) {
 
         public function __set(string $name, $value): void
         {
-            if ('data' !== $name) {
+            if ($name !== 'data') {
                 $this->$name = $value;
 
                 return;
             }
 
-            if (is_object($value) ? !method_exists($value, '__toString') : !is_scalar($value)) {
+            if (is_object($value) ? ! method_exists($value, '__toString') : ! is_scalar($value)) {
                 throw new TypeError('Cannot assign '.gettype($value).' to property CURLStringFile::$data of type string');
             }
 

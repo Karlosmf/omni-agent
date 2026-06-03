@@ -9,14 +9,14 @@ trait HasRecord
     /**
      * @var Model | array<string, mixed> | null
      */
-    protected Model | array | null $record = null;
+    protected Model|array|null $record = null;
 
     protected ?string $recordKey = null;
 
     /**
      * @param  Model | array<string, mixed>  $record
      */
-    public function record(Model | array $record): static
+    public function record(Model|array $record): static
     {
         $this->record = $record;
 
@@ -38,7 +38,7 @@ trait HasRecord
     /**
      * @return Model | array<string, mixed> | null
      */
-    public function getRecord(): Model | array | null
+    public function getRecord(): Model|array|null
     {
         return $this->record ?? $this->getLayout()?->getRecord();
     }

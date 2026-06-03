@@ -31,7 +31,7 @@ final class TableOfContentsPlaceholderParser extends AbstractBlockContinueParser
 
     public function __construct()
     {
-        $this->block = new TableOfContentsPlaceholder();
+        $this->block = new TableOfContentsPlaceholder;
     }
 
     public function getBlock(): TableOfContentsPlaceholder
@@ -46,7 +46,8 @@ final class TableOfContentsPlaceholderParser extends AbstractBlockContinueParser
 
     public static function blockStartParser(): BlockStartParserInterface
     {
-        return new class () implements BlockStartParserInterface, ConfigurationAwareInterface {
+        return new class implements BlockStartParserInterface, ConfigurationAwareInterface
+        {
             /** @psalm-readonly-allow-private-mutation */
             private ConfigurationInterface $config;
 
@@ -58,11 +59,11 @@ final class TableOfContentsPlaceholderParser extends AbstractBlockContinueParser
                 }
 
                 // The placeholder must be the only thing on the line
-                if ($cursor->match('/^' . \preg_quote($placeholder, '/') . '$/') === null) {
+                if ($cursor->match('/^'.\preg_quote($placeholder, '/').'$/') === null) {
                     return BlockStart::none();
                 }
 
-                return BlockStart::of(new TableOfContentsPlaceholderParser())->at($cursor);
+                return BlockStart::of(new TableOfContentsPlaceholderParser)->at($cursor);
             }
 
             public function setConfiguration(ConfigurationInterface $configuration): void

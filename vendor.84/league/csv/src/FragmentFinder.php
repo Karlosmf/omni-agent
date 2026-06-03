@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\Csv;
 
+use const FILTER_VALIDATE_INT;
+
 use Deprecated;
 
 use function array_filter;
@@ -24,8 +26,6 @@ use function filter_var;
 use function preg_match;
 use function range;
 
-use const FILTER_VALIDATE_INT;
-
 /**
  * EXPERIMENTAL WARNING! This class implementation will change in the next major point release.
  *
@@ -36,10 +36,15 @@ use const FILTER_VALIDATE_INT;
 class FragmentFinder
 {
     private const REGEXP_URI_FRAGMENT = ',^(?<type>row|cell|col)=(?<selections>.*)$,i';
+
     private const REGEXP_ROWS_COLUMNS_SELECTION = '/^(?<start>\d+)(-(?<end>\d+|\*))?$/';
+
     private const REGEXP_CELLS_SELECTION = '/^(?<csr>\d+),(?<csc>\d+)(-(?<end>((?<cer>\d+),(?<cec>\d+))|\*))?$/';
+
     private const TYPE_ROW = 'row';
+
     private const TYPE_COLUMN = 'col';
+
     private const TYPE_UNKNOWN = 'unknown';
 
     /**
@@ -49,8 +54,9 @@ class FragmentFinder
      *
      * @experimental since version 9.12.0
      *
-     * @throws SyntaxError
      * @return iterable<int, TabularDataReader>
+     *
+     * @throws SyntaxError
      */
     public function findAll(string $expression, TabularData|TabularDataProvider $tabularData): iterable
     {
@@ -102,7 +108,7 @@ class FragmentFinder
     {
         $tabularData = self::tabularData($tabularData);
         $parsedExpression = $this->parseExpression($expression, $tabularData);
-        if ([] !== array_filter($parsedExpression['selections'], fn (array $selection) => -1 === $selection['start'])) {
+        if (array_filter($parsedExpression['selections'], fn (array $selection) => $selection['start'] === -1) !== []) {
             throw new FragmentNotFound('The expression `'.$expression.'` contains an invalid or an unsupported selection for the tabular data.');
         }
 
@@ -115,37 +121,35 @@ class FragmentFinder
     }
 
     /**
-     * @param array{type:string, selections:non-empty-array<selection>} $parsedExpression
+     * @param  array{type:string, selections:non-empty-array<selection>}  $parsedExpression
+     * @return array<int, TabularDataReader>
      *
      * @throws SyntaxError
-     *
-     * @return array<int, TabularDataReader>
      */
     private function find(array $parsedExpression, TabularData $tabularData): array
     {
         ['type' => $type, 'selections' => $selections] = $parsedExpression;
 
-        $selections = array_filter($selections, fn (array $selection) => -1 !== $selection['start']);
-        if ([] === $selections) {
-            return [new ResultSet()];
+        $selections = array_filter($selections, fn (array $selection) => $selection['start'] !== -1);
+        if ($selections === []) {
+            return [new ResultSet];
         }
 
-        if (self::TYPE_ROW === $type) {
-            $rowFilter = fn (array $record, int $offset): bool => [] !== array_filter(
+        if ($type === self::TYPE_ROW) {
+            $rowFilter = fn (array $record, int $offset): bool => array_filter(
                 $selections,
-                fn (array $selection) =>
-                        $offset >= $selection['start'] &&
-                        (null === $selection['end'] || $offset <= $selection['end'])
-            );
+                fn (array $selection) => $offset >= $selection['start'] &&
+                        ($selection['end'] === null || $offset <= $selection['end'])
+            ) !== [];
 
             return [
-                (new Statement())
+                (new Statement)
                     ->where($rowFilter)
                     ->process($tabularData),
             ];
         }
 
-        if (self::TYPE_COLUMN === $type) {
+        if ($type === self::TYPE_COLUMN) {
             $columns = array_reduce(
                 $selections,
                 fn (array $columns, array $selection) => [...$columns, ...$selection['columns']],
@@ -153,13 +157,13 @@ class FragmentFinder
             );
 
             return [match ([]) {
-                $columns => new ResultSet(),
-                default => (new Statement())->select(...$columns)->process($tabularData),
+                $columns => new ResultSet,
+                default => (new Statement)->select(...$columns)->process($tabularData),
             }];
         }
 
         return array_map(
-            fn (array $selection) => (new Statement())
+            fn (array $selection) => (new Statement)
                 ->offset($selection['start'])
                 ->limit($selection['length'])
                 ->select(...$selection['columns'])
@@ -173,7 +177,7 @@ class FragmentFinder
      */
     private function parseExpression(string $expression, TabularData $tabularData): array
     {
-        if (1 !== preg_match(self::REGEXP_URI_FRAGMENT, $expression, $matches)) {
+        if (preg_match(self::REGEXP_URI_FRAGMENT, $expression, $matches) !== 1) {
             return [
                 'type' => self::TYPE_UNKNOWN,
                 'selections' => [
@@ -215,15 +219,15 @@ class FragmentFinder
         [$start, $end] = $this->parseRowColumnSelection($selection);
 
         return match (true) {
-            -1 === $start,
-            null === $end => [
-            'selection' => $selection,
-            'start' => $start,
-            'end' => $start,
-            'length' => 1,
-            'columns' => [],
+            $start === -1,
+            $end === null => [
+                'selection' => $selection,
+                'start' => $start,
+                'end' => $start,
+                'length' => 1,
+                'columns' => [],
             ],
-            '*' === $end => [
+            $end === '*' => [
                 'selection' => $selection,
                 'start' => $start,
                 'end' => null,
@@ -247,35 +251,35 @@ class FragmentFinder
     {
         [$start, $end] = $this->parseRowColumnSelection($selection);
         $header = $tabularData->getHeader();
-        if ([] === $header) {
+        if ($header === []) {
             $header = $tabularData->nth(0);
         }
 
         $nbColumns = count($header);
 
         return match (true) {
-            -1 === $start,
+            $start === -1,
             $start >= $nbColumns => [
-            'selection' => $selection,
-            'start' => -1,
-            'end' => null,
-            'length' => -1,
-            'columns' => [],
+                'selection' => $selection,
+                'start' => -1,
+                'end' => null,
+                'length' => -1,
+                'columns' => [],
             ],
-            null === $end => [
+            $end === null => [
                 'selection' => $selection,
                 'start' => 0,
                 'end' => null,
                 'length' => -1,
                 'columns' => [$start],
             ],
-            '*' === $end,
+            $end === '*',
             $end > ($nbColumns - 1) => [
-            'selection' => $selection,
-            'start' => 0,
-            'end' => null,
-            'length' => -1,
-            'columns' => range($start, $nbColumns - 1),
+                'selection' => $selection,
+                'start' => 0,
+                'end' => null,
+                'length' => -1,
+                'columns' => range($start, $nbColumns - 1),
             ],
             default => [
                 'selection' => $selection,
@@ -292,27 +296,27 @@ class FragmentFinder
      */
     private function parseRowColumnSelection(string $selection): array
     {
-        if (1 !== preg_match(self::REGEXP_ROWS_COLUMNS_SELECTION, $selection, $found)) {
+        if (preg_match(self::REGEXP_ROWS_COLUMNS_SELECTION, $selection, $found) !== 1) {
             return [-1, 0];
         }
 
         $start = $found['start'];
         $end = $found['end'] ?? null;
         $start = filter_var($start, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-        if (false === $start) {
+        if ($start === false) {
             return [-1, 0];
         }
-        --$start;
+        $start--;
 
-        if (null === $end || '*' === $end) {
+        if ($end === null || $end === '*') {
             return [$start, $end];
         }
 
         $end = filter_var($end, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-        if (false === $end) {
+        if ($end === false) {
             return [-1, 0];
         }
-        --$end;
+        $end--;
 
         if ($end <= $start) {
             return [-1, 0];
@@ -326,7 +330,7 @@ class FragmentFinder
      */
     private function parseCellSelection(string $selection, TabularData $tabularData): array
     {
-        if (1 !== preg_match(self::REGEXP_CELLS_SELECTION, $selection, $found)) {
+        if (preg_match(self::REGEXP_CELLS_SELECTION, $selection, $found) !== 1) {
             return [
                 'selection' => $selection,
                 'start' => -1,
@@ -338,7 +342,7 @@ class FragmentFinder
 
         $cellStartRow = filter_var($found['csr'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
         $cellStartCol = filter_var($found['csc'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-        if (false === $cellStartRow || false === $cellStartCol) {
+        if ($cellStartRow === false || $cellStartCol === false) {
             return [
                 'selection' => $selection,
                 'start' => -1,
@@ -348,11 +352,11 @@ class FragmentFinder
             ];
         }
 
-        --$cellStartRow;
-        --$cellStartCol;
+        $cellStartRow--;
+        $cellStartCol--;
 
         $header = $tabularData->getHeader();
-        if ([] === $header) {
+        if ($header === []) {
             $header = $tabularData->nth(0);
         }
 
@@ -369,7 +373,7 @@ class FragmentFinder
         }
 
         $cellEnd = $found['end'] ?? null;
-        if (null === $cellEnd) {
+        if ($cellEnd === null) {
             return [
                 'selection' => $selection,
                 'start' => $cellStartRow,
@@ -379,7 +383,7 @@ class FragmentFinder
             ];
         }
 
-        if ('*' === $cellEnd) {
+        if ($cellEnd === '*') {
             return [
                 'selection' => $selection,
                 'start' => $cellStartRow,
@@ -392,7 +396,7 @@ class FragmentFinder
         $cellEndRow = filter_var($found['cer'] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
         $cellEndCol = filter_var($found['cec'] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 
-        if (false === $cellEndRow || false === $cellEndCol) {
+        if ($cellEndRow === false || $cellEndCol === false) {
             return [
                 'selection' => $selection,
                 'start' => -1,
@@ -402,8 +406,8 @@ class FragmentFinder
             ];
         }
 
-        --$cellEndRow;
-        --$cellEndCol;
+        $cellEndRow--;
+        $cellEndCol--;
 
         if ($cellEndRow < $cellStartRow || $cellEndCol < $cellStartCol) {
             return [
@@ -429,13 +433,14 @@ class FragmentFinder
      *
      * @see FragmentFinder::__construct()
      * @deprecated Since version 9.22.0
+     *
      * @codeCoverageIgnore
      *
      * Returns a new instance.
      */
-    #[Deprecated(message:'use League\Csv\FragmentFinder::__construct()', since:'league/csv:9.22.0')]
+    #[Deprecated(message: 'use League\Csv\FragmentFinder::__construct()', since: 'league/csv:9.22.0')]
     public static function create(): self
     {
-        return new self();
+        return new self;
     }
 }

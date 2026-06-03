@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\Constraint;
 
 use function array_map;
@@ -114,11 +117,11 @@ abstract class BinaryOperator extends Operator
         $prefix = '';
 
         if ($position > 0) {
-            $prefix = (' ' . $this->operator() . ' ');
+            $prefix = (' '.$this->operator().' ');
         }
 
         if ($this->constraintNeedsParentheses($constraint)) {
-            return $prefix . '( ' . $constraint->toString() . ' )';
+            return $prefix.'( '.$constraint->toString().' )';
         }
 
         $string = $constraint->toStringInContext($this, $position);
@@ -127,6 +130,6 @@ abstract class BinaryOperator extends Operator
             $string = $constraint->toString();
         }
 
-        return $prefix . $string;
+        return $prefix.$string;
     }
 }

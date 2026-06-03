@@ -14,6 +14,4 @@ namespace Symfony\Component\Mailer\Exception;
 /**
  * @author Konstantin Myakshin <molodchick@gmail.com>
  */
-class IncompleteDsnException extends InvalidArgumentException
-{
-}
+class IncompleteDsnException extends InvalidArgumentException {}

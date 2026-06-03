@@ -22,13 +22,12 @@ final class ResponseCookieValueSame extends Constraint
         private string $value,
         private string $path = '/',
         private ?string $domain = null,
-    ) {
-    }
+    ) {}
 
     public function toString(): string
     {
         $str = \sprintf('has cookie "%s"', $this->name);
-        if ('/' !== $this->path) {
+        if ($this->path !== '/') {
             $str .= \sprintf(' with path "%s"', $this->path);
         }
         if ($this->domain) {
@@ -39,12 +38,12 @@ final class ResponseCookieValueSame extends Constraint
     }
 
     /**
-     * @param Response $response
+     * @param  Response  $response
      */
     protected function matches($response): bool
     {
         $cookie = $this->getCookie($response);
-        if (!$cookie) {
+        if (! $cookie) {
             return false;
         }
 
@@ -52,7 +51,7 @@ final class ResponseCookieValueSame extends Constraint
     }
 
     /**
-     * @param Response $response
+     * @param  Response  $response
      */
     protected function failureDescription($response): string
     {

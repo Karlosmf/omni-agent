@@ -1,6 +1,8 @@
 <?php
+
 /**
  * Whoops - php errors for cool kids
+ *
  * @author Filipe Dobreira <http://github.com/filp>
  */
 
@@ -18,7 +20,7 @@ use UnexpectedValueException;
  * Exposes a fluent interface for dealing with an ordered list
  * of stack-trace frames.
  */
-class FrameCollection implements ArrayAccess, IteratorAggregate, Serializable, Countable
+class FrameCollection implements ArrayAccess, Countable, IteratorAggregate, Serializable
 {
     /**
      * @var array[]
@@ -35,19 +37,20 @@ class FrameCollection implements ArrayAccess, IteratorAggregate, Serializable, C
     /**
      * Filters frames using a callable, returns the same FrameCollection
      *
-     * @param  callable        $callable
+     * @param  callable  $callable
      * @return FrameCollection
      */
     public function filter($callable)
     {
         $this->frames = array_values(array_filter($this->frames, $callable));
+
         return $this;
     }
 
     /**
      * Map the collection of frames
      *
-     * @param  callable        $callable
+     * @param  callable  $callable
      * @return FrameCollection
      */
     public function map($callable)
@@ -57,9 +60,9 @@ class FrameCollection implements ArrayAccess, IteratorAggregate, Serializable, C
         $this->frames = array_map(function ($frame) use ($callable) {
             $frame = call_user_func($callable, $frame);
 
-            if (!$frame instanceof Frame) {
+            if (! $frame instanceof Frame) {
                 throw new UnexpectedValueException(
-                    "Callable to " . __CLASS__ . "::map must return a Frame object"
+                    'Callable to '.__CLASS__.'::map must return a Frame object'
                 );
             }
 
@@ -75,7 +78,9 @@ class FrameCollection implements ArrayAccess, IteratorAggregate, Serializable, C
      *
      * @todo   If this gets any more complex than this,
      *         have getIterator use this method.
+     *
      * @see    FrameCollection::getIterator
+     *
      * @return array
      */
     public function getArray()
@@ -85,6 +90,7 @@ class FrameCollection implements ArrayAccess, IteratorAggregate, Serializable, C
 
     /**
      * @see IteratorAggregate::getIterator
+     *
      * @return ArrayIterator
      */
     #[ReturnTypeWillChange]
@@ -95,7 +101,8 @@ class FrameCollection implements ArrayAccess, IteratorAggregate, Serializable, C
 
     /**
      * @see ArrayAccess::offsetExists
-     * @param int $offset
+     *
+     * @param  int  $offset
      */
     #[ReturnTypeWillChange]
     public function offsetExists($offset)
@@ -105,7 +112,8 @@ class FrameCollection implements ArrayAccess, IteratorAggregate, Serializable, C
 
     /**
      * @see ArrayAccess::offsetGet
-     * @param int $offset
+     *
+     * @param  int  $offset
      */
     #[ReturnTypeWillChange]
     public function offsetGet($offset)
@@ -115,26 +123,29 @@ class FrameCollection implements ArrayAccess, IteratorAggregate, Serializable, C
 
     /**
      * @see ArrayAccess::offsetSet
-     * @param int $offset
+     *
+     * @param  int  $offset
      */
     #[ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
-        throw new \Exception(__CLASS__ . ' is read only');
+        throw new \Exception(__CLASS__.' is read only');
     }
 
     /**
      * @see ArrayAccess::offsetUnset
-     * @param int $offset
+     *
+     * @param  int  $offset
      */
     #[ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
-        throw new \Exception(__CLASS__ . ' is read only');
+        throw new \Exception(__CLASS__.' is read only');
     }
 
     /**
      * @see Countable::count
+     *
      * @return int
      */
     #[ReturnTypeWillChange]
@@ -157,6 +168,7 @@ class FrameCollection implements ArrayAccess, IteratorAggregate, Serializable, C
 
     /**
      * @see Serializable::serialize
+     *
      * @return string
      */
     #[ReturnTypeWillChange]
@@ -167,7 +179,8 @@ class FrameCollection implements ArrayAccess, IteratorAggregate, Serializable, C
 
     /**
      * @see Serializable::unserialize
-     * @param string $serializedFrames
+     *
+     * @param  string  $serializedFrames
      */
     #[ReturnTypeWillChange]
     public function unserialize($serializedFrames)
@@ -186,7 +199,7 @@ class FrameCollection implements ArrayAccess, IteratorAggregate, Serializable, C
     }
 
     /**
-     * @param Frame[] $frames Array of Frame instances, usually from $e->getPrevious()
+     * @param  Frame[]  $frames  Array of Frame instances, usually from $e->getPrevious()
      */
     public function prependFrames(array $frames)
     {
@@ -196,7 +209,7 @@ class FrameCollection implements ArrayAccess, IteratorAggregate, Serializable, C
     /**
      * Gets the innermost part of stack trace that is not the same as that of outer exception
      *
-     * @param  FrameCollection $parentFrames Outer exception frames to compare tail against
+     * @param  FrameCollection  $parentFrames  Outer exception frames to compare tail against
      * @return Frame[]
      */
     public function topDiff(FrameCollection $parentFrames)
@@ -204,9 +217,9 @@ class FrameCollection implements ArrayAccess, IteratorAggregate, Serializable, C
         $diff = $this->frames;
 
         $parentFrames = $parentFrames->getArray();
-        $p = count($parentFrames)-1;
+        $p = count($parentFrames) - 1;
 
-        for ($i = count($diff)-1; $i >= 0 && $p >= 0; $i--) {
+        for ($i = count($diff) - 1; $i >= 0 && $p >= 0; $i--) {
             /** @var Frame $tailFrame */
             $tailFrame = $diff[$i];
             if ($tailFrame->equals($parentFrames[$p])) {
@@ -214,6 +227,7 @@ class FrameCollection implements ArrayAccess, IteratorAggregate, Serializable, C
             }
             $p--;
         }
+
         return $diff;
     }
 }

@@ -43,7 +43,7 @@ interface HasTable
      */
     public function getTableFilterFormState(string $name): ?array;
 
-    public function getSelectedTableRecords(bool $shouldFetchSelectedRecords = true, ?int $chunkSize = null): EloquentCollection | Collection | LazyCollection;
+    public function getSelectedTableRecords(bool $shouldFetchSelectedRecords = true, ?int $chunkSize = null): EloquentCollection|Collection|LazyCollection;
 
     public function getSelectedTableRecordsQuery(bool $shouldFetchSelectedRecords = true, ?int $chunkSize = null): Builder;
 
@@ -65,11 +65,11 @@ interface HasTable
 
     public function getTableFiltersForm(): Schema;
 
-    public function getTableRecords(): Collection | Paginator | CursorPaginator;
+    public function getTableRecords(): Collection|Paginator|CursorPaginator;
 
-    public function getTableRecordsPerPage(): int | string | null;
+    public function getTableRecordsPerPage(): int|string|null;
 
-    public function getTablePage(): int | string;
+    public function getTablePage(): int|string;
 
     public function getTableSortColumn(): ?string;
 
@@ -84,12 +84,12 @@ interface HasTable
     /**
      * @return Model | array<string, mixed> | null
      */
-    public function getTableRecord(?string $key): Model | array | null;
+    public function getTableRecord(?string $key): Model|array|null;
 
     /**
      * @param  Model | array<string, mixed>  $record
      */
-    public function getTableRecordKey(Model | array $record): string;
+    public function getTableRecordKey(Model|array $record): string;
 
     public function toggleTableReordering(): void;
 

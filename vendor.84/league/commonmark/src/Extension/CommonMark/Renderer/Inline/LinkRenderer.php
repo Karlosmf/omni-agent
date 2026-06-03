@@ -26,13 +26,13 @@ use League\CommonMark\Xml\XmlNodeRendererInterface;
 use League\Config\ConfigurationAwareInterface;
 use League\Config\ConfigurationInterface;
 
-final class LinkRenderer implements NodeRendererInterface, XmlNodeRendererInterface, ConfigurationAwareInterface
+final class LinkRenderer implements ConfigurationAwareInterface, NodeRendererInterface, XmlNodeRendererInterface
 {
     /** @psalm-readonly-allow-private-mutation */
     private ConfigurationInterface $config;
 
     /**
-     * @param Link $node
+     * @param  Link  $node
      *
      * {@inheritDoc}
      *
@@ -71,8 +71,7 @@ final class LinkRenderer implements NodeRendererInterface, XmlNodeRendererInterf
     }
 
     /**
-     * @param Link $node
-     *
+     * @param  Link  $node
      * @return array<string, scalar>
      *
      * @psalm-suppress MoreSpecificImplementedParamType

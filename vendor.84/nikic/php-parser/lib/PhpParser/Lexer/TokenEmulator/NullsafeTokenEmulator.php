@@ -1,29 +1,36 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace PhpParser\Lexer\TokenEmulator;
 
 use PhpParser\PhpVersion;
 use PhpParser\Token;
 
-final class NullsafeTokenEmulator extends TokenEmulator {
-    public function getPhpVersion(): PhpVersion {
+final class NullsafeTokenEmulator extends TokenEmulator
+{
+    public function getPhpVersion(): PhpVersion
+    {
         return PhpVersion::fromComponents(8, 0);
     }
 
-    public function isEmulationNeeded(string $code): bool {
+    public function isEmulationNeeded(string $code): bool
+    {
         return strpos($code, '?->') !== false;
     }
 
-    public function emulate(string $code, array $tokens): array {
+    public function emulate(string $code, array $tokens): array
+    {
         // We need to manually iterate and manage a count because we'll change
         // the tokens array on the way
-        for ($i = 0, $c = count($tokens); $i < $c; ++$i) {
+        for ($i = 0, $c = count($tokens); $i < $c; $i++) {
             $token = $tokens[$i];
             if ($token->text === '?' && isset($tokens[$i + 1]) && $tokens[$i + 1]->id === \T_OBJECT_OPERATOR) {
                 array_splice($tokens, $i, 2, [
                     new Token(\T_NULLSAFE_OBJECT_OPERATOR, '?->', $token->line, $token->pos),
                 ]);
                 $c--;
+
                 continue;
             }
 
@@ -46,6 +53,7 @@ final class NullsafeTokenEmulator extends TokenEmulator {
                 }
                 array_splice($tokens, $i, 1, $replacement);
                 $c += \count($replacement) - 1;
+
                 continue;
             }
         }
@@ -53,7 +61,8 @@ final class NullsafeTokenEmulator extends TokenEmulator {
         return $tokens;
     }
 
-    public function reverseEmulate(string $code, array $tokens): array {
+    public function reverseEmulate(string $code, array $tokens): array
+    {
         // ?-> was not valid code previously, don't bother.
         return $tokens;
     }

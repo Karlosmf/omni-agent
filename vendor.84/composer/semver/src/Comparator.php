@@ -18,9 +18,8 @@ class Comparator
     /**
      * Evaluates the expression: $version1 > $version2.
      *
-     * @param string $version1
-     * @param string $version2
-     *
+     * @param  string  $version1
+     * @param  string  $version2
      * @return bool
      */
     public static function greaterThan($version1, $version2)
@@ -31,9 +30,8 @@ class Comparator
     /**
      * Evaluates the expression: $version1 >= $version2.
      *
-     * @param string $version1
-     * @param string $version2
-     *
+     * @param  string  $version1
+     * @param  string  $version2
      * @return bool
      */
     public static function greaterThanOrEqualTo($version1, $version2)
@@ -44,9 +42,8 @@ class Comparator
     /**
      * Evaluates the expression: $version1 < $version2.
      *
-     * @param string $version1
-     * @param string $version2
-     *
+     * @param  string  $version1
+     * @param  string  $version2
      * @return bool
      */
     public static function lessThan($version1, $version2)
@@ -57,9 +54,8 @@ class Comparator
     /**
      * Evaluates the expression: $version1 <= $version2.
      *
-     * @param string $version1
-     * @param string $version2
-     *
+     * @param  string  $version1
+     * @param  string  $version2
      * @return bool
      */
     public static function lessThanOrEqualTo($version1, $version2)
@@ -70,9 +66,8 @@ class Comparator
     /**
      * Evaluates the expression: $version1 == $version2.
      *
-     * @param string $version1
-     * @param string $version2
-     *
+     * @param  string  $version1
+     * @param  string  $version2
      * @return bool
      */
     public static function equalTo($version1, $version2)
@@ -83,9 +78,8 @@ class Comparator
     /**
      * Evaluates the expression: $version1 != $version2.
      *
-     * @param string $version1
-     * @param string $version2
-     *
+     * @param  string  $version1
+     * @param  string  $version2
      * @return bool
      */
     public static function notEqualTo($version1, $version2)
@@ -96,13 +90,13 @@ class Comparator
     /**
      * Evaluates the expression: $version1 $operator $version2.
      *
-     * @param string $version1
-     * @param string $operator
-     * @param string $version2
-     *
-     * @return bool
+     * @param  string  $version1
+     * @param  string  $operator
+     * @param  string  $version2
      *
      * @phpstan-param Constraint::STR_OP_*  $operator
+     *
+     * @return bool
      */
     public static function compare($version1, $operator, $version2)
     {

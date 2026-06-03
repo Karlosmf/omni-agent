@@ -7,5 +7,5 @@ use Illuminate\Contracts\Support\Htmlable;
 
 interface HasIcon
 {
-    public function getIcon(): string | BackedEnum | Htmlable | null;
+    public function getIcon(): string|BackedEnum|Htmlable|null;
 }

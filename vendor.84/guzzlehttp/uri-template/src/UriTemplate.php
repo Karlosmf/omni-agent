@@ -74,13 +74,13 @@ final class UriTemplate
     ];
 
     /**
-     * @param array<string,mixed> $variables Variables to use in the template expansion
+     * @param  array<string,mixed>  $variables  Variables to use in the template expansion
      *
      * @throws \RuntimeException
      */
     public static function expand(string $template, array $variables): string
     {
-        if (false === \strpos($template, '{')) {
+        if (\strpos($template, '{') === false) {
             return $template;
         }
 
@@ -91,7 +91,7 @@ final class UriTemplate
             $template
         );
 
-        if (null === $result) {
+        if ($result === null) {
             throw new \RuntimeException(\sprintf('Unable to process template: %s', \preg_last_error_msg()));
         }
 
@@ -99,8 +99,7 @@ final class UriTemplate
     }
 
     /**
-     * @param array<string,mixed> $variables Variables to use in the template expansion
-     *
+     * @param  array<string,mixed>  $variables  Variables to use in the template expansion
      * @return callable(string[]): string
      */
     private static function expandMatchCallback(array $variables): callable
@@ -113,9 +112,8 @@ final class UriTemplate
     /**
      * Process an expansion
      *
-     * @param array<string,mixed> $variables Variables to use in the template expansion
-     * @param string[]            $matches   Matches met in the preg_replace_callback
-     *
+     * @param  array<string,mixed>  $variables  Variables to use in the template expansion
+     * @param  string[]  $matches  Matches met in the preg_replace_callback
      * @return string Returns the replacement string
      */
     private static function expandMatch(array $matches, array $variables): string
@@ -128,7 +126,7 @@ final class UriTemplate
         $allUndefined = true;
 
         foreach ($parsed['values'] as $value) {
-            if (!isset($variables[$value['value']])) {
+            if (! isset($variables[$value['value']])) {
                 continue;
             }
 
@@ -148,7 +146,7 @@ final class UriTemplate
                         $isNestedArray = false;
                     }
 
-                    if (!$isNestedArray) {
+                    if (! $isNestedArray) {
                         $var = \rawurlencode((string) $var);
                         if ($parsed['operator'] === '+' || $parsed['operator'] === '#') {
                             $var = self::decodeReserved($var);
@@ -172,7 +170,7 @@ final class UriTemplate
                     $kvp[$key] = $var;
                 }
 
-                if (0 === \count($variable)) {
+                if (\count($variable) === 0) {
                     $actuallyUseQuery = false;
                 } elseif ($value['modifier'] === '*') {
                     $expanded = \implode($joiner, $kvp);
@@ -217,13 +215,13 @@ final class UriTemplate
 
         $ret = \implode($joiner, $replacements);
 
-        if ('' === $ret) {
+        if ($ret === '') {
             // Spec section 3.2.4 and 3.2.5
-            if (false === $allUndefined && ('#' === $prefix || '.' === $prefix)) {
+            if ($allUndefined === false && ($prefix === '#' || $prefix === '.')) {
                 return $prefix;
             }
         } else {
-            if ('' !== $prefix) {
+            if ($prefix !== '') {
                 return \sprintf('%s%s', $prefix, $ret);
             }
         }
@@ -234,8 +232,7 @@ final class UriTemplate
     /**
      * Parse an expression into parts
      *
-     * @param string $expression Expression to parse
-     *
+     * @param  string  $expression  Expression to parse
      * @return array{operator:string, values:array<array{value:string, modifier:(''|'*'|':'), position?:int}>}
      */
     private static function parseExpression(string $expression): array

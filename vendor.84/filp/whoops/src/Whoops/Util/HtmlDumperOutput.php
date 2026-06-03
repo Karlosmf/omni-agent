@@ -1,6 +1,8 @@
 <?php
+
 /**
  * Whoops - php errors for cool kids
+ *
  * @author Filipe Dobreira <http://github.com/filp>
  */
 
@@ -20,7 +22,7 @@ class HtmlDumperOutput
         // A negative depth means "end of dump"
         if ($depth >= 0) {
             // Adds a two spaces indentation to the line
-            $this->output .= str_repeat('  ', $depth) . $line . "\n";
+            $this->output .= str_repeat('  ', $depth).$line."\n";
         }
     }
 

@@ -21,8 +21,8 @@ use function ksort;
 final readonly class TestSuite
 {
     /**
-     * @param array<string, TestSuite> $suites
-     * @param list<TestCase>           $cases
+     * @param  array<string, TestSuite>  $suites
+     * @param  list<TestCase>  $cases
      */
     public function __construct(
         public string $name,
@@ -35,12 +35,11 @@ final readonly class TestSuite
         public string $file,
         public array $suites,
         public array $cases
-    ) {
-    }
+    ) {}
 
     public static function fromFile(SplFileInfo $logFile): self
     {
-        assert($logFile->isFile() && 0 < (int) $logFile->getSize());
+        assert($logFile->isFile() && (int) $logFile->getSize() > 0);
 
         $logFileContents = file_get_contents($logFile->getPathname());
         assert($logFileContents !== false);
@@ -54,22 +53,22 @@ final readonly class TestSuite
     private static function parseTestSuite(SimpleXMLElement $node, bool $isRootSuite): self
     {
         if ($isRootSuite) {
-            $tests      = 0;
+            $tests = 0;
             $assertions = 0;
-            $failures   = 0;
-            $errors     = 0;
-            $skipped    = 0;
-            $time       = 0;
+            $failures = 0;
+            $errors = 0;
+            $skipped = 0;
+            $time = 0;
         } else {
-            $tests      = (int) $node['tests'];
+            $tests = (int) $node['tests'];
             $assertions = (int) $node['assertions'];
-            $failures   = (int) $node['failures'];
-            $errors     = (int) $node['errors'];
-            $skipped    = (int) $node['skipped'];
-            $time       = (float) $node['time'];
+            $failures = (int) $node['failures'];
+            $errors = (int) $node['errors'];
+            $skipped = (int) $node['skipped'];
+            $time = (float) $node['time'];
         }
 
-        $count  = count($node->testsuite);
+        $count = count($node->testsuite);
         $suites = [];
         foreach ($node->testsuite as $singleTestSuiteXml) {
             $testSuite = self::parseTestSuite($singleTestSuiteXml, false);
@@ -87,12 +86,12 @@ final readonly class TestSuite
                 continue;
             }
 
-            $tests      += $testSuite->tests;
+            $tests += $testSuite->tests;
             $assertions += $testSuite->assertions;
-            $failures   += $testSuite->failures;
-            $errors     += $testSuite->errors;
-            $skipped    += $testSuite->skipped;
-            $time       += $testSuite->time;
+            $failures += $testSuite->failures;
+            $errors += $testSuite->errors;
+            $skipped += $testSuite->skipped;
+            $time += $testSuite->time;
         }
 
         $cases = [];
@@ -122,6 +121,7 @@ final readonly class TestSuite
         foreach ($other->suites as $otherSuiteName => $otherSuite) {
             if (! isset($this->suites[$otherSuiteName])) {
                 $suites[$otherSuiteName] = $otherSuite;
+
                 continue;
             }
 

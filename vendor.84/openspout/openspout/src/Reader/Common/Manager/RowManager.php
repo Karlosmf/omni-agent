@@ -19,7 +19,7 @@ final class RowManager
     {
         $numCells = $row->getNumCells();
 
-        if (0 === $numCells) {
+        if ($numCells === 0) {
             return;
         }
 
@@ -35,8 +35,8 @@ final class RowManager
          */
         $needsSorting = false;
 
-        for ($cellIndex = 0; $cellIndex < $maxCellIndex; ++$cellIndex) {
-            if (!isset($rowCells[$cellIndex])) {
+        for ($cellIndex = 0; $cellIndex < $maxCellIndex; $cellIndex++) {
+            if (! isset($rowCells[$cellIndex])) {
                 $row->setCellAtIndex(Cell::fromValue(''), $cellIndex);
                 $needsSorting = true;
             }

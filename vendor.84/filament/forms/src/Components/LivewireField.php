@@ -11,16 +11,16 @@ class LivewireField extends Field
      */
     protected string $view = 'filament-forms::components.livewire-field';
 
-    protected bool | Closure $isLazy = false;
+    protected bool|Closure $isLazy = false;
 
     /**
      * @var array<string, mixed> | Closure
      */
-    protected array | Closure $data = [];
+    protected array|Closure $data = [];
 
-    protected string | Closure $component;
+    protected string|Closure $component;
 
-    public function component(string | Closure $component): static
+    public function component(string|Closure $component): static
     {
         $this->component = $component;
 
@@ -32,7 +32,7 @@ class LivewireField extends Field
         return $this->evaluate($this->component);
     }
 
-    public function lazy(bool | Closure $condition = true): static
+    public function lazy(bool|Closure $condition = true): static
     {
         $this->isLazy = $condition;
 
@@ -47,7 +47,7 @@ class LivewireField extends Field
     /**
      * @param  array<string, mixed> | Closure  $data
      */
-    public function data(array | Closure $data): static
+    public function data(array|Closure $data): static
     {
         $this->data = $data;
 

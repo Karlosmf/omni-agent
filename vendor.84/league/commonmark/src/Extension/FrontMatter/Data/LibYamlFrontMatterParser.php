@@ -24,7 +24,7 @@ final class LibYamlFrontMatterParser implements FrontMatterDataParserInterface
             return null;
         }
 
-        return new LibYamlFrontMatterParser();
+        return new LibYamlFrontMatterParser;
     }
 
     /**

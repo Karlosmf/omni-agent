@@ -12,11 +12,10 @@ use DeepCopy\TypeFilter\TypeFilter;
  */
 class DateIntervalFilter implements TypeFilter
 {
-
     /**
      * {@inheritdoc}
      *
-     * @param DateInterval $element
+     * @param  DateInterval  $element
      *
      * @see http://news.php.net/php.bugs/205076
      */

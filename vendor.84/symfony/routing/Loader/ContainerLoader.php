@@ -29,7 +29,7 @@ class ContainerLoader extends ObjectLoader
 
     public function supports(mixed $resource, ?string $type = null): bool
     {
-        return 'service' === $type && \is_string($resource);
+        return $type === 'service' && \is_string($resource);
     }
 
     protected function getObject(string $id): object

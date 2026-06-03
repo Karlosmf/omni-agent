@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of phpDocumentor.
  *
@@ -31,8 +32,7 @@ interface Factory
     /**
      * Factory method responsible for instantiating the correct sub type.
      *
-     * @param string $tagLine The text for this tag, including description.
-     *
+     * @param  string  $tagLine  The text for this tag, including description.
      * @return Tag A new tag object.
      *
      * @throws InvalidArgumentException If an invalid tag line was presented.

@@ -6,9 +6,9 @@ use Closure;
 
 trait CanAllowHtml
 {
-    protected bool | Closure $isHtmlAllowed = false;
+    protected bool|Closure $isHtmlAllowed = false;
 
-    public function allowHtml(bool | Closure $condition = true): static
+    public function allowHtml(bool|Closure $condition = true): static
     {
         $this->isHtmlAllowed = $condition;
 

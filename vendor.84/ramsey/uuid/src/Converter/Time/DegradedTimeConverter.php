@@ -20,6 +20,4 @@ namespace Ramsey\Uuid\Converter\Time;
  *
  * @immutable
  */
-class DegradedTimeConverter extends BigNumberTimeConverter
-{
-}
+class DegradedTimeConverter extends BigNumberTimeConverter {}

@@ -10,21 +10,37 @@ use OpenSpout\Reader\XLSX\Helper\CellHelper;
 final class SheetView
 {
     private bool $showFormulas = false;
+
     private bool $showGridLines = true;
+
     private bool $showRowColHeaders = true;
+
     private bool $showZeros = true;
+
     private bool $rightToLeft = false;
+
     private bool $tabSelected = false;
+
     private bool $showOutlineSymbols = true;
+
     private bool $defaultGridColor = true;
+
     private string $view = 'normal';
+
     private string $topLeftCell = 'A1';
+
     private int $colorId = 64;
+
     private int $zoomScale = 100;
+
     private int $zoomScaleNormal = 100;
+
     private int $zoomScalePageLayoutView = 100;
+
     private int $workbookViewId = 0;
+
     private int $freezeRow = 0;
+
     private string $freezeColumn = 'A';
 
     /**
@@ -190,8 +206,7 @@ final class SheetView
     }
 
     /**
-     * @param positive-int $freezeRow Set to 2 to fix the first row
-     *
+     * @param  positive-int  $freezeRow  Set to 2 to fix the first row
      * @return $this
      */
     public function setFreezeRow(int $freezeRow): self
@@ -206,8 +221,7 @@ final class SheetView
     }
 
     /**
-     * @param string $freezeColumn Set to B to fix the first column
-     *
+     * @param  string  $freezeColumn  Set to B to fix the first column
      * @return $this
      */
     public function setFreezeColumn(string $freezeColumn): self
@@ -247,7 +261,7 @@ final class SheetView
 
     private function getFreezeCellPaneXml(): string
     {
-        if ($this->freezeRow < 2 && 'A' === $this->freezeColumn) {
+        if ($this->freezeRow < 2 && $this->freezeColumn === 'A') {
             return '';
         }
 
@@ -263,7 +277,7 @@ final class SheetView
     }
 
     /**
-     * @param array<string, bool|int|string> $data with key containing the attribute name and value containing the attribute value
+     * @param  array<string, bool|int|string>  $data  with key containing the attribute name and value containing the attribute value
      */
     private function generateAttributes(array $data): string
     {

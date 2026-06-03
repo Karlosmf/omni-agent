@@ -46,7 +46,7 @@ class Color extends Base
      */
     public static function hexColor()
     {
-        return '#' . str_pad(dechex(self::numberBetween(1, 16777215)), 6, '0', STR_PAD_LEFT);
+        return '#'.str_pad(dechex(self::numberBetween(1, 16777215)), 6, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -58,7 +58,7 @@ class Color extends Base
     {
         $color = str_pad(dechex(self::numberBetween(0, 255)), 3, '0', STR_PAD_LEFT);
 
-        return '#' . $color[0] . $color[0] . $color[1] . $color[1] . $color[2] . $color[2];
+        return '#'.$color[0].$color[0].$color[1].$color[1].$color[2].$color[2];
     }
 
     /**
@@ -94,7 +94,7 @@ class Color extends Base
      */
     public static function rgbCssColor()
     {
-        return 'rgb(' . static::rgbColor() . ')';
+        return 'rgb('.static::rgbColor().')';
     }
 
     /**
@@ -104,7 +104,7 @@ class Color extends Base
      */
     public static function rgbaCssColor()
     {
-        return 'rgba(' . static::rgbColor() . ',' . static::randomFloat(1, 0, 1) . ')';
+        return 'rgba('.static::rgbColor().','.static::randomFloat(1, 0, 1).')';
     }
 
     /**

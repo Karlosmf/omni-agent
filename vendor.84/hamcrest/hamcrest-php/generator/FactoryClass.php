@@ -30,7 +30,7 @@ class FactoryClass
 
     public function extractFactoryMethods()
     {
-        $this->methods = array();
+        $this->methods = [];
         foreach ($this->getPublicStaticMethods() as $method) {
             if ($method->isFactory()) {
                 $this->methods[] = $method;
@@ -40,12 +40,13 @@ class FactoryClass
 
     public function getPublicStaticMethods()
     {
-        $methods = array();
+        $methods = [];
         foreach ($this->reflector->getMethods(ReflectionMethod::IS_STATIC) as $method) {
             if ($method->isPublic() && $method->getDeclaringClass() == $this->reflector) {
                 $methods[] = new FactoryMethod($this, $method);
             }
         }
+
         return $methods;
     }
 
@@ -61,7 +62,7 @@ class FactoryClass
 
     public function isFactory()
     {
-        return !empty($this->methods);
+        return ! empty($this->methods);
     }
 
     public function getMethods()

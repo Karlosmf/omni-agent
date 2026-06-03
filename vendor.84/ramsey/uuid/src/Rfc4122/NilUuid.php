@@ -23,6 +23,4 @@ use Ramsey\Uuid\Uuid;
  *
  * @immutable
  */
-final class NilUuid extends Uuid implements UuidInterface
-{
-}
+final class NilUuid extends Uuid implements UuidInterface {}

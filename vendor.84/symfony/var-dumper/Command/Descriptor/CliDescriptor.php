@@ -30,8 +30,7 @@ class CliDescriptor implements DumpDescriptorInterface
 
     public function __construct(
         private CliDumper $dumper,
-    ) {
-    }
+    ) {}
 
     public function describe(OutputInterface $output, Data $data, array $context, int $clientId): void
     {

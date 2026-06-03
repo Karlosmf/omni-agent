@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-invoker.
  *
@@ -7,9 +9,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\Invoker;
 
 use const SIGALRM;
+
+use Throwable;
+
 use function call_user_func_array;
 use function extension_loaded;
 use function function_exists;
@@ -17,18 +23,17 @@ use function pcntl_alarm;
 use function pcntl_async_signals;
 use function pcntl_signal;
 use function sprintf;
-use Throwable;
 
 final class Invoker
 {
     /**
-     * @param array<mixed> $arguments
+     * @param  array<mixed>  $arguments
      *
      * @throws Throwable
      */
     public function invoke(callable $callable, array $arguments, int $timeout): mixed
     {
-        if (!$this->canInvokeWithTimeout()) {
+        if (! $this->canInvokeWithTimeout()) {
             // @codeCoverageIgnoreStart
             throw new ProcessControlExtensionNotLoadedException;
             // @codeCoverageIgnoreEnd
@@ -36,8 +41,7 @@ final class Invoker
 
         pcntl_signal(
             SIGALRM,
-            static function () use ($timeout): void
-            {
+            static function () use ($timeout): void {
                 throw new TimeoutException(
                     sprintf(
                         'Execution aborted after %d second%s',

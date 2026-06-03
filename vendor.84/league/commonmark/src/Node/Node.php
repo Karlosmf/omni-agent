@@ -67,7 +67,7 @@ abstract class Node
     protected function setParent(?Node $node = null): void
     {
         $this->parent = $node;
-        $this->depth  = $node === null ? 0 : $node->depth + 1;
+        $this->depth = $node === null ? 0 : $node->depth + 1;
     }
 
     /**
@@ -83,7 +83,7 @@ abstract class Node
         }
 
         $sibling->previous = $this;
-        $this->next        = $sibling;
+        $this->next = $sibling;
         $sibling->setParent($this->parent);
 
         if (! $sibling->next && $sibling->parent) {
@@ -103,7 +103,7 @@ abstract class Node
             $sibling->previous->next = $sibling;
         }
 
-        $sibling->next  = $this;
+        $sibling->next = $this;
         $this->previous = $sibling;
         $sibling->setParent($this->parent);
 
@@ -133,10 +133,10 @@ abstract class Node
             $this->parent->lastChild = $this->previous;
         }
 
-        $this->parent   = null;
-        $this->next     = null;
+        $this->parent = null;
+        $this->next = null;
         $this->previous = null;
-        $this->depth    = 0;
+        $this->depth = 0;
     }
 
     public function hasChildren(): bool
@@ -207,7 +207,7 @@ abstract class Node
     /**
      * Replace all children of given node with collection of another
      *
-     * @param iterable<Node> $children
+     * @param  iterable<Node>  $children
      */
     public function replaceChildren(iterable $children): void
     {
@@ -240,9 +240,9 @@ abstract class Node
     public function __clone()
     {
         // Cloned nodes are detached from their parents, siblings, and children
-        $this->parent   = null;
+        $this->parent = null;
         $this->previous = null;
-        $this->next     = null;
+        $this->next = null;
         // But save a copy of the children since we'll need that in a moment
         $children = $this->children();
         $this->detachChildren();

@@ -50,7 +50,7 @@ final class Since extends BaseTag implements Factory\StaticMethod
     {
         Assert::nullOrNotEmpty($version);
 
-        $this->version     = $version;
+        $this->version = $version;
         $this->description = $description;
     }
 
@@ -60,17 +60,17 @@ final class Since extends BaseTag implements Factory\StaticMethod
         ?TypeContext $context = null
     ): ?self {
         if ($body === null || $body === '') {
-            return new static();
+            return new self;
         }
 
         $matches = [];
-        if (!preg_match('/^(' . self::REGEX_VECTOR . ')\s*(.+)?$/sux', $body, $matches)) {
+        if (! preg_match('/^('.self::REGEX_VECTOR.')\s*(.+)?$/sux', $body, $matches)) {
             return null;
         }
 
         Assert::notNull($descriptionFactory);
 
-        return new static(
+        return new self(
             $matches[1],
             $descriptionFactory->create($matches[2] ?? '', $context)
         );
@@ -97,6 +97,6 @@ final class Since extends BaseTag implements Factory\StaticMethod
 
         $version = (string) $this->version;
 
-        return $version . ($description !== '' ? ($version !== '' ? ' ' : '') . $description : '');
+        return $version.($description !== '' ? ($version !== '' ? ' ' : '').$description : '');
     }
 }

@@ -86,7 +86,7 @@ class SMimePart extends AbstractPart
 
     public function __serialize(): array
     {
-        if (self::class === (new \ReflectionMethod($this, '__sleep'))->class || self::class !== (new \ReflectionMethod($this, '__serialize'))->class) {
+        if ((new \ReflectionMethod($this, '__sleep'))->class === self::class || (new \ReflectionMethod($this, '__serialize'))->class !== self::class) {
             // convert iterables to strings for serialization
             if (is_iterable($this->body)) {
                 $this->body = $this->bodyToString();
@@ -119,7 +119,7 @@ class SMimePart extends AbstractPart
 
     public function __unserialize(array $data): void
     {
-        if ($wakeup = self::class !== (new \ReflectionMethod($this, '__wakeup'))->class && self::class === (new \ReflectionMethod($this, '__unserialize'))->class) {
+        if ($wakeup = (new \ReflectionMethod($this, '__wakeup'))->class !== self::class && (new \ReflectionMethod($this, '__unserialize'))->class === self::class) {
             trigger_deprecation('symfony/mime', '7.4', 'Implementing "%s::__wakeup()" is deprecated, use "__unserialize()" instead.', get_debug_type($this));
         }
 
@@ -159,7 +159,7 @@ class SMimePart extends AbstractPart
 
         \Closure::bind(function ($data) use ($wakeup) {
             foreach ($data as $key => $value) {
-                $this->{("\0" === $key[0] ?? '') ? substr($key, 1 + strrpos($key, "\0")) : $key} = $value;
+                $this->{($key[0] === "\0" ?? '') ? substr($key, 1 + strrpos($key, "\0")) : $key} = $value;
             }
 
             if ($wakeup) {

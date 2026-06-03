@@ -22,9 +22,9 @@ class InstallCommand extends Command
 
     public function __construct(Package $package)
     {
-        $this->signature = $package->shortName() . ':install';
+        $this->signature = $package->shortName().':install';
 
-        $this->description = 'Install ' . $package->name;
+        $this->description = 'Install '.$package->name;
 
         $this->package = $package;
 

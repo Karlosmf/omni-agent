@@ -23,8 +23,7 @@ class XliffFileDumper extends FileDumper
 {
     public function __construct(
         private string $extension = 'xlf',
-    ) {
-    }
+    ) {}
 
     public function formatCatalogue(MessageCatalogue $messages, string $domain, array $options = []): string
     {
@@ -39,10 +38,10 @@ class XliffFileDumper extends FileDumper
             $defaultLocale = \Locale::getDefault();
         }
 
-        if ('1.2' === $xliffVersion) {
+        if ($xliffVersion === '1.2') {
             return $this->dumpXliff1($defaultLocale, $messages, $domain, $options);
         }
-        if ('2.0' === $xliffVersion) {
+        if ($xliffVersion === '2.0') {
             return $this->dumpXliff2($defaultLocale, $messages, $domain);
         }
 
@@ -100,7 +99,7 @@ class XliffFileDumper extends FileDumper
             $s->appendChild($dom->createTextNode($source));
 
             // Does the target contain characters requiring a CDATA section?
-            $text = 1 === preg_match('/[&<>]/', $target) ? $dom->createCDATASection($target) : $dom->createTextNode($target);
+            $text = preg_match('/[&<>]/', $target) === 1 ? $dom->createCDATASection($target) : $dom->createTextNode($target);
 
             $targetElement = $dom->createElement('target');
             $metadata = $messages->getMetadata($source, $domain);
@@ -114,7 +113,7 @@ class XliffFileDumper extends FileDumper
 
             if ($this->hasMetadataArrayInfo('notes', $metadata)) {
                 foreach ($metadata['notes'] as $note) {
-                    if (!isset($note['content'])) {
+                    if (! isset($note['content'])) {
                         continue;
                     }
 
@@ -203,7 +202,7 @@ class XliffFileDumper extends FileDumper
             $s->appendChild($dom->createTextNode($source));
 
             // Does the target contain characters requiring a CDATA section?
-            $text = 1 === preg_match('/[&<>]/', $target) ? $dom->createCDATASection($target) : $dom->createTextNode($target);
+            $text = preg_match('/[&<>]/', $target) === 1 ? $dom->createCDATASection($target) : $dom->createTextNode($target);
 
             $targetElement = $dom->createElement('target');
             if ($this->hasMetadataArrayInfo('target-attributes', $metadata)) {

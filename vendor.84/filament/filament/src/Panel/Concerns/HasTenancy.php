@@ -21,11 +21,11 @@ trait HasTenancy
 
     protected string $tenantBillingRouteSlug = 'billing';
 
-    protected bool | Closure $hasTenantMenu = true;
+    protected bool|Closure $hasTenantMenu = true;
 
-    protected bool | Closure $hasTenantSwitcher = true;
+    protected bool|Closure $hasTenantSwitcher = true;
 
-    protected bool | Closure | null $isTenantMenuSearchable = null;
+    protected bool|Closure|null $isTenantMenuSearchable = null;
 
     protected ?string $tenantRoutePrefix = null;
 
@@ -73,21 +73,21 @@ trait HasTenancy
         return $this;
     }
 
-    public function tenantSwitcher(bool | Closure $condition = true): static
+    public function tenantSwitcher(bool|Closure $condition = true): static
     {
         $this->hasTenantSwitcher = $condition;
 
         return $this;
     }
 
-    public function searchableTenantMenu(bool | Closure | null $condition = true): static
+    public function searchableTenantMenu(bool|Closure|null $condition = true): static
     {
         $this->isTenantMenuSearchable = $condition;
 
         return $this;
     }
 
-    public function tenantMenu(bool | Closure $condition = true): static
+    public function tenantMenu(bool|Closure $condition = true): static
     {
         $this->hasTenantMenu = $condition;
 
@@ -297,7 +297,7 @@ trait HasTenancy
         return (bool) $this->evaluate($this->hasTenantMenu);
     }
 
-    protected function getTenantProfileMenuItem(Action | Closure | MenuItem | null $item = null): Action
+    protected function getTenantProfileMenuItem(Action|Closure|MenuItem|null $item = null): Action
     {
         $currentTenant = Filament::getTenant();
 
@@ -319,7 +319,7 @@ trait HasTenancy
         ]) ?? $action;
     }
 
-    protected function getTenantBillingMenuItem(Action | Closure | MenuItem | null $item = null): Action
+    protected function getTenantBillingMenuItem(Action|Closure|MenuItem|null $item = null): Action
     {
         $action = Action::make('billing')
             ->label(__('filament-panels::layout.actions.billing.label'))
@@ -338,7 +338,7 @@ trait HasTenancy
         ]) ?? $action;
     }
 
-    protected function getTenantRegistrationMenuItem(Action | Closure | MenuItem | null $item = null): Action
+    protected function getTenantRegistrationMenuItem(Action|Closure|MenuItem|null $item = null): Action
     {
         $page = Filament::getTenantRegistrationPage();
 
@@ -374,7 +374,7 @@ trait HasTenancy
     public function getTenantMenuItems(): array
     {
         return collect($this->tenantMenuItems)
-            ->mapWithKeys(function (Action | Closure | MenuItem $item, int | string $key): array {
+            ->mapWithKeys(function (Action|Closure|MenuItem $item, int|string $key): array {
                 if ($item instanceof Action) {
                     return [$item->getName() => $item];
                 }

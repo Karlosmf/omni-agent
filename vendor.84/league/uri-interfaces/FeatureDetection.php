@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\Uri;
 
+use const PHP_INT_SIZE;
+
 use finfo;
 use League\Uri\Exceptions\MissingFeature;
 use League\Uri\IPv4\Calculator;
@@ -21,8 +23,6 @@ use function class_exists;
 use function defined;
 use function extension_loaded;
 use function function_exists;
-
-use const PHP_INT_SIZE;
 
 /**
  * Allow detecting features needed to make the packages work.

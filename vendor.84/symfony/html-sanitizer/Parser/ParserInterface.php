@@ -11,6 +11,8 @@
 
 namespace Symfony\Component\HtmlSanitizer\Parser;
 
+use Dom\Node;
+
 /**
  * Transforms an untrusted HTML input string into a DOM tree.
  *
@@ -23,7 +25,7 @@ interface ParserInterface
      *
      * This method must return null if the string cannot be parsed as HTML.
      *
-     * @param string $context The name of the context element in which the HTML is parsed
+     * @param  string  $context  The name of the context element in which the HTML is parsed
      */
-    public function parse(string $html, string $context = 'body'): \Dom\Node|\DOMNode|null;
+    public function parse(string $html, string $context = 'body'): Node|\DOMNode|null;
 }

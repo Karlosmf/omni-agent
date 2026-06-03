@@ -29,14 +29,14 @@ class SchemasServiceProvider extends PackageServiceProvider
     public function packageBooted(): void
     {
         FilamentAsset::register([
-            AlpineComponent::make('actions', __DIR__ . '/../dist/components/actions.js'),
-            AlpineComponent::make('tabs', __DIR__ . '/../dist/components/tabs.js'),
-            AlpineComponent::make('wizard', __DIR__ . '/../dist/components/wizard.js'),
-            Js::make('schemas', __DIR__ . '/../dist/index.js'),
+            AlpineComponent::make('actions', __DIR__.'/../dist/components/actions.js'),
+            AlpineComponent::make('tabs', __DIR__.'/../dist/components/tabs.js'),
+            AlpineComponent::make('wizard', __DIR__.'/../dist/components/wizard.js'),
+            Js::make('schemas', __DIR__.'/../dist/index.js'),
         ], 'filament/schemas');
 
         if ($this->app->runningInConsole()) {
-            foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
+            foreach (app(Filesystem::class)->files(__DIR__.'/../stubs/') as $file) {
                 $this->publishes([
                     $file->getRealPath() => base_path("stubs/filament/{$file->getFilename()}"),
                 ], 'filament-stubs');

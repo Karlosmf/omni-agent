@@ -31,7 +31,7 @@ class WhitespaceHandler implements HandlerInterface
     {
         $match = $reader->findPattern('~^[ \t\r\n\f]+~');
 
-        if (false === $match) {
+        if ($match === false) {
             return false;
         }
 

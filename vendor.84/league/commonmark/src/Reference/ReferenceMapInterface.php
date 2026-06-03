@@ -21,7 +21,7 @@ namespace League\CommonMark\Reference;
  *
  * @phpstan-extends \IteratorAggregate<ReferenceInterface>
  */
-interface ReferenceMapInterface extends \IteratorAggregate, \Countable
+interface ReferenceMapInterface extends \Countable, \IteratorAggregate
 {
     public function add(ReferenceInterface $reference): void;
 

@@ -15,7 +15,7 @@ trait HasIcon
         getIcon as getBaseIcon;
     }
 
-    public function getIcon(): string | BackedEnum | Htmlable | null
+    public function getIcon(): string|BackedEnum|Htmlable|null
     {
         return $this->getBaseIcon() ?? match ($this->getStatus()) {
             'danger' => FilamentIcon::resolve(NotificationsIconAlias::NOTIFICATION_DANGER) ?? Heroicon::OutlinedXCircle,

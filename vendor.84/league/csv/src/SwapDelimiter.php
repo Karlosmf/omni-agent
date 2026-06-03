@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\Csv;
 
+use const PSFS_PASS_ON;
+
 use php_user_filter;
 use RuntimeException;
 use TypeError;
@@ -30,14 +32,16 @@ use function stream_filter_register;
 use function stream_get_filters;
 use function stream_get_meta_data;
 
-use const PSFS_PASS_ON;
-
 final class SwapDelimiter extends php_user_filter
 {
     private const FILTER_NAME = 'string.league.csv.delimiter';
+
     public const MODE_READ = 'read';
+
     public const MODE_WRITE = 'write';
+
     private string $search = '';
+
     private string $replace = '';
 
     public static function getFiltername(): string
@@ -66,6 +70,7 @@ final class SwapDelimiter extends php_user_filter
                 'separator' => $csv->getDelimiter(),
                 'mode' => self::MODE_READ,
             ]);
+
             return;
         }
 
@@ -77,12 +82,11 @@ final class SwapDelimiter extends php_user_filter
     }
 
     /**
-     * @param resource $stream
+     * @param  resource  $stream
+     * @return resource
      *
      * @throws TypeError
      * @throws RuntimeException
-     *
-     * @return resource
      */
     public static function appendTo(mixed $stream, string $inputDelimiter, string $delimiter): mixed
     {
@@ -104,12 +108,11 @@ final class SwapDelimiter extends php_user_filter
     }
 
     /**
-     * @param resource $stream
+     * @param  resource  $stream
+     * @return resource
      *
      * @throws TypeError
      * @throws RuntimeException
-     *
-     * @return resource
      */
     public static function prependTo(mixed $stream, string $inputDelimiter, string $delimiter): mixed
     {
@@ -132,11 +135,11 @@ final class SwapDelimiter extends php_user_filter
 
     public function onCreate(): bool
     {
-        if (self::FILTER_NAME !== $this->filtername) {
+        if ($this->filtername !== self::FILTER_NAME) {
             return false;
         }
 
-        if (!is_array($this->params)) {
+        if (! is_array($this->params)) {
             return false;
         }
 
@@ -147,7 +150,7 @@ final class SwapDelimiter extends php_user_filter
             default => ['', ''],
         };
 
-        return !in_array('', [$this->replace, $this->search], true);
+        return ! in_array('', [$this->replace, $this->search], true);
     }
 
     public function filter($in, $out, &$consumed, bool $closing): int

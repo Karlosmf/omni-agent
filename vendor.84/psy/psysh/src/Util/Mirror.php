@@ -21,8 +21,11 @@ use Psy\Reflection\ReflectionNamespace;
 class Mirror
 {
     const CONSTANT = 1;
+
     const METHOD = 2;
+
     const STATIC_PROPERTY = 4;
+
     const PROPERTY = 8;
 
     /**
@@ -33,14 +36,13 @@ class Mirror
      *
      *    $filter = Mirror::CONSTANT | Mirror::STATIC_PROPERTY
      *
-     * @throws \Psy\Exception\RuntimeException when a $member specified but not present on $value
-     * @throws \InvalidArgumentException       if $value is something other than an object or class/function name
      *
-     * @param mixed       $value  Class or function name, or variable instance
-     * @param string|null $member Optional: property, constant or method name (default: null)
-     * @param int         $filter (default: CONSTANT | METHOD | PROPERTY | STATIC_PROPERTY)
+     * @param  mixed  $value  Class or function name, or variable instance
+     * @param  string|null  $member  Optional: property, constant or method name (default: null)
+     * @param  int  $filter  (default: CONSTANT | METHOD | PROPERTY | STATIC_PROPERTY)
      *
-     * @return \Reflector
+     * @throws RuntimeException when a $member specified but not present on $value
+     * @throws \InvalidArgumentException if $value is something other than an object or class/function name
      */
     public static function get($value, ?string $member = null, int $filter = 15): \Reflector
     {
@@ -72,11 +74,11 @@ class Mirror
     /**
      * Get a ReflectionClass (or ReflectionObject, or ReflectionNamespace) if possible.
      *
-     * @throws \InvalidArgumentException if $value is not a namespace or class name or instance
      *
-     * @param mixed $value
-     *
+     * @param  mixed  $value
      * @return \ReflectionClass|ReflectionNamespace
+     *
+     * @throws \InvalidArgumentException if $value is not a namespace or class name or instance
      */
     private static function getClass($value)
     {
@@ -84,7 +86,7 @@ class Mirror
             return new \ReflectionObject($value);
         }
 
-        if (!\is_string($value)) {
+        if (! \is_string($value)) {
             throw new \InvalidArgumentException('Mirror expects an object or class');
         }
 
@@ -134,7 +136,7 @@ class Mirror
             // the last one is the function or class or whatever...
             \array_pop($chunks);
 
-            while (!empty($chunks)) {
+            while (! empty($chunks)) {
                 $namespaces[\implode('\\', $chunks)] = true;
                 \array_pop($chunks);
             }

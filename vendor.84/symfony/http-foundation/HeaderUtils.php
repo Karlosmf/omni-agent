@@ -19,14 +19,13 @@ namespace Symfony\Component\HttpFoundation;
 class HeaderUtils
 {
     public const DISPOSITION_ATTACHMENT = 'attachment';
+
     public const DISPOSITION_INLINE = 'inline';
 
     /**
      * This class should not be instantiated.
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Splits an HTTP header by one or more separators.
@@ -36,15 +35,14 @@ class HeaderUtils
      *     HeaderUtils::split('da, en-gb;q=0.8', ',;')
      *     # returns [['da'], ['en-gb', 'q=0.8']]
      *
-     * @param string $separators List of characters to split on, ordered by
-     *                           precedence, e.g. ',', ';=', or ',;='
-     *
+     * @param  string  $separators  List of characters to split on, ordered by
+     *                              precedence, e.g. ',', ';=', or ',;='
      * @return array Nested array with as many levels as there are characters in
      *               $separators
      */
     public static function split(string $header, string $separators): array
     {
-        if ('' === $separators) {
+        if ($separators === '') {
             throw new \InvalidArgumentException('At least one separator must be specified.');
         }
 
@@ -112,7 +110,7 @@ class HeaderUtils
     {
         $parts = [];
         foreach ($assoc as $name => $value) {
-            if (true === $value) {
+            if ($value === true) {
                 $parts[] = $name;
             } else {
                 $parts[] = $name.'='.self::quote($value);
@@ -152,11 +150,11 @@ class HeaderUtils
     /**
      * Generates an HTTP Content-Disposition field-value.
      *
-     * @param string $disposition      One of "inline" or "attachment"
-     * @param string $filename         A unicode string
-     * @param string $filenameFallback A string containing only ASCII characters that
-     *                                 is semantically equivalent to $filename. If the filename is already ASCII,
-     *                                 it can be omitted, or just copied from $filename
+     * @param  string  $disposition  One of "inline" or "attachment"
+     * @param  string  $filename  A unicode string
+     * @param  string  $filenameFallback  A string containing only ASCII characters that
+     *                                    is semantically equivalent to $filename. If the filename is already ASCII,
+     *                                    it can be omitted, or just copied from $filename
      *
      * @throws \InvalidArgumentException
      *
@@ -164,16 +162,16 @@ class HeaderUtils
      */
     public static function makeDisposition(string $disposition, string $filename, string $filenameFallback = ''): string
     {
-        if (!\in_array($disposition, [self::DISPOSITION_ATTACHMENT, self::DISPOSITION_INLINE], true)) {
+        if (! \in_array($disposition, [self::DISPOSITION_ATTACHMENT, self::DISPOSITION_INLINE], true)) {
             throw new \InvalidArgumentException(\sprintf('The disposition must be either "%s" or "%s".', self::DISPOSITION_ATTACHMENT, self::DISPOSITION_INLINE));
         }
 
-        if ('' === $filenameFallback) {
+        if ($filenameFallback === '') {
             $filenameFallback = $filename;
         }
 
         // filenameFallback is not ASCII.
-        if (!preg_match('/^[\x20-\x7e]*$/', $filenameFallback)) {
+        if (! preg_match('/^[\x20-\x7e]*$/', $filenameFallback)) {
             throw new \InvalidArgumentException('The filename fallback must only contain ASCII characters.');
         }
 
@@ -259,11 +257,11 @@ class HeaderUtils
         $separators = substr($separators, 1) ?: '';
         $i = 0;
 
-        if ('' === $separators && !$first) {
+        if ($separators === '' && ! $first) {
             $parts = [''];
 
             foreach ($matches as $match) {
-                if (!$i && isset($match['separator'])) {
+                if (! $i && isset($match['separator'])) {
                     $i = 1;
                     $parts[1] = '';
                 } else {
@@ -279,14 +277,14 @@ class HeaderUtils
 
         foreach ($matches as $match) {
             if (($match['separator'] ?? null) === $separator) {
-                ++$i;
+                $i++;
             } else {
                 $partMatches[$i][] = $match;
             }
         }
 
         foreach ($partMatches as $matches) {
-            if ('' === $separators && '' !== $unquoted = self::unquote($matches[0][0])) {
+            if ($separators === '' && '' !== $unquoted = self::unquote($matches[0][0])) {
                 $parts[] = $unquoted;
             } elseif ($groupedParts = self::groupParts($matches, $separators, false)) {
                 $parts[] = $groupedParts;

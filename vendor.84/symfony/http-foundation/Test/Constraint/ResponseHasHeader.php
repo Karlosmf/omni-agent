@@ -18,8 +18,7 @@ final class ResponseHasHeader extends Constraint
 {
     public function __construct(
         private string $headerName,
-    ) {
-    }
+    ) {}
 
     public function toString(): string
     {
@@ -27,7 +26,7 @@ final class ResponseHasHeader extends Constraint
     }
 
     /**
-     * @param Response $response
+     * @param  Response  $response
      */
     protected function matches($response): bool
     {
@@ -35,7 +34,7 @@ final class ResponseHasHeader extends Constraint
     }
 
     /**
-     * @param Response $response
+     * @param  Response  $response
      */
     protected function failureDescription($response): string
     {

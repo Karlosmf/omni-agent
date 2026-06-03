@@ -6,9 +6,9 @@ use Closure;
 
 trait HasEntryWrapper
 {
-    protected string | Closure | null $entryWrapperView = null;
+    protected string|Closure|null $entryWrapperView = null;
 
-    public function entryWrapperView(string | Closure | null $view): static
+    public function entryWrapperView(string|Closure|null $view): static
     {
         $this->entryWrapperView = $view;
 

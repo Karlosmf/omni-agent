@@ -6,9 +6,9 @@ use Closure;
 
 trait CanSelectPlaceholder
 {
-    protected bool | Closure | null $canSelectPlaceholder = true;
+    protected bool|Closure|null $canSelectPlaceholder = true;
 
-    public function selectablePlaceholder(bool | Closure $condition = true): static
+    public function selectablePlaceholder(bool|Closure $condition = true): static
     {
         $this->canSelectPlaceholder = $condition;
 
@@ -18,7 +18,7 @@ trait CanSelectPlaceholder
     /**
      * @deprecated Use `selectablePlaceholder()` instead.
      */
-    public function disablePlaceholderSelection(bool | Closure $condition = true): static
+    public function disablePlaceholderSelection(bool|Closure $condition = true): static
     {
         $this->selectablePlaceholder(fn (): bool => ! $this->evaluate($condition));
 

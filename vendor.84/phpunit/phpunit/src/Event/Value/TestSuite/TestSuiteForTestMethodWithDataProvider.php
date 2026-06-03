@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\TestSuite;
 
 use PHPUnit\Event\Code\TestCollection;
@@ -27,22 +30,24 @@ final readonly class TestSuiteForTestMethodWithDataProvider extends TestSuite
      * @var non-empty-string
      */
     private string $methodName;
+
     private string $file;
+
     private int $line;
 
     /**
-     * @param non-empty-string $name
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  non-empty-string  $name
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      */
     public function __construct(string $name, int $size, TestCollection $tests, string $className, string $methodName, string $file, int $line)
     {
         parent::__construct($name, $size, $tests);
 
-        $this->className  = $className;
+        $this->className = $className;
         $this->methodName = $methodName;
-        $this->file       = $file;
-        $this->line       = $line;
+        $this->file = $file;
+        $this->line = $line;
     }
 
     /**

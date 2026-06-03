@@ -44,7 +44,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
 use Psr\EventDispatcher\StoppableEventInterface;
 
-final class Environment implements EnvironmentInterface, EnvironmentBuilderInterface, ListenerProviderInterface
+final class Environment implements EnvironmentBuilderInterface, EnvironmentInterface, ListenerProviderInterface
 {
     /**
      * @var ExtensionInterface[]
@@ -102,21 +102,21 @@ final class Environment implements EnvironmentInterface, EnvironmentBuilderInter
     private ?TextNormalizerInterface $slugNormalizer = null;
 
     /**
-     * @param array<string, mixed> $config
+     * @param  array<string, mixed>  $config
      */
     public function __construct(array $config = [])
     {
         $this->config = self::createDefaultConfiguration();
         $this->config->merge($config);
 
-        $this->blockStartParsers   = new PrioritizedList();
-        $this->inlineParsers       = new PrioritizedList();
-        $this->listenerData        = new PrioritizedList();
-        $this->delimiterProcessors = new DelimiterProcessorCollection();
+        $this->blockStartParsers = new PrioritizedList;
+        $this->inlineParsers = new PrioritizedList;
+        $this->listenerData = new PrioritizedList;
+        $this->delimiterProcessors = new DelimiterProcessorCollection;
 
         // Performance optimization: always include a block "parser" that aborts parsing if a line starts with a letter
         // and is therefore unlikely to match any lines as a block start.
-        $this->addBlockStartParser(new SkipLinesStartingWithLettersParser(), 249);
+        $this->addBlockStartParser(new SkipLinesStartingWithLettersParser, 249);
     }
 
     public function getConfiguration(): ConfigurationInterface
@@ -127,7 +127,7 @@ final class Environment implements EnvironmentInterface, EnvironmentBuilderInter
     /**
      * @deprecated Environment::mergeConfig() is deprecated since league/commonmark v2.0 and will be removed in v3.0. Configuration should be set when instantiating the environment instead.
      *
-     * @param array<string, mixed> $config
+     * @param  array<string, mixed>  $config
      */
     public function mergeConfig(array $config): void
     {
@@ -172,7 +172,7 @@ final class Environment implements EnvironmentInterface, EnvironmentBuilderInter
         $this->assertUninitialized('Failed to add renderer.');
 
         if (! isset($this->renderersByClass[$nodeClass])) {
-            $this->renderersByClass[$nodeClass] = new PrioritizedList();
+            $this->renderersByClass[$nodeClass] = new PrioritizedList;
         }
 
         $this->renderersByClass[$nodeClass]->add($renderer, $priority);
@@ -246,7 +246,7 @@ final class Environment implements EnvironmentInterface, EnvironmentBuilderInter
     {
         $this->assertUninitialized('Failed to add extension.');
 
-        $this->extensions[]              = $extension;
+        $this->extensions[] = $extension;
         $this->uninitializedExtensions[] = $extension;
 
         if ($extension instanceof ConfigurableExtensionInterface) {
@@ -291,12 +291,12 @@ final class Environment implements EnvironmentInterface, EnvironmentBuilderInter
     /**
      * @deprecated Instantiate the environment and add the extension yourself
      *
-     * @param array<string, mixed> $config
+     * @param  array<string, mixed>  $config
      */
     public static function createCommonMarkEnvironment(array $config = []): Environment
     {
         $environment = new self($config);
-        $environment->addExtension(new CommonMarkCoreExtension());
+        $environment->addExtension(new CommonMarkCoreExtension);
 
         return $environment;
     }
@@ -304,13 +304,13 @@ final class Environment implements EnvironmentInterface, EnvironmentBuilderInter
     /**
      * @deprecated Instantiate the environment and add the extension yourself
      *
-     * @param array<string, mixed> $config
+     * @param  array<string, mixed>  $config
      */
     public static function createGFMEnvironment(array $config = []): Environment
     {
         $environment = new self($config);
-        $environment->addExtension(new CommonMarkCoreExtension());
-        $environment->addExtension(new GithubFlavoredMarkdownExtension());
+        $environment->addExtension(new CommonMarkCoreExtension);
+        $environment->addExtension(new GithubFlavoredMarkdownExtension);
 
         return $environment;
     }
@@ -422,7 +422,7 @@ final class Environment implements EnvironmentInterface, EnvironmentBuilderInter
     private function assertUninitialized(string $message): void
     {
         if ($this->extensionsInitialized) {
-            throw new AlreadyInitializedException($message . ' Extensions have already been initialized.');
+            throw new AlreadyInitializedException($message.' Extensions have already been initialized.');
         }
     }
 
@@ -439,7 +439,7 @@ final class Environment implements EnvironmentInterface, EnvironmentBuilderInter
                 'soft_break' => Expect::string("\n"),
             ]),
             'slug_normalizer' => Expect::structure([
-                'instance' => Expect::type(TextNormalizerInterface::class)->default(new SlugNormalizer()),
+                'instance' => Expect::type(TextNormalizerInterface::class)->default(new SlugNormalizer),
                 'max_length' => Expect::int()->min(0)->default(255),
                 'unique' => Expect::anyOf(UniqueSlugNormalizerInterface::DISABLED, UniqueSlugNormalizerInterface::PER_ENVIRONMENT, UniqueSlugNormalizerInterface::PER_DOCUMENT)->default(UniqueSlugNormalizerInterface::PER_DOCUMENT),
             ]),

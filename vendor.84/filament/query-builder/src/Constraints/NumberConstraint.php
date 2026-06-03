@@ -20,7 +20,7 @@ class NumberConstraint extends Constraint
      */
     protected array $existingAggregateAliases = [];
 
-    protected bool | Closure $isInteger = false;
+    protected bool|Closure $isInteger = false;
 
     protected function setUp(): void
     {
@@ -37,7 +37,7 @@ class NumberConstraint extends Constraint
         ]);
     }
 
-    public function integer(bool | Closure $condition = true): static
+    public function integer(bool|Closure $condition = true): static
     {
         $this->isInteger = $condition;
 

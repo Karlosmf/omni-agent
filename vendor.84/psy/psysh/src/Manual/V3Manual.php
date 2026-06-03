@@ -31,7 +31,7 @@ class V3Manual implements ManualInterface
     /**
      * Constructor.
      *
-     * @param string $filePath Path to the PHP manual file
+     * @param  string  $filePath  Path to the PHP manual file
      *
      * @throws InvalidManualException if file doesn't return a valid manual data object
      */
@@ -56,21 +56,21 @@ class V3Manual implements ManualInterface
 
         // Validate that the file returned an object with the expected interface
         // @phan-suppress-next-line PhanPossiblyUndeclaredVariable $data is always set above
-        if (!\is_object($data)) {
+        if (! \is_object($data)) {
             throw new InvalidManualException(\sprintf('Manual file "%s" must return an object, got %s', $filePath, \gettype($data)), $filePath);
         }
 
         $requiredMethods = ['get', 'getMeta'];
         foreach ($requiredMethods as $method) {
             // @phan-suppress-next-line PhanPossiblyUndeclaredVariable $data is always set above
-            if (!\method_exists($data, $method)) {
+            if (! \method_exists($data, $method)) {
                 throw new InvalidManualException(\sprintf('Manual data object must have a %s() method', $method), $filePath);
             }
         }
 
         // Verify the manual format version is v3.x
         $meta = $data->getMeta();
-        if (!isset($meta['version']) || !\preg_match('/^3\./', (string) $meta['version'])) {
+        if (! isset($meta['version']) || ! \preg_match('/^3\./', (string) $meta['version'])) {
             $version = $meta['version'] ?? 'unknown';
             throw new InvalidManualException(\sprintf('Manual file "%s" must be v3.x format, got version %s', $filePath, $version), $filePath);
         }
@@ -96,8 +96,6 @@ class V3Manual implements ManualInterface
 
     /**
      * Get manual metadata (version, language, build date, etc).
-     *
-     * @return array
      */
     public function getMeta(): array
     {

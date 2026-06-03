@@ -64,7 +64,7 @@ abstract class Page extends BasePage
 
         $routeBaseName = static::getResource()::getRouteBaseName($panel);
 
-        return $routeBaseName . '.' . static::getResourcePageName();
+        return $routeBaseName.'.'.static::getResourcePageName();
     }
 
     /**
@@ -88,7 +88,7 @@ abstract class Page extends BasePage
     /**
      * @return string | array<string>
      */
-    public static function getNavigationItemActiveRoutePattern(): string | array
+    public static function getNavigationItemActiveRoutePattern(): string|array
     {
         return static::getRouteName();
     }
@@ -119,7 +119,7 @@ abstract class Page extends BasePage
             return $pageName;
         }
 
-        throw new LogicException('Page [' . static::class . '] is not registered to the resource [' . static::getResource() . '].');
+        throw new LogicException('Page ['.static::class.'] is not registered to the resource ['.static::getResource().'].');
     }
 
     public static function route(string $path): PageRegistration

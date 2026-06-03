@@ -34,15 +34,15 @@ class TablesServiceProvider extends PackageServiceProvider
     public function packageBooted(): void
     {
         FilamentAsset::register([
-            AlpineComponent::make('columns/checkbox', __DIR__ . '/../dist/components/columns/checkbox.js'),
-            AlpineComponent::make('columns/select', __DIR__ . '/../dist/components/columns/select.js'),
-            AlpineComponent::make('columns/text-input', __DIR__ . '/../dist/components/columns/text-input.js'),
-            AlpineComponent::make('columns/toggle', __DIR__ . '/../dist/components/columns/toggle.js'),
-            Js::make('tables', __DIR__ . '/../dist/index.js'),
+            AlpineComponent::make('columns/checkbox', __DIR__.'/../dist/components/columns/checkbox.js'),
+            AlpineComponent::make('columns/select', __DIR__.'/../dist/components/columns/select.js'),
+            AlpineComponent::make('columns/text-input', __DIR__.'/../dist/components/columns/text-input.js'),
+            AlpineComponent::make('columns/toggle', __DIR__.'/../dist/components/columns/toggle.js'),
+            Js::make('tables', __DIR__.'/../dist/index.js'),
         ], 'filament/tables');
 
         if ($this->app->runningInConsole()) {
-            foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
+            foreach (app(Filesystem::class)->files(__DIR__.'/../stubs/') as $file) {
                 $this->publishes([
                     $file->getRealPath() => base_path("stubs/filament/{$file->getFilename()}"),
                 ], 'filament-stubs');

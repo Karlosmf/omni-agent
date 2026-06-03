@@ -1,88 +1,92 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace PHPStan\PhpDocParser\Ast\Type;
 
 use PHPStan\PhpDocParser\Ast\NodeAttributes;
+
 use function implode;
 
 class ArrayShapeNode implements TypeNode
 {
+    public const KIND_ARRAY = 'array';
 
-	public const KIND_ARRAY = 'array';
-	public const KIND_LIST = 'list';
-	public const KIND_NON_EMPTY_ARRAY = 'non-empty-array';
-	public const KIND_NON_EMPTY_LIST = 'non-empty-list';
+    public const KIND_LIST = 'list';
 
-	use NodeAttributes;
+    public const KIND_NON_EMPTY_ARRAY = 'non-empty-array';
 
-	/** @var ArrayShapeItemNode[] */
-	public array $items;
+    public const KIND_NON_EMPTY_LIST = 'non-empty-list';
 
-	public bool $sealed;
+    use NodeAttributes;
 
-	/** @var self::KIND_* */
-	public $kind;
+    /** @var ArrayShapeItemNode[] */
+    public array $items;
 
-	public ?ArrayShapeUnsealedTypeNode $unsealedType = null;
+    public bool $sealed;
 
-	/**
-	 * @param ArrayShapeItemNode[] $items
-	 * @param self::KIND_* $kind
-	 */
-	private function __construct(
-		array $items,
-		bool $sealed = true,
-		?ArrayShapeUnsealedTypeNode $unsealedType = null,
-		string $kind = self::KIND_ARRAY
-	)
-	{
-		$this->items = $items;
-		$this->sealed = $sealed;
-		$this->unsealedType = $unsealedType;
-		$this->kind = $kind;
-	}
+    /** @var self::KIND_* */
+    public $kind;
 
-	/**
-	 * @param ArrayShapeItemNode[] $items
-	 * @param self::KIND_* $kind
-	 */
-	public static function createSealed(array $items, string $kind = self::KIND_ARRAY): self
-	{
-		return new self($items, true, null, $kind);
-	}
+    public ?ArrayShapeUnsealedTypeNode $unsealedType = null;
 
-	/**
-	 * @param ArrayShapeItemNode[] $items
-	 * @param self::KIND_* $kind
-	 */
-	public static function createUnsealed(array $items, ?ArrayShapeUnsealedTypeNode $unsealedType, string $kind = self::KIND_ARRAY): self
-	{
-		return new self($items, false, $unsealedType, $kind);
-	}
+    /**
+     * @param  ArrayShapeItemNode[]  $items
+     * @param  self::KIND_*  $kind
+     */
+    private function __construct(
+        array $items,
+        bool $sealed = true,
+        ?ArrayShapeUnsealedTypeNode $unsealedType = null,
+        string $kind = self::KIND_ARRAY
+    ) {
+        $this->items = $items;
+        $this->sealed = $sealed;
+        $this->unsealedType = $unsealedType;
+        $this->kind = $kind;
+    }
 
-	public function __toString(): string
-	{
-		$items = $this->items;
+    /**
+     * @param  ArrayShapeItemNode[]  $items
+     * @param  self::KIND_*  $kind
+     */
+    public static function createSealed(array $items, string $kind = self::KIND_ARRAY): self
+    {
+        return new self($items, true, null, $kind);
+    }
 
-		if (! $this->sealed) {
-			$items[] = '...' . $this->unsealedType;
-		}
+    /**
+     * @param  ArrayShapeItemNode[]  $items
+     * @param  self::KIND_*  $kind
+     */
+    public static function createUnsealed(array $items, ?ArrayShapeUnsealedTypeNode $unsealedType, string $kind = self::KIND_ARRAY): self
+    {
+        return new self($items, false, $unsealedType, $kind);
+    }
 
-		return $this->kind . '{' . implode(', ', $items) . '}';
-	}
+    public function __toString(): string
+    {
+        $items = $this->items;
 
-	/**
-	 * @param array<string, mixed> $properties
-	 */
-	public static function __set_state(array $properties): self
-	{
-		$instance = new self($properties['items'], $properties['sealed'], $properties['unsealedType'], $properties['kind']);
-		if (isset($properties['attributes'])) {
-			foreach ($properties['attributes'] as $key => $value) {
-				$instance->setAttribute($key, $value);
-			}
-		}
-		return $instance;
-	}
+        if (! $this->sealed) {
+            $items[] = '...'.$this->unsealedType;
+        }
 
+        return $this->kind.'{'.implode(', ', $items).'}';
+    }
+
+    /**
+     * @param  array<string, mixed>  $properties
+     */
+    public static function __set_state(array $properties): self
+    {
+        $instance = new self($properties['items'], $properties['sealed'], $properties['unsealedType'], $properties['kind']);
+        if (isset($properties['attributes'])) {
+            foreach ($properties['attributes'] as $key => $value) {
+                $instance->setAttribute($key, $value);
+            }
+        }
+
+        return $instance;
+    }
 }

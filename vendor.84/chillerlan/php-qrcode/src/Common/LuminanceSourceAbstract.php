@@ -1,8 +1,10 @@
 <?php
+
 /**
  * Class LuminanceSourceAbstract
  *
  * @created      24.01.2021
+ *
  * @author       ZXing Authors
  * @author       Ashot Khanamiryan
  * @author       Smiley <smiley@chillerlan.net>
@@ -15,7 +17,13 @@ namespace chillerlan\QRCode\Common;
 use chillerlan\QRCode\Decoder\QRCodeDecoderException;
 use chillerlan\QRCode\QROptions;
 use chillerlan\Settings\SettingsContainerInterface;
-use function array_slice, array_splice, file_exists, is_file, is_readable, realpath;
+
+use function array_slice;
+use function array_splice;
+use function file_exists;
+use function is_file;
+use function is_readable;
+use function realpath;
 
 /**
  * The purpose of this class hierarchy is to abstract different bitmap implementations across
@@ -23,85 +31,89 @@ use function array_slice, array_splice, file_exists, is_file, is_readable, realp
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
-abstract class LuminanceSourceAbstract implements LuminanceSourceInterface{
+abstract class LuminanceSourceAbstract implements LuminanceSourceInterface
+{
+    /** @var QROptions|SettingsContainerInterface */
+    protected SettingsContainerInterface $options;
 
-	/** @var \chillerlan\QRCode\QROptions|\chillerlan\Settings\SettingsContainerInterface */
-	protected SettingsContainerInterface $options;
-	protected array $luminances;
-	protected int   $width;
-	protected int   $height;
+    protected array $luminances;
 
-	/**
-	 *
-	 */
-	public function __construct(int $width, int $height, ?SettingsContainerInterface $options = null){
-		$this->width   = $width;
-		$this->height  = $height;
-		$this->options = ($options ?? new QROptions);
+    protected int $width;
 
-		$this->luminances = [];
-	}
+    protected int $height;
 
-	/** @inheritDoc */
-	public function getLuminances():array{
-		return $this->luminances;
-	}
+    public function __construct(int $width, int $height, ?SettingsContainerInterface $options = null)
+    {
+        $this->width = $width;
+        $this->height = $height;
+        $this->options = ($options ?? new QROptions);
 
-	/** @inheritDoc */
-	public function getWidth():int{
-		return $this->width;
-	}
+        $this->luminances = [];
+    }
 
-	/** @inheritDoc */
-	public function getHeight():int{
-		return $this->height;
-	}
+    /** {@inheritDoc} */
+    public function getLuminances(): array
+    {
+        return $this->luminances;
+    }
 
-	/**
-	 * @inheritDoc
-	 * @throws \chillerlan\QRCode\Decoder\QRCodeDecoderException
-	 */
-	public function getRow(int $y):array{
+    /** {@inheritDoc} */
+    public function getWidth(): int
+    {
+        return $this->width;
+    }
 
-		if($y < 0 || $y >= $this->getHeight()){
-			throw new QRCodeDecoderException('Requested row is outside the image: '.$y);
-		}
+    /** {@inheritDoc} */
+    public function getHeight(): int
+    {
+        return $this->height;
+    }
 
-		$arr = [];
+    /**
+     * {@inheritDoc}
+     *
+     * @throws QRCodeDecoderException
+     */
+    public function getRow(int $y): array
+    {
 
-		array_splice($arr, 0, $this->width, array_slice($this->luminances, ($y * $this->width), $this->width));
+        if ($y < 0 || $y >= $this->getHeight()) {
+            throw new QRCodeDecoderException('Requested row is outside the image: '.$y);
+        }
 
-		return $arr;
-	}
+        $arr = [];
 
-	/**
-	 *
-	 */
-	protected function setLuminancePixel(int $r, int $g, int $b):void{
-		$this->luminances[] = ($r === $g && $g === $b)
-			// Image is already greyscale, so pick any channel.
-			? $r // (($r + 128) % 256) - 128;
-			// Calculate luminance cheaply, favoring green.
-			: (($r + 2 * $g + $b) / 4); // (((($r + 2 * $g + $b) / 4) + 128) % 256) - 128;
-	}
+        array_splice($arr, 0, $this->width, array_slice($this->luminances, ($y * $this->width), $this->width));
 
-	/**
-	 * @throws \chillerlan\QRCode\Decoder\QRCodeDecoderException
-	 */
-	protected static function checkFile(string $path):string{
-		$path = trim($path);
+        return $arr;
+    }
 
-		if(!file_exists($path) || !is_file($path) || !is_readable($path)){
-			throw new QRCodeDecoderException('invalid file: '.$path);
-		}
+    protected function setLuminancePixel(int $r, int $g, int $b): void
+    {
+        $this->luminances[] = ($r === $g && $g === $b)
+            // Image is already greyscale, so pick any channel.
+            ? $r // (($r + 128) % 256) - 128;
+            // Calculate luminance cheaply, favoring green.
+            : (($r + 2 * $g + $b) / 4); // (((($r + 2 * $g + $b) / 4) + 128) % 256) - 128;
+    }
 
-		$realpath = realpath($path);
+    /**
+     * @throws QRCodeDecoderException
+     */
+    protected static function checkFile(string $path): string
+    {
+        $path = trim($path);
 
-		if($realpath === false){
-			throw new QRCodeDecoderException('unable to resolve path: '.$path);
-		}
+        if (! file_exists($path) || ! is_file($path) || ! is_readable($path)) {
+            throw new QRCodeDecoderException('invalid file: '.$path);
+        }
 
-		return $realpath;
-	}
+        $realpath = realpath($path);
 
+        if ($realpath === false) {
+            throw new QRCodeDecoderException('unable to resolve path: '.$path);
+        }
+
+        return $realpath;
+    }
 }

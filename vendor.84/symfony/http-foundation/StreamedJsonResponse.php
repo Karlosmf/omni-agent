@@ -47,10 +47,10 @@ class StreamedJsonResponse extends StreamedResponse
     private const PLACEHOLDER = '__symfony_json__';
 
     /**
-     * @param mixed[]                        $data            JSON Data containing PHP generators which will be streamed as list of data or a Generator
-     * @param int                            $status          The HTTP status code (200 "OK" by default)
-     * @param array<string, string|string[]> $headers         An array of HTTP headers
-     * @param int                            $encodingOptions Flags for the json_encode() function
+     * @param  mixed[]  $data  JSON Data containing PHP generators which will be streamed as list of data or a Generator
+     * @param  int  $status  The HTTP status code (200 "OK" by default)
+     * @param  array<string, string|string[]>  $headers  An array of HTTP headers
+     * @param  int  $encodingOptions  Flags for the json_encode() function
      */
     public function __construct(
         private readonly iterable $data,
@@ -60,7 +60,7 @@ class StreamedJsonResponse extends StreamedResponse
     ) {
         parent::__construct($this->stream(...), $status, $headers);
 
-        if (!$this->headers->get('Content-Type')) {
+        if (! $this->headers->get('Content-Type')) {
             $this->headers->set('Content-Type', 'application/json');
         }
     }
@@ -81,7 +81,7 @@ class StreamedJsonResponse extends StreamedResponse
             return;
         }
 
-        if (is_iterable($data) && !$data instanceof \JsonSerializable) {
+        if (is_iterable($data) && ! $data instanceof \JsonSerializable) {
             $this->streamIterable($data, $jsonEncodingOptions, $keyEncodingOptions);
 
             return;
@@ -95,7 +95,7 @@ class StreamedJsonResponse extends StreamedResponse
         $generators = [];
 
         array_walk_recursive($data, function (&$item, $key) use (&$generators) {
-            if (self::PLACEHOLDER === $key) {
+            if ($key === self::PLACEHOLDER) {
                 // if the placeholder is already in the structure it should be replaced with a new one that explode
                 // works like expected for the structure
                 $generators[] = $key;
@@ -105,7 +105,7 @@ class StreamedJsonResponse extends StreamedResponse
             if (\is_object($item)) {
                 $generators[] = $item;
                 $item = self::PLACEHOLDER;
-            } elseif (self::PLACEHOLDER === $item) {
+            } elseif ($item === self::PLACEHOLDER) {
                 // if the placeholder is already in the structure it should be replaced with a new one that explode
                 // works like expected for the structure
                 $generators[] = $item;
@@ -136,7 +136,7 @@ class StreamedJsonResponse extends StreamedResponse
                 // depending on the first elements key the generator is detected as a list or map
                 // we can not check for a whole list or map because that would hurt the performance
                 // of the streamed response which is the main goal of this response class
-                if (0 !== $key) {
+                if ($key !== 0) {
                     $startTag = '{';
                 }
 
@@ -146,7 +146,7 @@ class StreamedJsonResponse extends StreamedResponse
                 echo ',';
             }
 
-            if ('{' === $startTag) {
+            if ($startTag === '{') {
                 echo json_encode((string) $key, $keyEncodingOptions).':';
             }
 
@@ -157,6 +157,6 @@ class StreamedJsonResponse extends StreamedResponse
             echo '[';
         }
 
-        echo '[' === $startTag ? ']' : '}';
+        echo $startTag === '[' ? ']' : '}';
     }
 }

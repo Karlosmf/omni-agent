@@ -30,15 +30,16 @@ final class Reader extends AbstractReader
     private SheetIterator $sheetIterator;
 
     private readonly Options $options;
+
     private readonly CachingStrategyFactoryInterface $cachingStrategyFactory;
 
     public function __construct(
         ?Options $options = null,
         ?CachingStrategyFactoryInterface $cachingStrategyFactory = null
     ) {
-        $this->options = $options ?? new Options();
+        $this->options = $options ?? new Options;
 
-        if (null === $cachingStrategyFactory) {
+        if ($cachingStrategyFactory === null) {
             $memoryLimit = \ini_get('memory_limit');
             $cachingStrategyFactory = new CachingStrategyFactory(new MemoryLimit($memoryLimit));
         }
@@ -65,18 +66,18 @@ final class Reader extends AbstractReader
      * It also parses the sharedStrings.xml file to get all the shared strings available in memory
      * and fetches all the available sheets.
      *
-     * @param string $filePath Path of the file to be read
+     * @param  string  $filePath  Path of the file to be read
      *
-     * @throws IOException            If the file at the given path or its content cannot be read
+     * @throws IOException If the file at the given path or its content cannot be read
      * @throws NoSheetsFoundException If there are no sheets in the file
      */
     protected function openReader(string $filePath): void
     {
-        $this->zip = new ZipArchive();
+        $this->zip = new ZipArchive;
 
         $openResult = $this->zip->open($filePath);
 
-        if (true !== $openResult) {
+        if ($openResult !== true) {
             $errorMessage = match ($openResult) {
                 ZipArchive::ER_INCONS => 'Zip archive inconsistent',
                 ZipArchive::ER_INVAL => 'Invalid argument',
@@ -109,7 +110,7 @@ final class Reader extends AbstractReader
                 $filePath,
                 $this->options,
                 $this->sharedStringsManager,
-                new XLSX()
+                new XLSX
             )
         );
     }

@@ -30,9 +30,8 @@ interface TimeConverterInterface
      *
      * @link https://www.rfc-editor.org/rfc/rfc9562#appendix-A RFC 9562, Appendix A. Test Vectors
      *
-     * @param string $seconds A string representation of seconds since the Unix epoch for the time to calculate
-     * @param string $microseconds A string representation of the micro-seconds associated with the time to calculate
-     *
+     * @param  string  $seconds  A string representation of seconds since the Unix epoch for the time to calculate
+     * @param  string  $microseconds  A string representation of the micro-seconds associated with the time to calculate
      * @return Hexadecimal The full UUID timestamp as a Hexadecimal value
      *
      * @pure
@@ -42,9 +41,8 @@ interface TimeConverterInterface
     /**
      * Converts a timestamp extracted from a UUID to a Unix timestamp
      *
-     * @param Hexadecimal $uuidTimestamp A hexadecimal representation of a UUID timestamp; a UUID timestamp is a count
-     *     of 100-nanosecond intervals since UTC 00:00:00.00, 15 October 1582.
-     *
+     * @param  Hexadecimal  $uuidTimestamp  A hexadecimal representation of a UUID timestamp; a UUID timestamp is a count
+     *                                      of 100-nanosecond intervals since UTC 00:00:00.00, 15 October 1582.
      * @return Time An instance of {@see Time}
      *
      * @pure

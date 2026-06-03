@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace League\MimeTypeDetection;
 
-class GeneratedExtensionToMimeTypeMap implements ExtensionToMimeTypeMap, ExtensionLookup
+class GeneratedExtensionToMimeTypeMap implements ExtensionLookup, ExtensionToMimeTypeMap
 {
     /**
      * @var array<string, string>

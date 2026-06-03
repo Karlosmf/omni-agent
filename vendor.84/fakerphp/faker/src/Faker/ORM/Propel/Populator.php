@@ -2,6 +2,8 @@
 
 namespace Faker\ORM\Propel;
 
+use Faker\Generator;
+
 /**
  * Service class for populating a database using the Propel ORM.
  * A Populator can populate several tables using ActiveRecord classes.
@@ -9,10 +11,12 @@ namespace Faker\ORM\Propel;
 class Populator
 {
     protected $generator;
+
     protected $entities = [];
+
     protected $quantities = [];
 
-    public function __construct(\Faker\Generator $generator)
+    public function __construct(Generator $generator)
     {
         $this->generator = $generator;
     }
@@ -20,13 +24,13 @@ class Populator
     /**
      * Add an order for the generation of $number records for $entity.
      *
-     * @param mixed $entity A Propel ActiveRecord classname, or a \Faker\ORM\Propel\EntityPopulator instance
-     * @param int   $number The number of entities to populate
+     * @param  mixed  $entity  A Propel ActiveRecord classname, or a \Faker\ORM\Propel\EntityPopulator instance
+     * @param  int  $number  The number of entities to populate
      */
     public function addEntity($entity, $number, $customColumnFormatters = [], $customModifiers = [])
     {
-        if (!$entity instanceof \Faker\ORM\Propel\EntityPopulator) {
-            $entity = new \Faker\ORM\Propel\EntityPopulator($entity);
+        if (! $entity instanceof EntityPopulator) {
+            $entity = new EntityPopulator($entity);
         }
         $entity->setColumnFormatters($entity->guessColumnFormatters($this->generator));
 
@@ -46,13 +50,12 @@ class Populator
     /**
      * Populate the database using all the Entity classes previously added.
      *
-     * @param PropelPDO $con A Propel connection object
-     *
+     * @param  PropelPDO  $con  A Propel connection object
      * @return array A list of the inserted PKs
      */
     public function execute($con = null)
     {
-        if (null === $con) {
+        if ($con === null) {
             $con = $this->getConnection();
         }
         $isInstancePoolingEnabled = \Propel::isInstancePoolingEnabled();
@@ -61,7 +64,7 @@ class Populator
         $con->beginTransaction();
 
         foreach ($this->quantities as $class => $number) {
-            for ($i = 0; $i < $number; ++$i) {
+            for ($i = 0; $i < $number; $i++) {
                 $insertedEntities[$class][] = $this->entities[$class]->execute($con, $insertedEntities);
             }
         }
@@ -79,7 +82,7 @@ class Populator
         // use the first connection available
         $class = key($this->entities);
 
-        if (!$class) {
+        if (! $class) {
             throw new \RuntimeException('No class found from entities. Did you add entities to the Populator ?');
         }
 

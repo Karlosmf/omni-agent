@@ -9,8 +9,7 @@ namespace Faker\Provider\pt_BR;
  * @see http://pt.wikipedia.org/wiki/CNPJ#Algoritmo_de_Valida.C3.A7.C3.A3o
  * @see http://en.wikipedia.org/wiki/Cadastro_de_Pessoas_F%C3%ADsicas#Validation
  *
- * @param int|string $numbers Numbers on which generate the check digit
- *
+ * @param  int|string  $numbers  Numbers on which generate the check digit
  * @return int
  */
 function check_digit($numbers)
@@ -20,8 +19,8 @@ function check_digit($numbers)
     $second_algorithm = $length >= 12;
     $verifier = 0;
 
-    for ($i = 1; $i <= $length; ++$i) {
-        if (!$second_algorithm) {
+    for ($i = 1; $i <= $length; $i++) {
+        if (! $second_algorithm) {
             $multiplier = $i + 1;
         } else {
             $multiplier = ($i >= 9) ? $i - 7 : $i + 1;

@@ -27,14 +27,21 @@ use Symfony\Component\Console\Input\InputOption;
 final class CompletionInput extends ArgvInput
 {
     public const TYPE_ARGUMENT_VALUE = 'argument_value';
+
     public const TYPE_OPTION_VALUE = 'option_value';
+
     public const TYPE_OPTION_NAME = 'option_name';
+
     public const TYPE_NONE = 'none';
 
     private array $tokens;
+
     private int $currentIndex;
+
     private string $completionType;
+
     private ?string $completionName = null;
+
     private string $completionValue = '';
 
     /**
@@ -52,8 +59,8 @@ final class CompletionInput extends ArgvInput
     /**
      * Create an input based on an COMP_WORDS token list.
      *
-     * @param string[] $tokens       the set of split tokens (e.g. COMP_WORDS or argv)
-     * @param int      $currentIndex the index of the cursor (e.g. COMP_CWORD)
+     * @param  string[]  $tokens  the set of split tokens (e.g. COMP_WORDS or argv)
+     * @param  int  $currentIndex  the index of the cursor (e.g. COMP_CWORD)
      */
     public static function fromTokens(array $tokens, int $currentIndex): self
     {
@@ -69,12 +76,12 @@ final class CompletionInput extends ArgvInput
         parent::bind($definition);
 
         $relevantToken = $this->getRelevantToken();
-        if ('-' === $relevantToken[0]) {
+        if ($relevantToken[0] === '-') {
             // the current token is an input option: complete either option name or option value
             [$optionToken, $optionValue] = explode('=', $relevantToken, 2) + ['', ''];
 
             $option = $this->getOptionFromToken($optionToken);
-            if (null === $option && !$this->isCursorFree()) {
+            if ($option === null && ! $this->isCursorFree()) {
                 $this->completionType = self::TYPE_OPTION_NAME;
                 $this->completionValue = $relevantToken;
 
@@ -84,14 +91,14 @@ final class CompletionInput extends ArgvInput
             if ($option?->acceptValue()) {
                 $this->completionType = self::TYPE_OPTION_VALUE;
                 $this->completionName = $option->getName();
-                $this->completionValue = $optionValue ?: (!str_starts_with($optionToken, '--') ? substr($optionToken, 2) : '');
+                $this->completionValue = $optionValue ?: (! str_starts_with($optionToken, '--') ? substr($optionToken, 2) : '');
 
                 return;
             }
         }
 
         $previousToken = $this->tokens[$this->currentIndex - 1];
-        if ('-' === $previousToken[0] && '' !== trim($previousToken, '-')) {
+        if ($previousToken[0] === '-' && trim($previousToken, '-') !== '') {
             // check if previous option accepted a value
             $previousOption = $this->getOptionFromToken($previousToken);
             if ($previousOption?->acceptValue()) {
@@ -107,7 +114,7 @@ final class CompletionInput extends ArgvInput
         $this->completionType = self::TYPE_ARGUMENT_VALUE;
 
         foreach ($this->definition->getArguments() as $argumentName => $argument) {
-            if (!isset($this->arguments[$argumentName])) {
+            if (! isset($this->arguments[$argumentName])) {
                 break;
             }
 
@@ -121,7 +128,7 @@ final class CompletionInput extends ArgvInput
         }
 
         if ($this->currentIndex >= \count($this->tokens)) {
-            if (!isset($this->arguments[$argumentName]) || $this->definition->getArgument($argumentName)->isArray()) {
+            if (! isset($this->arguments[$argumentName]) || $this->definition->getArgument($argumentName)->isArray()) {
                 $this->completionName = $argumentName;
             } else {
                 // we've reached the end
@@ -170,12 +177,12 @@ final class CompletionInput extends ArgvInput
 
     public function mustSuggestOptionValuesFor(string $optionName): bool
     {
-        return self::TYPE_OPTION_VALUE === $this->getCompletionType() && $optionName === $this->getCompletionName();
+        return $this->getCompletionType() === self::TYPE_OPTION_VALUE && $optionName === $this->getCompletionName();
     }
 
     public function mustSuggestArgumentValuesFor(string $argumentName): bool
     {
-        return self::TYPE_ARGUMENT_VALUE === $this->getCompletionType() && $argumentName === $this->getCompletionName();
+        return $this->getCompletionType() === self::TYPE_ARGUMENT_VALUE && $argumentName === $this->getCompletionName();
     }
 
     protected function parseToken(string $token, bool $parseOptions): bool
@@ -192,7 +199,7 @@ final class CompletionInput extends ArgvInput
     private function getOptionFromToken(string $optionToken): ?InputOption
     {
         $optionName = ltrim($optionToken, '-');
-        if (!$optionName) {
+        if (! $optionName) {
             return null;
         }
 

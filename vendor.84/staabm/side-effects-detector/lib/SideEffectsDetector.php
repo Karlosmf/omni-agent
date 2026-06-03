@@ -2,7 +2,8 @@
 
 namespace staabm\SideEffectsDetector;
 
-final class SideEffectsDetector {
+final class SideEffectsDetector
+{
     /**
      * @var array<int>
      */
@@ -20,17 +21,17 @@ final class SideEffectsDetector {
         T_REQUIRE_ONCE,
         T_THROW,
         T_UNSET,
-        T_UNSET_CAST
+        T_UNSET_CAST,
     ];
 
     private const PROCESS_EXIT_TOKENS = [
-        T_EXIT
+        T_EXIT,
     ];
 
     private const OUTPUT_TOKENS = [
         T_PRINT,
         T_ECHO,
-        T_INLINE_HTML
+        T_INLINE_HTML,
     ];
 
     private const SCOPE_POLLUTING_FUNCTIONS = [
@@ -42,7 +43,7 @@ final class SideEffectsDetector {
 
     private const STANDARD_OUTPUT_FUNCTIONS = [
         'printf',
-        'vprintf'
+        'vprintf',
     ];
 
     private const INPUT_OUTPUT_FUNCTIONS = [
@@ -52,7 +53,7 @@ final class SideEffectsDetector {
         'fwrite',
         'fputs',
         'fread',
-        'unlink'
+        'unlink',
     ];
 
     /**
@@ -60,9 +61,10 @@ final class SideEffectsDetector {
      */
     private array $functionMetadata;
 
-    public function __construct() {
-        $functionMeta = require __DIR__ . '/functionMetadata.php';
-        if (!is_array($functionMeta)) {
+    public function __construct()
+    {
+        $functionMeta = require __DIR__.'/functionMetadata.php';
+        if (! is_array($functionMeta)) {
             throw new \RuntimeException('Invalid function metadata');
         }
         $this->functionMetadata = $functionMeta;
@@ -77,14 +79,15 @@ final class SideEffectsDetector {
      *
      * @return array<SideEffect::*>
      */
-    public function getSideEffects(string $code): array {
+    public function getSideEffects(string $code): array
+    {
         $tokens = token_get_all($code);
 
         $sideEffects = [];
         for ($i = 0; $i < count($tokens); $i++) {
             $token = $tokens[$i];
 
-            if (!is_array($token)) {
+            if (! is_array($token)) {
                 continue;
             }
 
@@ -94,10 +97,12 @@ final class SideEffectsDetector {
 
             if (in_array($token[0], self::OUTPUT_TOKENS, true)) {
                 $sideEffects[] = SideEffect::STANDARD_OUTPUT;
+
                 continue;
             }
             if (in_array($token[0], self::PROCESS_EXIT_TOKENS, true)) {
                 $sideEffects[] = SideEffect::PROCESS_EXIT;
+
                 continue;
             }
             if (in_array($token[0], $this->scopePollutingTokens, true)) {
@@ -110,14 +115,15 @@ final class SideEffectsDetector {
 
                 // consume function/class-name
                 if (
-                    !array_key_exists($i, $tokens)
-                    || !is_array($tokens[$i])
+                    ! array_key_exists($i, $tokens)
+                    || ! is_array($tokens[$i])
                     || $tokens[$i][0] !== T_STRING
                 ) {
                     continue;
                 }
 
                 $i++;
+
                 continue;
             }
 
@@ -127,23 +133,27 @@ final class SideEffectsDetector {
                 if ($callSideEffect !== null) {
                     $sideEffects[] = $callSideEffect;
                 }
+
                 continue;
             }
 
             $methodCall = $this->getMethodCall($tokens, $i);
             if ($methodCall !== null) {
                 $sideEffects[] = SideEffect::MAYBE;
+
                 continue;
             }
 
             $propertyAccess = $this->getPropertyAccess($tokens, $i);
             if ($propertyAccess !== null) {
                 $sideEffects[] = SideEffect::SCOPE_POLLUTION;
+
                 continue;
             }
 
             if ($this->isNonLocalVariable($tokens, $i)) {
                 $sideEffects[] = SideEffect::SCOPE_POLLUTION;
+
                 continue;
             }
         }
@@ -154,10 +164,10 @@ final class SideEffectsDetector {
     /**
      * @return SideEffect::*|null
      */
-    private function getFunctionCallSideEffect(string $functionName): ?string { // @phpstan-ignore return.unusedType
-        if (in_array($functionName, self::STANDARD_OUTPUT_FUNCTIONS, true)) {
-            return SideEffect::STANDARD_OUTPUT;
-        }
+    private function getFunctionCallSideEffect(string $functionName): ?string // @phpstan-ignore return.unusedType
+    {if (in_array($functionName, self::STANDARD_OUTPUT_FUNCTIONS, true)) {
+        return SideEffect::STANDARD_OUTPUT;
+    }
 
         if (in_array($functionName, self::INPUT_OUTPUT_FUNCTIONS, true)) {
             return SideEffect::INPUT_OUTPUT;
@@ -178,7 +188,7 @@ final class SideEffectsDetector {
                 if ($returnType === null) {
                     return SideEffect::MAYBE; // no reflection information -> we don't know
                 }
-                if ((string)$returnType === 'void') {
+                if ((string) $returnType === 'void') {
                     return SideEffect::UNKNOWN_CLASS; // functions with void return type must have side-effects
                 }
             } catch (\ReflectionException $e) {
@@ -190,12 +200,13 @@ final class SideEffectsDetector {
     }
 
     /**
-     * @param array<int, array{0:int,1:string,2:int}|string|int> $tokens
+     * @param  array<int, array{0:int,1:string,2:int}|string|int>  $tokens
      */
-    private function getFunctionCall(array $tokens, int $index): ?string {
+    private function getFunctionCall(array $tokens, int $index): ?string
+    {
         if (
-            !array_key_exists($index, $tokens)
-            || !is_array($tokens[$index])
+            ! array_key_exists($index, $tokens)
+            || ! is_array($tokens[$index])
             || $tokens[$index][0] !== T_STRING
         ) {
             return null;
@@ -216,13 +227,14 @@ final class SideEffectsDetector {
     }
 
     /**
-     * @param array<int, array{0:int,1:string,2:int}|string|int> $tokens
+     * @param  array<int, array{0:int,1:string,2:int}|string|int>  $tokens
      */
-    private function getMethodCall(array $tokens, int $index): ?string {
+    private function getMethodCall(array $tokens, int $index): ?string
+    {
         if (
-            !array_key_exists($index, $tokens)
-            || !is_array($tokens[$index])
-            || !in_array($tokens[$index][0], [T_VARIABLE, T_STRING], true)
+            ! array_key_exists($index, $tokens)
+            || ! is_array($tokens[$index])
+            || ! in_array($tokens[$index][0], [T_VARIABLE, T_STRING], true)
         ) {
             return null;
         }
@@ -232,9 +244,9 @@ final class SideEffectsDetector {
         $this->consumeWhitespaces($tokens, $index);
 
         if (
-            !array_key_exists($index, $tokens)
-            || !is_array($tokens[$index])
-            || !in_array($tokens[$index][0], [T_OBJECT_OPERATOR , T_DOUBLE_COLON ], true)
+            ! array_key_exists($index, $tokens)
+            || ! is_array($tokens[$index])
+            || ! in_array($tokens[$index][0], [T_OBJECT_OPERATOR, T_DOUBLE_COLON], true)
         ) {
             return null;
         }
@@ -244,9 +256,9 @@ final class SideEffectsDetector {
         $this->consumeWhitespaces($tokens, $index);
 
         if (
-            !array_key_exists($index, $tokens)
-            || !is_array($tokens[$index])
-            || !in_array($tokens[$index][0], [T_STRING], true)
+            ! array_key_exists($index, $tokens)
+            || ! is_array($tokens[$index])
+            || ! in_array($tokens[$index][0], [T_STRING], true)
         ) {
             return null;
         }
@@ -262,17 +274,18 @@ final class SideEffectsDetector {
             return null;
         }
 
-        return $callee . $operator . $method;
+        return $callee.$operator.$method;
     }
 
     /**
-     * @param array<int, array{0:int,1:string,2:int}|string|int> $tokens
+     * @param  array<int, array{0:int,1:string,2:int}|string|int>  $tokens
      */
-    private function getPropertyAccess(array $tokens, int $index): ?string {
+    private function getPropertyAccess(array $tokens, int $index): ?string
+    {
         if (
-            !array_key_exists($index, $tokens)
-            || !is_array($tokens[$index])
-            || !in_array($tokens[$index][0], [T_VARIABLE, T_STRING], true)
+            ! array_key_exists($index, $tokens)
+            || ! is_array($tokens[$index])
+            || ! in_array($tokens[$index][0], [T_VARIABLE, T_STRING], true)
         ) {
             return null;
         }
@@ -282,9 +295,9 @@ final class SideEffectsDetector {
         $this->consumeWhitespaces($tokens, $index);
 
         if (
-            !array_key_exists($index, $tokens)
-            || !is_array($tokens[$index])
-            || !in_array($tokens[$index][0], [T_OBJECT_OPERATOR , T_DOUBLE_COLON ], true)
+            ! array_key_exists($index, $tokens)
+            || ! is_array($tokens[$index])
+            || ! in_array($tokens[$index][0], [T_OBJECT_OPERATOR, T_DOUBLE_COLON], true)
         ) {
             return null;
         }
@@ -294,25 +307,25 @@ final class SideEffectsDetector {
         $this->consumeWhitespaces($tokens, $index);
 
         if (
-            !array_key_exists($index, $tokens)
-            || !is_array($tokens[$index])
-            || !in_array($tokens[$index][0], [T_STRING, T_VARIABLE], true)
+            ! array_key_exists($index, $tokens)
+            || ! is_array($tokens[$index])
+            || ! in_array($tokens[$index][0], [T_STRING, T_VARIABLE], true)
         ) {
             return null;
         }
         $propName = $tokens[$index][1];
 
-        return $objectOrClass . $operator . $propName;
+        return $objectOrClass.$operator.$propName;
     }
 
     /**
-     * @param array<int, array{0:int,1:string,2:int}|string|int> $tokens
+     * @param  array<int, array{0:int,1:string,2:int}|string|int>  $tokens
      */
     private function isAnonymousFunction(array $tokens, int $index): bool
     {
         if (
-            !array_key_exists($index, $tokens)
-            || !is_array($tokens[$index])
+            ! array_key_exists($index, $tokens)
+            || ! is_array($tokens[$index])
             || $tokens[$index][0] !== T_FUNCTION
         ) {
             return false;
@@ -332,7 +345,7 @@ final class SideEffectsDetector {
     }
 
     /**
-     * @param array<int, array{0:int,1:string,2:int}|string|int> $tokens
+     * @param  array<int, array{0:int,1:string,2:int}|string|int>  $tokens
      */
     private function isNonLocalVariable(array $tokens, int $index): bool
     {
@@ -343,12 +356,12 @@ final class SideEffectsDetector {
         ) {
             if (
                 in_array(
-                $tokens[$index][1],
-                [
-                    '$this',
-                    '$GLOBALS', '$_SERVER', '$_GET', '$_POST', '$_FILES', '$_COOKIE', '$_SESSION', '$_REQUEST', '$_ENV',
-                ],
-            true)
+                    $tokens[$index][1],
+                    [
+                        '$this',
+                        '$GLOBALS', '$_SERVER', '$_GET', '$_POST', '$_FILES', '$_COOKIE', '$_SESSION', '$_REQUEST', '$_ENV',
+                    ],
+                    true)
             ) {
                 return true;
             }
@@ -358,9 +371,10 @@ final class SideEffectsDetector {
     }
 
     /**
-     * @param array<int, array{0:int,1:string,2:int}|string|int> $tokens
+     * @param  array<int, array{0:int,1:string,2:int}|string|int>  $tokens
      */
-    private function consumeWhitespaces(array $tokens, int &$index): void {
+    private function consumeWhitespaces(array $tokens, int &$index): void
+    {
         while (
             array_key_exists($index, $tokens)
             && is_array($tokens[$index])

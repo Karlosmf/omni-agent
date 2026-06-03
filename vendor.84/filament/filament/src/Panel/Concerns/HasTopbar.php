@@ -8,11 +8,11 @@ use Livewire\Component;
 
 trait HasTopbar
 {
-    protected bool | Closure $hasTopbar = true;
+    protected bool|Closure $hasTopbar = true;
 
-    protected string | Closure | null $topbarLivewireComponent = null;
+    protected string|Closure|null $topbarLivewireComponent = null;
 
-    public function topbar(bool | Closure $condition = true): static
+    public function topbar(bool|Closure $condition = true): static
     {
         $this->hasTopbar = $condition;
 
@@ -22,7 +22,7 @@ trait HasTopbar
     /**
      * @param  class-string<Component> | Closure | null  $component
      */
-    public function topbarLivewireComponent(string | Closure | null $component): static
+    public function topbarLivewireComponent(string|Closure|null $component): static
     {
         $this->topbarLivewireComponent = $component;
 

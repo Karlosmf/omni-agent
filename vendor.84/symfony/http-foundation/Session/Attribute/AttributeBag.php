@@ -16,19 +16,18 @@ namespace Symfony\Component\HttpFoundation\Session\Attribute;
  *
  * @implements \IteratorAggregate<string, mixed>
  */
-class AttributeBag implements AttributeBagInterface, \IteratorAggregate, \Countable
+class AttributeBag implements \Countable, \IteratorAggregate, AttributeBagInterface
 {
     protected array $attributes = [];
 
     private string $name = 'attributes';
 
     /**
-     * @param string $storageKey The key used to store attributes in the session
+     * @param  string  $storageKey  The key used to store attributes in the session
      */
     public function __construct(
         private string $storageKey = '_sf2_attributes',
-    ) {
-    }
+    ) {}
 
     public function getName(): string
     {

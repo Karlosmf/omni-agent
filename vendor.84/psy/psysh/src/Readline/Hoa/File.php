@@ -127,14 +127,13 @@ abstract class File extends FileGeneric implements StreamBufferable, StreamLocka
                 break;
 
             default:
-                if (true === \ctype_digit($streamName)) {
+                if (\ctype_digit($streamName) === true) {
                     $streamName = 'php://fd/'.$streamName;
                 }
         }
 
         parent::__construct($streamName, $context, $wait);
 
-        return;
     }
 
     /**
@@ -143,11 +142,11 @@ abstract class File extends FileGeneric implements StreamBufferable, StreamLocka
     protected function &_open(string $streamName, ?StreamContext $context = null)
     {
         if (\substr($streamName, 0, 4) === 'file' &&
-            false === \is_dir(\dirname($streamName))) {
+            \is_dir(\dirname($streamName)) === false) {
             throw new FileException('Directory %s does not exist. Could not open file %s.', 1, [\dirname($streamName), \basename($streamName)]);
         }
 
-        if (null === $context) {
+        if ($context === null) {
             if (false === $out = @\fopen($streamName, $this->getMode(), true)) {
                 throw new FileException('Failed to open stream %s.', 2, $streamName);
             }
@@ -162,7 +161,7 @@ abstract class File extends FileGeneric implements StreamBufferable, StreamLocka
             $context->getContext()
         );
 
-        if (false === $out) {
+        if ($out === false) {
             throw new FileException('Failed to open stream %s.', 3, $streamName);
         }
 
@@ -253,7 +252,7 @@ abstract class File extends FileGeneric implements StreamBufferable, StreamLocka
     {
         $stream = $this->getStream();
 
-        if (null === $stream) {
+        if ($stream === null) {
             return 0;
         }
 

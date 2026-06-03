@@ -44,8 +44,7 @@ trait LocalFactory
      *
      * @template T
      *
-     * @param Closure(): T $action
-     *
+     * @param  Closure(): T  $action
      * @return T
      */
     private function transmitFactory(Closure $action): mixed

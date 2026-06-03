@@ -19,9 +19,9 @@ class Master extends Plugin
 
             'framework/extended.json' => '{locale}.json',
 
-            'framework/master/auth.php'       => '{locale}/auth.php',
+            'framework/master/auth.php' => '{locale}/auth.php',
             'framework/master/pagination.php' => '{locale}/pagination.php',
-            'framework/master/passwords.php'  => '{locale}/passwords.php',
+            'framework/master/passwords.php' => '{locale}/passwords.php',
             'framework/master/validation.php' => '{locale}/validation.php',
         ];
     }

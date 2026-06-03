@@ -21,28 +21,28 @@ trait CanSearchRecords
      */
     protected array $extraSearchableColumns = [];
 
-    protected bool | Closure | null $persistsSearchInSession = false;
+    protected bool|Closure|null $persistsSearchInSession = false;
 
-    protected bool | Closure | null $persistsColumnSearchesInSession = false;
+    protected bool|Closure|null $persistsColumnSearchesInSession = false;
 
-    protected string | Closure | null $searchPlaceholder = null;
+    protected string|Closure|null $searchPlaceholder = null;
 
     protected ?string $searchDebounce = null;
 
-    protected bool | Closure $isSearchOnBlur = false;
+    protected bool|Closure $isSearchOnBlur = false;
 
-    protected bool | Closure $shouldSplitSearchTerms = true;
+    protected bool|Closure $shouldSplitSearchTerms = true;
 
     protected ?Closure $searchUsing = null;
 
-    public function persistSearchInSession(bool | Closure $condition = true): static
+    public function persistSearchInSession(bool|Closure $condition = true): static
     {
         $this->persistsSearchInSession = $condition;
 
         return $this;
     }
 
-    public function persistColumnSearchesInSession(bool | Closure $condition = true): static
+    public function persistColumnSearchesInSession(bool|Closure $condition = true): static
     {
         $this->persistsColumnSearchesInSession = $condition;
 
@@ -52,7 +52,7 @@ trait CanSearchRecords
     /**
      * @param  bool | array<string | Closure>  $condition
      */
-    public function searchable(bool | array $condition = true): static
+    public function searchable(bool|array $condition = true): static
     {
         if ($condition === true) {
             $this->isSearchable = true;
@@ -122,7 +122,7 @@ trait CanSearchRecords
         return (bool) $this->evaluate($this->persistsColumnSearchesInSession);
     }
 
-    public function searchPlaceholder(string | Closure | null $searchPlaceholder): static
+    public function searchPlaceholder(string|Closure|null $searchPlaceholder): static
     {
         $this->searchPlaceholder = $searchPlaceholder;
 
@@ -157,7 +157,7 @@ trait CanSearchRecords
         return $this->searchDebounce ?? '500ms';
     }
 
-    public function searchOnBlur(bool | Closure $condition = true): static
+    public function searchOnBlur(bool|Closure $condition = true): static
     {
         $this->isSearchOnBlur = $condition;
 
@@ -267,7 +267,7 @@ trait CanSearchRecords
         return $relationship;
     }
 
-    public function splitSearchTerms(bool | Closure $condition = true): static
+    public function splitSearchTerms(bool|Closure $condition = true): static
     {
         $this->shouldSplitSearchTerms = $condition;
 

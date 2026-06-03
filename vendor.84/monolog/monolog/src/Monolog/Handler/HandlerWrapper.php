@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -11,9 +13,9 @@
 
 namespace Monolog\Handler;
 
-use Monolog\ResettableInterface;
 use Monolog\Formatter\FormatterInterface;
 use Monolog\LogRecord;
+use Monolog\ResettableInterface;
 
 /**
  * This simple wrapper class can be used to extend handlers functionality.
@@ -32,7 +34,7 @@ use Monolog\LogRecord;
  *
  * @author Alexey Karapetov <alexey@karapetov.com>
  */
-class HandlerWrapper implements HandlerInterface, ProcessableHandlerInterface, FormattableHandlerInterface, ResettableInterface
+class HandlerWrapper implements FormattableHandlerInterface, HandlerInterface, ProcessableHandlerInterface, ResettableInterface
 {
     protected HandlerInterface $handler;
 
@@ -42,7 +44,7 @@ class HandlerWrapper implements HandlerInterface, ProcessableHandlerInterface, F
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function isHandling(LogRecord $record): bool
     {
@@ -50,7 +52,7 @@ class HandlerWrapper implements HandlerInterface, ProcessableHandlerInterface, F
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function handle(LogRecord $record): bool
     {
@@ -58,7 +60,7 @@ class HandlerWrapper implements HandlerInterface, ProcessableHandlerInterface, F
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function handleBatch(array $records): void
     {
@@ -66,7 +68,7 @@ class HandlerWrapper implements HandlerInterface, ProcessableHandlerInterface, F
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function close(): void
     {
@@ -74,7 +76,7 @@ class HandlerWrapper implements HandlerInterface, ProcessableHandlerInterface, F
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function pushProcessor(callable $callback): HandlerInterface
     {
@@ -84,11 +86,11 @@ class HandlerWrapper implements HandlerInterface, ProcessableHandlerInterface, F
             return $this;
         }
 
-        throw new \LogicException('The wrapped handler does not implement ' . ProcessableHandlerInterface::class);
+        throw new \LogicException('The wrapped handler does not implement '.ProcessableHandlerInterface::class);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function popProcessor(): callable
     {
@@ -96,11 +98,11 @@ class HandlerWrapper implements HandlerInterface, ProcessableHandlerInterface, F
             return $this->handler->popProcessor();
         }
 
-        throw new \LogicException('The wrapped handler does not implement ' . ProcessableHandlerInterface::class);
+        throw new \LogicException('The wrapped handler does not implement '.ProcessableHandlerInterface::class);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setFormatter(FormatterInterface $formatter): HandlerInterface
     {
@@ -110,11 +112,11 @@ class HandlerWrapper implements HandlerInterface, ProcessableHandlerInterface, F
             return $this;
         }
 
-        throw new \LogicException('The wrapped handler does not implement ' . FormattableHandlerInterface::class);
+        throw new \LogicException('The wrapped handler does not implement '.FormattableHandlerInterface::class);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getFormatter(): FormatterInterface
     {
@@ -122,7 +124,7 @@ class HandlerWrapper implements HandlerInterface, ProcessableHandlerInterface, F
             return $this->handler->getFormatter();
         }
 
-        throw new \LogicException('The wrapped handler does not implement ' . FormattableHandlerInterface::class);
+        throw new \LogicException('The wrapped handler does not implement '.FormattableHandlerInterface::class);
     }
 
     public function reset(): void

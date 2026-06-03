@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Test\Target;
 
 use function array_keys;
@@ -33,7 +36,7 @@ final readonly class Mapper
     private array $map;
 
     /**
-     * @param TargetMap $map
+     * @param  TargetMap  $map
      */
     public function __construct(array $map)
     {
@@ -49,7 +52,7 @@ final readonly class Mapper
 
         foreach ($targets as $target) {
             foreach ($this->mapTarget($target) as $file => $lines) {
-                if (!isset($result[$file])) {
+                if (! isset($result[$file])) {
                     $result[$file] = $lines;
 
                     continue;
@@ -63,9 +66,9 @@ final readonly class Mapper
     }
 
     /**
-     * @throws InvalidCodeCoverageTargetException
-     *
      * @return array<non-empty-string, list<positive-int>>
+     *
+     * @throws InvalidCodeCoverageTargetException
      */
     public function mapTarget(Target $target): array
     {
@@ -83,14 +86,13 @@ final readonly class Mapper
     }
 
     /**
-     * @param non-empty-string $file
-     * @param positive-int     $line
-     *
+     * @param  non-empty-string  $file
+     * @param  positive-int  $line
      * @return non-empty-string
      */
     public function lookup(string $file, int $line): string
     {
-        $key = $file . ':' . $line;
+        $key = $file.':'.$line;
 
         if (isset($this->map['reverseLookup'][$key])) {
             return $this->map['reverseLookup'][$key];

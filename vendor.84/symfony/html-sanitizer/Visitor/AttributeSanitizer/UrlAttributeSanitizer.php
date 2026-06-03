@@ -32,7 +32,7 @@ final class UrlAttributeSanitizer implements AttributeSanitizerInterface
 
     public function sanitizeAttribute(string $element, string $attribute, string $value, HtmlSanitizerConfig $config): ?string
     {
-        if ('a' === $element) {
+        if ($element === 'a') {
             return UrlSanitizer::sanitize(
                 $value,
                 $config->getAllowedLinkSchemes(),

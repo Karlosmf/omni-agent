@@ -22,7 +22,7 @@ class QueryBuilder extends BaseFilter
      */
     protected ?array $constraintPickerColumns = [];
 
-    protected string | Closure | null $constraintPickerWidth = null;
+    protected string|Closure|null $constraintPickerWidth = null;
 
     /** @var array<Constraint> */
     protected array $constraints = [];
@@ -69,7 +69,7 @@ class QueryBuilder extends BaseFilter
             $ruleBuilderBlockContainer = $ruleBuilder->getChildSchema($ruleIndex);
 
             if (! $ruleBuilderBlockContainer) {
-                throw new LogicException('No query builder block found for [' . ($rule['type'] ?? $ruleIndex) . '].');
+                throw new LogicException('No query builder block found for ['.($rule['type'] ?? $ruleIndex).'].');
             }
 
             if ($rule['type'] === RuleBuilder::OR_BLOCK_NAME) {
@@ -82,7 +82,7 @@ class QueryBuilder extends BaseFilter
                         $iteration + 1,
                     );
 
-                    $orSummaries[] = ((count($orGroupSummaries) > 1) ? '(' : '') . implode(' ' . __('filament-query-builder::query-builder.form.rules.item.and') . ' ', $orGroupSummaries) . ((count($orGroupSummaries) > 1) ? ')' : '');
+                    $orSummaries[] = ((count($orGroupSummaries) > 1) ? '(' : '').implode(' '.__('filament-query-builder::query-builder.form.rules.item.and').' ', $orGroupSummaries).((count($orGroupSummaries) > 1) ? ')' : '');
                 }
 
                 $orSummaries = array_filter($orSummaries, filled(...));
@@ -99,7 +99,7 @@ class QueryBuilder extends BaseFilter
 
                 $hasParentheses = ($iteration > 1) && (count($orSummaries) > 1);
 
-                $summaries[$ruleIndex] = ($hasParentheses ? '(' : '') . implode(' ' . __('filament-query-builder::query-builder.form.or_groups.block.or') . ' ', $orSummaries) . ($hasParentheses ? ')' : '');
+                $summaries[$ruleIndex] = ($hasParentheses ? '(' : '').implode(' '.__('filament-query-builder::query-builder.form.or_groups.block.or').' ', $orSummaries).($hasParentheses ? ')' : '');
 
                 continue;
             }
@@ -137,7 +137,7 @@ class QueryBuilder extends BaseFilter
             $ruleBuilderBlockContainer = $ruleBuilder->getChildSchema($ruleIndex);
 
             if (! $ruleBuilderBlockContainer) {
-                throw new LogicException('No query builder block found for [' . ($rule['type'] ?? $ruleIndex) . '].');
+                throw new LogicException('No query builder block found for ['.($rule['type'] ?? $ruleIndex).'].');
             }
 
             if ($rule['type'] === RuleBuilder::OR_BLOCK_NAME) {
@@ -176,7 +176,7 @@ class QueryBuilder extends BaseFilter
             $ruleBuilderBlockContainer = $ruleBuilder->getChildSchema($ruleIndex);
 
             if (! $ruleBuilderBlockContainer) {
-                throw new LogicException('No query builder block found for [' . ($rule['type'] ?? $ruleIndex) . '].');
+                throw new LogicException('No query builder block found for ['.($rule['type'] ?? $ruleIndex).'].');
             }
 
             if ($rule['type'] === RuleBuilder::OR_BLOCK_NAME) {
@@ -222,7 +222,7 @@ class QueryBuilder extends BaseFilter
             $ruleBuilderBlockContainer = $ruleBuilder->getChildSchema($ruleIndex);
 
             if (! $ruleBuilderBlockContainer) {
-                throw new LogicException('No query builder block found for [' . ($rule['type'] ?? $ruleIndex) . '].');
+                throw new LogicException('No query builder block found for ['.($rule['type'] ?? $ruleIndex).'].');
             }
 
             if ($rule['type'] === RuleBuilder::OR_BLOCK_NAME) {
@@ -250,7 +250,7 @@ class QueryBuilder extends BaseFilter
     /**
      * @param  array<string, ?int> | int | null  $columns
      */
-    public function constraintPickerColumns(array | int | null $columns = 2): static
+    public function constraintPickerColumns(array|int|null $columns = 2): static
     {
         if (! is_array($columns)) {
             $columns = [
@@ -269,7 +269,7 @@ class QueryBuilder extends BaseFilter
     /**
      * @return array<string, ?int> | int | null
      */
-    public function getConstraintPickerColumns(?string $breakpoint = null): array | int | null
+    public function getConstraintPickerColumns(?string $breakpoint = null): array|int|null
     {
         $columns = $this->constraintPickerColumns ?? [
             'default' => 1,
@@ -287,7 +287,7 @@ class QueryBuilder extends BaseFilter
         return $columns;
     }
 
-    public function constraintPickerWidth(string | Closure | null $width): static
+    public function constraintPickerWidth(string|Closure|null $width): static
     {
         $this->constraintPickerWidth = $width;
 

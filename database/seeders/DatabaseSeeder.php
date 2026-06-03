@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\TravelPackage;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -24,7 +25,7 @@ class DatabaseSeeder extends Seeder
             SupplierSeeder::class,
         ]);
 
-        \App\Models\TravelPackage::factory(10)->create();
+        TravelPackage::factory(10)->create();
 
         $this->call([
             LeadSeeder::class,

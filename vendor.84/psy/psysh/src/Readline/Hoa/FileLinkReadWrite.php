@@ -54,7 +54,6 @@ class FileLinkReadWrite extends FileLink implements StreamIn, StreamOut
     ) {
         parent::__construct($streamName, $mode, $context, $wait);
 
-        return;
     }
 
     /**
@@ -69,15 +68,15 @@ class FileLinkReadWrite extends FileLink implements StreamIn, StreamOut
             parent::MODE_CREATE_READ_WRITE,
         ];
 
-        if (!\in_array($this->getMode(), $createModes)) {
+        if (! \in_array($this->getMode(), $createModes)) {
             throw new FileException('Open mode are not supported; given %d. Only %s are supported.', 0, [$this->getMode(), \implode(', ', $createModes)]);
         }
 
         \preg_match('#^(\w+)://#', $streamName, $match);
 
-        if (((isset($match[1]) && $match[1] === 'file') || !isset($match[1])) &&
-            !\file_exists($streamName) &&
-            parent::MODE_READ_WRITE === $this->getMode()) {
+        if (((isset($match[1]) && $match[1] === 'file') || ! isset($match[1])) &&
+            ! \file_exists($streamName) &&
+            $this->getMode() === parent::MODE_READ_WRITE) {
             throw new FileDoesNotExistException('File %s does not exist.', 1, $streamName);
         }
 
@@ -99,7 +98,7 @@ class FileLinkReadWrite extends FileLink implements StreamIn, StreamOut
      */
     public function read(int $length)
     {
-        if (0 > $length) {
+        if ($length < 0) {
             throw new FileException('Length must be greater than 0, given %d.', 2, $length);
         }
 
@@ -184,7 +183,7 @@ class FileLinkReadWrite extends FileLink implements StreamIn, StreamOut
      */
     public function write(string $string, int $length)
     {
-        if (0 > $length) {
+        if ($length < 0) {
             throw new FileException('Length must be greater than 0, given %d.', 3, $length);
         }
 
@@ -256,7 +255,7 @@ class FileLinkReadWrite extends FileLink implements StreamIn, StreamOut
             return $this->write($line."\n", \strlen($line) + 1);
         }
 
-        ++$n;
+        $n++;
 
         return $this->write(\substr($line, 0, $n), $n);
     }

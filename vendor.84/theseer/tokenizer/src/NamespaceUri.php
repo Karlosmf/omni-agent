@@ -1,23 +1,30 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
+
 namespace TheSeer\Tokenizer;
 
 use function sprintf;
 use function strpos;
 
-class NamespaceUri {
+class NamespaceUri
+{
     /** @var string */
     private $value;
 
-    public function __construct(string $value) {
+    public function __construct(string $value)
+    {
         $this->ensureValidUri($value);
         $this->value = $value;
     }
 
-    public function asString(): string {
+    public function asString(): string
+    {
         return $this->value;
     }
 
-    private function ensureValidUri($value): void {
+    private function ensureValidUri($value): void
+    {
         if (strpos($value, ':') === false) {
             throw new NamespaceUriException(
                 sprintf("Namespace URI '%s' must contain at least one colon", $value)

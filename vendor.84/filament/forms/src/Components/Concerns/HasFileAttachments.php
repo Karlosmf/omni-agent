@@ -17,33 +17,33 @@ use Throwable;
 
 trait HasFileAttachments
 {
-    protected string | Closure | null $fileAttachmentsDirectory = null;
+    protected string|Closure|null $fileAttachmentsDirectory = null;
 
-    protected string | Closure | null $fileAttachmentsDiskName = null;
+    protected string|Closure|null $fileAttachmentsDiskName = null;
 
     protected ?Closure $getFileAttachmentUrlUsing = null;
 
     protected ?Closure $saveUploadedFileAttachmentUsing = null;
 
-    protected string | Closure | null $fileAttachmentsVisibility = null;
+    protected string|Closure|null $fileAttachmentsVisibility = null;
 
-    protected bool | Closure | null $hasFileAttachments = null;
+    protected bool|Closure|null $hasFileAttachments = null;
 
     /**
      * @var array<string> | Arrayable | Closure | null
      */
-    protected array | Arrayable | Closure | null $fileAttachmentsAcceptedFileTypes = ['image/png', 'image/jpeg', 'image/gif', 'image/webp'];
+    protected array|Arrayable|Closure|null $fileAttachmentsAcceptedFileTypes = ['image/png', 'image/jpeg', 'image/gif', 'image/webp'];
 
-    protected int | Closure | null $fileAttachmentsMaxSize = 12288;
+    protected int|Closure|null $fileAttachmentsMaxSize = 12288;
 
-    public function fileAttachmentsDirectory(string | Closure | null $directory): static
+    public function fileAttachmentsDirectory(string|Closure|null $directory): static
     {
         $this->fileAttachmentsDirectory = $directory;
 
         return $this;
     }
 
-    public function fileAttachmentsDisk(string | Closure | null $name): static
+    public function fileAttachmentsDisk(string|Closure|null $name): static
     {
         $this->fileAttachmentsDiskName = $name;
 
@@ -52,12 +52,12 @@ trait HasFileAttachments
 
     #[ExposedLivewireMethod]
     #[Renderless]
-    public function getUploadedFileAttachmentTemporaryUrl(TemporaryUploadedFile | string | null $attachment = null): ?string
+    public function getUploadedFileAttachmentTemporaryUrl(TemporaryUploadedFile|string|null $attachment = null): ?string
     {
         return $this->getUploadedFileAttachment($attachment)?->temporaryUrl();
     }
 
-    public function getUploadedFileAttachment(TemporaryUploadedFile | string | null $attachment = null): ?TemporaryUploadedFile
+    public function getUploadedFileAttachment(TemporaryUploadedFile|string|null $attachment = null): ?TemporaryUploadedFile
     {
         if (is_string($attachment)) {
             $attachment = data_get($this->getLivewire(), "componentFileAttachments.{$this->getStatePath()}.{$attachment}");
@@ -76,7 +76,7 @@ trait HasFileAttachments
                         'file' => [
                             'file',
                             ...($maxSize ? ["max:{$maxSize}"] : []),
-                            ...($acceptedFileTypes ? ['mimetypes:' . implode(',', $acceptedFileTypes)] : []),
+                            ...($acceptedFileTypes ? ['mimetypes:'.implode(',', $acceptedFileTypes)] : []),
                         ],
                     ],
                 );
@@ -129,7 +129,7 @@ trait HasFileAttachments
         return $this->getFileAttachmentUrl($file);
     }
 
-    public function fileAttachmentsVisibility(string | Closure | null $visibility): static
+    public function fileAttachmentsVisibility(string|Closure|null $visibility): static
     {
         $this->fileAttachmentsVisibility = $visibility;
 
@@ -261,7 +261,7 @@ trait HasFileAttachments
     /**
      * @param  array<string> | Arrayable | Closure  $types
      */
-    public function fileAttachmentsAcceptedFileTypes(array | Arrayable | Closure $types): static
+    public function fileAttachmentsAcceptedFileTypes(array|Arrayable|Closure $types): static
     {
         $this->fileAttachmentsAcceptedFileTypes = $types;
 
@@ -282,7 +282,7 @@ trait HasFileAttachments
         return $types;
     }
 
-    public function fileAttachmentsMaxSize(int | Closure | null $size): static
+    public function fileAttachmentsMaxSize(int|Closure|null $size): static
     {
         $this->fileAttachmentsMaxSize = $size;
 
@@ -294,7 +294,7 @@ trait HasFileAttachments
         return $this->evaluate($this->fileAttachmentsMaxSize);
     }
 
-    public function fileAttachments(bool | Closure | null $condition): static
+    public function fileAttachments(bool|Closure|null $condition): static
     {
         $this->hasFileAttachments = $condition;
 

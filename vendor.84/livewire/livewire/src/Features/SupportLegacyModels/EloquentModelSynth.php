@@ -4,9 +4,9 @@ namespace Livewire\Features\SupportLegacyModels;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\ClassMorphViolationException;
-use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;
 
 class EloquentModelSynth extends Synth
 {
@@ -49,7 +49,9 @@ class EloquentModelSynth extends Synth
 
         $rules = $this->getRules($this->context);
 
-        if (empty($rules)) return [[], $meta];
+        if (empty($rules)) {
+            return [[], $meta];
+        }
 
         $data = $this->getDataFromModel($target, $rules);
 
@@ -62,7 +64,9 @@ class EloquentModelSynth extends Synth
 
     public function hydrate($data, $meta, $hydrateChild)
     {
-        if (! is_iterable($data)) return null;
+        if (! is_iterable($data)) {
+            return null;
+        }
 
         if (isset($meta['__child_from_parent'])) {
             $model = $meta['__child_from_parent'];
@@ -73,8 +77,10 @@ class EloquentModelSynth extends Synth
         }
 
         if (isset($meta['relations'])) {
-            foreach($meta['relations'] as $relationKey) {
-                if (! isset($data[$relationKey])) continue;
+            foreach ($meta['relations'] as $relationKey) {
+                if (! isset($data[$relationKey])) {
+                    continue;
+                }
 
                 $data[$relationKey][1]['__child_from_parent'] = $model->getRelation($relationKey);
 
@@ -120,15 +126,15 @@ class EloquentModelSynth extends Synth
         return [];
     }
 
-    public function call($target, $method, $params, $addEffect)
-    {
-    }
+    public function call($target, $method, $params, $addEffect) {}
 
     protected function getRules($context)
     {
         $key = $this->path ?? null;
 
-        if (is_null($key)) return [];
+        if (is_null($key)) {
+            return [];
+        }
 
         if ($context->component) {
             return SupportLegacyModels::getRulesFor($this->context->component, $key);
@@ -148,12 +154,14 @@ class EloquentModelSynth extends Synth
         $attributes = $model->attributesToArray();
 
         foreach ($model->getCasts() as $key => $cast) {
-            if (! class_exists($cast)) continue;
+            if (! class_exists($cast)) {
+                continue;
+            }
 
             if (
                 in_array(CastsAttributes::class, class_implements($cast))
                 && isset($attributes[$key])
-                ) {
+            ) {
                 $attributes[$key] = $model->getAttributes()[$key];
             }
         }
@@ -165,7 +173,7 @@ class EloquentModelSynth extends Synth
     {
         $filteredAttributes = [];
 
-        foreach($rules as $key => $rule) {
+        foreach ($rules as $key => $rule) {
             // If the rule is an array, take the key instead
             if (is_array($rule)) {
                 $rule = $key;
@@ -212,7 +220,7 @@ class EloquentModelSynth extends Synth
 
             $model = $query->first();
         } else {
-            $model = new $class();
+            $model = new $class;
         }
 
         return $model;

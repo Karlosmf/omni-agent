@@ -25,9 +25,7 @@ use Ramsey\Uuid\Type\Integer as IntegerObject;
  */
 class GenericNumberConverter implements NumberConverterInterface
 {
-    public function __construct(private CalculatorInterface $calculator)
-    {
-    }
+    public function __construct(private CalculatorInterface $calculator) {}
 
     /**
      * @pure

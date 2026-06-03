@@ -12,7 +12,7 @@ class Plugin extends Provider
 {
     protected ?string $package_name = 'moonshine/moonshine';
 
-    protected string $base_path = __DIR__ . '/../';
+    protected string $base_path = __DIR__.'/../';
 
     protected array $plugins = [
         V3::class,

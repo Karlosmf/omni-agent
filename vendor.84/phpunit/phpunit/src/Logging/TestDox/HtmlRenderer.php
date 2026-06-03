@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Logging\TestDox;
 
 use function sprintf;
@@ -73,15 +76,18 @@ final readonly class HtmlRenderer
     </head>
     <body>
 EOT;
+
     private const string CLASS_HEADER = <<<'EOT'
 
         <h2>%s</h2>
         <ul>
 
 EOT;
+
     private const string CLASS_FOOTER = <<<'EOT'
         </ul>
 EOT;
+
     private const string PAGE_FOOTER = <<<'EOT'
 
     </body>
@@ -89,7 +95,7 @@ EOT;
 EOT;
 
     /**
-     * @param array<string, TestResultCollection> $tests
+     * @param  array<string, TestResultCollection>  $tests
      */
     public function render(array $tests): string
     {
@@ -112,7 +118,7 @@ EOT;
             $buffer .= self::CLASS_FOOTER;
         }
 
-        return $buffer . self::PAGE_FOOTER;
+        return $buffer.self::PAGE_FOOTER;
     }
 
     /**
@@ -125,7 +131,7 @@ EOT;
         foreach ($tests as $test) {
             $prettifiedMethodName = $test->test()->testDox()->prettifiedMethodName();
 
-            if (!isset($result[$prettifiedMethodName])) {
+            if (! isset($result[$prettifiedMethodName])) {
                 $result[$prettifiedMethodName] = $test->status()->isSuccess() ? 'success' : 'defect';
 
                 continue;

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Data;
 
 use NoDiscard;
@@ -27,7 +30,7 @@ final readonly class ProcessedFunctionCoverageData
     public array $paths;
 
     /**
-     * @param XdebugFunctionCoverageType $xdebugCoverageData
+     * @param  XdebugFunctionCoverageType  $xdebugCoverageData
      */
     public static function fromXdebugCoverage(array $xdebugCoverageData): self
     {
@@ -49,14 +52,14 @@ final readonly class ProcessedFunctionCoverageData
     }
 
     /**
-     * @param array<int, ProcessedBranchCoverageData> $branches
-     * @param array<int, ProcessedPathCoverageData>   $paths
+     * @param  array<int, ProcessedBranchCoverageData>  $branches
+     * @param  array<int, ProcessedPathCoverageData>  $paths
      */
     public function __construct(
         array $branches,
         array $paths,
     ) {
-        $this->paths    = $paths;
+        $this->paths = $paths;
         $this->branches = $branches;
     }
 
@@ -69,7 +72,7 @@ final readonly class ProcessedFunctionCoverageData
             $branches = $this->branches;
 
             foreach ($data->branches as $branchId => $branch) {
-                if (!isset($branches[$branchId])) {
+                if (! isset($branches[$branchId])) {
                     $branches[$branchId] = $branch;
                 } else {
                     $branches[$branchId] = $branches[$branchId]->merge($branch);
@@ -83,7 +86,7 @@ final readonly class ProcessedFunctionCoverageData
             $paths = $this->paths;
 
             foreach ($data->paths as $pathId => $path) {
-                if (!isset($paths[$pathId])) {
+                if (! isset($paths[$pathId])) {
                     $paths[$pathId] = $path;
                 } else {
                     $paths[$pathId] = $paths[$pathId]->merge($path);
@@ -102,7 +105,7 @@ final readonly class ProcessedFunctionCoverageData
     }
 
     /**
-     * @param TestIdType $testCaseId
+     * @param  TestIdType  $testCaseId
      */
     public function recordBranchHit(int $branchId, string $testCaseId): void
     {
@@ -110,7 +113,7 @@ final readonly class ProcessedFunctionCoverageData
     }
 
     /**
-     * @param TestIdType $testCaseId
+     * @param  TestIdType  $testCaseId
      */
     public function recordPathHit(int $pathId, string $testCaseId): void
     {

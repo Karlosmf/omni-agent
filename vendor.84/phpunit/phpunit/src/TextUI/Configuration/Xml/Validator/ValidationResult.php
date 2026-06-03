@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,12 +9,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\XmlConfiguration;
 
 use const PHP_EOL;
+
+use LibXMLError;
+
 use function sprintf;
 use function trim;
-use LibXMLError;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -29,14 +34,14 @@ final readonly class ValidationResult
     private array $validationErrors;
 
     /**
-     * @param array<int, LibXMLError> $errors
+     * @param  array<int, LibXMLError>  $errors
      */
     public static function fromArray(array $errors): self
     {
         $validationErrors = [];
 
         foreach ($errors as $error) {
-            if (!isset($validationErrors[$error->line])) {
+            if (! isset($validationErrors[$error->line])) {
                 $validationErrors[$error->line] = [];
             }
 
@@ -47,7 +52,7 @@ final readonly class ValidationResult
     }
 
     /**
-     * @param array<int, list<string>> $validationErrors
+     * @param  array<int, list<string>>  $validationErrors
      */
     private function __construct(array $validationErrors)
     {
@@ -64,10 +69,10 @@ final readonly class ValidationResult
         $buffer = '';
 
         foreach ($this->validationErrors as $line => $validationErrorsOnLine) {
-            $buffer .= sprintf(PHP_EOL . '  Line %d:' . PHP_EOL, $line);
+            $buffer .= sprintf(PHP_EOL.'  Line %d:'.PHP_EOL, $line);
 
             foreach ($validationErrorsOnLine as $validationError) {
-                $buffer .= sprintf('  - %s' . PHP_EOL, $validationError);
+                $buffer .= sprintf('  - %s'.PHP_EOL, $validationError);
             }
         }
 

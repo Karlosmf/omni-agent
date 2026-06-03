@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Metadata;
 
 /**
@@ -20,19 +23,21 @@ final readonly class DependsOnClass extends Metadata
      * @var class-string
      */
     private string $className;
+
     private bool $deepClone;
+
     private bool $shallowClone;
 
     /**
-     * @param int<0, 1>    $level
-     * @param class-string $className
+     * @param  int<0, 1>  $level
+     * @param  class-string  $className
      */
     protected function __construct(int $level, string $className, bool $deepClone, bool $shallowClone)
     {
         parent::__construct($level);
 
-        $this->className    = $className;
-        $this->deepClone    = $deepClone;
+        $this->className = $className;
+        $this->deepClone = $deepClone;
         $this->shallowClone = $shallowClone;
     }
 

@@ -39,11 +39,11 @@ trait HasTabs
     public function getCachedTabs(): array
     {
         return $this->cachedTabs ??= collect($this->getTabs())
-            ->map(fn (Tab $tab, string | int $key): Tab => $tab->hasCustomLabel() ? $tab : $tab->label($this->generateTabLabel($key)))
+            ->map(fn (Tab $tab, string|int $key): Tab => $tab->hasCustomLabel() ? $tab : $tab->label($this->generateTabLabel($key)))
             ->all();
     }
 
-    public function getDefaultActiveTab(): string | int | null
+    public function getDefaultActiveTab(): string|int|null
     {
         return array_key_first($this->getCachedTabs());
     }

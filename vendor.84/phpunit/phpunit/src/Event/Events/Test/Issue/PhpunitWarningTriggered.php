@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,14 +9,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\Test;
 
 use const PHP_EOL;
-use function implode;
-use function sprintf;
+
 use PHPUnit\Event\Code\Test;
 use PHPUnit\Event\Event;
 use PHPUnit\Event\Telemetry;
+
+use function implode;
+use function sprintf;
 
 /**
  * @immutable
@@ -24,22 +29,24 @@ use PHPUnit\Event\Telemetry;
 final readonly class PhpunitWarningTriggered implements Event
 {
     private Telemetry\Info $telemetryInfo;
+
     private Test $test;
 
     /**
      * @var non-empty-string
      */
     private string $message;
+
     private bool $ignoredByTest;
 
     /**
-     * @param non-empty-string $message
+     * @param  non-empty-string  $message
      */
     public function __construct(Telemetry\Info $telemetryInfo, Test $test, string $message, bool $ignoredByTest)
     {
         $this->telemetryInfo = $telemetryInfo;
-        $this->test          = $test;
-        $this->message       = $message;
+        $this->test = $test;
+        $this->message = $message;
         $this->ignoredByTest = $ignoredByTest;
     }
 
@@ -74,7 +81,7 @@ final readonly class PhpunitWarningTriggered implements Event
         $message = $this->message;
 
         if ($message !== '') {
-            $message = PHP_EOL . $message;
+            $message = PHP_EOL.$message;
         }
 
         $details = [$this->test->id()];

@@ -5,6 +5,7 @@ namespace Faker\Provider\en_GB;
 class Address extends \Faker\Provider\Address
 {
     protected static $cityPrefix = ['North', 'East', 'West', 'South', 'New', 'Lake', 'Port'];
+
     protected static $citySuffix = [
         'berg', 'borough', 'burgh', 'bury',
         'chester',
@@ -17,7 +18,9 @@ class Address extends \Faker\Provider\Address
         'ton', 'town',
         'view', 'ville',
     ];
+
     protected static $buildingNumber = ['%##', '%#', '%'];
+
     protected static $streetSuffix = [
         'Alley', 'Avenue',
         'Branch', 'Bridge', 'Brook', 'Brooks', 'Burg', 'Burgs', 'Bypass',
@@ -126,18 +129,22 @@ class Address extends \Faker\Provider\Address
         '{{firstName}}{{citySuffix}}',
         '{{lastName}}{{citySuffix}}',
     ];
+
     protected static $streetNameFormats = [
         '{{firstName}} {{streetSuffix}}',
         '{{lastName}} {{streetSuffix}}',
     ];
+
     protected static $streetAddressFormats = [
         '{{buildingNumber}} {{streetName}}',
         '{{buildingNumber}} {{streetName}}',
         "{{secondaryAddress}}\n{{streetName}}",
     ];
+
     protected static $addressFormats = [
         "{{streetAddress}}\n{{city}}\n{{postcode}}",
     ];
+
     protected static $secondaryAddressFormats = ['Flat ##', 'Flat ##?', 'Studio ##', 'Studio ##?'];
 
     /**

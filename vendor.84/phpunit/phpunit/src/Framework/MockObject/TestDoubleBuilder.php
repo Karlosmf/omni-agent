@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,12 +9,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\MockObject;
 
-use function array_merge;
 use PHPUnit\Framework\MockObject\Generator\Generator;
 use PHPUnit\Framework\MockObject\Generator\ReflectionException;
 use ReflectionClass;
+
+use function array_merge;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -27,19 +31,23 @@ abstract class TestDoubleBuilder
     /**
      * @var list<non-empty-string>
      */
-    protected array $methods          = [];
+    protected array $methods = [];
+
     protected bool $emptyMethodsArray = false;
 
     /**
      * @var array<mixed>
      */
-    protected array $constructorArgs      = [];
-    protected bool $originalConstructor   = true;
-    protected bool $originalClone         = true;
+    protected array $constructorArgs = [];
+
+    protected bool $originalConstructor = true;
+
+    protected bool $originalClone = true;
+
     protected bool $returnValueGeneration = true;
 
     /**
-     * @param class-string|trait-string $type
+     * @param  class-string|trait-string  $type
      */
     public function __construct(string $type)
     {
@@ -49,12 +57,11 @@ abstract class TestDoubleBuilder
     /**
      * Specifies the subset of methods to mock, requiring each to exist in the class.
      *
-     * @param list<non-empty-string> $methods
+     * @param  list<non-empty-string>  $methods
+     * @return $this
      *
      * @throws CannotUseOnlyMethodsException
      * @throws ReflectionException
-     *
-     * @return $this
      */
     public function onlyMethods(array $methods): self
     {
@@ -79,7 +86,7 @@ abstract class TestDoubleBuilder
         }
 
         foreach ($methods as $method) {
-            if (!$reflector->hasMethod($method)) {
+            if (! $reflector->hasMethod($method)) {
                 throw new CannotUseOnlyMethodsException($this->type, $method);
             }
         }
@@ -92,8 +99,7 @@ abstract class TestDoubleBuilder
     /**
      * Specifies the arguments for the constructor.
      *
-     * @param array<mixed> $arguments
-     *
+     * @param  array<mixed>  $arguments
      * @return $this
      */
     public function setConstructorArgs(array $arguments): self
@@ -176,7 +182,7 @@ abstract class TestDoubleBuilder
         return (new Generator)->testDouble(
             $this->type,
             $mockObject,
-            !$this->emptyMethodsArray ? $this->methods : null,
+            ! $this->emptyMethodsArray ? $this->methods : null,
             $this->constructorArgs,
             $testDoubleClassName ?? '',
             $this->originalConstructor,

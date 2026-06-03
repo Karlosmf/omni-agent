@@ -3,6 +3,8 @@
 namespace App\Filament\Admin\Resources\TravelPackages\Pages;
 
 use App\Filament\Admin\Resources\TravelPackages\TravelPackageResource;
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditTravelPackage extends EditRecord
@@ -12,20 +14,20 @@ class EditTravelPackage extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            \Filament\Actions\DeleteAction::make()
+            DeleteAction::make()
                 ->label('Eliminar')
                 ->icon('heroicon-o-trash'),
         ];
     }
 
-    protected function getSaveFormAction(): \Filament\Actions\Action
+    protected function getSaveFormAction(): Action
     {
         return parent::getSaveFormAction()
             ->label('Guardar cambios')
             ->icon('heroicon-o-check');
     }
 
-    protected function getCancelFormAction(): \Filament\Actions\Action
+    protected function getCancelFormAction(): Action
     {
         return parent::getCancelFormAction()
             ->label('Cancelar')

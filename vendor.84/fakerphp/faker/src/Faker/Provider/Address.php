@@ -5,22 +5,29 @@ namespace Faker\Provider;
 class Address extends Base
 {
     protected static $citySuffix = ['Ville'];
+
     protected static $streetSuffix = ['Street'];
+
     protected static $cityFormats = [
         '{{firstName}}{{citySuffix}}',
     ];
+
     protected static $streetNameFormats = [
         '{{lastName}} {{streetSuffix}}',
     ];
+
     protected static $streetAddressFormats = [
         '{{buildingNumber}} {{streetName}}',
     ];
+
     protected static $addressFormats = [
         '{{streetAddress}} {{postcode}} {{city}}',
     ];
 
     protected static $buildingNumber = ['%#'];
+
     protected static $postcode = ['#####'];
+
     protected static $country = [];
 
     /**
@@ -126,9 +133,8 @@ class Address extends Base
      *
      * @example '77.147489'
      *
-     * @param float|int $min
-     * @param float|int $max
-     *
+     * @param  float|int  $min
+     * @param  float|int  $max
      * @return float
      */
     public static function latitude($min = -90, $max = 90)
@@ -141,9 +147,8 @@ class Address extends Base
      *
      * @example '86.211205'
      *
-     * @param float|int $min
-     * @param float|int $max
-     *
+     * @param  float|int  $min
+     * @param  float|int  $max
      * @return float
      */
     public static function longitude($min = -180, $max = 180)

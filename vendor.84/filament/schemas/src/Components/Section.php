@@ -51,9 +51,9 @@ class Section extends Component implements CanConcealComponents, CanEntangleWith
      */
     protected string $view = 'filament-schemas::components.section';
 
-    protected bool | Closure | null $isAside = null;
+    protected bool|Closure|null $isAside = null;
 
-    protected bool | Closure $isFormBefore = false;
+    protected bool|Closure $isFormBefore = false;
 
     const AFTER_HEADER_SCHEMA_KEY = 'after_header';
 
@@ -70,7 +70,7 @@ class Section extends Component implements CanConcealComponents, CanEntangleWith
     /**
      * @param  string | array<Component | Action | ActionGroup> | Htmlable | Closure | null  $heading
      */
-    final public function __construct(string | array | Htmlable | Closure | null $heading = null)
+    final public function __construct(string|array|Htmlable|Closure|null $heading = null)
     {
         is_array($heading)
             ? $this->components($heading)
@@ -80,7 +80,7 @@ class Section extends Component implements CanConcealComponents, CanEntangleWith
     /**
      * @param  string | array<Component | Action | ActionGroup> | Htmlable | Closure | null  $heading
      */
-    public static function make(string | array | Htmlable | Closure | null $heading = null): static
+    public static function make(string|array|Htmlable|Closure|null $heading = null): static
     {
         $static = app(static::class, ['heading' => $heading]);
         $static->configure();
@@ -101,7 +101,7 @@ class Section extends Component implements CanConcealComponents, CanEntangleWith
 
             $statePath = $component->getStatePath();
 
-            return Str::slug(Str::transliterate($heading, strict: true)) . '::' . (filled($statePath) ? "{$statePath}::section" : 'section');
+            return Str::slug(Str::transliterate($heading, strict: true)).'::'.(filled($statePath) ? "{$statePath}::section" : 'section');
         }, isInheritable: false);
 
         $this->afterHeader(fn (Section $component): array => $component->getHeaderActions());
@@ -115,7 +115,7 @@ class Section extends Component implements CanConcealComponents, CanEntangleWith
         });
     }
 
-    public function aside(bool | Closure | null $condition = true): static
+    public function aside(bool|Closure|null $condition = true): static
     {
         $this->isAside = $condition;
 
@@ -132,7 +132,7 @@ class Section extends Component implements CanConcealComponents, CanEntangleWith
         return (bool) ($this->evaluate($this->isAside) ?? false);
     }
 
-    public function formBefore(bool | Closure $condition = true): static
+    public function formBefore(bool|Closure $condition = true): static
     {
         $this->isFormBefore = $condition;
 
@@ -147,7 +147,7 @@ class Section extends Component implements CanConcealComponents, CanEntangleWith
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function afterHeader(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components): static
+    public function afterHeader(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components): static
     {
         $this->childComponents($components, static::AFTER_HEADER_SCHEMA_KEY);
 
@@ -157,7 +157,7 @@ class Section extends Component implements CanConcealComponents, CanEntangleWith
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function footer(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components): static
+    public function footer(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components): static
     {
         $this->childComponents($components, static::FOOTER_SCHEMA_KEY);
 
@@ -167,7 +167,7 @@ class Section extends Component implements CanConcealComponents, CanEntangleWith
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function beforeLabel(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components): static
+    public function beforeLabel(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components): static
     {
         $this->childComponents($components, static::BEFORE_LABEL_SCHEMA_KEY);
 
@@ -177,7 +177,7 @@ class Section extends Component implements CanConcealComponents, CanEntangleWith
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function afterLabel(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components): static
+    public function afterLabel(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components): static
     {
         $this->childComponents($components, static::AFTER_LABEL_SCHEMA_KEY);
 
@@ -187,7 +187,7 @@ class Section extends Component implements CanConcealComponents, CanEntangleWith
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function aboveContent(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components): static
+    public function aboveContent(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components): static
     {
         $this->childComponents($components, static::ABOVE_CONTENT_SCHEMA_KEY);
 
@@ -197,7 +197,7 @@ class Section extends Component implements CanConcealComponents, CanEntangleWith
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function belowContent(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components): static
+    public function belowContent(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components): static
     {
         $this->childComponents($components, static::BELOW_CONTENT_SCHEMA_KEY);
 

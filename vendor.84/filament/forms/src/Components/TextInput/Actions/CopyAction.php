@@ -11,9 +11,9 @@ use Illuminate\Support\Js;
 
 class CopyAction extends Action
 {
-    protected string | Closure | null $copyMessage = null;
+    protected string|Closure|null $copyMessage = null;
 
-    protected int | Closure | null $copyMessageDuration = null;
+    protected int|Closure|null $copyMessageDuration = null;
 
     protected function setUp(): void
     {
@@ -45,14 +45,14 @@ class CopyAction extends Action
         return 'copy';
     }
 
-    public function copyMessage(string | Closure | null $message): static
+    public function copyMessage(string|Closure|null $message): static
     {
         $this->copyMessage = $message;
 
         return $this;
     }
 
-    public function copyMessageDuration(int | Closure | null $duration): static
+    public function copyMessageDuration(int|Closure|null $duration): static
     {
         $this->copyMessageDuration = $duration;
 

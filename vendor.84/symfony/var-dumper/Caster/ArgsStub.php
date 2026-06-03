@@ -28,9 +28,9 @@ class ArgsStub extends EnumStub
 
         $values = [];
         foreach ($args as $k => $v) {
-            $values[$k] = !\is_scalar($v) && !$v instanceof Stub ? new CutStub($v) : $v;
+            $values[$k] = ! \is_scalar($v) && ! $v instanceof Stub ? new CutStub($v) : $v;
         }
-        if (null === $params) {
+        if ($params === null) {
             parent::__construct($values, false);
 
             return;
@@ -55,7 +55,7 @@ class ArgsStub extends EnumStub
         }
 
         try {
-            $r = null !== $class ? new \ReflectionMethod($class, $function) : new \ReflectionFunction($function);
+            $r = $class !== null ? new \ReflectionMethod($class, $function) : new \ReflectionFunction($function);
         } catch (\ReflectionException) {
             return [null, null];
         }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Data;
 
 /**
@@ -15,22 +18,34 @@ namespace SebastianBergmann\CodeCoverage\Data;
 final class ProcessedClassType
 {
     public readonly string $className;
+
     public readonly string $namespace;
 
     /**
      * @var array<string, ProcessedMethodType>
      */
     public array $methods;
+
     public readonly int $startLine;
+
     public int $executableLines;
+
     public int $executedLines;
+
     public int $executableBranches;
+
     public int $executedBranches;
+
     public int $executablePaths;
+
     public int $executedPaths;
+
     public int $ccn;
+
     public float|int $coverage;
+
     public int|string $crap;
+
     public readonly string $link;
 
     public function __construct(
@@ -52,19 +67,19 @@ final class ProcessedClassType
         int|string $crap,
         string $link,
     ) {
-        $this->className          = $className;
-        $this->namespace          = $namespace;
-        $this->methods            = $methods;
-        $this->startLine          = $startLine;
-        $this->executableLines    = $executableLines;
-        $this->executedLines      = $executedLines;
+        $this->className = $className;
+        $this->namespace = $namespace;
+        $this->methods = $methods;
+        $this->startLine = $startLine;
+        $this->executableLines = $executableLines;
+        $this->executedLines = $executedLines;
         $this->executableBranches = $executableBranches;
-        $this->executedBranches   = $executedBranches;
-        $this->executablePaths    = $executablePaths;
-        $this->executedPaths      = $executedPaths;
-        $this->ccn                = $ccn;
-        $this->coverage           = $coverage;
-        $this->crap               = $crap;
-        $this->link               = $link;
+        $this->executedBranches = $executedBranches;
+        $this->executablePaths = $executablePaths;
+        $this->executedPaths = $executedPaths;
+        $this->ccn = $ccn;
+        $this->coverage = $coverage;
+        $this->crap = $crap;
+        $this->link = $link;
     }
 }

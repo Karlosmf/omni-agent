@@ -28,7 +28,7 @@ interface WebDriverElement extends WebDriverSearchContext
      * Attribute is meant what is declared in the HTML markup of the element.
      * To read a value of a IDL "JavaScript" property (like `innerHTML`), use `getDomProperty()` method.
      *
-     * @param string $attribute_name The name of the attribute.
+     * @param  string  $attribute_name  The name of the attribute.
      * @return string|null The value of the attribute.
      */
     public function getAttribute($attribute_name);
@@ -47,7 +47,7 @@ interface WebDriverElement extends WebDriverSearchContext
     /**
      * Get the value of a given CSS property.
      *
-     * @param string $css_property_name The name of the CSS property.
+     * @param  string  $css_property_name  The name of the CSS property.
      * @return string The value of the CSS property.
      */
     public function getCSSValue($css_property_name);
@@ -115,7 +115,7 @@ interface WebDriverElement extends WebDriverSearchContext
     /**
      * Simulate typing into an element, which may set its value.
      *
-     * @param mixed $value The data to be typed.
+     * @param  mixed  $value  The data to be typed.
      * @return WebDriverElement The current instance.
      */
     public function sendKeys($value);
@@ -138,17 +138,19 @@ interface WebDriverElement extends WebDriverSearchContext
     /**
      * Take screenshot of a specific element.
      *
-     * @param string $save_as The path of the screenshot to be saved.
+     * @param  string  $save_as  The path of the screenshot to be saved.
      * @return string The screenshot in PNG format.
+     *
      * @todo Add in next major release (BC)
      */
-    //public function takeElementScreenshot($save_as = null);
+    // public function takeElementScreenshot($save_as = null);
 
     /**
      * Get representation of an element's shadow root for accessing the shadow DOM of a web component.
      *
      * @return ShadowRoot
+     *
      * @todo Add in next major release (BC)
      */
-    //public function getShadowRoot();
+    // public function getShadowRoot();
 }

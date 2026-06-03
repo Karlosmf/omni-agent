@@ -13,7 +13,7 @@ interface HasActions
     /**
      * @param  string | array<string>  $name
      */
-    public function getAction(string | array $name, bool $isMounting = true): ?Action;
+    public function getAction(string|array $name, bool $isMounting = true): ?Action;
 
     /**
      * @param  array<string, mixed>  $arguments

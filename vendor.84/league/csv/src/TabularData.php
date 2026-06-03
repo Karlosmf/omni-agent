@@ -49,8 +49,7 @@ interface TabularData
      * filled with null values while extra record fields are strip from
      * the returned object.
      *
-     * @param array<int, string> $header an optional header mapper to use instead of the tabular data header
-     *
+     * @param  array<int, string>  $header  an optional header mapper to use instead of the tabular data header
      * @return Iterator<array-key, array<array-key, mixed>>
      */
     public function getRecords(array $header = []): Iterator;
@@ -60,11 +59,10 @@ interface TabularData
      *
      * By default, if no value is supplied the first column is fetched
      *
-     * @param string|int $index CSV column index
+     * @param  string|int  $index  CSV column index
+     * @return Iterator<int, mixed>
      *
      * @throws UnableToProcessCsv if the column index is invalid or not found
-     *
-     * @return Iterator<int, mixed>
      */
     public function fetchColumn(string|int $index = 0): Iterator;
 }

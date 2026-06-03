@@ -90,7 +90,7 @@ class QpEncoder implements EncoderInterface
     public function __construct()
     {
         $id = static::class;
-        if (!isset(self::$safeMapShare[$id])) {
+        if (! isset(self::$safeMapShare[$id])) {
             $this->initSafeMap();
             self::$safeMapShare[$id] = $this->safeMap;
         } else {
@@ -134,7 +134,7 @@ class QpEncoder implements EncoderInterface
             $enc = $this->encodeByteSequence($bytes, $size);
 
             $i = strpos($enc, '=0D=0A');
-            $newLineLength = $lineLen + (false === $i ? $size : $i);
+            $newLineLength = $lineLen + ($i === false ? $size : $i);
 
             if ($currentLine && $newLineLength >= $thisLineLength) {
                 $lines[$lNo] = '';
@@ -145,7 +145,7 @@ class QpEncoder implements EncoderInterface
 
             $currentLine .= $enc;
 
-            if (false === $i) {
+            if ($i === false) {
                 $lineLen += $size;
             } else {
                 // 6 is the length of '=0D=0A'.
@@ -166,7 +166,7 @@ class QpEncoder implements EncoderInterface
         foreach ($bytes as $b) {
             if (isset($this->safeMap[$b])) {
                 $ret .= $this->safeMap[$b];
-                ++$size;
+                $size++;
             } else {
                 $ret .= self::QP_MAP[$b];
                 $size += 3;

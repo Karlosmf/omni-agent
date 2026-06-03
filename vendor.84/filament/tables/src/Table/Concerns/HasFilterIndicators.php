@@ -8,7 +8,7 @@ use Filament\Tables\Filters\Indicator;
 
 trait HasFilterIndicators
 {
-    protected bool | Closure $areFilterIndicatorsHidden = false;
+    protected bool|Closure $areFilterIndicatorsHidden = false;
 
     /**
      * @return array<Indicator>
@@ -30,7 +30,7 @@ trait HasFilterIndicators
                         ->map(function (Indicator $indicator) use ($filter): Indicator {
                             $removeField = $indicator->getRemoveField();
 
-                            return $indicator->removeLivewireClickHandler("removeTableFilter('{$filter->getName()}'" . (filled($removeField) ? ', \'' . $removeField . '\'' : null) . ')');
+                            return $indicator->removeLivewireClickHandler("removeTableFilter('{$filter->getName()}'".(filled($removeField) ? ', \''.$removeField.'\'' : null).')');
                         })
                         ->all(),
                 ],
@@ -39,7 +39,7 @@ trait HasFilterIndicators
         ];
     }
 
-    public function hiddenFilterIndicators(bool | Closure $condition = true): static
+    public function hiddenFilterIndicators(bool|Closure $condition = true): static
     {
         $this->areFilterIndicatorsHidden = $condition;
 

@@ -16,6 +16,4 @@ namespace League\Uri\Exceptions;
 use League\Uri\Contracts\UriException;
 use RuntimeException;
 
-class MissingFeature extends RuntimeException implements UriException
-{
-}
+class MissingFeature extends RuntimeException implements UriException {}

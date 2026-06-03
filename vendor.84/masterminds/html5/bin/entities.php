@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Fetch the entities.json file and convert to PHP datastructure.
  */
@@ -9,7 +10,7 @@ $ENTITIES_URL = 'http://www.w3.org/TR/2012/CR-html5-20121217/entities.json';
 $payload = file_get_contents($ENTITIES_URL);
 $json = json_decode($payload);
 
-$table = array();
+$table = [];
 foreach ($json as $name => $obj) {
     $sname = substr($name, 1, -1);
     $table[$sname] = $obj->characters;
@@ -22,5 +23,5 @@ class Entities {
   public static $byName = ';
 var_export($table);
 echo ';
-}' . PHP_EOL;
-//print serialize($table);
+}'.PHP_EOL;
+// print serialize($table);

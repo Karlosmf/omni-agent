@@ -9,6 +9,7 @@ class Address extends \Faker\Provider\Address
     protected static $streetSuffixLong = [
         'Gasse', 'Platz', 'Ring', 'Straße', 'Weg',
     ];
+
     protected static $streetSuffixShort = [
         'gasse', 'platz', 'ring', 'straße', 'weg',
     ];
@@ -109,6 +110,7 @@ class Address extends \Faker\Provider\Address
     protected static $streetAddressFormats = [
         '{{streetName}} {{buildingNumber}}',
     ];
+
     protected static $addressFormats = [
         "{{streetAddress}}\n{{postcode}} {{city}}",
     ];

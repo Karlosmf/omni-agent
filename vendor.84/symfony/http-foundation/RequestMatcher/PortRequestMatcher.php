@@ -21,9 +21,7 @@ use Symfony\Component\HttpFoundation\RequestMatcherInterface;
  */
 class PortRequestMatcher implements RequestMatcherInterface
 {
-    public function __construct(private int $port)
-    {
-    }
+    public function __construct(private int $port) {}
 
     public function matches(Request $request): bool
     {

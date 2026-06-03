@@ -34,13 +34,13 @@ class MergeOperation extends AbstractOperation
         $intlDomain = $domain.MessageCatalogueInterface::INTL_DOMAIN_SUFFIX;
 
         foreach ($this->target->getCatalogueMetadata('', $domain) ?? [] as $key => $value) {
-            if (null === $this->result->getCatalogueMetadata($key, $domain)) {
+            if ($this->result->getCatalogueMetadata($key, $domain) === null) {
                 $this->result->setCatalogueMetadata($key, $value, $domain);
             }
         }
 
         foreach ($this->target->getCatalogueMetadata('', $intlDomain) ?? [] as $key => $value) {
-            if (null === $this->result->getCatalogueMetadata($key, $intlDomain)) {
+            if ($this->result->getCatalogueMetadata($key, $intlDomain) === null) {
                 $this->result->setCatalogueMetadata($key, $value, $intlDomain);
             }
         }
@@ -55,7 +55,7 @@ class MergeOperation extends AbstractOperation
         }
 
         foreach ($this->target->all($domain) as $id => $message) {
-            if (!$this->source->has($id, $domain)) {
+            if (! $this->source->has($id, $domain)) {
                 $this->messages[$domain]['all'][$id] = $message;
                 $this->messages[$domain]['new'][$id] = $message;
                 $d = $this->target->defines($id, $intlDomain) ? $intlDomain : $domain;

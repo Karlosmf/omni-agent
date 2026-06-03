@@ -7,9 +7,9 @@ use UnitEnum;
 
 trait HasEnum
 {
-    protected string | Closure | null $enum = null;
+    protected string|Closure|null $enum = null;
 
-    public function enum(string | Closure | null $enum): static
+    public function enum(string|Closure|null $enum): static
     {
         $this->enum = $enum;
 

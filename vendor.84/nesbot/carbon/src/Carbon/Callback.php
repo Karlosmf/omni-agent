@@ -27,9 +27,7 @@ final class Callback
 {
     private ?ReflectionFunction $function;
 
-    private function __construct(private readonly Closure $closure)
-    {
-    }
+    private function __construct(private readonly Closure $closure) {}
 
     public static function fromClosure(Closure $closure): self
     {
@@ -54,7 +52,7 @@ final class Callback
     {
         $type = $this->getParameterType($index);
 
-        if (!($type instanceof ReflectionNamedType)) {
+        if (! ($type instanceof ReflectionNamedType)) {
             return $value;
         }
 
@@ -64,7 +62,7 @@ final class Callback
             $name = $value instanceof DateTime ? Carbon::class : CarbonImmutable::class;
         }
 
-        if (!class_exists($name) || is_a($value, $name)) {
+        if (! class_exists($name) || is_a($value, $name)) {
             return $value;
         }
 

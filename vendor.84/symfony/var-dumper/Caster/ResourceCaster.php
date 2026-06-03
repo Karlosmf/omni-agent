@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\VarDumper\Caster;
 
+use Dba\Connection;
 use Symfony\Component\VarDumper\Cloner\Stub;
 
 /**
@@ -35,11 +36,11 @@ class ResourceCaster
     }
 
     /**
-     * @param resource|\Dba\Connection $dba
+     * @param  resource|Connection  $dba
      */
     public static function castDba(mixed $dba, array $a, Stub $stub, bool $isNested): array
     {
-        if (\PHP_VERSION_ID < 80402 && !\is_resource($dba)) {
+        if (\PHP_VERSION_ID < 80402 && ! \is_resource($dba)) {
             // @see https://github.com/php/php-src/issues/16990
             return $a;
         }

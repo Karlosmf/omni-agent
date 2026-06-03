@@ -2,26 +2,29 @@
 
 namespace Livewire\Features\SupportValidation;
 
-use function Livewire\invade;
-use function Livewire\store;
 use Illuminate\Contracts\Support\Arrayable;
-use Livewire\Wireable;
-use Livewire\Exceptions\MissingRulesException;
-use Livewire\Drawer\Utils;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Support\MessageBag;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\MessageBag;
 use Illuminate\Support\ViewErrorBag;
+use Illuminate\Validation\ValidationException;
+use Livewire\Component;
+use Livewire\Drawer\Utils;
+use Livewire\Exceptions\MissingRulesException;
 use Livewire\Form;
+
+use function Livewire\invade;
+use function Livewire\store;
 
 trait HandlesValidation
 {
     protected $withValidatorCallback;
 
     protected $rulesFromOutside = [];
+
     protected $messagesFromOutside = [];
+
     protected $validationAttributesFromOutside = [];
 
     public function addRulesFromOutside($rules)
@@ -108,12 +111,15 @@ trait HandlesValidation
     {
         $rulesFromComponent = [];
 
-        if (method_exists($this, 'rules')) $rulesFromComponent = $this->rules();
-        else if (property_exists($this, 'rules')) $rulesFromComponent = $this->rules;
+        if (method_exists($this, 'rules')) {
+            $rulesFromComponent = $this->rules();
+        } elseif (property_exists($this, 'rules')) {
+            $rulesFromComponent = $this->rules;
+        }
 
         $rulesFromOutside = array_merge_recursive(
             ...array_map(
-                fn($i) => value($i),
+                fn ($i) => value($i),
                 $this->rulesFromOutside
             )
         );
@@ -125,12 +131,15 @@ trait HandlesValidation
     {
         $messages = [];
 
-        if (method_exists($this, 'messages')) $messages = $this->messages();
-        elseif (property_exists($this, 'messages')) $messages = $this->messages;
+        if (method_exists($this, 'messages')) {
+            $messages = $this->messages();
+        } elseif (property_exists($this, 'messages')) {
+            $messages = $this->messages;
+        }
 
         $messagesFromOutside = array_merge(
             ...array_map(
-                fn($i) => value($i),
+                fn ($i) => value($i),
                 $this->messagesFromOutside
             )
         );
@@ -142,12 +151,15 @@ trait HandlesValidation
     {
         $validationAttributes = [];
 
-        if (method_exists($this, 'validationAttributes')) $validationAttributes = $this->validationAttributes();
-        elseif (property_exists($this, 'validationAttributes')) $validationAttributes = $this->validationAttributes;
+        if (method_exists($this, 'validationAttributes')) {
+            $validationAttributes = $this->validationAttributes();
+        } elseif (property_exists($this, 'validationAttributes')) {
+            $validationAttributes = $this->validationAttributes;
+        }
 
         $validationAttributesFromOutside = array_merge(
             ...array_map(
-                fn($i) => value($i),
+                fn ($i) => value($i),
                 $this->validationAttributesFromOutside
             )
         );
@@ -157,15 +169,21 @@ trait HandlesValidation
 
     protected function getValidationCustomValues()
     {
-        if (method_exists($this, 'validationCustomValues')) return $this->validationCustomValues();
-        if (property_exists($this, 'validationCustomValues')) return $this->validationCustomValues;
+        if (method_exists($this, 'validationCustomValues')) {
+            return $this->validationCustomValues();
+        }
+        if (property_exists($this, 'validationCustomValues')) {
+            return $this->validationCustomValues;
+        }
 
         return [];
     }
 
     public function rulesForModel($name)
     {
-        if (empty($this->getRules())) return collect();
+        if (empty($this->getRules())) {
+            return collect();
+        }
 
         return collect($this->getRules())
             ->filter(function ($value, $key) use ($name) {
@@ -220,7 +238,7 @@ trait HandlesValidation
     {
         collect($rules)
             ->keys()
-            ->each(function($ruleKey) use ($data) {
+            ->each(function ($ruleKey) use ($data) {
                 throw_unless(
                     array_key_exists(Utils::beforeFirstDot($ruleKey), $data),
                     new \Exception('No property found for validation: ['.$ruleKey.']')
@@ -274,7 +292,7 @@ trait HandlesValidation
     protected function isRootComponent()
     {
         // Because this trait is used for form objects as well...
-        return $this instanceof \Livewire\Component;
+        return $this instanceof Component;
     }
 
     protected function withFormObjectValidators($validator, $validateSelf, $validateForm)
@@ -331,6 +349,7 @@ trait HandlesValidation
             && ($form = $this->all()[$property] ?? false) instanceof Form
         ) {
             $stripPrefix = (string) str($field)->after('.');
+
             return $form->validateOnly($stripPrefix, $rules, $messages, $attributes, $dataOverrides);
         }
 
@@ -342,16 +361,16 @@ trait HandlesValidation
         // rules that match the field, but return the rules without wildcard characters replaced,
         // so that custom attributes and messages still work as they need wildcards to work.
         $rulesForField = collect($rules)
-            ->filter(function($value, $rule) use ($field) {
-                if(! str($field)->is($rule)) {
+            ->filter(function ($value, $rule) use ($field) {
+                if (! str($field)->is($rule)) {
                     return false;
                 }
 
                 $fieldArray = str($field)->explode('.');
                 $ruleArray = str($rule)->explode('.');
 
-                for($i = 0; $i < count($fieldArray); $i++) {
-                    if(isset($ruleArray[$i]) && $ruleArray[$i] === '*') {
+                for ($i = 0; $i < count($fieldArray); $i++) {
+                    if (isset($ruleArray[$i]) && $ruleArray[$i] === '*') {
                         $ruleArray[$i] = $fieldArray[$i];
                     }
                 }
@@ -399,7 +418,7 @@ trait HandlesValidation
         $this->shortenModelAttributesInsideValidator($ruleKeysToShorten, $validator);
 
         $customValues = $this->getValidationCustomValues();
-        if (!empty($customValues)) {
+        if (! empty($customValues)) {
             $validator->addCustomValues($customValues);
         }
 
@@ -509,8 +528,11 @@ trait HandlesValidation
 
             $synth = app('livewire')->findSynth($value, $this);
 
-            if ($synth && method_exists($synth, 'unwrapForValidation')) return $synth->unwrapForValidation($value);
-            else if ($value instanceof Arrayable) return $value->toArray();
+            if ($synth && method_exists($synth, 'unwrapForValidation')) {
+                return $synth->unwrapForValidation($value);
+            } elseif ($value instanceof Arrayable) {
+                return $value->toArray();
+            }
 
             return $value;
         })->all();

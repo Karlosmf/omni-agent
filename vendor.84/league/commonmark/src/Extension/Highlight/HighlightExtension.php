@@ -20,7 +20,7 @@ class HighlightExtension implements ExtensionInterface
 {
     public function register(EnvironmentBuilderInterface $environment): void
     {
-        $environment->addDelimiterProcessor(new MarkDelimiterProcessor());
-        $environment->addRenderer(Mark::class, new MarkRenderer());
+        $environment->addDelimiterProcessor(new MarkDelimiterProcessor);
+        $environment->addRenderer(Mark::class, new MarkRenderer);
     }
 }

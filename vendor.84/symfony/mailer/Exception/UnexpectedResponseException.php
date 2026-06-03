@@ -11,6 +11,4 @@
 
 namespace Symfony\Component\Mailer\Exception;
 
-class UnexpectedResponseException extends TransportException
-{
-}
+class UnexpectedResponseException extends TransportException {}

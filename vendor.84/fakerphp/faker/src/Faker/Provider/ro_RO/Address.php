@@ -5,9 +5,13 @@ namespace Faker\Provider\ro_RO;
 class Address extends \Faker\Provider\Address
 {
     protected static $buildingNumber = ['%##', '%#', '%', '%/#', '#A', '#B'];
+
     protected static $apartmentNumber = ['#', '##'];
+
     protected static $floor = ['#', '##'];
+
     protected static $block = ['#', '##', 'A', 'B', 'C', 'D'];
+
     protected static $blockSegment = ['A', 'B', 'C', 'D'];
 
     protected static $streetPrefix = [

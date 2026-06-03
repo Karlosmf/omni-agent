@@ -33,7 +33,7 @@ final class HtmlSanitizer implements HtmlSanitizerInterface
         private HtmlSanitizerConfig $config,
         ?ParserInterface $parser = null,
     ) {
-        $this->parser = $parser ?? new NativeParser();
+        $this->parser = $parser ?? new NativeParser;
     }
 
     public function sanitize(string $input): string
@@ -48,7 +48,7 @@ final class HtmlSanitizer implements HtmlSanitizerInterface
         $element = isset(W3CReference::BODY_ELEMENTS[$element]) ? $element : $context;
 
         // Text context: early return with HTML encoding
-        if (W3CReference::CONTEXT_TEXT === $context) {
+        if ($context === W3CReference::CONTEXT_TEXT) {
             return StringSanitizer::encodeHtmlEntities($input);
         }
 
@@ -56,13 +56,13 @@ final class HtmlSanitizer implements HtmlSanitizerInterface
         $this->domVisitors[$context] ??= $this->createDomVisitorForContext($context);
 
         // Prevent DOS attack induced by extremely long HTML strings
-        if (-1 !== $this->config->getMaxInputLength() && \strlen($input) > $this->config->getMaxInputLength()) {
+        if ($this->config->getMaxInputLength() !== -1 && \strlen($input) > $this->config->getMaxInputLength()) {
             $input = substr($input, 0, $this->config->getMaxInputLength());
         }
 
         // Only operate on valid UTF-8 strings. This is necessary to prevent cross
         // site scripting issues on Internet Explorer 6. Idea from Drupal (filter_xss).
-        if (!$this->isValidUtf8($input)) {
+        if (! $this->isValidUtf8($input)) {
             return '';
         }
 
@@ -70,7 +70,7 @@ final class HtmlSanitizer implements HtmlSanitizerInterface
         $input = str_replace(\chr(0), '�', $input);
 
         // Parse as HTML
-        if ('' === trim($input) || !$parsed = $this->parser->parse($input, $element)) {
+        if (trim($input) === '' || ! $parsed = $this->parser->parse($input, $element)) {
             return '';
         }
 
@@ -81,7 +81,7 @@ final class HtmlSanitizer implements HtmlSanitizerInterface
     private function isValidUtf8(string $html): bool
     {
         // preg_match() fails silently on strings containing invalid UTF-8.
-        return '' === $html || preg_match('//u', $html);
+        return $html === '' || preg_match('//u', $html);
     }
 
     private function createDomVisitorForContext(string $context): DomVisitor
@@ -89,7 +89,7 @@ final class HtmlSanitizer implements HtmlSanitizerInterface
         $elementsConfig = [];
 
         // Head: only a few elements are allowed
-        if (W3CReference::CONTEXT_HEAD === $context) {
+        if ($context === W3CReference::CONTEXT_HEAD) {
             foreach ($this->config->getAllowedElements() as $allowedElement => $allowedAttributes) {
                 if (\array_key_exists($allowedElement, W3CReference::HEAD_ELEMENTS)) {
                     $elementsConfig[$allowedElement] = $allowedAttributes;
@@ -113,19 +113,19 @@ final class HtmlSanitizer implements HtmlSanitizerInterface
 
         // Body: allow any configured element that isn't in <head>
         foreach ($this->config->getAllowedElements() as $allowedElement => $allowedAttributes) {
-            if (!\array_key_exists($allowedElement, W3CReference::HEAD_ELEMENTS)) {
+            if (! \array_key_exists($allowedElement, W3CReference::HEAD_ELEMENTS)) {
                 $elementsConfig[$allowedElement] = $allowedAttributes;
             }
         }
 
         foreach ($this->config->getBlockedElements() as $blockedElement => $v) {
-            if (!\array_key_exists($blockedElement, W3CReference::HEAD_ELEMENTS)) {
+            if (! \array_key_exists($blockedElement, W3CReference::HEAD_ELEMENTS)) {
                 $elementsConfig[$blockedElement] = HtmlSanitizerAction::Block;
             }
         }
 
         foreach ($this->config->getDroppedElements() as $droppedElement => $v) {
-            if (!\array_key_exists($droppedElement, W3CReference::HEAD_ELEMENTS)) {
+            if (! \array_key_exists($droppedElement, W3CReference::HEAD_ELEMENTS)) {
                 $elementsConfig[$droppedElement] = HtmlSanitizerAction::Drop;
             }
         }

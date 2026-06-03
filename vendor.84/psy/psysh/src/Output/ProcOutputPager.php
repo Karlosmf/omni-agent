@@ -25,18 +25,21 @@ class ProcOutputPager extends StreamOutput implements OutputPager
 {
     /** @var ?resource */
     private $proc = null;
+
     /** @var ?resource */
     private $pipe = null;
+
     /** @var resource */
     private $stream;
+
     private string $cmd;
+
     private bool $closedEarly = false;
 
     /**
      * Constructor.
      *
-     * @param StreamOutput $output
-     * @param string       $cmd    Pager process command (default: 'less -R -F -X')
+     * @param  string  $cmd  Pager process command (default: 'less -R -F -X')
      */
     public function __construct(StreamOutput $output, string $cmd = 'less -R -F -X')
     {
@@ -47,8 +50,8 @@ class ProcOutputPager extends StreamOutput implements OutputPager
     /**
      * Writes a message to the output.
      *
-     * @param string $message A message to write to the output
-     * @param bool   $newline Whether to add a newline or not
+     * @param  string  $message  A message to write to the output
+     * @param  bool  $newline  Whether to add a newline or not
      *
      * @throws \RuntimeException When unable to write output (should never happen)
      */
@@ -60,7 +63,7 @@ class ProcOutputPager extends StreamOutput implements OutputPager
         }
 
         $pipe = $this->getPipe();
-        if (false === @\fwrite($pipe, $message.($newline ? \PHP_EOL : ''))) {
+        if (@\fwrite($pipe, $message.($newline ? \PHP_EOL : '')) === false) {
             // @codeCoverageIgnoreStart
             // When the message is sufficiently long, writing to the pipe fails
             // if the pager process is closed before the entire message is read.
@@ -105,11 +108,11 @@ class ProcOutputPager extends StreamOutput implements OutputPager
      */
     private function getPipe()
     {
-        if (!isset($this->pipe) || !isset($this->proc)) {
+        if (! isset($this->pipe) || ! isset($this->proc)) {
             $desc = [['pipe', 'r'], $this->stream, \fopen('php://stderr', 'w')];
             $this->proc = \proc_open($this->cmd, $desc, $pipes);
 
-            if (!\is_resource($this->proc)) {
+            if (! \is_resource($this->proc)) {
                 throw new \RuntimeException('Error opening output stream');
             }
 

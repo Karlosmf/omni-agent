@@ -3,6 +3,21 @@
 namespace Tiptap\Extensions;
 
 use Tiptap\Core\Extension;
+use Tiptap\Marks\Bold;
+use Tiptap\Marks\Code;
+use Tiptap\Marks\Italic;
+use Tiptap\Marks\Strike;
+use Tiptap\Nodes\Blockquote;
+use Tiptap\Nodes\BulletList;
+use Tiptap\Nodes\CodeBlock;
+use Tiptap\Nodes\Document;
+use Tiptap\Nodes\HardBreak;
+use Tiptap\Nodes\Heading;
+use Tiptap\Nodes\HorizontalRule;
+use Tiptap\Nodes\ListItem;
+use Tiptap\Nodes\OrderedList;
+use Tiptap\Nodes\Paragraph;
+use Tiptap\Nodes\Text;
 
 class StarterKit extends Extension
 {
@@ -33,49 +48,49 @@ class StarterKit extends Extension
     {
         return array_filter([
             $this->options['document'] !== false
-                ? new \Tiptap\Nodes\Document($this->options['document'])
+                ? new Document($this->options['document'])
                 : null,
             $this->options['blockquote'] !== false
-                ? new \Tiptap\Nodes\Blockquote($this->options['blockquote'])
+                ? new Blockquote($this->options['blockquote'])
                 : null,
             $this->options['bulletList'] !== false
-                ? new \Tiptap\Nodes\BulletList($this->options['bulletList'])
+                ? new BulletList($this->options['bulletList'])
                 : null,
             $this->options['codeBlock'] !== false
-                ? new \Tiptap\Nodes\CodeBlock($this->options['codeBlock'])
+                ? new CodeBlock($this->options['codeBlock'])
                 : null,
             $this->options['hardBreak'] !== false
-                ? new \Tiptap\Nodes\HardBreak($this->options['hardBreak'])
+                ? new HardBreak($this->options['hardBreak'])
                 : null,
             $this->options['heading'] !== false
-                ? new \Tiptap\Nodes\Heading($this->options['heading'])
+                ? new Heading($this->options['heading'])
                 : null,
             $this->options['horizontalRule'] !== false
-                ? new \Tiptap\Nodes\HorizontalRule($this->options['horizontalRule'])
+                ? new HorizontalRule($this->options['horizontalRule'])
                 : null,
             $this->options['listItem'] !== false
-                ? new \Tiptap\Nodes\ListItem($this->options['listItem'])
+                ? new ListItem($this->options['listItem'])
                 : null,
             $this->options['orderedList'] !== false
-                ? new \Tiptap\Nodes\OrderedList($this->options['orderedList'])
+                ? new OrderedList($this->options['orderedList'])
                 : null,
             $this->options['paragraph'] !== false
-                ? new \Tiptap\Nodes\Paragraph($this->options['paragraph'])
+                ? new Paragraph($this->options['paragraph'])
                 : null,
             $this->options['text'] !== false
-                ? new \Tiptap\Nodes\Text($this->options['text'])
+                ? new Text($this->options['text'])
                 : null,
             $this->options['bold'] !== false
-                ? new \Tiptap\Marks\Bold($this->options['bold'])
+                ? new Bold($this->options['bold'])
                 : null,
             $this->options['code'] !== false
-                ? new \Tiptap\Marks\Code($this->options['code'])
+                ? new Code($this->options['code'])
                 : null,
             $this->options['italic'] !== false
-                ? new \Tiptap\Marks\Italic($this->options['italic'])
+                ? new Italic($this->options['italic'])
                 : null,
             $this->options['strike'] !== false
-                ? new \Tiptap\Marks\Strike($this->options['strike'])
+                ? new Strike($this->options['strike'])
                 : null,
         ]);
     }

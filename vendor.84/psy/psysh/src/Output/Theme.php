@@ -28,47 +28,47 @@ class Theme
     const CLASSIC_THEME = [
         'compact' => true,
 
-        'prompt'       => '>>> ',
+        'prompt' => '>>> ',
         'bufferPrompt' => '... ',
         'replayPrompt' => '--> ',
-        'returnValue'  => '=>  ',
+        'returnValue' => '=>  ',
     ];
 
     // Custom themes fall back to DEFAULT_STYLES for any undefined style.
     const DEFAULT_STYLES = [
-        'info'    => ['white', 'blue', ['bold']],
+        'info' => ['white', 'blue', ['bold']],
         'warning' => ['black', 'yellow'],
-        'error'   => ['white', 'red', ['bold']],
+        'error' => ['white', 'red', ['bold']],
         'whisper' => ['gray'],
 
-        'aside'  => ['blue'],
+        'aside' => ['blue'],
         'strong' => [null, null, ['bold']],
         'return' => ['cyan'],
         'urgent' => ['red'],
         'hidden' => ['black'],
 
         // Keywords
-        'public'    => [null, null, ['bold']],
+        'public' => [null, null, ['bold']],
         'protected' => ['yellow'],
-        'private'   => ['red'],
-        'global'    => ['cyan', null, ['bold']],
-        'const'     => ['cyan'],
-        'class'     => ['blue', null, ['underscore']],
-        'function'  => [null],
-        'virtual'   => ['magenta'],
-        'default'   => [null],
+        'private' => ['red'],
+        'global' => ['cyan', null, ['bold']],
+        'const' => ['cyan'],
+        'class' => ['blue', null, ['underscore']],
+        'function' => [null],
+        'virtual' => ['magenta'],
+        'default' => [null],
 
         // Types
-        'number'       => ['magenta'],
-        'integer'      => ['magenta'],
-        'float'        => ['yellow'],
-        'string'       => ['green'],
-        'bool'         => ['cyan'],
-        'keyword'      => ['yellow'],
-        'comment'      => ['blue'],
+        'number' => ['magenta'],
+        'integer' => ['magenta'],
+        'float' => ['yellow'],
+        'string' => ['green'],
+        'bool' => ['cyan'],
+        'keyword' => ['yellow'],
+        'comment' => ['blue'],
         'code_comment' => ['gray'],
-        'object'       => ['blue'],
-        'resource'     => ['yellow'],
+        'object' => ['blue'],
+        'resource' => ['yellow'],
 
         // Code-specific formatting
         'inline_html' => ['cyan'],
@@ -79,8 +79,11 @@ class Theme
     private bool $compact = false;
 
     private string $prompt = '> ';
+
     private string $bufferPrompt = '. ';
+
     private string $replayPrompt = '- ';
+
     private string $returnValue = '= ';
 
     private string $grayFallback = 'blue';
@@ -88,7 +91,7 @@ class Theme
     private array $styles = [];
 
     /**
-     * @param string|array $config theme name or config options
+     * @param  string|array  $config  theme name or config options
      */
     public function __construct($config = 'modern')
     {
@@ -113,7 +116,7 @@ class Theme
             }
         }
 
-        if (!\is_array($config)) {
+        if (! \is_array($config)) {
             throw new \InvalidArgumentException('Invalid theme config');
         }
 
@@ -311,7 +314,7 @@ class Theme
             $parts[] = \sprintf('bg=%s', $bg);
         }
 
-        if (!empty($options)) {
+        if (! empty($options)) {
             $parts[] = \sprintf('options=%s', \implode(',', $options));
         }
 

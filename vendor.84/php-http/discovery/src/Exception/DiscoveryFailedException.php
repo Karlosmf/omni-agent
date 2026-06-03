@@ -17,8 +17,8 @@ final class DiscoveryFailedException extends \Exception implements Exception
     private $exceptions;
 
     /**
-     * @param string       $message
-     * @param \Exception[] $exceptions
+     * @param  string  $message
+     * @param  \Exception[]  $exceptions
      */
     public function __construct($message, array $exceptions = [])
     {
@@ -28,7 +28,7 @@ final class DiscoveryFailedException extends \Exception implements Exception
     }
 
     /**
-     * @param \Exception[] $exceptions
+     * @param  \Exception[]  $exceptions
      */
     public static function create($exceptions)
     {

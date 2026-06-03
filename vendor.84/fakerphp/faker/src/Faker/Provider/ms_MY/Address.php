@@ -140,6 +140,7 @@ class Address extends \Faker\Provider\Address
         'Taman', 'Taman', 'Taman', 'Taman', 'Taman', 'Taman',
         'Taman Desa',
     ];
+
     protected static $townshipSuffix = [
         'Aman', 'Amanjaya', 'Anggerik', 'Angkasa', 'Antarabangsa', 'Awan',
         'Bahagia', 'Bangsar', 'Baru', 'Belakong', 'Bendahara', 'Bestari', 'Bintang', 'Brickfields',
@@ -598,18 +599,17 @@ class Address extends \Faker\Provider\Address
      *
      * @see https://en.wikipedia.org/wiki/Postal_codes_in_Malaysia#States
      *
-     * @param string|null $state 'state' or null
-     *
+     * @param  string|null  $state  'state' or null
      * @return string
      */
     public static function postcode($state = null)
     {
         $format = [
             'perlis' => [ // (01000 - 02800)
-                '0' . self::numberBetween(1000, 2800),
+                '0'.self::numberBetween(1000, 2800),
             ],
             'kedah' => [ // (05000 - 09810)
-                '0' . self::numberBetween(5000, 9810),
+                '0'.self::numberBetween(5000, 9810),
             ],
             'penang' => [ // (10000 - 14400)
                 self::numberBetween(10000, 14400),
@@ -658,7 +658,7 @@ class Address extends \Faker\Provider\Address
             ],
         ];
 
-        $postcode = null === $state ? static::randomElement($format) : $format[$state];
+        $postcode = $state === null ? static::randomElement($format) : $format[$state];
 
         return (string) static::randomElement($postcode);
     }
@@ -677,7 +677,7 @@ class Address extends \Faker\Provider\Address
         $town = static::randomElement(static::$towns[$state]);
         $state = static::randomElement(static::$states[$state]);
 
-        return $postcode . ' ' . $town . ', ' . $state;
+        return $postcode.' '.$town.', '.$state;
     }
 
     /**

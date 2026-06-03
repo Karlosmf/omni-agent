@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PharIo\Manifest.
  *
@@ -8,18 +10,23 @@
  * file that was distributed with this source code.
  *
  */
+
 namespace PharIo\Manifest;
 
-class AuthorElement extends ManifestElement {
-    public function getName(): string {
+class AuthorElement extends ManifestElement
+{
+    public function getName(): string
+    {
         return $this->getAttributeValue('name');
     }
 
-    public function getEmail(): string {
+    public function getEmail(): string
+    {
         return $this->getAttributeValue('email');
     }
 
-    public function hasEMail(): bool {
+    public function hasEMail(): bool
+    {
         return $this->hasAttribute('email');
     }
 }

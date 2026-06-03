@@ -28,31 +28,31 @@ class TextInputColumn extends Column implements Editable, HasEmbeddedView
     use HasInputMode;
     use HasStep;
 
-    protected string | RawJs | Closure | null $mask = null;
+    protected string|RawJs|Closure|null $mask = null;
 
-    protected string | Closure | null $type = null;
+    protected string|Closure|null $type = null;
 
-    protected string | Htmlable | Closure | null $suffixLabel = null;
+    protected string|Htmlable|Closure|null $suffixLabel = null;
 
-    protected string | Htmlable | Closure | null $prefixLabel = null;
+    protected string|Htmlable|Closure|null $prefixLabel = null;
 
-    protected string | BackedEnum | Htmlable | Closure | null $prefixIcon = null;
-
-    /**
-     * @var string | array<string> | Closure | null
-     */
-    protected string | array | Closure | null $prefixIconColor = null;
-
-    protected string | BackedEnum | Htmlable | Closure | null $suffixIcon = null;
+    protected string|BackedEnum|Htmlable|Closure|null $prefixIcon = null;
 
     /**
      * @var string | array<string> | Closure | null
      */
-    protected string | array | Closure | null $suffixIconColor = null;
+    protected string|array|Closure|null $prefixIconColor = null;
 
-    protected bool | Closure $isPrefixInline = false;
+    protected string|BackedEnum|Htmlable|Closure|null $suffixIcon = null;
 
-    protected bool | Closure $isSuffixInline = false;
+    /**
+     * @var string | array<string> | Closure | null
+     */
+    protected string|array|Closure|null $suffixIconColor = null;
+
+    protected bool|Closure $isPrefixInline = false;
+
+    protected bool|Closure $isSuffixInline = false;
 
     protected function setUp(): void
     {
@@ -61,7 +61,7 @@ class TextInputColumn extends Column implements Editable, HasEmbeddedView
         $this->disabledClick();
     }
 
-    public function type(string | Closure | null $type): static
+    public function type(string|Closure|null $type): static
     {
         $this->type = $type;
 
@@ -73,19 +73,19 @@ class TextInputColumn extends Column implements Editable, HasEmbeddedView
         return $this->evaluate($this->type) ?? 'text';
     }
 
-    public function mask(string | RawJs | Closure | null $mask): static
+    public function mask(string|RawJs|Closure|null $mask): static
     {
         $this->mask = $mask;
 
         return $this;
     }
 
-    public function getMask(): string | RawJs | null
+    public function getMask(): string|RawJs|null
     {
         return $this->evaluate($this->mask);
     }
 
-    public function prefix(string | Htmlable | Closure | null $label, bool | Closure $isInline = false): static
+    public function prefix(string|Htmlable|Closure|null $label, bool|Closure $isInline = false): static
     {
         $this->prefixLabel = $label;
         $this->inlinePrefix($isInline);
@@ -93,7 +93,7 @@ class TextInputColumn extends Column implements Editable, HasEmbeddedView
         return $this;
     }
 
-    public function suffix(string | Htmlable | Closure | null $label, bool | Closure $isInline = false): static
+    public function suffix(string|Htmlable|Closure|null $label, bool|Closure $isInline = false): static
     {
         $this->suffixLabel = $label;
         $this->inlineSuffix($isInline);
@@ -101,21 +101,21 @@ class TextInputColumn extends Column implements Editable, HasEmbeddedView
         return $this;
     }
 
-    public function inlinePrefix(bool | Closure $isInline = true): static
+    public function inlinePrefix(bool|Closure $isInline = true): static
     {
         $this->isPrefixInline = $isInline;
 
         return $this;
     }
 
-    public function inlineSuffix(bool | Closure $isInline = true): static
+    public function inlineSuffix(bool|Closure $isInline = true): static
     {
         $this->isSuffixInline = $isInline;
 
         return $this;
     }
 
-    public function prefixIcon(string | BackedEnum | Htmlable | Closure | null $icon, bool | Closure $isInline = false): static
+    public function prefixIcon(string|BackedEnum|Htmlable|Closure|null $icon, bool|Closure $isInline = false): static
     {
         $this->prefixIcon = $icon;
         $this->inlinePrefix($isInline);
@@ -126,14 +126,14 @@ class TextInputColumn extends Column implements Editable, HasEmbeddedView
     /**
      * @param  string | array<string> | Closure | null  $color
      */
-    public function prefixIconColor(string | array | Closure | null $color = null): static
+    public function prefixIconColor(string|array|Closure|null $color = null): static
     {
         $this->prefixIconColor = $color;
 
         return $this;
     }
 
-    public function suffixIcon(string | BackedEnum | Htmlable | Closure | null $icon, bool | Closure $isInline = false): static
+    public function suffixIcon(string|BackedEnum|Htmlable|Closure|null $icon, bool|Closure $isInline = false): static
     {
         $this->suffixIcon = $icon;
         $this->inlineSuffix($isInline);
@@ -144,29 +144,29 @@ class TextInputColumn extends Column implements Editable, HasEmbeddedView
     /**
      * @param  string | array<string> | Closure | null  $color
      */
-    public function suffixIconColor(string | array | Closure | null $color = null): static
+    public function suffixIconColor(string|array|Closure|null $color = null): static
     {
         $this->suffixIconColor = $color;
 
         return $this;
     }
 
-    public function getPrefixLabel(): string | Htmlable | null
+    public function getPrefixLabel(): string|Htmlable|null
     {
         return $this->evaluate($this->prefixLabel);
     }
 
-    public function getSuffixLabel(): string | Htmlable | null
+    public function getSuffixLabel(): string|Htmlable|null
     {
         return $this->evaluate($this->suffixLabel);
     }
 
-    public function getPrefixIcon(): string | BackedEnum | Htmlable | null
+    public function getPrefixIcon(): string|BackedEnum|Htmlable|null
     {
         return $this->evaluate($this->prefixIcon);
     }
 
-    public function getSuffixIcon(): string | BackedEnum | Htmlable | null
+    public function getSuffixIcon(): string|BackedEnum|Htmlable|null
     {
         return $this->evaluate($this->suffixIcon);
     }
@@ -174,7 +174,7 @@ class TextInputColumn extends Column implements Editable, HasEmbeddedView
     /**
      * @return string | array<string> | null
      */
-    public function getPrefixIconColor(): string | array | null
+    public function getPrefixIconColor(): string|array|null
     {
         return $this->evaluate($this->prefixIconColor);
     }
@@ -182,7 +182,7 @@ class TextInputColumn extends Column implements Editable, HasEmbeddedView
     /**
      * @return string | array<string> | null
      */
-    public function getSuffixIconColor(): string | array | null
+    public function getSuffixIconColor(): string|array|null
     {
         return $this->evaluate($this->suffixIconColor);
     }
@@ -228,9 +228,9 @@ class TextInputColumn extends Column implements Editable, HasEmbeddedView
                 'x-load' => true,
                 'x-load-src' => FilamentAsset::getAlpineComponentSrc('columns/text-input', 'filament/tables'),
                 'x-data' => 'textInputTableColumn({
-                    name: ' . Js::from($this->getName()) . ',
-                    recordKey: ' . Js::from($this->getRecordKey()) . ',
-                    state: ' . Js::from($state) . ',
+                    name: '.Js::from($this->getName()).',
+                    recordKey: '.Js::from($this->getRecordKey()).',
+                    state: '.Js::from($state).',
                 })',
             ], escape: false)
             ->class([
@@ -248,12 +248,12 @@ class TextInputColumn extends Column implements Editable, HasEmbeddedView
                 'placeholder' => $this->getPlaceholder(),
                 'step' => $this->getStep(),
                 'type' => $type,
-                'x-mask' . ($mask instanceof RawJs ? ':dynamic' : '') => filled($mask) ? $mask : null,
+                'x-mask'.($mask instanceof RawJs ? ':dynamic' : '') => filled($mask) ? $mask : null,
                 'x-tooltip' => filled($tooltip = $this->getTooltip($state))
                     ? '{
-                        content: ' . Js::from($tooltip) . ',
+                        content: '.Js::from($tooltip).',
                         theme: $store.theme,
-                        allowHTML: ' . Js::from($tooltip instanceof Htmlable) . ',
+                        allowHTML: '.Js::from($tooltip instanceof Htmlable).',
                     }'
                     : null,
             ], escape: false)

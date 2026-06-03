@@ -15,7 +15,7 @@ trait HasExtraSidebarAttributes
     /**
      * @param  array<mixed> | Closure  $attributes
      */
-    public function extraSidebarAttributes(array | Closure $attributes, bool $merge = false): static
+    public function extraSidebarAttributes(array|Closure $attributes, bool $merge = false): static
     {
         if ($merge) {
             $this->extraSidebarAttributes[] = $attributes;

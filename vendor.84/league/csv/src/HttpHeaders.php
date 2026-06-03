@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace League\Csv;
 
+use const FILTER_FLAG_STRIP_HIGH;
+use const FILTER_FLAG_STRIP_LOW;
+
 use InvalidArgumentException;
 
 use function filter_var;
@@ -20,9 +23,6 @@ use function header;
 use function rawurlencode;
 use function str_contains;
 use function str_replace;
-
-use const FILTER_FLAG_STRIP_HIGH;
-use const FILTER_FLAG_STRIP_LOW;
 
 /**
  * Send the CSV headers.

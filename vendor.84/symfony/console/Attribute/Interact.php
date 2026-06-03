@@ -24,15 +24,15 @@ class Interact implements InteractiveAttributeInterface
     public static function tryFrom(\ReflectionMethod $method): ?self
     {
         /** @var self|null $self */
-        if (!$self = ($method->getAttributes(self::class)[0] ?? null)?->newInstance()) {
+        if (! $self = ($method->getAttributes(self::class)[0] ?? null)?->newInstance()) {
             return null;
         }
 
-        if (!$method->isPublic() || $method->isStatic()) {
+        if (! $method->isPublic() || $method->isStatic()) {
             throw new LogicException(\sprintf('The interactive method "%s::%s()" must be public and non-static.', $method->getDeclaringClass()->getName(), $method->getName()));
         }
 
-        if ('__invoke' === $method->getName()) {
+        if ($method->getName() === '__invoke') {
             throw new LogicException(\sprintf('The "%s::__invoke()" method cannot be used as an interactive method.', $method->getDeclaringClass()->getName()));
         }
 

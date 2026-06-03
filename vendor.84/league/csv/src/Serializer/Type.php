@@ -11,6 +11,11 @@
 
 namespace League\Csv\Serializer;
 
+use const FILTER_UNSAFE_RAW;
+use const FILTER_VALIDATE_BOOL;
+use const FILTER_VALIDATE_FLOAT;
+use const FILTER_VALIDATE_INT;
+
 use DateTimeInterface;
 use ReflectionClass;
 use ReflectionNamedType;
@@ -24,11 +29,6 @@ use UnitEnum;
 use function class_exists;
 use function enum_exists;
 use function in_array;
-
-use const FILTER_UNSAFE_RAW;
-use const FILTER_VALIDATE_BOOL;
-use const FILTER_VALIDATE_FLOAT;
-use const FILTER_VALIDATE_INT;
 
 enum Type: string
 {
@@ -100,12 +100,12 @@ enum Type: string
         $reflectionType = $reflectionProperty->getType() ?? throw MappingFailed::dueToUnsupportedType($reflectionProperty);
 
         $foundTypes = static function (array $res, ReflectionType $reflectionType) {
-            if (!$reflectionType instanceof ReflectionNamedType) {
+            if (! $reflectionType instanceof ReflectionNamedType) {
                 return $res;
             }
 
             $type = self::tryFromName($reflectionType->getName());
-            if (null !== $type) {
+            if ($type !== null) {
                 $res[] = [$type, $reflectionType];
             }
 
@@ -135,7 +135,7 @@ enum Type: string
     public static function tryFromAccessor(ReflectionProperty|ReflectionParameter $reflectionProperty): ?self
     {
         $type = $reflectionProperty->getType();
-        if (null === $type) {
+        if ($type === null) {
             return Type::Mixed;
         }
 
@@ -143,12 +143,12 @@ enum Type: string
             return self::tryFromName($type->getName());
         }
 
-        if (!$type instanceof ReflectionUnionType) {
+        if (! $type instanceof ReflectionUnionType) {
             return null;
         }
 
         foreach ($type->getTypes() as $innerType) {
-            if (!$innerType instanceof ReflectionNamedType) {
+            if (! $innerType instanceof ReflectionNamedType) {
                 continue;
             }
 

@@ -11,14 +11,17 @@
 
 namespace Symfony\Component\HtmlSanitizer\Parser;
 
+use Dom\HTMLDocument;
+use Dom\Node;
+
 /**
  * Parser using PHP 8.4's new Dom API.
  */
 final class NativeParser implements ParserInterface
 {
-    public function parse(string $html, string $context = 'body'): ?\Dom\Node
+    public function parse(string $html, string $context = 'body'): ?Node
     {
-        $document = @\Dom\HTMLDocument::createFromString(\sprintf('<!DOCTYPE html><%s>%s</%1$s>', $context, $html));
+        $document = @HTMLDocument::createFromString(\sprintf('<!DOCTYPE html><%s>%s</%1$s>', $context, $html));
         $element = $document->getElementsByTagName($context)->item(0);
 
         return $element->hasChildNodes() ? $element : null;

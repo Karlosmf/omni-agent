@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,10 +9,16 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Util\PHP;
 
 use const PHP_BINARY;
 use const PHP_SAPI;
+
+use PHPUnit\Event\Facade;
+use PHPUnit\Runner\CodeCoverage;
+use SebastianBergmann\Environment\Runtime;
+
 use function array_keys;
 use function array_merge;
 use function array_values;
@@ -31,9 +39,6 @@ use function tempnam;
 use function trim;
 use function unlink;
 use function xdebug_is_debugger_active;
-use PHPUnit\Event\Facade;
-use PHPUnit\Runner\CodeCoverage;
-use SebastianBergmann\Environment\Runtime;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -78,7 +83,7 @@ final readonly class DefaultJobRunner extends JobRunner
     }
 
     /**
-     * @param ?non-empty-string $temporaryFile
+     * @param  ?non-empty-string  $temporaryFile
      *
      * @throws PhpProcessException
      */
@@ -121,7 +126,7 @@ final readonly class DefaultJobRunner extends JobRunner
             $environmentVariables,
         );
 
-        if (!is_resource($process)) {
+        if (! is_resource($process)) {
             // @codeCoverageIgnoreStart
             throw new PhpProcessException(
                 'Unable to spawn worker process',
@@ -166,8 +171,8 @@ final readonly class DefaultJobRunner extends JobRunner
      */
     private function buildCommand(Job $job, ?string $file): array
     {
-        $runtime     = new Runtime;
-        $command     = [PHP_BINARY];
+        $runtime = new Runtime;
+        $command = [PHP_BINARY];
         $phpSettings = $job->phpSettings();
 
         $xdebugModeConfiguredExplicitly = false;
@@ -206,10 +211,10 @@ final readonly class DefaultJobRunner extends JobRunner
             );
 
             if (
-                !$xdebugModeConfiguredExplicitly &&
-                !CodeCoverage::instance()->isActive() &&
+                ! $xdebugModeConfiguredExplicitly &&
+                ! CodeCoverage::instance()->isActive() &&
                 xdebug_is_debugger_active() === false &&
-                !$job->requiresXdebug()
+                ! $job->requiresXdebug()
             ) {
                 // disable xdebug to speedup test execution
                 $phpSettings['xdebug.mode'] = 'xdebug.mode=off';
@@ -245,8 +250,7 @@ final readonly class DefaultJobRunner extends JobRunner
     }
 
     /**
-     * @param list<string> $settings
-     *
+     * @param  list<string>  $settings
      * @return list<string>
      */
     private function settingsToParameters(array $settings): array

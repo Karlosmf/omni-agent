@@ -29,8 +29,7 @@ class AttributeNode extends AbstractNode
         private string $attribute,
         private string $operator,
         private ?string $value,
-    ) {
-    }
+    ) {}
 
     public function getSelector(): NodeInterface
     {
@@ -66,7 +65,7 @@ class AttributeNode extends AbstractNode
     {
         $attribute = $this->namespace ? $this->namespace.'|'.$this->attribute : $this->attribute;
 
-        return 'exists' === $this->operator
+        return $this->operator === 'exists'
             ? \sprintf('%s[%s[%s]]', $this->getNodeName(), $this->selector, $attribute)
             : \sprintf("%s[%s[%s %s '%s']]", $this->getNodeName(), $this->selector, $attribute, $this->operator, $this->value);
     }

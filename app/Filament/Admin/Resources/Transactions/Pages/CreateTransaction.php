@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\Transactions\Pages;
 
 use App\Enums\TransactionType;
 use App\Filament\Admin\Resources\Transactions\TransactionResource;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateTransaction extends CreateRecord
@@ -29,14 +30,14 @@ class CreateTransaction extends CreateRecord
         }
     }
 
-    protected function getCreateFormAction(): \Filament\Actions\Action
+    protected function getCreateFormAction(): Action
     {
         return parent::getCreateFormAction()
             ->label('Crear registro')
             ->icon('heroicon-o-plus');
     }
 
-    protected function getCancelFormAction(): \Filament\Actions\Action
+    protected function getCancelFormAction(): Action
     {
         return parent::getCancelFormAction()
             ->label('Cancelar')

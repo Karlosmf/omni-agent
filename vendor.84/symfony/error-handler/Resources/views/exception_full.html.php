@@ -1,4 +1,8 @@
-<!-- <?= $_message = \sprintf('%s (%d %s)', $exceptionMessage, $statusCode, $statusText); ?> -->
+<!-- <?php
+
+use Symfony\Component\HttpKernel\Kernel;
+
+?><?= $_message = \sprintf('%s (%d %s)', $exceptionMessage, $statusCode, $statusText); ?> -->
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -17,13 +21,13 @@
             );
         </script>
 
-        <?php if (class_exists(\Symfony\Component\HttpKernel\Kernel::class)) { ?>
+        <?php if (class_exists(Kernel::class)) { ?>
             <header>
                 <div class="container">
                     <h1 class="logo"><?= $this->include('assets/images/symfony-logo.svg'); ?> Symfony Exception</h1>
 
                     <div class="help-link">
-                        <a href="https://symfony.com/doc/<?= Symfony\Component\HttpKernel\Kernel::VERSION; ?>/index.html">
+                        <a href="https://symfony.com/doc/<?= Kernel::VERSION; ?>/index.html">
                             <span class="icon"><?= $this->include('assets/images/icon-book.svg'); ?></span>
                             <span class="hidden-xs-down">Symfony</span> Docs
                         </a>

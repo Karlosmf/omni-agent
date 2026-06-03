@@ -25,8 +25,7 @@ final class Dsn
         #[\SensitiveParameter] private ?string $password = null,
         private ?int $port = null,
         private array $options = [],
-    ) {
-    }
+    ) {}
 
     public static function fromString(#[\SensitiveParameter] string $dsn): self
     {
@@ -34,11 +33,11 @@ final class Dsn
             throw new InvalidArgumentException('The mailer DSN is invalid.');
         }
 
-        if (!isset($params['scheme'])) {
+        if (! isset($params['scheme'])) {
             throw new InvalidArgumentException('The mailer DSN must contain a scheme.');
         }
 
-        if (!isset($params['host'])) {
+        if (! isset($params['host'])) {
             throw new InvalidArgumentException('The mailer DSN must contain a host (use "default" by default).');
         }
 

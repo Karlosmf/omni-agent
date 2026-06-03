@@ -12,9 +12,13 @@ use OpenSpout\Reader\Wrapper\XMLReader;
 final class SheetHeaderReader
 {
     public const XML_NODE_COL = 'col';
+
     public const XML_NODE_SHEETDATA = 'sheetData';
+
     public const XML_ATTRIBUTE_MIN = 'min';
+
     public const XML_ATTRIBUTE_MAX = 'max';
+
     public const XML_ATTRIBUTE_WIDTH = 'width';
 
     /** @var string Path of the XLSX file being read */
@@ -33,10 +37,10 @@ final class SheetHeaderReader
     private array $columnWidths = [];
 
     /**
-     * @param string       $filePath             Path of the XLSX file being read
-     * @param string       $sheetDataXMLFilePath Path of the sheet data XML file as in [Content_Types].xml
-     * @param XMLReader    $xmlReader            XML Reader
-     * @param XMLProcessor $xmlProcessor         Helper to process XML files
+     * @param  string  $filePath  Path of the XLSX file being read
+     * @param  string  $sheetDataXMLFilePath  Path of the sheet data XML file as in [Content_Types].xml
+     * @param  XMLReader  $xmlReader  XML Reader
+     * @param  XMLProcessor  $xmlProcessor  Helper to process XML files
      */
     public function __construct(
         string $filePath,
@@ -56,7 +60,7 @@ final class SheetHeaderReader
         // The reader should be unused, but we close to be sure
         $this->xmlReader->close();
 
-        if (false === $this->xmlReader->openFileInZip($this->filePath, $this->sheetDataXMLFilePath)) {
+        if ($this->xmlReader->openFileInZip($this->filePath, $this->sheetDataXMLFilePath) === false) {
             throw new IOException("Could not open \"{$this->sheetDataXMLFilePath}\".");
         }
 
@@ -78,8 +82,7 @@ final class SheetHeaderReader
     }
 
     /**
-     * @param XMLReader $xmlReader XMLReader object, positioned on a "<col>" starting node
-     *
+     * @param  XMLReader  $xmlReader  XMLReader object, positioned on a "<col>" starting node
      * @return int A return code that indicates what action should the processor take next
      */
     private function processColStartingNode(XMLReader $xmlReader): int
@@ -107,8 +110,7 @@ final class SheetHeaderReader
     }
 
     /**
-     * @param string $sheetDataXMLFilePath Path of the sheet data XML file as in [Content_Types].xml
-     *
+     * @param  string  $sheetDataXMLFilePath  Path of the sheet data XML file as in [Content_Types].xml
      * @return string path of the XML file containing the sheet data,
      *                without the leading slash
      */

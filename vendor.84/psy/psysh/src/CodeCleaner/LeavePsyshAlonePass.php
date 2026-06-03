@@ -23,11 +23,11 @@ class LeavePsyshAlonePass extends CodeCleanerPass
     /**
      * Validate that the user input does not reference the `$__psysh__` variable.
      *
-     * @throws RuntimeException if the user is messing with $__psysh__
      *
-     * @param Node $node
      *
      * @return int|Node|null Replacement node (or special return value)
+     *
+     * @throws RuntimeException if the user is messing with $__psysh__
      */
     public function enterNode(Node $node)
     {

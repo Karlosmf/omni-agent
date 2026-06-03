@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Core;
 
 /*
@@ -12,7 +13,6 @@ use Hamcrest\Description;
  */
 class IsAnything extends BaseMatcher
 {
-
     private $_message;
 
     public function __construct($message = 'ANYTHING')
@@ -33,9 +33,9 @@ class IsAnything extends BaseMatcher
     /**
      * This matcher always evaluates to true.
      *
-     * @param string $description A meaningful string used when describing itself.
+     * @param  string  $description  A meaningful string used when describing itself.
+     * @return IsAnything
      *
-     * @return \Hamcrest\Core\IsAnything
      * @factory
      */
     public static function anything($description = 'ANYTHING')

@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Builder;
 
 class TernaryFilter extends SelectFilter
 {
-    protected string | Closure | null $trueLabel = null;
+    protected string|Closure|null $trueLabel = null;
 
-    protected string | Closure | null $falseLabel = null;
+    protected string|Closure|null $falseLabel = null;
 
     protected function setUp(): void
     {
@@ -41,14 +41,14 @@ class TernaryFilter extends SelectFilter
         });
     }
 
-    public function trueLabel(string | Closure | null $trueLabel): static
+    public function trueLabel(string|Closure|null $trueLabel): static
     {
         $this->trueLabel = $trueLabel;
 
         return $this;
     }
 
-    public function falseLabel(string | Closure | null $falseLabel): static
+    public function falseLabel(string|Closure|null $falseLabel): static
     {
         $this->falseLabel = $falseLabel;
 

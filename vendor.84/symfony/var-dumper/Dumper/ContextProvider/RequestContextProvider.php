@@ -27,7 +27,7 @@ final class RequestContextProvider implements ContextProviderInterface
     public function __construct(
         private RequestStack $requestStack,
     ) {
-        $this->cloner = new VarCloner();
+        $this->cloner = new VarCloner;
         $this->cloner->setMaxItems(0);
         $this->cloner->addCasters(ReflectionCaster::UNSET_CLOSURE_FILE_INFO);
     }

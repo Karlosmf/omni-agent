@@ -24,7 +24,7 @@ trait HasActions
     /**
      * @var Model|class-string<Model>|null
      */
-    protected Model | string | Closure | null $actionSchemaModel = null;
+    protected Model|string|Closure|null $actionSchemaModel = null;
 
     protected ?Action $action = null;
 
@@ -55,7 +55,7 @@ trait HasActions
     /**
      * @param  string | array<string> | null  $name
      */
-    public function getAction(string | array | null $name = null): ?Action
+    public function getAction(string|array|null $name = null): ?Action
     {
         $actions = $this->getActions();
 
@@ -154,7 +154,7 @@ trait HasActions
     /**
      * @param  Model | class-string<Model> | Closure | null  $model
      */
-    public function actionSchemaModel(Model | string | Closure | null $model): static
+    public function actionSchemaModel(Model|string|Closure|null $model): static
     {
         $this->actionSchemaModel = $model;
 
@@ -164,7 +164,7 @@ trait HasActions
     /**
      * @return Model | array<string, mixed> | class-string<Model> | null
      */
-    public function getActionSchemaModel(): Model | array | string | null
+    public function getActionSchemaModel(): Model|array|string|null
     {
         return $this->evaluate($this->actionSchemaModel) ?? $this->getRecord() ?? $this->getModel();
     }

@@ -15,23 +15,23 @@ use Laravel\SerializableClosure\Serializers\Native;
  */
 class MenuItem extends Component
 {
-    protected string | Closure | null $color = null;
+    protected string|Closure|null $color = null;
 
-    protected string | BackedEnum | Htmlable | Closure | null $icon = null;
+    protected string|BackedEnum|Htmlable|Closure|null $icon = null;
 
-    protected string | Closure | null $label = null;
+    protected string|Closure|null $label = null;
 
-    protected string | Closure | null $postAction = null;
+    protected string|Closure|null $postAction = null;
 
-    protected int | Closure | null $sort = null;
+    protected int|Closure|null $sort = null;
 
-    protected string | Closure | Native | null $url = null;
+    protected string|Closure|Native|null $url = null;
 
-    protected bool | Closure $shouldOpenUrlInNewTab = false;
+    protected bool|Closure $shouldOpenUrlInNewTab = false;
 
-    protected bool | Closure $isHidden = false;
+    protected bool|Closure $isHidden = false;
 
-    protected bool | Closure $isVisible = true;
+    protected bool|Closure $isVisible = true;
 
     final public function __construct() {}
 
@@ -43,42 +43,42 @@ class MenuItem extends Component
         return $static;
     }
 
-    public function color(string | Closure | null $color): static
+    public function color(string|Closure|null $color): static
     {
         $this->color = $color;
 
         return $this;
     }
 
-    public function icon(string | BackedEnum | Htmlable | Closure | null $icon): static
+    public function icon(string|BackedEnum|Htmlable|Closure|null $icon): static
     {
         $this->icon = $icon;
 
         return $this;
     }
 
-    public function label(string | Closure | null $label): static
+    public function label(string|Closure|null $label): static
     {
         $this->label = $label;
 
         return $this;
     }
 
-    public function postAction(string | Closure | null $action): static
+    public function postAction(string|Closure|null $action): static
     {
         $this->postAction = $action;
 
         return $this;
     }
 
-    public function sort(int | Closure | null $sort): static
+    public function sort(int|Closure|null $sort): static
     {
         $this->sort = $sort;
 
         return $this;
     }
 
-    public function url(string | Closure | null $url, bool | Closure $shouldOpenInNewTab = false): static
+    public function url(string|Closure|null $url, bool|Closure $shouldOpenInNewTab = false): static
     {
         $this->openUrlInNewTab($shouldOpenInNewTab);
         $this->url = $url;
@@ -86,21 +86,21 @@ class MenuItem extends Component
         return $this;
     }
 
-    public function openUrlInNewTab(bool | Closure $condition = true): static
+    public function openUrlInNewTab(bool|Closure $condition = true): static
     {
         $this->shouldOpenUrlInNewTab = $condition;
 
         return $this;
     }
 
-    public function hidden(bool | Closure $condition = true): static
+    public function hidden(bool|Closure $condition = true): static
     {
         $this->isHidden = $condition;
 
         return $this;
     }
 
-    public function visible(bool | Closure $condition = true): static
+    public function visible(bool|Closure $condition = true): static
     {
         $this->isVisible = $condition;
 
@@ -126,7 +126,7 @@ class MenuItem extends Component
         return $this->evaluate($this->color);
     }
 
-    public function getIcon(): string | BackedEnum | Htmlable | null
+    public function getIcon(): string|BackedEnum|Htmlable|null
     {
         return $this->evaluate($this->icon);
     }

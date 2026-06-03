@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -23,23 +25,27 @@ class SendGridHandler extends MailHandler
 {
     /**
      * The SendGrid API User
+     *
      * @deprecated this is not used anymore as of SendGrid API v3
      */
     protected string $apiUser;
+
     /**
      * The email addresses to which the message will be sent
+     *
      * @var string[]
      */
     protected array $to;
 
     /**
-     * @param string|null $apiUser Unused user as of SendGrid API v3, you can pass null or any string
-     * @param list<string>|string $to
-     * @param non-empty-string $apiHost Allows you to use another endpoint (e.g. api.eu.sendgrid.com)
+     * @param  string|null  $apiUser  Unused user as of SendGrid API v3, you can pass null or any string
+     * @param  list<string>|string  $to
+     * @param  non-empty-string  $apiHost  Allows you to use another endpoint (e.g. api.eu.sendgrid.com)
+     *
      * @throws MissingExtensionException If the curl extension is missing
      */
     public function __construct(
-        string|null $apiUser,
+        ?string $apiUser,
         protected string $apiKey,
         protected string $from,
         array|string $to,
@@ -49,7 +55,7 @@ class SendGridHandler extends MailHandler
         /** @var non-empty-string */
         private readonly string $apiHost = 'api.sendgrid.com',
     ) {
-        if (!\extension_loaded('curl')) {
+        if (! \extension_loaded('curl')) {
             throw new MissingExtensionException('The curl extension is needed to use the SendGridHandler');
         }
 

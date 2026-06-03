@@ -33,7 +33,7 @@ final class NonEmptyList extends Array_ implements PseudoType
 
     public function __construct(?Type $valueType = null)
     {
-        parent::__construct($valueType, new Integer());
+        parent::__construct($valueType, new Integer);
     }
 
     /**
@@ -45,6 +45,6 @@ final class NonEmptyList extends Array_ implements PseudoType
             return 'non-empty-list';
         }
 
-        return 'non-empty-list<' . $this->valueType . '>';
+        return 'non-empty-list<'.$this->valueType.'>';
     }
 }

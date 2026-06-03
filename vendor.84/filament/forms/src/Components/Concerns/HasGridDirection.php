@@ -7,9 +7,9 @@ use Filament\Support\Enums\GridDirection;
 
 trait HasGridDirection
 {
-    protected GridDirection | string | Closure | null $gridDirection = null;
+    protected GridDirection|string|Closure|null $gridDirection = null;
 
-    public function gridDirection(GridDirection | string | Closure | null $gridDirection): static
+    public function gridDirection(GridDirection|string|Closure|null $gridDirection): static
     {
         $this->gridDirection = $gridDirection;
 

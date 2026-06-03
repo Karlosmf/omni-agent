@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,12 +9,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\MockObject\Stub;
+
+use PHPUnit\Framework\MockObject\Invocation;
+use PHPUnit\Framework\MockObject\NoMoreReturnValuesConfiguredException;
 
 use function array_shift;
 use function count;
-use PHPUnit\Framework\MockObject\Invocation;
-use PHPUnit\Framework\MockObject\NoMoreReturnValuesConfiguredException;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -25,14 +29,15 @@ final class ConsecutiveCalls implements Stub
      * @var array<mixed>
      */
     private array $stack;
+
     private int $numberOfConfiguredReturnValues;
 
     /**
-     * @param array<mixed> $stack
+     * @param  array<mixed>  $stack
      */
     public function __construct(array $stack)
     {
-        $this->stack                          = $stack;
+        $this->stack = $stack;
         $this->numberOfConfiguredReturnValues = count($stack);
     }
 

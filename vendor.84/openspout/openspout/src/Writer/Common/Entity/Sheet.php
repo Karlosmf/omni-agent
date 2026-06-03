@@ -49,9 +49,9 @@ final class Sheet
     private ?SheetProtection $sheetProtection = null;
 
     /**
-     * @param 0|positive-int $sheetIndex           Index of the sheet, based on order in the workbook (zero-based)
-     * @param string         $associatedWorkbookId ID of the sheet's associated workbook
-     * @param SheetManager   $sheetManager         To manage sheets
+     * @param  0|positive-int  $sheetIndex  Index of the sheet, based on order in the workbook (zero-based)
+     * @param  string  $associatedWorkbookId  ID of the sheet's associated workbook
+     * @param  SheetManager  $sheetManager  To manage sheets
      */
     public function __construct(int $sheetIndex, string $associatedWorkbookId, SheetManager $sheetManager)
     {
@@ -93,7 +93,7 @@ final class Sheet
      *  - it should not contain these characters: \ / ? * : [ or ]
      *  - it should be unique.
      *
-     * @param string $name Name of the sheet
+     * @param  string  $name  Name of the sheet
      *
      * @throws InvalidSheetNameException if the sheet's name is invalid
      */
@@ -117,7 +117,7 @@ final class Sheet
     }
 
     /**
-     * @param bool $isVisible Visibility of the sheet
+     * @param  bool  $isVisible  Visibility of the sheet
      */
     public function setIsVisible(bool $isVisible): self
     {
@@ -146,7 +146,7 @@ final class Sheet
      */
     public function incrementWrittenRowCount(): void
     {
-        ++$this->writtenRowCount;
+        $this->writtenRowCount++;
     }
 
     /**
@@ -173,7 +173,7 @@ final class Sheet
     }
 
     /**
-     * @param positive-int ...$columns One or more columns with this width
+     * @param  positive-int  ...$columns  One or more columns with this width
      */
     public function setColumnWidth(float $width, int ...$columns): void
     {
@@ -194,9 +194,9 @@ final class Sheet
     }
 
     /**
-     * @param float        $width The width to set
-     * @param positive-int $start First column index of the range
-     * @param positive-int $end   Last column index of the range
+     * @param  float  $width  The width to set
+     * @param  positive-int  $start  First column index of the range
+     * @param  positive-int  $end  Last column index of the range
      */
     public function setColumnWidthForRange(float $width, int $start, int $end): void
     {

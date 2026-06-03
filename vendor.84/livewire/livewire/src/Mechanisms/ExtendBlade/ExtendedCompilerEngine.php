@@ -2,12 +2,22 @@
 
 namespace Livewire\Mechanisms\ExtendBlade;
 
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\View\Engines\CompilerEngine;
+use Illuminate\View\Engines\PhpEngine;
+use Livewire\Exceptions\BypassViewHandler;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 use function Livewire\trigger;
 
-class ExtendedCompilerEngine extends \Illuminate\View\Engines\CompilerEngine {
+class ExtendedCompilerEngine extends CompilerEngine
+{
     public function get($path, array $data = [])
     {
-        if (! ExtendBlade::isRenderingLivewireComponent()) return parent::get($path, $data);
+        if (! ExtendBlade::isRenderingLivewireComponent()) {
+            return parent::get($path, $data);
+        }
 
         $currentComponent = ExtendBlade::currentRendering();
 
@@ -50,7 +60,7 @@ class ExtendedCompilerEngine extends \Illuminate\View\Engines\CompilerEngine {
     {
         if ($this->shouldBypassExceptionForLivewire($e, $obLevel)) {
             // This is because there is no "parent::parent::".
-            \Illuminate\View\Engines\PhpEngine::handleViewException($e, $obLevel);
+            PhpEngine::handleViewException($e, $obLevel);
 
             return;
         }
@@ -62,15 +72,14 @@ class ExtendedCompilerEngine extends \Illuminate\View\Engines\CompilerEngine {
     {
         $uses = array_flip(class_uses_recursive($e));
 
-        return (
+        return
             // Don't wrap "abort(403)".
-            $e instanceof \Illuminate\Auth\Access\AuthorizationException
+            $e instanceof AuthorizationException
             // Don't wrap "abort(404)".
-            || $e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+            || $e instanceof NotFoundHttpException
             // Don't wrap "abort(500)".
-            || $e instanceof \Symfony\Component\HttpKernel\Exception\HttpException
+            || $e instanceof HttpException
             // Don't wrap most Livewire exceptions.
-            || isset($uses[\Livewire\Exceptions\BypassViewHandler::class])
-        );
+            || isset($uses[BypassViewHandler::class]);
     }
 }

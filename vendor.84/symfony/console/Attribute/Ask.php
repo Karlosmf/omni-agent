@@ -23,19 +23,21 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class Ask implements InteractiveAttributeInterface
 {
     public ?\Closure $normalizer;
+
     public ?\Closure $validator;
+
     private \Closure $closure;
 
     /**
-     * @param string                     $question    The question to ask the user
-     * @param string|bool|int|float|null $default     The default answer to return if the user enters nothing
-     * @param bool                       $hidden      Whether the user response must be hidden or not
-     * @param bool                       $multiline   Whether the user response should accept newline characters
-     * @param bool                       $trimmable   Whether the user response must be trimmed or not
-     * @param int|null                   $timeout     The maximum time the user has to answer the question in seconds
-     * @param callable|null              $validator   The validator for the question
-     * @param int|null                   $maxAttempts The maximum number of attempts allowed to answer the question.
-     *                                                Null means an unlimited number of attempts
+     * @param  string  $question  The question to ask the user
+     * @param  string|bool|int|float|null  $default  The default answer to return if the user enters nothing
+     * @param  bool  $hidden  Whether the user response must be hidden or not
+     * @param  bool  $multiline  Whether the user response should accept newline characters
+     * @param  bool  $trimmable  Whether the user response must be trimmed or not
+     * @param  int|null  $timeout  The maximum time the user has to answer the question in seconds
+     * @param  callable|null  $validator  The validator for the question
+     * @param  int|null  $maxAttempts  The maximum number of attempts allowed to answer the question.
+     *                                 Null means an unlimited number of attempts
      */
     public function __construct(
         public string $question,
@@ -59,13 +61,13 @@ class Ask implements InteractiveAttributeInterface
     {
         $reflection = new ReflectionMember($member);
 
-        if (!$self = $reflection->getAttribute(self::class)) {
+        if (! $self = $reflection->getAttribute(self::class)) {
             return null;
         }
 
         $type = $reflection->getType();
 
-        if (!$type instanceof \ReflectionNamedType) {
+        if (! $type instanceof \ReflectionNamedType) {
             throw new LogicException(\sprintf('The %s "$%s" of "%s" must have a named type. Untyped, Union or Intersection types are not supported for interactive questions.', $reflection->getMemberName(), $name, $reflection->getSourceName()));
         }
 
@@ -74,14 +76,14 @@ class Ask implements InteractiveAttributeInterface
                 return;
             }
 
-            if ($reflection->isParameter() && !\in_array($input->getArgument($name), [null, []], true)) {
+            if ($reflection->isParameter() && ! \in_array($input->getArgument($name), [null, []], true)) {
                 return;
             }
 
-            if ('bool' === $type->getName()) {
+            if ($type->getName() === 'bool') {
                 $self->default ??= false;
 
-                if (!\is_bool($self->default)) {
+                if (! \is_bool($self->default)) {
                     throw new LogicException(\sprintf('The "%s::$default" value for the %s "$%s" of "%s" must be a boolean.', self::class, $reflection->getMemberName(), $name, $reflection->getSourceName()));
                 }
 
@@ -94,7 +96,7 @@ class Ask implements InteractiveAttributeInterface
             $question->setTrimmable($self->trimmable);
             $question->setTimeout($self->timeout);
 
-            if (!$self->validator && $reflection->isProperty() && 'array' !== $type->getName()) {
+            if (! $self->validator && $reflection->isProperty() && $type->getName() !== 'array') {
                 $self->validator = function (mixed $value) use ($reflection): mixed {
                     return $this->{$reflection->getName()} = $value;
                 };
@@ -111,10 +113,10 @@ class Ask implements InteractiveAttributeInterface
                 $question->setNormalizer(fn (string|int $value) => $backedType::tryFrom($value) ?? throw InvalidArgumentException::fromEnumValue($reflection->getName(), $value, array_column($backedType::cases(), 'value')));
             }
 
-            if ('array' === $type->getName()) {
+            if ($type->getName() === 'array') {
                 $value = [];
                 while ($v = $io->askQuestion($question)) {
-                    if ("\x4" === $v || \PHP_EOL === $v || ($question->isTrimmable() && '' === $v = trim($v))) {
+                    if ($v === "\x4" || $v === \PHP_EOL || ($question->isTrimmable() && '' === $v = trim($v))) {
                         break;
                     }
                     $value[] = $v;
@@ -123,7 +125,7 @@ class Ask implements InteractiveAttributeInterface
                 $value = $io->askQuestion($question);
             }
 
-            if (null === $value && !$reflection->isNullable()) {
+            if ($value === null && ! $reflection->isNullable()) {
                 return;
             }
 

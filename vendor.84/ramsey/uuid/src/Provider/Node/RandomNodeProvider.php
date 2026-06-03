@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Ramsey\Uuid\Provider\Node;
 
+use const STR_PAD_LEFT;
+
 use Ramsey\Uuid\Exception\RandomSourceException;
 use Ramsey\Uuid\Provider\NodeProviderInterface;
 use Ramsey\Uuid\Type\Hexadecimal;
@@ -25,8 +27,6 @@ use function hex2bin;
 use function hexdec;
 use function str_pad;
 use function substr;
-
-use const STR_PAD_LEFT;
 
 /**
  * RandomNodeProvider generates a random node ID
@@ -50,6 +50,6 @@ class RandomNodeProvider implements NodeProviderInterface
         // Set the multicast bit; see RFC 9562, section 6.10.
         $nodeMsb = hex2bin(str_pad(dechex(hexdec(bin2hex($nodeMsb)) | 0x010000), 6, '0', STR_PAD_LEFT));
 
-        return new Hexadecimal(str_pad(bin2hex($nodeMsb . $nodeLsb), 12, '0', STR_PAD_LEFT));
+        return new Hexadecimal(str_pad(bin2hex($nodeMsb.$nodeLsb), 12, '0', STR_PAD_LEFT));
     }
 }

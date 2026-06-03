@@ -20,7 +20,9 @@ use Symfony\Component\Translation\MessageCatalogue;
 abstract class AbstractVisitor
 {
     private MessageCatalogue $catalogue;
+
     private \SplFileInfo $file;
+
     private string $messagePrefix;
 
     public function initialize(MessageCatalogue $catalogue, \SplFileInfo $file, string $messagePrefix): void
@@ -48,7 +50,7 @@ abstract class AbstractVisitor
 
         $args = $node instanceof Node\Expr\CallLike ? $node->getRawArgs() : $node->args;
 
-        if (!($arg = $args[$index] ?? null) instanceof Node\Arg) {
+        if (! ($arg = $args[$index] ?? null) instanceof Node\Arg) {
             return [];
         }
 
@@ -60,7 +62,7 @@ abstract class AbstractVisitor
         $args = $node instanceof Node\Expr\CallLike ? $node->getRawArgs() : $node->args;
 
         foreach ($args as $arg) {
-            if ($arg instanceof Node\Arg && null !== $arg->name) {
+            if ($arg instanceof Node\Arg && $arg->name !== null) {
                 return true;
             }
         }
@@ -73,7 +75,7 @@ abstract class AbstractVisitor
         $args = $node instanceof Node\Expr\CallLike ? $node->getRawArgs() : $node->args;
 
         foreach ($args as $i => $arg) {
-            if ($arg instanceof Node\Arg && null !== $arg->name) {
+            if ($arg instanceof Node\Arg && $arg->name !== null) {
                 return $i;
             }
         }
@@ -87,7 +89,7 @@ abstract class AbstractVisitor
         $argumentValues = [];
 
         foreach ($args as $arg) {
-            if (!$isArgumentNamePattern && $arg->name?->toString() === $argumentName) {
+            if (! $isArgumentNamePattern && $arg->name?->toString() === $argumentName) {
                 $argumentValues[] = $this->getStringValue($arg->value);
             } elseif ($isArgumentNamePattern && preg_match($argumentName, $arg->name?->toString() ?? '') > 0) {
                 $argumentValues[] = $this->getStringValue($arg->value);
@@ -123,7 +125,7 @@ abstract class AbstractVisitor
             try {
                 $reflection = new \ReflectionClass($node->class->toString());
                 $constant = $reflection->getReflectionConstant($node->name->toString());
-                if (false !== $constant && \is_string($constant->getValue())) {
+                if ($constant !== false && \is_string($constant->getValue())) {
                     return $constant->getValue();
                 }
             } catch (\ReflectionException) {

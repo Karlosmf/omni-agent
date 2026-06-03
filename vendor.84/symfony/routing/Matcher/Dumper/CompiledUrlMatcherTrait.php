@@ -27,9 +27,13 @@ use Symfony\Component\Routing\RequestContext;
 trait CompiledUrlMatcherTrait
 {
     private bool $matchHost = false;
+
     private array $staticRoutes = [];
+
     private array $regexpList = [];
+
     private array $dynamicRoutes = [];
+
     private ?\Closure $checkCondition;
 
     public function match(string $pathinfo): array
@@ -41,10 +45,10 @@ trait CompiledUrlMatcherTrait
         if ($allow) {
             throw new MethodNotAllowedException(array_keys($allow));
         }
-        if (!$this instanceof RedirectableUrlMatcherInterface) {
+        if (! $this instanceof RedirectableUrlMatcherInterface) {
             throw new ResourceNotFoundException(\sprintf('No routes found for "%s".', $pathinfo));
         }
-        if (!\in_array($this->context->getMethod(), ['HEAD', 'GET'], true)) {
+        if (! \in_array($this->context->getMethod(), ['HEAD', 'GET'], true)) {
             // no-op
         } elseif ($allowSchemes) {
             redirect_scheme:
@@ -82,41 +86,44 @@ trait CompiledUrlMatcherTrait
             $host = strtolower($context->getHost());
         }
 
-        if ('HEAD' === $requestMethod) {
+        if ($requestMethod === 'HEAD') {
             $canonicalMethod = 'GET';
         }
-        $supportsRedirections = 'GET' === $canonicalMethod && $this instanceof RedirectableUrlMatcherInterface;
+        $supportsRedirections = $canonicalMethod === 'GET' && $this instanceof RedirectableUrlMatcherInterface;
 
         foreach ($this->staticRoutes[$trimmedPathinfo] ?? [] as [$ret, $requiredHost, $requiredMethods, $requiredSchemes, $hasTrailingSlash, , $condition]) {
             if ($requiredHost) {
-                if ('{' !== $requiredHost[0] ? $requiredHost !== $host : !preg_match($requiredHost, $host, $hostMatches)) {
+                if ($requiredHost[0] !== '{' ? $requiredHost !== $host : ! preg_match($requiredHost, $host, $hostMatches)) {
                     continue;
                 }
-                if ('{' === $requiredHost[0] && $hostMatches) {
+                if ($requiredHost[0] === '{' && $hostMatches) {
                     $hostMatches['_route'] = $ret['_route'];
                     $ret = $this->mergeDefaults($hostMatches, $ret);
                 }
             }
 
-            if ($condition && !($this->checkCondition)($condition, $context, 0 < $condition ? $request ??= $this->request ?: $this->createRequest($pathinfo) : null, $ret)) {
+            if ($condition && ! ($this->checkCondition)($condition, $context, $condition > 0 ? $request ??= $this->request ?: $this->createRequest($pathinfo) : null, $ret)) {
                 continue;
             }
 
-            if ('/' !== $pathinfo && $hasTrailingSlash === ($trimmedPathinfo === $pathinfo)) {
-                if ($supportsRedirections && (!$requiredMethods || isset($requiredMethods['GET']))) {
+            if ($pathinfo !== '/' && $hasTrailingSlash === ($trimmedPathinfo === $pathinfo)) {
+                if ($supportsRedirections && (! $requiredMethods || isset($requiredMethods['GET']))) {
                     return $allow = $allowSchemes = [];
                 }
+
                 continue;
             }
 
-            $hasRequiredScheme = !$requiredSchemes || isset($requiredSchemes[$context->getScheme()]);
-            if ($hasRequiredScheme && $requiredMethods && !isset($requiredMethods[$canonicalMethod]) && !isset($requiredMethods[$requestMethod])) {
+            $hasRequiredScheme = ! $requiredSchemes || isset($requiredSchemes[$context->getScheme()]);
+            if ($hasRequiredScheme && $requiredMethods && ! isset($requiredMethods[$canonicalMethod]) && ! isset($requiredMethods[$requestMethod])) {
                 $allow += $requiredMethods;
+
                 continue;
             }
 
-            if (!$hasRequiredScheme) {
+            if (! $hasRequiredScheme) {
                 $allowSchemes += $requiredSchemes;
+
                 continue;
             }
 
@@ -128,7 +135,7 @@ trait CompiledUrlMatcherTrait
         foreach ($this->regexpList as $offset => $regex) {
             while (preg_match($regex, $matchedPathinfo, $matches)) {
                 foreach ($this->dynamicRoutes[$m = (int) $matches['MARK']] as [$ret, $vars, $requiredMethods, $requiredSchemes, $hasTrailingSlash, $hasTrailingVar, $condition]) {
-                    if (0 === $condition) { // marks the last route in the regexp
+                    if ($condition === 0) { // marks the last route in the regexp
                         continue 3;
                     }
 
@@ -148,24 +155,27 @@ trait CompiledUrlMatcherTrait
                         }
                     }
 
-                    if ($condition && !($this->checkCondition)($condition, $context, 0 < $condition ? $request ??= $this->request ?: $this->createRequest($pathinfo) : null, $ret)) {
+                    if ($condition && ! ($this->checkCondition)($condition, $context, $condition > 0 ? $request ??= $this->request ?: $this->createRequest($pathinfo) : null, $ret)) {
                         continue;
                     }
 
-                    if ('/' !== $pathinfo && !$hasTrailingVar && $hasTrailingSlash === ($trimmedPathinfo === $pathinfo)) {
-                        if ($supportsRedirections && (!$requiredMethods || isset($requiredMethods['GET']))) {
+                    if ($pathinfo !== '/' && ! $hasTrailingVar && $hasTrailingSlash === ($trimmedPathinfo === $pathinfo)) {
+                        if ($supportsRedirections && (! $requiredMethods || isset($requiredMethods['GET']))) {
                             return $allow = $allowSchemes = [];
                         }
+
                         continue;
                     }
 
-                    if ($requiredSchemes && !isset($requiredSchemes[$context->getScheme()])) {
+                    if ($requiredSchemes && ! isset($requiredSchemes[$context->getScheme()])) {
                         $allowSchemes += $requiredSchemes;
+
                         continue;
                     }
 
-                    if ($requiredMethods && !isset($requiredMethods[$canonicalMethod]) && !isset($requiredMethods[$requestMethod])) {
+                    if ($requiredMethods && ! isset($requiredMethods[$canonicalMethod]) && ! isset($requiredMethods[$requestMethod])) {
                         $allow += $requiredMethods;
+
                         continue;
                     }
 
@@ -177,8 +187,8 @@ trait CompiledUrlMatcherTrait
             }
         }
 
-        if ('/' === $pathinfo && !$allow && !$allowSchemes) {
-            throw new NoConfigurationException();
+        if ($pathinfo === '/' && ! $allow && ! $allowSchemes) {
+            throw new NoConfigurationException;
         }
 
         return [];

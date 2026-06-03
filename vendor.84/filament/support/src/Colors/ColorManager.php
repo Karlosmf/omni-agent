@@ -59,7 +59,7 @@ class ColorManager
     /**
      * @param  array<string, array<int, string> | string> | Closure  $colors
      */
-    public function register(array | Closure $colors): static
+    public function register(array|Closure $colors): static
     {
         $this->colors[] = $colors;
 
@@ -85,7 +85,7 @@ class ColorManager
                     $color = Color::generatePalette($color);
                 } else {
                     $color = array_map(
-                        fn (string | int $color): string | int => is_string($color) ? Color::convertToOklch($color) : $color,
+                        fn (string|int $color): string|int => is_string($color) ? Color::convertToOklch($color) : $color,
                         $color,
                     );
                 }
@@ -109,7 +109,7 @@ class ColorManager
      * @param  class-string<HasColor> | HasColor  $component
      * @return array<string>
      */
-    public function getComponentClasses(string | HasColor $component, ?string $color): array
+    public function getComponentClasses(string|HasColor $component, ?string $color): array
     {
         if (blank($color)) {
             return [];
@@ -162,7 +162,7 @@ class ColorManager
      * @param  array<string>  $color
      * @return array<string>
      */
-    public function getComponentCustomStyles(string | HasColor $component, array $color): array
+    public function getComponentCustomStyles(string|HasColor $component, array $color): array
     {
         $component = is_string($component) ? app($component) : $component;
         $componentKey = serialize($component);
@@ -181,7 +181,7 @@ class ColorManager
                 array_keys($color),
             ),
             ...array_map(
-                fn (string $shade, string $key): string => '--' . str_replace(':', '-', $key) . ': ' . ($shade ? "var(--color-{$shade})" : 'oklch(1 0 0)'),
+                fn (string $shade, string $key): string => '--'.str_replace(':', '-', $key).': '.($shade ? "var(--color-{$shade})" : 'oklch(1 0 0)'),
                 array_values($map),
                 array_keys($map),
             ),

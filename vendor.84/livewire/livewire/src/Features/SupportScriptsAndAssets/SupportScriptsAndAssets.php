@@ -3,10 +3,10 @@
 namespace Livewire\Features\SupportScriptsAndAssets;
 
 use Illuminate\Support\Facades\Blade;
-use function Livewire\store;
 use Livewire\ComponentHook;
 
 use function Livewire\on;
+use function Livewire\store;
 
 class SupportScriptsAndAssets extends ComponentHook
 {
@@ -25,14 +25,14 @@ class SupportScriptsAndAssets extends ComponentHook
 
     public static function processNonLivewireAssets()
     {
-        // If any assets have been added outside of a Livewire component, then they will not be 
-        // processed like the other assets as there is no dehydrate being called. So instead 
+        // If any assets have been added outside of a Livewire component, then they will not be
+        // processed like the other assets as there is no dehydrate being called. So instead
         // we process them manually that way they are included with the other assets when
         // they are injected...
         $alreadyRunAssetKeys = [];
 
         foreach (static::$nonLivewireAssets as $key => $assets) {
-             if (! in_array($key, $alreadyRunAssetKeys)) {
+            if (! in_array($key, $alreadyRunAssetKeys)) {
 
                 // These will get injected into the HTML if it's an initial page load...
                 static::$renderedAssets[$key] = $assets;
@@ -51,7 +51,9 @@ class SupportScriptsAndAssets extends ComponentHook
         // number of already compiled directives here...
         $viewPath = crc32(app('blade.compiler')->getPath() ?? '');
 
-        if (! isset(static::$countersByViewPath[$viewPath])) static::$countersByViewPath[$viewPath] = 0;
+        if (! isset(static::$countersByViewPath[$viewPath])) {
+            static::$countersByViewPath[$viewPath] = 0;
+        }
 
         $key = $viewPath.'-'.static::$countersByViewPath[$viewPath];
 
@@ -60,7 +62,7 @@ class SupportScriptsAndAssets extends ComponentHook
         return $key;
     }
 
-    static function provide()
+    public static function provide()
     {
         on('flush-state', function () {
             static::$alreadyRunAssetKeys = [];
@@ -125,7 +127,8 @@ class SupportScriptsAndAssets extends ComponentHook
         });
     }
 
-    function hydrate($memo) {
+    public function hydrate($memo)
+    {
         // Store the "scripts" and "assets" memos so they can be re-added later (persisted between requests)...
         if (isset($memo['scripts'])) {
             store($this->component)->set('forwardScriptsToDehydrateMemo', $memo['scripts']);
@@ -136,7 +139,7 @@ class SupportScriptsAndAssets extends ComponentHook
         }
     }
 
-    function dehydrate($context)
+    public function dehydrate($context)
     {
         $alreadyRunScriptKeys = store($this->component)->get('forwardScriptsToDehydrateMemo', []);
 

@@ -38,7 +38,7 @@ final class IPv4Normalizer
     public function __construct(
         Converter|Calculator $calculator
     ) {
-        if (!$calculator instanceof Converter) {
+        if (! $calculator instanceof Converter) {
             $calculator = new Converter($calculator);
         }
 
@@ -107,6 +107,7 @@ final class IPv4Normalizer
      * @throws MissingFeature If no IPv4Calculator implementing object can be used on the platform
      *
      * @codeCoverageIgnore
+     *
      * @see Converter::fromEnvironment()
      *
      * @codeCoverageIgnore
@@ -139,7 +140,7 @@ final class IPv4Normalizer
         $decimalIPv4 = $this->converter->toDecimal($host);
 
         return match (true) {
-            null === $decimalIPv4,
+            $decimalIPv4 === null,
             $decimalIPv4 === $host => $uri,
             default => $uri->withHost($decimalIPv4),
         };
@@ -164,7 +165,7 @@ final class IPv4Normalizer
         $decimalIpv4 = $this->converter->toDecimal($host);
 
         return match (true) {
-            null === $decimalIpv4,
+            $decimalIpv4 === null,
             $decimalIpv4 === $host => $authority,
             default => $authority->withHost($decimalIpv4),
         };

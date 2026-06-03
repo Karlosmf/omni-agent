@@ -107,7 +107,7 @@ class Person extends \Faker\Provider\Person
         $randomDigits = static::numerify('#########');
         $checksum = self::tcNoChecksum($randomDigits);
 
-        return $randomDigits . $checksum;
+        return $randomDigits.$checksum;
     }
 
     /**
@@ -116,8 +116,7 @@ class Person extends \Faker\Provider\Person
      *
      * @see https://en.wikipedia.org/wiki/Turkish_Identification_Number
      *
-     * @param string $identityPrefix
-     *
+     * @param  string  $identityPrefix
      * @return string Checksum (two digit)
      */
     public static function tcNoChecksum($identityPrefix)
@@ -142,14 +141,13 @@ class Person extends \Faker\Provider\Person
         $tenthDigit = (7 * $evenSum - $oddSum) % 10;
         $eleventhDigit = ($evenSum + $oddSum + $tenthDigit) % 10;
 
-        return $tenthDigit . $eleventhDigit;
+        return $tenthDigit.$eleventhDigit;
     }
 
     /**
      * Checks whether a TCNo has a valid checksum
      *
-     * @param string $tcNo
-     *
+     * @param  string  $tcNo
      * @return bool
      */
     public static function tcNoIsValid($tcNo)

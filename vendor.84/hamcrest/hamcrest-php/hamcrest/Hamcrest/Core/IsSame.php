@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Core;
 
 /*
@@ -13,7 +14,6 @@ use Hamcrest\Description;
  */
 class IsSame extends BaseMatcher
 {
-
     private $_object;
 
     public function __construct($object)
@@ -29,19 +29,18 @@ class IsSame extends BaseMatcher
     public function describeTo(Description $description)
     {
         $description->appendText('sameInstance(')
-                                ->appendValue($this->_object)
-                                ->appendText(')')
-                                ;
+            ->appendValue($this->_object)
+            ->appendText(')');
     }
 
     /**
      * Creates a new instance of IsSame.
      *
-     * @param mixed $object
-     *   The predicate evaluates to true only when the argument is
-     *   this object.
+     * @param  mixed  $object
+     *                         The predicate evaluates to true only when the argument is
+     *                         this object.
+     * @return IsSame
      *
-     * @return \Hamcrest\Core\IsSame
      * @factory
      */
     public static function sameInstance($object)

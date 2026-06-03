@@ -51,7 +51,7 @@ trait Aliases
         return match (true) {
             $locale instanceof LocaleData => $locale->code,
             $locale instanceof LocaleCode => $locale->value,
-            default                       => $locale
+            default => $locale
         };
     }
 }

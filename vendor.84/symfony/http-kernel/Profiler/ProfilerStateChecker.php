@@ -18,8 +18,7 @@ class ProfilerStateChecker
     public function __construct(
         private ContainerInterface $container,
         private bool $defaultEnabled,
-    ) {
-    }
+    ) {}
 
     public function isProfilerEnabled(): bool
     {
@@ -28,6 +27,6 @@ class ProfilerStateChecker
 
     public function isProfilerDisabled(): bool
     {
-        return !$this->isProfilerEnabled();
+        return ! $this->isProfilerEnabled();
     }
 }

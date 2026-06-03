@@ -25,10 +25,11 @@ use Symfony\Component\Console\Exception\InvalidArgumentException;
 class StringInput extends ArgvInput
 {
     public const REGEX_UNQUOTED_STRING = '([^\s\\\\]+?)';
+
     public const REGEX_QUOTED_STRING = '(?:"([^"\\\\]*(?:\\\\.[^"\\\\]*)*)"|\'([^\'\\\\]*(?:\\\\.[^\'\\\\]*)*)\')';
 
     /**
-     * @param string $input A string representing the parameters from the CLI
+     * @param  string  $input  A string representing the parameters from the CLI
      */
     public function __construct(string $input)
     {
@@ -51,14 +52,15 @@ class StringInput extends ArgvInput
         $cursor = 0;
         $token = null;
         while ($cursor < $length) {
-            if ('\\' === $input[$cursor]) {
+            if ($input[$cursor] === '\\') {
                 $token .= $input[++$cursor] ?? '';
-                ++$cursor;
+                $cursor++;
+
                 continue;
             }
 
             if (preg_match('/\s+/A', $input, $match, 0, $cursor)) {
-                if (null !== $token) {
+                if ($token !== null) {
                     $tokens[] = $token;
                     $token = null;
                 }
@@ -76,7 +78,7 @@ class StringInput extends ArgvInput
             $cursor += \strlen($match[0]);
         }
 
-        if (null !== $token) {
+        if ($token !== null) {
             $tokens[] = $token;
         }
 

@@ -23,7 +23,7 @@ final class CommandIsSuccessful extends Constraint
 
     protected function matches($other): bool
     {
-        return Command::SUCCESS === $other;
+        return $other === Command::SUCCESS;
     }
 
     protected function failureDescription($other): string

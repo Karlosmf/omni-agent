@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\HttpFoundation\Session\Storage\Handler;
 
+use Predis\ClientInterface;
 use Predis\Response\ErrorInterface;
 use Relay\Relay;
 
@@ -40,7 +41,7 @@ class RedisSessionHandler extends AbstractSessionHandler
      * @throws \InvalidArgumentException When unsupported client or options are passed
      */
     public function __construct(
-        private \Redis|Relay|\RedisArray|\RedisCluster|\Predis\ClientInterface $redis,
+        private \Redis|Relay|\RedisArray|\RedisCluster|ClientInterface $redis,
         array $options = [],
     ) {
         if ($diff = array_diff(array_keys($options), ['prefix', 'ttl'])) {
@@ -61,7 +62,7 @@ class RedisSessionHandler extends AbstractSessionHandler
         $ttl = ($this->ttl instanceof \Closure ? ($this->ttl)() : $this->ttl) ?? \ini_get('session.gc_maxlifetime');
         $result = $this->redis->setEx($this->prefix.$sessionId, (int) $ttl, $data);
 
-        return $result && !$result instanceof ErrorInterface;
+        return $result && ! $result instanceof ErrorInterface;
     }
 
     protected function doDestroy(#[\SensitiveParameter] string $sessionId): bool
@@ -70,13 +71,13 @@ class RedisSessionHandler extends AbstractSessionHandler
 
         if ($unlink) {
             try {
-                $unlink = false !== $this->redis->unlink($this->prefix.$sessionId);
+                $unlink = $this->redis->unlink($this->prefix.$sessionId) !== false;
             } catch (\Throwable) {
                 $unlink = false;
             }
         }
 
-        if (!$unlink) {
+        if (! $unlink) {
             $this->redis->del($this->prefix.$sessionId);
         }
 

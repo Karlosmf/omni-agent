@@ -26,7 +26,7 @@ final class PositiveInteger extends Integer implements PseudoType
 {
     public function underlyingType(): Type
     {
-        return new Integer();
+        return new Integer;
     }
 
     /**

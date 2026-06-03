@@ -29,8 +29,8 @@ final class DescriptionTermContinueParser extends AbstractBlockContinueParser im
 
     public function __construct(string $term)
     {
-        $this->block = new DescriptionTerm();
-        $this->term  = $term;
+        $this->block = new DescriptionTerm;
+        $this->term = $term;
     }
 
     public function getBlock(): DescriptionTerm

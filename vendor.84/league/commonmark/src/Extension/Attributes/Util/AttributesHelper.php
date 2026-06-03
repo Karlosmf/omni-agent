@@ -23,8 +23,9 @@ use League\CommonMark\Util\RegexHelper;
  */
 final class AttributesHelper
 {
-    private const SINGLE_ATTRIBUTE = '\s*([.]-?[_a-z][^\s.}]*|[#][^\s}]+|' . RegexHelper::PARTIAL_ATTRIBUTENAME . RegexHelper::PARTIAL_ATTRIBUTEVALUESPEC . ')\s*';
-    private const ATTRIBUTE_LIST   = '/^{:?(' . self::SINGLE_ATTRIBUTE . ')+}/i';
+    private const SINGLE_ATTRIBUTE = '\s*([.]-?[_a-z][^\s.}]*|[#][^\s}]+|'.RegexHelper::PARTIAL_ATTRIBUTENAME.RegexHelper::PARTIAL_ATTRIBUTEVALUESPEC.')\s*';
+
+    private const ATTRIBUTE_LIST = '/^{:?('.self::SINGLE_ATTRIBUTE.')+}/i';
 
     /**
      * @return array<string, mixed>
@@ -55,11 +56,11 @@ final class AttributesHelper
 
         // Trim the leading '{' or '{:' and the trailing '}'
         $attributeExpression = \ltrim(\substr($attributeExpression, 1, -1), ':');
-        $attributeCursor     = new Cursor($attributeExpression);
+        $attributeCursor = new Cursor($attributeExpression);
 
         /** @var array<string, mixed> $attributes */
         $attributes = [];
-        while ($attribute = \trim((string) $attributeCursor->match('/^' . self::SINGLE_ATTRIBUTE . '/i'))) {
+        while ($attribute = \trim((string) $attributeCursor->match('/^'.self::SINGLE_ATTRIBUTE.'/i'))) {
             if ($attribute[0] === '#') {
                 $attributes['id'] = \substr($attribute, 1);
 
@@ -77,11 +78,12 @@ final class AttributesHelper
 
             if ($value === 'true') {
                 $attributes[$name] = true;
+
                 continue;
             }
 
             $first = $value[0];
-            $last  = \substr($value, -1);
+            $last = \substr($value, -1);
             if (($first === '"' && $last === '"') || ($first === "'" && $last === "'") && \strlen($value) > 1) {
                 $value = \substr($value, 1, -1);
             }
@@ -103,9 +105,8 @@ final class AttributesHelper
     }
 
     /**
-     * @param Node|array<string, mixed> $attributes1
-     * @param Node|array<string, mixed> $attributes2
-     *
+     * @param  Node|array<string, mixed>  $attributes1
+     * @param  Node|array<string, mixed>  $attributes2
      * @return array<string, mixed>
      */
     public static function mergeAttributes($attributes1, $attributes2): array
@@ -141,9 +142,8 @@ final class AttributesHelper
     }
 
     /**
-     * @param array<string, mixed> $attributes
-     * @param list<string>         $allowList
-     *
+     * @param  array<string, mixed>  $attributes
+     * @param  list<string>  $allowList
      * @return array<string, mixed>
      */
     public static function filterAttributes(array $attributes, array $allowList, bool $allowUnsafeLinks): array
@@ -156,6 +156,7 @@ final class AttributesHelper
             // Remove any unsafe links
             if (! $allowUnsafeLinks && ($attrNameLower === 'href' || $attrNameLower === 'src') && \is_string($value) && RegexHelper::isLinkPotentiallyUnsafe($value)) {
                 unset($attributes[$name]);
+
                 continue;
             }
 

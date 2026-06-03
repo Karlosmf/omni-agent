@@ -30,6 +30,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 final class ExceptionEvent extends RequestEvent
 {
     private \Throwable $throwable;
+
     private bool $allowCustomResponseCode = false;
 
     public function __construct(

@@ -28,12 +28,11 @@ class HtmlDescriptor implements DumpDescriptorInterface
 
     public function __construct(
         private HtmlDumper $dumper,
-    ) {
-    }
+    ) {}
 
     public function describe(OutputInterface $output, Data $data, array $context, int $clientId): void
     {
-        if (!$this->initialized) {
+        if (! $this->initialized) {
             $styles = file_get_contents(__DIR__.'/../../Resources/css/htmlDescriptor.css');
             $scripts = file_get_contents(__DIR__.'/../../Resources/js/htmlDescriptor.js');
             $output->writeln("<style>$styles</style><script>$scripts</script>");
@@ -98,7 +97,7 @@ class HtmlDescriptor implements DumpDescriptorInterface
 
     private function renderTags(array $tags): string
     {
-        if (!$tags) {
+        if (! $tags) {
             return '';
         }
 

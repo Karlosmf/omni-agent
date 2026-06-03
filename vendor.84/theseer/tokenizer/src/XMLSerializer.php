@@ -1,37 +1,46 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
+
 namespace TheSeer\Tokenizer;
 
-use DOMDocument;
-use XMLWriter;
-use function count;
 use const ENT_DISALLOWED;
 use const ENT_NOQUOTES;
 use const ENT_XML1;
 
-class XMLSerializer {
+use DOMDocument;
+use XMLWriter;
+
+use function count;
+
+class XMLSerializer
+{
     /** @var NamespaceUri */
     private $xmlns;
 
     /**
      * XMLSerializer constructor.
      */
-    public function __construct(?NamespaceUri $xmlns = null) {
+    public function __construct(?NamespaceUri $xmlns = null)
+    {
         if ($xmlns === null) {
             $xmlns = new NamespaceUri('https://github.com/theseer/tokenizer');
         }
         $this->xmlns = $xmlns;
     }
 
-    public function toDom(TokenCollection $tokens): DOMDocument {
-        $dom                     = new DOMDocument();
+    public function toDom(TokenCollection $tokens): DOMDocument
+    {
+        $dom = new DOMDocument;
         $dom->preserveWhiteSpace = false;
         $dom->loadXML($this->toXML($tokens));
 
         return $dom;
     }
 
-    public function toXML(TokenCollection $tokens): string {
-        $writer = new XMLWriter();
+    public function toXML(TokenCollection $tokens): string
+    {
+        $writer = new XMLWriter;
         $writer->openMemory();
         $writer->setIndent(true);
 
@@ -42,7 +51,8 @@ class XMLSerializer {
         return $writer->outputMemory();
     }
 
-    public function appendToWriter(XMLWriter $writer, TokenCollection $tokens): void {
+    public function appendToWriter(XMLWriter $writer, TokenCollection $tokens): void
+    {
         $writer->startElement('source');
         $writer->writeAttribute('xmlns', $this->xmlns->asString());
 
@@ -50,9 +60,9 @@ class XMLSerializer {
             $writer->startElement('line');
             $writer->writeAttribute('no', '1');
 
-            $iterator      = $tokens->getIterator();
+            $iterator = $tokens->getIterator();
             $previousToken = $iterator->current();
-            $previousLine  = $previousToken->getLine();
+            $previousLine = $previousToken->getLine();
 
             foreach ($iterator as $token) {
                 $line = $token->getLine();
@@ -61,7 +71,7 @@ class XMLSerializer {
                     $writer->endElement();
 
                     $writer->startElement('line');
-                    $writer->writeAttribute('no', (string)$line);
+                    $writer->writeAttribute('no', (string) $line);
                     $previousLine = $line;
                 }
 

@@ -25,8 +25,7 @@ abstract class OutputStyle implements OutputInterface, StyleInterface
 {
     public function __construct(
         private OutputInterface $output,
-    ) {
-    }
+    ) {}
 
     public function newLine(int $count = 1): void
     {
@@ -81,7 +80,7 @@ abstract class OutputStyle implements OutputInterface, StyleInterface
     public function isSilent(): bool
     {
         // @deprecated since Symfony 7.2, change to $this->output->isSilent() in 8.0
-        return method_exists($this->output, 'isSilent') ? $this->output->isSilent() : self::VERBOSITY_SILENT === $this->output->getVerbosity();
+        return method_exists($this->output, 'isSilent') ? $this->output->isSilent() : $this->output->getVerbosity() === self::VERBOSITY_SILENT;
     }
 
     public function isQuiet(): bool
@@ -106,7 +105,7 @@ abstract class OutputStyle implements OutputInterface, StyleInterface
 
     protected function getErrorOutput(): OutputInterface
     {
-        if (!$this->output instanceof ConsoleOutputInterface) {
+        if (! $this->output instanceof ConsoleOutputInterface) {
             return $this->output;
         }
 

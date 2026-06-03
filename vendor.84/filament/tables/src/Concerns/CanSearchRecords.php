@@ -227,7 +227,7 @@ trait CanSearchRecords
 
     public function getTableSearchIndicator(): Indicator
     {
-        return Indicator::make(__('filament-tables::table.fields.search.indicator') . ': ' . $this->getTableSearch())
+        return Indicator::make(__('filament-tables::table.fields.search.indicator').': '.$this->getTableSearch())
             ->removeLivewireClickHandler('resetTableSearch');
     }
 
@@ -269,7 +269,7 @@ trait CanSearchRecords
     protected function castTableColumnSearches(array $searches): array
     {
         return array_map(
-            fn ($search): array | string => is_array($search) ?
+            fn ($search): array|string => is_array($search) ?
                 $this->castTableColumnSearches($search) :
                 strval($search),
             $searches,

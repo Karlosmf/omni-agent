@@ -25,14 +25,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 class TimeitCommand extends Command
 {
     const RESULT_MSG = '<info>Command took %.6f seconds to complete.</info>';
+
     const AVG_RESULT_MSG = '<info>Command took %.6f seconds on average (%.6f median; %.6f total) to complete.</info>';
 
     // All times stored as nanoseconds!
     private static ?int $start = null;
+
     private static array $times = [];
 
     private CodeArgumentParser $parser;
+
     private NodeTraverser $traverser;
+
     private Printer $printer;
 
     /**
@@ -40,13 +44,13 @@ class TimeitCommand extends Command
      */
     public function __construct($name = null)
     {
-        $this->parser = new CodeArgumentParser();
+        $this->parser = new CodeArgumentParser;
 
         // @todo Pass visitor directly to once we drop support for PHP-Parser 4.x
-        $this->traverser = new NodeTraverser();
-        $this->traverser->addVisitor(new TimeitVisitor());
+        $this->traverser = new NodeTraverser;
+        $this->traverser->addVisitor(new TimeitVisitor);
 
-        $this->printer = new Printer();
+        $this->printer = new Printer;
 
         parent::__construct($name);
     }
@@ -137,8 +141,7 @@ HELP
      * the return value of the last statement back out of timeit. This saves us
      * a bunch of code rewriting shenanigans.
      *
-     * @param mixed $ret
-     *
+     * @param  mixed  $ret
      * @return mixed it just passes $ret right back
      */
     public static function markEnd($ret = null)

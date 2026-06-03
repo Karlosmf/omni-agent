@@ -20,8 +20,7 @@ class ImmutableEventDispatcher implements EventDispatcherInterface
 {
     public function __construct(
         private EventDispatcherInterface $dispatcher,
-    ) {
-    }
+    ) {}
 
     public function dispatch(object $event, ?string $eventName = null): object
     {

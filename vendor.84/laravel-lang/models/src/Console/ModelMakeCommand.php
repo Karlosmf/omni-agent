@@ -103,7 +103,7 @@ class ModelMakeCommand extends Command
 
     protected function hasTranslation(string $model): bool
     {
-        return class_exists($model . Config::shared()->models->suffix);
+        return class_exists($model.Config::shared()->models->suffix);
     }
 
     protected function columns(): array

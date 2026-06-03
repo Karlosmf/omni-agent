@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,11 +9,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework;
 
-use function assert;
-use function trim;
-use function unserialize;
 use PHPUnit\Event\Code\TestMethodBuilder;
 use PHPUnit\Event\Code\ThrowableBuilder;
 use PHPUnit\Event\Emitter;
@@ -19,21 +19,28 @@ use PHPUnit\Event\Facade;
 use PHPUnit\Runner\CodeCoverage;
 use PHPUnit\TestRunner\TestResult\PassedTests;
 
+use function assert;
+use function trim;
+use function unserialize;
+
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  */
 final readonly class ChildProcessResultProcessor
 {
     private Facade $eventFacade;
+
     private Emitter $emitter;
+
     private PassedTests $passedTests;
+
     private CodeCoverage $codeCoverage;
 
     public function __construct(Facade $eventFacade, Emitter $emitter, PassedTests $passedTests, CodeCoverage $codeCoverage)
     {
-        $this->eventFacade  = $eventFacade;
-        $this->emitter      = $emitter;
-        $this->passedTests  = $passedTests;
+        $this->eventFacade = $eventFacade;
+        $this->emitter = $emitter;
+        $this->passedTests = $passedTests;
         $this->codeCoverage = $codeCoverage;
     }
 
@@ -82,12 +89,12 @@ final readonly class ChildProcessResultProcessor
         $test->setResult($childResult->testResult);
         $test->addToAssertionCount($childResult->numAssertions);
 
-        if (!$this->codeCoverage->isActive()) {
+        if (! $this->codeCoverage->isActive()) {
             return;
         }
 
         // @codeCoverageIgnoreStart
-        if (!$childResult->codeCoverage instanceof \SebastianBergmann\CodeCoverage\CodeCoverage) {
+        if (! $childResult->codeCoverage instanceof \SebastianBergmann\CodeCoverage\CodeCoverage) {
             return;
         }
 

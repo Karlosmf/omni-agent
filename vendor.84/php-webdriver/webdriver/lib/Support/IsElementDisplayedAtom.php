@@ -42,7 +42,7 @@ class IsElementDisplayedAtom
 
     public static function match($browserName)
     {
-        return !in_array($browserName, self::BROWSERS_WITH_ENDPOINT_SUPPORT, true);
+        return ! in_array($browserName, self::BROWSERS_WITH_ENDPOINT_SUPPORT, true);
     }
 
     public function execute($params)
@@ -66,6 +66,6 @@ class IsElementDisplayedAtom
 
     private function loadAtomScript($atomName)
     {
-        return file_get_contents(__DIR__ . '/../scripts/' . $atomName . '.js');
+        return file_get_contents(__DIR__.'/../scripts/'.$atomName.'.js');
     }
 }

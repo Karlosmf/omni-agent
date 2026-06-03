@@ -25,8 +25,7 @@ abstract class AbstractTransportFactory implements TransportFactoryInterface
         protected ?EventDispatcherInterface $dispatcher = null,
         protected ?HttpClientInterface $client = null,
         protected ?LoggerInterface $logger = null,
-    ) {
-    }
+    ) {}
 
     public function supports(Dsn $dsn): bool
     {

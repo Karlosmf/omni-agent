@@ -12,13 +12,13 @@ trait HasStateBindingModifiers
      */
     protected ?array $stateBindingModifiers = null;
 
-    protected int | string | null $liveDebounce = null;
+    protected int|string|null $liveDebounce = null;
 
-    protected bool | Closure | null $isLive = null;
+    protected bool|Closure|null $isLive = null;
 
     protected bool $isLiveOnBlur = false;
 
-    public function live(bool $onBlur = false, int | string | null $debounce = null, bool | Closure | null $condition = true): static
+    public function live(bool $onBlur = false, int|string|null $debounce = null, bool|Closure|null $condition = true): static
     {
         $this->isLive = $condition;
         $this->isLiveOnBlur = $onBlur;
@@ -41,7 +41,7 @@ trait HasStateBindingModifiers
         return $this;
     }
 
-    public function debounce(int | string | null $delay = 500): static
+    public function debounce(int|string|null $delay = 500): static
     {
         $this->live(debounce: $delay);
 
@@ -187,7 +187,7 @@ trait HasStateBindingModifiers
         return false;
     }
 
-    public function getLiveDebounce(): int | string | null
+    public function getLiveDebounce(): int|string|null
     {
         if ($this->isLiveOnBlur) {
             return null;

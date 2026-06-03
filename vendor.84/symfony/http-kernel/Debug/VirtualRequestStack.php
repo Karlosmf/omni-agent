@@ -25,8 +25,7 @@ final class VirtualRequestStack extends RequestStack
 {
     public function __construct(
         private readonly RequestStack $decorated,
-    ) {
-    }
+    ) {}
 
     public function push(Request $request): void
     {

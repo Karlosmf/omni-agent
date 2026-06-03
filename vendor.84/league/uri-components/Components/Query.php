@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace League\Uri\Components;
 
+use const ARRAY_FILTER_USE_BOTH;
+use const PREG_SPLIT_NO_EMPTY;
+
 use BackedEnum;
 use Deprecated;
 use Iterator;
@@ -61,21 +64,23 @@ use function preg_match;
 use function preg_quote;
 use function preg_replace;
 
-use const ARRAY_FILTER_USE_BOTH;
-use const PREG_SPLIT_NO_EMPTY;
-
 final class Query extends Component implements QueryInterface
 {
     private const REGEXP_NON_ASCII_PATTERN = '/[^\x20-\x7f]/';
+
     private const REGXP_FILTER_LIST = '/^
         [^\[\]]+        # base key (no [ or ])
         (?:\[[^\]]*\])+ # one or more bracket groups
     $/x';
+
     /** @var array<int, array{0:string, 1:string|null}> */
     private readonly array $pairs;
+
     /** @var non-empty-string */
     private readonly string $separator;
+
     private readonly array $parameters;
+
     private readonly array $list;
 
     /**
@@ -90,7 +95,7 @@ final class Query extends Component implements QueryInterface
         $this->separator = $converter->separator();
         $this->parameters = QueryString::extractFromValue($query, $converter);
         $this->list = QueryString::convert(
-            array_filter($this->pairs, static fn (array $pair): bool => 1 === preg_match(self::REGXP_FILTER_LIST, $pair[0])),
+            array_filter($this->pairs, static fn (array $pair): bool => preg_match(self::REGXP_FILTER_LIST, $pair[0]) === 1),
             QueryExtractMode::LossLess,
         );
     }
@@ -118,7 +123,7 @@ final class Query extends Component implements QueryInterface
     /**
      * Returns a new instance from the input of http_build_query.
      *
-     * @param non-empty-string $separator
+     * @param  non-empty-string  $separator
      */
     public static function fromVariable(
         object|array $parameters,
@@ -126,7 +131,7 @@ final class Query extends Component implements QueryInterface
         string $prefix = '',
         QueryComposeMode $composeMode = QueryComposeMode::Native
     ): self {
-        if ($parameters instanceof UnitEnum && QueryComposeMode::Compatible !== $composeMode) {
+        if ($parameters instanceof UnitEnum && $composeMode !== QueryComposeMode::Compatible) {
             throw new TypeError('Enum can not be used as arguments.');
         }
 
@@ -146,14 +151,14 @@ final class Query extends Component implements QueryInterface
     /**
      * Returns a new instance from the result of QueryString::parse.
      *
-     * @param iterable<int, array{0:string, 1:string|null}> $pairs
-     * @param non-empty-string $separator
+     * @param  iterable<int, array{0:string, 1:string|null}>  $pairs
+     * @param  non-empty-string  $separator
      */
     public static function fromPairs(iterable $pairs, string $separator = '&', string $prefix = '', StringCoercionMode $coercionMode = StringCoercionMode::Native): self
     {
         $data = [];
         foreach ($pairs as $pair) {
-            if (!is_array($pair) || !array_is_list($pair) || 2 !== count($pair)) {
+            if (! is_array($pair) || ! array_is_list($pair) || count($pair) !== 2) {
                 throw new SyntaxError('A pair must be a sequential array starting at `0` and containing two elements.');
             }
 
@@ -173,7 +178,7 @@ final class Query extends Component implements QueryInterface
         return match (true) {
             $uri instanceof Rfc3986Uri => new self($uri->getRawQuery(), Converter::fromRFC3986()),
             $uri instanceof WhatWgUrl => new self($uri->getQuery(), Converter::fromFormData()),
-            $uri instanceof UriInterface  => new self($uri->getQuery(), Converter::fromRFC3986()),
+            $uri instanceof UriInterface => new self($uri->getQuery(), Converter::fromRFC3986()),
             $uri instanceof BackedEnum => new self($uri, Converter::fromRFC3986()),
             default => new self(UriString::parse($uri)['query'], Converter::fromRFC3986()),
         };
@@ -182,7 +187,7 @@ final class Query extends Component implements QueryInterface
     /**
      * Returns a new instance.
      *
-     * @param non-empty-string $separator
+     * @param  non-empty-string  $separator
      */
     public static function fromRFC3986(BackedEnum|Stringable|string|null $query = null, string $separator = '&'): self
     {
@@ -192,7 +197,7 @@ final class Query extends Component implements QueryInterface
     /**
      * Returns a new instance.
      *
-     * @param non-empty-string $separator
+     * @param  non-empty-string  $separator
      */
     public static function fromRFC1738(BackedEnum|Stringable|string|null $query = null, string $separator = '&'): self
     {
@@ -202,7 +207,7 @@ final class Query extends Component implements QueryInterface
     /**
      * Returns a new instance.
      *
-     * @param non-empty-string $separator
+     * @param  non-empty-string  $separator
      */
     public static function fromFormData(BackedEnum|Stringable|string|null $query = null, string $separator = '&'): self
     {
@@ -254,7 +259,7 @@ final class Query extends Component implements QueryInterface
 
     public function isEmpty(): bool
     {
-        return [] === $this->pairs;
+        return $this->pairs === [];
     }
 
     public function isNotEmpty(): bool
@@ -295,12 +300,12 @@ final class Query extends Component implements QueryInterface
     public function has(string ...$keys): bool
     {
         foreach ($keys as $key) {
-            if (!isset(array_flip(array_column($this->pairs, 0))[$key])) {
+            if (! isset(array_flip(array_column($this->pairs, 0))[$key])) {
                 return false;
             }
         }
 
-        return [] !== $keys;
+        return $keys !== [];
     }
 
     public function hasPair(string $key, ?string $value): bool
@@ -312,14 +317,14 @@ final class Query extends Component implements QueryInterface
     {
         $offset = $this->indexOf($key);
 
-        return null === $offset ? null : $this->valueAt($offset);
+        return $offset === null ? null : $this->valueAt($offset);
     }
 
     public function last(string $key): ?string
     {
         $offset = $this->indexOf($key, -1);
 
-        return null === $offset ? null : $this->valueAt($offset);
+        return $offset === null ? null : $this->valueAt($offset);
     }
 
     public function get(string $key): ?string
@@ -334,13 +339,13 @@ final class Query extends Component implements QueryInterface
 
     public function indexOf(string $key, int $nth = 0): ?int
     {
-        if ([] === $this->pairs) {
+        if ($this->pairs === []) {
             return null;
         }
 
         if ($nth < 0) {
             $matchCount = 0;
-            for ($offset = count($this->pairs) - 1; $offset >= 0; --$offset) {
+            for ($offset = count($this->pairs) - 1; $offset >= 0; $offset--) {
                 if ($this->pairs[$offset][0] === $key) {
                     if (++$matchCount === -$nth) {
                         return $offset;
@@ -357,7 +362,7 @@ final class Query extends Component implements QueryInterface
                 if ($nth === $matchCount) {
                     return $offset;
                 }
-                ++$matchCount;
+                $matchCount++;
             }
         }
 
@@ -366,13 +371,13 @@ final class Query extends Component implements QueryInterface
 
     public function indexOfValue(?string $value, int $nth = 0): ?int
     {
-        if ([] === $this->pairs) {
+        if ($this->pairs === []) {
             return null;
         }
 
         if ($nth < 0) {
             $matchCount = 0;
-            for ($offset = count($this->pairs) - 1; $offset >= 0; --$offset) {
+            for ($offset = count($this->pairs) - 1; $offset >= 0; $offset--) {
                 if ($this->pairs[$offset][1] === $value) {
                     if (++$matchCount === -$nth) {
                         return $offset;
@@ -389,7 +394,7 @@ final class Query extends Component implements QueryInterface
                 if ($nth === $matchCount) {
                     return $offset;
                 }
-                ++$matchCount;
+                $matchCount++;
             }
         }
 
@@ -401,9 +406,10 @@ final class Query extends Component implements QueryInterface
      *
      * Negative offsets are supported (counting from the end).
      *
-     * @throws OutOfBoundsException If the offset is invalid
      *
      * @return array{0:string, 1:?string}
+     *
+     * @throws OutOfBoundsException If the offset is invalid
      */
     public function pair(int $offset): array
     {
@@ -438,23 +444,23 @@ final class Query extends Component implements QueryInterface
     public function hasList(string ...$names): bool
     {
         foreach ($names as $name) {
-            if ([] === $this->getList($name)) {
+            if ($this->getList($name) === []) {
                 return false;
             }
         }
 
-        return [] !== $names;
+        return $names !== [];
     }
 
     public function equals(mixed $value): bool
     {
-        if (!$value instanceof BackedEnum && !$value instanceof Stringable && !is_string($value) && null !== $value) {
+        if (! $value instanceof BackedEnum && ! $value instanceof Stringable && ! is_string($value) && $value !== null) {
             return false;
         }
 
-        if (!$value instanceof UriComponentInterface) {
+        if (! $value instanceof UriComponentInterface) {
             $value = self::tryNew($value);
-            if (null === $value) {
+            if ($value === null) {
                 return false;
             }
         }
@@ -475,7 +481,7 @@ final class Query extends Component implements QueryInterface
     {
         $codepoints = fn (?string $str): string => in_array($str, ['', null], true) ? '' : implode('.', array_map(
             mb_ord(...), /* @phpstan-ignore-line */
-            (array) preg_split(pattern:'//u', subject: $str, flags: PREG_SPLIT_NO_EMPTY)
+            (array) preg_split(pattern: '//u', subject: $str, flags: PREG_SPLIT_NO_EMPTY)
         ));
 
         $compare = fn (string $name1, string $name2): int => match (1) {
@@ -498,7 +504,7 @@ final class Query extends Component implements QueryInterface
         }
 
         return match ($this->pairs) {
-            $pairs  => $this,
+            $pairs => $this,
             default => self::fromPairs($pairs),
         };
     }
@@ -520,9 +526,8 @@ final class Query extends Component implements QueryInterface
     /**
      * @template TInitial
      *
-     * @param callable(TInitial|null, array{0:array-key, 1:mixed}, array-key=): TInitial $callback
-     * @param TInitial|null $initial
-     *
+     * @param  callable(TInitial|null, array{0:array-key, 1:mixed}, array-key=): TInitial  $callback
+     * @param  TInitial|null  $initial
      * @return TInitial|null
      */
     public function reduce(callable $callback, mixed $initial = null): mixed
@@ -535,7 +540,7 @@ final class Query extends Component implements QueryInterface
     }
 
     /**
-     * @param callable(array{0:array-key, 1:mixed}, array-key=): bool $callback
+     * @param  callable(array{0:array-key, 1:mixed}, array-key=): bool  $callback
      */
     public function filter(callable $callback): QueryInterface
     {
@@ -547,8 +552,7 @@ final class Query extends Component implements QueryInterface
     /**
      * @template TReturn
      *
-     * @param callable(array{0:array-key, 1:mixed}, array-key=): TReturn $callback
-     *
+     * @param  callable(array{0:array-key, 1:mixed}, array-key=): TReturn  $callback
      * @return Iterator<TReturn>
      */
     public function map(callable $callback): Iterator
@@ -571,7 +575,7 @@ final class Query extends Component implements QueryInterface
 
     public function withoutEmptyPairs(): QueryInterface
     {
-        return $this->filter(fn (array $pair): bool => '' !== $pair[0] && null !== $pair[1] && '' !== $pair[1]);
+        return $this->filter(fn (array $pair): bool => $pair[0] !== '' && $pair[1] !== null && $pair[1] !== '');
     }
 
     public function withoutNumericIndices(): self
@@ -587,8 +591,7 @@ final class Query extends Component implements QueryInterface
     /**
      * Remove numeric indices from pairs.
      *
-     * @param array{0:string, 1:string|null} $pair
-     *
+     * @param  array{0:string, 1:string|null}  $pair
      * @return array{0:string, 1:string|null}
      */
     private function encodeNumericIndices(array $pair): array
@@ -602,11 +605,9 @@ final class Query extends Component implements QueryInterface
 
     public function withPair(string $key, array|BackedEnum|Stringable|string|int|float|bool|null $value, StringCoercionMode $coercionMode = StringCoercionMode::Native): QueryInterface
     {
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             $value = [$value];
-        }
-
-        [] !== $value || throw new ValueError('The value list can not be empty.');
+        }[] !== $value || throw new ValueError('The value list can not be empty.');
 
         $found = false;
         $reducer = static function (array $pairs, array $srcPair) use ($key, $value, &$found): array {
@@ -633,7 +634,7 @@ final class Query extends Component implements QueryInterface
         };
 
         $pairs = array_reduce($this->pairs, $reducer, []);
-        if (!$found) {
+        if (! $found) {
             foreach ($value as $val) {
                 $pairs[] = [$key, $val];
             }
@@ -662,7 +663,7 @@ final class Query extends Component implements QueryInterface
                 return $pairs;
             }
 
-            if (!$found) {
+            if (! $found) {
                 $pairs[] = $pair;
                 $found = true;
 
@@ -673,7 +674,7 @@ final class Query extends Component implements QueryInterface
         };
 
         $pairs = array_reduce($list, $reducer, []);
-        if (!$found) {
+        if (! $found) {
             $pairs[] = $pair;
         }
 
@@ -695,31 +696,31 @@ final class Query extends Component implements QueryInterface
 
     public function withoutPairByKey(string ...$keys): QueryInterface
     {
-        if ([] === $keys) {
+        if ($keys === []) {
             return $this;
         }
 
         $keysToRemove = array_intersect($keys, array_column($this->pairs, 0));
-        if ([] === $keysToRemove) {
+        if ($keysToRemove === []) {
             return $this;
         }
 
-        return $this->filter(fn (array $pair): bool => !in_array($pair[0], $keysToRemove, true));
+        return $this->filter(fn (array $pair): bool => ! in_array($pair[0], $keysToRemove, true));
     }
 
     public function withoutPairByValue(array|BackedEnum|Stringable|string|int|float|bool|null $values, StringCoercionMode $coercionMode = StringCoercionMode::Native): QueryInterface
     {
-        if (!is_array($values)) {
+        if (! is_array($values)) {
             $values = [$values];
         }
 
-        if ([] === $values) {
+        if ($values === []) {
             return $this;
         }
 
         $values = array_map($coercionMode->coerce(...), $values);
 
-        return $this->filter(fn (array $pair) => !in_array($pair[1], $values, true));
+        return $this->filter(fn (array $pair) => ! in_array($pair[1], $values, true));
     }
 
     public function withoutPairByKeyValue(string $key, BackedEnum|Stringable|string|int|float|bool|null $value, StringCoercionMode $coercionMode = StringCoercionMode::Native): QueryInterface
@@ -731,11 +732,9 @@ final class Query extends Component implements QueryInterface
 
     public function appendTo(string $key, array|BackedEnum|Stringable|string|int|float|bool|null $value, StringCoercionMode $coercionMode = StringCoercionMode::Native): QueryInterface
     {
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             $value = [$value];
-        }
-
-        [] !== $value || throw new ValueError('Missing values to append');
+        }[] !== $value || throw new ValueError('Missing values to append');
 
         $converter = function (iterable $values) use ($key) {
             foreach ($values as $value) {
@@ -762,10 +761,10 @@ final class Query extends Component implements QueryInterface
 
     public function append(BackedEnum|Stringable|string|null $query, StringCoercionMode $coercionMode = StringCoercionMode::Native): QueryInterface
     {
-        return null === $query ? $this : self::fromPairs(
+        return $query === null ? $this : self::fromPairs(
             array_filter(
                 array_merge($this->pairs, QueryString::parseFromValue($query, Converter::fromRFC3986($this->separator))),
-                static fn (array $pair): bool => '' !== $pair[0] || null !== $pair[1]
+                static fn (array $pair): bool => $pair[0] !== '' || $pair[1] !== null
             ),
             $this->separator,
             coercionMode: $coercionMode,
@@ -784,7 +783,7 @@ final class Query extends Component implements QueryInterface
     {
         $index = $offset < 0 ? count($this->pairs) + $offset : $offset;
         $pair = $this->pairs[$index] ?? [];
-        [] !== $pair || throw new ValueError('The given offset "'.$offset.'" does not exist');
+        $pair !== [] || throw new ValueError('The given offset "'.$offset.'" does not exist');
 
         $newPair = [$key, $coercionMode->coerce($value)];
         if ($pair === $newPair) {
@@ -802,7 +801,7 @@ final class Query extends Component implements QueryInterface
         array $values,
         QueryComposeMode $composeMode = QueryComposeMode::Native
     ): QueryInterface {
-        if ([] === $values) {
+        if ($values === []) {
             return $this;
         }
 
@@ -818,7 +817,7 @@ final class Query extends Component implements QueryInterface
         $isRemoved = false;
 
         $pairs = array_reduce($this->pairs, function (array $pairs, array $pair) use ($data, $regexp, &$isRemoved): array {
-            if (1 !== preg_match($regexp, $pair[0])) {
+            if (preg_match($regexp, $pair[0]) !== 1) {
                 $pairs[] = $pair;
 
                 return $pairs;
@@ -836,7 +835,7 @@ final class Query extends Component implements QueryInterface
             return $pairs;
         }, []);
 
-        if (!$isRemoved) {
+        if (! $isRemoved) {
             $pairs = array_merge($pairs, $data);
         }
 
@@ -845,24 +844,24 @@ final class Query extends Component implements QueryInterface
 
     public function withoutList(string ...$names): QueryInterface
     {
-        if ([] === $names) {
+        if ($names === []) {
             return $this;
         }
 
         $mapper = static fn (string $offset): string => preg_quote($offset, ',').'(\[.*\].*)';
         $regexp = ',^('.implode('|', array_map($mapper, $names)).')?$,';
 
-        return $this->filter(fn (array $pair): bool => 1 !== preg_match($regexp, $pair[0]));
+        return $this->filter(fn (array $pair): bool => preg_match($regexp, $pair[0]) !== 1);
     }
 
     public function onlyLists(): QueryInterface
     {
-        return $this->filter(static fn (array $pair): bool => 1 === preg_match(self::REGXP_FILTER_LIST, $pair[0]));
+        return $this->filter(static fn (array $pair): bool => preg_match(self::REGXP_FILTER_LIST, $pair[0]) === 1);
     }
 
     public function withoutLists(): QueryInterface
     {
-        return [] === $this->list ? $this : $this->filter(static fn (array $pair): bool => 1 !== preg_match(self::REGXP_FILTER_LIST, $pair[0]));
+        return $this->list === [] ? $this : $this->filter(static fn (array $pair): bool => preg_match(self::REGXP_FILTER_LIST, $pair[0]) !== 1);
     }
 
     public function parameters(): array
@@ -908,24 +907,24 @@ final class Query extends Component implements QueryInterface
     public function hasParameter(string ...$names): bool
     {
         foreach ($names as $name) {
-            if (!isset($this->parameters[$name])) {
+            if (! isset($this->parameters[$name])) {
                 return false;
             }
         }
 
-        return [] !== $names;
+        return $names !== [];
     }
 
     public function withoutParameters(string ...$names): QueryInterface
     {
-        if ([] === $names) {
+        if ($names === []) {
             return $this;
         }
 
         $mapper = static fn (string $offset): string => preg_quote($offset, ',').'(\[.*\].*)?';
         $regexp = ',^('.implode('|', array_map($mapper, $names)).')?$,';
 
-        return $this->filter(fn (array $pair): bool => 1 !== preg_match($regexp, $pair[0]));
+        return $this->filter(fn (array $pair): bool => preg_match($regexp, $pair[0]) !== 1);
     }
 
     /**
@@ -936,13 +935,13 @@ final class Query extends Component implements QueryInterface
      *
      * @codeCoverageIgnore
      *
-     * @param non-empty-string $separator
+     * @param  non-empty-string  $separator
      *
      * Returns a new instance from the result of PHP's parse_str.
      *
      * @deprecated Since version 7.0.0
      */
-    #[Deprecated(message:'use League\Uri\Components\Query::fromVariables() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Query::fromVariables() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromParams(iterable|object $params, string $separator = '&'): self
     {
         return self::fromParameters($params, $separator);
@@ -956,13 +955,10 @@ final class Query extends Component implements QueryInterface
      *
      * @codeCoverageIgnore
      *
-     *
-     * Returns a new instance from the result of QueryString::parse.
-     *
-     * @param iterable<int, array{0:string, 1:string|null}> $pairs
-     * @param non-empty-string $separator
+     * @param  iterable<int, array{0:string, 1:string|null}>  $pairs
+     * @param  non-empty-string  $separator
      */
-    #[Deprecated(message:'use League\Uri\Components\Query::fromPairs() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Query::fromPairs() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromPairs(iterable $pairs, string $separator = '&'): self
     {
         return self::fromPairs($pairs, $separator);
@@ -978,7 +974,7 @@ final class Query extends Component implements QueryInterface
      *
      * Create a new instance from a URI object.
      */
-    #[Deprecated(message:'use League\Uri\Components\Query::fromUri() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Query::fromUri() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromUri(Psr7UriInterface|UriInterface $uri): self
     {
         return self::fromUri($uri);
@@ -994,12 +990,12 @@ final class Query extends Component implements QueryInterface
      *
      * Returns a new instance.
      *
-     * @param non-empty-string $separator
+     * @param  non-empty-string  $separator
      */
-    #[Deprecated(message:'use League\Uri\Components\Query::fromRFC3986() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Query::fromRFC3986() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromRFC3986(Stringable|string|int|null $query = '', string $separator = '&'): self
     {
-        if (null !== $query) {
+        if ($query !== null) {
             $query = (string) $query;
         }
 
@@ -1016,9 +1012,9 @@ final class Query extends Component implements QueryInterface
      *
      * Returns a new instance.
      *
-     * @param non-empty-string $separator
+     * @param  non-empty-string  $separator
      */
-    #[Deprecated(message:'use League\Uri\Components\Query::fromRFC1738() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Query::fromRFC1738() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromRFC1738(Stringable|string|int|null $query = '', string $separator = '&'): self
     {
         if (is_int($query)) {
@@ -1039,10 +1035,10 @@ final class Query extends Component implements QueryInterface
      *
      * Returns the query as a collection of PHP variables or a single variable assign to a specific key
      */
-    #[Deprecated(message:'use League\Uri\Components\Query::parameter() or League\Uri\Components\Query::parameters() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Query::parameter() or League\Uri\Components\Query::parameters() instead', since: 'league/uri-components:7.0.0')]
     public function params(?string $key = null): mixed
     {
-        return null === $key ? $this->parameters : $this->parameters[$key] ?? null;
+        return $key === null ? $this->parameters : $this->parameters[$key] ?? null;
     }
 
     /**
@@ -1053,7 +1049,7 @@ final class Query extends Component implements QueryInterface
      *
      * @codeCoverageIgnore
      */
-    #[Deprecated(message:'use League\Uri\Components\Query::withoutParameters() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Query::withoutParameters() instead', since: 'league/uri-components:7.0.0')]
     public function withoutParams(string ...$names): QueryInterface
     {
         return $this->withoutPairByKey(...$names)->withoutList(...$names);
@@ -1067,7 +1063,7 @@ final class Query extends Component implements QueryInterface
      *
      * @codeCoverageIgnore
      */
-    #[Deprecated(message:'use League\Uri\Components\Query::withoutPairByKey() instead', since:'league/uri-components:7.3.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Query::withoutPairByKey() instead', since: 'league/uri-components:7.3.0')]
     public function withoutPair(string ...$keys): QueryInterface
     {
         return $this->withoutPairByKey(...$keys);
@@ -1076,7 +1072,7 @@ final class Query extends Component implements QueryInterface
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @param non-empty-string $separator
+     * @param  non-empty-string  $separator
      *
      * @see Query::fromVariable()
      *
@@ -1085,7 +1081,7 @@ final class Query extends Component implements QueryInterface
      *
      * @deprecated Since version 7.0.0
      */
-    #[Deprecated(message:'use League\Uri\Components\Query::fromVariable() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Query::fromVariable() instead', since: 'league/uri-components:7.0.0')]
     public static function fromParameters(object|array $parameters, string $separator = '&'): self
     {
         if ($parameters instanceof QueryInterface) {

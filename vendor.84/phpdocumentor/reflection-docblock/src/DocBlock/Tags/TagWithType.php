@@ -24,7 +24,6 @@ use function trim;
 
 abstract class TagWithType extends BaseTag
 {
-    /** @var ?Type */
     protected ?Type $type = null;
 
     /**
@@ -40,7 +39,7 @@ abstract class TagWithType extends BaseTag
      */
     protected static function extractTypeFromBody(string $body): array
     {
-        $type         = '';
+        $type = '';
         $nestingLevel = 0;
         for ($i = 0, $iMax = strlen($body); $i < $iMax; $i++) {
             $character = $body[$i];
@@ -52,11 +51,13 @@ abstract class TagWithType extends BaseTag
             $type .= $character;
             if (in_array($character, ['<', '(', '[', '{'])) {
                 $nestingLevel++;
+
                 continue;
             }
 
             if (in_array($character, ['>', ')', ']', '}'])) {
                 $nestingLevel--;
+
                 continue;
             }
         }
@@ -82,6 +83,6 @@ abstract class TagWithType extends BaseTag
 
         $type = (string) $this->type;
 
-        return $type . ($description !== '' ? ($type !== '' ? ' ' : '') . $description : '');
+        return $type.($description !== '' ? ($type !== '' ? ' ' : '').$description : '');
     }
 }

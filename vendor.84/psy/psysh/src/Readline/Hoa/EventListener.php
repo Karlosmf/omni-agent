@@ -60,7 +60,6 @@ class EventListener
         $this->_source = $source;
         $this->addIds($ids);
 
-        return;
     }
 
     /**
@@ -78,7 +77,7 @@ class EventListener
      */
     public function attach(string $listenerId, $callable): self
     {
-        if (false === $this->listenerExists($listenerId)) {
+        if ($this->listenerExists($listenerId) === false) {
             throw new EventException('Cannot listen %s because it is not defined.', 0, $listenerId);
         }
 
@@ -121,7 +120,7 @@ class EventListener
      */
     public function fire(string $listenerId, EventBucket $data): array
     {
-        if (false === $this->listenerExists($listenerId)) {
+        if ($this->listenerExists($listenerId) === false) {
             throw new EventException('Cannot fire on %s because it is not defined.', 1, $listenerId);
         }
 

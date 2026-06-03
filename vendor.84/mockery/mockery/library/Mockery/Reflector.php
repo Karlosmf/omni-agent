@@ -5,10 +5,13 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
 namespace Mockery;
+
+use const PHP_VERSION_ID;
 
 use InvalidArgumentException;
 use ReflectionClass;
@@ -29,8 +32,6 @@ use function in_array;
 use function method_exists;
 use function sprintf;
 use function strpos;
-
-use const PHP_VERSION_ID;
 
 /**
  * @internal
@@ -68,8 +69,7 @@ class Reflector
     /**
      * Compute the string representation for the return type.
      *
-     * @param bool $withoutNullable
-     *
+     * @param  bool  $withoutNullable
      * @return null|string
      */
     public static function getReturnType(ReflectionMethod $method, $withoutNullable = false)
@@ -126,8 +126,7 @@ class Reflector
     /**
      * Compute the string representation for the paramater type.
      *
-     * @param bool $withoutNullable
-     *
+     * @param  bool  $withoutNullable
      * @return null|string
      */
     public static function getTypeHint(ReflectionParameter $param, $withoutNullable = false)
@@ -245,7 +244,7 @@ class Reflector
             );
         }
 
-        throw new InvalidArgumentException('Unknown ReflectionType: ' . get_debug_type($type));
+        throw new InvalidArgumentException('Unknown ReflectionType: '.get_debug_type($type));
     }
 
     /**

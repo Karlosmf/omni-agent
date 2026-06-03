@@ -29,8 +29,11 @@ use MongoDB\Driver\Query;
 class MongoDbSessionHandler extends AbstractSessionHandler
 {
     private Manager $manager;
+
     private string $namespace;
+
     private array $options;
+
     private int|\Closure|null $ttl;
 
     /**
@@ -66,7 +69,7 @@ class MongoDbSessionHandler extends AbstractSessionHandler
      */
     public function __construct(Client|Manager $mongo, array $options)
     {
-        if (!isset($options['database']) || !isset($options['collection'])) {
+        if (! isset($options['database']) || ! isset($options['collection'])) {
             throw new \InvalidArgumentException('You must provide the "database" and "collection" option for MongoDBSessionHandler.');
         }
 
@@ -93,7 +96,7 @@ class MongoDbSessionHandler extends AbstractSessionHandler
 
     protected function doDestroy(#[\SensitiveParameter] string $sessionId): bool
     {
-        $write = new BulkWrite();
+        $write = new BulkWrite;
         $write->delete(
             [$this->options['id_field'] => $sessionId],
             ['limit' => 1]
@@ -106,7 +109,7 @@ class MongoDbSessionHandler extends AbstractSessionHandler
 
     public function gc(int $maxlifetime): int|false
     {
-        $write = new BulkWrite();
+        $write = new BulkWrite;
         $write->delete(
             [$this->options['expiry_field'] => ['$lt' => $this->getUTCDateTime()]],
         );
@@ -126,7 +129,7 @@ class MongoDbSessionHandler extends AbstractSessionHandler
             $this->options['data_field'] => new Binary($data, Binary::TYPE_GENERIC),
         ];
 
-        $write = new BulkWrite();
+        $write = new BulkWrite;
         $write->update(
             [$this->options['id_field'] => $sessionId],
             ['$set' => $fields],
@@ -143,7 +146,7 @@ class MongoDbSessionHandler extends AbstractSessionHandler
         $ttl = ($this->ttl instanceof \Closure ? ($this->ttl)() : $this->ttl) ?? \ini_get('session.gc_maxlifetime');
         $expiry = $this->getUTCDateTime($ttl);
 
-        $write = new BulkWrite();
+        $write = new BulkWrite;
         $write->update(
             [$this->options['id_field'] => $sessionId],
             ['$set' => [

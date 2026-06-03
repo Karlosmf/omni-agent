@@ -26,8 +26,7 @@ class ElementNode extends AbstractNode
     public function __construct(
         private ?string $namespace = null,
         private ?string $element = null,
-    ) {
-    }
+    ) {}
 
     public function getNamespace(): ?string
     {

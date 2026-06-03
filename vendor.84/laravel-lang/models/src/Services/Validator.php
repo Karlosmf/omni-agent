@@ -10,11 +10,12 @@ use LaravelLang\Locales\Data\LocaleData;
 use LaravelLang\Locales\Facades\Locales;
 use LaravelLang\Models\Exceptions\AttributeIsNotTranslatableException;
 use LaravelLang\Models\Exceptions\UnavailableLocaleException;
+use LaravelLang\Models\HasTranslations;
 
 class Validator
 {
     /**
-     * @param  Attribute|\LaravelLang\Models\HasTranslations  $model
+     * @param  Attribute|HasTranslations  $model
      *
      * @throws AttributeIsNotTranslatableException
      */

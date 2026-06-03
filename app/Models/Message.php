@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Message extends Model
 {
@@ -13,7 +14,7 @@ class Message extends Model
         'content',
     ];
 
-    public function lead(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function lead(): BelongsTo
     {
         return $this->belongsTo(Lead::class);
     }

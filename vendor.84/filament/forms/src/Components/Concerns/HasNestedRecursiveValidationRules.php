@@ -11,7 +11,7 @@ trait HasNestedRecursiveValidationRules
      */
     protected array $nestedRecursiveValidationRules = [];
 
-    public function nestedRecursiveRule(mixed $rule, bool | Closure $condition = true): static
+    public function nestedRecursiveRule(mixed $rule, bool|Closure $condition = true): static
     {
         $this->nestedRecursiveValidationRules = [
             ...$this->nestedRecursiveValidationRules,
@@ -24,7 +24,7 @@ trait HasNestedRecursiveValidationRules
     /**
      * @param  string | array<mixed>  $rules
      */
-    public function nestedRecursiveRules(string | array $rules, bool | Closure $condition = true): static
+    public function nestedRecursiveRules(string|array $rules, bool|Closure $condition = true): static
     {
         if (is_string($rules)) {
             $rules = explode('|', $rules);
@@ -32,7 +32,7 @@ trait HasNestedRecursiveValidationRules
 
         $this->nestedRecursiveValidationRules = [
             ...$this->nestedRecursiveValidationRules,
-            ...array_map(static fn (string | object $rule): array => [$rule, $condition], $rules),
+            ...array_map(static fn (string|object $rule): array => [$rule, $condition], $rules),
         ];
 
         return $this;

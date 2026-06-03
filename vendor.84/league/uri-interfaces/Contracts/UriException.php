@@ -15,6 +15,4 @@ namespace League\Uri\Contracts;
 
 use Throwable;
 
-interface UriException extends Throwable
-{
-}
+interface UriException extends Throwable {}

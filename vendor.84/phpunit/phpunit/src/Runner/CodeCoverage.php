@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,12 +9,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner;
 
-use function assert;
-use function file_put_contents;
-use function sprintf;
-use function sys_get_temp_dir;
 use PHPUnit\Event\Facade as EventFacade;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\TextUI\Configuration\CodeCoverageFilterRegistry;
@@ -43,6 +42,11 @@ use SebastianBergmann\Comparator\Comparator;
 use SebastianBergmann\Timer\NoActiveTimerException;
 use SebastianBergmann\Timer\Timer;
 
+use function assert;
+use function file_put_contents;
+use function sprintf;
+use function sys_get_temp_dir;
+
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  *
@@ -52,16 +56,20 @@ use SebastianBergmann\Timer\Timer;
  */
 final class CodeCoverage
 {
-    private static ?self $instance                                      = null;
+    private static ?self $instance = null;
+
     private ?\SebastianBergmann\CodeCoverage\CodeCoverage $codeCoverage = null;
 
     /**
      * @phpstan-ignore property.internalClass
      */
-    private ?Driver $driver  = null;
+    private ?Driver $driver = null;
+
     private bool $collecting = false;
-    private ?TestCase $test  = null;
-    private ?Timer $timer    = null;
+
+    private ?TestCase $test = null;
+
+    private ?Timer $timer = null;
 
     public static function instance(): self
     {
@@ -76,20 +84,20 @@ final class CodeCoverage
     {
         $codeCoverageFilterRegistry->init($configuration);
 
-        if (!$configuration->hasCoverageReport() && !$extensionRequiresCodeCoverageCollection) {
+        if (! $configuration->hasCoverageReport() && ! $extensionRequiresCodeCoverageCollection) {
             return CodeCoverageInitializationStatus::NOT_REQUESTED;
         }
 
         $this->activate($codeCoverageFilterRegistry->get(), $configuration->pathCoverage());
 
-        if (!$this->isActive()) {
+        if (! $this->isActive()) {
             return CodeCoverageInitializationStatus::FAILED;
         }
 
         if ($configuration->hasCoverageCacheDirectory()) {
             $coverageCacheDirectory = $configuration->coverageCacheDirectory();
         } else {
-            $candidate = sys_get_temp_dir() . '/phpunit-code-coverage-cache';
+            $candidate = sys_get_temp_dir().'/phpunit-code-coverage-cache';
 
             if (Filesystem::createDirectory($candidate)) {
                 $coverageCacheDirectory = $candidate;
@@ -125,7 +133,7 @@ final class CodeCoverage
         }
 
         if ($codeCoverageFilterRegistry->get()->isEmpty()) {
-            if (!$codeCoverageFilterRegistry->configured()) {
+            if (! $codeCoverageFilterRegistry->configured()) {
                 EventFacade::emitter()->testRunnerTriggeredPhpunitWarning(
                     'No filter is configured, code coverage will not be processed',
                 );
@@ -144,7 +152,7 @@ final class CodeCoverage
             /** @phpstan-ignore new.internalClass,method.internalClass */
             $statistics = (new CacheWarmer)->warmCache(
                 $coverageCacheDirectory,
-                !$configuration->disableCodeCoverageIgnore(),
+                ! $configuration->disableCodeCoverageIgnore(),
                 $configuration->ignoreDeprecatedCodeUnitsFromCodeCoverage(),
                 $codeCoverageFilterRegistry->get(),
             );
@@ -209,12 +217,12 @@ final class CodeCoverage
 
     public function stop(bool $append, null|false|TargetCollection $covers = null, ?TargetCollection $uses = null): void
     {
-        if (!$this->collecting) {
+        if (! $this->collecting) {
             return;
         }
 
-        $time             = $this->timer()->stop()->asSeconds();
-        $status           = TestStatus::unknown();
+        $time = $this->timer()->stop()->asSeconds();
+        $status = TestStatus::unknown();
         $this->collecting = false;
 
         if ($this->test !== null) {
@@ -262,14 +270,14 @@ final class CodeCoverage
 
     public function deactivate(): void
     {
-        $this->driver       = null;
+        $this->driver = null;
         $this->codeCoverage = null;
-        $this->test         = null;
+        $this->test = null;
     }
 
     public function generateReports(Printer $printer, Configuration $configuration): void
     {
-        if (!$this->isActive()) {
+        if (! $this->isActive()) {
             return;
         }
 
@@ -397,7 +405,7 @@ final class CodeCoverage
             $textReport = $processor->process($this->codeCoverage(), $configuration->colors());
 
             if ($configuration->coverageText() === 'php://stdout') {
-                if (!$configuration->noOutput() && !$configuration->debug()) {
+                if (! $configuration->noOutput() && ! $configuration->debug()) {
                     $printer->print($textReport);
                 }
             } else {

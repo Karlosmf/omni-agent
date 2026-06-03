@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -11,10 +13,10 @@
 
 namespace Monolog\Handler;
 
-use Monolog\Level;
+use CurlHandle;
 use Monolog\Formatter\FormatterInterface;
 use Monolog\Formatter\LogglyFormatter;
-use CurlHandle;
+use Monolog\Level;
 use Monolog\LogRecord;
 
 /**
@@ -27,7 +29,9 @@ use Monolog\LogRecord;
 class LogglyHandler extends AbstractProcessingHandler
 {
     protected const HOST = 'logs-01.loggly.com';
+
     protected const ENDPOINT_SINGLE = 'inputs';
+
     protected const ENDPOINT_BATCH = 'bulk';
 
     /**
@@ -43,13 +47,13 @@ class LogglyHandler extends AbstractProcessingHandler
     protected array $tag = [];
 
     /**
-     * @param string $token API token supplied by Loggly
+     * @param  string  $token  API token supplied by Loggly
      *
      * @throws MissingExtensionException If the curl extension is missing
      */
     public function __construct(string $token, int|string|Level $level = Level::Debug, bool $bubble = true)
     {
-        if (!\extension_loaded('curl')) {
+        if (! \extension_loaded('curl')) {
             throw new MissingExtensionException('The curl extension is needed to use the LogglyHandler');
         }
 
@@ -63,7 +67,7 @@ class LogglyHandler extends AbstractProcessingHandler
      */
     protected function getCurlHandler(string $endpoint): CurlHandle
     {
-        if (!\array_key_exists($endpoint, $this->curlHandlers)) {
+        if (! \array_key_exists($endpoint, $this->curlHandlers)) {
             $this->curlHandlers[$endpoint] = $this->loadCurlHandle($endpoint);
         }
 
@@ -75,7 +79,7 @@ class LogglyHandler extends AbstractProcessingHandler
      */
     private function loadCurlHandle(string $endpoint): CurlHandle
     {
-        $url = sprintf("https://%s/%s/%s/", static::HOST, $endpoint, $this->token);
+        $url = sprintf('https://%s/%s/%s/', static::HOST, $endpoint, $this->token);
 
         $ch = curl_init();
 
@@ -87,12 +91,12 @@ class LogglyHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @param  string[]|string $tag
+     * @param  string[]|string  $tag
      * @return $this
      */
     public function setTag(string|array $tag): self
     {
-        if ('' === $tag || [] === $tag) {
+        if ($tag === '' || $tag === []) {
             $this->tag = [];
         } else {
             $this->tag = \is_array($tag) ? $tag : [$tag];
@@ -102,12 +106,12 @@ class LogglyHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @param  string[]|string $tag
+     * @param  string[]|string  $tag
      * @return $this
      */
     public function addTag(string|array $tag): self
     {
-        if ('' !== $tag) {
+        if ($tag !== '') {
             $tag = \is_array($tag) ? $tag : [$tag];
             $this->tag = array_unique(array_merge($this->tag, $tag));
         }
@@ -125,7 +129,7 @@ class LogglyHandler extends AbstractProcessingHandler
         $level = $this->level;
 
         $records = array_filter($records, function ($record) use ($level) {
-            return ($record->level->value >= $level->value);
+            return $record->level->value >= $level->value;
         });
 
         if (\count($records) > 0) {
@@ -151,6 +155,6 @@ class LogglyHandler extends AbstractProcessingHandler
 
     protected function getDefaultFormatter(): FormatterInterface
     {
-        return new LogglyFormatter();
+        return new LogglyFormatter;
     }
 }

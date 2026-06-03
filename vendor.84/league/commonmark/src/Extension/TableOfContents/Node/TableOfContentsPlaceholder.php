@@ -15,6 +15,4 @@ namespace League\CommonMark\Extension\TableOfContents\Node;
 
 use League\CommonMark\Node\Block\AbstractBlock;
 
-final class TableOfContentsPlaceholder extends AbstractBlock
-{
-}
+final class TableOfContentsPlaceholder extends AbstractBlock {}

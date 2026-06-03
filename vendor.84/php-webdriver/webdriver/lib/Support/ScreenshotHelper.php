@@ -22,9 +22,10 @@ class ScreenshotHelper
     }
 
     /**
-     * @param string|null $saveAs
-     * @throws WebDriverException
+     * @param  string|null  $saveAs
      * @return string
+     *
+     * @throws WebDriverException
      */
     public function takePageScreenshot($saveAs = null)
     {
@@ -44,7 +45,7 @@ class ScreenshotHelper
     {
         $response = $this->executor->execute(...$commandToExecute);
 
-        if (!is_string($response)) {
+        if (! is_string($response)) {
             throw UnexpectedResponseException::forError(
                 'Error taking screenshot, no data received from the remote end'
             );
@@ -72,8 +73,8 @@ class ScreenshotHelper
 
     private function createDirectoryIfNotExists($directoryPath)
     {
-        if (!file_exists($directoryPath)) {
-            if (!mkdir($directoryPath, 0777, true) && !is_dir($directoryPath)) {
+        if (! file_exists($directoryPath)) {
+            if (! mkdir($directoryPath, 0777, true) && ! is_dir($directoryPath)) {
                 throw IOException::forFileError('Directory cannot be not created', $directoryPath);
             }
         }

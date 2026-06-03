@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,16 +9,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework;
 
-use function array_combine;
-use function array_intersect_key;
-use function class_exists;
-use function count;
-use function file_get_contents;
-use function interface_exists;
-use function is_bool;
-use function sprintf;
 use ArrayAccess;
 use Countable;
 use Generator;
@@ -68,6 +63,15 @@ use PHPUnit\Framework\Constraint\TraversableContainsOnly;
 use PHPUnit\Util\Xml\Loader as XmlLoader;
 use PHPUnit\Util\Xml\XmlException;
 
+use function array_combine;
+use function array_intersect_key;
+use function class_exists;
+use function count;
+use function file_get_contents;
+use function interface_exists;
+use function is_bool;
+use function sprintf;
+
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  */
@@ -78,9 +82,9 @@ abstract class Assert
     /**
      * Asserts that two arrays are equal while only considering a list of keys.
      *
-     * @param array<mixed>              $expected
-     * @param array<mixed>              $actual
-     * @param non-empty-list<array-key> $keysToBeConsidered
+     * @param  array<mixed>  $expected
+     * @param  array<mixed>  $actual
+     * @param  non-empty-list<array-key>  $keysToBeConsidered
      *
      * @throws Exception
      * @throws ExpectationFailedException
@@ -109,9 +113,9 @@ abstract class Assert
     /**
      * Asserts that two arrays are equal while ignoring a list of keys.
      *
-     * @param array<mixed>              $expected
-     * @param array<mixed>              $actual
-     * @param non-empty-list<array-key> $keysToBeIgnored
+     * @param  array<mixed>  $expected
+     * @param  array<mixed>  $actual
+     * @param  non-empty-list<array-key>  $keysToBeIgnored
      *
      * @throws Exception
      * @throws ExpectationFailedException
@@ -128,9 +132,9 @@ abstract class Assert
     /**
      * Asserts that two arrays are identical while only considering a list of keys.
      *
-     * @param array<mixed>              $expected
-     * @param array<mixed>              $actual
-     * @param non-empty-list<array-key> $keysToBeConsidered
+     * @param  array<mixed>  $expected
+     * @param  array<mixed>  $actual
+     * @param  non-empty-list<array-key>  $keysToBeConsidered
      *
      * @throws Exception
      * @throws ExpectationFailedException
@@ -138,8 +142,8 @@ abstract class Assert
     final public static function assertArrayIsIdenticalToArrayOnlyConsideringListOfKeys(array $expected, array $actual, array $keysToBeConsidered, string $message = ''): void
     {
         $keysToBeConsidered = array_combine($keysToBeConsidered, $keysToBeConsidered);
-        $expected           = array_intersect_key($expected, $keysToBeConsidered);
-        $actual             = array_intersect_key($actual, $keysToBeConsidered);
+        $expected = array_intersect_key($expected, $keysToBeConsidered);
+        $actual = array_intersect_key($actual, $keysToBeConsidered);
 
         self::assertSame($expected, $actual, $message);
     }
@@ -147,9 +151,9 @@ abstract class Assert
     /**
      * Asserts that two arrays are equal while ignoring a list of keys.
      *
-     * @param array<mixed>              $expected
-     * @param array<mixed>              $actual
-     * @param non-empty-list<array-key> $keysToBeIgnored
+     * @param  array<mixed>  $expected
+     * @param  array<mixed>  $actual
+     * @param  non-empty-list<array-key>  $keysToBeIgnored
      *
      * @throws Exception
      * @throws ExpectationFailedException
@@ -166,7 +170,7 @@ abstract class Assert
     /**
      * Asserts that an array has a specified key.
      *
-     * @param array<mixed>|ArrayAccess<array-key, mixed> $array
+     * @param  array<mixed>|ArrayAccess<array-key, mixed>  $array
      *
      * @throws Exception
      * @throws ExpectationFailedException
@@ -181,7 +185,7 @@ abstract class Assert
     /**
      * Asserts that an array does not have a specified key.
      *
-     * @param array<mixed>|ArrayAccess<array-key, mixed> $array
+     * @param  array<mixed>|ArrayAccess<array-key, mixed>  $array
      *
      * @throws Exception
      * @throws ExpectationFailedException
@@ -212,7 +216,7 @@ abstract class Assert
     /**
      * Asserts that a haystack contains a needle.
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws Exception
      * @throws ExpectationFailedException
@@ -225,7 +229,7 @@ abstract class Assert
     }
 
     /**
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -239,7 +243,7 @@ abstract class Assert
     /**
      * Asserts that a haystack does not contain a needle.
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws Exception
      * @throws ExpectationFailedException
@@ -254,7 +258,7 @@ abstract class Assert
     }
 
     /**
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -268,8 +272,8 @@ abstract class Assert
     /**
      * Asserts that a haystack contains only values of a given type.
      *
-     * @param 'array'|'bool'|'boolean'|'callable'|'double'|'float'|'int'|'integer'|'iterable'|'null'|'numeric'|'object'|'real'|'resource (closed)'|'resource'|'scalar'|'string' $type
-     * @param iterable<mixed>                                                                                                                                                   $haystack
+     * @param  'array'|'bool'|'boolean'|'callable'|'double'|'float'|'int'|'integer'|'iterable'|'null'|'numeric'|'object'|'real'|'resource (closed)'|'resource'|'scalar'|'string'  $type
+     * @param  iterable<mixed>  $haystack
      *
      * @throws Exception
      * @throws ExpectationFailedException
@@ -284,29 +288,29 @@ abstract class Assert
 
         if ($isNativeType) {
             $replacement = match ($type) {
-                'array'             => 'assertContainsOnlyArray',
-                'bool'              => 'assertContainsOnlyBool',
-                'boolean'           => 'assertContainsOnlyBool',
-                'callable'          => 'assertContainsOnlyCallable',
-                'double'            => 'assertContainsOnlyFloat',
-                'float'             => 'assertContainsOnlyFloat',
-                'int'               => 'assertContainsOnlyInt',
-                'integer'           => 'assertContainsOnlyInt',
-                'iterable'          => 'assertContainsOnlyIterable',
-                'null'              => 'assertContainsOnlyNull',
-                'numeric'           => 'assertContainsOnlyNumeric',
-                'object'            => 'assertContainsOnlyObject',
-                'real'              => 'assertContainsOnlyFloat',
-                'resource'          => 'assertContainsOnlyResource',
+                'array' => 'assertContainsOnlyArray',
+                'bool' => 'assertContainsOnlyBool',
+                'boolean' => 'assertContainsOnlyBool',
+                'callable' => 'assertContainsOnlyCallable',
+                'double' => 'assertContainsOnlyFloat',
+                'float' => 'assertContainsOnlyFloat',
+                'int' => 'assertContainsOnlyInt',
+                'integer' => 'assertContainsOnlyInt',
+                'iterable' => 'assertContainsOnlyIterable',
+                'null' => 'assertContainsOnlyNull',
+                'numeric' => 'assertContainsOnlyNumeric',
+                'object' => 'assertContainsOnlyObject',
+                'real' => 'assertContainsOnlyFloat',
+                'resource' => 'assertContainsOnlyResource',
                 'resource (closed)' => 'assertContainsOnlyClosedResource',
-                'scalar'            => 'assertContainsOnlyScalar',
-                'string'            => 'assertContainsOnlyString',
+                'scalar' => 'assertContainsOnlyScalar',
+                'string' => 'assertContainsOnlyString',
             };
 
             EventFacade::emitter()->testTriggeredPhpunitDeprecation(
                 null,
                 sprintf(
-                    'assertContainsOnly() is deprecated and will be removed in PHPUnit 13. ' .
+                    'assertContainsOnly() is deprecated and will be removed in PHPUnit 13. '.
                     'Please use %s($haystack) instead of assertContainsOnly(\'%s\', $haystack).',
                     $replacement,
                     $type,
@@ -318,7 +322,7 @@ abstract class Assert
             EventFacade::emitter()->testTriggeredPhpunitDeprecation(
                 null,
                 sprintf(
-                    'assertContainsOnly() is deprecated and will be removed in PHPUnit 13. ' .
+                    'assertContainsOnly() is deprecated and will be removed in PHPUnit 13. '.
                     'Please use assertContainsOnlyInstancesOf(\'%s\', $haystack) instead of assertContainsOnly(\'%s\', $haystack).',
                     $type,
                     $type,
@@ -337,7 +341,7 @@ abstract class Assert
      *
      * @phpstan-assert iterable<array<mixed>> $haystack
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -357,7 +361,7 @@ abstract class Assert
      *
      * @phpstan-assert iterable<bool> $haystack
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -377,7 +381,7 @@ abstract class Assert
      *
      * @phpstan-assert iterable<callable> $haystack
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -397,7 +401,7 @@ abstract class Assert
      *
      * @phpstan-assert iterable<float> $haystack
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -417,7 +421,7 @@ abstract class Assert
      *
      * @phpstan-assert iterable<int> $haystack
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -437,7 +441,7 @@ abstract class Assert
      *
      * @phpstan-assert iterable<iterable<mixed>> $haystack
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -457,7 +461,7 @@ abstract class Assert
      *
      * @phpstan-assert iterable<null> $haystack
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -477,7 +481,7 @@ abstract class Assert
      *
      * @phpstan-assert iterable<numeric> $haystack
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -497,7 +501,7 @@ abstract class Assert
      *
      * @phpstan-assert iterable<object> $haystack
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -517,7 +521,7 @@ abstract class Assert
      *
      * @phpstan-assert iterable<resource> $haystack
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -537,7 +541,7 @@ abstract class Assert
      *
      * @phpstan-assert iterable<resource> $haystack
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -557,7 +561,7 @@ abstract class Assert
      *
      * @phpstan-assert iterable<scalar> $haystack
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -577,7 +581,7 @@ abstract class Assert
      *
      * @phpstan-assert iterable<string> $haystack
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -599,8 +603,8 @@ abstract class Assert
      *
      * @phpstan-assert iterable<T> $haystack
      *
-     * @param class-string<T> $className
-     * @param iterable<mixed> $haystack
+     * @param  class-string<T>  $className
+     * @param  iterable<mixed>  $haystack
      *
      * @throws Exception
      * @throws ExpectationFailedException
@@ -617,8 +621,8 @@ abstract class Assert
     /**
      * Asserts that a haystack does not contain only values of a given type.
      *
-     * @param 'array'|'bool'|'boolean'|'callable'|'double'|'float'|'int'|'integer'|'iterable'|'null'|'numeric'|'object'|'real'|'resource (closed)'|'resource'|'scalar'|'string' $type
-     * @param iterable<mixed>                                                                                                                                                   $haystack
+     * @param  'array'|'bool'|'boolean'|'callable'|'double'|'float'|'int'|'integer'|'iterable'|'null'|'numeric'|'object'|'real'|'resource (closed)'|'resource'|'scalar'|'string'  $type
+     * @param  iterable<mixed>  $haystack
      *
      * @throws Exception
      * @throws ExpectationFailedException
@@ -633,29 +637,29 @@ abstract class Assert
 
         if ($isNativeType) {
             $replacement = match ($type) {
-                'array'             => 'assertContainsNotOnlyArray',
-                'bool'              => 'assertContainsNotOnlyBool',
-                'boolean'           => 'assertContainsNotOnlyBool',
-                'callable'          => 'assertContainsNotOnlyCallable',
-                'double'            => 'assertContainsNotOnlyFloat',
-                'float'             => 'assertContainsNotOnlyFloat',
-                'int'               => 'assertContainsNotOnlyInt',
-                'integer'           => 'assertContainsNotOnlyInt',
-                'iterable'          => 'assertContainsNotOnlyIterable',
-                'null'              => 'assertContainsNotOnlyNull',
-                'numeric'           => 'assertContainsNotOnlyNumeric',
-                'object'            => 'assertContainsNotOnlyObject',
-                'real'              => 'assertContainsNotOnlyFloat',
-                'resource'          => 'assertContainsNotOnlyResource',
+                'array' => 'assertContainsNotOnlyArray',
+                'bool' => 'assertContainsNotOnlyBool',
+                'boolean' => 'assertContainsNotOnlyBool',
+                'callable' => 'assertContainsNotOnlyCallable',
+                'double' => 'assertContainsNotOnlyFloat',
+                'float' => 'assertContainsNotOnlyFloat',
+                'int' => 'assertContainsNotOnlyInt',
+                'integer' => 'assertContainsNotOnlyInt',
+                'iterable' => 'assertContainsNotOnlyIterable',
+                'null' => 'assertContainsNotOnlyNull',
+                'numeric' => 'assertContainsNotOnlyNumeric',
+                'object' => 'assertContainsNotOnlyObject',
+                'real' => 'assertContainsNotOnlyFloat',
+                'resource' => 'assertContainsNotOnlyResource',
                 'resource (closed)' => 'assertContainsNotOnlyClosedResource',
-                'scalar'            => 'assertContainsNotOnlyScalar',
-                'string'            => 'assertContainsNotOnlyString',
+                'scalar' => 'assertContainsNotOnlyScalar',
+                'string' => 'assertContainsNotOnlyString',
             };
 
             EventFacade::emitter()->testTriggeredPhpunitDeprecation(
                 null,
                 sprintf(
-                    'assertNotContainsOnly() is deprecated and will be removed in PHPUnit 13. ' .
+                    'assertNotContainsOnly() is deprecated and will be removed in PHPUnit 13. '.
                     'Please use %s($haystack) instead of assertNotContainsOnly(\'%s\', $haystack).',
                     $replacement,
                     $type,
@@ -667,7 +671,7 @@ abstract class Assert
             EventFacade::emitter()->testTriggeredPhpunitDeprecation(
                 null,
                 sprintf(
-                    'assertNotContainsOnly() is deprecated and will be removed in PHPUnit 13. ' .
+                    'assertNotContainsOnly() is deprecated and will be removed in PHPUnit 13. '.
                     'Please use assertContainsNotOnlyInstancesOf(\'%s\', $haystack) instead of assertNotContainsOnly(\'%s\', $haystack).',
                     $type,
                     $type,
@@ -688,7 +692,7 @@ abstract class Assert
     /**
      * Asserts that a haystack does not contain only values of type array.
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -708,7 +712,7 @@ abstract class Assert
     /**
      * Asserts that a haystack does not contain only values of type bool.
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -728,7 +732,7 @@ abstract class Assert
     /**
      * Asserts that a haystack does not contain only values of type callable.
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -748,7 +752,7 @@ abstract class Assert
     /**
      * Asserts that a haystack does not contain only values of type float.
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -768,7 +772,7 @@ abstract class Assert
     /**
      * Asserts that a haystack does not contain only values of type int.
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -788,7 +792,7 @@ abstract class Assert
     /**
      * Asserts that a haystack does not contain only values of type iterable.
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -808,7 +812,7 @@ abstract class Assert
     /**
      * Asserts that a haystack does not contain only values of type null.
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -828,7 +832,7 @@ abstract class Assert
     /**
      * Asserts that a haystack does not contain only values of type numeric.
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -848,7 +852,7 @@ abstract class Assert
     /**
      * Asserts that a haystack does not contain only values of type object.
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -868,7 +872,7 @@ abstract class Assert
     /**
      * Asserts that a haystack does not contain only values of type resource.
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -888,7 +892,7 @@ abstract class Assert
     /**
      * Asserts that a haystack does not contain only values of type closed resource.
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -908,7 +912,7 @@ abstract class Assert
     /**
      * Asserts that a haystack does not contain only values of type scalar.
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -928,7 +932,7 @@ abstract class Assert
     /**
      * Asserts that a haystack does not contain only values of type string.
      *
-     * @param iterable<mixed> $haystack
+     * @param  iterable<mixed>  $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -948,8 +952,8 @@ abstract class Assert
     /**
      * Asserts that a haystack does not contain only instances of a specified interface or class name.
      *
-     * @param class-string    $className
-     * @param iterable<mixed> $haystack
+     * @param  class-string  $className
+     * @param  iterable<mixed>  $haystack
      *
      * @throws Exception
      * @throws ExpectationFailedException
@@ -968,7 +972,7 @@ abstract class Assert
     /**
      * Asserts the number of elements of an array, Countable or Traversable.
      *
-     * @param Countable|iterable<mixed> $haystack
+     * @param  Countable|iterable<mixed>  $haystack
      *
      * @throws Exception
      * @throws ExpectationFailedException
@@ -990,7 +994,7 @@ abstract class Assert
     /**
      * Asserts the number of elements of an array, Countable or Traversable.
      *
-     * @param Countable|iterable<mixed> $haystack
+     * @param  Countable|iterable<mixed>  $haystack
      *
      * @throws Exception
      * @throws ExpectationFailedException
@@ -1726,7 +1730,7 @@ abstract class Assert
      *
      * @template ExpectedType
      *
-     * @param ExpectedType $expected
+     * @param  ExpectedType  $expected
      *
      * @throws ExpectationFailedException
      *
@@ -1768,7 +1772,7 @@ abstract class Assert
      *
      * @template ExpectedType of object
      *
-     * @param class-string<ExpectedType> $expected
+     * @param  class-string<ExpectedType>  $expected
      *
      * @throws Exception
      * @throws ExpectationFailedException
@@ -1778,7 +1782,7 @@ abstract class Assert
      */
     final public static function assertInstanceOf(string $expected, mixed $actual, string $message = ''): void
     {
-        if (!class_exists($expected) && !interface_exists($expected)) {
+        if (! class_exists($expected) && ! interface_exists($expected)) {
             throw new UnknownClassOrInterfaceException($expected);
         }
 
@@ -1794,7 +1798,7 @@ abstract class Assert
      *
      * @template ExpectedType of object
      *
-     * @param class-string<ExpectedType> $expected
+     * @param  class-string<ExpectedType>  $expected
      *
      * @throws Exception
      * @throws ExpectationFailedException
@@ -1803,7 +1807,7 @@ abstract class Assert
      */
     final public static function assertNotInstanceOf(string $expected, mixed $actual, string $message = ''): void
     {
-        if (!class_exists($expected) && !interface_exists($expected)) {
+        if (! class_exists($expected) && ! interface_exists($expected)) {
             throw new UnknownClassOrInterfaceException($expected);
         }
 
@@ -2254,8 +2258,8 @@ abstract class Assert
      * Assert that the size of two arrays (or `Countable` or `Traversable` objects)
      * is the same.
      *
-     * @param Countable|iterable<mixed> $expected
-     * @param Countable|iterable<mixed> $actual
+     * @param  Countable|iterable<mixed>  $expected
+     * @param  Countable|iterable<mixed>  $actual
      *
      * @throws Exception
      * @throws ExpectationFailedException
@@ -2282,8 +2286,8 @@ abstract class Assert
      * Assert that the size of two arrays (or `Countable` or `Traversable` objects)
      * is not the same.
      *
-     * @param Countable|iterable<mixed> $expected
-     * @param Countable|iterable<mixed> $actual
+     * @param  Countable|iterable<mixed>  $expected
+     * @param  Countable|iterable<mixed>  $actual
      *
      * @throws Exception
      * @throws ExpectationFailedException
@@ -2398,7 +2402,7 @@ abstract class Assert
     /**
      * Asserts that a string starts with a given prefix.
      *
-     * @param non-empty-string $prefix
+     * @param  non-empty-string  $prefix
      *
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
@@ -2411,7 +2415,7 @@ abstract class Assert
     /**
      * Asserts that a string starts not with a given prefix.
      *
-     * @param non-empty-string $prefix
+     * @param  non-empty-string  $prefix
      *
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
@@ -2470,7 +2474,7 @@ abstract class Assert
     /**
      * Asserts that a string ends with a given suffix.
      *
-     * @param non-empty-string $suffix
+     * @param  non-empty-string  $suffix
      *
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
@@ -2483,7 +2487,7 @@ abstract class Assert
     /**
      * Asserts that a string ends not with a given suffix.
      *
-     * @param non-empty-string $suffix
+     * @param  non-empty-string  $suffix
      *
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
@@ -2509,7 +2513,7 @@ abstract class Assert
     final public static function assertXmlFileEqualsXmlFile(string $expectedFile, string $actualFile, string $message = ''): void
     {
         $expected = (new XmlLoader)->loadFile($expectedFile);
-        $actual   = (new XmlLoader)->loadFile($actualFile);
+        $actual = (new XmlLoader)->loadFile($actualFile);
 
         self::assertEquals($expected, $actual, $message);
     }
@@ -2523,7 +2527,7 @@ abstract class Assert
     final public static function assertXmlFileNotEqualsXmlFile(string $expectedFile, string $actualFile, string $message = ''): void
     {
         $expected = (new XmlLoader)->loadFile($expectedFile);
-        $actual   = (new XmlLoader)->loadFile($actualFile);
+        $actual = (new XmlLoader)->loadFile($actualFile);
 
         self::assertNotEquals($expected, $actual, $message);
     }
@@ -2537,7 +2541,7 @@ abstract class Assert
     final public static function assertXmlStringEqualsXmlFile(string $expectedFile, string $actualXml, string $message = ''): void
     {
         $expected = (new XmlLoader)->loadFile($expectedFile);
-        $actual   = (new XmlLoader)->load($actualXml);
+        $actual = (new XmlLoader)->load($actualXml);
 
         self::assertEquals($expected, $actual, $message);
     }
@@ -2551,7 +2555,7 @@ abstract class Assert
     final public static function assertXmlStringNotEqualsXmlFile(string $expectedFile, string $actualXml, string $message = ''): void
     {
         $expected = (new XmlLoader)->loadFile($expectedFile);
-        $actual   = (new XmlLoader)->load($actualXml);
+        $actual = (new XmlLoader)->load($actualXml);
 
         self::assertNotEquals($expected, $actual, $message);
     }
@@ -2565,7 +2569,7 @@ abstract class Assert
     final public static function assertXmlStringEqualsXmlString(string $expectedXml, string $actualXml, string $message = ''): void
     {
         $expected = (new XmlLoader)->load($expectedXml);
-        $actual   = (new XmlLoader)->load($actualXml);
+        $actual = (new XmlLoader)->load($actualXml);
 
         self::assertEquals($expected, $actual, $message);
     }
@@ -2579,7 +2583,7 @@ abstract class Assert
     final public static function assertXmlStringNotEqualsXmlString(string $expectedXml, string $actualXml, string $message = ''): void
     {
         $expected = (new XmlLoader)->load($expectedXml);
-        $actual   = (new XmlLoader)->load($actualXml);
+        $actual = (new XmlLoader)->load($actualXml);
 
         self::assertNotEquals($expected, $actual, $message);
     }
@@ -2764,8 +2768,7 @@ abstract class Assert
     /**
      * @template CallbackInput of mixed
      *
-     * @param callable(CallbackInput $callback): bool $callback
-     *
+     * @param  callable(CallbackInput $callback): bool  $callback
      * @return Callback<CallbackInput>
      */
     final public static function callback(callable $callback): Callback
@@ -2814,7 +2817,7 @@ abstract class Assert
     }
 
     /**
-     * @param 'array'|'bool'|'boolean'|'callable'|'double'|'float'|'int'|'integer'|'iterable'|'null'|'numeric'|'object'|'real'|'resource (closed)'|'resource'|'scalar'|'string' $type
+     * @param  'array'|'bool'|'boolean'|'callable'|'double'|'float'|'int'|'integer'|'iterable'|'null'|'numeric'|'object'|'real'|'resource (closed)'|'resource'|'scalar'|'string'  $type
      *
      * @throws Exception
      *
@@ -2891,7 +2894,7 @@ abstract class Assert
     }
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      *
      * @throws Exception
      */
@@ -3042,7 +3045,7 @@ abstract class Assert
     }
 
     /**
-     * @param 'array'|'bool'|'boolean'|'callable'|'double'|'float'|'int'|'integer'|'iterable'|'null'|'numeric'|'object'|'real'|'resource (closed)'|'resource'|'scalar'|'string' $type
+     * @param  'array'|'bool'|'boolean'|'callable'|'double'|'float'|'int'|'integer'|'iterable'|'null'|'numeric'|'object'|'real'|'resource (closed)'|'resource'|'scalar'|'string'  $type
      *
      * @throws UnknownNativeTypeException
      *
@@ -3053,29 +3056,29 @@ abstract class Assert
         $constraint = new IsType(self::mapNativeType($type));
 
         $replacement = match ($type) {
-            'array'             => 'isArray',
-            'bool'              => 'isBool',
-            'boolean'           => 'isBool',
-            'callable'          => 'isCallable',
-            'double'            => 'isFloat',
-            'float'             => 'isFloat',
-            'int'               => 'isInt',
-            'integer'           => 'isInt',
-            'iterable'          => 'isIterable',
-            'null'              => 'isNull',
-            'numeric'           => 'isNumeric',
-            'object'            => 'isObject',
-            'real'              => 'isFloat',
-            'resource'          => 'isResource',
+            'array' => 'isArray',
+            'bool' => 'isBool',
+            'boolean' => 'isBool',
+            'callable' => 'isCallable',
+            'double' => 'isFloat',
+            'float' => 'isFloat',
+            'int' => 'isInt',
+            'integer' => 'isInt',
+            'iterable' => 'isIterable',
+            'null' => 'isNull',
+            'numeric' => 'isNumeric',
+            'object' => 'isObject',
+            'real' => 'isFloat',
+            'resource' => 'isResource',
             'resource (closed)' => 'isClosedResource',
-            'scalar'            => 'isScalar',
-            'string'            => 'isString',
+            'scalar' => 'isScalar',
+            'string' => 'isString',
         };
 
         EventFacade::emitter()->testTriggeredPhpunitDeprecation(
             null,
             sprintf(
-                'isType(\'%s\') is deprecated and will be removed in PHPUnit 13. ' .
+                'isType(\'%s\') is deprecated and will be removed in PHPUnit 13. '.
                 'Please use the %s() method instead.',
                 $type,
                 $replacement,
@@ -3109,7 +3112,7 @@ abstract class Assert
     }
 
     /**
-     * @param non-empty-string $prefix
+     * @param  non-empty-string  $prefix
      *
      * @throws InvalidArgumentException
      */
@@ -3124,7 +3127,7 @@ abstract class Assert
     }
 
     /**
-     * @param non-empty-string $suffix
+     * @param  non-empty-string  $suffix
      *
      * @throws InvalidArgumentException
      */
@@ -3222,29 +3225,29 @@ abstract class Assert
      */
     private static function mapNativeType(string $type): NativeType
     {
-        if (!self::isNativeType($type)) {
+        if (! self::isNativeType($type)) {
             throw new UnknownNativeTypeException($type);
         }
 
         /** @phpstan-ignore match.unhandled */
         return match ($type) {
-            'array'             => NativeType::Array,
-            'bool'              => NativeType::Bool,
-            'boolean'           => NativeType::Bool,
-            'callable'          => NativeType::Callable,
-            'double'            => NativeType::Float,
-            'float'             => NativeType::Float,
-            'int'               => NativeType::Int,
-            'integer'           => NativeType::Int,
-            'iterable'          => NativeType::Iterable,
-            'null'              => NativeType::Null,
-            'numeric'           => NativeType::Numeric,
-            'object'            => NativeType::Object,
-            'real'              => NativeType::Float,
-            'resource'          => NativeType::Resource,
+            'array' => NativeType::Array,
+            'bool' => NativeType::Bool,
+            'boolean' => NativeType::Bool,
+            'callable' => NativeType::Callable,
+            'double' => NativeType::Float,
+            'float' => NativeType::Float,
+            'int' => NativeType::Int,
+            'integer' => NativeType::Int,
+            'iterable' => NativeType::Iterable,
+            'null' => NativeType::Null,
+            'numeric' => NativeType::Numeric,
+            'object' => NativeType::Object,
+            'real' => NativeType::Float,
+            'resource' => NativeType::Resource,
             'resource (closed)' => NativeType::ClosedResource,
-            'scalar'            => NativeType::Scalar,
-            'string'            => NativeType::String,
+            'scalar' => NativeType::Scalar,
+            'string' => NativeType::String,
         };
     }
 }

@@ -11,11 +11,11 @@ class WebDriverCurlException extends UnexpectedResponseException
     {
         $message = sprintf('Curl error thrown for http %s to %s', $httpMethod, $url);
 
-        if (!empty($params)) {
+        if (! empty($params)) {
             $message .= sprintf(' with params: %s', json_encode($params, JSON_UNESCAPED_SLASHES));
         }
 
-        $message .= "\n\n" . $curlError;
+        $message .= "\n\n".$curlError;
 
         return new self($message);
     }

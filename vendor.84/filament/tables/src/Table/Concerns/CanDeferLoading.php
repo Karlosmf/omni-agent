@@ -6,9 +6,9 @@ use Closure;
 
 trait CanDeferLoading
 {
-    protected bool | Closure $isLoadingDeferred = false;
+    protected bool|Closure $isLoadingDeferred = false;
 
-    public function deferLoading(bool | Closure $condition = true): static
+    public function deferLoading(bool|Closure $condition = true): static
     {
         $this->isLoadingDeferred = $condition;
 

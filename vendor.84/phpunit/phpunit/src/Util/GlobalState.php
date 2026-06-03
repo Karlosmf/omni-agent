@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,10 +9,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Util;
 
 use const PHP_MAJOR_VERSION;
 use const PHP_MINOR_VERSION;
+
+use Closure;
+
 use function array_reverse;
 use function array_shift;
 use function assert;
@@ -29,7 +35,6 @@ use function str_ends_with;
 use function str_starts_with;
 use function strtr;
 use function var_export;
-use Closure;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -56,106 +61,106 @@ final readonly class GlobalState
      */
     private const array DEPRECATED_INI_SETTINGS = [
         '7.3' => [
-            'iconv.input_encoding'       => true,
-            'iconv.output_encoding'      => true,
-            'iconv.internal_encoding'    => true,
-            'mbstring.func_overload'     => true,
-            'mbstring.http_input'        => true,
-            'mbstring.http_output'       => true,
+            'iconv.input_encoding' => true,
+            'iconv.output_encoding' => true,
+            'iconv.internal_encoding' => true,
+            'mbstring.func_overload' => true,
+            'mbstring.http_input' => true,
+            'mbstring.http_output' => true,
             'mbstring.internal_encoding' => true,
-            'string.strip_tags'          => true,
+            'string.strip_tags' => true,
         ],
 
         '7.4' => [
-            'iconv.input_encoding'       => true,
-            'iconv.output_encoding'      => true,
-            'iconv.internal_encoding'    => true,
-            'mbstring.func_overload'     => true,
-            'mbstring.http_input'        => true,
-            'mbstring.http_output'       => true,
+            'iconv.input_encoding' => true,
+            'iconv.output_encoding' => true,
+            'iconv.internal_encoding' => true,
+            'mbstring.func_overload' => true,
+            'mbstring.http_input' => true,
+            'mbstring.http_output' => true,
             'mbstring.internal_encoding' => true,
             'pdo_odbc.db2_instance_name' => true,
-            'string.strip_tags'          => true,
+            'string.strip_tags' => true,
         ],
 
         '8.0' => [
-            'iconv.input_encoding'       => true,
-            'iconv.output_encoding'      => true,
-            'iconv.internal_encoding'    => true,
-            'mbstring.http_input'        => true,
-            'mbstring.http_output'       => true,
+            'iconv.input_encoding' => true,
+            'iconv.output_encoding' => true,
+            'iconv.internal_encoding' => true,
+            'mbstring.http_input' => true,
+            'mbstring.http_output' => true,
             'mbstring.internal_encoding' => true,
         ],
 
         '8.1' => [
-            'auto_detect_line_endings'     => true,
-            'filter.default'               => true,
-            'iconv.input_encoding'         => true,
-            'iconv.output_encoding'        => true,
-            'iconv.internal_encoding'      => true,
-            'mbstring.http_input'          => true,
-            'mbstring.http_output'         => true,
-            'mbstring.internal_encoding'   => true,
+            'auto_detect_line_endings' => true,
+            'filter.default' => true,
+            'iconv.input_encoding' => true,
+            'iconv.output_encoding' => true,
+            'iconv.internal_encoding' => true,
+            'mbstring.http_input' => true,
+            'mbstring.http_output' => true,
+            'mbstring.internal_encoding' => true,
             'oci8.old_oci_close_semantics' => true,
         ],
 
         '8.2' => [
-            'auto_detect_line_endings'     => true,
-            'filter.default'               => true,
-            'iconv.input_encoding'         => true,
-            'iconv.output_encoding'        => true,
-            'iconv.internal_encoding'      => true,
-            'mbstring.http_input'          => true,
-            'mbstring.http_output'         => true,
-            'mbstring.internal_encoding'   => true,
+            'auto_detect_line_endings' => true,
+            'filter.default' => true,
+            'iconv.input_encoding' => true,
+            'iconv.output_encoding' => true,
+            'iconv.internal_encoding' => true,
+            'mbstring.http_input' => true,
+            'mbstring.http_output' => true,
+            'mbstring.internal_encoding' => true,
             'oci8.old_oci_close_semantics' => true,
         ],
 
         '8.3' => [
-            'auto_detect_line_endings'     => true,
-            'filter.default'               => true,
-            'iconv.input_encoding'         => true,
-            'iconv.output_encoding'        => true,
-            'iconv.internal_encoding'      => true,
-            'mbstring.http_input'          => true,
-            'mbstring.http_output'         => true,
-            'mbstring.internal_encoding'   => true,
+            'auto_detect_line_endings' => true,
+            'filter.default' => true,
+            'iconv.input_encoding' => true,
+            'iconv.output_encoding' => true,
+            'iconv.internal_encoding' => true,
+            'mbstring.http_input' => true,
+            'mbstring.http_output' => true,
+            'mbstring.internal_encoding' => true,
             'oci8.old_oci_close_semantics' => true,
         ],
 
         '8.4' => [
-            'auto_detect_line_endings'     => true,
-            'filter.default'               => true,
-            'iconv.input_encoding'         => true,
-            'iconv.output_encoding'        => true,
-            'iconv.internal_encoding'      => true,
-            'mbstring.http_input'          => true,
-            'mbstring.http_output'         => true,
-            'mbstring.internal_encoding'   => true,
+            'auto_detect_line_endings' => true,
+            'filter.default' => true,
+            'iconv.input_encoding' => true,
+            'iconv.output_encoding' => true,
+            'iconv.internal_encoding' => true,
+            'mbstring.http_input' => true,
+            'mbstring.http_output' => true,
+            'mbstring.internal_encoding' => true,
             'oci8.old_oci_close_semantics' => true,
         ],
 
         '8.5' => [
-            'auto_detect_line_endings'     => true,
-            'filter.default'               => true,
-            'iconv.input_encoding'         => true,
-            'iconv.output_encoding'        => true,
-            'iconv.internal_encoding'      => true,
-            'mbstring.http_input'          => true,
-            'mbstring.http_output'         => true,
-            'mbstring.internal_encoding'   => true,
+            'auto_detect_line_endings' => true,
+            'filter.default' => true,
+            'iconv.input_encoding' => true,
+            'iconv.output_encoding' => true,
+            'iconv.internal_encoding' => true,
+            'mbstring.http_input' => true,
+            'mbstring.http_output' => true,
+            'mbstring.internal_encoding' => true,
             'oci8.old_oci_close_semantics' => true,
         ],
 
         '8.6' => [
-            'auto_detect_line_endings'     => true,
-            'filter.default'               => true,
-            'iconv.input_encoding'         => true,
-            'iconv.output_encoding'        => true,
-            'iconv.internal_encoding'      => true,
-            'mbstring.http_input'          => true,
-            'mbstring.http_output'         => true,
-            'mbstring.internal_encoding'   => true,
+            'auto_detect_line_endings' => true,
+            'filter.default' => true,
+            'iconv.input_encoding' => true,
+            'iconv.output_encoding' => true,
+            'iconv.internal_encoding' => true,
+            'mbstring.http_input' => true,
+            'mbstring.http_output' => true,
+            'mbstring.internal_encoding' => true,
             'oci8.old_oci_close_semantics' => true,
         ],
     ];
@@ -169,19 +174,19 @@ final readonly class GlobalState
     }
 
     /**
-     * @param list<string> $files
+     * @param  list<string>  $files
      *
      * @throws Exception
      */
     public static function processIncludedFilesAsString(array $files): string
     {
         $excludeList = new ExcludeList;
-        $prefix      = false;
-        $result      = '';
+        $prefix = false;
+        $result = '';
 
         if (defined('__PHPUNIT_PHAR__')) {
             // @codeCoverageIgnoreStart
-            $prefix = 'phar://' . __PHPUNIT_PHAR__ . '/';
+            $prefix = 'phar://'.__PHPUNIT_PHAR__.'/';
             // @codeCoverageIgnoreEnd
         }
 
@@ -212,8 +217,8 @@ final readonly class GlobalState
                 continue;
             }
 
-            if (!$excludeList->isExcluded($file) && is_file($file)) {
-                $result = 'require_once \'' . $file . "';\n" . $result;
+            if (! $excludeList->isExcluded($file) && is_file($file)) {
+                $result = 'require_once \''.$file."';\n".$result;
             }
         }
 
@@ -234,7 +239,7 @@ final readonly class GlobalState
             }
 
             $result .= sprintf(
-                '@ini_set(%s, %s);' . "\n",
+                '@ini_set(%s, %s);'."\n",
                 self::exportVariable($key),
                 self::exportVariable((string) $value),
             );
@@ -246,12 +251,12 @@ final readonly class GlobalState
     public static function getConstantsAsString(): string
     {
         $constants = get_defined_constants(true);
-        $result    = '';
+        $result = '';
 
         if (isset($constants['user'])) {
             foreach ($constants['user'] as $name => $value) {
                 $result .= sprintf(
-                    'if (!defined(\'%s\')) define(\'%s\', %s);' . "\n",
+                    'if (!defined(\'%s\')) define(\'%s\', %s);'."\n",
                     $name,
                     $name,
                     self::exportVariable($value),
@@ -274,7 +279,7 @@ final readonly class GlobalState
                     }
 
                     $result .= sprintf(
-                        '$GLOBALS[\'%s\'][\'%s\'] = %s;' . "\n",
+                        '$GLOBALS[\'%s\'][\'%s\'] = %s;'."\n",
                         $superGlobalArray,
                         $key,
                         self::exportVariable($GLOBALS[$superGlobalArray][$key]),
@@ -283,13 +288,13 @@ final readonly class GlobalState
             }
         }
 
-        $excludeList   = self::SUPER_GLOBAL_ARRAYS;
+        $excludeList = self::SUPER_GLOBAL_ARRAYS;
         $excludeList[] = 'GLOBALS';
 
         foreach ($GLOBALS as $key => $value) {
-            if (!$value instanceof Closure && !in_array($key, $excludeList, true)) {
+            if (! $value instanceof Closure && ! in_array($key, $excludeList, true)) {
                 $result .= sprintf(
-                    '$GLOBALS[\'%s\'] = %s;' . "\n",
+                    '$GLOBALS[\'%s\'] = %s;'."\n",
                     $key,
                     self::exportVariable($value),
                 );
@@ -306,11 +311,11 @@ final readonly class GlobalState
             return var_export($variable, true);
         }
 
-        return 'unserialize(' . var_export(serialize($variable), true) . ')';
+        return 'unserialize('.var_export(serialize($variable), true).')';
     }
 
     /**
-     * @param array<mixed> $array
+     * @param  array<mixed>  $array
      */
     private static function arrayOnlyContainsScalars(array $array): bool
     {
@@ -319,11 +324,11 @@ final readonly class GlobalState
         foreach ($array as $element) {
             if (is_array($element)) {
                 $result = self::arrayOnlyContainsScalars($element);
-            } elseif (!is_scalar($element) && $element !== null) {
+            } elseif (! is_scalar($element) && $element !== null) {
                 $result = false;
             }
 
-            if (!$result) {
+            if (! $result) {
                 break;
             }
         }
@@ -333,6 +338,6 @@ final readonly class GlobalState
 
     private static function isIniSettingDeprecated(string $iniSetting): bool
     {
-        return isset(self::DEPRECATED_INI_SETTINGS[PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION][$iniSetting]);
+        return isset(self::DEPRECATED_INI_SETTINGS[PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION][$iniSetting]);
     }
 }

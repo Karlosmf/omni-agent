@@ -21,7 +21,7 @@ class CallbackLogger
     private $callback;
 
     /**
-     * @param callable $callback Callback to invoke with (string $kind, string $data)
+     * @param  callable  $callback  Callback to invoke with (string $kind, string $data)
      */
     public function __construct(callable $callback)
     {
@@ -31,9 +31,9 @@ class CallbackLogger
     /**
      * Log a message.
      *
-     * @param string $level   Log level
-     * @param string $message Log message
-     * @param array  $context Context data
+     * @param  string  $level  Log level
+     * @param  string  $message  Log message
+     * @param  array  $context  Context data
      */
     public function log(string $level, string $message, array $context = []): void
     {

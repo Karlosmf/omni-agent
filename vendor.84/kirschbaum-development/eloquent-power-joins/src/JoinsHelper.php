@@ -32,18 +32,18 @@ class JoinsHelper
 
     protected function __construct()
     {
-        static::$instances ??= new WeakMap();
-        static::$modelQueryDictionary ??= new WeakMap();
-        static::$beforeQueryCallbacks ??= new WeakMap();
+        static::$instances ??= new WeakMap;
+        static::$modelQueryDictionary ??= new WeakMap;
+        static::$beforeQueryCallbacks ??= new WeakMap;
 
-        $this->joinRelationshipCache = new WeakMap();
+        $this->joinRelationshipCache = new WeakMap;
     }
 
     public static function make($model): static
     {
-        static::$instances ??= new WeakMap();
+        static::$instances ??= new WeakMap;
 
-        return static::$instances[$model] ??= new self();
+        return static::$instances[$model] ??= new self;
     }
 
     /**
@@ -111,7 +111,7 @@ class JoinsHelper
             $originalFrom = $query->getQuery()->from;
 
             // Ensure the model of the cloned query is unique to the query.
-            $query->setModel($model = new $originalModel());
+            $query->setModel($model = new $originalModel);
             $model->mergeCasts($originalModel->getCasts());
 
             // Restore the original from clause if it was set
@@ -254,6 +254,6 @@ class JoinsHelper
 
     public function clear(): void
     {
-        $this->joinRelationshipCache = new WeakMap();
+        $this->joinRelationshipCache = new WeakMap;
     }
 }

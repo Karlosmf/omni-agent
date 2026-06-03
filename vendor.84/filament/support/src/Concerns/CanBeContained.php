@@ -6,11 +6,11 @@ use Closure;
 
 trait CanBeContained
 {
-    protected bool | Closure $isContained = true;
+    protected bool|Closure $isContained = true;
 
     protected bool $isContainedCache;
 
-    public function contained(bool | Closure $condition = true): static
+    public function contained(bool|Closure $condition = true): static
     {
         $this->isContained = $condition;
 

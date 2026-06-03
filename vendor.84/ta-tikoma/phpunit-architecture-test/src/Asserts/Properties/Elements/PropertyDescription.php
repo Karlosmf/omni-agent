@@ -29,7 +29,7 @@ final class PropertyDescription
         ObjectPropertiesDescription $objectPropertiesDescription,
         ReflectionProperty $reflectionProperty
     ): self {
-        $description = new static();
+        $description = new self;
         $description->name = $reflectionProperty->getName();
         $description->type = self::getPropertyType($objectPropertiesDescription, $reflectionProperty);
 
@@ -75,7 +75,7 @@ final class PropertyDescription
                 return $result;
         }
 
-        throw new Exception('Unexpected type:"' . get_class($type) . '"');
+        throw new Exception('Unexpected type:"'.get_class($type).'"');
     }
 
     /**
@@ -102,6 +102,7 @@ final class PropertyDescription
             if (ServiceContainer::$showException) {
                 echo "Can't parse: '$docComment'";
             }
+
             return null;
         }
 
@@ -117,7 +118,6 @@ final class PropertyDescription
 
         return null;
     }
-
 
     public function __toString()
     {

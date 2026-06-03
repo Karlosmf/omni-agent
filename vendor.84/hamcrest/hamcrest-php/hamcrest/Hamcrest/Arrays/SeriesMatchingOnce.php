@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Arrays;
 
 /*
@@ -10,10 +11,12 @@ use Hamcrest\Matcher;
 
 class SeriesMatchingOnce
 {
-
     private $_elementMatchers;
+
     private $_keys;
+
     private $_mismatchDescription;
+
     private $_nextMatchKey;
 
     public function __construct(array $elementMatchers, Description $mismatchDescription)
@@ -30,7 +33,7 @@ class SeriesMatchingOnce
 
     public function isFinished()
     {
-        if (!empty($this->_elementMatchers)) {
+        if (! empty($this->_elementMatchers)) {
             $nextMatcher = current($this->_elementMatchers);
             $this->_mismatchDescription->appendText('No item matched: ')->appendDescriptionOf($nextMatcher);
 
@@ -58,7 +61,7 @@ class SeriesMatchingOnce
         $this->_nextMatchKey = array_shift($this->_keys);
         $nextMatcher = array_shift($this->_elementMatchers);
 
-        if (!$nextMatcher->matches($item)) {
+        if (! $nextMatcher->matches($item)) {
             $this->_describeMismatch($nextMatcher, $item);
 
             return false;
@@ -69,7 +72,7 @@ class SeriesMatchingOnce
 
     private function _describeMismatch(Matcher $matcher, $item)
     {
-        $this->_mismatchDescription->appendText('item with key ' . $this->_nextMatchKey . ': ');
+        $this->_mismatchDescription->appendText('item with key '.$this->_nextMatchKey.': ');
         $matcher->describeMismatch($item, $this->_mismatchDescription);
     }
 }

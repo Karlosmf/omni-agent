@@ -53,7 +53,7 @@ class ProtocolNodeLibrary extends ProtocolNode
             return parent::reach($queue);
         }
 
-        if (!empty($queue)) {
+        if (! empty($queue)) {
             $head = $queue;
 
             if (false !== $pos = \strpos($queue, '/')) {

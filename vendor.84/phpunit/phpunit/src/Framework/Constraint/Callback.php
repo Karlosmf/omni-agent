@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\Constraint;
 
 use Closure;
@@ -25,7 +28,7 @@ final class Callback extends Constraint
     private readonly mixed $callback;
 
     /**
-     * @param callable(CallbackInput $input): bool $callback
+     * @param  callable(CallbackInput $input): bool  $callback
      */
     public function __construct(callable $callback)
     {
@@ -49,7 +52,7 @@ final class Callback extends Constraint
      * Evaluates the constraint for parameter $value. Returns true if the
      * constraint is met, false otherwise.
      *
-     * @param CallbackInput $other
+     * @param  CallbackInput  $other
      */
     protected function matches(mixed $other): bool
     {

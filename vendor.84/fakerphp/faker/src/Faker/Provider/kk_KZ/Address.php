@@ -7,12 +7,15 @@ class Address extends \Faker\Provider\Address
     protected static $citySuffix = ['қаласы'];
 
     protected static $regionSuffix = ['облысы'];
+
     protected static $streetSuffix = [
         'көшесі', 'даңғылы',
     ];
 
     protected static $buildingNumber = ['%##'];
+
     protected static $postcode = ['0#####'];
+
     // TODO list all country names in the world
     protected static $country = [
         'Қазақстан',

@@ -15,7 +15,7 @@ trait HasExtraEntryWrapperAttributes
     /**
      * @param  array<mixed> | Closure  $attributes
      */
-    public function extraEntryWrapperAttributes(array | Closure $attributes, bool $merge = false): static
+    public function extraEntryWrapperAttributes(array|Closure $attributes, bool $merge = false): static
     {
         if ($merge) {
             $this->extraEntryWrapperAttributes[] = $attributes;

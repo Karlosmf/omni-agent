@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -23,8 +24,8 @@ class MethodCall
     private $method;
 
     /**
-     * @param string $method
-     * @param array  $args
+     * @param  string  $method
+     * @param  array  $args
      */
     public function __construct($method, $args)
     {

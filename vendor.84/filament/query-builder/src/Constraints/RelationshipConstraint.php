@@ -14,9 +14,9 @@ use Filament\Support\Icons\Heroicon;
 
 class RelationshipConstraint extends Constraint
 {
-    protected bool | Closure $isMultiple = false;
+    protected bool|Closure $isMultiple = false;
 
-    protected bool | Closure | null $canBeEmpty = false;
+    protected bool|Closure|null $canBeEmpty = false;
 
     protected function setUp(): void
     {
@@ -43,7 +43,7 @@ class RelationshipConstraint extends Constraint
         return $this;
     }
 
-    public function multiple(bool | Closure $condition = true): static
+    public function multiple(bool|Closure $condition = true): static
     {
         $this->isMultiple = $condition;
 
@@ -55,7 +55,7 @@ class RelationshipConstraint extends Constraint
         return (bool) $this->evaluate($this->isMultiple);
     }
 
-    public function emptyable(bool | Closure | null $condition = true): static
+    public function emptyable(bool|Closure|null $condition = true): static
     {
         $this->canBeEmpty = $condition;
 

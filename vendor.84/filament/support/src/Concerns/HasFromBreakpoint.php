@@ -6,9 +6,9 @@ use Closure;
 
 trait HasFromBreakpoint
 {
-    protected string | Closure | null $fromBreakpoint = null;
+    protected string|Closure|null $fromBreakpoint = null;
 
-    public function from(string | Closure | null $breakpoint): static
+    public function from(string|Closure|null $breakpoint): static
     {
         $this->fromBreakpoint = $breakpoint;
 

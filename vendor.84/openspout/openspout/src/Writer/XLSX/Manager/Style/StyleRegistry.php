@@ -175,7 +175,7 @@ class StyleRegistry extends CommonStyleRegistry
         $styleId = $style->getId();
 
         $format = $style->getFormat();
-        if (null !== $format) {
+        if ($format !== null) {
             $isFormatRegistered = isset($this->registeredFormats[$format]);
 
             // We need to track the already registered format definitions
@@ -207,7 +207,7 @@ class StyleRegistry extends CommonStyleRegistry
         // so $backgroundColor is a scalar value (RGB Color)
         $backgroundColor = $style->getBackgroundColor();
 
-        if (null !== $backgroundColor) {
+        if ($backgroundColor !== null) {
             $isBackgroundColorRegistered = isset($this->registeredFills[$backgroundColor]);
 
             // We need to track the already registered background definitions

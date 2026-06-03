@@ -85,7 +85,7 @@ class ProtocolWrapper
      */
     public function stream_close()
     {
-        if (true === @\fclose($this->getStream())) {
+        if (@\fclose($this->getStream()) === true) {
             $this->_stream = null;
             $this->_streamName = null;
         }
@@ -154,9 +154,9 @@ class ProtocolWrapper
             case \STREAM_META_TOUCH:
                 $arity = \count($values);
 
-                if (0 === $arity) {
+                if ($arity === 0) {
                     $out = \touch($path);
-                } elseif (1 === $arity) {
+                } elseif ($arity === 1) {
                     $out = \touch($path, $values[0]);
                 } else {
                     $out = \touch($path, $values[0], $values[1]);
@@ -195,13 +195,13 @@ class ProtocolWrapper
      */
     public function stream_open(string $path, string $mode, int $options, &$openedPath): bool
     {
-        $path = static::realPath($path, 'r' === $mode[0]);
+        $path = static::realPath($path, $mode[0] === 'r');
 
-        if (Protocol::NO_RESOLUTION === $path) {
+        if ($path === Protocol::NO_RESOLUTION) {
             return false;
         }
 
-        if (null === $this->context) {
+        if ($this->context === null) {
             $openedPath = \fopen($path, $mode, $options & \STREAM_USE_PATH);
         } else {
             $openedPath = \fopen(
@@ -212,7 +212,7 @@ class ProtocolWrapper
             );
         }
 
-        if (false === \is_resource($openedPath)) {
+        if (\is_resource($openedPath) === false) {
             return false;
         }
 
@@ -244,7 +244,7 @@ class ProtocolWrapper
      */
     public function stream_seek(int $offset, int $whence = \SEEK_SET): bool
     {
-        return 0 === \fseek($this->getStream(), $offset, $whence);
+        return \fseek($this->getStream(), $offset, $whence) === 0;
     }
 
     /**
@@ -307,13 +307,13 @@ class ProtocolWrapper
         $path = static::realPath($path);
         $handle = null;
 
-        if (null === $this->context) {
+        if ($this->context === null) {
             $handle = @\opendir($path);
         } else {
             $handle = @\opendir($path, $this->context);
         }
 
-        if (false === $handle) {
+        if ($handle === false) {
             return false;
         }
 
@@ -352,7 +352,7 @@ class ProtocolWrapper
      */
     public function mkdir(string $path, int $mode, int $options): bool
     {
-        if (null === $this->context) {
+        if ($this->context === null) {
             return \mkdir(
                 static::realPath($path, false),
                 $mode,
@@ -375,7 +375,7 @@ class ProtocolWrapper
      */
     public function rename(string $from, string $to): bool
     {
-        if (null === $this->context) {
+        if ($this->context === null) {
             return \rename(static::realPath($from), static::realPath($to, false));
         }
 
@@ -393,7 +393,7 @@ class ProtocolWrapper
      */
     public function rmdir(string $path, int $options): bool
     {
-        if (null === $this->context) {
+        if ($this->context === null) {
             return \rmdir(static::realPath($path));
         }
 
@@ -406,7 +406,7 @@ class ProtocolWrapper
      */
     public function unlink(string $path): bool
     {
-        if (null === $this->context) {
+        if ($this->context === null) {
             return \unlink(static::realPath($path));
         }
 
@@ -432,7 +432,7 @@ class ProtocolWrapper
     {
         $path = static::realPath($path);
 
-        if (Protocol::NO_RESOLUTION === $path) {
+        if ($path === Protocol::NO_RESOLUTION) {
             if ($flags & \STREAM_URL_STAT_QUIET) {
                 return 0;
             } else {

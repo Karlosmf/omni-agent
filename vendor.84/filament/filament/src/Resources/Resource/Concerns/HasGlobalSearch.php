@@ -61,7 +61,7 @@ trait HasGlobalSearch
         return [];
     }
 
-    public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
+    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
     {
         return static::getRecordTitle($record);
     }

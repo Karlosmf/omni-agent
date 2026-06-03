@@ -8,6 +8,6 @@ class ReplacedPackageException extends \Exception implements VersionMissingExcep
 {
     public static function create(string $packageName): VersionMissingExceptionInterface
     {
-        return new self('Cannot retrieve a version for package ' . $packageName . ' since it is replaced by some other package');
+        return new self('Cannot retrieve a version for package '.$packageName.' since it is replaced by some other package');
     }
 }

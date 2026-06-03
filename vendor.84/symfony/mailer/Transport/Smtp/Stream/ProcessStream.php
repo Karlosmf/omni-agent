@@ -24,6 +24,7 @@ use Symfony\Component\Mailer\Exception\TransportException;
 final class ProcessStream extends AbstractStream
 {
     private string $command;
+
     private bool $interactive = false;
 
     public function setCommand(string $command): void
@@ -56,7 +57,7 @@ final class ProcessStream extends AbstractStream
 
     public function terminate(): void
     {
-        if (null !== $this->stream) {
+        if ($this->stream !== null) {
             fclose($this->in);
             $out = stream_get_contents($this->out);
             fclose($this->out);
@@ -69,7 +70,7 @@ final class ProcessStream extends AbstractStream
 
         parent::terminate();
 
-        if (!$this->interactive && isset($errorMessage)) {
+        if (! $this->interactive && isset($errorMessage)) {
             throw new TransportException($errorMessage);
         }
     }

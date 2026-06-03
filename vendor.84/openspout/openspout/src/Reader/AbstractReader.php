@@ -22,22 +22,22 @@ abstract class AbstractReader implements ReaderInterface
      * Prepares the reader to read the given file. It also makes sure
      * that the file exists and is readable.
      *
-     * @param string $filePath Path of the file to be read
+     * @param  string  $filePath  Path of the file to be read
      *
      * @throws IOException If the file at the given path does not exist, is not readable or is corrupted
      */
     public function open(string $filePath): void
     {
-        if ($this->isStreamWrapper($filePath) && (!$this->doesSupportStreamWrapper() || !$this->isSupportedStreamWrapper($filePath))) {
+        if ($this->isStreamWrapper($filePath) && (! $this->doesSupportStreamWrapper() || ! $this->isSupportedStreamWrapper($filePath))) {
             throw new IOException("Could not open {$filePath} for reading! Stream wrapper used is not supported for this type of file.");
         }
 
-        if (!$this->isPhpStream($filePath)) {
+        if (! $this->isPhpStream($filePath)) {
             // we skip the checks if the provided file path points to a PHP stream
-            if (!file_exists($filePath)) {
+            if (! file_exists($filePath)) {
                 throw new IOException("Could not open {$filePath} for reading! File does not exist.");
             }
-            if (!is_readable($filePath)) {
+            if (! is_readable($filePath)) {
                 throw new IOException("Could not open {$filePath} for reading! File is not readable.");
             }
         }
@@ -75,7 +75,7 @@ abstract class AbstractReader implements ReaderInterface
     /**
      * Opens the file at the given file path to make it ready to be read.
      *
-     * @param string $filePath Path of the file to be read
+     * @param  string  $filePath  Path of the file to be read
      */
     abstract protected function openReader(string $filePath): void;
 
@@ -86,7 +86,7 @@ abstract class AbstractReader implements ReaderInterface
 
     final protected function ensureStreamOpened(): void
     {
-        if (!$this->isStreamOpened) {
+        if (! $this->isStreamOpened) {
             throw new ReaderNotOpenedException('Reader should be opened first.');
         }
     }
@@ -103,7 +103,7 @@ abstract class AbstractReader implements ReaderInterface
 
         // Need to use realpath to fix "Can't open file" on some Windows setup
         $realpath = realpath($filePath);
-        \assert(false !== $realpath);
+        \assert($realpath !== false);
 
         return $realpath;
     }
@@ -112,14 +112,13 @@ abstract class AbstractReader implements ReaderInterface
      * Returns the scheme of the custom stream wrapper, if the path indicates a stream wrapper is used.
      * For example, php://temp => php, s3://path/to/file => s3...
      *
-     * @param string $filePath Path of the file to be read
-     *
+     * @param  string  $filePath  Path of the file to be read
      * @return null|string The stream wrapper scheme or NULL if not a stream wrapper
      */
     private function getStreamWrapperScheme(string $filePath): ?string
     {
         $streamScheme = null;
-        if (1 === preg_match('/^(\w+):\/\//', $filePath, $matches)) {
+        if (preg_match('/^(\w+):\/\//', $filePath, $matches) === 1) {
             $streamScheme = $matches[1];
         }
 
@@ -130,13 +129,12 @@ abstract class AbstractReader implements ReaderInterface
      * Checks if the given path is an unsupported stream wrapper
      * (like local path, php://temp, mystream://foo/bar...).
      *
-     * @param string $filePath Path of the file to be read
-     *
+     * @param  string  $filePath  Path of the file to be read
      * @return bool Whether the given path is an unsupported stream wrapper
      */
     private function isStreamWrapper(string $filePath): bool
     {
-        return null !== $this->getStreamWrapperScheme($filePath);
+        return $this->getStreamWrapperScheme($filePath) !== null;
     }
 
     /**
@@ -144,28 +142,26 @@ abstract class AbstractReader implements ReaderInterface
      * (like php://temp, mystream://foo/bar...).
      * If the given path is a local path, returns true.
      *
-     * @param string $filePath Path of the file to be read
-     *
+     * @param  string  $filePath  Path of the file to be read
      * @return bool Whether the given path is an supported stream wrapper
      */
     private function isSupportedStreamWrapper(string $filePath): bool
     {
         $streamScheme = $this->getStreamWrapperScheme($filePath);
 
-        return null === $streamScheme || \in_array($streamScheme, stream_get_wrappers(), true);
+        return $streamScheme === null || \in_array($streamScheme, stream_get_wrappers(), true);
     }
 
     /**
      * Checks if a path is a PHP stream (like php://output, php://memory, ...).
      *
-     * @param string $filePath Path of the file to be read
-     *
+     * @param  string  $filePath  Path of the file to be read
      * @return bool Whether the given path maps to a PHP stream
      */
     private function isPhpStream(string $filePath): bool
     {
         $streamScheme = $this->getStreamWrapperScheme($filePath);
 
-        return 'php' === $streamScheme;
+        return $streamScheme === 'php';
     }
 }

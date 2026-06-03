@@ -33,17 +33,18 @@ use Symfony\Contracts\Service\ServiceProviderInterface;
 final class ArgumentResolver implements ArgumentResolverInterface
 {
     private ArgumentMetadataFactoryInterface $argumentMetadataFactory;
+
     private iterable $argumentValueResolvers;
 
     /**
-     * @param iterable<mixed, ValueResolverInterface> $argumentValueResolvers
+     * @param  iterable<mixed, ValueResolverInterface>  $argumentValueResolvers
      */
     public function __construct(
         ?ArgumentMetadataFactoryInterface $argumentMetadataFactory = null,
         iterable $argumentValueResolvers = [],
         private ?ContainerInterface $namedResolvers = null,
     ) {
-        $this->argumentMetadataFactory = $argumentMetadataFactory ?? new ArgumentMetadataFactory();
+        $this->argumentMetadataFactory = $argumentMetadataFactory ?? new ArgumentMetadataFactory;
         $this->argumentValueResolvers = $argumentValueResolvers ?: self::getDefaultArgumentValueResolvers();
     }
 
@@ -68,14 +69,14 @@ final class ArgumentResolver implements ArgumentResolverInterface
                 }
 
                 if ($resolverName) {
-                    if (!$this->namedResolvers->has($resolverName)) {
+                    if (! $this->namedResolvers->has($resolverName)) {
                         throw new ResolverNotFoundException($resolverName, $this->namedResolvers instanceof ServiceProviderInterface ? array_keys($this->namedResolvers->getProvidedServices()) : []);
                     }
 
                     $argumentValueResolvers = [
                         $this->namedResolvers->get($resolverName),
-                        new RequestAttributeValueResolver(),
-                        new DefaultValueResolver(),
+                        new RequestAttributeValueResolver,
+                        new DefaultValueResolver,
                     ];
                 }
             }
@@ -89,14 +90,14 @@ final class ArgumentResolver implements ArgumentResolverInterface
                 try {
                     $count = 0;
                     foreach ($resolver->resolve($request, $metadata) as $argument) {
-                        ++$count;
+                        $count++;
                         $arguments[] = $argument;
                     }
                 } catch (NearMissValueResolverException $e) {
                     $valueResolverExceptions[] = $e;
                 }
 
-                if (1 < $count && !$metadata->isVariadic()) {
+                if ($count > 1 && ! $metadata->isVariadic()) {
                     throw new \InvalidArgumentException(\sprintf('"%s::resolve()" must yield at most one value for non-variadic arguments.', get_debug_type($resolver)));
                 }
 
@@ -107,7 +108,7 @@ final class ArgumentResolver implements ArgumentResolverInterface
             }
 
             $reasons = array_map(static fn (NearMissValueResolverException $e) => $e->getMessage(), $valueResolverExceptions);
-            if (!$reasons) {
+            if (! $reasons) {
                 $reasons[] = 'Either the argument is nullable and no null value has been provided, no default value has been provided or there is a non-optional argument after this one.';
             }
 
@@ -115,7 +116,7 @@ final class ArgumentResolver implements ArgumentResolverInterface
             if (\count($reasons) > 1) {
                 foreach ($reasons as $i => $reason) {
                     $reasons[$i] = $reasonCounter.') '.$reason;
-                    ++$reasonCounter;
+                    $reasonCounter++;
                 }
             }
 
@@ -131,11 +132,11 @@ final class ArgumentResolver implements ArgumentResolverInterface
     public static function getDefaultArgumentValueResolvers(): iterable
     {
         return [
-            new RequestAttributeValueResolver(),
-            new RequestValueResolver(),
-            new SessionValueResolver(),
-            new DefaultValueResolver(),
-            new VariadicValueResolver(),
+            new RequestAttributeValueResolver,
+            new RequestValueResolver,
+            new SessionValueResolver,
+            new DefaultValueResolver,
+            new VariadicValueResolver,
         ];
     }
 }

@@ -2,16 +2,27 @@
 
 namespace App\Filament\Admin\Resources\TravelPackages\Tables;
 
+use App\Enums\UserRole;
+use App\Filament\Admin\Resources\Bookings\BookingResource;
+use App\Models\TravelPackage;
+use App\Models\User;
+use App\Services\BudgetGenerationService;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class TravelPackagesTable
 {
@@ -51,7 +62,7 @@ class TravelPackagesTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                \Filament\Tables\Filters\TernaryFilter::make('is_active')
+                TernaryFilter::make('is_active')
                     ->label('Estado')
                     ->trueLabel('Solo activos')
                     ->falseLabel('Solo inactivos'),
@@ -64,46 +75,46 @@ class TravelPackagesTable
                     ->form([
                         Select::make('customer_id')
                             ->label('Cliente')
-                            ->options(\App\Models\User::where('role', \App\Enums\UserRole::Customer)->pluck('name', 'id'))
+                            ->options(User::where('role', UserRole::Customer)->pluck('name', 'id'))
                             ->searchable()
                             ->preload()
                             ->required()
                             ->createOptionForm([
-                                \Filament\Forms\Components\TextInput::make('name')
+                                TextInput::make('name')
                                     ->label('Nombre')
                                     ->required(),
-                                \Filament\Forms\Components\TextInput::make('phone')
+                                TextInput::make('phone')
                                     ->label('Teléfono')
                                     ->required(),
                             ])
                             ->createOptionUsing(function (array $data): int {
-                                $data['role'] = \App\Enums\UserRole::Customer;
-                                $data['password'] = \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(12));
+                                $data['role'] = UserRole::Customer;
+                                $data['password'] = Hash::make(Str::random(12));
 
-                                return \App\Models\User::create($data)->id;
+                                return User::create($data)->id;
                             }),
-                        \Filament\Forms\Components\DatePicker::make('travel_date')
+                        DatePicker::make('travel_date')
                             ->label('Fecha Estimada de Viaje')
                             ->default(now()->addMonths(3))
                             ->required(),
-                        \Filament\Forms\Components\TextInput::make('passengers')
+                        TextInput::make('passengers')
                             ->label('Cantidad de Pasajeros')
                             ->numeric()
                             ->default(2)
                             ->required(),
                     ])
-                    ->action(function (\App\Models\TravelPackage $record, array $data) {
-                        $customer = \App\Models\User::find($data['customer_id']);
+                    ->action(function (TravelPackage $record, array $data) {
+                        $customer = User::find($data['customer_id']);
                         if (! $customer) {
-                            $customer = \App\Models\User::create([
+                            $customer = User::create([
                                 'name' => $data['name'],
                                 'phone' => $data['phone'] ?? '',
-                                'role' => \App\Enums\UserRole::Customer,
-                                'password' => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(12)),
+                                'role' => UserRole::Customer,
+                                'password' => Hash::make(Str::random(12)),
                             ]);
                         }
 
-                        $service = app(\App\Services\BudgetGenerationService::class);
+                        $service = app(BudgetGenerationService::class);
                         $newBooking = $service->clonePackageToBudget(
                             $record,
                             $customer,
@@ -111,13 +122,13 @@ class TravelPackagesTable
                             passengers: $data['passengers']
                         );
 
-                        \Filament\Notifications\Notification::make()
+                        Notification::make()
                             ->title('Presupuesto inicial creado')
                             ->body('Se cargaron los datos de la Idea de Viaje.')
                             ->success()
                             ->send();
 
-                        return redirect(\App\Filament\Admin\Resources\Bookings\BookingResource::getUrl('edit', ['record' => $newBooking]));
+                        return redirect(BookingResource::getUrl('edit', ['record' => $newBooking]));
                     }),
                 EditAction::make()
                     ->label('Editar'),

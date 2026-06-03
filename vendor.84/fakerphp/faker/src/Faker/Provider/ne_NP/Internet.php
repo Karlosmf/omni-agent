@@ -5,6 +5,7 @@ namespace Faker\Provider\ne_NP;
 class Internet extends \Faker\Provider\Internet
 {
     protected static $freeEmailDomain = ['gmail.com', 'yahoo.com', 'hotmail.com'];
+
     protected static $tld = ['com', 'com', 'com', 'net', 'org'];
 
     protected static $emailFormats = [

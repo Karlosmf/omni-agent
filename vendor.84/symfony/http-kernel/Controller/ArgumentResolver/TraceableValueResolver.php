@@ -26,8 +26,7 @@ final class TraceableValueResolver implements ValueResolverInterface
     public function __construct(
         private ValueResolverInterface $inner,
         private Stopwatch $stopwatch,
-    ) {
-    }
+    ) {}
 
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {

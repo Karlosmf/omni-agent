@@ -5,28 +5,33 @@ namespace Livewire\Features\SupportValidation;
 use Closure;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Contracts\Validation\ValidationRule;
-use function Livewire\store;
-use PHPUnit\Framework\Assert as PHPUnit;
-use Illuminate\Support\Str;
-use Illuminate\Support\MessageBag;
 use Illuminate\Support\Arr;
+use Illuminate\Support\MessageBag;
+use Illuminate\Support\Str;
+use PHPUnit\Framework\Assert as PHPUnit;
+
+use function Livewire\store;
 
 trait TestsValidation
 {
-    function errors()
+    public function errors()
     {
         $validator = store($this->target)->get('testing.validator');
 
-        if ($validator) return $validator->errors();
+        if ($validator) {
+            return $validator->errors();
+        }
 
         $errors = store($this->target)->get('testing.errors');
 
-        if ($errors) return $errors;
+        if ($errors) {
+            return $errors;
+        }
 
         return new MessageBag;
     }
 
-    function failedRules()
+    public function failedRules()
     {
         $validator = store($this->target)->get('testing.validator');
 
@@ -52,7 +57,8 @@ trait TestsValidation
         return $this;
     }
 
-    protected function makeErrorAssertion($key = null, $value = null) {
+    protected function makeErrorAssertion($key = null, $value = null)
+    {
         $errors = $this->errors();
 
         $messages = $errors->get($key);
@@ -86,7 +92,7 @@ trait TestsValidation
 
     protected function assertErrorMatchesRuleOrMessage($rules, $messages, $key, $ruleOrMessage)
     {
-        if (Str::contains($ruleOrMessage, ':')){
+        if (Str::contains($ruleOrMessage, ':')) {
             $ruleOrMessage = Str::before($ruleOrMessage, ':');
         }
 
@@ -99,7 +105,6 @@ trait TestsValidation
         // If the provided rule/message isn't a failed rule, let's check to see if it's a message...
         PHPUnit::assertContains($ruleOrMessage, $messages, "Component has no matching failed rule or error message [{$ruleOrMessage}] for [{$key}] attribute.");
     }
-
 
     public function assertHasNoErrors($keys = [])
     {
@@ -121,7 +126,7 @@ trait TestsValidation
                 $rules = array_keys(Arr::get($failed, $key, []));
 
                 foreach ((array) $value as $rule) {
-                    if (Str::contains($rule, ':')){
+                    if (Str::contains($rule, ':')) {
                         $rule = Str::before($rule, ':');
                     }
 

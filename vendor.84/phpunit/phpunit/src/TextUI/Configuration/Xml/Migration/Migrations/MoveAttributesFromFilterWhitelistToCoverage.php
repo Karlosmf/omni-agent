@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\XmlConfiguration;
 
 use DOMDocument;
@@ -32,17 +35,17 @@ final readonly class MoveAttributesFromFilterWhitelistToCoverage implements Migr
 
         $coverage = $document->getElementsByTagName('coverage')->item(0);
 
-        if (!$coverage instanceof DOMElement) {
+        if (! $coverage instanceof DOMElement) {
             throw new MigrationException('Unexpected state - No coverage element');
         }
 
         $map = [
-            'addUncoveredFilesFromWhitelist'     => 'includeUncoveredFiles',
+            'addUncoveredFilesFromWhitelist' => 'includeUncoveredFiles',
             'processUncoveredFilesFromWhitelist' => 'processUncoveredFiles',
         ];
 
         foreach ($map as $old => $new) {
-            if (!$whitelist->hasAttribute($old)) {
+            if (! $whitelist->hasAttribute($old)) {
                 continue;
             }
 

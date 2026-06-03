@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\Runtime;
 
 use const PHP_EXTRA_VERSION;
@@ -16,6 +19,7 @@ use const PHP_RELEASE_VERSION;
 use const PHP_SAPI;
 use const PHP_VERSION;
 use const PHP_VERSION_ID;
+
 use function array_merge;
 use function get_loaded_extensions;
 use function sort;
@@ -28,11 +32,17 @@ use function sort;
 final readonly class PHP
 {
     private string $version;
+
     private int $versionId;
+
     private int $majorVersion;
+
     private int $minorVersion;
+
     private int $releaseVersion;
+
     private string $extraVersion;
+
     private string $sapi;
 
     /**
@@ -42,13 +52,13 @@ final readonly class PHP
 
     public function __construct()
     {
-        $this->version        = PHP_VERSION;
-        $this->versionId      = PHP_VERSION_ID;
-        $this->majorVersion   = PHP_MAJOR_VERSION;
-        $this->minorVersion   = PHP_MINOR_VERSION;
+        $this->version = PHP_VERSION;
+        $this->versionId = PHP_VERSION_ID;
+        $this->majorVersion = PHP_MAJOR_VERSION;
+        $this->minorVersion = PHP_MINOR_VERSION;
         $this->releaseVersion = PHP_RELEASE_VERSION;
-        $this->extraVersion   = PHP_EXTRA_VERSION;
-        $this->sapi           = PHP_SAPI;
+        $this->extraVersion = PHP_EXTRA_VERSION;
+        $this->sapi = PHP_SAPI;
 
         $extensions = array_merge(
             get_loaded_extensions(true),

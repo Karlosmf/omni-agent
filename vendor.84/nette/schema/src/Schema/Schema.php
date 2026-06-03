@@ -9,29 +9,31 @@ declare(strict_types=1);
 
 namespace Nette\Schema;
 
-
 interface Schema
 {
-	/**
-	 * Normalization.
-	 * @return mixed
-	 */
-	function normalize(mixed $value, Context $context);
+    /**
+     * Normalization.
+     *
+     * @return mixed
+     */
+    public function normalize(mixed $value, Context $context);
 
-	/**
-	 * Merging.
-	 * @return mixed
-	 */
-	function merge(mixed $value, mixed $base);
+    /**
+     * Merging.
+     *
+     * @return mixed
+     */
+    public function merge(mixed $value, mixed $base);
 
-	/**
-	 * Validation and finalization.
-	 * @return mixed
-	 */
-	function complete(mixed $value, Context $context);
+    /**
+     * Validation and finalization.
+     *
+     * @return mixed
+     */
+    public function complete(mixed $value, Context $context);
 
-	/**
-	 * @return mixed
-	 */
-	function completeDefault(Context $context);
+    /**
+     * @return mixed
+     */
+    public function completeDefault(Context $context);
 }

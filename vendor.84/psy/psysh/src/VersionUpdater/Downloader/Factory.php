@@ -22,9 +22,9 @@ class Factory
     public static function getDownloader(): Downloader
     {
         if (\extension_loaded('curl')) {
-            return new CurlDownloader();
+            return new CurlDownloader;
         } elseif (\ini_get('allow_url_fopen')) {
-            return new FileDownloader();
+            return new FileDownloader;
         }
         throw new ErrorException('No downloader available.');
     }

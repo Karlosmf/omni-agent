@@ -11,6 +11,4 @@
 
 namespace Symfony\Component\ErrorHandler\Error;
 
-class OutOfMemoryError extends FatalError
-{
-}
+class OutOfMemoryError extends FatalError {}

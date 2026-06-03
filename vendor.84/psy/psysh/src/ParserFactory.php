@@ -24,9 +24,9 @@ class ParserFactory
      */
     public function createParser(): Parser
     {
-        $factory = new PhpParserFactory();
+        $factory = new PhpParserFactory;
 
-        if (!\method_exists($factory, 'createForHostVersion')) {
+        if (! \method_exists($factory, 'createForHostVersion')) {
             return $factory->create(PhpParserFactory::ONLY_PHP7);
         }
 

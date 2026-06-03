@@ -1,4 +1,4 @@
-<div class="exception-summary <?= !$exceptionMessage ? 'exception-without-message' : ''; ?>">
+<div class="exception-summary <?= ! $exceptionMessage ? 'exception-without-message' : ''; ?>">
     <div class="exception-metadata">
         <div class="container">
             <h2 class="exception-hierarchy">
@@ -29,17 +29,17 @@
         <div class="tab">
             <?php
             $exceptionAsArray = $exception->toArray();
-            $exceptionWithUserCode = [];
-            $exceptionAsArrayCount = count($exceptionAsArray);
-            $last = $exceptionAsArrayCount - 1;
-            foreach ($exceptionAsArray as $i => $e) {
-                foreach ($e['trace'] as $trace) {
-                    if ($trace['file'] && !str_contains($trace['file'], '/vendor/') && !str_contains($trace['file'], '/var/cache/') && $i < $last) {
-                        $exceptionWithUserCode[] = $i;
-                    }
-                }
-            }
-            ?>
+$exceptionWithUserCode = [];
+$exceptionAsArrayCount = count($exceptionAsArray);
+$last = $exceptionAsArrayCount - 1;
+foreach ($exceptionAsArray as $i => $e) {
+    foreach ($e['trace'] as $trace) {
+        if ($trace['file'] && ! str_contains($trace['file'], '/vendor/') && ! str_contains($trace['file'], '/var/cache/') && $i < $last) {
+            $exceptionWithUserCode[] = $i;
+        }
+    }
+}
+?>
             <h3 class="tab-title">
                 <?php if ($exceptionAsArrayCount > 1) { ?>
                     Exceptions <span class="badge"><?= $exceptionAsArrayCount; ?></span>
@@ -50,19 +50,19 @@
 
             <div class="tab-content">
                 <?php
-                foreach ($exceptionAsArray as $i => $e) {
-                    echo $this->include('views/traces.html.php', [
-                        'exception' => $e,
-                        'index' => $i + 1,
-                        'expand' => in_array($i, $exceptionWithUserCode, true) || ([] === $exceptionWithUserCode && 0 === $i),
-                    ]);
-                }
-                ?>
+    foreach ($exceptionAsArray as $i => $e) {
+        echo $this->include('views/traces.html.php', [
+            'exception' => $e,
+            'index' => $i + 1,
+            'expand' => in_array($i, $exceptionWithUserCode, true) || ($exceptionWithUserCode === [] && $i === 0),
+        ]);
+    }
+?>
             </div>
         </div>
 
         <?php if ($logger) { ?>
-        <div class="tab <?= !$logger->getLogs() ? 'disabled' : ''; ?>">
+        <div class="tab <?= ! $logger->getLogs() ? 'disabled' : ''; ?>">
             <h3 class="tab-title">
                 Logs
                 <?php if ($logger->countErrors()) { ?><span class="badge status-error"><?= $logger->countErrors(); ?></span><?php } ?>
@@ -91,14 +91,14 @@
 
             <div class="tab-content">
                 <?php
-                foreach ($exceptionAsArray as $i => $e) {
-                    echo $this->include('views/traces_text.html.php', [
-                        'exception' => $e,
-                        'index' => $i + 1,
-                        'numExceptions' => $exceptionAsArrayCount,
-                    ]);
-                }
-                ?>
+foreach ($exceptionAsArray as $i => $e) {
+    echo $this->include('views/traces_text.html.php', [
+        'exception' => $e,
+        'index' => $i + 1,
+        'numExceptions' => $exceptionAsArrayCount,
+    ]);
+}
+?>
             </div>
         </div>
 

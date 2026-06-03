@@ -23,22 +23,28 @@ namespace Psy\Reflection;
 class ReflectionMagicProperty implements \Reflector
 {
     private \ReflectionClass $declaringClass;
+
     public string $name;
+
     public string $class;
+
     private ?string $type;
+
     private bool $readOnly;
+
     private bool $writeOnly;
+
     private ?string $description;
 
     /**
      * Construct a ReflectionMagicProperty.
      *
-     * @param \ReflectionClass $declaringClass The class that declares this magic property
-     * @param string           $name           The property name (without $)
-     * @param string|null      $type           The property type (from docblock)
-     * @param bool             $readOnly       Whether this is a read-only property (@property)
-     * @param bool             $writeOnly      Whether this is a write-only property (@property)
-     * @param string|null      $description    The property description
+     * @param  \ReflectionClass  $declaringClass  The class that declares this magic property
+     * @param  string  $name  The property name (without $)
+     * @param  string|null  $type  The property type (from docblock)
+     * @param  bool  $readOnly  Whether this is a read-only property (@property)
+     * @param  bool  $writeOnly  Whether this is a write-only property (@property)
+     * @param  string|null  $description  The property description
      */
     public function __construct(
         \ReflectionClass $declaringClass,

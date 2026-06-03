@@ -27,7 +27,6 @@ class MagicConstantsPass extends CodeCleanerPass
      * Swap out __DIR__ and __FILE__ constants, because the default ones when
      * calling eval() don't make sense.
      *
-     * @param Node $node
      *
      * @return FuncCall|String_|null
      */

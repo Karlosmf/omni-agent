@@ -27,21 +27,15 @@ abstract class AbstractBundle extends Bundle implements ConfigurableExtensionInt
 {
     protected string $extensionAlias = '';
 
-    public function configure(DefinitionConfigurator $definition): void
-    {
-    }
+    public function configure(DefinitionConfigurator $definition): void {}
 
-    public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
-    {
-    }
+    public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void {}
 
-    public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
-    {
-    }
+    public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void {}
 
     public function getContainerExtension(): ?ExtensionInterface
     {
-        if ('' === $this->extensionAlias) {
+        if ($this->extensionAlias === '') {
             $this->extensionAlias = Container::underscore(preg_replace('/Bundle$/', '', $this->getName()));
         }
 
@@ -50,7 +44,7 @@ abstract class AbstractBundle extends Bundle implements ConfigurableExtensionInt
 
     public function getPath(): string
     {
-        if (!isset($this->path)) {
+        if (! isset($this->path)) {
             $reflected = new \ReflectionObject($this);
             // assume the modern directory structure by default
             $this->path = \dirname($reflected->getFileName(), 2);

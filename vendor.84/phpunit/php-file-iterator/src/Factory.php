@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-file-iterator.
  *
@@ -7,10 +9,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\FileIterator;
 
 use const DIRECTORY_SEPARATOR;
 use const GLOB_ONLYDIR;
+
+use AppendIterator;
+use FilesystemIterator;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+
 use function array_filter;
 use function array_map;
 use function array_merge;
@@ -24,10 +33,6 @@ use function sort;
 use function str_ends_with;
 use function stripos;
 use function substr;
-use AppendIterator;
-use FilesystemIterator;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-file-iterator
@@ -35,10 +40,10 @@ use RecursiveIteratorIterator;
 final class Factory
 {
     /**
-     * @param list<non-empty-string>|non-empty-string $paths
-     * @param list<non-empty-string>|string           $suffixes
-     * @param list<non-empty-string>|string           $prefixes
-     * @param list<non-empty-string>                  $exclude
+     * @param  list<non-empty-string>|non-empty-string  $paths
+     * @param  list<non-empty-string>|string  $suffixes
+     * @param  list<non-empty-string>|string  $prefixes
+     * @param  list<non-empty-string>  $exclude
      *
      * @phpstan-ignore missingType.generics
      */
@@ -48,7 +53,7 @@ final class Factory
             $paths = [$paths];
         }
 
-        $paths   = $this->resolveWildcards($paths);
+        $paths = $this->resolveWildcards($paths);
         $exclude = $this->resolveWildcards($exclude);
 
         if (is_string($prefixes)) {
@@ -91,8 +96,7 @@ final class Factory
     }
 
     /**
-     * @param list<non-empty-string> $paths
-     *
+     * @param  list<non-empty-string>  $paths
      * @return list<non-empty-string>
      */
     private function resolveWildcards(array $paths): array
@@ -104,12 +108,11 @@ final class Factory
 
             if ($locals = $this->globstar($path)) {
                 $_paths[] = array_map(
-                    static function (string $local) use ($pathEndsWithDirectorySeparator): string|false
-                    {
+                    static function (string $local) use ($pathEndsWithDirectorySeparator): string|false {
                         $realPath = realpath($local);
 
                         if ($realPath !== false && $pathEndsWithDirectorySeparator && is_dir($realPath)) {
-                            return $realPath . DIRECTORY_SEPARATOR;
+                            return $realPath.DIRECTORY_SEPARATOR;
                         }
 
                         return $realPath;
@@ -121,7 +124,7 @@ final class Factory
                 $realPath = realpath($path);
 
                 if ($realPath !== false && $pathEndsWithDirectorySeparator && is_dir($realPath)) {
-                    $_paths[] = [$realPath . DIRECTORY_SEPARATOR];
+                    $_paths[] = [$realPath.DIRECTORY_SEPARATOR];
                 } else {
                     $_paths[] = [$realPath];
                 }
@@ -142,18 +145,18 @@ final class Factory
         if (stripos($pattern, '**') === false) {
             $files = glob($pattern, GLOB_ONLYDIR);
         } else {
-            $position    = stripos($pattern, '**');
+            $position = stripos($pattern, '**');
             $rootPattern = substr($pattern, 0, $position - 1);
             $restPattern = substr($pattern, $position + 2);
 
-            $patterns = [$rootPattern . $restPattern];
+            $patterns = [$rootPattern.$restPattern];
             $rootPattern .= '/*';
 
             while ($directories = glob($rootPattern, GLOB_ONLYDIR)) {
                 $rootPattern .= '/*';
 
                 foreach ($directories as $directory) {
-                    $patterns[] = $directory . $restPattern;
+                    $patterns[] = $directory.$restPattern;
                 }
             }
 

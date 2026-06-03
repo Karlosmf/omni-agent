@@ -32,12 +32,12 @@ use Illuminate\Support\Facades\Facade;
  * @method static string originalMethod()
  * @method static \Livewire\LivewireManager withoutLazyLoading()
  *
- * @see \Livewire\LivewireManager
+ * @see LivewireManager
  */
 class Livewire extends Facade
 {
     public static function getFacadeAccessor()
     {
-        return \Livewire\LivewireManager::class;
+        return LivewireManager::class;
     }
 }

@@ -11,23 +11,25 @@
 
 namespace Psy\Exception;
 
+use PhpParser\Error;
+
 /**
  * A "parse error" Exception for Psy.
  */
-class ParseErrorException extends \PhpParser\Error implements Exception
+class ParseErrorException extends Error implements Exception
 {
     /**
      * Constructor!
      *
-     * @param string    $message    (default: '')
-     * @param array|int $attributes Attributes of node/token where error occurred
-     *                              (or start line of error -- deprecated)
+     * @param  string  $message  (default: '')
+     * @param  array|int  $attributes  Attributes of node/token where error occurred
+     *                                 (or start line of error -- deprecated)
      */
     public function __construct(string $message = '', $attributes = [])
     {
         $message = \sprintf('PHP Parse error: %s', $message);
 
-        if (!\is_array($attributes)) {
+        if (! \is_array($attributes)) {
             $attributes = ['startLine' => $attributes];
         }
 
@@ -36,10 +38,8 @@ class ParseErrorException extends \PhpParser\Error implements Exception
 
     /**
      * Create a ParseErrorException from a PhpParser Error.
-     *
-     * @param \PhpParser\Error $e
      */
-    public static function fromParseError(\PhpParser\Error $e): self
+    public static function fromParseError(Error $e): self
     {
         return new self($e->getRawMessage(), $e->getAttributes());
     }

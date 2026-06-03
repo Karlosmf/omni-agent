@@ -23,8 +23,7 @@ class TranslatableMessage implements TranslatableInterface
         private string $message,
         private array $parameters = [],
         private ?string $domain = null,
-    ) {
-    }
+    ) {}
 
     public function getMessage(): string
     {

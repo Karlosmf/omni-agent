@@ -18,8 +18,7 @@ final class StaticMessage implements TranslatableInterface
 {
     public function __construct(
         private string $message,
-    ) {
-    }
+    ) {}
 
     public function getMessage(): string
     {

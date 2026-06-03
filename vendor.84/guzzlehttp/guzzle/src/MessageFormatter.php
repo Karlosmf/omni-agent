@@ -45,7 +45,9 @@ class MessageFormatter implements MessageFormatterInterface
      * @var string
      */
     public const CLF = '{hostname} {req_header_User-Agent} - [{date_common_log}] "{method} {target} HTTP/{version}" {code} {res_header_Content-Length}';
+
     public const DEBUG = ">>>>>>>>\n{request}\n<<<<<<<<\n{response}\n--------\n{error}";
+
     public const SHORT = '[{ts}] "{method} {target} HTTP/{version}" {code}';
 
     /**
@@ -54,7 +56,7 @@ class MessageFormatter implements MessageFormatterInterface
     private $template;
 
     /**
-     * @param string $template Log message template
+     * @param  string  $template  Log message template
      */
     public function __construct(?string $template = self::CLF)
     {
@@ -64,9 +66,9 @@ class MessageFormatter implements MessageFormatterInterface
     /**
      * Returns a formatted message string.
      *
-     * @param RequestInterface       $request  Request that was sent
-     * @param ResponseInterface|null $response Response that was received
-     * @param \Throwable|null        $error    Exception that was received
+     * @param  RequestInterface  $request  Request that was sent
+     * @param  ResponseInterface|null  $response  Response that was received
+     * @param  \Throwable|null  $error  Exception that was received
      */
     public function format(RequestInterface $request, ?ResponseInterface $response = null, ?\Throwable $error = null): string
     {
@@ -108,14 +110,14 @@ class MessageFormatter implements MessageFormatterInterface
                         $result = $request->getBody()->__toString();
                         break;
                     case 'res_body':
-                        if (!$response instanceof ResponseInterface) {
+                        if (! $response instanceof ResponseInterface) {
                             $result = 'NULL';
                             break;
                         }
 
                         $body = $response->getBody();
 
-                        if (!$body->isSeekable()) {
+                        if (! $body->isSeekable()) {
                             $result = 'RESPONSE_NOT_LOGGEABLE';
                             break;
                         }

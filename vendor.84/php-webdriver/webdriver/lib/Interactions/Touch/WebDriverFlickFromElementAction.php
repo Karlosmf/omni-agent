@@ -11,19 +11,21 @@ class WebDriverFlickFromElementAction extends WebDriverTouchAction implements We
      * @var int
      */
     private $x;
+
     /**
      * @var int
      */
     private $y;
+
     /**
      * @var int
      */
     private $speed;
 
     /**
-     * @param int $x
-     * @param int $y
-     * @param int $speed
+     * @param  int  $x
+     * @param  int  $y
+     * @param  int  $speed
      */
     public function __construct(
         WebDriverTouchScreen $touch_screen,

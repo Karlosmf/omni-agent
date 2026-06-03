@@ -56,10 +56,10 @@ class SmartPunctuationDecorator extends BaseDecorator
         return new Environment([
             'smartpunct' => $smartpunct,
             'html_input' => HtmlFilter::ALLOW,
-            'renderer'   => [
+            'renderer' => [
                 'block_separator' => Expect::string(),
                 'inner_separator' => Expect::string(),
-                'soft_break'      => Expect::string(),
+                'soft_break' => Expect::string(),
             ],
         ]);
     }

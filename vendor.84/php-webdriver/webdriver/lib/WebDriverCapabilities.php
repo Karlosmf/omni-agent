@@ -10,7 +10,7 @@ interface WebDriverCapabilities
     public function getBrowserName();
 
     /**
-     * @param string $name
+     * @param  string  $name
      * @return mixed The value of a capability.
      */
     public function getCapability($name);
@@ -26,21 +26,23 @@ interface WebDriverCapabilities
     public function getVersion();
 
     /**
-     * @param string $capability_name
+     * @param  string  $capability_name
      * @return bool Whether the value is not null and not false.
      */
     public function is($capability_name);
 
     /**
      * @todo Remove in next major release (BC)
+     *
      * @deprecated All browsers are always JS enabled except HtmlUnit and it's not meaningful to disable JS execution.
+     *
      * @return bool Whether javascript is enabled.
      */
     public function isJavascriptEnabled();
 
     // TODO: Add in next major release (BC)
-    ///**
+    // /**
     // * @return array
     // */
-    //public function toArray();
+    // public function toArray();
 }

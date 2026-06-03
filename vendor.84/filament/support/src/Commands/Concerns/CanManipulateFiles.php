@@ -14,7 +14,7 @@ trait CanManipulateFiles
     /**
      * @param  string | array<string>  $paths
      */
-    protected function checkForCollision(string | array $paths): bool
+    protected function checkForCollision(string|array $paths): bool
     {
         foreach (Arr::wrap($paths) as $path) {
             if (! $this->fileExists($path)) {
@@ -23,7 +23,7 @@ trait CanManipulateFiles
 
             if (
                 (! app()->runningUnitTests()) &&
-                (! confirm(basename($path) . ' already exists, do you want to overwrite it?'))
+                (! confirm(basename($path).' already exists, do you want to overwrite it?'))
             ) {
                 $this->components->error("{$path} already exists, aborting.");
 
@@ -44,7 +44,7 @@ trait CanManipulateFiles
         $filesystem = app(Filesystem::class);
 
         if (! $this->fileExists($stubPath = base_path("stubs/filament/{$stub}.stub"))) {
-            $stubPath = $this->getDefaultStubPath() . "/{$stub}.stub";
+            $stubPath = $this->getDefaultStubPath()."/{$stub}.stub";
         }
 
         $stub = str($filesystem->get($stubPath));
@@ -65,7 +65,7 @@ trait CanManipulateFiles
         return $filesystem->exists($path);
     }
 
-    protected function writeFile(string $path, string | FileGenerator $contents): void
+    protected function writeFile(string $path, string|FileGenerator $contents): void
     {
         $filesystem = app(Filesystem::class);
 

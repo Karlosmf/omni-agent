@@ -18,18 +18,23 @@ use League\CommonMark\Node\Node;
 final class Bracket
 {
     private Node $node;
+
     private ?Bracket $previous;
+
     private bool $hasNext = false;
+
     private int $position;
+
     private bool $image;
+
     private bool $active = true;
 
     public function __construct(Node $node, ?Bracket $previous, int $position, bool $image)
     {
-        $this->node     = $node;
+        $this->node = $node;
         $this->previous = $previous;
         $this->position = $position;
-        $this->image    = $image;
+        $this->image = $image;
     }
 
     public function getNode(): Node

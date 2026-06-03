@@ -2,15 +2,20 @@
 
 namespace Livewire\Drawer;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Pipeline\Pipeline;
+use Illuminate\View\Component;
 use Livewire\Exceptions\RootTagMissingFromViewException;
-
 use Livewire\Features\SupportFileUploads\FileUploadConfiguration;
+
 use function Livewire\invade;
 
 class Utils extends BaseUtils
 {
-    static function insertAttributesIntoHtmlRoot($html, $attributes) {
+    public static function insertAttributesIntoHtmlRoot($html, $attributes)
+    {
         $attributesFormattedForHtmlElement = static::stringifyHtmlAttributes($attributes);
 
         preg_match('/(?:\n\s*|^\s*)<([a-zA-Z0-9\-]+)/', $html, $matches, PREG_OFFSET_CAPTURE);
@@ -32,7 +37,7 @@ class Utils extends BaseUtils
         );
     }
 
-    static function stringifyHtmlAttributes($attributes)
+    public static function stringifyHtmlAttributes($attributes)
     {
         return collect($attributes)
             ->mapWithKeys(function ($value, $key) {
@@ -42,16 +47,16 @@ class Utils extends BaseUtils
             })->implode(' ');
     }
 
-    static function escapeStringForHtml($subject)
+    public static function escapeStringForHtml($subject)
     {
         if (is_string($subject) || is_numeric($subject)) {
-            return htmlspecialchars($subject, ENT_QUOTES|ENT_SUBSTITUTE);
+            return htmlspecialchars($subject, ENT_QUOTES | ENT_SUBSTITUTE);
         }
 
-        return htmlspecialchars(json_encode($subject), ENT_QUOTES|ENT_SUBSTITUTE);
+        return htmlspecialchars(json_encode($subject), ENT_QUOTES | ENT_SUBSTITUTE);
     }
 
-    static function pretendResponseIsFile($file, $contentType = 'application/javascript; charset=utf-8')
+    public static function pretendResponseIsFile($file, $contentType = 'application/javascript; charset=utf-8')
     {
         $lastModified = filemtime($file);
 
@@ -59,7 +64,7 @@ class Utils extends BaseUtils
             fn ($headers) => response()->file($file, $headers));
     }
 
-    static function pretendPreviewResponseIsPreviewFile($filename)
+    public static function pretendPreviewResponseIsPreviewFile($filename)
     {
         $file = FileUploadConfiguration::path($filename);
         $storage = FileUploadConfiguration::storage();
@@ -70,7 +75,7 @@ class Utils extends BaseUtils
             fn ($headers) => $storage->download($file, $filename, $headers));
     }
 
-    static private function cachedFileResponse($filename, $contentType, $lastModified, $downloadCallback)
+    private static function cachedFileResponse($filename, $contentType, $lastModified, $downloadCallback)
     {
         $expires = strtotime('+1 year');
         $cacheControl = 'public, max-age=31536000';
@@ -96,44 +101,44 @@ class Utils extends BaseUtils
         return $downloadCallback($headers);
     }
 
-    static function matchesCache($lastModified)
+    public static function matchesCache($lastModified)
     {
         $ifModifiedSince = app(Request::class)->header('if-modified-since');
 
         return $ifModifiedSince !== null && @strtotime($ifModifiedSince) === $lastModified;
     }
 
-    static function httpDate($timestamp)
+    public static function httpDate($timestamp)
     {
         return sprintf('%s GMT', gmdate('D, d M Y H:i:s', $timestamp));
     }
 
-    static function containsDots($subject)
+    public static function containsDots($subject)
     {
         return str_contains($subject, '.');
     }
 
-    static function dotSegments($subject)
+    public static function dotSegments($subject)
     {
         return explode('.', $subject);
     }
 
-    static function beforeFirstDot($subject)
+    public static function beforeFirstDot($subject)
     {
         return head(explode('.', $subject));
     }
 
-    static function afterFirstDot($subject) : string
+    public static function afterFirstDot($subject): string
     {
         return str($subject)->after('.');
     }
 
-    static public function hasProperty($target, $property)
+    public static function hasProperty($target, $property)
     {
         return property_exists($target, static::beforeFirstDot($property));
     }
 
-    static public function shareWithViews($name, $value)
+    public static function shareWithViews($name, $value)
     {
         $old = app('view')->shared($name, 'notfound');
 
@@ -148,13 +153,13 @@ class Utils extends BaseUtils
         };
     }
 
-    static function generateBladeView($subject, $data = [])
+    public static function generateBladeView($subject, $data = [])
     {
         if (! is_string($subject)) {
             return tap($subject)->with($data);
         }
 
-        $component = new class($subject) extends \Illuminate\View\Component
+        $component = new class($subject) extends Component
         {
             protected $template;
 
@@ -174,28 +179,28 @@ class Utils extends BaseUtils
         return $view;
     }
 
-    static function applyMiddleware(\Illuminate\Http\Request $request, $middleware = [])
+    public static function applyMiddleware(Request $request, $middleware = [])
     {
-        $response = (new \Illuminate\Pipeline\Pipeline(app()))
+        $response = (new Pipeline(app()))
             ->send($request)
             ->through($middleware)
-            ->then(function() {
-                return new \Illuminate\Http\Response();
+            ->then(function () {
+                return new Response;
             });
 
-        if ($response instanceof \Illuminate\Http\RedirectResponse) {
+        if ($response instanceof RedirectResponse) {
             abort($response);
         }
 
         return $response;
     }
 
-    static function extractAttributeDataFromHtml($html, $attribute)
+    public static function extractAttributeDataFromHtml($html, $attribute)
     {
         $data = (string) str($html)->betweenFirst($attribute.'="', '"');
 
         return json_decode(
-            htmlspecialchars_decode($data, ENT_QUOTES|ENT_SUBSTITUTE),
+            htmlspecialchars_decode($data, ENT_QUOTES | ENT_SUBSTITUTE),
             associative: true,
         );
     }

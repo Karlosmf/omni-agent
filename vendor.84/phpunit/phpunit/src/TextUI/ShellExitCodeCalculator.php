@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI;
 
 use PHPUnit\TestRunner\TestResult\TestResult;
@@ -19,34 +22,36 @@ use PHPUnit\TextUI\Configuration\Configuration;
  */
 final readonly class ShellExitCodeCalculator
 {
-    private const int SUCCESS_EXIT   = 0;
-    private const int FAILURE_EXIT   = 1;
+    private const int SUCCESS_EXIT = 0;
+
+    private const int FAILURE_EXIT = 1;
+
     private const int EXCEPTION_EXIT = 2;
 
     public function calculate(Configuration $configuration, TestResult $result): int
     {
-        $failOnDeprecation        = false;
+        $failOnDeprecation = false;
         $failOnPhpunitDeprecation = false;
-        $failOnPhpunitNotice      = false;
-        $failOnPhpunitWarning     = false;
-        $failOnEmptyTestSuite     = false;
-        $failOnIncomplete         = false;
-        $failOnNotice             = false;
-        $failOnRisky              = false;
-        $failOnSkipped            = false;
-        $failOnWarning            = false;
+        $failOnPhpunitNotice = false;
+        $failOnPhpunitWarning = false;
+        $failOnEmptyTestSuite = false;
+        $failOnIncomplete = false;
+        $failOnNotice = false;
+        $failOnRisky = false;
+        $failOnSkipped = false;
+        $failOnWarning = false;
 
         if ($configuration->failOnAllIssues()) {
-            $failOnDeprecation        = true;
+            $failOnDeprecation = true;
             $failOnPhpunitDeprecation = true;
-            $failOnPhpunitNotice      = true;
-            $failOnPhpunitWarning     = true;
-            $failOnEmptyTestSuite     = true;
-            $failOnIncomplete         = true;
-            $failOnNotice             = true;
-            $failOnRisky              = true;
-            $failOnSkipped            = true;
-            $failOnWarning            = true;
+            $failOnPhpunitNotice = true;
+            $failOnPhpunitWarning = true;
+            $failOnEmptyTestSuite = true;
+            $failOnIncomplete = true;
+            $failOnNotice = true;
+            $failOnRisky = true;
+            $failOnSkipped = true;
+            $failOnWarning = true;
         }
 
         if ($configuration->failOnDeprecation()) {
@@ -135,7 +140,7 @@ final readonly class ShellExitCodeCalculator
             $returnCode = self::SUCCESS_EXIT;
         }
 
-        if ($failOnEmptyTestSuite && !$result->hasTests()) {
+        if ($failOnEmptyTestSuite && ! $result->hasTests()) {
             $returnCode = self::FAILURE_EXIT;
         }
 

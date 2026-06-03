@@ -31,13 +31,13 @@ abstract class Command extends BaseCommand
     /**
      * Sets the application instance for this command.
      *
-     * @param Application|null $application An Application instance
+     * @param  Application|null  $application  An Application instance
      *
      * @api
      */
     public function setApplication(?Application $application = null): void
     {
-        if ($application !== null && !$application instanceof Shell) {
+        if ($application !== null && ! $application instanceof Shell) {
             throw new \InvalidArgumentException('PsySH Commands require an instance of Psy\Shell');
         }
 
@@ -50,7 +50,7 @@ abstract class Command extends BaseCommand
     protected function getShell(): Shell
     {
         $shell = $this->getApplication();
-        if (!$shell instanceof Shell) {
+        if (! $shell instanceof Shell) {
             throw new \RuntimeException('PsySH Commands require an instance of Psy\Shell');
         }
 
@@ -113,7 +113,7 @@ abstract class Command extends BaseCommand
         $hidden = $this->getHiddenArguments();
 
         return \array_filter($this->getNativeDefinition()->getArguments(), function ($argument) use ($hidden) {
-            return !\in_array($argument->getName(), $hidden);
+            return ! \in_array($argument->getName(), $hidden);
         });
     }
 
@@ -135,7 +135,7 @@ abstract class Command extends BaseCommand
         $hidden = $this->getHiddenOptions();
 
         return \array_filter($this->getNativeDefinition()->getOptions(), function ($option) use ($hidden) {
-            return !\in_array($option->getName(), $hidden);
+            return ! \in_array($option->getName(), $hidden);
         });
     }
 
@@ -166,10 +166,10 @@ abstract class Command extends BaseCommand
         $messages = [];
 
         $arguments = $this->getArguments();
-        if (!empty($arguments)) {
+        if (! empty($arguments)) {
             $messages[] = '<comment>Arguments:</comment>';
             foreach ($arguments as $argument) {
-                if (null !== $argument->getDefault() && (!\is_array($argument->getDefault()) || \count($argument->getDefault()))) {
+                if ($argument->getDefault() !== null && (! \is_array($argument->getDefault()) || \count($argument->getDefault()))) {
                     $default = \sprintf('<comment> (default: %s)</comment>', $this->formatDefaultValue($argument->getDefault()));
                 } else {
                     $default = '';
@@ -203,7 +203,7 @@ abstract class Command extends BaseCommand
             $messages[] = '<comment>Options:</comment>';
 
             foreach ($options as $option) {
-                if ($option->acceptValue() && null !== $option->getDefault() && (!\is_array($option->getDefault()) || \count($option->getDefault()))) {
+                if ($option->acceptValue() && $option->getDefault() !== null && (! \is_array($option->getDefault()) || \count($option->getDefault()))) {
                     $default = \sprintf('<comment> (default: %s)</comment>', $this->formatDefaultValue($option->getDefault()));
                 } else {
                     $default = '';
@@ -256,7 +256,7 @@ abstract class Command extends BaseCommand
     /**
      * Format an option default as text.
      *
-     * @param mixed $default
+     * @param  mixed  $default
      */
     private function formatDefaultValue($default): string
     {
@@ -274,7 +274,7 @@ abstract class Command extends BaseCommand
      */
     protected function getTable(OutputInterface $output)
     {
-        $style = new TableStyle();
+        $style = new TableStyle;
 
         // Symfony 4.1 deprecated single-argument style setters.
         if (\method_exists($style, 'setVerticalBorderChars')) {

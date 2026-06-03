@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -11,8 +13,8 @@
 
 namespace Monolog\Handler;
 
-use Monolog\Level;
 use Monolog\Formatter\FormatterInterface;
+use Monolog\Level;
 use Monolog\LogRecord;
 
 /**
@@ -50,7 +52,7 @@ class OverflowHandler extends AbstractHandler implements FormattableHandlerInter
     private array $buffer = [];
 
     /**
-     * @param array<int, int> $thresholdMap Dictionary of log level value => threshold
+     * @param  array<int, int>  $thresholdMap  Dictionary of log level value => threshold
      */
     public function __construct(
         HandlerInterface $handler,
@@ -75,7 +77,7 @@ class OverflowHandler extends AbstractHandler implements FormattableHandlerInter
      * Unless the bubbling is interrupted (by returning true), the Logger class will keep on
      * calling further handlers in the stack with a given log record.
      *
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function handle(LogRecord $record): bool
     {
@@ -85,7 +87,7 @@ class OverflowHandler extends AbstractHandler implements FormattableHandlerInter
 
         $level = $record->level->value;
 
-        if (!isset($this->thresholdMap[$level])) {
+        if (! isset($this->thresholdMap[$level])) {
             $this->thresholdMap[$level] = 0;
         }
 
@@ -94,7 +96,7 @@ class OverflowHandler extends AbstractHandler implements FormattableHandlerInter
             $this->thresholdMap[$level]--;
             $this->buffer[$level][] = $record;
 
-            return false === $this->bubble;
+            return $this->bubble === false;
         }
 
         if ($this->thresholdMap[$level] === 0) {
@@ -108,11 +110,11 @@ class OverflowHandler extends AbstractHandler implements FormattableHandlerInter
 
         $this->handler->handle($record);
 
-        return false === $this->bubble;
+        return $this->bubble === false;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setFormatter(FormatterInterface $formatter): HandlerInterface
     {
@@ -126,7 +128,7 @@ class OverflowHandler extends AbstractHandler implements FormattableHandlerInter
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getFormatter(): FormatterInterface
     {

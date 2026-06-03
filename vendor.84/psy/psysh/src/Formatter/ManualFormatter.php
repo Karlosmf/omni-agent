@@ -25,16 +25,18 @@ class ManualFormatter
     private const MAX_WIDTH = 120;
 
     private ManualWrapper $wrapper;
+
     private int $width;
+
     private ?ManualInterface $manual;
 
     /**
-     * @param int                  $width  Terminal width for text wrapping
-     * @param ManualInterface|null $manual Optional manual for generating hyperlinks
+     * @param  int  $width  Terminal width for text wrapping
+     * @param  ManualInterface|null  $manual  Optional manual for generating hyperlinks
      */
     public function __construct(int $width = 100, ?ManualInterface $manual = null)
     {
-        $this->wrapper = new ManualWrapper();
+        $this->wrapper = new ManualWrapper;
         // Cap width at MAX_WIDTH for readability on ultra-wide terminals
         $this->width = \min($width, self::MAX_WIDTH);
         $this->manual = $manual;
@@ -43,7 +45,7 @@ class ManualFormatter
     /**
      * Format structured manual data for display.
      *
-     * @param array $data Structured manual data
+     * @param  array  $data  Structured manual data
      */
     public function format(array $data): string
     {
@@ -62,7 +64,7 @@ class ManualFormatter
                 break;
             default:
                 // Generic fallback
-                if (!empty($data['description'])) {
+                if (! empty($data['description'])) {
                     $output[] = $this->formatDescription($data['description']);
                 }
         }
@@ -73,25 +75,25 @@ class ManualFormatter
     /**
      * Format a function entry.
      *
-     * @param array $data Function data
+     * @param  array  $data  Function data
      */
     private function formatFunction(array $data): string
     {
         $output = [];
 
-        if (!empty($data['description'])) {
+        if (! empty($data['description'])) {
             $output[] = $this->formatDescription($data['description']);
         }
 
-        if (!empty($data['params'])) {
+        if (! empty($data['params'])) {
             $output[] = $this->formatParameters($data['params']);
         }
 
-        if (!empty($data['return'])) {
+        if (! empty($data['return'])) {
             $output[] = $this->formatReturn($data['return']);
         }
 
-        if (!empty($data['seeAlso'])) {
+        if (! empty($data['seeAlso'])) {
             $output[] = $this->formatSeeAlso($data['seeAlso']);
         }
 
@@ -101,19 +103,19 @@ class ManualFormatter
     /**
      * Format a class entry.
      *
-     * @param array $data Class data
+     * @param  array  $data  Class data
      */
     private function formatClass(array $data): string
     {
         $output = [];
 
         // Description
-        if (!empty($data['description'])) {
+        if (! empty($data['description'])) {
             $output[] = $this->formatDescription($data['description']);
         }
 
         // See also
-        if (!empty($data['seeAlso'])) {
+        if (! empty($data['seeAlso'])) {
             $output[] = $this->formatSeeAlso($data['seeAlso']);
         }
 
@@ -123,7 +125,7 @@ class ManualFormatter
     /**
      * Format a constant entry.
      *
-     * @param array $data Constant data
+     * @param  array  $data  Constant data
      */
     private function formatConstant(array $data): string
     {
@@ -133,11 +135,11 @@ class ManualFormatter
             $output[] = '<strong>Value:</strong> '.$this->thunkTags($data['value']);
         }
 
-        if (!empty($data['description'])) {
+        if (! empty($data['description'])) {
             $output[] = $this->formatDescription($data['description']);
         }
 
-        if (!empty($data['seeAlso'])) {
+        if (! empty($data['seeAlso'])) {
             $output[] = $this->formatSeeAlso($data['seeAlso']);
         }
 
@@ -147,8 +149,7 @@ class ManualFormatter
     /**
      * Format a description section.
      *
-     * @param string $description Description text with semantic tags
-     *
+     * @param  string  $description  Description text with semantic tags
      * @return string Formatted description
      */
     private function formatDescription(string $description): string
@@ -166,7 +167,7 @@ class ManualFormatter
     /**
      * Format parameters section.
      *
-     * @param array $params Parameter list
+     * @param  array  $params  Parameter list
      */
     private function formatParameters(array $params): string
     {
@@ -182,7 +183,7 @@ class ManualFormatter
     /**
      * Format parameters as a table (for wide terminals).
      *
-     * @param array $params Parameter list
+     * @param  array  $params  Parameter list
      */
     private function formatParametersTable(array $params): string
     {
@@ -211,7 +212,7 @@ class ManualFormatter
             $nameFormatted = '<strong>'.$name.'</strong>'.\str_repeat(' ', $nameWidth - \mb_strlen($name));
 
             // Wrap description with proper indentation
-            if (!empty($desc)) {
+            if (! empty($desc)) {
                 $wrapped = $this->wrapper->wrap($desc, $wrapWidth);
                 $firstLine = '  '.$typeFormatted.'  '.$nameFormatted.'  ';
                 $output = \array_merge($output, $this->indentWrappedLines($wrapped, $indent, $firstLine));
@@ -226,7 +227,7 @@ class ManualFormatter
     /**
      * Format parameters stacked (for narrow terminals).
      *
-     * @param array $params Parameter list
+     * @param  array  $params  Parameter list
      */
     private function formatParametersStacked(array $params): string
     {
@@ -243,7 +244,7 @@ class ManualFormatter
 
             $output[] = \sprintf('  <info>%s</info>  <strong>%s</strong>', $type, $name);
 
-            if (!empty($param['description'])) {
+            if (! empty($param['description'])) {
                 $desc = $this->thunkTags($param['description']);
                 $indent = \str_repeat(' ', $typeWidth + 4);
                 $wrapped = $this->wrapper->wrap($desc, $this->width - \mb_strlen($indent));
@@ -257,7 +258,7 @@ class ManualFormatter
     /**
      * Format return value section.
      *
-     * @param array $return Return value data
+     * @param  array  $return  Return value data
      */
     private function formatReturn(array $return): string
     {
@@ -269,7 +270,7 @@ class ManualFormatter
         $indent = \str_repeat(' ', \mb_strlen($type) + 4);
         $wrapWidth = $this->width - \mb_strlen($indent);
 
-        if (!empty($desc)) {
+        if (! empty($desc)) {
             $desc = $this->thunkTags($desc);
             $wrapped = $this->wrapper->wrap($desc, $wrapWidth);
             $firstLine = \sprintf('  <info>%s</info>  ', $type);
@@ -284,7 +285,7 @@ class ManualFormatter
     /**
      * Format see also section.
      *
-     * @param array $seeAlso List of related functions/classes
+     * @param  array  $seeAlso  List of related functions/classes
      */
     private function formatSeeAlso(array $seeAlso): string
     {
@@ -309,7 +310,7 @@ class ManualFormatter
     /**
      * Format a single see also item with hyperlink if available.
      *
-     * @param string $item Function or class name (may contain XML tags)
+     * @param  string  $item  Function or class name (may contain XML tags)
      */
     private function formatSeeAlsoItem(string $item): string
     {
@@ -348,10 +349,9 @@ class ManualFormatter
      * Takes wrapped text and adds indentation to each line.
      * The first line can have a different prefix than subsequent lines.
      *
-     * @param string      $wrapped     Wrapped text (may contain newlines)
-     * @param string      $indent      Indentation for continuation lines
-     * @param string|null $firstIndent Optional different indentation for first line (defaults to $indent)
-     *
+     * @param  string  $wrapped  Wrapped text (may contain newlines)
+     * @param  string  $indent  Indentation for continuation lines
+     * @param  string|null  $firstIndent  Optional different indentation for first line (defaults to $indent)
      * @return array Lines with indentation applied
      */
     private function indentWrappedLines(string $wrapped, string $indent, ?string $firstIndent = null): array
@@ -370,8 +370,7 @@ class ManualFormatter
     /**
      * Convert semantic XML tags to Symfony Console format tags.
      *
-     * @param string $text Text with semantic tags
-     *
+     * @param  string  $text  Text with semantic tags
      * @return string Text with console format tags
      */
     private function thunkTags(string $text): string
@@ -435,16 +434,16 @@ class ManualFormatter
 
         // Map other semantic tags to corresponding formats
         $replacements = [
-            '<constant>'   => '<info>',
-            '</constant>'  => '</info>',
-            '<classname>'  => '<class>',
+            '<constant>' => '<info>',
+            '</constant>' => '</info>',
+            '<classname>' => '<class>',
             '</classname>' => '</class>',
-            '<class>'      => '<class>',
-            '</class>'     => '</class>',
-            '<type>'       => '<info>',
-            '</type>'      => '</info>',
-            '<literal>'    => '<return>',
-            '</literal>'   => '</return>',
+            '<class>' => '<class>',
+            '</class>' => '</class>',
+            '<type>' => '<info>',
+            '</type>' => '</info>',
+            '<literal>' => '<return>',
+            '</literal>' => '</return>',
         ];
 
         $text = \str_replace(\array_keys($replacements), \array_values($replacements), $text);

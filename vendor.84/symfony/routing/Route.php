@@ -20,13 +20,21 @@ namespace Symfony\Component\Routing;
 class Route implements \Serializable
 {
     private string $path = '/';
+
     private string $host = '';
+
     private array $schemes = [];
+
     private array $methods = [];
+
     private array $defaults = [];
+
     private array $requirements = [];
+
     private array $options = [];
+
     private string $condition = '';
+
     private ?CompiledRoute $compiled = null;
 
     /**
@@ -37,14 +45,14 @@ class Route implements \Serializable
      *  * compiler_class: A class name able to compile this route instance (RouteCompiler by default)
      *  * utf8:           Whether UTF-8 matching is enforced or not
      *
-     * @param string                    $path         The path pattern to match
-     * @param array                     $defaults     An array of default parameter values
-     * @param array<string|\Stringable> $requirements An array of requirements for parameters (regexes)
-     * @param array                     $options      An array of options
-     * @param string|null               $host         The host pattern to match
-     * @param string|string[]           $schemes      A required URI scheme or an array of restricted schemes
-     * @param string|string[]           $methods      A required HTTP method or an array of restricted methods
-     * @param string|null               $condition    A condition that should evaluate to true for the route to match
+     * @param  string  $path  The path pattern to match
+     * @param  array  $defaults  An array of default parameter values
+     * @param  array<string|\Stringable>  $requirements  An array of requirements for parameters (regexes)
+     * @param  array  $options  An array of options
+     * @param  string|null  $host  The host pattern to match
+     * @param  string|string[]  $schemes  A required URI scheme or an array of restricted schemes
+     * @param  string|string[]  $methods  A required HTTP method or an array of restricted methods
+     * @param  string|null  $condition  A condition that should evaluate to true for the route to match
      */
     public function __construct(string $path, array $defaults = [], array $requirements = [], array $options = [], ?string $host = '', string|array $schemes = [], string|array $methods = [], ?string $condition = '')
     {
@@ -158,8 +166,7 @@ class Route implements \Serializable
      * Sets the schemes (e.g. 'https') this route is restricted to.
      * So an empty array means that any scheme is allowed.
      *
-     * @param string|string[] $schemes The scheme or an array of schemes
-     *
+     * @param  string|string[]  $schemes  The scheme or an array of schemes
      * @return $this
      */
     public function setSchemes(string|array $schemes): static
@@ -193,8 +200,7 @@ class Route implements \Serializable
      * Sets the HTTP methods (e.g. 'POST') this route is restricted to.
      * So an empty array means that any method is allowed.
      *
-     * @param string|string[] $methods The method or an array of methods
-     *
+     * @param  string|string[]  $methods  The method or an array of methods
      * @return $this
      */
     public function setMethods(string|array $methods): static
@@ -308,7 +314,7 @@ class Route implements \Serializable
      */
     public function setDefault(string $name, mixed $default): static
     {
-        if ('_locale' === $name && $this->isLocalized()) {
+        if ($name === '_locale' && $this->isLocalized()) {
             return $this;
         }
 
@@ -365,7 +371,7 @@ class Route implements \Serializable
      */
     public function setRequirement(string $key, string $regex): static
     {
-        if ('_locale' === $key && $this->isLocalized()) {
+        if ($key === '_locale' && $this->isLocalized()) {
             return $this;
         }
 
@@ -401,7 +407,7 @@ class Route implements \Serializable
      */
     public function compile(): CompiledRoute
     {
-        if (null !== $this->compiled) {
+        if ($this->compiled !== null) {
             return $this->compiled;
         }
 
@@ -412,7 +418,7 @@ class Route implements \Serializable
 
     private function extractInlineDefaultsAndRequirements(string $pattern): string
     {
-        if (false === strpbrk($pattern, '?<:')) {
+        if (strpbrk($pattern, '?<:') === false) {
             return $pattern;
         }
 
@@ -420,7 +426,7 @@ class Route implements \Serializable
 
         $pattern = preg_replace_callback('#\{(!?)([\w\x80-\xFF]++)(:([\w\x80-\xFF]++)(\.[\w\x80-\xFF]++)?)?(<.*?>)?(\?[^\}]*+)?\}#', function ($m) use (&$mapping) {
             if (isset($m[7][0])) {
-                $this->setDefault($m[2], '?' !== $m[7] ? substr($m[7], 1) : null);
+                $this->setDefault($m[2], $m[7] !== '?' ? substr($m[7], 1) : null);
             }
             if (isset($m[6][0])) {
                 $this->setRequirement($m[2], substr($m[6], 1, -1));
@@ -441,8 +447,8 @@ class Route implements \Serializable
 
     private function sanitizeRequirement(string $key, string $regex): string
     {
-        if ('' !== $regex) {
-            if ('^' === $regex[0]) {
+        if ($regex !== '') {
+            if ($regex[0] === '^') {
                 $regex = substr($regex, 1);
             } elseif (str_starts_with($regex, '\\A')) {
                 $regex = substr($regex, 2);
@@ -455,7 +461,7 @@ class Route implements \Serializable
             $regex = substr($regex, 0, -2);
         }
 
-        if ('' === $regex) {
+        if ($regex === '') {
             throw new \InvalidArgumentException(\sprintf('Routing requirement for "%s" cannot be empty.', $key));
         }
 

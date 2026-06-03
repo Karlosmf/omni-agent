@@ -34,11 +34,11 @@ final class AttributesExtension implements ConfigurableExtensionInterface
 
     public function register(EnvironmentBuilderInterface $environment): void
     {
-        $allowList        = $environment->getConfiguration()->get('attributes.allow');
+        $allowList = $environment->getConfiguration()->get('attributes.allow');
         $allowUnsafeLinks = $environment->getConfiguration()->get('allow_unsafe_links');
 
-        $environment->addBlockStartParser(new AttributesBlockStartParser());
-        $environment->addInlineParser(new AttributesInlineParser());
+        $environment->addBlockStartParser(new AttributesBlockStartParser);
+        $environment->addInlineParser(new AttributesInlineParser);
         $environment->addEventListener(DocumentParsedEvent::class, [new AttributesListener($allowList, $allowUnsafeLinks), 'processDocument']);
     }
 }

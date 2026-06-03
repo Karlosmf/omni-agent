@@ -16,15 +16,15 @@ use function Filament\Support\locale_has_pluralization;
 
 trait HasRecords
 {
-    protected bool | Closure $allowsDuplicates = false;
+    protected bool|Closure $allowsDuplicates = false;
 
-    protected string | Closure | null $modelLabel = null;
+    protected string|Closure|null $modelLabel = null;
 
-    protected string | Closure | null $pluralModelLabel = null;
+    protected string|Closure|null $pluralModelLabel = null;
 
-    protected string | Closure | null $recordTitle = null;
+    protected string|Closure|null $recordTitle = null;
 
-    protected string | Closure | null $recordTitleAttribute = null;
+    protected string|Closure|null $recordTitleAttribute = null;
 
     protected ?Closure $dataSource = null;
 
@@ -44,42 +44,42 @@ trait HasRecords
         return $this;
     }
 
-    public function allowDuplicates(bool | Closure $condition = true): static
+    public function allowDuplicates(bool|Closure $condition = true): static
     {
         $this->allowsDuplicates = $condition;
 
         return $this;
     }
 
-    public function modelLabel(string | Closure | null $label): static
+    public function modelLabel(string|Closure|null $label): static
     {
         $this->modelLabel = $label;
 
         return $this;
     }
 
-    public function pluralModelLabel(string | Closure | null $label): static
+    public function pluralModelLabel(string|Closure|null $label): static
     {
         $this->pluralModelLabel = $label;
 
         return $this;
     }
 
-    public function recordTitle(string | Closure | null $title): static
+    public function recordTitle(string|Closure|null $title): static
     {
         $this->recordTitle = $title;
 
         return $this;
     }
 
-    public function recordTitleAttribute(string | Closure | null $attribute): static
+    public function recordTitleAttribute(string|Closure|null $attribute): static
     {
         $this->recordTitleAttribute = $attribute;
 
         return $this;
     }
 
-    public function getRecords(): Collection | Paginator | CursorPaginator
+    public function getRecords(): Collection|Paginator|CursorPaginator
     {
         return $this->getLivewire()->getTableRecords();
     }
@@ -102,7 +102,7 @@ trait HasRecords
     /**
      * @param  Model | array<string, mixed>  $record
      */
-    public function getRecordKey(Model | array $record): string
+    public function getRecordKey(Model|array $record): string
     {
         return $this->getLivewire()->getTableRecordKey($record);
     }

@@ -2,6 +2,8 @@
 
 namespace App\Filament\Admin\Resources\Suppliers\RelationManagers;
 
+use App\Enums\TransactionType;
+use App\Filament\Admin\Resources\Bookings\BookingResource;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -39,13 +41,13 @@ class TransactionsRelationManager extends RelationManager
                 TextColumn::make('booking.file_number')
                     ->label('File')
                     ->searchable()
-                    ->url(fn ($record) => $record->booking ? \App\Filament\Admin\Resources\Bookings\BookingResource::getUrl('edit', ['record' => $record->booking]) : null),
+                    ->url(fn ($record) => $record->booking ? BookingResource::getUrl('edit', ['record' => $record->booking]) : null),
                 TextColumn::make('type')
                     ->label('Tipo')
                     ->badge()
                     ->colors([
-                        'success' => \App\Enums\TransactionType::Cobro,
-                        'danger' => \App\Enums\TransactionType::Pago,
+                        'success' => TransactionType::Cobro,
+                        'danger' => TransactionType::Pago,
                     ]),
                 TextColumn::make('amount')
                     ->label('Monto')

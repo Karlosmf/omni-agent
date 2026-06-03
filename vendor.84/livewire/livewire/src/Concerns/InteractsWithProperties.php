@@ -63,6 +63,7 @@ trait InteractsWithProperties
                 // form object reset
                 if (is_subclass_of($this->{$objectName}, Form::class)) {
                     $this->{$objectName}->reset($propertyName);
+
                     continue;
                 }
 
@@ -80,6 +81,7 @@ trait InteractsWithProperties
             // Handle resetting properties that are not initialized by default.
             if (! $isInitialized) {
                 data_forget($this, (string) $property);
+
                 continue;
             }
 
@@ -95,7 +97,7 @@ trait InteractsWithProperties
 
         $keysToReset = array_diff(array_keys($this->all()), $properties);
 
-        if($keysToReset === []) {
+        if ($keysToReset === []) {
             return;
         }
 

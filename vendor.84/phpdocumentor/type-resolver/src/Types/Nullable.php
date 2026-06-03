@@ -46,6 +46,6 @@ final class Nullable implements Type
      */
     public function __toString(): string
     {
-        return '?' . $this->realType->__toString();
+        return '?'.$this->realType->__toString();
     }
 }

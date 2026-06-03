@@ -141,7 +141,7 @@ class MakeClusterCommand extends Command
                 ->beforeLast('Cluster');
         }
 
-        $this->fqnEnd .= '\\' . str($this->fqnEnd)
+        $this->fqnEnd .= '\\'.str($this->fqnEnd)
             ->classBasename()
             ->append('Cluster');
     }
@@ -159,7 +159,7 @@ class MakeClusterCommand extends Command
         }
 
         if (count($namespaces) < 2) {
-            $this->clustersNamespace = (Arr::first($namespaces) ?? app()->getNamespace() . 'Filament\\Clusters');
+            $this->clustersNamespace = (Arr::first($namespaces) ?? app()->getNamespace().'Filament\\Clusters');
             $this->clustersDirectory = (Arr::first($directories) ?? app_path('Filament/Clusters/'));
 
             return;
@@ -187,7 +187,7 @@ class MakeClusterCommand extends Command
 
     protected function configureFqn(): void
     {
-        $this->fqn = $this->clustersNamespace . '\\' . $this->fqnEnd;
+        $this->fqn = $this->clustersNamespace.'\\'.$this->fqnEnd;
     }
 
     protected function createClass(): void

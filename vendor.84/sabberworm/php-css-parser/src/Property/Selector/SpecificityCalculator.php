@@ -62,9 +62,9 @@ final class SpecificityCalculator
      */
     public static function calculate(string $selector): int
     {
-        if (!isset(self::$cache[$selector])) {
+        if (! isset(self::$cache[$selector])) {
             $a = 0;
-            /// @todo should exclude \# as well as "#"
+            // / @todo should exclude \# as well as "#"
             $matches = null;
             $b = \substr_count($selector, '#');
             $c = \preg_match_all(self::NON_ID_ATTRIBUTES_AND_PSEUDO_CLASSES_RX, $selector, $matches);

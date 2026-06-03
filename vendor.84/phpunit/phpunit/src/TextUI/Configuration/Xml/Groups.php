@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\XmlConfiguration;
 
 use PHPUnit\TextUI\Configuration\GroupCollection;
@@ -21,6 +24,7 @@ use PHPUnit\TextUI\Configuration\GroupCollection;
 final readonly class Groups
 {
     private GroupCollection $include;
+
     private GroupCollection $exclude;
 
     public function __construct(GroupCollection $include, GroupCollection $exclude)
@@ -31,7 +35,7 @@ final readonly class Groups
 
     public function hasInclude(): bool
     {
-        return !$this->include->isEmpty();
+        return ! $this->include->isEmpty();
     }
 
     public function include(): GroupCollection
@@ -41,7 +45,7 @@ final readonly class Groups
 
     public function hasExclude(): bool
     {
-        return !$this->exclude->isEmpty();
+        return ! $this->exclude->isEmpty();
     }
 
     public function exclude(): GroupCollection

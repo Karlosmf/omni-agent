@@ -21,7 +21,7 @@ abstract class Value implements CSSElement, Positionable
     use Position;
 
     /**
-     * @param int<1, max>|null $lineNumber
+     * @param  int<1, max>|null  $lineNumber
      */
     public function __construct(?int $lineNumber = null)
     {
@@ -29,8 +29,7 @@ abstract class Value implements CSSElement, Positionable
     }
 
     /**
-     * @param array<non-empty-string> $listDelimiters
-     *
+     * @param  array<non-empty-string>  $listDelimiters
      * @return Value|string
      *
      * @throws UnexpectedTokenException
@@ -43,11 +42,11 @@ abstract class Value implements CSSElement, Positionable
         /** @var list<Value|string> $stack */
         $stack = [];
         $parserState->consumeWhiteSpace();
-        //Build a list of delimiters and parsed values
+        // Build a list of delimiters and parsed values
         while (
-        !($parserState->comes('}') || $parserState->comes(';') || $parserState->comes('!')
-            || $parserState->comes(')')
-            || $parserState->isEnd())
+            ! ($parserState->comes('}') || $parserState->comes(';') || $parserState->comes('!')
+                || $parserState->comes(')')
+                || $parserState->isEnd())
         ) {
             if (\count($stack) > 0) {
                 $foundDelimiter = false;
@@ -59,8 +58,8 @@ abstract class Value implements CSSElement, Positionable
                         break;
                     }
                 }
-                if (!$foundDelimiter) {
-                    //Whitespace was the list delimiter
+                if (! $foundDelimiter) {
+                    // Whitespace was the list delimiter
                     \array_push($stack, ' ');
                 }
             }
@@ -74,12 +73,13 @@ abstract class Value implements CSSElement, Positionable
                 return $stack[0];
             }
             $newStack = [];
-            for ($offset = 0; $offset < $stackSize; ++$offset) {
+            for ($offset = 0; $offset < $stackSize; $offset++) {
                 if ($offset === ($stackSize - 1) || $delimiter !== $stack[$offset + 1]) {
                     $newStack[] = $stack[$offset];
+
                     continue;
                 }
-                $length = 2; //Number of elements to be joined
+                $length = 2; // Number of elements to be joined
                 for ($i = $offset + 3; $i < $stackSize; $i += 2, ++$length) {
                     if ($delimiter !== $stack[$i]) {
                         break;
@@ -94,14 +94,15 @@ abstract class Value implements CSSElement, Positionable
             }
             $stack = $newStack;
         }
-        if (!isset($stack[0])) {
+        if (! isset($stack[0])) {
             throw new UnexpectedTokenException(
                 " {$parserState->peek()} ",
-                $parserState->peek(1, -1) . $parserState->peek(2),
+                $parserState->peek(1, -1).$parserState->peek(2),
                 'literal',
                 $parserState->currentLine()
             );
         }
+
         return $stack[0];
     }
 
@@ -187,6 +188,7 @@ abstract class Value implements CSSElement, Positionable
     {
         $function = $parserState->consumeUntil('(', false, true);
         $arguments = Value::parseValue($parserState, [',', '=']);
+
         return new CSSFunction($function, $arguments, ',', $parserState->currentLine());
     }
 

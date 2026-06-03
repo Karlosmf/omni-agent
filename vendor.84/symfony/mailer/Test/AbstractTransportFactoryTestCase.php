@@ -21,6 +21,7 @@ use Symfony\Component\Mailer\Transport\TransportInterface;
 abstract class AbstractTransportFactoryTestCase extends TestCase
 {
     protected const USER = 'u$er';
+
     protected const PASSWORD = 'pa$s';
 
     abstract public function getFactory(): TransportFactoryInterface;
@@ -44,7 +45,7 @@ abstract class AbstractTransportFactoryTestCase extends TestCase
      * @dataProvider supportsProvider
      */
     #[DataProvider('supportsProvider')]
-    public function testSupports(Dsn $dsn, bool $supports)
+    public function test_supports(Dsn $dsn, bool $supports)
     {
         $factory = $this->getFactory();
 
@@ -55,7 +56,7 @@ abstract class AbstractTransportFactoryTestCase extends TestCase
      * @dataProvider createProvider
      */
     #[DataProvider('createProvider')]
-    public function testCreate(Dsn $dsn, TransportInterface $transport)
+    public function test_create(Dsn $dsn, TransportInterface $transport)
     {
         $factory = $this->getFactory();
 
@@ -69,12 +70,12 @@ abstract class AbstractTransportFactoryTestCase extends TestCase
      * @dataProvider unsupportedSchemeProvider
      */
     #[DataProvider('unsupportedSchemeProvider')]
-    public function testUnsupportedSchemeException(Dsn $dsn, ?string $message = null)
+    public function test_unsupported_scheme_exception(Dsn $dsn, ?string $message = null)
     {
         $factory = $this->getFactory();
 
         $this->expectException(UnsupportedSchemeException::class);
-        if (null !== $message) {
+        if ($message !== null) {
             $this->expectExceptionMessage($message);
         }
 

@@ -1,13 +1,15 @@
 <?php
 
+use App\Enums\UserRole;
 use App\Filament\Admin\Pages\ManageAgencySettings;
 use App\Models\AgencySetting;
 use App\Models\User;
 use Livewire\Livewire;
+
 use function Pest\Laravel\actingAs;
 
 it('can validate contact email in agency settings', function () {
-    $user = User::factory()->create(['role' => \App\Enums\UserRole::Admin]);
+    $user = User::factory()->create(['role' => UserRole::Admin]);
 
     actingAs($user);
 
@@ -18,7 +20,7 @@ it('can validate contact email in agency settings', function () {
 });
 
 it('can save agency settings', function () {
-    $user = User::factory()->create(['role' => \App\Enums\UserRole::Admin]);
+    $user = User::factory()->create(['role' => UserRole::Admin]);
 
     actingAs($user);
 

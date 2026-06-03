@@ -22,23 +22,23 @@ trait CanFormatState
 
     protected ?Closure $formatStateUsing = null;
 
-    protected int | Closure | null $characterLimit = null;
+    protected int|Closure|null $characterLimit = null;
 
-    protected string | Closure | null $characterLimitEnd = null;
+    protected string|Closure|null $characterLimitEnd = null;
 
-    protected int | Closure | null $wordLimit = null;
+    protected int|Closure|null $wordLimit = null;
 
-    protected string | Closure | null $wordLimitEnd = null;
+    protected string|Closure|null $wordLimitEnd = null;
 
-    protected string | Htmlable | Closure | null $prefix = null;
+    protected string|Htmlable|Closure|null $prefix = null;
 
-    protected string | Htmlable | Closure | null $suffix = null;
+    protected string|Htmlable|Closure|null $suffix = null;
 
-    protected string | Closure | null $timezone = null;
+    protected string|Closure|null $timezone = null;
 
-    protected bool | Closure $isHtml = false;
+    protected bool|Closure $isHtml = false;
 
-    protected bool | Closure $isMarkdown = false;
+    protected bool|Closure $isMarkdown = false;
 
     protected bool $isDate = false;
 
@@ -50,14 +50,14 @@ trait CanFormatState
 
     protected bool $isTime = false;
 
-    public function markdown(bool | Closure $condition = true): static
+    public function markdown(bool|Closure $condition = true): static
     {
         $this->isMarkdown = $condition;
 
         return $this;
     }
 
-    public function date(string | Closure | null $format = null, string | Closure | null $timezone = null): static
+    public function date(string|Closure|null $format = null, string|Closure|null $timezone = null): static
     {
         $this->isDate = true;
 
@@ -74,7 +74,7 @@ trait CanFormatState
         return $this;
     }
 
-    public function dateTime(string | Closure | null $format = null, string | Closure | null $timezone = null): static
+    public function dateTime(string|Closure|null $format = null, string|Closure|null $timezone = null): static
     {
         $this->isDateTime = true;
 
@@ -85,7 +85,7 @@ trait CanFormatState
         return $this;
     }
 
-    public function isoDate(string | Closure | null $format = null, string | Closure | null $timezone = null): static
+    public function isoDate(string|Closure|null $format = null, string|Closure|null $timezone = null): static
     {
         $this->isDate = true;
 
@@ -104,7 +104,7 @@ trait CanFormatState
         return $this;
     }
 
-    public function isoDateTime(string | Closure | null $format = null, string | Closure | null $timezone = null): static
+    public function isoDateTime(string|Closure|null $format = null, string|Closure|null $timezone = null): static
     {
         $this->isDateTime = true;
 
@@ -115,7 +115,7 @@ trait CanFormatState
         return $this;
     }
 
-    public function since(string | Closure | null $timezone = null): static
+    public function since(string|Closure|null $timezone = null): static
     {
         $this->isDateTime = true;
 
@@ -132,7 +132,7 @@ trait CanFormatState
         return $this;
     }
 
-    public function dateTooltip(string | Closure | null $format = null, string | Closure | null $timezone = null): static
+    public function dateTooltip(string|Closure|null $format = null, string|Closure|null $timezone = null): static
     {
         $this->tooltip(static function (TextColumn $column, mixed $state) use ($format, $timezone): ?string {
             if (blank($state)) {
@@ -147,7 +147,7 @@ trait CanFormatState
         return $this;
     }
 
-    public function dateTimeTooltip(string | Closure | null $format = null, string | Closure | null $timezone = null): static
+    public function dateTimeTooltip(string|Closure|null $format = null, string|Closure|null $timezone = null): static
     {
         $format ??= fn (TextColumn $column): string => $column->getTable()->getDefaultDateTimeDisplayFormat();
 
@@ -156,7 +156,7 @@ trait CanFormatState
         return $this;
     }
 
-    public function timeTooltip(string | Closure | null $format = null, string | Closure | null $timezone = null): static
+    public function timeTooltip(string|Closure|null $format = null, string|Closure|null $timezone = null): static
     {
         $format ??= fn (TextColumn $column): string => $column->getTable()->getDefaultTimeDisplayFormat();
 
@@ -165,7 +165,7 @@ trait CanFormatState
         return $this;
     }
 
-    public function sinceTooltip(string | Closure | null $timezone = null): static
+    public function sinceTooltip(string|Closure|null $timezone = null): static
     {
         $this->tooltip(static function (TextColumn $column, mixed $state) use ($timezone): ?string {
             if (blank($state)) {
@@ -180,7 +180,7 @@ trait CanFormatState
         return $this;
     }
 
-    public function isoDateTooltip(string | Closure | null $format = null, string | Closure | null $timezone = null): static
+    public function isoDateTooltip(string|Closure|null $format = null, string|Closure|null $timezone = null): static
     {
         $format ??= fn (TextColumn $column): string => $column->getTable()->getDefaultIsoDateDisplayFormat();
 
@@ -197,7 +197,7 @@ trait CanFormatState
         return $this;
     }
 
-    public function isoDateTimeTooltip(string | Closure | null $format = null, string | Closure | null $timezone = null): static
+    public function isoDateTimeTooltip(string|Closure|null $format = null, string|Closure|null $timezone = null): static
     {
         $format ??= fn (TextColumn $column): string => $column->getTable()->getDefaultIsoDateTimeDisplayFormat();
 
@@ -206,7 +206,7 @@ trait CanFormatState
         return $this;
     }
 
-    public function isoTimeTooltip(string | Closure | null $format = null, string | Closure | null $timezone = null): static
+    public function isoTimeTooltip(string|Closure|null $format = null, string|Closure|null $timezone = null): static
     {
         $format ??= fn (TextColumn $column): string => $column->getTable()->getDefaultIsoTimeDisplayFormat();
 
@@ -215,7 +215,7 @@ trait CanFormatState
         return $this;
     }
 
-    public function money(string | BackedEnum | Closure | null $currency = null, int | Closure $divideBy = 0, string | BackedEnum | Closure | null $locale = null, int | Closure | null $decimalPlaces = null): static
+    public function money(string|BackedEnum|Closure|null $currency = null, int|Closure $divideBy = 0, string|BackedEnum|Closure|null $locale = null, int|Closure|null $decimalPlaces = null): static
     {
         $this->isMoney = true;
 
@@ -250,7 +250,7 @@ trait CanFormatState
         return $this;
     }
 
-    public function numeric(int | Closure | null $decimalPlaces = null, string | Closure | null | ArgumentValue $decimalSeparator = ArgumentValue::Default, string | Closure | null | ArgumentValue $thousandsSeparator = ArgumentValue::Default, int | Closure | null $maxDecimalPlaces = null, string | Closure | null $locale = null): static
+    public function numeric(int|Closure|null $decimalPlaces = null, string|Closure|null|ArgumentValue $decimalSeparator = ArgumentValue::Default, string|Closure|null|ArgumentValue $thousandsSeparator = ArgumentValue::Default, int|Closure|null $maxDecimalPlaces = null, string|Closure|null $locale = null): static
     {
         $this->isNumeric = true;
 
@@ -287,7 +287,7 @@ trait CanFormatState
         return $this;
     }
 
-    public function time(string | Closure | null $format = null, string | Closure | null $timezone = null): static
+    public function time(string|Closure|null $format = null, string|Closure|null $timezone = null): static
     {
         $this->isTime = true;
 
@@ -298,7 +298,7 @@ trait CanFormatState
         return $this;
     }
 
-    public function isoTime(string | Closure | null $format = null, string | Closure | null $timezone = null): static
+    public function isoTime(string|Closure|null $format = null, string|Closure|null $timezone = null): static
     {
         $this->isTime = true;
 
@@ -309,14 +309,14 @@ trait CanFormatState
         return $this;
     }
 
-    public function timezone(string | Closure | null $timezone): static
+    public function timezone(string|Closure|null $timezone): static
     {
         $this->timezone = $timezone;
 
         return $this;
     }
 
-    public function limit(int | Closure | null $length = 100, string | Closure | null $end = '...'): static
+    public function limit(int|Closure|null $length = 100, string|Closure|null $end = '...'): static
     {
         $this->characterLimit = $length;
         $this->characterLimitEnd = $end;
@@ -324,7 +324,7 @@ trait CanFormatState
         return $this;
     }
 
-    public function words(int | Closure | null $words = 100, string | Closure | null $end = '...'): static
+    public function words(int|Closure|null $words = 100, string|Closure|null $end = '...'): static
     {
         $this->wordLimit = $words;
         $this->wordLimitEnd = $end;
@@ -332,21 +332,21 @@ trait CanFormatState
         return $this;
     }
 
-    public function prefix(string | Htmlable | Closure | null $prefix): static
+    public function prefix(string|Htmlable|Closure|null $prefix): static
     {
         $this->prefix = $prefix;
 
         return $this;
     }
 
-    public function suffix(string | Htmlable | Closure | null $suffix): static
+    public function suffix(string|Htmlable|Closure|null $suffix): static
     {
         $this->suffix = $suffix;
 
         return $this;
     }
 
-    public function html(bool | Closure $condition = true): static
+    public function html(bool|Closure $condition = true): static
     {
         $this->isHtml = $condition;
 
@@ -418,7 +418,7 @@ trait CanFormatState
                 $prefix = e($prefix);
             }
 
-            $state = $prefix . $state;
+            $state = $prefix.$state;
         }
 
         if (filled($suffix)) {
@@ -464,12 +464,12 @@ trait CanFormatState
         return $this->evaluate($this->isHtml) || $this->isMarkdown();
     }
 
-    public function getPrefix(): string | Htmlable | null
+    public function getPrefix(): string|Htmlable|null
     {
         return $this->evaluate($this->prefix);
     }
 
-    public function getSuffix(): string | Htmlable | null
+    public function getSuffix(): string|Htmlable|null
     {
         return $this->evaluate($this->suffix);
     }

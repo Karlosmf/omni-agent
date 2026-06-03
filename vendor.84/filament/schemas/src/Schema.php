@@ -107,7 +107,7 @@ class Schema extends ViewComponent implements HasEmbeddedView
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure  $components
      */
-    public static function start(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure $components): static
+    public static function start(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure $components): static
     {
         return static::make()
             ->components($components)
@@ -117,7 +117,7 @@ class Schema extends ViewComponent implements HasEmbeddedView
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure  $components
      */
-    public static function end(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure $components): static
+    public static function end(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure $components): static
     {
         return static::make()
             ->components($components)
@@ -127,7 +127,7 @@ class Schema extends ViewComponent implements HasEmbeddedView
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure  $components
      */
-    public static function center(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure $components): static
+    public static function center(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure $components): static
     {
         return static::make()
             ->components($components)
@@ -137,7 +137,7 @@ class Schema extends ViewComponent implements HasEmbeddedView
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure  $components
      */
-    public static function between(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure $components): static
+    public static function between(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure $components): static
     {
         return static::make()
             ->components($components)
@@ -153,7 +153,7 @@ class Schema extends ViewComponent implements HasEmbeddedView
         $hasVisibleComponents = false;
 
         $componentsWithVisibility = array_map(
-            function (Component | Action | ActionGroup $component) use (&$hasVisibleComponents): array {
+            function (Component|Action|ActionGroup $component) use (&$hasVisibleComponents): array {
                 $isComponentVisible = $component->isVisible();
 
                 if ($isComponentVisible) {
@@ -179,8 +179,8 @@ class Schema extends ViewComponent implements HasEmbeddedView
                 fn (ComponentAttributeBag $attributes) => $attributes->grid($this->getColumns()),
             )
             ->merge([
-                'wire:partial' => $this->shouldPartiallyRender() ? ('schema.' . $this->getKey()) : null,
-                'x-data' => $isRoot ? 'filamentSchema({ livewireId: ' . Js::from($this->getLivewire()->getId()) . ' })' : null,
+                'wire:partial' => $this->shouldPartiallyRender() ? ('schema.'.$this->getKey()) : null,
+                'x-data' => $isRoot ? 'filamentSchema({ livewireId: '.Js::from($this->getLivewire()->getId()).' })' : null,
                 'x-on:form-validation-error.window' => $isRoot ? 'handleFormValidationError' : null,
             ], escape: false)
             ->class([

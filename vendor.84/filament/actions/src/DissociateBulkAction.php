@@ -45,7 +45,7 @@ class DissociateBulkAction extends BulkAction
         $this->modalIcon(FilamentIcon::resolve(ActionsIconAlias::DISSOCIATE_ACTION_MODAL) ?? Heroicon::OutlinedXMark);
 
         $this->action(function (): void {
-            $this->process(function (DissociateBulkAction $action, EloquentCollection | Collection | LazyCollection $records, Table $table): void {
+            $this->process(function (DissociateBulkAction $action, EloquentCollection|Collection|LazyCollection $records, Table $table): void {
                 if (! $action->shouldFetchSelectedRecords()) {
                     /** @var HasMany $relationship */
                     $relationship = $table->getRelationship();

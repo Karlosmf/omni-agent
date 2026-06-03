@@ -67,15 +67,14 @@ abstract class CSSBlockList extends CSSList
     /**
      * Returns all `Value` objects found recursively in `Rule`s in the tree.
      *
-     * @param CSSElement|null $element
-     *        This is the `CSSList` or `RuleSet` to start the search from (defaults to the whole document).
-     * @param string|null $ruleSearchPattern
-     *        This allows filtering rules by property name
-     *        (e.g. if "color" is passed, only `Value`s from `color` properties will be returned,
-     *        or if "font-" is provided, `Value`s from all font rules, like `font-size`, and including `font` itself,
-     *        will be returned).
-     * @param bool $searchInFunctionArguments whether to also return `Value` objects used as `CSSFunction` arguments.
-     *
+     * @param  CSSElement|null  $element
+     *                                    This is the `CSSList` or `RuleSet` to start the search from (defaults to the whole document).
+     * @param  string|null  $ruleSearchPattern
+     *                                          This allows filtering rules by property name
+     *                                          (e.g. if "color" is passed, only `Value`s from `color` properties will be returned,
+     *                                          or if "font-" is provided, `Value`s from all font rules, like `font-size`, and including `font` itself,
+     *                                          will be returned).
+     * @param  bool  $searchInFunctionArguments  whether to also return `Value` objects used as `CSSFunction` arguments.
      * @return list<Value>
      *
      * @see RuleSet->getRules()
@@ -115,7 +114,7 @@ abstract class CSSBlockList extends CSSList
                 );
             }
         } elseif ($element instanceof ValueList) {
-            if ($searchInFunctionArguments || !($element instanceof CSSFunction)) {
+            if ($searchInFunctionArguments || ! ($element instanceof CSSFunction)) {
                 foreach ($element->getListComponents() as $component) {
                     // `string` components are discarded.
                     if ($component instanceof CSSElement) {

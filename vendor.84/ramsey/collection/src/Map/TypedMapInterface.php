@@ -20,6 +20,7 @@ namespace Ramsey\Collection\Map;
  *
  * @template K of array-key
  * @template T
+ *
  * @extends MapInterface<K, T>
  */
 interface TypedMapInterface extends MapInterface

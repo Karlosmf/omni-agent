@@ -18,6 +18,4 @@ namespace Symfony\Component\Routing\Exception;
  *
  * @author Kris Wallsmith <kris@symfony.com>
  */
-class ResourceNotFoundException extends \RuntimeException implements ExceptionInterface
-{
-}
+class ResourceNotFoundException extends \RuntimeException implements ExceptionInterface {}

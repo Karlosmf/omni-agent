@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-text-template.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\Template;
 
 use function array_keys;
@@ -41,25 +44,25 @@ final class Template
     private array $values = [];
 
     /**
-     * @param non-empty-string $templateFile
-     * @param non-empty-string $openDelimiter
-     * @param non-empty-string $closeDelimiter
+     * @param  non-empty-string  $templateFile
+     * @param  non-empty-string  $openDelimiter
+     * @param  non-empty-string  $closeDelimiter
      *
      * @throws InvalidArgumentException
      */
     public function __construct(string $templateFile, string $openDelimiter = '{', string $closeDelimiter = '}')
     {
-        $this->template       = $this->loadTemplateFile($templateFile);
-        $this->openDelimiter  = $openDelimiter;
+        $this->template = $this->loadTemplateFile($templateFile);
+        $this->openDelimiter = $openDelimiter;
         $this->closeDelimiter = $closeDelimiter;
     }
 
     /**
-     * @param array<string,string> $values
+     * @param  array<string,string>  $values
      */
     public function setVar(array $values, bool $merge = true): void
     {
-        if (!$merge || empty($this->values)) {
+        if (! $merge || empty($this->values)) {
             $this->values = $values;
 
             return;
@@ -73,7 +76,7 @@ final class Template
         $keys = [];
 
         foreach (array_keys($this->values) as $key) {
-            $keys[] = $this->openDelimiter . $key . $this->closeDelimiter;
+            $keys[] = $this->openDelimiter.$key.$this->closeDelimiter;
         }
 
         return str_replace($keys, $this->values, $this->template);
@@ -84,7 +87,7 @@ final class Template
      */
     public function renderTo(string $target): void
     {
-        if (!@file_put_contents($target, $this->render())) {
+        if (! @file_put_contents($target, $this->render())) {
             throw new RuntimeException(
                 sprintf(
                     'Writing rendered result to "%s" failed',
@@ -95,28 +98,27 @@ final class Template
     }
 
     /**
-     * @param non-empty-string $file
+     * @param  non-empty-string  $file
+     * @return non-empty-string
      *
      * @throws InvalidArgumentException
-     *
-     * @return non-empty-string
      */
     private function loadTemplateFile(string $file): string
     {
         if (is_file($file)) {
             $template = file_get_contents($file);
 
-            if (is_string($template) && !empty($template)) {
+            if (is_string($template) && ! empty($template)) {
                 return $template;
             }
         }
 
-        $distFile = $file . '.dist';
+        $distFile = $file.'.dist';
 
         if (is_file($distFile)) {
             $template = file_get_contents($distFile);
 
-            if (is_string($template) && !empty($template)) {
+            if (is_string($template) && ! empty($template)) {
                 return $template;
             }
         }

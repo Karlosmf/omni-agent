@@ -20,7 +20,7 @@ class ObjectMethodDefaultParametersMatcher extends AbstractDefaultParametersMatc
         $methodOperator = \array_pop($tokens);
 
         $objectToken = \array_pop($tokens);
-        if (!\is_array($objectToken)) {
+        if (! \is_array($objectToken)) {
             return [];
         }
 
@@ -56,13 +56,13 @@ class ObjectMethodDefaultParametersMatcher extends AbstractDefaultParametersMatc
 
         $functionName = \array_pop($tokens);
 
-        if (!self::tokenIs($functionName, self::T_STRING)) {
+        if (! self::tokenIs($functionName, self::T_STRING)) {
             return false;
         }
 
         $operator = \array_pop($tokens);
 
-        if (!self::tokenIs($operator, self::T_OBJECT_OPERATOR)) {
+        if (! self::tokenIs($operator, self::T_OBJECT_OPERATOR)) {
             return false;
         }
 

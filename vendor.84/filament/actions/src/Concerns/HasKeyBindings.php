@@ -10,12 +10,12 @@ trait HasKeyBindings
     /**
      * @var string | array<string> | Closure | null
      */
-    protected string | array | Closure | null $keyBindings = null;
+    protected string|array|Closure|null $keyBindings = null;
 
     /**
      * @param  string | array<string> | Closure | null  $bindings
      */
-    public function keyBindings(string | array | Closure | null $bindings): static
+    public function keyBindings(string|array|Closure|null $bindings): static
     {
         $this->keyBindings = $bindings;
 

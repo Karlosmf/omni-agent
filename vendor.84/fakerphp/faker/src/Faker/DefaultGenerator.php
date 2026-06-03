@@ -27,7 +27,7 @@ class DefaultGenerator
     }
 
     /**
-     * @param string $attribute
+     * @param  string  $attribute
      *
      * @deprecated Use a method instead.
      */
@@ -39,8 +39,8 @@ class DefaultGenerator
     }
 
     /**
-     * @param string $method
-     * @param array  $attributes
+     * @param  string  $method
+     * @param  array  $attributes
      */
     public function __call($method, $attributes)
     {

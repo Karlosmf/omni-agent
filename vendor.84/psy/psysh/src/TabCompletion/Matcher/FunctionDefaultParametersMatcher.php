@@ -40,11 +40,11 @@ class FunctionDefaultParametersMatcher extends AbstractDefaultParametersMatcher
 
         $functionName = \array_pop($tokens);
 
-        if (!self::tokenIs($functionName, self::T_STRING)) {
+        if (! self::tokenIs($functionName, self::T_STRING)) {
             return false;
         }
 
-        if (!\function_exists($functionName[1])) {
+        if (! \function_exists($functionName[1])) {
             return false;
         }
 

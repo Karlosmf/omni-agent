@@ -6,9 +6,9 @@ use Closure;
 
 trait CanPollRecords
 {
-    protected string | Closure | null $pollingInterval = null;
+    protected string|Closure|null $pollingInterval = null;
 
-    public function poll(string | Closure | null $interval = '10s'): static
+    public function poll(string|Closure|null $interval = '10s'): static
     {
         $this->pollingInterval = $interval;
 

@@ -19,8 +19,7 @@ final class EmailTextBodyContains extends Constraint
 {
     public function __construct(
         private string $expectedText,
-    ) {
-    }
+    ) {}
 
     public function toString(): string
     {
@@ -28,11 +27,11 @@ final class EmailTextBodyContains extends Constraint
     }
 
     /**
-     * @param RawMessage $message
+     * @param  RawMessage  $message
      */
     protected function matches($message): bool
     {
-        if (RawMessage::class === $message::class || Message::class === $message::class) {
+        if ($message::class === RawMessage::class || $message::class === Message::class) {
             throw new \LogicException('Unable to test a message text body on a RawMessage or Message instance.');
         }
 
@@ -40,7 +39,7 @@ final class EmailTextBodyContains extends Constraint
     }
 
     /**
-     * @param RawMessage $message
+     * @param  RawMessage  $message
      */
     protected function failureDescription($message): string
     {

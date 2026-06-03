@@ -29,9 +29,13 @@ use Psy\Exception\FatalErrorException;
 class ReturnTypePass extends CodeCleanerPass
 {
     const MESSAGE = 'A function with return type must return a value';
+
     const NULLABLE_MESSAGE = 'A function with return type must return a value (did you mean "return null;" instead of "return;"?)';
+
     const VOID_MESSAGE = 'A void function must not return a value';
+
     const VOID_NULL_MESSAGE = 'A void function must not return a value (did you mean "return;" instead of "return null;"?)';
+
     const NULLABLE_VOID_MESSAGE = 'Void type cannot be nullable';
 
     private array $returnTypeStack = [];
@@ -49,7 +53,7 @@ class ReturnTypePass extends CodeCleanerPass
             return null;
         }
 
-        if (!empty($this->returnTypeStack) && $node instanceof Return_) {
+        if (! empty($this->returnTypeStack) && $node instanceof Return_) {
             $expectedType = \end($this->returnTypeStack);
             if ($expectedType === null) {
                 return null;
@@ -88,7 +92,7 @@ class ReturnTypePass extends CodeCleanerPass
      */
     public function leaveNode(Node $node)
     {
-        if (!empty($this->returnTypeStack) && $this->isFunctionNode($node)) {
+        if (! empty($this->returnTypeStack) && $this->isFunctionNode($node)) {
             \array_pop($this->returnTypeStack);
         }
 

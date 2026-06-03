@@ -25,7 +25,7 @@ final class ReplaceUnpairedQuotesListener
 {
     public function __invoke(DocumentParsedEvent $event): void
     {
-        $query = (new Query())->where(Query::type(Quote::class));
+        $query = (new Query)->where(Query::type(Quote::class));
         foreach ($query->findAll($event->getDocument()) as $quote) {
             \assert($quote instanceof Quote);
 

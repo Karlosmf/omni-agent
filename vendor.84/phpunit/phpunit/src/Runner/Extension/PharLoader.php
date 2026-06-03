@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,15 +9,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner\Extension;
 
-use function count;
-use function explode;
-use function extension_loaded;
-use function implode;
-use function is_file;
-use function sprintf;
-use function str_contains;
 use PharIo\Manifest\ApplicationName;
 use PharIo\Manifest\Exception as ManifestException;
 use PharIo\Manifest\ManifestLoader;
@@ -25,6 +21,14 @@ use PHPUnit\Runner\Version;
 use SebastianBergmann\FileIterator\Facade as FileIteratorFacade;
 use Throwable;
 
+use function count;
+use function explode;
+use function extension_loaded;
+use function implode;
+use function is_file;
+use function sprintf;
+use function str_contains;
+
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  *
@@ -33,17 +37,16 @@ use Throwable;
 final readonly class PharLoader
 {
     /**
-     * @param non-empty-string $directory
-     *
+     * @param  non-empty-string  $directory
      * @return list<string>
      */
     public function loadPharExtensionsInDirectory(string $directory): array
     {
         $pharExtensionLoaded = extension_loaded('phar');
-        $loadedExtensions    = [];
+        $loadedExtensions = [];
 
         foreach ((new FileIteratorFacade)->getFilesAsArray($directory, '.phar') as $file) {
-            if (!$pharExtensionLoaded) {
+            if (! $pharExtensionLoaded) {
                 Event\Facade::emitter()->testRunnerTriggeredPhpunitWarning(
                     sprintf(
                         'Cannot load extension from %s because the PHAR extension is not available',
@@ -54,7 +57,7 @@ final readonly class PharLoader
                 continue;
             }
 
-            if (!is_file('phar://' . $file . '/manifest.xml')) {
+            if (! is_file('phar://'.$file.'/manifest.xml')) {
                 Event\Facade::emitter()->testRunnerTriggeredPhpunitWarning(
                     sprintf(
                         '%s is not an extension for PHPUnit',
@@ -67,10 +70,10 @@ final readonly class PharLoader
 
             try {
                 $applicationName = new ApplicationName('phpunit/phpunit');
-                $version         = new PharIoVersion($this->phpunitVersion());
-                $manifest        = ManifestLoader::fromFile('phar://' . $file . '/manifest.xml');
+                $version = new PharIoVersion($this->phpunitVersion());
+                $manifest = ManifestLoader::fromFile('phar://'.$file.'/manifest.xml');
 
-                if (!$manifest->isExtensionFor($applicationName)) {
+                if (! $manifest->isExtensionFor($applicationName)) {
                     Event\Facade::emitter()->testRunnerTriggeredPhpunitWarning(
                         sprintf(
                             '%s is not an extension for PHPUnit',
@@ -81,7 +84,7 @@ final readonly class PharLoader
                     continue;
                 }
 
-                if (!$manifest->isExtensionFor($applicationName, $version)) {
+                if (! $manifest->isExtensionFor($applicationName, $version)) {
                     Event\Facade::emitter()->testRunnerTriggeredPhpunitWarning(
                         sprintf(
                             '%s is not compatible with PHPUnit %s',
@@ -118,7 +121,7 @@ final readonly class PharLoader
                 continue;
             }
 
-            $loadedExtensions[] = $manifest->getName()->asString() . ' ' . $manifest->getVersion()->getVersionString();
+            $loadedExtensions[] = $manifest->getName()->asString().' '.$manifest->getVersion()->getVersionString();
 
             Event\Facade::emitter()->testRunnerLoadedExtensionFromPhar(
                 $file,
@@ -134,7 +137,7 @@ final readonly class PharLoader
     {
         $version = Version::id();
 
-        if (!str_contains($version, '-')) {
+        if (! str_contains($version, '-')) {
             return $version;
         }
 

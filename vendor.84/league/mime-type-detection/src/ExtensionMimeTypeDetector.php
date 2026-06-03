@@ -6,7 +6,7 @@ namespace League\MimeTypeDetection;
 
 use const PATHINFO_EXTENSION;
 
-class ExtensionMimeTypeDetector implements MimeTypeDetector, ExtensionLookup
+class ExtensionMimeTypeDetector implements ExtensionLookup, MimeTypeDetector
 {
     /**
      * @var ExtensionToMimeTypeMap
@@ -15,7 +15,7 @@ class ExtensionMimeTypeDetector implements MimeTypeDetector, ExtensionLookup
 
     public function __construct(?ExtensionToMimeTypeMap $extensions = null)
     {
-        $this->extensions = $extensions ?: new GeneratedExtensionToMimeTypeMap();
+        $this->extensions = $extensions ?: new GeneratedExtensionToMimeTypeMap;
     }
 
     public function detectMimeType(string $path, $contents): ?string

@@ -17,7 +17,7 @@ interface HasSchemas
     /**
      * @param  array<Component>  $skipComponentsChildContainersWhileSearching
      */
-    public function getSchemaComponent(string $key, bool $withHidden = false, array $skipComponentsChildContainersWhileSearching = []): Component | Action | ActionGroup | null;
+    public function getSchemaComponent(string $key, bool $withHidden = false, array $skipComponentsChildContainersWhileSearching = []): Component|Action|ActionGroup|null;
 
     public function getSchema(string $name): ?Schema;
 

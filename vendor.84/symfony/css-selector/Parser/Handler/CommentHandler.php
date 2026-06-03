@@ -28,13 +28,13 @@ class CommentHandler implements HandlerInterface
 {
     public function handle(Reader $reader, TokenStream $stream): bool
     {
-        if ('/*' !== $reader->getSubstring(2)) {
+        if ($reader->getSubstring(2) !== '/*') {
             return false;
         }
 
         $offset = $reader->getOffset('*/');
 
-        if (false === $offset) {
+        if ($offset === false) {
             $reader->moveToEnd();
         } else {
             $reader->moveForward($offset + 2);

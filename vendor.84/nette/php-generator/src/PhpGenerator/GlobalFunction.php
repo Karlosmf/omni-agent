@@ -11,31 +11,28 @@ namespace Nette\PhpGenerator;
 
 use Nette;
 
-
 /**
  * Definition of a global function.
  */
 final class GlobalFunction
 {
-	use Traits\FunctionLike;
-	use Traits\NameAware;
-	use Traits\CommentAware;
-	use Traits\AttributeAware;
+    use Traits\AttributeAware;
+    use Traits\CommentAware;
+    use Traits\FunctionLike;
+    use Traits\NameAware;
 
-	public static function from(string|\Closure $function, bool $withBody = false): self
-	{
-		return (new Factory)->fromFunctionReflection(Nette\Utils\Callback::toReflection($function), $withBody);
-	}
+    public static function from(string|\Closure $function, bool $withBody = false): self
+    {
+        return (new Factory)->fromFunctionReflection(Nette\Utils\Callback::toReflection($function), $withBody);
+    }
 
+    public function __toString(): string
+    {
+        return (new Printer)->printFunction($this);
+    }
 
-	public function __toString(): string
-	{
-		return (new Printer)->printFunction($this);
-	}
-
-
-	public function __clone(): void
-	{
-		$this->parameters = array_map(fn($param) => clone $param, $this->parameters);
-	}
+    public function __clone(): void
+    {
+        $this->parameters = array_map(fn ($param) => clone $param, $this->parameters);
+    }
 }

@@ -17,9 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class ResponseHeaderLocationSame extends Constraint
 {
-    public function __construct(private Request $request, private string $expectedValue)
-    {
-    }
+    public function __construct(private Request $request, private string $expectedValue) {}
 
     public function toString(): string
     {
@@ -28,13 +26,13 @@ final class ResponseHeaderLocationSame extends Constraint
 
     protected function matches($other): bool
     {
-        if (!$other instanceof Response) {
+        if (! $other instanceof Response) {
             return false;
         }
 
         $location = $other->headers->get('Location');
 
-        if (null === $location) {
+        if ($location === null) {
             return false;
         }
 
@@ -48,7 +46,7 @@ final class ResponseHeaderLocationSame extends Constraint
 
     private function toFullUrl(string $url): string
     {
-        if (null === parse_url($url, \PHP_URL_PATH)) {
+        if (parse_url($url, \PHP_URL_PATH) === null) {
             $url .= '/';
         }
 

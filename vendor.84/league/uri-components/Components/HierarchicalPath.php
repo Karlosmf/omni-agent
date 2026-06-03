@@ -13,6 +13,10 @@ declare(strict_types=1);
 
 namespace League\Uri\Components;
 
+use const ARRAY_FILTER_USE_KEY;
+use const FILTER_VALIDATE_INT;
+use const PATHINFO_EXTENSION;
+
 use BackedEnum;
 use Deprecated;
 use Iterator;
@@ -48,22 +52,22 @@ use function str_starts_with;
 use function strrpos;
 use function substr;
 
-use const ARRAY_FILTER_USE_KEY;
-use const FILTER_VALIDATE_INT;
-use const PATHINFO_EXTENSION;
-
 final class HierarchicalPath extends Component implements SegmentedPathInterface
 {
     private const SEPARATOR = '/';
+
     private const IS_ABSOLUTE = 1;
+
     private const IS_RELATIVE = 0;
+
     private readonly PathInterface $path;
+
     /** @var array<string> */
     private readonly array $segments;
 
     private function __construct(BackedEnum|Stringable|string $path)
     {
-        if (!$path instanceof PathInterface) {
+        if (! $path instanceof PathInterface) {
             $path = Path::new($path);
         }
 
@@ -125,14 +129,14 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
     }
 
     /**
-     * @param array<string> $segments
+     * @param  array<string>  $segments
      */
     private static function fromSegments(int $pathType, array $segments): self
     {
         $path = implode(self::SEPARATOR, $segments);
 
         return match (true) {
-            self::IS_RELATIVE === $pathType => new self(ltrim($path, self::SEPARATOR)),
+            $pathType === self::IS_RELATIVE => new self(ltrim($path, self::SEPARATOR)),
             self::SEPARATOR !== ($path[0] ?? '') => new self(self::SEPARATOR.$path),
             default => new self($path),
         };
@@ -232,12 +236,12 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
 
     public function contains(BackedEnum|Stringable|string $segment): bool
     {
-        return [] !== $this->keys($segment);
+        return $this->keys($segment) !== [];
     }
 
     public function isEmpty(): bool
     {
-        return '' === $this->path->value();
+        return $this->path->value() === '';
     }
 
     public function get(int $offset): ?string
@@ -265,7 +269,7 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
 
         return match ($this->path) {
             $path => $this,
-            default =>  new self($path),
+            default => new self($path),
         };
     }
 
@@ -275,7 +279,7 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
 
         return match ($this->path) {
             $path => $this,
-            default =>  new self($path),
+            default => new self($path),
         };
     }
 
@@ -285,7 +289,7 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
 
         return match ($this->path) {
             $path => $this,
-            default =>  new self($path),
+            default => new self($path),
         };
     }
 
@@ -295,7 +299,7 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
 
         return match ($this->path) {
             $path => $this,
-            default =>  new self($path),
+            default => new self($path),
         };
     }
 
@@ -305,7 +309,7 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
 
         return match ($this->path) {
             $path => $this,
-            default =>  new self($path),
+            default => new self($path),
         };
     }
 
@@ -322,8 +326,7 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
     }
 
     /**
-     * @param iterable<BackedEnum|Stringable|string> $segments
-     *
+     * @param  iterable<BackedEnum|Stringable|string>  $segments
      */
     public function appendSegments(iterable $segments): SegmentedPathInterface
     {
@@ -348,8 +351,7 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
     }
 
     /**
-     * @param iterable<BackedEnum|Stringable|string> $segments
-     *
+     * @param  iterable<BackedEnum|Stringable|string>  $segments
      */
     public function prependSegments(iterable $segments): SegmentedPathInterface
     {
@@ -364,11 +366,11 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
     public function withSegment(int $key, BackedEnum|Stringable|string $segment): SegmentedPathInterface
     {
         $nbSegments = count($this->segments);
-        if ($key < - $nbSegments - 1 || $key > $nbSegments) {
+        if ($key < -$nbSegments - 1 || $key > $nbSegments) {
             throw new OffsetOutOfBounds(sprintf('The given key `%s` is invalid.', $key));
         }
 
-        if (0 > $key) {
+        if ($key < 0) {
             $key += $nbSegments;
         }
 
@@ -376,11 +378,11 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
             return $this->append($segment);
         }
 
-        if (-1 === $key) {
+        if ($key === -1) {
             return $this->prepend($segment);
         }
 
-        if (!$segment instanceof PathInterface) {
+        if (! $segment instanceof PathInterface) {
             $segment = new self($segment);
         }
 
@@ -408,16 +410,16 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
 
     public function withoutSegment(int ...$keys): SegmentedPathInterface
     {
-        if ([] === $keys) {
+        if ($keys === []) {
             return $this;
         }
         $nb_segments = count($this->segments);
-        $options = ['options' => ['min_range' => - $nb_segments, 'max_range' => $nb_segments - 1]];
+        $options = ['options' => ['min_range' => -$nb_segments, 'max_range' => $nb_segments - 1]];
         $deleted_keys = [];
         foreach ($keys as $value) {
             /** @var false|int $offset */
             $offset = filter_var($value, FILTER_VALIDATE_INT, $options);
-            if (false === $offset) {
+            if ($offset === false) {
                 throw new OffsetOutOfBounds(sprintf('The key `%s` is invalid.', $value));
             }
 
@@ -428,7 +430,7 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
         }
 
         $deleted_keys = array_keys(array_count_values($deleted_keys));
-        $filter = static fn ($key): bool => !in_array($key, $deleted_keys, true);
+        $filter = static fn ($key): bool => ! in_array($key, $deleted_keys, true);
 
         $path = implode(self::SEPARATOR, array_filter($this->segments, $filter, ARRAY_FILTER_USE_KEY));
         if ($this->isAbsolute()) {
@@ -459,7 +461,7 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
 
     public function withDirname(BackedEnum|Stringable|string $path): SegmentedPathInterface
     {
-        if (!$path instanceof PathInterface) {
+        if (! $path instanceof PathInterface) {
             $path = Path::new($path);
         }
 
@@ -502,7 +504,7 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
         /** @var string $basename */
         $basename = $this->segments[array_key_last($this->segments)];
         [$ext, $param] = explode(';', $basename, 2) + [1 => null];
-        if ('' === $ext) {
+        if ($ext === '') {
             return $this;
         }
 
@@ -515,16 +517,16 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
     private function buildBasename(string $extension, string $ext, ?string $param = null): string
     {
         $length = strrpos($ext, '.'.pathinfo($ext, PATHINFO_EXTENSION));
-        if (false !== $length) {
+        if ($length !== false) {
             $ext = substr($ext, 0, $length);
         }
 
-        if (null !== $param && '' !== $param) {
+        if ($param !== null && $param !== '') {
             $param = ';'.$param;
         }
 
         $extension = trim($extension);
-        if ('' === $extension) {
+        if ($extension === '') {
             return $ext.$param;
         }
 
@@ -541,7 +543,7 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
      *
      * Returns a new instance from a string or a stringable object.
      */
-    #[Deprecated(message:'use League\Uri\Components\HierarchicalPath::getIterator() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\HierarchicalPath::getIterator() instead', since: 'league/uri-components:7.0.0')]
     public function segments(): array
     {
         return $this->segments;
@@ -557,7 +559,7 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
      *
      * Returns a new instance from a string or a stringable object.
      */
-    #[Deprecated(message:'use League\Uri\Components\HierarchicalPath::new() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\HierarchicalPath::new() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromString(Stringable|string $path): self
     {
         return self::new($path);
@@ -571,7 +573,7 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
      *
      * @codeCoverageIgnore
      */
-    #[Deprecated(message:'use League\Uri\Components\HierarchicalPath::new() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\HierarchicalPath::new() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromPath(PathInterface $path): self
     {
         return self::new($path);
@@ -581,6 +583,7 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @throws TypeError If the segments are malformed
+     *
      *@see HierarchicalPath::fromRelative()
      *
      * @codeCoverageIgnore
@@ -589,7 +592,7 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
      *
      * @deprecated Since version 7.0.0
      */
-    #[Deprecated(message:'use League\Uri\Components\HierarchicalPath::fromRelative() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\HierarchicalPath::fromRelative() instead', since: 'league/uri-components:7.0.0')]
     public static function createRelativeFromSegments(iterable $segments): self
     {
         return self::fromRelative(...$segments);
@@ -599,6 +602,7 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @throws TypeError If the segments are malformed
+     *
      *@see HierarchicalPath::fromAbsolute()
      *
      * @codeCoverageIgnore
@@ -607,7 +611,7 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
      *
      * @deprecated Since version 7.0.0
      */
-    #[Deprecated(message:'use League\Uri\Components\HierarchicalPath::fromAbsolute() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\HierarchicalPath::fromAbsolute() instead', since: 'league/uri-components:7.0.0')]
     public static function createAbsoluteFromSegments(iterable $segments): self
     {
         return self::fromAbsolute(...$segments);
@@ -623,7 +627,7 @@ final class HierarchicalPath extends Component implements SegmentedPathInterface
      *
      * Create a new instance from a URI object.
      */
-    #[Deprecated(message:'use League\Uri\Components\HierarchicalPath::fromUri() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\HierarchicalPath::fromUri() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromUri(Psr7UriInterface|UriInterface $uri): self
     {
         return self::fromUri($uri);

@@ -6,9 +6,9 @@ use Closure;
 
 trait CanBeLiberatedFromContainerGrid
 {
-    protected bool | Closure $isLiberatedFromContainerGrid = false;
+    protected bool|Closure $isLiberatedFromContainerGrid = false;
 
-    public function liberatedFromContainerGrid(bool | Closure $condition = true): static
+    public function liberatedFromContainerGrid(bool|Closure $condition = true): static
     {
         $this->isLiberatedFromContainerGrid = $condition;
 

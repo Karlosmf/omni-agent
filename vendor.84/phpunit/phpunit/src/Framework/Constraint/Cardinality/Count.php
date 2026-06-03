@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,13 +9,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\Constraint;
 
-use function count;
-use function is_countable;
-use function iterator_count;
-use function spl_object_id;
-use function sprintf;
 use EmptyIterator;
 use Generator;
 use Iterator;
@@ -21,6 +19,12 @@ use IteratorAggregate;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\GeneratorNotSupportedException;
 use Traversable;
+
+use function count;
+use function is_countable;
+use function iterator_count;
+use function spl_object_id;
+use function sprintf;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -95,11 +99,11 @@ class Count extends Constraint
                 throw new GeneratorNotSupportedException;
             }
 
-            if (!$iterator instanceof Iterator) {
+            if (! $iterator instanceof Iterator) {
                 return iterator_count($iterator);
             }
 
-            $key   = $iterator->key();
+            $key = $iterator->key();
             $count = iterator_count($iterator);
 
             // Manually rewind $iterator to previous key, since iterator_count

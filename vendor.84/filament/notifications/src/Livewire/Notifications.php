@@ -82,7 +82,7 @@ class Notifications extends Component
         );
     }
 
-    public function getUser(): Model | Authenticatable | null
+    public function getUser(): Model|Authenticatable|null
     {
         return auth(static::$authGuard)->user();
     }

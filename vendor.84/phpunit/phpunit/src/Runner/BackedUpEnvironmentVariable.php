@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner;
 
 use function getenv;
@@ -19,7 +22,8 @@ use function putenv;
  */
 final readonly class BackedUpEnvironmentVariable
 {
-    private const string FROM_GETENV      = 'getenv';
+    private const string FROM_GETENV = 'getenv';
+
     private const string FROM_SUPERGLOBAL = 'superglobal';
 
     /**
@@ -31,11 +35,11 @@ final readonly class BackedUpEnvironmentVariable
      * @var non-empty-string
      */
     private string $name;
-    private null|string $value;
+
+    private ?string $value;
 
     /**
-     * @param non-empty-string $name
-     *
+     * @param  non-empty-string  $name
      * @return array{0: self, 1: self}
      */
     public static function create(string $name): array
@@ -53,13 +57,13 @@ final readonly class BackedUpEnvironmentVariable
     }
 
     /**
-     * @param self::FROM_GETENV|self::FROM_SUPERGLOBAL $from
-     * @param non-empty-string                         $name
+     * @param  self::FROM_GETENV|self::FROM_SUPERGLOBAL  $from
+     * @param  non-empty-string  $name
      */
-    private function __construct(string $from, string $name, null|string $value)
+    private function __construct(string $from, string $name, ?string $value)
     {
-        $this->from  = $from;
-        $this->name  = $name;
+        $this->from = $from;
+        $this->name = $name;
         $this->value = $value;
     }
 

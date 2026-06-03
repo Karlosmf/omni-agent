@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class Range extends Summarizer
 {
-    protected bool | Closure $shouldExcludeNull = true;
+    protected bool|Closure $shouldExcludeNull = true;
 
     /**
      * @return array{0: mixed, 1: mixed}
@@ -30,7 +30,7 @@ class Range extends Summarizer
         return [$state->{$minSelectAlias}, $state->{$maxSelectAlias}];
     }
 
-    public function excludeNull(bool | Closure $condition = true): static
+    public function excludeNull(bool|Closure $condition = true): static
     {
         $this->shouldExcludeNull = $condition;
 

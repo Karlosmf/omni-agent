@@ -154,7 +154,7 @@ class Config
                 enabled    : $item['enabled'] ?? true,
                 translator : $item['translator'],
                 credentials: $item['credentials'] ?? [],
-                priority   : $item['priority']    ?? 0
+                priority   : $item['priority'] ?? 0
             )
         )->sortBy(fn (TranslatorData $item) => $item->priority)->all();
     }
@@ -166,8 +166,8 @@ class Config
         ?string $object = null,
         mixed $fallback = null
     ): mixed {
-        $main    = $name->value . '.' . $key;
-        $default = $default ? $name->value . '.' . $default : null;
+        $main = $name->value.'.'.$key;
+        $default = $default ? $name->value.'.'.$default : null;
 
         if (is_null($object)) {
             return $this->repository($main, $this->repository($default)) ?? $fallback;

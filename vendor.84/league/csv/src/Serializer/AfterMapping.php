@@ -20,13 +20,13 @@ use ReflectionClass;
 
 /**
  * @deprecated since version 9.17.0
- *
  * @see MapRecord
  */
 #[Attribute(Attribute::TARGET_CLASS)]
 final class AfterMapping
 {
     public readonly MapRecord $mapRecord;
+
     public readonly array $methods;
 
     #[Deprecated(message: 'use League\Csv\Serializer\MapRecord instead', since: 'league/csv:9.17.0')]
@@ -42,8 +42,8 @@ final class AfterMapping
         $nbAttributes = count($attributes);
 
         return match (true) {
-            0 === $nbAttributes => null,
-            1 < $nbAttributes => throw new MappingFailed('Using more than one `'.self::class.'` attribute on a class property or method is not supported.'),
+            $nbAttributes === 0 => null,
+            $nbAttributes > 1 => throw new MappingFailed('Using more than one `'.self::class.'` attribute on a class property or method is not supported.'),
             default => $attributes[0]->newInstance(),
         };
     }

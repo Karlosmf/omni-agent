@@ -23,7 +23,7 @@ class V2Manual implements ManualInterface
     /**
      * Constructor.
      *
-     * @param \PDO $db SQLite database connection
+     * @param  \PDO  $db  SQLite database connection
      */
     public function __construct(\PDO $db)
     {
@@ -55,8 +55,6 @@ class V2Manual implements ManualInterface
      * Get manual metadata (version, language, build date, etc).
      *
      * Reads metadata from the meta table in the SQLite database.
-     *
-     * @return array
      */
     public function getMeta(): array
     {

@@ -16,6 +16,4 @@ namespace Symfony\Component\HttpFoundation\Exception;
  *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-final class JsonException extends UnexpectedValueException implements RequestExceptionInterface
-{
-}
+final class JsonException extends UnexpectedValueException implements RequestExceptionInterface {}

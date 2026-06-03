@@ -135,14 +135,13 @@ class Person extends \Faker\Provider\Person
     /**
      * @see https://en.wikipedia.org/wiki/National_identification_number#South_Africa
      *
-     * @param bool   $citizen
-     * @param string $gender
-     *
+     * @param  bool  $citizen
+     * @param  string  $gender
      * @return string
      */
     public function idNumber(?\DateTime $birthdate = null, $citizen = true, $gender = null)
     {
-        if (!$birthdate) {
+        if (! $birthdate) {
             $birthdate = $this->generator->dateTimeThisCentury();
         }
         $birthDateString = $birthdate->format('ymd');
@@ -165,9 +164,9 @@ class Person extends \Faker\Provider\Person
         $citizenDigit = ($citizen === true) ? '0' : '1';
         $raceDigit = self::numberBetween(8, 9);
 
-        $partialIdNumber = $birthDateString . $genderDigit . $sequenceDigits . $citizenDigit . $raceDigit;
+        $partialIdNumber = $birthDateString.$genderDigit.$sequenceDigits.$citizenDigit.$raceDigit;
 
-        return $partialIdNumber . Luhn::computeCheckDigit($partialIdNumber);
+        return $partialIdNumber.Luhn::computeCheckDigit($partialIdNumber);
     }
 
     /**

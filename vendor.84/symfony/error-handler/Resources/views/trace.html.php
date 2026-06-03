@@ -1,10 +1,10 @@
-<div class="trace-line-header break-long-words <?= $trace['file'] ? 'sf-toggle' : ''; ?>" data-toggle-selector="#trace-html-<?= $prefix; ?>-<?= $i; ?>" data-toggle-initial="<?= 'expanded' === $style ? 'display' : ''; ?>">
+<div class="trace-line-header break-long-words <?= $trace['file'] ? 'sf-toggle' : ''; ?>" data-toggle-selector="#trace-html-<?= $prefix; ?>-<?= $i; ?>" data-toggle-initial="<?= $style === 'expanded' ? 'display' : ''; ?>">
     <?php if ($trace['file']) { ?>
         <span class="icon icon-close"><?= $this->include('assets/images/icon-minus-square.svg'); ?></span>
         <span class="icon icon-open"><?= $this->include('assets/images/icon-plus-square.svg'); ?></span>
     <?php } ?>
 
-    <?php if ('compact' !== $style && $trace['function']) { ?>
+    <?php if ($style !== 'compact' && $trace['function']) { ?>
         <span class="trace-class"><?= $this->abbrClass($trace['class']); ?></span><?php if ($trace['type']) { ?><span class="trace-type"><?= $trace['type']; ?></span><?php } ?><span class="trace-method"><?= $trace['function']; ?></span><?php if (isset($trace['args'])) { ?><span class="trace-arguments">(<?= $this->formatArgs($trace['args']); ?>)</span><?php } ?>
     <?php } ?>
 
@@ -20,7 +20,7 @@
             <a href="<?= $fileLink; ?>">
                 <?= implode(\DIRECTORY_SEPARATOR, array_slice($filePathParts, 0, -1)).\DIRECTORY_SEPARATOR; ?><strong><?= end($filePathParts); ?></strong>
             </a>
-            <?php if ('compact' === $style && $trace['function']) { ?>
+            <?php if ($style === 'compact' && $trace['function']) { ?>
                 <span class="trace-type"><?= $trace['type']; ?></span>
                 <span class="trace-method"><?= $trace['function']; ?></span>
             <?php } ?>

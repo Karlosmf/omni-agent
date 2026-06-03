@@ -26,7 +26,7 @@ if (! function_exists('Filament\Support\format_money')) {
     /**
      * @deprecated Use `Illuminate\Support\Number::currency()` instead.
      */
-    function format_money(float | int $money, string $currency, int $divideBy = 0): string
+    function format_money(float|int $money, string $currency, int $divideBy = 0): string
     {
         if ($divideBy) {
             $money /= $divideBy;
@@ -40,7 +40,7 @@ if (! function_exists('Filament\Support\format_number')) {
     /**
      * @deprecated Use `Illuminate\Support\Number::format()` instead.
      */
-    function format_number(float | int $number): string
+    function format_number(float|int $number): string
     {
         return Number::format($number);
     }
@@ -71,7 +71,7 @@ if (! function_exists('Filament\Support\get_component_color_classes')) {
      * @param  class-string<HasColor>  $component
      * @return array<string>
      */
-    function get_component_color_classes(string | HasColor $component, ?string $color): array
+    function get_component_color_classes(string|HasColor $component, ?string $color): array
     {
         if (blank($color)) {
             return [];
@@ -141,7 +141,7 @@ if (! function_exists('Filament\Support\generate_href_html')) {
             if (FilamentView::hasSpaPrefetching()) {
                 $html .= ' wire:navigate.hover';
             } elseif ($hasNestedClickEventHandler) {
-                $html .= ' x-on:click="if (! ($event.altKey || $event.ctrlKey || $event.metaKey || $event.shiftKey)) { $event.preventDefault(); Alpine.navigate(' . "'{$url}'" . ') }"';
+                $html .= ' x-on:click="if (! ($event.altKey || $event.ctrlKey || $event.metaKey || $event.shiftKey)) { $event.preventDefault(); Alpine.navigate('."'{$url}'".') }"';
             } else {
                 $html .= ' wire:navigate';
             }
@@ -155,7 +155,7 @@ if (! function_exists('Filament\Support\generate_icon_html')) {
     /**
      * @param  string | array<string> | null  $alias
      */
-    function generate_icon_html(string | BackedEnum | Htmlable | null $icon, string | array | null $alias = null, ?ComponentAttributeBag $attributes = null, ?IconSize $size = null): ?Htmlable
+    function generate_icon_html(string|BackedEnum|Htmlable|null $icon, string|array|null $alias = null, ?ComponentAttributeBag $attributes = null, ?IconSize $size = null): ?Htmlable
     {
         if (filled($alias)) {
             $icon = FilamentIcon::resolve($alias) ?: $icon;
@@ -233,7 +233,7 @@ if (! function_exists('Filament\Support\generate_search_column_expression')) {
     /**
      * @internal This function is only to be used internally by Filament and is subject to change at any time. Please do not use this function in your own code.
      */
-    function generate_search_column_expression(string $column, ?bool $isSearchForcedCaseInsensitive, Connection $databaseConnection): string | Expression
+    function generate_search_column_expression(string $column, ?bool $isSearchForcedCaseInsensitive, Connection $databaseConnection): string|Expression
     {
         $driverName = $databaseConnection->getDriverName();
 
@@ -247,7 +247,7 @@ if (! function_exists('Filament\Support\generate_search_column_expression')) {
                                     ->explode('.')
                                     ->map(fn (string $part): string => (string) str($part)->wrap('"'))
                                     ->implode('.')
-                            ) . collect(str($column)->after('->')->explode('->')) // Handle JSON path parts
+                            ).collect(str($column)->after('->')->explode('->')) // Handle JSON path parts
                                 ->map(function ($segment, $index) use ($column): string {
                                     // If segment already starts with `>` (from `->>` operator), preserve it
                                     $isExplicitOperatorPrefixed = str($segment)->startsWith('>');
@@ -272,7 +272,7 @@ if (! function_exists('Filament\Support\generate_search_column_expression')) {
                                 ->explode('.')
                                 ->map(fn (string $part): string => (string) str($part)->wrap('"'))
                                 ->implode('.')
-            ) . '::text',
+            ).'::text',
             default => $column,
         };
 
@@ -343,7 +343,7 @@ if (! function_exists('Filament\Support\discover_app_classes')) {
 
         return collect($classLoader->getClassMap())
             ->filter(function (string $file, string $class) use ($parentClass): bool {
-                if (! str($file)->startsWith(base_path('vendor' . DIRECTORY_SEPARATOR . 'composer/../../'))) {
+                if (! str($file)->startsWith(base_path('vendor'.DIRECTORY_SEPARATOR.'composer/../../'))) {
                     return false;
                 }
 
@@ -367,7 +367,7 @@ if (! function_exists('Filament\Support\get_color_css_variables')) {
      * @param  string | array{50: string, 100: string, 200: string, 300: string, 400: string, 500: string, 600: string, 700: string, 800: string, 900: string, 950: string} | null  $color
      * @param  array<int>  $shades
      */
-    function get_color_css_variables(string | array | null $color, array $shades, ?string $alias = null): ?string
+    function get_color_css_variables(string|array|null $color, array $shades, ?string $alias = null): ?string
     {
         if ($color === null) {
             return null;

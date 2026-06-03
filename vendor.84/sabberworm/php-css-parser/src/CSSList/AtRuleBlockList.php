@@ -23,8 +23,8 @@ class AtRuleBlockList extends CSSBlockList implements AtRule
     private $arguments;
 
     /**
-     * @param non-empty-string $type
-     * @param int<1, max>|null $lineNumber
+     * @param  non-empty-string  $type
+     * @param  int<1, max>|null  $lineNumber
      */
     public function __construct(string $type, string $arguments = '', ?int $lineNumber = null)
     {
@@ -56,12 +56,13 @@ class AtRuleBlockList extends CSSBlockList implements AtRule
         $result .= $outputFormat->getContentBeforeAtRuleBlock();
         $arguments = $this->arguments;
         if ($arguments !== '') {
-            $arguments = ' ' . $arguments;
+            $arguments = ' '.$arguments;
         }
         $result .= "@{$this->type}$arguments{$formatter->spaceBeforeOpeningBrace()}{";
         $result .= $this->renderListContents($outputFormat);
         $result .= '}';
         $result .= $outputFormat->getContentAfterAtRuleBlock();
+
         return $result;
     }
 

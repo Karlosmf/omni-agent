@@ -55,9 +55,9 @@ class ConsoleInput implements StreamIn
      */
     public function __construct(?StreamIn $input = null)
     {
-        if (null === $input) {
+        if ($input === null) {
             if (\defined('STDIN') &&
-                false !== @\stream_get_meta_data(\STDIN)) {
+                @\stream_get_meta_data(\STDIN) !== false) {
                 $input = new FileRead('php://stdin');
             } else {
                 $input = new FileRead('/dev/tty');
@@ -66,7 +66,6 @@ class ConsoleInput implements StreamIn
 
         $this->_input = $input;
 
-        return;
     }
 
     /**

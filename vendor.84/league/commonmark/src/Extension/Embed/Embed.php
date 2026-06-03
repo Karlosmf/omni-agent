@@ -18,13 +18,14 @@ use League\CommonMark\Node\Block\AbstractBlock;
 final class Embed extends AbstractBlock
 {
     private string $url;
+
     private ?string $embedCode;
 
     public function __construct(string $url, ?string $embedCode = null)
     {
         parent::__construct();
 
-        $this->url       = $url;
+        $this->url = $url;
         $this->embedCode = $embedCode;
     }
 

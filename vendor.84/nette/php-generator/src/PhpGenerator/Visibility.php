@@ -9,13 +9,12 @@ declare(strict_types=1);
 
 namespace Nette\PhpGenerator;
 
-
 /**
  * Member visibility.
  */
 enum Visibility: string
 {
-	case Public = 'public';
-	case Protected = 'protected';
-	case Private = 'private';
+    case Public = 'public';
+    case Protected = 'protected';
+    case Private = 'private';
 }

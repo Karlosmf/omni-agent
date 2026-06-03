@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace ParagonIE\ConstantTime;
 
 use RangeException;
@@ -31,7 +33,7 @@ use TypeError;
 
 /**
  * Class Encoding
- * @package ParagonIE\ConstantTime
+ *
  * @api
  */
 abstract class Encoding
@@ -39,8 +41,6 @@ abstract class Encoding
     /**
      * RFC 4648 Base32 encoding
      *
-     * @param string $str
-     * @return string
      * @throws TypeError
      */
     public static function base32Encode(
@@ -53,8 +53,6 @@ abstract class Encoding
     /**
      * RFC 4648 Base32 encoding
      *
-     * @param string $str
-     * @return string
      * @throws TypeError
      */
     public static function base32EncodeUpper(
@@ -67,8 +65,6 @@ abstract class Encoding
     /**
      * RFC 4648 Base32 decoding
      *
-     * @param string $str
-     * @return string
      * @throws TypeError
      */
     public static function base32Decode(
@@ -81,8 +77,6 @@ abstract class Encoding
     /**
      * RFC 4648 Base32 decoding
      *
-     * @param string $str
-     * @return string
      * @throws TypeError
      */
     public static function base32DecodeUpper(
@@ -95,8 +89,6 @@ abstract class Encoding
     /**
      * RFC 4648 Base32 encoding
      *
-     * @param string $str
-     * @return string
      * @throws TypeError
      */
     public static function base32HexEncode(
@@ -109,8 +101,6 @@ abstract class Encoding
     /**
      * RFC 4648 Base32Hex encoding
      *
-     * @param string $str
-     * @return string
      * @throws TypeError
      */
     public static function base32HexEncodeUpper(
@@ -123,8 +113,6 @@ abstract class Encoding
     /**
      * RFC 4648 Base32Hex decoding
      *
-     * @param string $str
-     * @return string
      * @throws TypeError
      */
     public static function base32HexDecode(
@@ -137,8 +125,6 @@ abstract class Encoding
     /**
      * RFC 4648 Base32Hex decoding
      *
-     * @param string $str
-     * @return string
      * @throws TypeError
      */
     public static function base32HexDecodeUpper(
@@ -151,8 +137,6 @@ abstract class Encoding
     /**
      * RFC 4648 Base64 encoding
      *
-     * @param string $str
-     * @return string
      * @throws TypeError
      */
     public static function base64Encode(
@@ -165,8 +149,6 @@ abstract class Encoding
     /**
      * RFC 4648 Base64 decoding
      *
-     * @param string $str
-     * @return string
      * @throws TypeError
      */
     public static function base64Decode(
@@ -180,8 +162,7 @@ abstract class Encoding
      * Encode into Base64
      *
      * Base64 character set "./[A-Z][a-z][0-9]"
-     * @param string $str
-     * @return string
+     *
      * @throws TypeError
      */
     public static function base64EncodeDotSlash(
@@ -196,8 +177,6 @@ abstract class Encoding
      *
      * Base64 character set "./[A-Z][a-z][0-9]"
      *
-     * @param string $str
-     * @return string
      * @throws RangeException
      * @throws TypeError
      */
@@ -212,8 +191,7 @@ abstract class Encoding
      * Encode into Base64
      *
      * Base64 character set "[.-9][A-Z][a-z]" or "./[0-9][A-Z][a-z]"
-     * @param string $str
-     * @return string
+     *
      * @throws TypeError
      */
     public static function base64EncodeDotSlashOrdered(
@@ -228,8 +206,6 @@ abstract class Encoding
      *
      * Base64 character set "[.-9][A-Z][a-z]" or "./[0-9][A-Z][a-z]"
      *
-     * @param string $str
-     * @return string
      * @throws RangeException
      * @throws TypeError
      */
@@ -244,8 +220,8 @@ abstract class Encoding
      * Convert a binary string into a hexadecimal string without cache-timing
      * leaks
      *
-     * @param string $bin_string (raw binary)
-     * @return string
+     * @param  string  $bin_string  (raw binary)
+     *
      * @throws TypeError
      */
     public static function hexEncode(
@@ -259,8 +235,8 @@ abstract class Encoding
      * Convert a hexadecimal string into a binary string without cache-timing
      * leaks
      *
-     * @param string $hex_string
      * @return string (raw binary)
+     *
      * @throws RangeException
      */
     public static function hexDecode(
@@ -274,8 +250,8 @@ abstract class Encoding
      * Convert a binary string into a hexadecimal string without cache-timing
      * leaks
      *
-     * @param string $bin_string (raw binary)
-     * @return string
+     * @param  string  $bin_string  (raw binary)
+     *
      * @throws TypeError
      */
     public static function hexEncodeUpper(
@@ -289,8 +265,7 @@ abstract class Encoding
      * Convert a binary string into a hexadecimal string without cache-timing
      * leaks
      *
-     * @param string $bin_string (raw binary)
-     * @return string
+     * @param  string  $bin_string  (raw binary)
      */
     public static function hexDecodeUpper(
         #[SensitiveParameter]

@@ -11,9 +11,9 @@ trait CanBeValidated
     /**
      * @var array<array-key> | Closure
      */
-    protected array | Closure $rules = [];
+    protected array|Closure $rules = [];
 
-    protected string | Closure | null $validationAttribute = null;
+    protected string|Closure|null $validationAttribute = null;
 
     /**
      * @var array<string, string | Closure>
@@ -23,14 +23,14 @@ trait CanBeValidated
     /**
      * @param  array<array-key> | Closure  $rules
      */
-    public function rules(array | Closure $rules): static
+    public function rules(array|Closure $rules): static
     {
         $this->rules = $rules;
 
         return $this;
     }
 
-    public function validationAttribute(string | Closure | null $label): static
+    public function validationAttribute(string|Closure|null $label): static
     {
         $this->validationAttribute = $label;
 

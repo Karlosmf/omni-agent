@@ -17,11 +17,9 @@ use Symfony\Component\HttpFoundation\Response;
 final class ResponseIsUnprocessable extends Constraint
 {
     /**
-     * @param bool $verbose If true, the entire response is printed on failure. If false, the response body is omitted.
+     * @param  bool  $verbose  If true, the entire response is printed on failure. If false, the response body is omitted.
      */
-    public function __construct(private readonly bool $verbose = true)
-    {
-    }
+    public function __construct(private readonly bool $verbose = true) {}
 
     public function toString(): string
     {
@@ -29,15 +27,15 @@ final class ResponseIsUnprocessable extends Constraint
     }
 
     /**
-     * @param Response $other
+     * @param  Response  $other
      */
     protected function matches($other): bool
     {
-        return Response::HTTP_UNPROCESSABLE_ENTITY === $other->getStatusCode();
+        return $other->getStatusCode() === Response::HTTP_UNPROCESSABLE_ENTITY;
     }
 
     /**
-     * @param Response $other
+     * @param  Response  $other
      */
     protected function failureDescription($other): string
     {
@@ -45,7 +43,7 @@ final class ResponseIsUnprocessable extends Constraint
     }
 
     /**
-     * @param Response $response
+     * @param  Response  $response
      */
     protected function additionalFailureDescription($response): string
     {

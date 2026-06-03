@@ -46,9 +46,6 @@ final class MacroExtension implements MethodsClassReflectionExtension
 
     /**
      * Extension constructor.
-     *
-     * @param ReflectionProvider $reflectionProvider
-     * @param ClosureTypeFactory $closureTypeFactory
      */
     public function __construct(
         ReflectionProvider $reflectionProvider,
@@ -65,7 +62,7 @@ final class MacroExtension implements MethodsClassReflectionExtension
     {
         if (
             $classReflection->getName() !== CarbonInterface::class &&
-            !$classReflection->isSubclassOf(CarbonInterface::class)
+            ! $classReflection->isSubclassOf(CarbonInterface::class)
         ) {
             return false;
         }
@@ -107,8 +104,8 @@ final class MacroExtension implements MethodsClassReflectionExtension
             $closure = $macro;
 
             try {
-                $boundClosure = Closure::bind($closure, new stdClass());
-                $static = (!$boundClosure || (new ReflectionFunction($boundClosure))->getClosureThis() === null);
+                $boundClosure = Closure::bind($closure, new stdClass);
+                $static = (! $boundClosure || (new ReflectionFunction($boundClosure))->getClosureThis() === null);
             } catch (Throwable) {
                 $static = true;
             }
@@ -118,7 +115,7 @@ final class MacroExtension implements MethodsClassReflectionExtension
             $docComment = $reflection->getDocComment() ?: null;
         }
 
-        if (!isset($closure)) {
+        if (! isset($closure)) {
             throw new InvalidArgumentException('Could not create reflection from the spec given'); // @codeCoverageIgnore
         }
 

@@ -27,8 +27,7 @@ class TimeGeneratorFactory
         private NodeProviderInterface $nodeProvider,
         private TimeConverterInterface $timeConverter,
         private TimeProviderInterface $timeProvider,
-    ) {
-    }
+    ) {}
 
     /**
      * Returns a default time generator, based on the current environment

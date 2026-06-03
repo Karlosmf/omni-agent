@@ -22,11 +22,10 @@ class TraceFormatter
     /**
      * Format the trace of the given exception.
      *
-     * @param \Throwable         $throwable  The error or exception with a backtrace
-     * @param FilterOptions|null $filter     (default: null)
-     * @param int|null           $count      (default: PHP_INT_MAX)
-     * @param bool               $includePsy (default: true)
-     *
+     * @param  \Throwable  $throwable  The error or exception with a backtrace
+     * @param  FilterOptions|null  $filter  (default: null)
+     * @param  int|null  $count  (default: PHP_INT_MAX)
+     * @param  bool  $includePsy  (default: true)
      * @return string[] Formatted stacktrace lines
      */
     public static function formatTrace(\Throwable $throwable, ?FilterOptions $filter = null, ?int $count = null, bool $includePsy = true): array
@@ -44,12 +43,12 @@ class TraceFormatter
         $trace = $throwable->getTrace();
         \array_unshift($trace, [
             'function' => '',
-            'file'     => $throwable->getFile() !== null ? $throwable->getFile() : 'n/a',
-            'line'     => $throwable->getLine() !== null ? $throwable->getLine() : 'n/a',
-            'args'     => [],
+            'file' => $throwable->getFile() !== null ? $throwable->getFile() : 'n/a',
+            'line' => $throwable->getLine() !== null ? $throwable->getLine() : 'n/a',
+            'args' => [],
         ]);
 
-        if (!$includePsy) {
+        if (! $includePsy) {
             for ($i = \count($trace) - 1; $i >= 0; $i--) {
                 $thing = isset($trace[$i]['class']) ? $trace[$i]['class'] : $trace[$i]['function'];
                 if (\preg_match('/\\\\?Psy\\\\/', $thing)) {
@@ -77,7 +76,7 @@ class TraceFormatter
             }
 
             // Skip any lines that don't match our filter options
-            if ($filter !== null && !$filter->match(\sprintf('%s%s%s() at %s:%s', $class, $type, $function, $file, $line))) {
+            if ($filter !== null && ! $filter->match(\sprintf('%s%s%s() at %s:%s', $class, $type, $function, $file, $line))) {
                 continue;
             }
 

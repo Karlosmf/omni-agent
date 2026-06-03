@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\MockObject\Generator;
 
 use function sprintf;
@@ -19,7 +22,7 @@ use function sprintf;
 final class NameAlreadyInUseException extends \PHPUnit\Framework\Exception implements Exception
 {
     /**
-     * @param class-string|trait-string $name
+     * @param  class-string|trait-string  $name
      */
     public function __construct(string $name)
     {

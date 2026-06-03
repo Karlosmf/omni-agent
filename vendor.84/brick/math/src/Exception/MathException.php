@@ -9,6 +9,4 @@ use RuntimeException;
 /**
  * Base class for all math exceptions.
  */
-class MathException extends RuntimeException
-{
-}
+class MathException extends RuntimeException {}

@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Core;
 
 /*
@@ -12,14 +13,13 @@ use Hamcrest\Description;
  */
 class IsTypeOf extends BaseMatcher
 {
-
     private $_theType;
 
     /**
      * Creates a new instance of IsTypeOf
      *
-     * @param string $theType
-     *   The predicate evaluates to true for values with this built-in type.
+     * @param  string  $theType
+     *                           The predicate evaluates to true for values with this built-in type.
      */
     public function __construct($theType)
     {
@@ -42,10 +42,9 @@ class IsTypeOf extends BaseMatcher
             $description->appendText('was null');
         } else {
             $description->appendText('was ')
-                                    ->appendText(self::getTypeDescription(strtolower(gettype($item))))
-                                    ->appendText(' ')
-                                    ->appendValue($item)
-                                    ;
+                ->appendText(self::getTypeDescription(strtolower(gettype($item))))
+                ->appendText(' ')
+                ->appendValue($item);
         }
     }
 
@@ -56,7 +55,7 @@ class IsTypeOf extends BaseMatcher
         }
 
         return (strpos('aeiou', substr($type, 0, 1)) === false ? 'a ' : 'an ')
-                . $type;
+                .$type;
     }
 
     /**

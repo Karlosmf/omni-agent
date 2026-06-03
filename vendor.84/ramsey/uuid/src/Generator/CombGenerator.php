@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Ramsey\Uuid\Generator;
 
+use const STR_PAD_LEFT;
+
 use Ramsey\Uuid\Converter\NumberConverterInterface;
 use Ramsey\Uuid\Exception\InvalidArgumentException;
 
@@ -23,8 +25,6 @@ use function hex2bin;
 use function microtime;
 use function str_pad;
 use function substr;
-
-use const STR_PAD_LEFT;
 
 /**
  * CombGenerator generates COMBs (combined UUID/timestamp)
@@ -53,7 +53,6 @@ use const STR_PAD_LEFT;
  * ```
  *
  * @deprecated Please migrate to {@link https://uuid.ramsey.dev/en/stable/rfc4122/version7.html Version 7, Unix Epoch Time UUIDs}.
- *
  * @link https://web.archive.org/web/20240118030355/https://www.informit.com/articles/printerfriendly/25862 The Cost of GUIDs as Primary Keys
  */
 class CombGenerator implements RandomGeneratorInterface
@@ -63,19 +62,18 @@ class CombGenerator implements RandomGeneratorInterface
     public function __construct(
         private RandomGeneratorInterface $generator,
         private NumberConverterInterface $numberConverter
-    ) {
-    }
+    ) {}
 
     /**
      * @throws InvalidArgumentException if $length is not a positive integer greater than or equal to CombGenerator::TIMESTAMP_BYTES
      *
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function generate(int $length): string
     {
         if ($length < self::TIMESTAMP_BYTES) {
             throw new InvalidArgumentException(
-                'Length must be a positive integer greater than or equal to ' . self::TIMESTAMP_BYTES
+                'Length must be a positive integer greater than or equal to '.self::TIMESTAMP_BYTES
             );
         }
 
@@ -97,7 +95,7 @@ class CombGenerator implements RandomGeneratorInterface
             STR_PAD_LEFT,
         );
 
-        return (string) hex2bin(str_pad(bin2hex($hash), $length - self::TIMESTAMP_BYTES, '0') . $lsbTime);
+        return (string) hex2bin(str_pad(bin2hex($hash), $length - self::TIMESTAMP_BYTES, '0').$lsbTime);
     }
 
     /**
@@ -107,6 +105,6 @@ class CombGenerator implements RandomGeneratorInterface
     {
         $time = explode(' ', microtime(false));
 
-        return $time[1] . substr($time[0], 2, 5);
+        return $time[1].substr($time[0], 2, 5);
     }
 }

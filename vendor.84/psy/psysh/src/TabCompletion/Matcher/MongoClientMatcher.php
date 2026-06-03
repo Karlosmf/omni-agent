@@ -36,7 +36,7 @@ class MongoClientMatcher extends AbstractContextAwareMatcher
         $objectName = \str_replace('$', '', $objectToken[1]);
         $object = $this->getVariable($objectName);
 
-        if (!$object instanceof \MongoClient) {
+        if (! $object instanceof \MongoClient) {
             return [];
         }
 

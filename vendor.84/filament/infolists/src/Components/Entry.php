@@ -92,7 +92,7 @@ class Entry extends Component
         return $this->getConstantState();
     }
 
-    public function getLabel(): string | Htmlable | null
+    public function getLabel(): string|Htmlable|null
     {
         if (filled($label = $this->getBaseLabel())) {
             return $label;
@@ -124,7 +124,7 @@ class Entry extends Component
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function aboveLabel(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components): static
+    public function aboveLabel(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components): static
     {
         $this->childComponents($components, static::ABOVE_LABEL_SCHEMA_KEY);
 
@@ -134,7 +134,7 @@ class Entry extends Component
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function belowLabel(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components): static
+    public function belowLabel(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components): static
     {
         $this->childComponents($components, static::BELOW_LABEL_SCHEMA_KEY);
 
@@ -144,7 +144,7 @@ class Entry extends Component
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function beforeLabel(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components): static
+    public function beforeLabel(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components): static
     {
         $this->childComponents($components, static::BEFORE_LABEL_SCHEMA_KEY);
 
@@ -154,7 +154,7 @@ class Entry extends Component
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function afterLabel(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components): static
+    public function afterLabel(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components): static
     {
         $this->childComponents($components, static::AFTER_LABEL_SCHEMA_KEY);
 
@@ -164,7 +164,7 @@ class Entry extends Component
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function aboveContent(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components): static
+    public function aboveContent(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components): static
     {
         $this->childComponents($components, static::ABOVE_CONTENT_SCHEMA_KEY);
 
@@ -174,7 +174,7 @@ class Entry extends Component
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function belowContent(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components): static
+    public function belowContent(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components): static
     {
         $this->childComponents($components, static::BELOW_CONTENT_SCHEMA_KEY);
 
@@ -184,7 +184,7 @@ class Entry extends Component
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function beforeContent(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components): static
+    public function beforeContent(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components): static
     {
         $this->childComponents($components, static::BEFORE_CONTENT_SCHEMA_KEY);
 
@@ -194,7 +194,7 @@ class Entry extends Component
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function afterContent(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components): static
+    public function afterContent(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components): static
     {
         $this->childComponents($components, static::AFTER_CONTENT_SCHEMA_KEY);
 

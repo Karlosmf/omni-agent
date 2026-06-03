@@ -19,10 +19,10 @@ namespace Symfony\Component\Yaml\Exception;
 class ParseException extends RuntimeException
 {
     /**
-     * @param string      $rawMessage The error message
-     * @param int         $parsedLine The line where the error occurred
-     * @param string|null $snippet    The snippet of code near the problem
-     * @param string|null $parsedFile The file name where the error occurred
+     * @param  string  $rawMessage  The error message
+     * @param  int  $parsedLine  The line where the error occurred
+     * @param  string|null  $snippet  The snippet of code near the problem
+     * @param  string|null  $parsedFile  The file name where the error occurred
      */
     public function __construct(
         private string $rawMessage,
@@ -102,7 +102,7 @@ class ParseException extends RuntimeException
             $dot = true;
         }
 
-        if (null !== $this->parsedFile) {
+        if ($this->parsedFile !== null) {
             $this->message .= \sprintf(' in %s', json_encode($this->parsedFile, \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE));
         }
 

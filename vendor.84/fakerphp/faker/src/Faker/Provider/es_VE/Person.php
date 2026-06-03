@@ -156,8 +156,7 @@ class Person extends \Faker\Provider\Person
     /**
      * Generate random national identification number (cédula de identidad). Ex V-8756432
      *
-     * @param string $separator
-     *
+     * @param  string  $separator
      * @return string CNE is the official national election registry org.
      *                CNE is the official national election registry org.
      *
@@ -168,9 +167,9 @@ class Person extends \Faker\Provider\Person
         $id = static::randomElement(static::$nationalityId);
 
         if ($id == 'V') {
-            return $id . $separator . $this->numberBetween(10000, 100000000);
+            return $id.$separator.$this->numberBetween(10000, 100000000);
         }
 
-        return $id . $separator . $this->numberBetween(80000000, 100000000);
+        return $id.$separator.$this->numberBetween(80000000, 100000000);
     }
 }

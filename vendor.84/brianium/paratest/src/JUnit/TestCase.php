@@ -26,8 +26,7 @@ readonly class TestCase
         public int $line,
         public int $assertions,
         public float $time
-    ) {
-    }
+    ) {}
 
     final public static function caseFromNode(SimpleXMLElement $node): self
     {
@@ -38,7 +37,7 @@ readonly class TestCase
 
             return $node;
         };
-        $getType      = static function (SimpleXMLElement $node): string {
+        $getType = static function (SimpleXMLElement $node): string {
             $element = $node->attributes();
             assert($element !== null);
             $attributes = iterator_to_array($element);
@@ -50,8 +49,8 @@ readonly class TestCase
         if (($errors = $node->xpath('error')) !== []) {
             assert($errors !== null);
             $error = $getFirstNode($errors);
-            $type  = $getType($error);
-            $text  = (string) $error;
+            $type = $getType($error);
+            $text = (string) $error;
 
             return new TestCaseWithMessage(
                 (string) $node['name'],
@@ -69,8 +68,8 @@ readonly class TestCase
         if (($failures = $node->xpath('failure')) !== []) {
             assert($failures !== null);
             $failure = $getFirstNode($failures);
-            $type    = $getType($failure);
-            $text    = (string) $failure;
+            $type = $getType($failure);
+            $text = (string) $failure;
 
             return new TestCaseWithMessage(
                 (string) $node['name'],

@@ -288,13 +288,12 @@ class Person extends \Faker\Provider\Person
      *
      * @see https://no.wikipedia.org/wiki/Personnummer
      *
-     * @param string $gender Person::GENDER_MALE || Person::GENDER_FEMALE
-     *
+     * @param  string  $gender  Person::GENDER_MALE || Person::GENDER_FEMALE
      * @return string on format DDMMYY#####
      */
     public function personalIdentityNumber(?\DateTime $birthdate = null, $gender = null)
     {
-        if (!$birthdate) {
+        if (! $birthdate) {
             $birthdate = \Faker\Provider\DateTime::dateTimeThisCentury();
         }
         $datePart = $birthdate->format('dmy');
@@ -321,7 +320,7 @@ class Person extends \Faker\Provider\Person
                 $genderDigit = (string) static::numerify('#');
         }
 
-        $digits = $datePart . $randomDigits . $genderDigit;
+        $digits = $datePart.$randomDigits.$genderDigit;
 
         /**
          * @todo Calculate modulo 11 of $digits
@@ -330,6 +329,6 @@ class Person extends \Faker\Provider\Person
          */
         $checksum = (string) static::numerify('##');
 
-        return $digits . $checksum;
+        return $digits.$checksum;
     }
 }

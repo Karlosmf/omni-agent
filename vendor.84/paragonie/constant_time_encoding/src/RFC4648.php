@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace ParagonIE\ConstantTime;
 
 use SensitiveParameter;
@@ -33,7 +35,6 @@ use TypeError;
  *
  * This class conforms strictly to the RFC
  *
- * @package ParagonIE\ConstantTime
  * @api
  */
 abstract class RFC4648
@@ -43,8 +44,6 @@ abstract class RFC4648
      *
      * "foo" -> "Zm9v"
      *
-     * @param string $str
-     * @return string
      *
      * @throws TypeError
      */
@@ -60,8 +59,6 @@ abstract class RFC4648
      *
      * "Zm9v" -> "foo"
      *
-     * @param string $str
-     * @return string
      *
      * @throws TypeError
      */
@@ -77,8 +74,6 @@ abstract class RFC4648
      *
      * "foo" -> "Zm9v"
      *
-     * @param string $str
-     * @return string
      *
      * @throws TypeError
      */
@@ -94,8 +89,6 @@ abstract class RFC4648
      *
      * "Zm9v" -> "foo"
      *
-     * @param string $str
-     * @return string
      *
      * @throws TypeError
      */
@@ -111,8 +104,6 @@ abstract class RFC4648
      *
      * "foo" -> "MZXW6==="
      *
-     * @param string $str
-     * @return string
      *
      * @throws TypeError
      */
@@ -128,8 +119,6 @@ abstract class RFC4648
      *
      * "MZXW6===" -> "foo"
      *
-     * @param string $str
-     * @return string
      *
      * @throws TypeError
      */
@@ -145,8 +134,6 @@ abstract class RFC4648
      *
      * "foo" -> "CPNMU==="
      *
-     * @param string $str
-     * @return string
      *
      * @throws TypeError
      */
@@ -162,8 +149,6 @@ abstract class RFC4648
      *
      * "CPNMU===" -> "foo"
      *
-     * @param string $str
-     * @return string
      *
      * @throws TypeError
      */
@@ -179,8 +164,6 @@ abstract class RFC4648
      *
      * "foo" -> "666F6F"
      *
-     * @param string $str
-     * @return string
      *
      * @throws TypeError
      */
@@ -195,9 +178,6 @@ abstract class RFC4648
      * RFC 4648 Base16 decoding
      *
      * "666F6F" -> "foo"
-     *
-     * @param string $str
-     * @return string
      */
     public static function base16Decode(
         #[SensitiveParameter]

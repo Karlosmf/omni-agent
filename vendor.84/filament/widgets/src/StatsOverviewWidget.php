@@ -19,7 +19,7 @@ class StatsOverviewWidget extends Widget implements HasSchemas
      */
     protected ?array $cachedStats = null;
 
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
 
     protected ?string $heading = null;
 
@@ -28,7 +28,7 @@ class StatsOverviewWidget extends Widget implements HasSchemas
     /**
      * @var int | array<string, ?int> | null
      */
-    protected int | array | null $columns = null;
+    protected int|array|null $columns = null;
 
     /**
      * @var view-string
@@ -57,7 +57,7 @@ class StatsOverviewWidget extends Widget implements HasSchemas
     /**
      * @return int | array<string, ?int> | null
      */
-    protected function getColumns(): int | array | null
+    protected function getColumns(): int|array|null
     {
         if ($this->columns) {
             return $this->columns;

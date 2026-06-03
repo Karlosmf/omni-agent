@@ -6,6 +6,7 @@ use App\Enums\UserRole;
 use App\Filament\Admin\Resources\Customers\Pages\CreateCustomer;
 use App\Filament\Admin\Resources\Customers\Pages\EditCustomer;
 use App\Filament\Admin\Resources\Customers\Pages\ListCustomers;
+use App\Filament\Admin\Resources\Customers\RelationManagers\BookingsRelationManager;
 use App\Filament\Admin\Resources\Customers\Schemas\CustomerForm;
 use App\Filament\Admin\Resources\Customers\Tables\CustomersTable;
 use App\Models\User;
@@ -52,7 +53,7 @@ class CustomerResource extends Resource
     public static function getRelations(): array
     {
         return [
-            \App\Filament\Admin\Resources\Customers\RelationManagers\BookingsRelationManager::class,
+            BookingsRelationManager::class,
         ];
     }
 

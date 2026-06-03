@@ -79,7 +79,7 @@ class ForceDeleteBulkAction extends BulkAction
         $this->modalIcon(FilamentIcon::resolve(ActionsIconAlias::FORCE_DELETE_ACTION_MODAL) ?? Heroicon::OutlinedTrash);
 
         $this->action(function (): void {
-            $this->process(static function (ForceDeleteBulkAction $action, EloquentCollection | Collection | LazyCollection $records): void {
+            $this->process(static function (ForceDeleteBulkAction $action, EloquentCollection|Collection|LazyCollection $records): void {
                 if (! $action->shouldFetchSelectedRecords()) {
                     try {
                         $action->reportBulkProcessingSuccessfulRecordsCount(

@@ -10,11 +10,9 @@ use League\Flysystem\UnableToGeneratePublicUrl;
 final class ChainedPublicUrlGenerator implements PublicUrlGenerator
 {
     /**
-     * @param PublicUrlGenerator[] $generators
+     * @param  PublicUrlGenerator[]  $generators
      */
-    public function __construct(private iterable $generators)
-    {
-    }
+    public function __construct(private iterable $generators) {}
 
     public function publicUrl(string $path, Config $config): string
     {

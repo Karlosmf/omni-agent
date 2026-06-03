@@ -40,6 +40,7 @@ final class Context
 
     /**
      * @var string[] List of namespace aliases => Fully Qualified Namespace.
+     *
      * @psalm-var array<string, string>
      */
     private $namespaceAliases;
@@ -48,8 +49,9 @@ final class Context
      * Initializes the new context and normalizes all passed namespaces to be in Qualified Namespace Name (QNN)
      * format (without a preceding `\`).
      *
-     * @param string   $namespace        The namespace where this DocBlock resides in.
-     * @param string[] $namespaceAliases List of namespace aliases => Fully Qualified Namespace.
+     * @param  string  $namespace  The namespace where this DocBlock resides in.
+     * @param  string[]  $namespaceAliases  List of namespace aliases => Fully Qualified Namespace.
+     *
      * @psalm-param array<string, string> $namespaceAliases
      */
     public function __construct(string $namespace, array $namespaceAliases = [])
@@ -86,6 +88,7 @@ final class Context
      * the alias for the imported Namespace.
      *
      * @return string[]
+     *
      * @psalm-return array<string, string>
      */
     public function getNamespaceAliases(): array

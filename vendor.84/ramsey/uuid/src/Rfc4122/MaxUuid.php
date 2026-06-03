@@ -23,6 +23,4 @@ use Ramsey\Uuid\Uuid;
  *
  * @immutable
  */
-final class MaxUuid extends Uuid implements UuidInterface
-{
-}
+final class MaxUuid extends Uuid implements UuidInterface {}

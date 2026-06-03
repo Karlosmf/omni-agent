@@ -17,8 +17,8 @@ class Cookie implements \ArrayAccess
     protected $cookie = [];
 
     /**
-     * @param string $name The name of the cookie; may not be null or an empty string.
-     * @param string $value The cookie value; may not be null.
+     * @param  string  $name  The name of the cookie; may not be null or an empty string.
+     * @param  string  $value  The cookie value; may not be null.
      */
     public function __construct($name, $value)
     {
@@ -30,15 +30,15 @@ class Cookie implements \ArrayAccess
     }
 
     /**
-     * @param array $cookieArray The cookie fields; must contain name and value.
+     * @param  array  $cookieArray  The cookie fields; must contain name and value.
      * @return Cookie
      */
     public static function createFromArray(array $cookieArray)
     {
-        if (!isset($cookieArray['name'])) {
+        if (! isset($cookieArray['name'])) {
             throw LogicException::forError('Cookie name should be set');
         }
-        if (!isset($cookieArray['value'])) {
+        if (! isset($cookieArray['value'])) {
             throw LogicException::forError('Cookie value should be set');
         }
         $cookie = new self($cookieArray['name'], $cookieArray['value']);
@@ -84,7 +84,7 @@ class Cookie implements \ArrayAccess
     /**
      * The path the cookie is visible to. Defaults to "/" if omitted.
      *
-     * @param string $path
+     * @param  string  $path
      */
     public function setPath($path)
     {
@@ -102,7 +102,7 @@ class Cookie implements \ArrayAccess
     /**
      * The domain the cookie is visible to. Defaults to the current browsing context's document's URL domain if omitted.
      *
-     * @param string $domain
+     * @param  string  $domain
      */
     public function setDomain($domain)
     {
@@ -124,7 +124,7 @@ class Cookie implements \ArrayAccess
     /**
      * The cookie's expiration date, specified in seconds since Unix Epoch.
      *
-     * @param int $expiry
+     * @param  int  $expiry
      */
     public function setExpiry($expiry)
     {
@@ -142,7 +142,7 @@ class Cookie implements \ArrayAccess
     /**
      * Whether this cookie requires a secure connection (https). Defaults to false if omitted.
      *
-     * @param bool $secure
+     * @param  bool  $secure
      */
     public function setSecure($secure)
     {
@@ -160,7 +160,7 @@ class Cookie implements \ArrayAccess
     /**
      * Whether the cookie is an HTTP only cookie. Defaults to false if omitted.
      *
-     * @param bool $httpOnly
+     * @param  bool  $httpOnly
      */
     public function setHttpOnly($httpOnly)
     {
@@ -178,7 +178,7 @@ class Cookie implements \ArrayAccess
     /**
      * The cookie's same-site value.
      *
-     * @param string $sameSite
+     * @param  string  $sameSite
      */
     public function setSameSite($sameSite)
     {
@@ -199,7 +199,7 @@ class Cookie implements \ArrayAccess
     public function toArray()
     {
         $cookie = $this->cookie;
-        if (!isset($cookie['secure'])) {
+        if (! isset($cookie['secure'])) {
             // Passing a boolean value for the "secure" flag is mandatory when using geckodriver
             $cookie['secure'] = false;
         }
@@ -208,7 +208,7 @@ class Cookie implements \ArrayAccess
     }
 
     /**
-     * @param mixed $offset
+     * @param  mixed  $offset
      * @return bool
      */
     #[\ReturnTypeWillChange]
@@ -218,7 +218,7 @@ class Cookie implements \ArrayAccess
     }
 
     /**
-     * @param mixed $offset
+     * @param  mixed  $offset
      * @return mixed
      */
     #[\ReturnTypeWillChange]
@@ -228,8 +228,8 @@ class Cookie implements \ArrayAccess
     }
 
     /**
-     * @param mixed $offset
-     * @param mixed $value
+     * @param  mixed  $offset
+     * @param  mixed  $value
      * @return void
      */
     #[\ReturnTypeWillChange]
@@ -243,7 +243,7 @@ class Cookie implements \ArrayAccess
     }
 
     /**
-     * @param mixed $offset
+     * @param  mixed  $offset
      * @return void
      */
     #[\ReturnTypeWillChange]
@@ -253,7 +253,7 @@ class Cookie implements \ArrayAccess
     }
 
     /**
-     * @param string $name
+     * @param  string  $name
      */
     protected function validateCookieName($name)
     {
@@ -267,7 +267,7 @@ class Cookie implements \ArrayAccess
     }
 
     /**
-     * @param string $value
+     * @param  string  $value
      */
     protected function validateCookieValue($value)
     {

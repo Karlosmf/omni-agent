@@ -29,20 +29,20 @@ class AttachAction extends Action
 
     protected ?Closure $modifyRecordSelectOptionsQueryUsing = null;
 
-    protected bool | Closure $canAttachAnother = true;
+    protected bool|Closure $canAttachAnother = true;
 
-    protected bool | Closure $isRecordSelectPreloaded = false;
+    protected bool|Closure $isRecordSelectPreloaded = false;
 
-    protected string | Closure | null $tableSelectConfiguration = null;
+    protected string|Closure|null $tableSelectConfiguration = null;
 
-    protected bool | Closure $isMultiple = false;
+    protected bool|Closure $isMultiple = false;
 
     /**
      * @var array<string> | Closure | null
      */
-    protected array | Closure | null $recordSelectSearchColumns = null;
+    protected array|Closure|null $recordSelectSearchColumns = null;
 
-    protected bool | Closure | null $isSearchForcedCaseInsensitive = null;
+    protected bool|Closure|null $isSearchForcedCaseInsensitive = null;
 
     public static function getDefaultName(): ?string
     {
@@ -54,7 +54,7 @@ class AttachAction extends Action
         return $this->evaluate($this->tableSelectConfiguration);
     }
 
-    public function tableSelect(string | Closure | null $configuration): static
+    public function tableSelect(string|Closure|null $configuration): static
     {
         $this->tableSelectConfiguration = $configuration;
 
@@ -142,7 +142,7 @@ class AttachAction extends Action
         return $this;
     }
 
-    public function attachAnother(bool | Closure $condition = true): static
+    public function attachAnother(bool|Closure $condition = true): static
     {
         $this->canAttachAnother = $condition;
 
@@ -152,14 +152,14 @@ class AttachAction extends Action
     /**
      * @deprecated Use `attachAnother()` instead.
      */
-    public function disableAttachAnother(bool | Closure $condition = true): static
+    public function disableAttachAnother(bool|Closure $condition = true): static
     {
         $this->attachAnother(fn (AttachAction $action): bool => ! $action->evaluate($condition));
 
         return $this;
     }
 
-    public function preloadRecordSelect(bool | Closure $condition = true): static
+    public function preloadRecordSelect(bool|Closure $condition = true): static
     {
         $this->isRecordSelectPreloaded = $condition;
 
@@ -176,7 +176,7 @@ class AttachAction extends Action
         return (bool) $this->evaluate($this->isRecordSelectPreloaded);
     }
 
-    public function multiple(bool | Closure $condition = true): static
+    public function multiple(bool|Closure $condition = true): static
     {
         $this->isMultiple = $condition;
 
@@ -191,7 +191,7 @@ class AttachAction extends Action
     /**
      * @param  array<string> | Closure | null  $columns
      */
-    public function recordSelectSearchColumns(array | Closure | null $columns): static
+    public function recordSelectSearchColumns(array|Closure|null $columns): static
     {
         $this->recordSelectSearchColumns = $columns;
 
@@ -351,7 +351,7 @@ class AttachAction extends Action
             ->multiple($this->isMultiple());
     }
 
-    public function forceSearchCaseInsensitive(bool | Closure | null $condition = true): static
+    public function forceSearchCaseInsensitive(bool|Closure|null $condition = true): static
     {
         $this->isSearchForcedCaseInsensitive = $condition;
 

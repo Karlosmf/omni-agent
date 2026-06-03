@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,12 +9,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
+
+use DOMDocument;
+use XMLWriter;
 
 use function basename;
 use function dirname;
-use DOMDocument;
-use XMLWriter;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -20,6 +24,7 @@ use XMLWriter;
 final class Report extends File
 {
     private readonly string $name;
+
     private readonly string $sha1;
 
     public function __construct(XMLWriter $xmlWriter, string $name, string $sha1)

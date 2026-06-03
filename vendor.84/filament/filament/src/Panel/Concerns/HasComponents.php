@@ -95,13 +95,13 @@ trait HasComponents
      */
     protected array $widgetNamespaces = [];
 
-    protected bool | Closure $hasReadOnlyRelationManagersOnResourceViewPagesByDefault = true;
+    protected bool|Closure $hasReadOnlyRelationManagersOnResourceViewPagesByDefault = true;
 
     protected ?bool $hasCachedComponents = null;
 
-    protected string | Closure | null $resourceCreatePageRedirect = null;
+    protected string|Closure|null $resourceCreatePageRedirect = null;
 
-    protected string | Closure | null $resourceEditPageRedirect = null;
+    protected string|Closure|null $resourceEditPageRedirect = null;
 
     /**
      * @param  array<class-string>  $pages
@@ -149,7 +149,7 @@ trait HasComponents
     /**
      * @param  class-string<Model>|Model  $model
      */
-    public function getModelResource(string | Model $model): ?string
+    public function getModelResource(string|Model $model): ?string
     {
         if ($model instanceof Model) {
             $model = $model::class;
@@ -191,7 +191,7 @@ trait HasComponents
      * @param  class-string<Widget> | WidgetConfiguration  $widget
      * @return class-string<Widget>
      */
-    protected function normalizeWidgetClass(string | WidgetConfiguration $widget): string
+    protected function normalizeWidgetClass(string|WidgetConfiguration $widget): string
     {
         if ($widget instanceof WidgetConfiguration) {
             return $widget->widget;
@@ -401,7 +401,7 @@ trait HasComponents
     {
         return collect($this->widgets)
             ->unique()
-            ->sortBy(fn (string | WidgetConfiguration $widget): int => $this->normalizeWidgetClass($widget)::getSort())
+            ->sortBy(fn (string|WidgetConfiguration $widget): int => $this->normalizeWidgetClass($widget)::getSort())
             ->all();
     }
 
@@ -424,7 +424,7 @@ trait HasComponents
 
         foreach ($filesystem->allFiles($directory) as $file) {
             $variableNamespace = $namespace->contains('*') ? str_ireplace(
-                ['\\' . $namespace->before('*'), $namespace->after('*')],
+                ['\\'.$namespace->before('*'), $namespace->after('*')],
                 ['', ''],
                 str_replace([DIRECTORY_SEPARATOR], ['\\'], (string) str($file->getPath())->after(base_path())),
             ) : null;
@@ -563,7 +563,7 @@ trait HasComponents
      * @param  class-string<RelationManager> | RelationManagerConfiguration  $manager
      * @return class-string<RelationManager>
      */
-    protected function normalizeRelationManagerClass(string | RelationManagerConfiguration $manager): string
+    protected function normalizeRelationManagerClass(string|RelationManagerConfiguration $manager): string
     {
         if ($manager instanceof RelationManagerConfiguration) {
             return $manager->relationManager;
@@ -598,7 +598,7 @@ trait HasComponents
         $this->livewireComponents[$componentName] = $component;
     }
 
-    public function readOnlyRelationManagersOnResourceViewPagesByDefault(bool | Closure $condition = true): static
+    public function readOnlyRelationManagersOnResourceViewPagesByDefault(bool|Closure $condition = true): static
     {
         $this->hasReadOnlyRelationManagersOnResourceViewPagesByDefault = $condition;
 
@@ -639,7 +639,7 @@ trait HasComponents
 
         $filesystem->put(
             $cachePath,
-            '<?php return ' . var_export([
+            '<?php return '.var_export([
                 'livewireComponents' => $this->livewireComponents,
                 'clusters' => $this->clusters,
                 'clusteredComponents' => $this->clusteredComponents,
@@ -654,7 +654,7 @@ trait HasComponents
                 'widgets' => $this->widgets,
                 'widgetDirectories' => $this->widgetDirectories,
                 'widgetNamespaces' => $this->widgetNamespaces,
-            ], true) . ';',
+            ], true).';',
         );
 
         $this->hasCachedComponents = true;
@@ -693,10 +693,10 @@ trait HasComponents
 
     public function getComponentCachePath(): string
     {
-        return (config('filament.cache_path') ?? base_path('bootstrap/cache/filament')) . DIRECTORY_SEPARATOR . 'panels' . DIRECTORY_SEPARATOR . "{$this->getId()}.php";
+        return (config('filament.cache_path') ?? base_path('bootstrap/cache/filament')).DIRECTORY_SEPARATOR.'panels'.DIRECTORY_SEPARATOR."{$this->getId()}.php";
     }
 
-    public function resourceCreatePageRedirect(string | Closure | null $page): static
+    public function resourceCreatePageRedirect(string|Closure|null $page): static
     {
         $this->resourceCreatePageRedirect = $page;
 
@@ -708,7 +708,7 @@ trait HasComponents
         return $this->evaluate($this->resourceCreatePageRedirect);
     }
 
-    public function resourceEditPageRedirect(string | Closure | null $page): static
+    public function resourceEditPageRedirect(string|Closure|null $page): static
     {
         $this->resourceEditPageRedirect = $page;
 

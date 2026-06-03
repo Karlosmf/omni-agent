@@ -6,9 +6,9 @@ use Closure;
 
 trait CanClose
 {
-    protected bool | Closure $shouldClose = false;
+    protected bool|Closure $shouldClose = false;
 
-    public function close(bool | Closure $condition = true): static
+    public function close(bool|Closure $condition = true): static
     {
         $this->shouldClose = $condition;
 

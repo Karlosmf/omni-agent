@@ -56,12 +56,11 @@ final class MailerTestCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $message = (new Email())
+        $message = (new Email)
             ->to($input->getArgument('to'))
             ->from($input->getOption('from'))
             ->subject($input->getOption('subject'))
-            ->text($input->getOption('body'))
-        ;
+            ->text($input->getOption('body'));
         if ($transport = $input->getOption('transport')) {
             $message->getHeaders()->addTextHeader('X-Transport', $transport);
         }

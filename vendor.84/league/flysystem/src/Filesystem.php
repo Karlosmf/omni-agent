@@ -20,6 +20,7 @@ class Filesystem implements FilesystemOperator
     use CalculateChecksumFromStream;
 
     private Config $config;
+
     private PathNormalizer $pathNormalizer;
 
     public function __construct(
@@ -30,7 +31,7 @@ class Filesystem implements FilesystemOperator
         private ?TemporaryUrlGenerator $temporaryUrlGenerator = null,
     ) {
         $this->config = new Config($config);
-        $this->pathNormalizer = $pathNormalizer ?? new WhitespacePathNormalizer();
+        $this->pathNormalizer = $pathNormalizer ?? new WhitespacePathNormalizer;
     }
 
     public function fileExists(string $location): bool
@@ -212,7 +213,7 @@ class Filesystem implements FilesystemOperator
     {
         $config = $this->config->extend($config);
 
-        if ( ! $this->adapter instanceof ChecksumProvider) {
+        if (! $this->adapter instanceof ChecksumProvider) {
             return $this->calculateChecksumFromStream($path, $config);
         }
 
@@ -246,23 +247,23 @@ class Filesystem implements FilesystemOperator
     }
 
     /**
-     * @param mixed $contents
+     * @param  mixed  $contents
      */
     private function assertIsResource($contents): void
     {
         if (is_resource($contents) === false) {
             throw new InvalidStreamProvided(
-                "Invalid stream provided, expected stream resource, received " . gettype($contents)
+                'Invalid stream provided, expected stream resource, received '.gettype($contents)
             );
         } elseif ($type = get_resource_type($contents) !== 'stream') {
             throw new InvalidStreamProvided(
-                "Invalid stream provided, expected stream resource, received resource of type " . $type
+                'Invalid stream provided, expected stream resource, received resource of type '.$type
             );
         }
     }
 
     /**
-     * @param resource $resource
+     * @param  resource  $resource
      */
     private function rewindStream($resource): void
     {

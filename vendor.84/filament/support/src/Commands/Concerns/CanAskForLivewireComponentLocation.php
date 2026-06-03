@@ -21,14 +21,14 @@ trait CanAskForLivewireComponentLocation
 
         if (blank($locations)) {
             return [
-                app()->getNamespace() . 'Livewire',
+                app()->getNamespace().'Livewire',
                 app_path('Livewire'),
                 '',
             ];
         }
 
         $options = [
-            '' => app()->getNamespace() . 'Livewire',
+            '' => app()->getNamespace().'Livewire',
             ...array_combine(
                 array_keys($locations),
                 array_keys($locations),
@@ -42,7 +42,7 @@ trait CanAskForLivewireComponentLocation
 
         if (blank($namespace)) {
             return [
-                app()->getNamespace() . 'Livewire',
+                app()->getNamespace().'Livewire',
                 app_path('Livewire'),
                 '',
             ];

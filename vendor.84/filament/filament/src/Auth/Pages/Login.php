@@ -301,12 +301,12 @@ class Login extends SimplePage
             ->url(filament()->getRegistrationUrl());
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('filament-panels::auth/pages/login.title');
     }
 
-    public function getHeading(): string | Htmlable | null
+    public function getHeading(): string|Htmlable|null
     {
         if (filled($this->userUndertakingMultiFactorAuthentication)) {
             return __('filament-panels::auth/pages/login.multi_factor.heading');
@@ -371,7 +371,7 @@ class Login extends SimplePage
         ];
     }
 
-    public function getSubheading(): string | Htmlable | null
+    public function getSubheading(): string|Htmlable|null
     {
         if (filled($this->userUndertakingMultiFactorAuthentication)) {
             return __('filament-panels::auth/pages/login.multi_factor.subheading');
@@ -381,7 +381,7 @@ class Login extends SimplePage
             return null;
         }
 
-        return new HtmlString(__('filament-panels::auth/pages/login.actions.register.before') . ' ' . $this->registerAction->toHtml());
+        return new HtmlString(__('filament-panels::auth/pages/login.actions.register.before').' '.$this->registerAction->toHtml());
     }
 
     public function content(Schema $schema): Schema
@@ -422,7 +422,7 @@ class Login extends SimplePage
             ->visible(fn (): bool => filled($this->userUndertakingMultiFactorAuthentication));
     }
 
-    public function getMultiFactorChallengeFormActionsAlignment(): string | Alignment
+    public function getMultiFactorChallengeFormActionsAlignment(): string|Alignment
     {
         return $this->getFormActionsAlignment();
     }

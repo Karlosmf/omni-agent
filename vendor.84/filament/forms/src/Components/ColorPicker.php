@@ -18,9 +18,9 @@ class ColorPicker extends Field implements HasAffixActions
      */
     protected string $view = 'filament-forms::components.color-picker';
 
-    protected string | Closure $format = 'hex';
+    protected string|Closure $format = 'hex';
 
-    public function format(string | Closure $format): static
+    public function format(string|Closure $format): static
     {
         $this->format = $format;
 

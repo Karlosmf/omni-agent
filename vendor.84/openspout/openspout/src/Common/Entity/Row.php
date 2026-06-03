@@ -26,18 +26,17 @@ final class Row
     /**
      * Row constructor.
      *
-     * @param Cell[] $cells
+     * @param  Cell[]  $cells
      */
     public function __construct(array $cells, ?Style $style = null)
     {
         $this
             ->setCells($cells)
-            ->setStyle($style)
-        ;
+            ->setStyle($style);
     }
 
     /**
-     * @param list<null|bool|DateInterval|DateTimeInterface|float|int|string> $cellValues
+     * @param  list<null|bool|DateInterval|DateTimeInterface|float|int|string>  $cellValues
      */
     public static function fromValues(array $cellValues = [], ?Style $rowStyle = null): self
     {
@@ -49,8 +48,8 @@ final class Row
     }
 
     /**
-     * @param array<array-key, null|bool|DateInterval|DateTimeInterface|float|int|string> $cellValues
-     * @param array<array-key, Style>                                                     $columnStyles
+     * @param  array<array-key, null|bool|DateInterval|DateTimeInterface|float|int|string>  $cellValues
+     * @param  array<array-key, Style>  $columnStyles
      */
     public static function fromValuesWithStyles(array $cellValues = [], ?Style $rowStyle = null, array $columnStyles = []): self
     {
@@ -70,7 +69,7 @@ final class Row
     }
 
     /**
-     * @param Cell[] $cells
+     * @param  Cell[]  $cells
      */
     public function setCells(array $cells): self
     {
@@ -105,7 +104,7 @@ final class Row
     {
         // When using "setCellAtIndex", it's possible to
         // have "$this->cells" contain holes.
-        if ([] === $this->cells) {
+        if ($this->cells === []) {
             return 0;
         }
 
@@ -119,7 +118,7 @@ final class Row
 
     public function setStyle(?Style $style): self
     {
-        $this->style = $style ?? new Style();
+        $this->style = $style ?? new Style;
 
         return $this;
     }
@@ -159,7 +158,7 @@ final class Row
     public function isEmpty(): bool
     {
         foreach ($this->cells as $cell) {
-            if (!$cell instanceof Cell\EmptyCell) {
+            if (! $cell instanceof Cell\EmptyCell) {
                 return false;
             }
         }

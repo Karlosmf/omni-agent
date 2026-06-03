@@ -36,12 +36,16 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class InvokableCommand implements SignalableCommandInterface
 {
     private readonly ?SignalableCommandInterface $signalableCommand;
+
     private readonly \ReflectionFunction $invokable;
+
     /**
      * @var list<Interaction>|null
      */
     private ?array $interactions = null;
+
     private bool $triggerDeprecations = false;
+
     private $code;
 
     public function __construct(
@@ -60,7 +64,7 @@ class InvokableCommand implements SignalableCommandInterface
     {
         $statusCode = $this->invokable->invoke(...$this->getParameters($this->invokable, $input, $output));
 
-        if (!\is_int($statusCode)) {
+        if (! \is_int($statusCode)) {
             if ($this->triggerDeprecations) {
                 trigger_deprecation('symfony/console', '7.3', \sprintf('Returning a non-integer value from the command "%s" is deprecated and will throw an exception in Symfony 8.0.', $this->command->getName()));
 
@@ -84,11 +88,13 @@ class InvokableCommand implements SignalableCommandInterface
         foreach ($this->invokable->getParameters() as $parameter) {
             if ($argument = Argument::tryFrom($parameter)) {
                 $definition->addArgument($argument->toInputArgument());
+
                 continue;
             }
 
             if ($option = Option::tryFrom($parameter)) {
                 $definition->addOption($option->toInputOption());
+
                 continue;
             }
 
@@ -116,13 +122,13 @@ class InvokableCommand implements SignalableCommandInterface
 
     private function getClosure(callable $code): \Closure
     {
-        if (!$code instanceof \Closure) {
+        if (! $code instanceof \Closure) {
             return $code(...);
         }
 
         $this->triggerDeprecations = true;
 
-        if (null !== (new \ReflectionFunction($code))->getClosureThis()) {
+        if ((new \ReflectionFunction($code))->getClosureThis() !== null) {
             return $code;
         }
 
@@ -162,7 +168,7 @@ class InvokableCommand implements SignalableCommandInterface
 
             $type = $parameter->getType();
 
-            if (!$type instanceof \ReflectionNamedType) {
+            if (! $type instanceof \ReflectionNamedType) {
                 if ($this->triggerDeprecations) {
                     trigger_deprecation('symfony/console', '7.3', \sprintf('Omitting the type declaration for the parameter "$%s" is deprecated and will throw an exception in Symfony 8.0.', $parameter->getName()));
 
@@ -197,16 +203,16 @@ class InvokableCommand implements SignalableCommandInterface
 
     public function isInteractive(): bool
     {
-        if (null === $this->interactions) {
+        if ($this->interactions === null) {
             $this->collectInteractions();
         }
 
-        return [] !== $this->interactions;
+        return $this->interactions !== [];
     }
 
     public function interact(InputInterface $input, OutputInterface $output): void
     {
-        if (null === $this->interactions) {
+        if ($this->interactions === null) {
             $this->collectInteractions();
         }
 
@@ -234,7 +240,7 @@ class InvokableCommand implements SignalableCommandInterface
             }
         }
 
-        if (!$class = $this->invokable->getClosureCalledClass()) {
+        if (! $class = $this->invokable->getClosureCalledClass()) {
             return;
         }
 

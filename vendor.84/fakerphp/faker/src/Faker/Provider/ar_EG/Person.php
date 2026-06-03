@@ -66,7 +66,9 @@ class Person extends \Faker\Provider\Person
     ];
 
     protected static $titleMale = ['السيد', 'الأستاذ', 'الدكتور', 'المهندس'];
+
     protected static $titleFemale = ['السيدة', 'الآنسة', 'الدكتورة', 'المهندسة'];
+
     private static $prefix = ['أ.', 'د.', 'أ.د', 'م.'];
 
     /**
@@ -102,6 +104,6 @@ class Person extends \Faker\Provider\Person
         $birthRegistrationSequence = str_pad((string) $birthRegistrationSequence, 4, '0', STR_PAD_LEFT);
         $randomCheckDigit = mt_rand(1, 9);
 
-        return $centuryId . $fullBirthDate . $governorateId . $birthRegistrationSequence . $randomCheckDigit;
+        return $centuryId.$fullBirthDate.$governorateId.$birthRegistrationSequence.$randomCheckDigit;
     }
 }

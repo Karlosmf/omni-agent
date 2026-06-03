@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of phpDocumentor.
  *
@@ -31,7 +32,7 @@ final class MethodParameter
     public const NO_DEFAULT_VALUE = '__NO_VALUE__';
 
     /**
-     * @param mixed $defaultValue
+     * @param  mixed  $defaultValue
      */
     public function __construct(
         string $name,
@@ -73,18 +74,18 @@ final class MethodParameter
             return null;
         }
 
-        return (new MethodParameterFactory())->format($this->defaultValue);
+        return (new MethodParameterFactory)->format($this->defaultValue);
     }
 
     public function __toString(): string
     {
-        return $this->getType() . ' ' .
-            ($this->isReference() ? '&' : '') .
-            ($this->isVariadic() ? '...' : '') .
-            '$' . $this->getName() .
+        return $this->getType().' '.
+            ($this->isReference() ? '&' : '').
+            ($this->isVariadic() ? '...' : '').
+            '$'.$this->getName().
             (
                 $this->defaultValue !== self::NO_DEFAULT_VALUE ?
-                (new MethodParameterFactory())->format($this->defaultValue) :
+                (new MethodParameterFactory)->format($this->defaultValue) :
                 ''
             );
     }

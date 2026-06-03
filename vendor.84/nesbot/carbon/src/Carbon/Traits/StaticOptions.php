@@ -20,9 +20,9 @@ use Carbon\FactoryImmutable;
  */
 trait StaticOptions
 {
-    ///////////////////////////////////////////////////////////////////
-    ///////////// Behavior customization for sub-classes //////////////
-    ///////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////
+    // /////////// Behavior customization for sub-classes //////////////
+    // /////////////////////////////////////////////////////////////////
 
     /**
      * Function to call instead of format.
@@ -45,9 +45,9 @@ trait StaticOptions
      */
     protected static $parseFunction;
 
-    ///////////////////////////////////////////////////////////////////
-    ///////////// Use default factory for static options //////////////
-    ///////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////
+    // /////////// Use default factory for static options //////////////
+    // /////////////////////////////////////////////////////////////////
 
     /**
      * @deprecated To avoid conflict between different third-party libraries, static setters should not be used.
@@ -55,8 +55,6 @@ trait StaticOptions
      * @see settings
      *
      * Enable the strict mode (or disable with passing false).
-     *
-     * @param bool $strictModeEnabled
      */
     public static function useStrictMode(bool $strictModeEnabled = true): void
     {
@@ -66,8 +64,6 @@ trait StaticOptions
     /**
      * Returns true if the strict mode is globally in use, false else.
      * (It can be overridden in specific instances.)
-     *
-     * @return bool
      */
     public static function isStrictModeEnabled(): bool
     {
@@ -82,10 +78,6 @@ trait StaticOptions
      * @see settings
      *
      * Indicates if months should be calculated with overflow.
-     *
-     * @param bool $monthsOverflow
-     *
-     * @return void
      */
     public static function useMonthsOverflow(bool $monthsOverflow = true): void
     {
@@ -100,8 +92,6 @@ trait StaticOptions
      * @see settings
      *
      * Reset the month overflow behavior.
-     *
-     * @return void
      */
     public static function resetMonthsOverflow(): void
     {
@@ -110,8 +100,6 @@ trait StaticOptions
 
     /**
      * Get the month overflow global behavior (can be overridden in specific instances).
-     *
-     * @return bool
      */
     public static function shouldOverflowMonths(): bool
     {
@@ -126,10 +114,6 @@ trait StaticOptions
      * @see settings
      *
      * Indicates if years should be calculated with overflow.
-     *
-     * @param bool $yearsOverflow
-     *
-     * @return void
      */
     public static function useYearsOverflow(bool $yearsOverflow = true): void
     {
@@ -144,8 +128,6 @@ trait StaticOptions
      * @see settings
      *
      * Reset the month overflow behavior.
-     *
-     * @return void
      */
     public static function resetYearsOverflow(): void
     {
@@ -154,8 +136,6 @@ trait StaticOptions
 
     /**
      * Get the month overflow global behavior (can be overridden in specific instances).
-     *
-     * @return bool
      */
     public static function shouldOverflowYears(): bool
     {

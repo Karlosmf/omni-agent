@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of phpDocumentor.
  *
@@ -37,7 +38,7 @@ class StringValue implements PseudoType
 
     public function underlyingType(): Type
     {
-        return new String_();
+        return new String_;
     }
 
     public function __toString(): string

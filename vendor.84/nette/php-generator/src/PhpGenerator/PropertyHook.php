@@ -6,124 +6,121 @@ namespace Nette\PhpGenerator;
 
 use JetBrains\PhpStorm\Language;
 
-
 /**
  * Definition of a property hook.
  */
 final class PropertyHook
 {
-	use Traits\AttributeAware;
-	use Traits\CommentAware;
+    use Traits\AttributeAware;
+    use Traits\CommentAware;
 
-	private string $body = '';
-	private bool $short = false;
-	private bool $final = false;
-	private bool $abstract = false;
+    private string $body = '';
 
-	/** @var Parameter[] */
-	private array $parameters = [];
-	private bool $returnReference = false;
+    private bool $short = false;
 
+    private bool $final = false;
 
-	/** @param  ?mixed[]  $args */
-	public function setBody(
-		#[Language('PHP')]
-		string $code,
-		?array $args = null,
-		bool $short = false,
-	): static
-	{
-		$this->body = $args === null
-			? $code
-			: (new Dumper)->format($code, ...$args);
-		$this->short = $short;
-		return $this;
-	}
+    private bool $abstract = false;
 
+    /** @var Parameter[] */
+    private array $parameters = [];
 
-	public function getBody(): string
-	{
-		return $this->body;
-	}
+    private bool $returnReference = false;
 
+    /** @param  ?mixed[]  $args */
+    public function setBody(
+        #[Language('PHP')]
+        string $code,
+        ?array $args = null,
+        bool $short = false,
+    ): static {
+        $this->body = $args === null
+            ? $code
+            : (new Dumper)->format($code, ...$args);
+        $this->short = $short;
 
-	public function isShort(): bool
-	{
-		return $this->short && trim($this->body) !== '';
-	}
+        return $this;
+    }
 
+    public function getBody(): string
+    {
+        return $this->body;
+    }
 
-	public function setFinal(bool $state = true): static
-	{
-		$this->final = $state;
-		return $this;
-	}
+    public function isShort(): bool
+    {
+        return $this->short && trim($this->body) !== '';
+    }
 
+    public function setFinal(bool $state = true): static
+    {
+        $this->final = $state;
 
-	public function isFinal(): bool
-	{
-		return $this->final;
-	}
+        return $this;
+    }
 
+    public function isFinal(): bool
+    {
+        return $this->final;
+    }
 
-	public function setAbstract(bool $state = true): static
-	{
-		$this->abstract = $state;
-		return $this;
-	}
+    public function setAbstract(bool $state = true): static
+    {
+        $this->abstract = $state;
 
+        return $this;
+    }
 
-	public function isAbstract(): bool
-	{
-		return $this->abstract;
-	}
+    public function isAbstract(): bool
+    {
+        return $this->abstract;
+    }
 
+    /**
+     * @param  Parameter[]  $val
+     *
+     * @internal
+     */
+    public function setParameters(array $val): static
+    {
+        (function (Parameter ...$val) {})(...$val);
+        $this->parameters = [];
+        foreach ($val as $v) {
+            $this->parameters[$v->getName()] = $v;
+        }
 
-	/**
-	 * @param  Parameter[]  $val
-	 * @internal
-	 */
-	public function setParameters(array $val): static
-	{
-		(function (Parameter ...$val) {})(...$val);
-		$this->parameters = [];
-		foreach ($val as $v) {
-			$this->parameters[$v->getName()] = $v;
-		}
+        return $this;
+    }
 
-		return $this;
-	}
+    /**
+     * @return Parameter[]
+     *
+     * @internal
+     */
+    public function getParameters(): array
+    {
+        return $this->parameters;
+    }
 
+    /**
+     * Adds a parameter. If it already exists, it overwrites it.
+     *
+     * @param  string  $name  without $
+     */
+    public function addParameter(string $name): Parameter
+    {
+        return $this->parameters[$name] = new Parameter($name);
+    }
 
-	/**
-	 * @return  Parameter[]
-	 * @internal
-	 */
-	public function getParameters(): array
-	{
-		return $this->parameters;
-	}
+    public function setReturnReference(bool $state = true): static
+    {
+        $this->returnReference = $state;
 
+        return $this;
+    }
 
-	/**
-	 * Adds a parameter. If it already exists, it overwrites it.
-	 * @param  string  $name without $
-	 */
-	public function addParameter(string $name): Parameter
-	{
-		return $this->parameters[$name] = new Parameter($name);
-	}
-
-
-	public function setReturnReference(bool $state = true): static
-	{
-		$this->returnReference = $state;
-		return $this;
-	}
-
-
-	public function getReturnReference(): bool
-	{
-		return $this->returnReference;
-	}
+    public function getReturnReference(): bool
+    {
+        return $this->returnReference;
+    }
 }

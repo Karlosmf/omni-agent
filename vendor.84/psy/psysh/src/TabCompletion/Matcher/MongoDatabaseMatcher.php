@@ -36,7 +36,7 @@ class MongoDatabaseMatcher extends AbstractContextAwareMatcher
         $objectName = \str_replace('$', '', $objectToken[1]);
         $object = $this->getVariable($objectName);
 
-        if (!$object instanceof \MongoDB) {
+        if (! $object instanceof \MongoDB) {
             return [];
         }
 

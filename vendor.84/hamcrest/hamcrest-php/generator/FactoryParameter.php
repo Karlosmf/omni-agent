@@ -29,7 +29,7 @@ class FactoryParameter
      */
     public function getDeclaration()
     {
-        $code = $this->getTypeCode() . $this->getInvocation();
+        $code = $this->getTypeCode().$this->getInvocation();
 
         if ($this->reflector->isOptional()) {
             $default = $this->reflector->getDefaultValue();
@@ -38,18 +38,19 @@ class FactoryParameter
             } elseif (is_bool($default)) {
                 $default = $default ? 'true' : 'false';
             } elseif (is_string($default)) {
-                $default = "'" . $default . "'";
+                $default = "'".$default."'";
             } elseif (is_numeric($default)) {
                 $default = strval($default);
             } elseif (is_array($default)) {
                 $default = 'array()';
             } else {
-                echo 'Warning: unknown default type for ' . $this->getMethod()->getFullName() . "\n";
+                echo 'Warning: unknown default type for '.$this->getMethod()->getFullName()."\n";
                 var_dump($default);
                 $default = 'null';
             }
-            $code .= ' = ' . $default;
+            $code .= ' = '.$default;
         }
+
         return $code;
     }
 
@@ -71,7 +72,7 @@ class FactoryParameter
             return $class ? sprintf('\\%s ', $class->getName()) : '';
         }
 
-        if (!$this->reflector->hasType()) {
+        if (! $this->reflector->hasType()) {
             return '';
         }
 
@@ -88,7 +89,6 @@ class FactoryParameter
      * This function knows how to prefix class names with a leading slash and
      * also how to handle PHP 8's union types.
      *
-     * @param ReflectionType $type
      *
      * @return string
      */

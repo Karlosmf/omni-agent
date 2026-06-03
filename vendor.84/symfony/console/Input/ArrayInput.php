@@ -35,7 +35,7 @@ class ArrayInput extends Input
     public function getFirstArgument(): ?string
     {
         foreach ($this->parameters as $param => $value) {
-            if ($param && \is_string($param) && '-' === $param[0]) {
+            if ($param && \is_string($param) && $param[0] === '-') {
                 continue;
             }
 
@@ -50,11 +50,11 @@ class ArrayInput extends Input
         $values = (array) $values;
 
         foreach ($this->parameters as $k => $v) {
-            if (!\is_int($k)) {
+            if (! \is_int($k)) {
                 $v = $k;
             }
 
-            if ($onlyParams && '--' === $v) {
+            if ($onlyParams && $v === '--') {
                 return false;
             }
 
@@ -71,7 +71,7 @@ class ArrayInput extends Input
         $values = (array) $values;
 
         foreach ($this->parameters as $k => $v) {
-            if ($onlyParams && ('--' === $k || (\is_int($k) && '--' === $v))) {
+            if ($onlyParams && ($k === '--' || (\is_int($k) && $v === '--'))) {
                 return $default;
             }
 
@@ -94,14 +94,14 @@ class ArrayInput extends Input
     {
         $params = [];
         foreach ($this->parameters as $param => $val) {
-            if ($param && \is_string($param) && '-' === $param[0]) {
-                $glue = ('-' === $param[1]) ? '=' : ' ';
+            if ($param && \is_string($param) && $param[0] === '-') {
+                $glue = ($param[1] === '-') ? '=' : ' ';
                 if (\is_array($val)) {
                     foreach ($val as $v) {
-                        $params[] = $param.('' != $v ? $glue.$this->escapeToken($v) : '');
+                        $params[] = $param.($v != '' ? $glue.$this->escapeToken($v) : '');
                     }
                 } else {
-                    $params[] = $param.('' != $val ? $glue.$this->escapeToken($val) : '');
+                    $params[] = $param.($val != '' ? $glue.$this->escapeToken($val) : '');
                 }
             } else {
                 $params[] = \is_array($val) ? implode(' ', array_map($this->escapeToken(...), $val)) : $this->escapeToken($val);
@@ -114,7 +114,7 @@ class ArrayInput extends Input
     protected function parse(): void
     {
         foreach ($this->parameters as $key => $value) {
-            if ('--' === $key) {
+            if ($key === '--') {
                 return;
             }
             if (str_starts_with($key, '--')) {
@@ -134,7 +134,7 @@ class ArrayInput extends Input
      */
     private function addShortOption(string $shortcut, mixed $value): void
     {
-        if (!$this->definition->hasShortcut($shortcut)) {
+        if (! $this->definition->hasShortcut($shortcut)) {
             throw new InvalidOptionException(\sprintf('The "-%s" option does not exist.', $shortcut));
         }
 
@@ -149,8 +149,8 @@ class ArrayInput extends Input
      */
     private function addLongOption(string $name, mixed $value): void
     {
-        if (!$this->definition->hasOption($name)) {
-            if (!$this->definition->hasNegation($name)) {
+        if (! $this->definition->hasOption($name)) {
+            if (! $this->definition->hasNegation($name)) {
                 throw new InvalidOptionException(\sprintf('The "--%s" option does not exist.', $name));
             }
 
@@ -162,12 +162,12 @@ class ArrayInput extends Input
 
         $option = $this->definition->getOption($name);
 
-        if (null === $value) {
+        if ($value === null) {
             if ($option->isValueRequired()) {
                 throw new InvalidOptionException(\sprintf('The "--%s" option requires a value.', $name));
             }
 
-            if (!$option->isValueOptional()) {
+            if (! $option->isValueOptional()) {
                 $value = true;
             }
         }
@@ -182,7 +182,7 @@ class ArrayInput extends Input
      */
     private function addArgument(string|int $name, mixed $value): void
     {
-        if (!$this->definition->hasArgument($name)) {
+        if (! $this->definition->hasArgument($name)) {
             throw new InvalidArgumentException(\sprintf('The "%s" argument does not exist.', $name));
         }
 

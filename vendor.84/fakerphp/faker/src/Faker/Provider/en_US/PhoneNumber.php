@@ -68,6 +68,7 @@ class PhoneNumber extends \Faker\Provider\PhoneNumber
     protected static $tollFreeAreaCodes = [
         800, 844, 855, 866, 877, 888,
     ];
+
     protected static $tollFreeFormats = [
         // Standard formats
         '{{tollFreeAreaCode}}-{{exchangeCode}}-####',
@@ -109,7 +110,7 @@ class PhoneNumber extends \Faker\Provider\PhoneNumber
     {
         $firstDigit = self::numberBetween(2, 9);
 
-        return $firstDigit . self::regexify(self::$areaCodeRegexes[$firstDigit]);
+        return $firstDigit.self::regexify(self::$areaCodeRegexes[$firstDigit]);
     }
 
     /**

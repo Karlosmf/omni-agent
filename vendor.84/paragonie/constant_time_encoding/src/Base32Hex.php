@@ -1,8 +1,11 @@
 <?php
+
 declare(strict_types=1);
+
 namespace ParagonIE\ConstantTime;
 
 use Override;
+
 use function pack;
 
 /**
@@ -31,17 +34,12 @@ use function pack;
 /**
  * Class Base32Hex
  * [0-9][A-V]
- *
- * @package ParagonIE\ConstantTime
  */
 abstract class Base32Hex extends Base32
 {
     /**
      * Uses bitwise operators instead of table-lookups to turn 5-bit integers
      * into 8-bit integers.
-     *
-     * @param int $src
-     * @return int
      */
     #[Override]
     protected static function decode5Bits(int $src): int
@@ -49,7 +47,7 @@ abstract class Base32Hex extends Base32
         $ret = -1;
 
         // if ($src > 0x30 && $src < 0x3a) ret += $src - 0x2e + 1; // -47
-        $ret += (((0x2f - $src) & ($src - 0x3a)) >> 8) & ($src - 47);
+        $ret += (((0x2F - $src) & ($src - 0x3A)) >> 8) & ($src - 47);
 
         // if ($src > 0x60 && $src < 0x77) ret += $src - 0x61 + 10 + 1; // -86
         $ret += (((0x60 - $src) & ($src - 0x77)) >> 8) & ($src - 86);
@@ -60,9 +58,6 @@ abstract class Base32Hex extends Base32
     /**
      * Uses bitwise operators instead of table-lookups to turn 5-bit integers
      * into 8-bit integers.
-     *
-     * @param int $src
-     * @return int
      */
     #[Override]
     protected static function decode5BitsUpper(int $src): int
@@ -70,7 +65,7 @@ abstract class Base32Hex extends Base32
         $ret = -1;
 
         // if ($src > 0x30 && $src < 0x3a) ret += $src - 0x2e + 1; // -47
-        $ret += (((0x2f - $src) & ($src - 0x3a)) >> 8) & ($src - 47);
+        $ret += (((0x2F - $src) & ($src - 0x3A)) >> 8) & ($src - 47);
 
         // if ($src > 0x40 && $src < 0x57) ret += $src - 0x41 + 10 + 1; // -54
         $ret += (((0x40 - $src) & ($src - 0x57)) >> 8) & ($src - 54);
@@ -81,9 +76,6 @@ abstract class Base32Hex extends Base32
     /**
      * Uses bitwise operators instead of table-lookups to turn 8-bit integers
      * into 5-bit integers.
-     *
-     * @param int $src
-     * @return string
      */
     #[Override]
     protected static function encode5Bits(int $src): string
@@ -101,9 +93,6 @@ abstract class Base32Hex extends Base32
      * into 5-bit integers.
      *
      * Uppercase variant.
-     *
-     * @param int $src
-     * @return string
      */
     #[Override]
     protected static function encode5BitsUpper(int $src): string

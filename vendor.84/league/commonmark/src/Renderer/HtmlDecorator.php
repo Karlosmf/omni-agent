@@ -19,19 +19,22 @@ use League\CommonMark\Util\HtmlElement;
 final class HtmlDecorator implements NodeRendererInterface
 {
     private NodeRendererInterface $inner;
+
     private string $tag;
+
     /** @var array<string, string|string[]|bool> */
     private array $attributes;
+
     private bool $selfClosing;
 
     /**
-     * @param array<string, string|string[]|bool> $attributes
+     * @param  array<string, string|string[]|bool>  $attributes
      */
     public function __construct(NodeRendererInterface $inner, string $tag, array $attributes = [], bool $selfClosing = false)
     {
-        $this->inner       = $inner;
-        $this->tag         = $tag;
-        $this->attributes  = $attributes;
+        $this->inner = $inner;
+        $this->tag = $tag;
+        $this->attributes = $attributes;
         $this->selfClosing = $selfClosing;
     }
 

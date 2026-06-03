@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,9 +9,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Util;
 
 use const DIRECTORY_SEPARATOR;
+
 use function basename;
 use function dirname;
 use function is_dir;
@@ -26,12 +30,11 @@ final readonly class Filesystem
 {
     public static function createDirectory(string $directory): bool
     {
-        return !(!is_dir($directory) && !@mkdir($directory, 0o777, true) && !is_dir($directory));
+        return ! (! is_dir($directory) && ! @mkdir($directory, 0o777, true) && ! is_dir($directory));
     }
 
     /**
-     * @param non-empty-string $path
-     *
+     * @param  non-empty-string  $path
      * @return false|non-empty-string
      */
     public static function resolveStreamOrFile(string $path): false|string
@@ -43,7 +46,7 @@ final readonly class Filesystem
         $directory = dirname($path);
 
         if (is_dir($directory)) {
-            return realpath($directory) . DIRECTORY_SEPARATOR . basename($path);
+            return realpath($directory).DIRECTORY_SEPARATOR.basename($path);
         }
 
         return false;

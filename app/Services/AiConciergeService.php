@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\LeadTemperature;
 use App\Models\Lead;
 use Gemini\Laravel\Facades\Gemini;
 use Illuminate\Support\Facades\Log;
@@ -35,11 +36,11 @@ class AiConciergeService
             $lowerMsg = strtolower($messageContent);
             if (str_contains($lowerMsg, 'humano') || str_contains($lowerMsg, 'agente') || str_contains($lowerMsg, 'asesor')) {
                 $lead->update([
-                    'temperature' => \App\Enums\LeadTemperature::Hot,
+                    'temperature' => LeadTemperature::Hot,
                     'needs_human_attention' => true,
                 ]);
-            } elseif ($lead->temperature === \App\Enums\LeadTemperature::Cool && (str_contains($lowerMsg, 'fecha') || str_contains($lowerMsg, 'presupuesto') || str_contains($lowerMsg, 'reserva'))) {
-                $lead->update(['temperature' => \App\Enums\LeadTemperature::Warm]);
+            } elseif ($lead->temperature === LeadTemperature::Cool && (str_contains($lowerMsg, 'fecha') || str_contains($lowerMsg, 'presupuesto') || str_contains($lowerMsg, 'reserva'))) {
+                $lead->update(['temperature' => LeadTemperature::Warm]);
             }
 
             // Load History from DB (expanded to 15 messages for deeper context)
@@ -78,13 +79,13 @@ class AiConciergeService
             // Get dynamic names from WhatsApp links
             $settings = get_agency_settings();
             $whatsappLinks = collect($settings?->social_links ?? [])
-                ->filter(fn($link) => 
-                    str_contains(strtolower($link['platform'] ?? ''), 'whatsapp') || 
+                ->filter(fn ($link) => str_contains(strtolower($link['platform'] ?? ''), 'whatsapp') ||
                     str_contains(strtolower($link['icon'] ?? ''), 'whatsapp')
                 );
 
-            $names = $whatsappLinks->map(function($link) {
+            $names = $whatsappLinks->map(function ($link) {
                 $displayName = str_ireplace('WhatsApp', '', $link['platform'] ?? '');
+
                 return trim($displayName) ?: 'nuestros agentes';
             })->filter()->unique();
 
@@ -128,11 +129,11 @@ class AiConciergeService
             Log::error('AiConciergeService Error: '.$e->getMessage());
 
             if ($e->getMessage() === 'GEMINI_API_KEY_MISSING') {
-                return "Por el momento, nuestro asistente virtual no está disponible.\n\n" .
-                       "PREGUNTAS FRECUENTES:\n" .
-                       "• ¿Cómo reservo un viaje? Puedes contactarnos por WhatsApp usando nuestros enlaces sociales.\n" .
-                       "• ¿Cuáles son los medios de pago? Aceptamos transferencias y tarjetas.\n" .
-                       "• ¿Dónde están ubicados? Revisa nuestra sección de contacto.";
+                return "Por el momento, nuestro asistente virtual no está disponible.\n\n".
+                       "PREGUNTAS FRECUENTES:\n".
+                       "• ¿Cómo reservo un viaje? Puedes contactarnos por WhatsApp usando nuestros enlaces sociales.\n".
+                       "• ¿Cuáles son los medios de pago? Aceptamos transferencias y tarjetas.\n".
+                       '• ¿Dónde están ubicados? Revisa nuestra sección de contacto.';
             }
 
             return 'Disculpá, estoy teniendo un pequeño problema técnico. ¿Podés intentar de nuevo en unos segundos? 🙏';
@@ -155,11 +156,11 @@ class AiConciergeService
             $lowerMsg = strtolower($messageContent);
             if (str_contains($lowerMsg, 'humano') || str_contains($lowerMsg, 'agente') || str_contains($lowerMsg, 'asesor')) {
                 $lead->update([
-                    'temperature' => \App\Enums\LeadTemperature::Hot,
+                    'temperature' => LeadTemperature::Hot,
                     'needs_human_attention' => true,
                 ]);
-            } elseif ($lead->temperature === \App\Enums\LeadTemperature::Cool && (str_contains($lowerMsg, 'fecha') || str_contains($lowerMsg, 'presupuesto') || str_contains($lowerMsg, 'reserva'))) {
-                $lead->update(['temperature' => \App\Enums\LeadTemperature::Warm]);
+            } elseif ($lead->temperature === LeadTemperature::Cool && (str_contains($lowerMsg, 'fecha') || str_contains($lowerMsg, 'presupuesto') || str_contains($lowerMsg, 'reserva'))) {
+                $lead->update(['temperature' => LeadTemperature::Warm]);
             }
 
             // Load History
@@ -197,13 +198,13 @@ class AiConciergeService
             // Get dynamic names from WhatsApp links
             $settings = get_agency_settings();
             $whatsappLinks = collect($settings?->social_links ?? [])
-                ->filter(fn($link) => 
-                    str_contains(strtolower($link['platform'] ?? ''), 'whatsapp') || 
+                ->filter(fn ($link) => str_contains(strtolower($link['platform'] ?? ''), 'whatsapp') ||
                     str_contains(strtolower($link['icon'] ?? ''), 'whatsapp')
                 );
 
-            $names = $whatsappLinks->map(function($link) {
+            $names = $whatsappLinks->map(function ($link) {
                 $displayName = str_ireplace('WhatsApp', '', $link['platform'] ?? '');
+
                 return trim($displayName) ?: 'nuestros agentes';
             })->filter()->unique();
 
@@ -235,7 +236,7 @@ class AiConciergeService
             }
 
             if (empty($settings?->gemini_api_key)) {
-                throw new \Exception("GEMINI_API_KEY_MISSING");
+                throw new \Exception('GEMINI_API_KEY_MISSING');
             }
             // Override config so the facade uses this API Key
             config(['gemini.api_key' => $settings->gemini_api_key]);
@@ -257,13 +258,13 @@ class AiConciergeService
 
         } catch (Throwable $e) {
             Log::error('AiConciergeService Stream Error: '.$e->getMessage());
-            
+
             if ($e->getMessage() === 'GEMINI_API_KEY_MISSING') {
-                yield "Por el momento, nuestro asistente virtual no está disponible.\n\n" .
-                      "PREGUNTAS FRECUENTES:\n" .
-                      "• ¿Cómo reservo un viaje? Puedes contactarnos por WhatsApp usando nuestros enlaces sociales.\n" .
-                      "• ¿Cuáles son los medios de pago? Aceptamos transferencias y tarjetas.\n" .
-                      "• ¿Dónde están ubicados? Revisa nuestra sección de contacto.";
+                yield "Por el momento, nuestro asistente virtual no está disponible.\n\n".
+                      "PREGUNTAS FRECUENTES:\n".
+                      "• ¿Cómo reservo un viaje? Puedes contactarnos por WhatsApp usando nuestros enlaces sociales.\n".
+                      "• ¿Cuáles son los medios de pago? Aceptamos transferencias y tarjetas.\n".
+                      '• ¿Dónde están ubicados? Revisa nuestra sección de contacto.';
             } else {
                 yield 'Disculpá, estoy teniendo un pequeño problema técnico. ¿Podés intentar de nuevo? 🙏';
             }
@@ -304,7 +305,7 @@ class AiConciergeService
     {
         $settings = get_agency_settings();
         if (empty($settings?->gemini_api_key)) {
-            throw new \Exception("GEMINI_API_KEY_MISSING");
+            throw new \Exception('GEMINI_API_KEY_MISSING');
         }
         config(['gemini.api_key' => $settings->gemini_api_key]);
 

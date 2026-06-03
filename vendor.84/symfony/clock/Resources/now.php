@@ -11,13 +11,13 @@
 
 namespace Symfony\Component\Clock;
 
-if (!\function_exists(now::class)) {
+if (! \function_exists(now::class)) {
     /**
      * @throws \DateMalformedStringException When the modifier is invalid
      */
     function now(string $modifier = 'now'): DatePoint
     {
-        if ('now' !== $modifier) {
+        if ($modifier !== 'now') {
             return new DatePoint($modifier);
         }
 

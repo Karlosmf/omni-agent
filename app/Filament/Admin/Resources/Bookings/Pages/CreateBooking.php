@@ -3,6 +3,9 @@
 namespace App\Filament\Admin\Resources\Bookings\Pages;
 
 use App\Filament\Admin\Resources\Bookings\BookingResource;
+use App\Models\Lead;
+use App\Models\User;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateBooking extends CreateRecord
@@ -24,7 +27,7 @@ class CreateBooking extends CreateRecord
             $data['customer_id'] = $customerId;
 
             // Find the most recent New lead for this customer that doesn't have a booking
-            $lead = \App\Models\Lead::where('customer_id', $customerId)
+            $lead = Lead::where('customer_id', $customerId)
                 ->doesntHave('booking')
                 ->latest()
                 ->first();
@@ -33,7 +36,7 @@ class CreateBooking extends CreateRecord
         // 2. Or check if lead_id is passed directly
         if (request()->has('lead_id')) {
             $leadId = request('lead_id');
-            $lead = \App\Models\Lead::find($leadId);
+            $lead = Lead::find($leadId);
             if ($lead) {
                 $data['lead_id'] = $lead->id;
                 if ($lead->customer_id) {
@@ -78,7 +81,7 @@ class CreateBooking extends CreateRecord
             }
         } elseif (isset($data['customer_id'])) {
             // Fallback if no lead but customer exists
-            $customer = \App\Models\User::find($data['customer_id']);
+            $customer = User::find($data['customer_id']);
             if ($customer) {
                 $data['holder_name'] = $customer->name;
             }
@@ -87,14 +90,14 @@ class CreateBooking extends CreateRecord
         $this->form->fill($data);
     }
 
-    protected function getCreateFormAction(): \Filament\Actions\Action
+    protected function getCreateFormAction(): Action
     {
         return parent::getCreateFormAction()
             ->label('Crear registro')
             ->icon('heroicon-o-plus');
     }
 
-    protected function getCancelFormAction(): \Filament\Actions\Action
+    protected function getCancelFormAction(): Action
     {
         return parent::getCancelFormAction()
             ->label('Cancelar')

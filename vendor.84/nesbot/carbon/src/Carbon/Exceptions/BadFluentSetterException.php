@@ -28,9 +28,8 @@ class BadFluentSetterException extends BaseBadMethodCallException implements Bad
     /**
      * Constructor.
      *
-     * @param string         $setter
-     * @param int            $code
-     * @param Throwable|null $previous
+     * @param  string  $setter
+     * @param  int  $code
      */
     public function __construct($setter, $code = 0, ?Throwable $previous = null)
     {
@@ -41,8 +40,6 @@ class BadFluentSetterException extends BaseBadMethodCallException implements Bad
 
     /**
      * Get the setter.
-     *
-     * @return string
      */
     public function getSetter(): string
     {

@@ -79,7 +79,7 @@ class ResetPassword extends SimplePage
 
         $status = Password::broker(Filament::getAuthPasswordBroker())->reset(
             $this->getCredentialsFromFormData($data),
-            function (CanResetPassword | Model | Authenticatable $user) use ($data, &$hasPanelAccess): void {
+            function (CanResetPassword|Model|Authenticatable $user) use ($data, &$hasPanelAccess): void {
                 if (
                     ($user instanceof FilamentUser) &&
                     (! $user->canAccessPanel(Filament::getCurrentOrDefaultPanel()))
@@ -175,12 +175,12 @@ class ResetPassword extends SimplePage
             ->dehydrated(false);
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('filament-panels::auth/pages/password-reset/reset-password.title');
     }
 
-    public function getHeading(): string | Htmlable | null
+    public function getHeading(): string|Htmlable|null
     {
         return __('filament-panels::auth/pages/password-reset/reset-password.heading');
     }

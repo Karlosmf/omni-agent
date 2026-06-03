@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,10 +9,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\MockObject\Generator;
 
-use function class_exists;
 use PHPUnit\Framework\MockObject\ConfigurableMethod;
+
+use function class_exists;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -32,13 +36,13 @@ final readonly class DoubledClass
     private array $configurableMethods;
 
     /**
-     * @param class-string             $mockName
-     * @param list<ConfigurableMethod> $configurableMethods
+     * @param  class-string  $mockName
+     * @param  list<ConfigurableMethod>  $configurableMethods
      */
     public function __construct(string $classCode, string $mockName, array $configurableMethods)
     {
-        $this->classCode           = $classCode;
-        $this->mockName            = $mockName;
+        $this->classCode = $classCode;
+        $this->mockName = $mockName;
         $this->configurableMethods = $configurableMethods;
     }
 
@@ -47,7 +51,7 @@ final readonly class DoubledClass
      */
     public function generate(): string
     {
-        if (!class_exists($this->mockName, false)) {
+        if (! class_exists($this->mockName, false)) {
             eval($this->classCode);
         }
 

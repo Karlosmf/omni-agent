@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -17,12 +19,13 @@ use Monolog\LogRecord;
  * Injects memory_get_usage in all records
  *
  * @see Monolog\Processor\MemoryProcessor::__construct() for options
+ *
  * @author Rob Jensen
  */
 class MemoryUsageProcessor extends MemoryProcessor
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __invoke(LogRecord $record): LogRecord
     {

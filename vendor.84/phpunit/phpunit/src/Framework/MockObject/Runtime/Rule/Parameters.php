@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,10 +9,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\MockObject\Rule;
 
-use function count;
-use function sprintf;
 use Exception;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\Constraint\Constraint;
@@ -19,6 +20,9 @@ use PHPUnit\Framework\Constraint\IsEqual;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\MockObject\Invocation as BaseInvocation;
 use PHPUnit\Util\Test;
+
+use function count;
+use function sprintf;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -30,19 +34,21 @@ final class Parameters implements ParametersRule
     /**
      * @var list<Constraint>
      */
-    private array $parameters           = [];
+    private array $parameters = [];
+
     private ?BaseInvocation $invocation = null;
+
     private null|bool|ExpectationFailedException $parameterVerificationResult;
 
     /**
-     * @param array<mixed> $parameters
+     * @param  array<mixed>  $parameters
      *
      * @throws \PHPUnit\Framework\Exception
      */
     public function __construct(array $parameters)
     {
         foreach ($parameters as $parameter) {
-            if (!$parameter instanceof Constraint) {
+            if (! $parameter instanceof Constraint) {
                 $parameter = new IsEqual(
                     $parameter,
                 );
@@ -57,7 +63,7 @@ final class Parameters implements ParametersRule
      */
     public function apply(BaseInvocation $invocation): void
     {
-        $this->invocation                  = $invocation;
+        $this->invocation = $invocation;
         $this->parameterVerificationResult = null;
 
         try {

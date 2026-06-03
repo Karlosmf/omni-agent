@@ -12,7 +12,7 @@ use Filament\Tables\View\TablesIconAlias;
 
 trait CanGroupRecords
 {
-    protected string | Group | Closure | null $defaultGroup = null;
+    protected string|Group|Closure|null $defaultGroup = null;
 
     /**
      * @var array<string, Group>
@@ -22,17 +22,17 @@ trait CanGroupRecords
     /**
      * @var array<string | Group> | Closure
      */
-    protected array | Closure $groups = [];
+    protected array|Closure $groups = [];
 
-    protected bool | Closure $isGroupsOnly = false;
+    protected bool|Closure $isGroupsOnly = false;
 
-    protected bool | Closure $areGroupingSettingsInDropdownOnDesktop = false;
+    protected bool|Closure $areGroupingSettingsInDropdownOnDesktop = false;
 
-    protected bool | Closure $areGroupingSettingsHidden = false;
+    protected bool|Closure $areGroupingSettingsHidden = false;
 
-    protected bool | Closure $isGroupingDirectionSettingHidden = false;
+    protected bool|Closure $isGroupingDirectionSettingHidden = false;
 
-    protected bool | Closure $areGroupsCollapsedByDefault = false;
+    protected bool|Closure $areGroupsCollapsedByDefault = false;
 
     protected ?Closure $modifyGroupRecordsTriggerActionUsing = null;
 
@@ -43,7 +43,7 @@ trait CanGroupRecords
         return $this;
     }
 
-    public function groupingSettingsInDropdownOnDesktop(bool | Closure $condition = true): static
+    public function groupingSettingsInDropdownOnDesktop(bool|Closure $condition = true): static
     {
         $this->areGroupingSettingsInDropdownOnDesktop = $condition;
 
@@ -53,35 +53,35 @@ trait CanGroupRecords
     /**
      * @deprecated Use the `groupingSettingsInDropdownOnDesktop()` method instead.
      */
-    public function groupsInDropdownOnDesktop(bool | Closure $condition = true): static
+    public function groupsInDropdownOnDesktop(bool|Closure $condition = true): static
     {
         $this->groupingSettingsInDropdownOnDesktop($condition);
 
         return $this;
     }
 
-    public function groupingSettingsHidden(bool | Closure $condition = true): static
+    public function groupingSettingsHidden(bool|Closure $condition = true): static
     {
         $this->areGroupingSettingsHidden = $condition;
 
         return $this;
     }
 
-    public function groupingDirectionSettingHidden(bool | Closure $condition = true): static
+    public function groupingDirectionSettingHidden(bool|Closure $condition = true): static
     {
         $this->isGroupingDirectionSettingHidden = $condition;
 
         return $this;
     }
 
-    public function collapsedGroupsByDefault(bool | Closure $condition = true): static
+    public function collapsedGroupsByDefault(bool|Closure $condition = true): static
     {
         $this->areGroupsCollapsedByDefault = $condition;
 
         return $this;
     }
 
-    public function defaultGroup(string | Group | Closure | null $group): static
+    public function defaultGroup(string|Group|Closure|null $group): static
     {
         $this->defaultGroup = $group;
 
@@ -91,14 +91,14 @@ trait CanGroupRecords
     /**
      * @param  array<string | Group> | Closure  $groups
      */
-    public function groups(array | Closure $groups): static
+    public function groups(array|Closure $groups): static
     {
         $this->groups = $groups;
 
         return $this;
     }
 
-    public function groupsOnly(bool | Closure $condition = true): static
+    public function groupsOnly(bool|Closure $condition = true): static
     {
         $this->isGroupsOnly = $condition;
 

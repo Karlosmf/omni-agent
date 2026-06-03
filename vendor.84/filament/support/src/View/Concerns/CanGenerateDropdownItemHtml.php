@@ -26,23 +26,23 @@ trait CanGenerateDropdownItemHtml
      */
     public function generateDropdownItemHtml(
         ComponentAttributeBag $attributes,
-        string | Htmlable | null $badge = null,
-        string | array | null $badgeColor = null,
-        string | Htmlable | null $badgeTooltip = null,
-        string | array | null $color = 'primary',
+        string|Htmlable|null $badge = null,
+        string|array|null $badgeColor = null,
+        string|Htmlable|null $badgeTooltip = null,
+        string|array|null $color = 'primary',
         bool $hasLoadingIndicator = true,
         ?bool $hasSpaMode = null,
         ?string $href = null,
-        string | BackedEnum | Htmlable | null $icon = null,
+        string|BackedEnum|Htmlable|null $icon = null,
         ?string $iconAlias = null,
         ?string $iconColor = null,
-        IconSize | string | null $iconSize = null,
+        IconSize|string|null $iconSize = null,
         bool $isDisabled = false,
         ?array $keyBindings = null,
-        string | Htmlable | null $label = null,
+        string|Htmlable|null $label = null,
         string $tag = 'button',
         ?string $target = null,
-        string | Htmlable | null $tooltip = null,
+        string|Htmlable|null $tooltip = null,
         ?string $type = 'button',
     ): string {
         $color ??= 'gray';
@@ -95,7 +95,7 @@ trait CanGenerateDropdownItemHtml
 
         ob_start(); ?>
 
-        <?= ($tag === 'form') ? ('<form ' . $formAttributes->toHtml() . '>' . csrf_field()) : '' ?>
+        <?= ($tag === 'form') ? ('<form '.$formAttributes->toHtml().'>'.csrf_field()) : '' ?>
 
         <<?= ($tag === 'form') ? 'button' : $tag ?>
             <?php if (($tag === 'a') && (! ($isDisabled && $hasTooltip))) { ?>
@@ -115,11 +115,11 @@ trait CanGenerateDropdownItemHtml
             <?= $attributes->toHtml() ?>
         >
             <?= $icon ? generate_icon_html($icon, $iconAlias, (new ComponentAttributeBag([
-                'wire:loading.remove.delay.' . config('filament.livewire_loading_delay', 'default') => $hasLoadingIndicator,
+                'wire:loading.remove.delay.'.config('filament.livewire_loading_delay', 'default') => $hasLoadingIndicator,
                 'wire:target' => $hasLoadingIndicator ? $loadingIndicatorTarget : false,
             ]))->color(IconComponent::class, $iconColor), size: $iconSize)->toHtml() : '' ?>
             <?= $hasLoadingIndicator ? generate_loading_indicator_html((new ComponentAttributeBag([
-                'wire:loading.delay.' . config('filament.livewire_loading_delay', 'default') => '',
+                'wire:loading.delay.'.config('filament.livewire_loading_delay', 'default') => '',
                 'wire:target' => $loadingIndicatorTarget,
             ])), size: $iconSize)->toHtml() : '' ?>
 

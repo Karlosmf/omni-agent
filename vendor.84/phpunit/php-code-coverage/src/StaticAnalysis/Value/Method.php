@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 /**
@@ -28,6 +31,7 @@ final readonly class Method
      * @var non-negative-int
      */
     private int $endLine;
+
     private Visibility $visibility;
 
     /**
@@ -41,19 +45,19 @@ final readonly class Method
     private int $cyclomaticComplexity;
 
     /**
-     * @param non-empty-string $name
-     * @param non-negative-int $startLine
-     * @param non-negative-int $endLine
-     * @param non-empty-string $signature
-     * @param positive-int     $cyclomaticComplexity
+     * @param  non-empty-string  $name
+     * @param  non-negative-int  $startLine
+     * @param  non-negative-int  $endLine
+     * @param  non-empty-string  $signature
+     * @param  positive-int  $cyclomaticComplexity
      */
     public function __construct(string $name, int $startLine, int $endLine, string $signature, Visibility $visibility, int $cyclomaticComplexity)
     {
-        $this->name                 = $name;
-        $this->startLine            = $startLine;
-        $this->endLine              = $endLine;
-        $this->signature            = $signature;
-        $this->visibility           = $visibility;
+        $this->name = $name;
+        $this->startLine = $startLine;
+        $this->endLine = $endLine;
+        $this->signature = $signature;
+        $this->visibility = $visibility;
         $this->cyclomaticComplexity = $cyclomaticComplexity;
     }
 

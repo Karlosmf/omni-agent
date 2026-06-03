@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -11,9 +13,9 @@
 
 namespace Monolog\Formatter;
 
+use Monolog\LogRecord;
 use Stringable;
 use Throwable;
-use Monolog\LogRecord;
 
 /**
  * Encodes whatever record data is passed to it as json
@@ -25,6 +27,7 @@ use Monolog\LogRecord;
 class JsonFormatter extends NormalizerFormatter
 {
     public const BATCH_MODE_JSON = 1;
+
     public const BATCH_MODE_NEWLINES = 2;
 
     /** @var self::BATCH_MODE_* */
@@ -37,7 +40,7 @@ class JsonFormatter extends NormalizerFormatter
     protected bool $includeStacktraces = false;
 
     /**
-     * @param self::BATCH_MODE_* $batchMode
+     * @param  self::BATCH_MODE_*  $batchMode
      */
     public function __construct(int $batchMode = self::BATCH_MODE_JSON, bool $appendNewline = true, bool $ignoreEmptyContextAndExtra = false, bool $includeStacktraces = false)
     {
@@ -70,17 +73,17 @@ class JsonFormatter extends NormalizerFormatter
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function format(LogRecord $record): string
     {
         $normalized = $this->normalizeRecord($record);
 
-        return $this->toJson($normalized, true) . ($this->appendNewline ? "\n" : '');
+        return $this->toJson($normalized, true).($this->appendNewline ? "\n" : '');
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function formatBatch(array $records): string
     {
@@ -225,7 +228,7 @@ class JsonFormatter extends NormalizerFormatter
     protected function normalizeException(Throwable $e, int $depth = 0): array
     {
         $data = parent::normalizeException($e, $depth);
-        if (!$this->includeStacktraces) {
+        if (! $this->includeStacktraces) {
             unset($data['trace']);
         }
 

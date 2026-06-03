@@ -70,9 +70,9 @@ abstract class AbstractWriterMultiSheets extends AbstractWriter
      * Sets the given sheet as the current one. New data will be written to this sheet.
      * The writing will resume where it stopped (i.e. data won't be truncated).
      *
-     * @param Sheet $sheet The sheet to set as current
+     * @param  Sheet  $sheet  The sheet to set as current
      *
-     * @throws SheetNotFoundException   If the given sheet does not exist in the workbook
+     * @throws SheetNotFoundException If the given sheet does not exist in the workbook
      * @throws WriterNotOpenedException If the writer has not been opened yet
      */
     final public function setCurrentSheet(Sheet $sheet): void
@@ -85,7 +85,7 @@ abstract class AbstractWriterMultiSheets extends AbstractWriter
 
     protected function openWriter(): void
     {
-        if (!isset($this->workbookManager)) {
+        if (! isset($this->workbookManager)) {
             $this->workbookManager = $this->createWorkbookManager();
             $this->workbookManager->addNewSheetAndMakeItCurrent();
         }
@@ -114,7 +114,7 @@ abstract class AbstractWriterMultiSheets extends AbstractWriter
      */
     private function throwIfWorkbookIsNotAvailable(): void
     {
-        if (!isset($this->workbookManager)) {
+        if (! isset($this->workbookManager)) {
             throw new WriterNotOpenedException('The writer must be opened before performing this action.');
         }
     }

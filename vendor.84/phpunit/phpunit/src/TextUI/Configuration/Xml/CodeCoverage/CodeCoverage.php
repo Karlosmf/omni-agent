@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\XmlConfiguration\CodeCoverage;
 
 use PHPUnit\TextUI\XmlConfiguration\CodeCoverage\Report\Clover;
@@ -29,32 +32,43 @@ use PHPUnit\TextUI\XmlConfiguration\Exception;
 final readonly class CodeCoverage
 {
     private bool $pathCoverage;
+
     private bool $includeUncoveredFiles;
+
     private bool $ignoreDeprecatedCodeUnits;
+
     private bool $disableCodeCoverageIgnore;
+
     private ?Clover $clover;
+
     private ?Cobertura $cobertura;
+
     private ?Crap4j $crap4j;
+
     private ?Html $html;
+
     private ?OpenClover $openClover;
+
     private ?Php $php;
+
     private ?Text $text;
+
     private ?Xml $xml;
 
     public function __construct(bool $pathCoverage, bool $includeUncoveredFiles, bool $ignoreDeprecatedCodeUnits, bool $disableCodeCoverageIgnore, ?Clover $clover, ?Cobertura $cobertura, ?Crap4j $crap4j, ?Html $html, ?OpenClover $openClover, ?Php $php, ?Text $text, ?Xml $xml)
     {
-        $this->pathCoverage              = $pathCoverage;
-        $this->includeUncoveredFiles     = $includeUncoveredFiles;
+        $this->pathCoverage = $pathCoverage;
+        $this->includeUncoveredFiles = $includeUncoveredFiles;
         $this->ignoreDeprecatedCodeUnits = $ignoreDeprecatedCodeUnits;
         $this->disableCodeCoverageIgnore = $disableCodeCoverageIgnore;
-        $this->clover                    = $clover;
-        $this->cobertura                 = $cobertura;
-        $this->crap4j                    = $crap4j;
-        $this->html                      = $html;
-        $this->openClover                = $openClover;
-        $this->php                       = $php;
-        $this->text                      = $text;
-        $this->xml                       = $xml;
+        $this->clover = $clover;
+        $this->cobertura = $cobertura;
+        $this->crap4j = $crap4j;
+        $this->html = $html;
+        $this->openClover = $openClover;
+        $this->php = $php;
+        $this->text = $text;
+        $this->xml = $xml;
     }
 
     public function pathCoverage(): bool
@@ -90,7 +104,7 @@ final readonly class CodeCoverage
      */
     public function clover(): Clover
     {
-        if (!$this->hasClover()) {
+        if (! $this->hasClover()) {
             throw new Exception(
                 'Code Coverage report "Clover XML" has not been configured',
             );
@@ -112,7 +126,7 @@ final readonly class CodeCoverage
      */
     public function cobertura(): Cobertura
     {
-        if (!$this->hasCobertura()) {
+        if (! $this->hasCobertura()) {
             throw new Exception(
                 'Code Coverage report "Cobertura XML" has not been configured',
             );
@@ -134,7 +148,7 @@ final readonly class CodeCoverage
      */
     public function crap4j(): Crap4j
     {
-        if (!$this->hasCrap4j()) {
+        if (! $this->hasCrap4j()) {
             throw new Exception(
                 'Code Coverage report "Crap4J" has not been configured',
             );
@@ -156,7 +170,7 @@ final readonly class CodeCoverage
      */
     public function html(): Html
     {
-        if (!$this->hasHtml()) {
+        if (! $this->hasHtml()) {
             throw new Exception(
                 'Code Coverage report "HTML" has not been configured',
             );
@@ -178,7 +192,7 @@ final readonly class CodeCoverage
      */
     public function openClover(): OpenClover
     {
-        if (!$this->hasOpenClover()) {
+        if (! $this->hasOpenClover()) {
             throw new Exception(
                 'Code Coverage report "OpenClover XML" has not been configured',
             );
@@ -200,7 +214,7 @@ final readonly class CodeCoverage
      */
     public function php(): Php
     {
-        if (!$this->hasPhp()) {
+        if (! $this->hasPhp()) {
             throw new Exception(
                 'Code Coverage report "PHP" has not been configured',
             );
@@ -222,7 +236,7 @@ final readonly class CodeCoverage
      */
     public function text(): Text
     {
-        if (!$this->hasText()) {
+        if (! $this->hasText()) {
             throw new Exception(
                 'Code Coverage report "Text" has not been configured',
             );
@@ -244,7 +258,7 @@ final readonly class CodeCoverage
      */
     public function xml(): Xml
     {
-        if (!$this->hasXml()) {
+        if (! $this->hasXml()) {
             throw new Exception(
                 'Code Coverage report "XML" has not been configured',
             );

@@ -3,10 +3,11 @@
 namespace Livewire\Mechanisms;
 
 use Illuminate\Support\Facades\Blade;
+use Livewire\Mechanisms\ExtendBlade\DeterministicBladeKeys;
 
 class RenderComponent extends Mechanism
 {
-    function boot()
+    public function boot()
     {
         Blade::directive('livewire', [static::class, 'livewire']);
     }
@@ -19,14 +20,15 @@ class RenderComponent extends Mechanism
 
         $expression = preg_replace_callback($pattern, function ($match) use (&$key) {
             $key = trim($match[1]) ?: $key;
+
             return '';
         }, $expression);
 
         if (is_null($key)) {
-            $key = 'null';    
+            $key = 'null';
         }
 
-        $deterministicBladeKey = app(\Livewire\Mechanisms\ExtendBlade\DeterministicBladeKeys::class)->generate();
+        $deterministicBladeKey = app(DeterministicBladeKeys::class)->generate();
         $deterministicBladeKey = "'{$deterministicBladeKey}'";
 
         return <<<EOT

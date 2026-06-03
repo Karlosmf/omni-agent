@@ -18,6 +18,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
 
 class ManageAgencySettings extends Page implements HasForms
@@ -89,7 +90,7 @@ class ManageAgencySettings extends Page implements HasForms
                                                     ->disk('branding')
                                                     ->directory('')
                                                     ->getUploadedFileNameForStorageUsing(
-                                                        fn (\Illuminate\Http\UploadedFile $file): string => 'logotipo.' . $file->getClientOriginalExtension()
+                                                        fn (UploadedFile $file): string => 'logotipo.'.$file->getClientOriginalExtension()
                                                     )
                                                     ->maxSize(2048)
                                                     ->imageEditor()
@@ -101,7 +102,7 @@ class ManageAgencySettings extends Page implements HasForms
                                                     ->disk('branding')
                                                     ->directory('')
                                                     ->getUploadedFileNameForStorageUsing(
-                                                        fn (\Illuminate\Http\UploadedFile $file): string => 'isotipo.' . $file->getClientOriginalExtension()
+                                                        fn (UploadedFile $file): string => 'isotipo.'.$file->getClientOriginalExtension()
                                                     )
                                                     ->maxSize(1024)
                                                     ->imageEditor()

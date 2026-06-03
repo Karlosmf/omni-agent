@@ -11,6 +11,7 @@
 
 namespace Psy;
 
+use Psr\Log\LoggerInterface;
 use Psy\Exception\DeprecatedException;
 use Psy\Exception\InvalidManualException;
 use Psy\Exception\RuntimeException;
@@ -34,6 +35,7 @@ use Psy\VersionUpdater\NoopChecker;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -42,21 +44,31 @@ use Symfony\Component\Console\Output\OutputInterface;
 class Configuration
 {
     const COLOR_MODE_AUTO = 'auto';
+
     const COLOR_MODE_FORCED = 'forced';
+
     const COLOR_MODE_DISABLED = 'disabled';
 
     const INTERACTIVE_MODE_AUTO = 'auto';
+
     const INTERACTIVE_MODE_FORCED = 'forced';
+
     const INTERACTIVE_MODE_DISABLED = 'disabled';
 
     const PROJECT_TRUST_PROMPT = 'prompt';
+
     const PROJECT_TRUST_ALWAYS = 'always';
+
     const PROJECT_TRUST_NEVER = 'never';
 
     const VERBOSITY_QUIET = 'quiet';
+
     const VERBOSITY_NORMAL = 'normal';
+
     const VERBOSITY_VERBOSE = 'verbose';
+
     const VERBOSITY_VERY_VERBOSE = 'very_verbose';
+
     const VERBOSITY_DEBUG = 'debug';
 
     private const AVAILABLE_OPTIONS = [
@@ -98,63 +110,114 @@ class Configuration
     ];
 
     private ?array $defaultIncludes = null;
+
     private ?string $configDir = null;
+
     private ?string $dataDir = null;
+
     private ?string $runtimeDir = null;
+
     private ?string $configFile = null;
+
     /** @var string|false|null */
     private $historyFile;
+
     private int $historySize = 0;
+
     private ?bool $eraseDuplicates = null;
+
     private ?string $manualDbFile = null;
+
     private bool $hasReadline;
+
     private ?bool $useReadline = null;
+
     private bool $useBracketedPaste = false;
+
     private bool $hasPcntl;
+
     private ?bool $usePcntl = null;
+
     private array $newCommands = [];
+
     private ?bool $pipedInput = null;
+
     private ?bool $pipedOutput = null;
+
     private bool $rawOutput = false;
+
     private bool $requireSemicolons = false;
+
     private bool $strictTypes = false;
+
     private ?bool $useUnicode = null;
+
     private ?bool $useTabCompletion = null;
+
     private array $newMatchers = [];
+
     private ?array $autoloadWarmers = null;
+
     private $implicitUse = false;
+
     private ?ShellLogger $logger = null;
+
     private int $errorLoggingLevel = \E_ALL;
+
     private bool $warnOnMultipleConfigs = false;
+
     private string $colorMode = self::COLOR_MODE_AUTO;
+
     private string $interactiveMode = self::INTERACTIVE_MODE_AUTO;
+
     private ProjectTrust $projectTrust;
+
     private ?string $updateCheck = null;
+
     private ?string $updateManualCheck = null;
+
     private ?string $startupMessage = null;
+
     private bool $forceArrayIndexes = false;
+
     /** @deprecated */
     private array $formatterStyles = [];
+
     private string $verbosity = self::VERBOSITY_NORMAL;
+
     private bool $yolo = false;
+
     private ?Theme $theme = null;
+
     private bool $localConfigLoaded = false;
+
     private bool $forceWarmAutoload = false;
 
     // services
     private ?Readline\Readline $readline = null;
+
     private ?ShellOutput $output = null;
+
     private ?Shell $shell = null;
+
     private ?CodeCleaner $cleaner = null;
+
     /** @var string|OutputPager|false|null */
     private $pager = null;
+
     private ?\PDO $manualDb = null;
+
     private ?ManualInterface $manual = null;
+
     private ?Presenter $presenter = null;
+
     private ?AutoCompleter $autoCompleter = null;
+
     private ?Checker $checker = null;
+
     /** @deprecated */
     private ?string $prompt = null;
+
     private ConfigPaths $configPaths;
 
     /**
@@ -162,11 +225,11 @@ class Configuration
      *
      * Optionally, supply an array of configuration values to load.
      *
-     * @param array $config Optional array of configuration values
+     * @param  array  $config  Optional array of configuration values
      */
     public function __construct(array $config = [])
     {
-        $this->configPaths = new ConfigPaths();
+        $this->configPaths = new ConfigPaths;
         $this->projectTrust = new ProjectTrust($this->configPaths);
 
         // explicit configFile option
@@ -230,13 +293,11 @@ class Configuration
      * @see self::getInputOptions
      *
      * @throws \InvalidArgumentException
-     *
-     * @param InputInterface $input
      */
     public static function fromInput(InputInterface $input): self
     {
         $configOptions = [
-            'configFile'   => self::getConfigFileFromInput($input),
+            'configFile' => self::getConfigFileFromInput($input),
             'trustProject' => self::getProjectTrustFromInput($input),
         ];
 
@@ -268,7 +329,7 @@ class Configuration
 
         // Handle --raw-output
         // @todo support raw output with interactive input?
-        if (!$config->getInputInteractive()) {
+        if (! $config->getInputInteractive()) {
             if (self::getOptionFromInput($input, ['raw-output'], ['-r'])) {
                 $config->setRawOutput(true);
             }
@@ -486,8 +547,8 @@ class Configuration
         $this->loadLocalConfigIfTrusted();
 
         $this->configPaths->overrideDirs([
-            'configDir'  => $this->configDir,
-            'dataDir'    => $this->dataDir,
+            'configDir' => $this->configDir,
+            'dataDir' => $this->dataDir,
             'runtimeDir' => $this->runtimeDir,
         ]);
     }
@@ -514,7 +575,7 @@ class Configuration
 
         $files = $this->configPaths->configFiles(['config.php', 'rc.php']);
 
-        if (!empty($files)) {
+        if (! empty($files)) {
             if ($this->warnOnMultipleConfigs && \count($files) > 1) {
                 $prettyFiles = \array_map([ConfigPaths::class, 'prettyPath'], $files);
                 $msg = \sprintf('Multiple configuration files found: %s. Using %s', \implode(', ', $prettyFiles), $prettyFiles[0]);
@@ -551,7 +612,7 @@ class Configuration
      *
      * Accepts boolean values or one of: 'prompt', 'always', 'never'.
      *
-     * @param bool|string|null $mode
+     * @param  bool|string|null  $mode
      */
     public function setTrustProject($mode): void
     {
@@ -567,7 +628,7 @@ class Configuration
             return;
         }
 
-        if (!\is_string($mode)) {
+        if (! \is_string($mode)) {
             throw new \InvalidArgumentException('Invalid trustProject value. Expected: prompt, always, or never');
         }
 
@@ -660,9 +721,9 @@ class Configuration
         }
 
         // Non-interactive: warn and skip untrusted features (do not auto-trust)
-        if (!$this->getInputInteractive() || !$input->isInteractive()) {
+        if (! $this->getInputInteractive() || ! $input->isInteractive()) {
             $errorOutput = $output;
-            if ($errorOutput instanceof \Symfony\Component\Console\Output\ConsoleOutput) {
+            if ($errorOutput instanceof ConsoleOutput) {
                 $errorOutput = $errorOutput->getErrorOutput();
             }
 
@@ -739,8 +800,8 @@ class Configuration
             $this->loadConfigFile($localConfig);
             $this->localConfigLoaded = true;
             $this->configPaths->overrideDirs([
-                'configDir'  => $this->configDir,
-                'dataDir'    => $this->dataDir,
+                'configDir' => $this->configDir,
+                'dataDir' => $this->dataDir,
                 'runtimeDir' => $this->runtimeDir,
             ]);
         }
@@ -752,7 +813,7 @@ class Configuration
             return false;
         }
 
-        if (!$this->hasComposerAutoloadWarmerConfigured()) {
+        if (! $this->hasComposerAutoloadWarmerConfigured()) {
             return false;
         }
 
@@ -776,8 +837,6 @@ class Configuration
 
     /**
      * Load configuration values from an array of options.
-     *
-     * @param array $options
      */
     public function loadConfig(array $options)
     {
@@ -820,12 +879,10 @@ class Configuration
      * an array of options which will be merged with the current configuration.
      *
      * @throws \InvalidArgumentException if the config file does not exist or returns a non-array result
-     *
-     * @param string $file
      */
     public function loadConfigFile(string $file)
     {
-        if (!\is_file($file)) {
+        if (! \is_file($file)) {
             throw new \InvalidArgumentException(\sprintf('Invalid configuration file specified, %s does not exist', ConfigPaths::prettyPath($file)));
         }
 
@@ -838,7 +895,7 @@ class Configuration
         };
         $result = $load($this);
 
-        if (!empty($result)) {
+        if (! empty($result)) {
             if (\is_array($result)) {
                 $this->loadConfig($result);
             } else {
@@ -849,8 +906,6 @@ class Configuration
 
     /**
      * Set files to be included by default at the start of each shell session.
-     *
-     * @param array $includes
      */
     public function setDefaultIncludes(array $includes = [])
     {
@@ -869,16 +924,14 @@ class Configuration
 
     /**
      * Set the shell's config directory location.
-     *
-     * @param string $dir
      */
     public function setConfigDir(string $dir)
     {
         $this->configDir = (string) $dir;
 
         $this->configPaths->overrideDirs([
-            'configDir'  => $this->configDir,
-            'dataDir'    => $this->dataDir,
+            'configDir' => $this->configDir,
+            'dataDir' => $this->dataDir,
             'runtimeDir' => $this->runtimeDir,
         ]);
     }
@@ -895,16 +948,14 @@ class Configuration
 
     /**
      * Set the shell's data directory location.
-     *
-     * @param string $dir
      */
     public function setDataDir(string $dir)
     {
         $this->dataDir = (string) $dir;
 
         $this->configPaths->overrideDirs([
-            'configDir'  => $this->configDir,
-            'dataDir'    => $this->dataDir,
+            'configDir' => $this->configDir,
+            'dataDir' => $this->dataDir,
             'runtimeDir' => $this->runtimeDir,
         ]);
     }
@@ -921,16 +972,14 @@ class Configuration
 
     /**
      * Set the shell's temporary directory location.
-     *
-     * @param string $dir
      */
     public function setRuntimeDir(string $dir)
     {
         $this->runtimeDir = (string) $dir;
 
         $this->configPaths->overrideDirs([
-            'configDir'  => $this->configDir,
-            'dataDir'    => $this->dataDir,
+            'configDir' => $this->configDir,
+            'dataDir' => $this->dataDir,
             'runtimeDir' => $this->runtimeDir,
         ]);
     }
@@ -941,16 +990,17 @@ class Configuration
      * Defaults to `/psysh` inside the system's temp dir unless explicitly
      * overridden.
      *
-     * @throws RuntimeException if no temporary directory is set and it is not possible to create one
      *
-     * @param bool $create False to suppress directory creation if it does not exist
+     * @param  bool  $create  False to suppress directory creation if it does not exist
+     *
+     * @throws RuntimeException if no temporary directory is set and it is not possible to create one
      */
     public function getRuntimeDir($create = true): string
     {
         $runtimeDir = $this->configPaths->runtimeDir();
 
         if ($create) {
-            if (!@ConfigPaths::ensureDir($runtimeDir)) {
+            if (! @ConfigPaths::ensureDir($runtimeDir)) {
                 throw new RuntimeException(\sprintf('Unable to create PsySH runtime directory. Make sure PHP is able to write to %s in order to continue.', \dirname($runtimeDir)));
             }
         }
@@ -960,8 +1010,6 @@ class Configuration
 
     /**
      * Set the readline history file path.
-     *
-     * @param string $file
      */
     public function setHistoryFile(string $file)
     {
@@ -982,7 +1030,7 @@ class Configuration
 
         $files = $this->configPaths->configFiles(['psysh_history', 'history']);
 
-        if (!empty($files)) {
+        if (! empty($files)) {
             if ($this->warnOnMultipleConfigs && \count($files) > 1) {
                 $prettyFiles = \array_map([ConfigPaths::class, 'prettyPath'], $files);
                 $msg = \sprintf('Multiple history files found: %s. Using %s', \implode(', ', $prettyFiles), $prettyFiles[0]);
@@ -1005,8 +1053,6 @@ class Configuration
 
     /**
      * Set the readline max history size.
-     *
-     * @param int $value
      */
     public function setHistorySize(int $value)
     {
@@ -1025,8 +1071,6 @@ class Configuration
 
     /**
      * Sets whether readline erases old duplicate history entries.
-     *
-     * @param bool $value
      */
     public function setEraseDuplicates(bool $value)
     {
@@ -1050,9 +1094,6 @@ class Configuration
      *
      * @see self::getRuntimeDir
      *
-     * @param string $type
-     * @param int    $pid
-     *
      * @return string Temporary file name
      */
     public function getTempFile(string $type, int $pid): string
@@ -1065,8 +1106,6 @@ class Configuration
      *
      * The pipe will be created inside the current temporary directory.
      *
-     * @param string $type
-     * @param int    $pid
      *
      * @return string Pipe name
      */
@@ -1087,8 +1126,6 @@ class Configuration
 
     /**
      * Enable or disable Readline usage.
-     *
-     * @param bool $useReadline
      */
     public function setUseReadline(bool $useReadline)
     {
@@ -1110,8 +1147,6 @@ class Configuration
 
     /**
      * Set the Psy Shell readline service.
-     *
-     * @param Readline\Readline $readline
      */
     public function setReadline(Readline\Readline $readline)
     {
@@ -1126,12 +1161,10 @@ class Configuration
      *  * GNU Readline
      *  * Libedit
      *  * A transient array-based readline emulation.
-     *
-     * @return Readline\Readline
      */
     public function getReadline(): Readline\Readline
     {
-        if (!isset($this->readline)) {
+        if (! isset($this->readline)) {
             $className = $this->getReadlineClass();
             $this->readline = new $className(
                 $this->getHistoryFile(),
@@ -1169,8 +1202,6 @@ class Configuration
      * Enable or disable bracketed paste.
      *
      * Note that this only works with readline (not libedit) integration for now.
-     *
-     * @param bool $useBracketedPaste
      */
     public function setUseBracketedPaste(bool $useBracketedPaste)
     {
@@ -1214,8 +1245,6 @@ class Configuration
 
     /**
      * Enable or disable Pcntl usage.
-     *
-     * @param bool $usePcntl
      */
     public function setUsePcntl(bool $usePcntl)
     {
@@ -1232,7 +1261,7 @@ class Configuration
      */
     public function usePcntl(): bool
     {
-        if (!isset($this->usePcntl)) {
+        if (! isset($this->usePcntl)) {
             // Unless pcntl is explicitly *enabled*, don't use it while XDebug is debugging.
             // See https://github.com/bobthecow/psysh/issues/742
             if (\function_exists('xdebug_is_debugger_active') && \xdebug_is_debugger_active()) {
@@ -1260,8 +1289,6 @@ class Configuration
 
     /**
      * Enable or disable raw output.
-     *
-     * @param bool $rawOutput
      */
     public function setRawOutput(bool $rawOutput)
     {
@@ -1272,8 +1299,6 @@ class Configuration
      * Enable or disable strict requirement of semicolons.
      *
      * @see self::requireSemicolons()
-     *
-     * @param bool $requireSemicolons
      */
     public function setRequireSemicolons(bool $requireSemicolons)
     {
@@ -1313,8 +1338,6 @@ class Configuration
      *
      * Note that this does not disable Unicode output in general, it just makes
      * it so PsySH won't output any itself.
-     *
-     * @param bool $useUnicode
      */
     public function setUseUnicode(bool $useUnicode)
     {
@@ -1342,7 +1365,7 @@ class Configuration
      *
      * @see self::errorLoggingLevel
      *
-     * @param int $errorLoggingLevel
+     * @param  int  $errorLoggingLevel
      */
     public function setErrorLoggingLevel($errorLoggingLevel)
     {
@@ -1372,8 +1395,6 @@ class Configuration
 
     /**
      * Set a CodeCleaner service instance.
-     *
-     * @param CodeCleaner $cleaner
      */
     public function setCodeCleaner(CodeCleaner $cleaner)
     {
@@ -1387,7 +1408,7 @@ class Configuration
      */
     public function getCodeCleaner(): CodeCleaner
     {
-        if (!isset($this->cleaner)) {
+        if (! isset($this->cleaner)) {
             $this->cleaner = new CodeCleaner(null, null, null, $this->yolo(), $this->strictTypes(), $this->implicitUse);
         }
 
@@ -1414,8 +1435,6 @@ class Configuration
 
     /**
      * Enable or disable tab completion.
-     *
-     * @param bool $useTabCompletion
      */
     public function setUseTabCompletion(bool $useTabCompletion)
     {
@@ -1424,8 +1443,6 @@ class Configuration
 
     /**
      * @deprecated Call `setUseTabCompletion` instead
-     *
-     * @param bool $useTabCompletion
      */
     public function setTabCompletion(bool $useTabCompletion)
     {
@@ -1459,8 +1476,6 @@ class Configuration
 
     /**
      * Set the Shell Output service.
-     *
-     * @param ShellOutput $output
      */
     public function setOutput(ShellOutput $output)
     {
@@ -1485,7 +1500,7 @@ class Configuration
      */
     public function getOutput(): ShellOutput
     {
-        if (!isset($this->output)) {
+        if (! isset($this->output)) {
             $this->setOutput(new ShellOutput(
                 $this->getOutputVerbosity(),
                 null,
@@ -1536,7 +1551,7 @@ class Configuration
                 return false;
             case self::INTERACTIVE_MODE_AUTO:
             default:
-                return !$this->inputIsPiped();
+                return ! $this->inputIsPiped();
         }
     }
 
@@ -1548,9 +1563,10 @@ class Configuration
      *
      * `cat` is special-cased to use the PassthruPager directly.
      *
-     * @throws \InvalidArgumentException if $pager is not a string or OutputPager instance
      *
-     * @param string|OutputPager|false $pager
+     * @param  string|OutputPager|false  $pager
+     *
+     * @throws \InvalidArgumentException if $pager is not a string or OutputPager instance
      */
     public function setPager($pager)
     {
@@ -1558,7 +1574,7 @@ class Configuration
             $pager = false;
         }
 
-        if ($pager !== false && !\is_string($pager) && !$pager instanceof OutputPager) {
+        if ($pager !== false && ! \is_string($pager) && ! $pager instanceof OutputPager) {
             throw new \InvalidArgumentException('Unexpected pager instance');
         }
 
@@ -1575,7 +1591,7 @@ class Configuration
      */
     public function getPager()
     {
-        if (!isset($this->pager) && $this->usePcntl()) {
+        if (! isset($this->pager) && $this->usePcntl()) {
             if (\getenv('TERM') === 'dumb') {
                 return false;
             }
@@ -1606,8 +1622,6 @@ class Configuration
 
     /**
      * Set the Shell AutoCompleter service.
-     *
-     * @param AutoCompleter $autoCompleter
      */
     public function setAutoCompleter(AutoCompleter $autoCompleter)
     {
@@ -1619,8 +1633,8 @@ class Configuration
      */
     public function getAutoCompleter(): AutoCompleter
     {
-        if (!isset($this->autoCompleter)) {
-            $this->autoCompleter = new AutoCompleter();
+        if (! isset($this->autoCompleter)) {
+            $this->autoCompleter = new AutoCompleter;
         }
 
         return $this->autoCompleter;
@@ -1643,8 +1657,6 @@ class Configuration
      * been instantiated. This allows the user to specify matchers in their
      * config rc file, despite the fact that their file is needed in the Shell
      * constructor.
-     *
-     * @param array $matchers
      */
     public function addMatchers(array $matchers)
     {
@@ -1660,7 +1672,7 @@ class Configuration
      */
     private function doAddMatchers()
     {
-        if (!empty($this->newMatchers)) {
+        if (! empty($this->newMatchers)) {
             $this->shell->addMatchers($this->newMatchers);
             $this->newMatchers = [];
         }
@@ -1669,11 +1681,11 @@ class Configuration
     /**
      * Configure autoload warming.
      *
-     * @param bool|array $config False to disable, true for defaults, or array for custom config
+     * @param  bool|array  $config  False to disable, true for defaults, or array for custom config
      */
     public function setWarmAutoload($config): void
     {
-        if (!\is_bool($config) && !\is_array($config)) {
+        if (! \is_bool($config) && ! \is_array($config)) {
             throw new \InvalidArgumentException('warmAutoload must be a boolean or configuration array');
         }
 
@@ -1702,9 +1714,9 @@ class Configuration
         }
 
         $projectRoot = $this->projectTrust->getProjectRoot();
-        if ($projectRoot !== null && ($this->projectTrust->getForceUntrust() || !$this->projectTrust->isProjectTrusted($projectRoot))) {
+        if ($projectRoot !== null && ($this->projectTrust->getForceUntrust() || ! $this->projectTrust->isProjectTrusted($projectRoot))) {
             $filtered = \array_values(\array_filter($this->autoloadWarmers, function ($warmer) {
-                return !$warmer instanceof TabCompletion\AutoloadWarmer\ComposerAutoloadWarmer;
+                return ! $warmer instanceof TabCompletion\AutoloadWarmer\ComposerAutoloadWarmer;
             }));
 
             if (\count($filtered) !== \count($this->autoloadWarmers)) {
@@ -1731,8 +1743,7 @@ class Configuration
      * - Other keys configure a ComposerAutoloadWarmer (implicitly enables)
      * - Both can be combined: custom warmers + configured ComposerAutoloadWarmer
      *
-     * @param bool|array $config Configuration value
-     *
+     * @param  bool|array  $config  Configuration value
      * @return TabCompletion\AutoloadWarmer\AutoloadWarmerInterface[]
      */
     private function parseWarmAutoloadConfig($config): array
@@ -1744,11 +1755,11 @@ class Configuration
 
         // true = use default ComposerAutoloadWarmer
         if ($config === true) {
-            return [new TabCompletion\AutoloadWarmer\ComposerAutoloadWarmer()];
+            return [new TabCompletion\AutoloadWarmer\ComposerAutoloadWarmer];
         }
 
         // array = custom configuration
-        if (!\is_array($config)) {
+        if (! \is_array($config)) {
             throw new \InvalidArgumentException('warmAutoload must be a boolean or configuration array');
         }
 
@@ -1757,12 +1768,12 @@ class Configuration
         // Extract explicit warmers if provided
         if (isset($config['warmers'])) {
             $explicitWarmers = $config['warmers'];
-            if (!\is_array($explicitWarmers)) {
+            if (! \is_array($explicitWarmers)) {
                 throw new \InvalidArgumentException('warmAutoload[\'warmers\'] must be an array');
             }
 
             foreach ($explicitWarmers as $warmer) {
-                if (!$warmer instanceof TabCompletion\AutoloadWarmer\AutoloadWarmerInterface) {
+                if (! $warmer instanceof TabCompletion\AutoloadWarmer\AutoloadWarmerInterface) {
                     throw new \InvalidArgumentException('Autoload warmers must implement AutoloadWarmerInterface');
                 }
                 $warmers[] = $warmer;
@@ -1772,7 +1783,7 @@ class Configuration
         }
 
         // If there are remaining config options, create a ComposerAutoloadWarmer with them
-        if (!empty($config)) {
+        if (! empty($config)) {
             $warmers[] = new TabCompletion\AutoloadWarmer\ComposerAutoloadWarmer($config);
         }
 
@@ -1808,7 +1819,7 @@ class Configuration
      * Note: At least one of includeNamespaces or excludeNamespaces must be provided.
      * If neither is provided, implicit use effectively does nothing.
      *
-     * @param false|array $config False to disable, or array with includeNamespaces/excludeNamespaces
+     * @param  false|array  $config  False to disable, or array with includeNamespaces/excludeNamespaces
      */
     public function setImplicitUse($config): void
     {
@@ -1818,7 +1829,7 @@ class Configuration
             return;
         }
 
-        if (!\is_array($config)) {
+        if (! \is_array($config)) {
             throw new \InvalidArgumentException('implicitUse must be false or a configuration array with includeNamespaces and/or excludeNamespaces');
         }
 
@@ -1869,7 +1880,7 @@ class Configuration
      *         ],
      *     ]);
      *
-     * @param \Psr\Log\LoggerInterface|callable|array $logging
+     * @param  LoggerInterface|callable|array  $logging
      */
     public function setLogging($logging): void
     {
@@ -1878,8 +1889,6 @@ class Configuration
 
     /**
      * Get a ShellLogger instance if logging is configured.
-     *
-     * @return ShellLogger|null
      */
     public function getLogger(): ?ShellLogger
     {
@@ -1888,8 +1897,6 @@ class Configuration
 
     /**
      * Get an InputLoggingListener if input logging is enabled.
-     *
-     * @return InputLoggingListener|null
      */
     public function getInputLogger(): ?InputLoggingListener
     {
@@ -1903,8 +1910,6 @@ class Configuration
 
     /**
      * Get an ExecutionLoggingListener if execution logging is enabled.
-     *
-     * @return ExecutionLoggingListener|null
      */
     public function getExecutionLogger(): ?ExecutionLoggingListener
     {
@@ -1919,17 +1924,15 @@ class Configuration
     /**
      * Parse logging configuration.
      *
-     * @param \Psr\Log\LoggerInterface|Logger\CallbackLogger|callable|array $config
-     *
-     * @return ShellLogger
+     * @param  LoggerInterface|CallbackLogger|callable|array  $config
      */
     private function parseLoggingConfig($config): ShellLogger
     {
-        if (!\is_array($config)) {
+        if (! \is_array($config)) {
             $config = ['logger' => $config];
         }
 
-        if (!isset($config['logger'])) {
+        if (! isset($config['logger'])) {
             throw new \InvalidArgumentException('Logging config array must include a "logger" key');
         }
 
@@ -1939,12 +1942,12 @@ class Configuration
             $logger = new CallbackLogger($logger);
         }
 
-        if (!$this->isLogger($logger)) {
+        if (! $this->isLogger($logger)) {
             throw new \InvalidArgumentException('Logging "logger" must be a logger instance or callable');
         }
 
         $defaults = [
-            'input'   => 'info',
+            'input' => 'info',
             'command' => 'info',
             'execute' => 'debug',
         ];
@@ -1955,14 +1958,14 @@ class Configuration
             // String: apply same level to all types
             if (\is_string($level)) {
                 $levels = [
-                    'input'   => $level,
+                    'input' => $level,
                     'command' => $level,
                     'execute' => $level,
                 ];
             } elseif (\is_array($level)) {
                 // Array: granular per-type levels
                 $levels = [
-                    'input'   => $level['input'] ?? $defaults['input'],
+                    'input' => $level['input'] ?? $defaults['input'],
                     'command' => $level['command'] ?? $defaults['command'],
                     'execute' => $level['execute'] ?? $defaults['execute'],
                 ];
@@ -1979,9 +1982,7 @@ class Configuration
     /**
      * Check if a value is a valid logger instance.
      *
-     * @param mixed $logger
-     *
-     * @return bool
+     * @param  mixed  $logger
      */
     private function isLogger($logger): bool
     {
@@ -1990,13 +1991,11 @@ class Configuration
         }
 
         // Safe check for LoggerInterface without requiring psr/log as a dependency
-        return \interface_exists('Psr\Log\LoggerInterface') && $logger instanceof \Psr\Log\LoggerInterface;
+        return \interface_exists('Psr\Log\LoggerInterface') && $logger instanceof LoggerInterface;
     }
 
     /**
      * @deprecated Use `addMatchers` instead
-     *
-     * @param array $matchers
      */
     public function addTabCompletionMatchers(array $matchers)
     {
@@ -2012,8 +2011,6 @@ class Configuration
      * been instantiated. This allows the user to specify commands in their
      * config rc file, despite the fact that their file is needed in the Shell
      * constructor.
-     *
-     * @param array $commands
      */
     public function addCommands(array $commands)
     {
@@ -2029,7 +2026,7 @@ class Configuration
      */
     private function doAddCommands()
     {
-        if (!empty($this->newCommands)) {
+        if (! empty($this->newCommands)) {
             $this->shell->addCommands($this->newCommands);
             $this->newCommands = [];
         }
@@ -2037,8 +2034,6 @@ class Configuration
 
     /**
      * Set the Shell backreference and add any new commands to the Shell.
-     *
-     * @param Shell $shell
      */
     public function setShell(Shell $shell)
     {
@@ -2055,8 +2050,6 @@ class Configuration
      *
      * This file should be an SQLite database generated from the phpdoc source
      * with the `bin/build_manual` script.
-     *
-     * @param string $filename
      */
     public function setManualDbFile(string $filename)
     {
@@ -2088,7 +2081,7 @@ class Configuration
 
         // Prefer v3 format over v2
         $files = $this->configPaths->dataFiles(['php_manual.php', 'php_manual.sqlite']);
-        if (!empty($files)) {
+        if (! empty($files)) {
             if ($this->warnOnMultipleConfigs && \count($files) > 1) {
                 $prettyFiles = \array_map([ConfigPaths::class, 'prettyPath'], $files);
                 $msg = \sprintf('Multiple manual database files found: %s. Using %s', \implode(', ', $prettyFiles), $prettyFiles[0]);
@@ -2110,7 +2103,7 @@ class Configuration
      */
     public function getManualDb()
     {
-        if (!isset($this->manualDb)) {
+        if (! isset($this->manualDb)) {
             $dbFile = $this->getManualDbFile();
             if ($dbFile !== null && \is_file($dbFile) && \substr($dbFile, -7) === '.sqlite') {
                 try {
@@ -2144,7 +2137,7 @@ class Configuration
      */
     public function getManual()
     {
-        if (!isset($this->manual)) {
+        if (! isset($this->manual)) {
             $this->manual = $this->loadManual();
         }
 
@@ -2230,7 +2223,6 @@ class Configuration
     /**
      * Load a manual from a file path.
      *
-     * @param string $file
      *
      * @return ManualInterface|null
      *
@@ -2253,8 +2245,6 @@ class Configuration
 
     /**
      * Add an array of casters definitions.
-     *
-     * @param array $casters
      */
     public function addCasters(array $casters)
     {
@@ -2266,7 +2256,7 @@ class Configuration
      */
     public function getPresenter(): Presenter
     {
-        if (!isset($this->presenter)) {
+        if (! isset($this->presenter)) {
             $this->presenter = new Presenter($this->getOutput()->getFormatter(), $this->forceArrayIndexes());
         }
 
@@ -2277,8 +2267,6 @@ class Configuration
      * Enable or disable warnings on multiple configuration or data files.
      *
      * @see self::warnOnMultipleConfigs()
-     *
-     * @param bool $warnOnMultipleConfigs
      */
     public function setWarnOnMultipleConfigs(bool $warnOnMultipleConfigs)
     {
@@ -2304,8 +2292,6 @@ class Configuration
      * Set the current color mode.
      *
      * @throws \InvalidArgumentException if the color mode isn't auto, forced or disabled
-     *
-     * @param string $colorMode
      */
     public function setColorMode(string $colorMode)
     {
@@ -2315,7 +2301,7 @@ class Configuration
             self::COLOR_MODE_DISABLED,
         ];
 
-        if (!\in_array($colorMode, $validColorModes)) {
+        if (! \in_array($colorMode, $validColorModes)) {
             throw new \InvalidArgumentException('Invalid color mode: '.$colorMode);
         }
 
@@ -2334,8 +2320,6 @@ class Configuration
      * Set the shell's interactive mode.
      *
      * @throws \InvalidArgumentException if interactive mode isn't disabled, forced, or auto
-     *
-     * @param string $interactiveMode
      */
     public function setInteractiveMode(string $interactiveMode)
     {
@@ -2345,7 +2329,7 @@ class Configuration
             self::INTERACTIVE_MODE_DISABLED,
         ];
 
-        if (!\in_array($interactiveMode, $validInteractiveModes)) {
+        if (! \in_array($interactiveMode, $validInteractiveModes)) {
             throw new \InvalidArgumentException('Invalid interactive mode: '.$interactiveMode);
         }
 
@@ -2362,8 +2346,6 @@ class Configuration
 
     /**
      * Set an update checker service instance.
-     *
-     * @param Checker $checker
      */
     public function setChecker(Checker $checker)
     {
@@ -2377,11 +2359,11 @@ class Configuration
      */
     public function getChecker(): Checker
     {
-        if (!isset($this->checker)) {
+        if (! isset($this->checker)) {
             $interval = $this->getUpdateCheck();
             switch ($interval) {
                 case Checker::ALWAYS:
-                    $this->checker = new GitHubChecker();
+                    $this->checker = new GitHubChecker;
                     break;
 
                 case Checker::DAILY:
@@ -2389,14 +2371,14 @@ class Configuration
                 case Checker::MONTHLY:
                     $checkFile = $this->getUpdateCheckCacheFile();
                     if ($checkFile === false) {
-                        $this->checker = new NoopChecker();
+                        $this->checker = new NoopChecker;
                     } else {
                         $this->checker = new IntervalChecker($checkFile, $interval);
                     }
                     break;
 
                 case Checker::NEVER:
-                    $this->checker = new NoopChecker();
+                    $this->checker = new NoopChecker;
                     break;
             }
         }
@@ -2419,8 +2401,6 @@ class Configuration
      * Set the update check interval.
      *
      * @throws \InvalidArgumentException if the update check interval is unknown
-     *
-     * @param string $interval
      */
     public function setUpdateCheck(string $interval)
     {
@@ -2432,7 +2412,7 @@ class Configuration
             Checker::NEVER,
         ];
 
-        if (!\in_array($interval, $validIntervals)) {
+        if (! \in_array($interval, $validIntervals)) {
             throw new \InvalidArgumentException('Invalid update check interval: '.$interval);
         }
 
@@ -2469,8 +2449,6 @@ class Configuration
      * Set the manual update check interval.
      *
      * @throws \InvalidArgumentException if the update check interval is unknown
-     *
-     * @param string $interval
      */
     public function setUpdateManualCheck(string $interval)
     {
@@ -2482,7 +2460,7 @@ class Configuration
             ManualUpdater\Checker::NEVER,
         ];
 
-        if (!\in_array($interval, $validIntervals)) {
+        if (! \in_array($interval, $validIntervals)) {
             throw new \InvalidArgumentException('Invalid manual update check interval: '.$interval);
         }
 
@@ -2494,10 +2472,8 @@ class Configuration
      *
      * If none has been explicitly defined, this will create a new instance.
      *
-     * @param string|null $lang   Override language (otherwise uses current manual's language or 'en')
-     * @param bool        $always Force immediate check, ignoring interval setting
-     *
-     * @return ManualUpdater\Checker|null
+     * @param  string|null  $lang  Override language (otherwise uses current manual's language or 'en')
+     * @param  bool  $always  Force immediate check, ignoring interval setting
      */
     public function getManualChecker(?string $lang = null, bool $always = false): ?ManualUpdater\Checker
     {
@@ -2575,7 +2551,7 @@ class Configuration
             return false;
         }
 
-        if (!ConfigPaths::ensureDir($dataDir)) {
+        if (! ConfigPaths::ensureDir($dataDir)) {
             return false;
         }
 
@@ -2584,8 +2560,6 @@ class Configuration
 
     /**
      * Set the startup message.
-     *
-     * @param string $message
      */
     public function setStartupMessage(string $message)
     {
@@ -2640,8 +2614,6 @@ class Configuration
 
     /**
      * Set the force array indexes.
-     *
-     * @param bool $forceArrayIndexes
      */
     public function setForceArrayIndexes(bool $forceArrayIndexes)
     {
@@ -2651,11 +2623,11 @@ class Configuration
     /**
      * Set the current output Theme.
      *
-     * @param Theme|string|array $theme Theme (or Theme config)
+     * @param  Theme|string|array  $theme  Theme (or Theme config)
      */
     public function setTheme($theme)
     {
-        if (!$theme instanceof Theme) {
+        if (! $theme instanceof Theme) {
             $theme = new Theme($theme);
         }
 
@@ -2676,9 +2648,9 @@ class Configuration
      */
     public function theme(): Theme
     {
-        if (!isset($this->theme)) {
+        if (! isset($this->theme)) {
             // If a prompt is explicitly set, and a theme is not, base it on the `classic` theme.
-            $this->theme = $this->prompt ? new Theme('classic') : new Theme();
+            $this->theme = $this->prompt ? new Theme('classic') : new Theme;
         }
 
         if (isset($this->prompt)) {
@@ -2754,8 +2726,6 @@ class Configuration
      * Accepts OutputInterface verbosity constants.
      *
      * @throws \InvalidArgumentException if verbosity level is invalid
-     *
-     * @param string $verbosity
      */
     public function setVerbosity(string $verbosity)
     {
@@ -2767,7 +2737,7 @@ class Configuration
             self::VERBOSITY_DEBUG,
         ];
 
-        if (!\in_array($verbosity, $validVerbosityLevels)) {
+        if (! \in_array($verbosity, $validVerbosityLevels)) {
             throw new \InvalidArgumentException('Invalid verbosity level: '.$verbosity);
         }
 
@@ -2831,12 +2801,12 @@ class Configuration
     /**
      * Guess whether an input or output stream is piped.
      *
-     * @param resource|int $stream
+     * @param  resource|int  $stream
      */
     private static function looksLikeAPipe($stream): bool
     {
         if (\function_exists('posix_isatty')) {
-            return !\posix_isatty($stream);
+            return ! \posix_isatty($stream);
         }
 
         $stat = \fstat($stream);

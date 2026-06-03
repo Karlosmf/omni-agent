@@ -18,8 +18,11 @@ class Terminal
     public const DEFAULT_COLOR_MODE = AnsiColorMode::Ansi4;
 
     private static ?AnsiColorMode $colorMode = null;
+
     private static ?int $width = null;
+
     private static ?int $height = null;
+
     private static ?bool $stty = null;
 
     /**
@@ -29,7 +32,7 @@ class Terminal
     public static function getColorMode(): AnsiColorMode
     {
         // Use Cache from previous run (or user forced mode)
-        if (null !== self::$colorMode) {
+        if (self::$colorMode !== null) {
             return self::$colorMode;
         }
 
@@ -86,11 +89,11 @@ class Terminal
     public function getWidth(): int
     {
         $width = getenv('COLUMNS');
-        if (false !== $width) {
+        if ($width !== false) {
             return (int) trim($width);
         }
 
-        if (null === self::$width) {
+        if (self::$width === null) {
             self::initDimensions();
         }
 
@@ -103,11 +106,11 @@ class Terminal
     public function getHeight(): int
     {
         $height = getenv('LINES');
-        if (false !== $height) {
+        if ($height !== false) {
             return (int) trim($height);
         }
 
-        if (null === self::$height) {
+        if (self::$height === null) {
             self::initDimensions();
         }
 
@@ -119,12 +122,12 @@ class Terminal
      */
     public static function hasSttyAvailable(): bool
     {
-        if (null !== self::$stty) {
+        if (self::$stty !== null) {
             return self::$stty;
         }
 
         // skip check if shell_exec function is disabled
-        if (!\function_exists('shell_exec')) {
+        if (! \function_exists('shell_exec')) {
             return false;
         }
 
@@ -135,12 +138,12 @@ class Terminal
     {
         if ('\\' === \DIRECTORY_SEPARATOR) {
             $ansicon = getenv('ANSICON');
-            if (false !== $ansicon && preg_match('/^(\d+)x(\d+)(?: \((\d+)x(\d+)\))?$/', trim($ansicon), $matches)) {
+            if ($ansicon !== false && preg_match('/^(\d+)x(\d+)(?: \((\d+)x(\d+)\))?$/', trim($ansicon), $matches)) {
                 // extract [w, H] from "wxh (WxH)"
                 // or [w, h] from "wxh"
                 self::$width = (int) $matches[1];
                 self::$height = isset($matches[4]) ? (int) $matches[4] : (int) $matches[2];
-            } elseif (!sapi_windows_vt100_support(fopen('php://stdout', 'w')) && self::hasSttyAvailable()) {
+            } elseif (! sapi_windows_vt100_support(fopen('php://stdout', 'w')) && self::hasSttyAvailable()) {
                 // only use stty on Windows if the terminal does not support vt100 (e.g. Windows 7 + git-bash)
                 // testing for stty in a Windows 10 vt100-enabled console will implicitly disable vt100 support on STDOUT
                 self::initDimensionsUsingStty();
@@ -181,7 +184,7 @@ class Terminal
     {
         $info = self::readFromProcess('mode CON');
 
-        if (null === $info || !preg_match('/--------+\r?\n.+?(\d+)\r?\n.+?(\d+)\r?\n/', $info, $matches)) {
+        if ($info === null || ! preg_match('/--------+\r?\n.+?(\d+)\r?\n.+?(\d+)\r?\n/', $info, $matches)) {
             return null;
         }
 
@@ -198,7 +201,7 @@ class Terminal
 
     private static function readFromProcess(string|array $command): ?string
     {
-        if (!\function_exists('proc_open')) {
+        if (! \function_exists('proc_open')) {
             return null;
         }
 
@@ -209,7 +212,7 @@ class Terminal
 
         $cp = \function_exists('sapi_windows_cp_set') ? sapi_windows_cp_get() : 0;
 
-        if (!$process = @proc_open($command, $descriptorspec, $pipes, null, null, ['suppress_errors' => true])) {
+        if (! $process = @proc_open($command, $descriptorspec, $pipes, null, null, ['suppress_errors' => true])) {
             return null;
         }
 

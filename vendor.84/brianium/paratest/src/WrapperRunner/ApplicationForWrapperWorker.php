@@ -54,7 +54,9 @@ use function substr;
 final class ApplicationForWrapperWorker
 {
     private bool $hasBeenBootstrapped = false;
+
     private Configuration $configuration;
+
     private TestResultCollector $testdoxResultCollector;
 
     /** @param list<string> $argv */
@@ -66,16 +68,15 @@ final class ApplicationForWrapperWorker
         private readonly ?string $resultCacheFile,
         private readonly ?string $teamcityFile,
         private readonly ?string $testdoxFile,
-    ) {
-    }
+    ) {}
 
     public function runTest(string $testPath): int
     {
-        $null   = strpos($testPath, "\0");
+        $null = strpos($testPath, "\0");
         $filter = null;
         if ($null !== false) {
-            $filter = new Factory();
-            $name   = substr($testPath, $null + 1);
+            $filter = new Factory;
+            $name = substr($testPath, $null + 1);
             assert($name !== '');
             $filter->addIncludeNameFilter($name);
 
@@ -88,8 +89,8 @@ final class ApplicationForWrapperWorker
             $testSuite = TestSuite::empty($testPath);
             $testSuite->addTestFile($testPath);
         } else {
-            $testSuiteRefl = (new TestSuiteLoader())->load($testPath);
-            $testSuite     = TestSuite::fromClassReflector($testSuiteRefl);
+            $testSuiteRefl = (new TestSuiteLoader)->load($testPath);
+            $testSuite = TestSuite::fromClassReflector($testSuiteRefl);
         }
 
         EventFacade::emitter()->testSuiteLoaded(
@@ -102,7 +103,7 @@ final class ApplicationForWrapperWorker
             mt_srand($this->configuration->randomOrderSeed());
         }
 
-        (new TestSuiteFilterProcessor())->process($this->configuration, $testSuite);
+        (new TestSuiteFilterProcessor)->process($this->configuration, $testSuite);
 
         if ($filter !== null) {
             $testSuite->injectFilter($filter);
@@ -132,9 +133,9 @@ final class ApplicationForWrapperWorker
         ExcludeList::addDirectory(__DIR__);
         EventFacade::emitter()->applicationStarted();
 
-        $this->configuration = (new Builder())->build($this->argv);
+        $this->configuration = (new Builder)->build($this->argv);
 
-        (new PhpHandler())->handle($this->configuration->php());
+        (new PhpHandler)->handle($this->configuration->php());
 
         if ($this->configuration->hasBootstrap()) {
             $bootstrapFilename = $this->configuration->bootstrap();
@@ -145,12 +146,12 @@ final class ApplicationForWrapperWorker
         $extensionRequiresCodeCoverageCollection = false;
         if (! $this->configuration->noExtensions()) {
             if ($this->configuration->hasPharExtensionDirectory()) {
-                (new PharLoader())->loadPharExtensionsInDirectory(
+                (new PharLoader)->loadPharExtensionsInDirectory(
                     $this->configuration->pharExtensionDirectory(),
                 );
             }
 
-            $extensionFacade       = new ExtensionFacade();
+            $extensionFacade = new ExtensionFacade;
             $extensionBootstrapper = new ExtensionBootstrapper(
                 $this->configuration,
                 $extensionFacade,
@@ -213,10 +214,10 @@ final class ApplicationForWrapperWorker
 
         if ($this->configuration->source()->useBaseline()) {
             $baselineFile = $this->configuration->source()->baseline();
-            $baseline     = null;
+            $baseline = null;
 
             try {
-                $baseline = (new Reader())->read($baselineFile);
+                $baseline = (new Reader)->read($baselineFile);
             } catch (CannotLoadBaselineException $e) {
                 EventFacade::emitter()->testRunnerTriggeredPhpunitWarning($e->getMessage());
             }
@@ -246,7 +247,7 @@ final class ApplicationForWrapperWorker
         EventFacade::emitter()->testRunnerExecutionFinished();
         EventFacade::emitter()->testRunnerFinished();
 
-        CodeCoverage::instance()->generateReports(new NullPrinter(), $this->configuration);
+        CodeCoverage::instance()->generateReports(new NullPrinter, $this->configuration);
 
         $result = TestResultFacade::result();
         if (isset($this->testdoxResultCollector)) {

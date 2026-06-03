@@ -19,7 +19,7 @@ interface WebDriver extends WebDriverSearchContext
     /**
      * Load a new web page in the current browser window.
      *
-     * @param string $url
+     * @param  string  $url
      * @return WebDriver The current instance.
      */
     public function get($url);
@@ -68,7 +68,7 @@ interface WebDriver extends WebDriverSearchContext
     /**
      * Take a screenshot of the current page.
      *
-     * @param string $save_as The path of the screenshot to be saved.
+     * @param  string  $save_as  The path of the screenshot to be saved.
      * @return string The screenshot in PNG format.
      */
     public function takeScreenshot($save_as = null);
@@ -81,8 +81,8 @@ interface WebDriver extends WebDriverSearchContext
      *     WebDriverExpectedCondition::titleIs('WebDriver Page')
      *   );
      *
-     * @param int $timeout_in_second
-     * @param int $interval_in_millisecond
+     * @param  int  $timeout_in_second
+     * @param  int  $interval_in_millisecond
      * @return WebDriverWait
      */
     public function wait(
@@ -103,6 +103,7 @@ interface WebDriver extends WebDriverSearchContext
      * navigate to a given URL.
      *
      * @return WebDriverNavigationInterface
+     *
      * @see WebDriverNavigation
      */
     public function navigate();
@@ -111,25 +112,26 @@ interface WebDriver extends WebDriverSearchContext
      * Switch to a different window or frame.
      *
      * @return WebDriverTargetLocator
+     *
      * @see WebDriverTargetLocator
      */
     public function switchTo();
 
     // TODO: Add in next major release (BC)
-    ///**
+    // /**
     // * @return WebDriverTouchScreen
     // */
-    //public function getTouch();
+    // public function getTouch();
 
     /**
-     * @param string $name
-     * @param array $params
+     * @param  string  $name
+     * @param  array  $params
      * @return mixed
      */
     public function execute($name, $params);
 
     // TODO: Add in next major release (BC)
-    ///**
+    // /**
     // * Execute custom commands on remote end.
     // * For example vendor-specific commands or other commands not implemented by php-webdriver.
     // *
@@ -139,5 +141,5 @@ interface WebDriver extends WebDriverSearchContext
     // * @param array $params
     // * @return mixed|null
     // */
-    //public function executeCustomCommand($endpointUrl, $method = 'GET', $params = []);
+    // public function executeCustomCommand($endpointUrl, $method = 'GET', $params = []);
 }

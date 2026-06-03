@@ -39,7 +39,7 @@ class ModalTableSelect extends Field
 
     protected ?Model $cachedSelectedRecord = null;
 
-    protected bool | Closure $isMultiple = false;
+    protected bool|Closure $isMultiple = false;
 
     protected ?Closure $getOptionLabelUsing;
 
@@ -47,26 +47,26 @@ class ModalTableSelect extends Field
 
     protected ?Closure $getOptionLabelsUsing;
 
-    protected string | Closure | null $relationshipTitleAttribute = null;
+    protected string|Closure|null $relationshipTitleAttribute = null;
 
     protected ?Closure $getOptionLabelFromRecordUsing = null;
 
-    protected string | Closure | null $relationship = null;
+    protected string|Closure|null $relationship = null;
 
-    protected string | Closure | null $tableConfiguration = null;
+    protected string|Closure|null $tableConfiguration = null;
 
     protected ?Closure $modifyTableSelectUsing = null;
 
     protected ?Closure $modifySelectActionUsing = null;
 
-    protected bool | Closure | null $hasBadges = null;
+    protected bool|Closure|null $hasBadges = null;
 
-    protected string | Closure | null $badgeColor = null;
+    protected string|Closure|null $badgeColor = null;
 
     /**
      * @var array<mixed> | Closure
      */
-    protected array | Closure $tableArguments = [];
+    protected array|Closure $tableArguments = [];
 
     protected function setUp(): void
     {
@@ -94,7 +94,7 @@ class ModalTableSelect extends Field
     /**
      * @param  array<mixed> | Closure  $arguments
      */
-    public function tableArguments(array | Closure $arguments): static
+    public function tableArguments(array|Closure $arguments): static
     {
         $this->tableArguments = $arguments;
 
@@ -177,14 +177,14 @@ class ModalTableSelect extends Field
         return $this;
     }
 
-    public function multiple(bool | Closure $condition = true): static
+    public function multiple(bool|Closure $condition = true): static
     {
         $this->isMultiple = $condition;
 
         return $this;
     }
 
-    public function getOptionLabel(bool $withDefault = true): string | Htmlable | null
+    public function getOptionLabel(bool $withDefault = true): string|Htmlable|null
     {
         $state = null;
 
@@ -236,7 +236,7 @@ class ModalTableSelect extends Field
         return (bool) $this->evaluate($this->isMultiple);
     }
 
-    public function relationship(string | Closure | null $name = null, string | Closure | null $titleAttribute = null, ?Closure $modifyQueryUsing = null, bool $ignoreRecord = false): static
+    public function relationship(string|Closure|null $name = null, string|Closure|null $titleAttribute = null, ?Closure $modifyQueryUsing = null, bool $ignoreRecord = false): static
     {
         $this->relationship = $name ?? $this->getName();
         $this->relationshipTitleAttribute = $titleAttribute;
@@ -661,7 +661,7 @@ class ModalTableSelect extends Field
         return $this->getOptionLabelFromRecordUsing !== null;
     }
 
-    public function getOptionLabelFromRecord(Model $record): string | Htmlable
+    public function getOptionLabelFromRecord(Model $record): string|Htmlable
     {
         return $this->evaluate(
             $this->getOptionLabelFromRecordUsing,
@@ -680,7 +680,7 @@ class ModalTableSelect extends Field
         return $this->evaluate($this->relationshipTitleAttribute);
     }
 
-    public function getLabel(): string | Htmlable | null
+    public function getLabel(): string|Htmlable|null
     {
         if ($this->label === null && $this->hasRelationship()) {
             $label = (string) str($this->getRelationshipName())
@@ -695,7 +695,7 @@ class ModalTableSelect extends Field
         return parent::getLabel();
     }
 
-    public function getRelationship(): BelongsTo | BelongsToMany | HasOneOrMany | HasOneOrManyThrough | BelongsToThrough | null
+    public function getRelationship(): BelongsTo|BelongsToMany|HasOneOrMany|HasOneOrManyThrough|BelongsToThrough|null
     {
         if (! $this->hasRelationship()) {
             return null;
@@ -805,7 +805,7 @@ class ModalTableSelect extends Field
         return $this->isMultiple();
     }
 
-    public function tableConfiguration(string | Closure $tableConfiguration): static
+    public function tableConfiguration(string|Closure $tableConfiguration): static
     {
         $this->tableConfiguration = $tableConfiguration;
 
@@ -825,7 +825,7 @@ class ModalTableSelect extends Field
         return $this->evaluate($this->tableArguments) ?? [];
     }
 
-    public function badge(bool | Closure | null $condition = true): static
+    public function badge(bool|Closure|null $condition = true): static
     {
         $this->hasBadges = $condition;
 
@@ -837,7 +837,7 @@ class ModalTableSelect extends Field
         return $this->evaluate($this->hasBadges) ?? $this->isMultiple();
     }
 
-    public function badgeColor(string | Closure | null $color): static
+    public function badgeColor(string|Closure|null $color): static
     {
         $this->badgeColor = $color;
 

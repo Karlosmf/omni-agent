@@ -33,7 +33,7 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the content of the "styles.xml" file, given a list of styles.
      *
-     * @param int $numWorksheets Number of worksheets created
+     * @param  int  $numWorksheets  Number of worksheets created
      */
     public function getStylesXMLFileContent(int $numWorksheets): string
     {
@@ -71,7 +71,7 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the contents of the "<office:automatic-styles>" section, inside "content.xml" file.
      *
-     * @param Worksheet[] $worksheets
+     * @param  Worksheet[]  $worksheets
      */
     public function getContentXmlAutomaticStylesSectionContent(array $worksheets): string
     {
@@ -81,9 +81,9 @@ final class StyleManager extends CommonStyleManager
             $content .= $this->getStyleSectionContent($style);
         }
 
-        $useOptimalRowHeight = null === $this->options->DEFAULT_ROW_HEIGHT ? 'true' : 'false';
-        $defaultRowHeight = null === $this->options->DEFAULT_ROW_HEIGHT ? '15pt' : "{$this->options->DEFAULT_ROW_HEIGHT}pt";
-        $defaultColumnWidth = null === $this->options->DEFAULT_COLUMN_WIDTH ? '' : "style:column-width=\"{$this->options->DEFAULT_COLUMN_WIDTH}pt\"";
+        $useOptimalRowHeight = $this->options->DEFAULT_ROW_HEIGHT === null ? 'true' : 'false';
+        $defaultRowHeight = $this->options->DEFAULT_ROW_HEIGHT === null ? '15pt' : "{$this->options->DEFAULT_ROW_HEIGHT}pt";
+        $defaultColumnWidth = $this->options->DEFAULT_COLUMN_WIDTH === null ? '' : "style:column-width=\"{$this->options->DEFAULT_COLUMN_WIDTH}pt\"";
 
         $content .= <<<EOD
             <style:style style:family="table-column" style:name="default-column-style">
@@ -119,7 +119,7 @@ final class StyleManager extends CommonStyleManager
 
     public function getTableColumnStylesXMLContent(): string
     {
-        if ([] === $this->options->getColumnWidths()) {
+        if ($this->options->getColumnWidths() === []) {
             return '';
         }
 
@@ -137,7 +137,7 @@ final class StyleManager extends CommonStyleManager
 
     public function getStyledTableColumnXMLContent(int $maxNumColumns): string
     {
-        if ([] === $this->options->getColumnWidths()) {
+        if ($this->options->getColumnWidths() === []) {
             return '';
         }
 
@@ -181,13 +181,13 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the content of the "<office:master-styles>" section, inside "styles.xml" file.
      *
-     * @param int $numWorksheets Number of worksheets created
+     * @param  int  $numWorksheets  Number of worksheets created
      */
     private function getMasterStylesSectionContent(int $numWorksheets): string
     {
         $content = '<office:master-styles>';
 
-        for ($i = 1; $i <= $numWorksheets; ++$i) {
+        for ($i = 1; $i <= $numWorksheets; $i++) {
             $content .= <<<EOD
                 <style:master-page style:name="mp{$i}" style:page-layout-name="pm{$i}">
                     <style:header/>
@@ -220,13 +220,13 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the content of the "<office:automatic-styles>" section, inside "styles.xml" file.
      *
-     * @param int $numWorksheets Number of worksheets created
+     * @param  int  $numWorksheets  Number of worksheets created
      */
     private function getAutomaticStylesSectionContent(int $numWorksheets): string
     {
         $content = '<office:automatic-styles>';
 
-        for ($i = 1; $i <= $numWorksheets; ++$i) {
+        for ($i = 1; $i <= $numWorksheets; $i++) {
             $content .= <<<EOD
                 <style:page-layout style:name="pm{$i}">
                     <style:page-layout-properties style:first-page-number="continue" style:print="objects charts drawings" style:table-centering="none"/>
@@ -264,7 +264,7 @@ final class StyleManager extends CommonStyleManager
      */
     private function getTextPropertiesSectionContent(Style $style): string
     {
-        if (!$style->shouldApplyFont()) {
+        if (! $style->shouldApplyFont()) {
             return '';
         }
 
@@ -317,7 +317,7 @@ final class StyleManager extends CommonStyleManager
      */
     private function getParagraphPropertiesSectionContent(Style $style): string
     {
-        if (!$style->shouldApplyCellAlignment() && !$style->shouldApplyCellVerticalAlignment()) {
+        if (! $style->shouldApplyCellAlignment() && ! $style->shouldApplyCellVerticalAlignment()) {
             return '';
         }
 
@@ -332,7 +332,7 @@ final class StyleManager extends CommonStyleManager
      */
     private function getCellAlignmentSectionContent(Style $style): string
     {
-        if (!$style->hasSetCellAlignment()) {
+        if (! $style->hasSetCellAlignment()) {
             return '';
         }
 
@@ -347,7 +347,7 @@ final class StyleManager extends CommonStyleManager
      */
     private function getCellVerticalAlignmentSectionContent(Style $style): string
     {
-        if (!$style->hasSetCellVerticalAlignment()) {
+        if (! $style->hasSetCellVerticalAlignment()) {
             return '';
         }
 
@@ -377,7 +377,7 @@ final class StyleManager extends CommonStyleManager
      */
     private function transformCellVerticalAlignment(string $cellVerticalAlignment): string
     {
-        return (CellVerticalAlignment::CENTER === $cellVerticalAlignment)
+        return ($cellVerticalAlignment === CellVerticalAlignment::CENTER)
             ? 'middle'
             : $cellVerticalAlignment;
     }

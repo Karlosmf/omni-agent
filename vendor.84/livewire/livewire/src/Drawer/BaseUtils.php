@@ -2,15 +2,19 @@
 
 namespace Livewire\Drawer;
 
+use Livewire\Component;
+
 class BaseUtils
 {
-    static function isSyntheticTuple($payload) {
+    public static function isSyntheticTuple($payload)
+    {
         return is_array($payload)
             && count($payload) === 2
             && isset($payload[1]['s']);
     }
 
-    static function isAPrimitive($target) {
+    public static function isAPrimitive($target)
+    {
         return
             is_numeric($target) ||
             is_string($target) ||
@@ -18,14 +22,15 @@ class BaseUtils
             is_null($target);
     }
 
-    static function getPublicPropertiesDefinedOnSubclass($target) {
+    public static function getPublicPropertiesDefinedOnSubclass($target)
+    {
         return static::getPublicProperties($target, function ($property) {
             // Filter out any properties from the first-party Component class...
-            return $property->getDeclaringClass()->getName() !== \Livewire\Component::class && $property->getDeclaringClass()->getName() !== \Livewire\Volt\Component::class;
+            return $property->getDeclaringClass()->getName() !== Component::class && $property->getDeclaringClass()->getName() !== \Livewire\Volt\Component::class;
         });
     }
 
-    static function getPublicProperties($target, $filter = null)
+    public static function getPublicProperties($target, $filter = null)
     {
         return collect((new \ReflectionObject($target))->getProperties())
             ->filter(function ($property) {
@@ -35,7 +40,7 @@ class BaseUtils
             ->mapWithKeys(function ($property) use ($target) {
                 // Ensures typed property is initialized in PHP >=7.4, if so, return its value,
                 // if not initialized, return null (as expected in earlier PHP Versions)
-                if (method_exists($property, 'isInitialized') && !$property->isInitialized($target)) {
+                if (method_exists($property, 'isInitialized') && ! $property->isInitialized($target)) {
                     // If a type of `array` is given with no value, let's assume users want
                     // it prefilled with an empty array...
                     $value = (method_exists($property, 'getType') && $property->getType() && method_exists($property->getType(), 'getName') && $property->getType()->getName() === 'array')
@@ -49,10 +54,10 @@ class BaseUtils
             ->all();
     }
 
-    static function getPublicMethodsDefinedBySubClass($target)
+    public static function getPublicMethodsDefinedBySubClass($target)
     {
         $methods = array_filter((new \ReflectionObject($target))->getMethods(), function ($method) {
-            $isInBaseComponentClass = $method->getDeclaringClass()->getName() === \Livewire\Component::class || $method->getDeclaringClass()->getName() === \Livewire\Volt\Component::class;
+            $isInBaseComponentClass = $method->getDeclaringClass()->getName() === Component::class || $method->getDeclaringClass()->getName() === \Livewire\Volt\Component::class;
 
             return $method->isPublic()
                 && ! $method->isStatic()
@@ -64,29 +69,35 @@ class BaseUtils
         }, $methods);
     }
 
-    static function hasAttribute($target, $property, $attributeClass) {
+    public static function hasAttribute($target, $property, $attributeClass)
+    {
         $property = static::getProperty($target, $property);
 
         foreach ($property->getAttributes() as $attribute) {
             $instance = $attribute->newInstance();
 
-            if ($instance instanceof $attributeClass) return true;
+            if ($instance instanceof $attributeClass) {
+                return true;
+            }
         }
 
         return false;
     }
 
-    static function getProperty($target, $property) {
+    public static function getProperty($target, $property)
+    {
         return (new \ReflectionObject($target))->getProperty($property);
     }
 
-    static function propertyIsTyped($target, $property) {
+    public static function propertyIsTyped($target, $property)
+    {
         $property = static::getProperty($target, $property);
 
         return $property->hasType();
     }
 
-    static function propertyIsTypedAndUninitialized($target, $property) {
+    public static function propertyIsTypedAndUninitialized($target, $property)
+    {
         $property = static::getProperty($target, $property);
 
         return $property->hasType() && (! $property->isInitialized($target));

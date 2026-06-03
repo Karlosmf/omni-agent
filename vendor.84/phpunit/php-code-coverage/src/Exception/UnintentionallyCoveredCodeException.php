@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,10 +9,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage;
 
-use function rtrim;
 use RuntimeException;
+
+use function rtrim;
 
 final class UnintentionallyCoveredCodeException extends RuntimeException implements Exception
 {
@@ -20,7 +24,7 @@ final class UnintentionallyCoveredCodeException extends RuntimeException impleme
     private readonly array $unintentionallyCoveredUnits;
 
     /**
-     * @param list<string> $unintentionallyCoveredUnits
+     * @param  list<string>  $unintentionallyCoveredUnits
      */
     public function __construct(array $unintentionallyCoveredUnits)
     {
@@ -42,7 +46,7 @@ final class UnintentionallyCoveredCodeException extends RuntimeException impleme
         $message = '';
 
         foreach ($this->unintentionallyCoveredUnits as $unit) {
-            $message .= '- ' . $unit . "\n";
+            $message .= '- '.$unit."\n";
         }
 
         return rtrim($message);

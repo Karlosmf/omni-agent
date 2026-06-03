@@ -20,10 +20,10 @@ class SessionCookieJar extends CookieJar
     /**
      * Create a new SessionCookieJar object
      *
-     * @param string $sessionKey          Session key name to store the cookie
-     *                                    data in session
-     * @param bool   $storeSessionCookies Set to true to store session cookies
-     *                                    in the cookie jar.
+     * @param  string  $sessionKey  Session key name to store the cookie
+     *                              data in session
+     * @param  bool  $storeSessionCookies  Set to true to store session cookies
+     *                                     in the cookie jar.
      */
     public function __construct(string $sessionKey, bool $storeSessionCookies = false)
     {
@@ -62,7 +62,7 @@ class SessionCookieJar extends CookieJar
      */
     protected function load(): void
     {
-        if (!isset($_SESSION[$this->sessionKey])) {
+        if (! isset($_SESSION[$this->sessionKey])) {
             return;
         }
         $data = \json_decode($_SESSION[$this->sessionKey], true);

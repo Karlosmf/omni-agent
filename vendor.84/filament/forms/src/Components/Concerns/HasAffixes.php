@@ -21,7 +21,7 @@ trait HasAffixes
      */
     protected array $suffixActions = [];
 
-    protected string | Htmlable | Closure | null $suffixLabel = null;
+    protected string|Htmlable|Closure|null $suffixLabel = null;
 
     /**
      * @var array<Action> | null
@@ -33,27 +33,27 @@ trait HasAffixes
      */
     protected array $prefixActions = [];
 
-    protected string | Htmlable | Closure | null $prefixLabel = null;
+    protected string|Htmlable|Closure|null $prefixLabel = null;
 
-    protected string | BackedEnum | Htmlable | Closure | null $prefixIcon = null;
-
-    /**
-     * @var string | array<string> | Closure | null
-     */
-    protected string | array | Closure | null $prefixIconColor = null;
-
-    protected string | BackedEnum | Htmlable | Closure | null $suffixIcon = null;
+    protected string|BackedEnum|Htmlable|Closure|null $prefixIcon = null;
 
     /**
      * @var string | array<string> | Closure | null
      */
-    protected string | array | Closure | null $suffixIconColor = null;
+    protected string|array|Closure|null $prefixIconColor = null;
 
-    protected bool | Closure $isPrefixInline = false;
+    protected string|BackedEnum|Htmlable|Closure|null $suffixIcon = null;
 
-    protected bool | Closure $isSuffixInline = false;
+    /**
+     * @var string | array<string> | Closure | null
+     */
+    protected string|array|Closure|null $suffixIconColor = null;
 
-    public function prefix(string | Htmlable | Closure | null $label, bool | Closure $isInline = false): static
+    protected bool|Closure $isPrefixInline = false;
+
+    protected bool|Closure $isSuffixInline = false;
+
+    public function prefix(string|Htmlable|Closure|null $label, bool|Closure $isInline = false): static
     {
         $this->prefixLabel = $label;
         $this->inlinePrefix($isInline);
@@ -61,12 +61,12 @@ trait HasAffixes
         return $this;
     }
 
-    public function postfix(string | Htmlable | Closure | null $label, bool | Closure $isInline = false): static
+    public function postfix(string|Htmlable|Closure|null $label, bool|Closure $isInline = false): static
     {
         return $this->suffix($label, $isInline);
     }
 
-    public function prefixAction(Action | Closure $action, bool | Closure $isInline = false): static
+    public function prefixAction(Action|Closure $action, bool|Closure $isInline = false): static
     {
         $this->prefixActions([$action], $isInline);
 
@@ -76,7 +76,7 @@ trait HasAffixes
     /**
      * @param  array<Action | Closure>  $actions
      */
-    public function prefixActions(array $actions, bool | Closure $isInline = false): static
+    public function prefixActions(array $actions, bool|Closure $isInline = false): static
     {
         $this->prefixActions = [
             ...$this->prefixActions,
@@ -87,7 +87,7 @@ trait HasAffixes
         return $this;
     }
 
-    public function suffixAction(Action | Closure $action, bool | Closure $isInline = false): static
+    public function suffixAction(Action|Closure $action, bool|Closure $isInline = false): static
     {
         $this->suffixActions([$action], $isInline);
 
@@ -97,7 +97,7 @@ trait HasAffixes
     /**
      * @param  array<Action | Closure>  $actions
      */
-    public function suffixActions(array $actions, bool | Closure $isInline = false): static
+    public function suffixActions(array $actions, bool|Closure $isInline = false): static
     {
         $this->suffixActions = [
             ...$this->suffixActions,
@@ -108,7 +108,7 @@ trait HasAffixes
         return $this;
     }
 
-    public function suffix(string | Htmlable | Closure | null $label, bool | Closure $isInline = false): static
+    public function suffix(string|Htmlable|Closure|null $label, bool|Closure $isInline = false): static
     {
         $this->suffixLabel = $label;
         $this->inlineSuffix($isInline);
@@ -116,21 +116,21 @@ trait HasAffixes
         return $this;
     }
 
-    public function inlinePrefix(bool | Closure $isInline = true): static
+    public function inlinePrefix(bool|Closure $isInline = true): static
     {
         $this->isPrefixInline = $isInline;
 
         return $this;
     }
 
-    public function inlineSuffix(bool | Closure $isInline = true): static
+    public function inlineSuffix(bool|Closure $isInline = true): static
     {
         $this->isSuffixInline = $isInline;
 
         return $this;
     }
 
-    public function prefixIcon(string | BackedEnum | Htmlable | Closure | null $icon, bool | Closure $isInline = false): static
+    public function prefixIcon(string|BackedEnum|Htmlable|Closure|null $icon, bool|Closure $isInline = false): static
     {
         $this->prefixIcon = $icon;
         $this->inlinePrefix($isInline);
@@ -141,14 +141,14 @@ trait HasAffixes
     /**
      * @param  string | array<string> | Closure | null  $color
      */
-    public function prefixIconColor(string | array | Closure | null $color = null): static
+    public function prefixIconColor(string|array|Closure|null $color = null): static
     {
         $this->prefixIconColor = $color;
 
         return $this;
     }
 
-    public function suffixIcon(string | BackedEnum | Htmlable | Closure | null $icon, bool | Closure $isInline = false): static
+    public function suffixIcon(string|BackedEnum|Htmlable|Closure|null $icon, bool|Closure $isInline = false): static
     {
         $this->suffixIcon = $icon;
         $this->inlineSuffix($isInline);
@@ -159,7 +159,7 @@ trait HasAffixes
     /**
      * @param  string | array<string> | Closure | null  $color
      */
-    public function suffixIconColor(string | array | Closure | null $color = null): static
+    public function suffixIconColor(string|array|Closure|null $color = null): static
     {
         $this->suffixIconColor = $color;
 
@@ -222,22 +222,22 @@ trait HasAffixes
         return $this->cachedSuffixActions;
     }
 
-    public function getPrefixLabel(): string | Htmlable | null
+    public function getPrefixLabel(): string|Htmlable|null
     {
         return $this->evaluate($this->prefixLabel);
     }
 
-    public function getSuffixLabel(): string | Htmlable | null
+    public function getSuffixLabel(): string|Htmlable|null
     {
         return $this->evaluate($this->suffixLabel);
     }
 
-    public function getPrefixIcon(): string | BackedEnum | Htmlable | null
+    public function getPrefixIcon(): string|BackedEnum|Htmlable|null
     {
         return $this->evaluate($this->prefixIcon);
     }
 
-    public function getSuffixIcon(): string | BackedEnum | Htmlable | null
+    public function getSuffixIcon(): string|BackedEnum|Htmlable|null
     {
         return $this->evaluate($this->suffixIcon);
     }
@@ -245,7 +245,7 @@ trait HasAffixes
     /**
      * @return string | array<string> | null
      */
-    public function getPrefixIconColor(): string | array | null
+    public function getPrefixIconColor(): string|array|null
     {
         return $this->evaluate($this->prefixIconColor);
     }
@@ -253,7 +253,7 @@ trait HasAffixes
     /**
      * @return string | array<string> | null
      */
-    public function getSuffixIconColor(): string | array | null
+    public function getSuffixIconColor(): string|array|null
     {
         return $this->evaluate($this->suffixIconColor);
     }

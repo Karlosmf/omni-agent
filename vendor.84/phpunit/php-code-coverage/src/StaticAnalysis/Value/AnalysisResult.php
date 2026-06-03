@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 /**
@@ -35,6 +38,7 @@ final readonly class AnalysisResult
      * @var array<string, Function_>
      */
     private array $functions;
+
     private LinesOfCode $linesOfCode;
 
     /**
@@ -48,22 +52,22 @@ final readonly class AnalysisResult
     private array $ignoredLines;
 
     /**
-     * @param array<string, Interface_> $interfaces
-     * @param array<string, Class_>     $classes
-     * @param array<string, Trait_>     $traits
-     * @param array<string, Function_>  $functions
-     * @param LinesType                 $executableLines
-     * @param LinesType                 $ignoredLines
+     * @param  array<string, Interface_>  $interfaces
+     * @param  array<string, Class_>  $classes
+     * @param  array<string, Trait_>  $traits
+     * @param  array<string, Function_>  $functions
+     * @param  LinesType  $executableLines
+     * @param  LinesType  $ignoredLines
      */
     public function __construct(array $interfaces, array $classes, array $traits, array $functions, LinesOfCode $linesOfCode, array $executableLines, array $ignoredLines)
     {
-        $this->interfaces      = $interfaces;
-        $this->classes         = $classes;
-        $this->traits          = $traits;
-        $this->functions       = $functions;
-        $this->linesOfCode     = $linesOfCode;
+        $this->interfaces = $interfaces;
+        $this->classes = $classes;
+        $this->traits = $traits;
+        $this->functions = $functions;
+        $this->linesOfCode = $linesOfCode;
         $this->executableLines = $executableLines;
-        $this->ignoredLines    = $ignoredLines;
+        $this->ignoredLines = $ignoredLines;
     }
 
     /**

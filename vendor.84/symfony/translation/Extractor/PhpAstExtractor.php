@@ -30,25 +30,25 @@ final class PhpAstExtractor extends AbstractFileExtractor implements ExtractorIn
 
     public function __construct(
         /**
-         * @param iterable<AbstractVisitor&NodeVisitor> $visitors
+         * @param  iterable<AbstractVisitor&NodeVisitor>  $visitors
          */
         private readonly iterable $visitors,
         private string $prefix = '',
     ) {
-        if (!class_exists(ParserFactory::class)) {
-            throw new \LogicException(\sprintf('You cannot use "%s" as the "nikic/php-parser" package is not installed. Try running "composer require nikic/php-parser".', static::class));
+        if (! class_exists(ParserFactory::class)) {
+            throw new \LogicException(\sprintf('You cannot use "%s" as the "nikic/php-parser" package is not installed. Try running "composer require nikic/php-parser".', self::class));
         }
 
-        $this->parser = (new ParserFactory())->createForHostVersion();
+        $this->parser = (new ParserFactory)->createForHostVersion();
     }
 
     public function extract(iterable|string $resource, MessageCatalogue $catalogue): void
     {
         foreach ($this->extractFiles($resource) as $file) {
-            $traverser = new NodeTraverser();
+            $traverser = new NodeTraverser;
 
             // This is needed to resolve namespaces in class methods/constants.
-            $nameResolver = new NodeVisitor\NameResolver();
+            $nameResolver = new NodeVisitor\NameResolver;
             $traverser->addVisitor($nameResolver);
 
             foreach ($this->visitors as $visitor) {
@@ -68,17 +68,17 @@ final class PhpAstExtractor extends AbstractFileExtractor implements ExtractorIn
 
     protected function canBeExtracted(string $file): bool
     {
-        return 'php' === pathinfo($file, \PATHINFO_EXTENSION)
+        return pathinfo($file, \PATHINFO_EXTENSION) === 'php'
             && $this->isFile($file)
             && preg_match('/\bt\(|->trans\(|TranslatableMessage|Symfony\\\\Component\\\\Validator\\\\Constraints/i', file_get_contents($file));
     }
 
     protected function extractFromDirectory(array|string $resource): iterable|Finder
     {
-        if (!class_exists(Finder::class)) {
-            throw new \LogicException(\sprintf('You cannot use "%s" as the "symfony/finder" package is not installed. Try running "composer require symfony/finder".', static::class));
+        if (! class_exists(Finder::class)) {
+            throw new \LogicException(\sprintf('You cannot use "%s" as the "symfony/finder" package is not installed. Try running "composer require symfony/finder".', self::class));
         }
 
-        return (new Finder())->files()->name('*.php')->in($resource);
+        return (new Finder)->files()->name('*.php')->in($resource);
     }
 }

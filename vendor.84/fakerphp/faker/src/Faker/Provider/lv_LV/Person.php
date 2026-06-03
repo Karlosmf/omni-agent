@@ -138,7 +138,7 @@ class Person extends \Faker\Provider\Person
      */
     public function personalIdentityNumber(?\DateTime $birthdate = null)
     {
-        if (!$birthdate) {
+        if (! $birthdate) {
             $birthdate = DateTime::dateTimeThisCentury();
         }
 
@@ -155,7 +155,7 @@ class Person extends \Faker\Provider\Person
         $datePart = $birthdate->format('dmy');
         $serialNumber = static::numerify('###');
 
-        $partialNumberSplit = str_split($datePart . $century . $serialNumber);
+        $partialNumberSplit = str_split($datePart.$century.$serialNumber);
 
         $idDigitValidator = [1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
         $total = 0;
@@ -168,6 +168,6 @@ class Person extends \Faker\Provider\Person
 
         $checksumDigit = (1101 - $total) % 11 % 10;
 
-        return $datePart . '-' . $century . $serialNumber . $checksumDigit;
+        return $datePart.'-'.$century.$serialNumber.$checksumDigit;
     }
 }

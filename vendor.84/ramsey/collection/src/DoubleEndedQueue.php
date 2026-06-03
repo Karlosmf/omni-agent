@@ -26,7 +26,9 @@ use function array_unshift;
  * minimize the effort required to implement this interface.
  *
  * @template T
+ *
  * @extends Queue<T>
+ *
  * @implements DoubleEndedQueueInterface<T>
  */
 class DoubleEndedQueue extends Queue implements DoubleEndedQueueInterface
@@ -35,8 +37,8 @@ class DoubleEndedQueue extends Queue implements DoubleEndedQueueInterface
      * Constructs a double-ended queue (dequeue) object of the specified type,
      * optionally with the specified data.
      *
-     * @param string $queueType The type or class name associated with this dequeue.
-     * @param array<array-key, T> $data The initial items to store in the dequeue.
+     * @param  string  $queueType  The type or class name associated with this dequeue.
+     * @param  array<array-key, T>  $data  The initial items to store in the dequeue.
      */
     public function __construct(private readonly string $queueType, array $data = [])
     {
@@ -50,8 +52,8 @@ class DoubleEndedQueue extends Queue implements DoubleEndedQueueInterface
     {
         if ($this->checkType($this->getType(), $element) === false) {
             throw new InvalidArgumentException(
-                'Value must be of type ' . $this->getType() . '; value is '
-                . $this->toolValueToString($element),
+                'Value must be of type '.$this->getType().'; value is '
+                .$this->toolValueToString($element),
             );
         }
 

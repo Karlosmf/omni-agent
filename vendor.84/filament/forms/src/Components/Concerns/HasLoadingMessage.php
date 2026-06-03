@@ -6,9 +6,9 @@ use Closure;
 
 trait HasLoadingMessage
 {
-    protected string | Closure | null $loadingMessage = null;
+    protected string|Closure|null $loadingMessage = null;
 
-    public function loadingMessage(string | Closure | null $message): static
+    public function loadingMessage(string|Closure|null $message): static
     {
         $this->loadingMessage = $message;
 

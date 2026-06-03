@@ -6,9 +6,9 @@ use Closure;
 
 trait HasInlineLabel
 {
-    protected bool | Closure | null $hasInlineLabel = null;
+    protected bool|Closure|null $hasInlineLabel = null;
 
-    public function inlineLabel(bool | Closure | null $condition = true): static
+    public function inlineLabel(bool|Closure|null $condition = true): static
     {
         $this->hasInlineLabel = $condition;
 

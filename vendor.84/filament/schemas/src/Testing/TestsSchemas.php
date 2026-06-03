@@ -162,7 +162,7 @@ class TestsSchemas
 
     public function assertSchemaStateSet(): Closure
     {
-        return function (array | Closure $state, ?string $schema = null): static {
+        return function (array|Closure $state, ?string $schema = null): static {
             if ($this->instance() instanceof HasActions) {
                 $schema ??= $this->instance()->getMountedActionSchemaName();
             }
@@ -194,7 +194,7 @@ class TestsSchemas
                             "Failed asserting that a component [{$key}] has the expected state in the [{$schema}] schema on the [{$livewireClass}] component."
                         );
                     } else {
-                        $this->assertSet((filled($schemaStatePath) ? "{$schemaStatePath}." : '') . $key, $value);
+                        $this->assertSet((filled($schemaStatePath) ? "{$schemaStatePath}." : '').$key, $value);
                     }
                 }
             }
@@ -277,7 +277,7 @@ class TestsSchemas
             $schemaInstance = $this->instance()->{$schema};
 
             /** @var Wizard $wizard */
-            $wizard = $schemaInstance->getComponent(fn (Component | Action | ActionGroup $component): bool => $component instanceof Wizard);
+            $wizard = $schemaInstance->getComponent(fn (Component|Action|ActionGroup $component): bool => $component instanceof Wizard);
             Assert::assertArrayHasKey(
                 $step - 1,
                 $wizard->getDefaultChildComponents(),
@@ -304,7 +304,7 @@ class TestsSchemas
             $schemaInstance = $this->instance()->{$schema};
 
             /** @var Wizard $wizard */
-            $wizard = $schemaInstance->getComponent(fn (Component | Action | ActionGroup $component): bool => $component instanceof Wizard);
+            $wizard = $schemaInstance->getComponent(fn (Component|Action|ActionGroup $component): bool => $component instanceof Wizard);
             Assert::assertEquals(
                 $step,
                 $current = $wizard->getCurrentStepIndex() + 1,
@@ -331,7 +331,7 @@ class TestsSchemas
             $schemaInstance = $this->instance()->{$schema};
 
             /** @var Wizard $wizard */
-            $wizard = $schemaInstance->getComponent(fn (Component | Action | ActionGroup $component): bool => $component instanceof Wizard);
+            $wizard = $schemaInstance->getComponent(fn (Component|Action|ActionGroup $component): bool => $component instanceof Wizard);
 
             $stepIndex = ($step <= 1) ? 0 : $step - 2;
 
@@ -357,7 +357,7 @@ class TestsSchemas
             $schemaInstance = $this->instance()->{$schema};
 
             /** @var Wizard $wizard */
-            $wizard = $schemaInstance->getComponent(fn (Component | Action | ActionGroup $component): bool => $component instanceof Wizard);
+            $wizard = $schemaInstance->getComponent(fn (Component|Action|ActionGroup $component): bool => $component instanceof Wizard);
 
             $this->call('callSchemaComponentMethod', $wizard->getKey(), 'nextStep', [$wizard->getCurrentStepIndex()]);
 
@@ -381,7 +381,7 @@ class TestsSchemas
             $schemaInstance = $this->instance()->{$schema};
 
             /** @var Wizard $wizard */
-            $wizard = $schemaInstance->getComponent(fn (Component | Action | ActionGroup $component): bool => $component instanceof Wizard);
+            $wizard = $schemaInstance->getComponent(fn (Component|Action|ActionGroup $component): bool => $component instanceof Wizard);
 
             $this->call('callSchemaComponentMethod', $wizard->getKey(), 'previousStep', [$wizard->getCurrentStepIndex()]);
 

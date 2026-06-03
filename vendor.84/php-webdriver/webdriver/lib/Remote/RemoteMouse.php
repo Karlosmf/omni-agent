@@ -12,8 +12,10 @@ class RemoteMouse implements WebDriverMouse
 {
     /** @internal */
     public const BUTTON_LEFT = 0;
+
     /** @internal */
     public const BUTTON_MIDDLE = 1;
+
     /** @internal */
     public const BUTTON_RIGHT = 2;
 
@@ -21,13 +23,14 @@ class RemoteMouse implements WebDriverMouse
      * @var RemoteExecuteMethod
      */
     private $executor;
+
     /**
      * @var bool
      */
     private $isW3cCompliant;
 
     /**
-     * @param bool $isW3cCompliant
+     * @param  bool  $isW3cCompliant
      */
     public function __construct(RemoteExecuteMethod $executor, $isW3cCompliant = false)
     {
@@ -163,9 +166,8 @@ class RemoteMouse implements WebDriverMouse
     }
 
     /**
-     * @param int|null $x_offset
-     * @param int|null $y_offset
-     *
+     * @param  int|null  $x_offset
+     * @param  int|null  $y_offset
      * @return RemoteMouse
      */
     public function mouseMove(
@@ -245,9 +247,8 @@ class RemoteMouse implements WebDriverMouse
     }
 
     /**
-     * @param int|null $x_offset
-     * @param int|null $y_offset
-     *
+     * @param  int|null  $x_offset
+     * @param  int|null  $y_offset
      * @return array
      */
     private function createMoveAction(

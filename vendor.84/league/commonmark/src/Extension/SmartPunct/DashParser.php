@@ -24,6 +24,7 @@ use League\CommonMark\Parser\InlineParserContext;
 final class DashParser implements InlineParserInterface
 {
     private const EN_DASH = '–';
+
     private const EM_DASH = '—';
 
     public function getMatchDefinition(): InlineParserMatch
@@ -51,7 +52,7 @@ final class DashParser implements InlineParserInterface
         }
 
         $inlineContext->getContainer()->appendChild(new Text(
-            \str_repeat(self::EM_DASH, $emCount) . \str_repeat(self::EN_DASH, $enCount)
+            \str_repeat(self::EM_DASH, $emCount).\str_repeat(self::EN_DASH, $enCount)
         ));
 
         return true;

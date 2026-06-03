@@ -18,9 +18,9 @@ trait MethodsAsserts
     /**
      * Search objects from LayerB in arguments of methods from LayerA
      *
-     * @param Layer|Layer[] $layerA
-     * @param Layer|Layer[] $layerB
-     * @param string[] $methods Search only this methods
+     * @param  Layer|Layer[]  $layerA
+     * @param  Layer|Layer[]  $layerB
+     * @param  string[]  $methods  Search only this methods
      */
     public function assertIncomingsNotFrom($layerA, $layerB, array $methods = []): void
     {
@@ -29,16 +29,16 @@ trait MethodsAsserts
         self::assertEquals(
             0,
             count($incomings),
-            'Found incomings: ' . implode("\n", $incomings)
+            'Found incomings: '.implode("\n", $incomings)
         );
     }
 
     /**
      * Search objects from LayerB in arguments of methods from LayerA
      *
-     * @param Layer|Layer[] $layerA
-     * @param Layer|Layer[] $layerB
-     * @param string[] $methods Search only this methods
+     * @param  Layer|Layer[]  $layerA
+     * @param  Layer|Layer[]  $layerB
+     * @param  string[]  $methods  Search only this methods
      */
     public function assertIncomingsFrom($layerA, $layerB, array $methods = []): void
     {
@@ -52,10 +52,9 @@ trait MethodsAsserts
     }
 
     /**
-     * @param Layer|Layer[] $layerA
-     * @param Layer|Layer[] $layerB
-     * @param string[] $methods Search only this methods
-     *
+     * @param  Layer|Layer[]  $layerA
+     * @param  Layer|Layer[]  $layerB
+     * @param  string[]  $methods  Search only this methods
      * @return string[]
      */
     protected function getIncomingsFrom($layerA, $layerB, array $methods): array
@@ -72,12 +71,12 @@ trait MethodsAsserts
             foreach ($layer as $object) {
                 foreach ($object->methods as $method) {
                     if (count($methods) > 0) {
-                        if (!in_array($method->name, $methods)) {
+                        if (! in_array($method->name, $methods)) {
                             continue;
                         }
                     }
 
-                    foreach ($method->args as list($aType, $aName)) {
+                    foreach ($method->args as [$aType, $aName]) {
                         $types = is_array($aType) ? $aType : [$aType];
                         foreach ($types as $type) {
                             foreach ($layersToSearch as $layerToSearch) {
@@ -104,9 +103,9 @@ trait MethodsAsserts
     /**
      * Search objects from LayerB in methods return type from LayerA
      *
-     * @param Layer|Layer[] $layerA
-     * @param Layer|Layer[] $layerB
-     * @param string[] $methods Search only this methods
+     * @param  Layer|Layer[]  $layerA
+     * @param  Layer|Layer[]  $layerB
+     * @param  string[]  $methods  Search only this methods
      */
     public function assertOutgoingFrom($layerA, $layerB, array $methods = []): void
     {
@@ -122,9 +121,9 @@ trait MethodsAsserts
     /**
      * Search objects from LayerB in methods return type from LayerA
      *
-     * @param Layer|Layer[] $layerA
-     * @param Layer|Layer[] $layerB
-     * @param string[] $methods Search only this methods
+     * @param  Layer|Layer[]  $layerA
+     * @param  Layer|Layer[]  $layerB
+     * @param  string[]  $methods  Search only this methods
      */
     public function assertOutgoingNotFrom($layerA, $layerB, array $methods = []): void
     {
@@ -133,15 +132,14 @@ trait MethodsAsserts
         self::assertNotEquals(
             0,
             count($outgoings),
-            'Found outgoings: ' . implode("\n", $outgoings)
+            'Found outgoings: '.implode("\n", $outgoings)
         );
     }
 
     /**
-     * @param Layer|Layer[] $layerA
-     * @param Layer|Layer[] $layerB
-     * @param string[] $methods Search only this methods
-     *
+     * @param  Layer|Layer[]  $layerA
+     * @param  Layer|Layer[]  $layerB
+     * @param  string[]  $methods  Search only this methods
      * @return string[]
      */
     protected function getOutgoingFrom($layerA, $layerB, array $methods): array
@@ -158,7 +156,7 @@ trait MethodsAsserts
             foreach ($layer as $object) {
                 foreach ($object->methods as $method) {
                     if (count($methods) > 0) {
-                        if (!in_array($method->name, $methods)) {
+                        if (! in_array($method->name, $methods)) {
                             continue;
                         }
                     }
@@ -185,7 +183,7 @@ trait MethodsAsserts
     /**
      * Check method's size in layer
      *
-     * @param Layer|Layer[] $layerA
+     * @param  Layer|Layer[]  $layerA
      */
     public function assertMethodSizeLessThan($layerA, int $size): void
     {
@@ -206,7 +204,7 @@ trait MethodsAsserts
         self::assertEquals(
             0,
             count($result),
-            'Found large methods: ' . implode("\n", $result)
+            'Found large methods: '.implode("\n", $result)
         );
     }
 }

@@ -34,7 +34,7 @@ trait InteractsWithForms /** @phpstan-ignore trait.unused */
     /**
      * @deprecated Use `cacheSchema()` instead.
      */
-    protected function cacheForm(string $name, Schema | Closure | null $form): ?Schema
+    protected function cacheForm(string $name, Schema|Closure|null $form): ?Schema
     {
         return $this->cacheSchema($name, $form);
     }
@@ -52,7 +52,7 @@ trait InteractsWithForms /** @phpstan-ignore trait.unused */
             ...$this->cachedSchemas,
             ...collect($this->getForms())
                 ->merge($this->getTraitForms())
-                ->mapWithKeys(function (Schema | string | null $form, string | int $formName): array {
+                ->mapWithKeys(function (Schema|string|null $form, string|int $formName): array {
                     if ($form === null) {
                         return ['' => null];
                     }
@@ -90,7 +90,7 @@ trait InteractsWithForms /** @phpstan-ignore trait.unused */
         $forms = [];
 
         foreach (class_uses_recursive($class = static::class) as $trait) {
-            if (method_exists($class, $method = 'get' . class_basename($trait) . 'Forms')) {
+            if (method_exists($class, $method = 'get'.class_basename($trait).'Forms')) {
                 $forms = [
                     ...$forms,
                     ...$this->{$method}(),
@@ -153,7 +153,7 @@ trait InteractsWithForms /** @phpstan-ignore trait.unused */
      *
      * @return Model|class-string<Model>|null
      */
-    protected function getFormModel(): Model | string | null
+    protected function getFormModel(): Model|string|null
     {
         return null;
     }

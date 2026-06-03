@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Brick\Math;
 
+use const E_USER_DEPRECATED;
+use const FILTER_VALIDATE_INT;
+use const PREG_UNMATCHED_AS_NULL;
+
 use Brick\Math\Exception\DivisionByZeroException;
 use Brick\Math\Exception\MathException;
 use Brick\Math\Exception\NumberFormatException;
@@ -28,10 +32,6 @@ use function strlen;
 use function substr;
 use function trigger_error;
 
-use const E_USER_DEPRECATED;
-use const FILTER_VALIDATE_INT;
-use const PREG_UNMATCHED_AS_NULL;
-
 /**
  * Base class for arbitrary-precision numbers.
  *
@@ -46,23 +46,23 @@ abstract readonly class BigNumber implements JsonSerializable, Stringable
      * The regular expression used to parse integer or decimal numbers.
      */
     private const PARSE_REGEXP_NUMERICAL =
-        '/^' .
-        '(?<sign>[\-\+])?' .
-        '(?<integral>[0-9]+)?' .
-        '(?<point>\.)?' .
-        '(?<fractional>[0-9]+)?' .
-        '(?:[eE](?<exponent>[\-\+]?[0-9]+))?' .
+        '/^'.
+        '(?<sign>[\-\+])?'.
+        '(?<integral>[0-9]+)?'.
+        '(?<point>\.)?'.
+        '(?<fractional>[0-9]+)?'.
+        '(?:[eE](?<exponent>[\-\+]?[0-9]+))?'.
         '$/';
 
     /**
      * The regular expression used to parse rational numbers.
      */
     private const PARSE_REGEXP_RATIONAL =
-        '/^' .
-        '(?<sign>[\-\+])?' .
-        '(?<numerator>[0-9]+)' .
-        '\/' .
-        '(?<denominator>[0-9]+)' .
+        '/^'.
+        '(?<sign>[\-\+])?'.
+        '(?<numerator>[0-9]+)'.
+        '\/'.
+        '(?<denominator>[0-9]+)'.
         '$/';
 
     /**
@@ -81,8 +81,8 @@ abstract readonly class BigNumber implements JsonSerializable, Stringable
      * When of() is called on BigInteger, BigDecimal, or BigRational, the resulting number is converted to an instance
      * of the subclass when possible; otherwise a RoundingNecessaryException exception is thrown.
      *
-     * @throws NumberFormatException      If the format of the number is not valid.
-     * @throws DivisionByZeroException    If the value represents a rational number with a denominator of zero.
+     * @throws NumberFormatException If the format of the number is not valid.
+     * @throws DivisionByZeroException If the value represents a rational number with a denominator of zero.
      * @throws RoundingNecessaryException If the value cannot be converted to an instance of the subclass without rounding.
      *
      * @pure
@@ -107,8 +107,8 @@ abstract readonly class BigNumber implements JsonSerializable, Stringable
      *
      * @see BigNumber::of()
      *
-     * @throws NumberFormatException      If the format of the number is not valid.
-     * @throws DivisionByZeroException    If the value represents a rational number with a denominator of zero.
+     * @throws NumberFormatException If the format of the number is not valid.
+     * @throws DivisionByZeroException If the value represents a rational number with a denominator of zero.
      * @throws RoundingNecessaryException If the value cannot be converted to an instance of the subclass without rounding.
      *
      * @pure
@@ -125,11 +125,11 @@ abstract readonly class BigNumber implements JsonSerializable, Stringable
     /**
      * Returns the minimum of the given values.
      *
-     * @param BigNumber|int|float|string ...$values The numbers to compare. All the numbers need to be convertible
-     *                                              to an instance of the class this method is called on.
+     * @param  BigNumber|int|float|string  ...$values  The numbers to compare. All the numbers need to be convertible
+     *                                                 to an instance of the class this method is called on.
      *
      * @throws InvalidArgumentException If no values are given.
-     * @throws MathException            If an argument is not valid.
+     * @throws MathException If an argument is not valid.
      *
      * @pure
      */
@@ -146,7 +146,7 @@ abstract readonly class BigNumber implements JsonSerializable, Stringable
         }
 
         if ($min === null) {
-            throw new InvalidArgumentException(__METHOD__ . '() expects at least one value.');
+            throw new InvalidArgumentException(__METHOD__.'() expects at least one value.');
         }
 
         return $min;
@@ -155,11 +155,11 @@ abstract readonly class BigNumber implements JsonSerializable, Stringable
     /**
      * Returns the maximum of the given values.
      *
-     * @param BigNumber|int|float|string ...$values The numbers to compare. All the numbers need to be convertible
-     *                                              to an instance of the class this method is called on.
+     * @param  BigNumber|int|float|string  ...$values  The numbers to compare. All the numbers need to be convertible
+     *                                                 to an instance of the class this method is called on.
      *
      * @throws InvalidArgumentException If no values are given.
-     * @throws MathException            If an argument is not valid.
+     * @throws MathException If an argument is not valid.
      *
      * @pure
      */
@@ -176,7 +176,7 @@ abstract readonly class BigNumber implements JsonSerializable, Stringable
         }
 
         if ($max === null) {
-            throw new InvalidArgumentException(__METHOD__ . '() expects at least one value.');
+            throw new InvalidArgumentException(__METHOD__.'() expects at least one value.');
         }
 
         return $max;
@@ -191,11 +191,11 @@ abstract readonly class BigNumber implements JsonSerializable, Stringable
      * When called on BigInteger, BigDecimal, or BigRational, sum() requires that all values can be converted to that
      * specific subclass, and returns a result of the same type.
      *
-     * @param BigNumber|int|float|string ...$values The values to add. All values must be convertible to the class on
-     *                                              which this method is called.
+     * @param  BigNumber|int|float|string  ...$values  The values to add. All values must be convertible to the class on
+     *                                                 which this method is called.
      *
      * @throws InvalidArgumentException If no values are given.
-     * @throws MathException            If an argument is not valid.
+     * @throws MathException If an argument is not valid.
      *
      * @pure
      */
@@ -204,7 +204,7 @@ abstract readonly class BigNumber implements JsonSerializable, Stringable
         $first = array_shift($values);
 
         if ($first === null) {
-            throw new InvalidArgumentException(__METHOD__ . '() expects at least one value.');
+            throw new InvalidArgumentException(__METHOD__.'() expects at least one value.');
         }
 
         $sum = static::of($first);
@@ -387,8 +387,8 @@ abstract readonly class BigNumber implements JsonSerializable, Stringable
     /**
      * Converts this number to a BigDecimal with the given scale, using rounding if necessary.
      *
-     * @param int          $scale        The scale of the resulting `BigDecimal`.
-     * @param RoundingMode $roundingMode An optional rounding mode, defaults to Unnecessary.
+     * @param  int  $scale  The scale of the resulting `BigDecimal`.
+     * @param  RoundingMode  $roundingMode  An optional rounding mode, defaults to Unnecessary.
      *
      * @throws RoundingNecessaryException If this number cannot be converted to the given scale without rounding.
      *                                    This only applies when RoundingMode::Unnecessary is used.
@@ -485,7 +485,7 @@ abstract readonly class BigNumber implements JsonSerializable, Stringable
     }
 
     /**
-     * @throws NumberFormatException   If the format of the number is not valid.
+     * @throws NumberFormatException If the format of the number is not valid.
      * @throws DivisionByZeroException If the value represents a rational number with a denominator of zero.
      *
      * @pure
@@ -503,7 +503,7 @@ abstract readonly class BigNumber implements JsonSerializable, Stringable
         if (is_float($value)) {
             // @phpstan-ignore-next-line
             trigger_error(
-                'Passing floats to BigNumber::of() and arithmetic methods is deprecated and will be removed in 0.15. ' .
+                'Passing floats to BigNumber::of() and arithmetic methods is deprecated and will be removed in 0.15. '.
                 'Cast the float to string explicitly to preserve the previous behaviour.',
                 E_USER_DEPRECATED,
             );
@@ -582,7 +582,7 @@ abstract readonly class BigNumber implements JsonSerializable, Stringable
                     throw new NumberFormatException('Exponent too large.');
                 }
 
-                $unscaledValue = self::cleanUp($sign, $integral . $fractional);
+                $unscaledValue = self::cleanUp($sign, $integral.$fractional);
 
                 $scale = strlen($fractional) - $exponent;
 
@@ -605,12 +605,12 @@ abstract readonly class BigNumber implements JsonSerializable, Stringable
     /**
      * Removes optional leading zeros and applies sign.
      *
-     * @param string|null $sign   The sign, '+' or '-', optional. Null is allowed for convenience and treated as '+'.
-     * @param string      $number The number, validated as a string of digits.
+     * @param  string|null  $sign  The sign, '+' or '-', optional. Null is allowed for convenience and treated as '+'.
+     * @param  string  $number  The number, validated as a string of digits.
      *
      * @pure
      */
-    private static function cleanUp(string|null $sign, string $number): string
+    private static function cleanUp(?string $sign, string $number): string
     {
         $number = ltrim($number, '0');
 
@@ -618,7 +618,7 @@ abstract readonly class BigNumber implements JsonSerializable, Stringable
             return '0';
         }
 
-        return $sign === '-' ? '-' . $number : $number;
+        return $sign === '-' ? '-'.$number : $number;
     }
 
     /**

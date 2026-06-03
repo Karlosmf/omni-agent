@@ -132,8 +132,9 @@ class HttpCommandExecutor implements WebDriverCommandExecutor
         DriverCommand::TOUCH_UP => ['method' => 'POST', 'url' => '/session/:sessionId/touch/up'],
         DriverCommand::CUSTOM_COMMAND => [],
     ];
+
     /**
-     * @var array Will be merged with $commands
+     * @var array Will be merged with
      */
     protected static $w3cCompliantCommands = [
         DriverCommand::ACCEPT_ALERT => ['method' => 'POST', 'url' => '/session/:sessionId/alert/accept'],
@@ -178,23 +179,26 @@ class HttpCommandExecutor implements WebDriverCommandExecutor
         // Selenium extension of W3C protocol
         DriverCommand::UPLOAD_FILE => ['method' => 'POST', 'url' => '/session/:sessionId/se/file'],
     ];
+
     /**
      * @var string
      */
     protected $url;
+
     /**
      * @var resource
      */
     protected $curl;
+
     /**
      * @var bool
      */
     protected $isW3cCompliant = true;
 
     /**
-     * @param string $url
-     * @param string|null $http_proxy
-     * @param int|null $http_proxy_port
+     * @param  string  $url
+     * @param  string|null  $http_proxy
+     * @param  int|null  $http_proxy_port
      */
     public function __construct($url, $http_proxy = null, $http_proxy_port = null)
     {
@@ -203,7 +207,7 @@ class HttpCommandExecutor implements WebDriverCommandExecutor
         $this->url = $url;
         $this->curl = curl_init();
 
-        if (!empty($http_proxy)) {
+        if (! empty($http_proxy)) {
             curl_setopt($this->curl, CURLOPT_PROXY, $http_proxy);
             if ($http_proxy_port !== null) {
                 curl_setopt($this->curl, CURLOPT_PROXYPORT, $http_proxy_port);
@@ -213,8 +217,8 @@ class HttpCommandExecutor implements WebDriverCommandExecutor
         // Get credentials from $url (if any)
         $matches = null;
         if (preg_match("/^(https?:\/\/)(.*):(.*)@(.*?)/U", $url, $matches)) {
-            $this->url = $matches[1] . $matches[4];
-            $auth_creds = $matches[2] . ':' . $matches[3];
+            $this->url = $matches[1].$matches[4];
+            $auth_creds = $matches[2].':'.$matches[3];
             curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
             curl_setopt($this->curl, CURLOPT_USERPWD, $auth_creds);
         }
@@ -235,7 +239,7 @@ class HttpCommandExecutor implements WebDriverCommandExecutor
     /**
      * Set timeout for the connect phase
      *
-     * @param int $timeout_in_ms Timeout in milliseconds
+     * @param  int  $timeout_in_ms  Timeout in milliseconds
      * @return HttpCommandExecutor
      */
     public function setConnectionTimeout($timeout_in_ms)
@@ -254,7 +258,7 @@ class HttpCommandExecutor implements WebDriverCommandExecutor
     /**
      * Set the maximum time of a request
      *
-     * @param int $timeout_in_ms Timeout in milliseconds
+     * @param  int  $timeout_in_ms  Timeout in milliseconds
      * @return HttpCommandExecutor
      */
     public function setRequestTimeout($timeout_in_ms)
@@ -290,11 +294,11 @@ class HttpCommandExecutor implements WebDriverCommandExecutor
             }
         }
 
-        if (is_array($params) && !empty($params) && $http_method !== 'POST') {
+        if (is_array($params) && ! empty($params) && $http_method !== 'POST') {
             throw LogicException::forInvalidHttpMethod($url, $http_method, $params);
         }
 
-        curl_setopt($this->curl, CURLOPT_URL, $this->url . $url);
+        curl_setopt($this->curl, CURLOPT_URL, $this->url.$url);
 
         // https://github.com/facebook/php-webdriver/issues/173
         if ($command->getName() === DriverCommand::NEW_SESSION) {
@@ -314,7 +318,7 @@ class HttpCommandExecutor implements WebDriverCommandExecutor
         $encoded_params = null;
 
         if ($http_method === 'POST') {
-            if (is_array($params) && !empty($params)) {
+            if (is_array($params) && ! empty($params)) {
                 $encoded_params = json_encode($params);
             } elseif ($this->isW3cCompliant) {
                 // POST body must be valid JSON in W3C, even if empty: https://www.w3.org/TR/webdriver/#processing-model
@@ -388,9 +392,9 @@ class HttpCommandExecutor implements WebDriverCommandExecutor
     protected function getCommandHttpOptions(WebDriverCommand $command)
     {
         $commandName = $command->getName();
-        if (!isset(self::$commands[$commandName])) {
-            if ($this->isW3cCompliant && !isset(self::$w3cCompliantCommands[$commandName])) {
-                throw LogicException::forError($command->getName() . ' is not a valid command.');
+        if (! isset(self::$commands[$commandName])) {
+            if ($this->isW3cCompliant && ! isset(self::$w3cCompliantCommands[$commandName])) {
+                throw LogicException::forError($command->getName().' is not a valid command.');
             }
         }
 

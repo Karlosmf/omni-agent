@@ -108,6 +108,7 @@ class Person extends \Faker\Provider\Person
     ];
 
     protected static $titleMale = ['Herr', 'Dr.', 'Mag.', 'Ing.', 'Dipl.-Ing.', 'Prof.', 'Univ.Prof.'];
+
     protected static $titleFemale = ['Frau', 'Dr.', 'Maga.', 'Ing.', 'Dipl.-Ing.', 'Prof.', 'Univ.Prof.'];
 
     protected static $suffix = ['B.Sc.', 'B.A.', 'B.Eng.', 'MBA.'];

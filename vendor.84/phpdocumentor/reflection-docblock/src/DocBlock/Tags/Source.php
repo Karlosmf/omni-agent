@@ -34,8 +34,8 @@ final class Source extends BaseTag implements Factory\StaticMethod
     private ?int $lineCount = null;
 
     /**
-     * @param int|string      $startingLine should be a to int convertible value
-     * @param int|string|null $lineCount    should be a to int convertible value
+     * @param  int|string  $startingLine  should be a to int convertible value
+     * @param  int|string|null  $lineCount  should be a to int convertible value
      */
     public function __construct($startingLine, $lineCount = null, ?Description $description = null)
     {
@@ -43,8 +43,8 @@ final class Source extends BaseTag implements Factory\StaticMethod
         Assert::nullOrIntegerish($lineCount);
 
         $this->startingLine = (int) $startingLine;
-        $this->lineCount    = $lineCount !== null ? (int) $lineCount : null;
-        $this->description  = $description;
+        $this->lineCount = $lineCount !== null ? (int) $lineCount : null;
+        $this->description = $description;
     }
 
     public static function create(
@@ -56,8 +56,8 @@ final class Source extends BaseTag implements Factory\StaticMethod
         Assert::notNull($descriptionFactory);
 
         $startingLine = 1;
-        $lineCount    = null;
-        $description  = null;
+        $lineCount = null;
+        $description = null;
 
         // Starting line / Number of lines / Description
         if (preg_match('/^([1-9]\d*)\s*(?:((?1))\s+)?(.*)$/sux', $body, $matches)) {
@@ -69,14 +69,14 @@ final class Source extends BaseTag implements Factory\StaticMethod
             $description = $matches[3];
         }
 
-        return new static($startingLine, $lineCount, $descriptionFactory->create($description ?? '', $context));
+        return new self($startingLine, $lineCount, $descriptionFactory->create($description ?? '', $context));
     }
 
     /**
      * Gets the starting line.
      *
      * @return int The starting line, relative to the structural element's
-     *     location.
+     *             location.
      */
     public function getStartingLine(): int
     {
@@ -87,7 +87,7 @@ final class Source extends BaseTag implements Factory\StaticMethod
      * Returns the number of lines.
      *
      * @return int|null The number of lines, relative to the starting line. NULL
-     *     means "to the end".
+     *                  means "to the end".
      */
     public function getLineCount(): ?int
     {
@@ -104,12 +104,12 @@ final class Source extends BaseTag implements Factory\StaticMethod
 
         $startingLine = (string) $this->startingLine;
 
-        $lineCount = $this->lineCount !== null ? ' ' . $this->lineCount : '';
+        $lineCount = $this->lineCount !== null ? ' '.$this->lineCount : '';
 
         return $startingLine
-            . $lineCount
-            . ($description !== ''
-                ? ' ' . $description
+            .$lineCount
+            .($description !== ''
+                ? ' '.$description
                 : '');
     }
 }

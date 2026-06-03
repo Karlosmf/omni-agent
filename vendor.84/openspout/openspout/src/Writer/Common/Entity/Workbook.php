@@ -32,7 +32,7 @@ final class Workbook
     }
 
     /**
-     * @param Worksheet[] $worksheets
+     * @param  Worksheet[]  $worksheets
      */
     public function setWorksheets(array $worksheets): void
     {

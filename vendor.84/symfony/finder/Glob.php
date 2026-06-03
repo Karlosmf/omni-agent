@@ -48,17 +48,17 @@ class Glob
             $glob = '/'.$glob;
         }
         $sizeGlob = \strlen($glob);
-        for ($i = 0; $i < $sizeGlob; ++$i) {
+        for ($i = 0; $i < $sizeGlob; $i++) {
             $car = $glob[$i];
-            if ($firstByte && $strictLeadingDot && '.' !== $car) {
+            if ($firstByte && $strictLeadingDot && $car !== '.') {
                 $regex .= '(?=[^\.])';
             }
 
-            $firstByte = '/' === $car;
+            $firstByte = $car === '/';
 
-            if ($firstByte && $strictWildcardSlash && isset($glob[$i + 2]) && '**' === $glob[$i + 1].$glob[$i + 2] && (!isset($glob[$i + 3]) || '/' === $glob[$i + 3])) {
+            if ($firstByte && $strictWildcardSlash && isset($glob[$i + 2]) && '**' === $glob[$i + 1].$glob[$i + 2] && (! isset($glob[$i + 3]) || $glob[$i + 3] === '/')) {
                 $car = '[^/]++/';
-                if (!isset($glob[$i + 3])) {
+                if (! isset($glob[$i + 3])) {
                     $car .= '?';
                 }
 
@@ -69,30 +69,30 @@ class Glob
                 $car = '/(?:'.$car.')*';
                 $i += 2 + isset($glob[$i + 3]);
 
-                if ('/' === $delimiter) {
+                if ($delimiter === '/') {
                     $car = str_replace('/', '\\/', $car);
                 }
             }
 
-            if ($delimiter === $car || '.' === $car || '(' === $car || ')' === $car || '|' === $car || '+' === $car || '^' === $car || '$' === $car) {
+            if ($delimiter === $car || $car === '.' || $car === '(' || $car === ')' || $car === '|' || $car === '+' || $car === '^' || $car === '$') {
                 $regex .= "\\$car";
-            } elseif ('*' === $car) {
+            } elseif ($car === '*') {
                 $regex .= $escaping ? '\\*' : ($strictWildcardSlash ? '[^/]*' : '.*');
-            } elseif ('?' === $car) {
+            } elseif ($car === '?') {
                 $regex .= $escaping ? '\\?' : ($strictWildcardSlash ? '[^/]' : '.');
-            } elseif ('{' === $car) {
+            } elseif ($car === '{') {
                 $regex .= $escaping ? '\\{' : '(';
-                if (!$escaping) {
-                    ++$inCurlies;
+                if (! $escaping) {
+                    $inCurlies++;
                 }
-            } elseif ('}' === $car && $inCurlies) {
+            } elseif ($car === '}' && $inCurlies) {
                 $regex .= $escaping ? '}' : ')';
-                if (!$escaping) {
-                    --$inCurlies;
+                if (! $escaping) {
+                    $inCurlies--;
                 }
-            } elseif (',' === $car && $inCurlies) {
+            } elseif ($car === ',' && $inCurlies) {
                 $regex .= $escaping ? ',' : '|';
-            } elseif ('\\' === $car) {
+            } elseif ($car === '\\') {
                 if ($escaping) {
                     $regex .= '\\\\';
                     $escaping = false;
@@ -108,7 +108,7 @@ class Glob
         }
 
         if ($unanchored) {
-            $regex = substr_replace($regex, '?', 1 + ('/' === $delimiter) + ($strictLeadingDot ? \strlen('(?=[^\.])') : 0), 0);
+            $regex = substr_replace($regex, '?', 1 + ($delimiter === '/') + ($strictLeadingDot ? \strlen('(?=[^\.])') : 0), 0);
         }
 
         return $delimiter.'^'.$regex.'$'.$delimiter;

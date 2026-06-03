@@ -10,8 +10,11 @@ namespace OpenSpout\Common\Entity\Style;
 final class CellAlignment
 {
     public const LEFT = 'left';
+
     public const RIGHT = 'right';
+
     public const CENTER = 'center';
+
     public const JUSTIFY = 'justify';
 
     private const VALID_ALIGNMENTS = [

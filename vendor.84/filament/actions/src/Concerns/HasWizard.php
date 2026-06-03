@@ -9,16 +9,16 @@ trait HasWizard
 {
     protected bool $isWizard = false;
 
-    protected bool | Closure $isWizardSkippable = false;
+    protected bool|Closure $isWizardSkippable = false;
 
-    protected int | Closure $wizardStartStep = 1;
+    protected int|Closure $wizardStartStep = 1;
 
     protected ?Closure $modifyWizardUsing = null;
 
     /**
      * @param  array<Step> | Closure  $steps
      */
-    public function steps(array | Closure $steps): static
+    public function steps(array|Closure $steps): static
     {
         $this->isWizard = true;
         $this->schema($steps);
@@ -26,14 +26,14 @@ trait HasWizard
         return $this;
     }
 
-    public function startOnStep(int | Closure $startStep): static
+    public function startOnStep(int|Closure $startStep): static
     {
         $this->wizardStartStep = $startStep;
 
         return $this;
     }
 
-    public function skippableSteps(bool | Closure $condition = true): static
+    public function skippableSteps(bool|Closure $condition = true): static
     {
         $this->isWizardSkippable = $condition;
 

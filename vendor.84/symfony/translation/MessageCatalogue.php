@@ -17,22 +17,25 @@ use Symfony\Component\Translation\Exception\LogicException;
 /**
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterface, CatalogueMetadataAwareInterface
+class MessageCatalogue implements CatalogueMetadataAwareInterface, MessageCatalogueInterface, MetadataAwareInterface
 {
     private array $metadata = [];
+
     private array $catalogueMetadata = [];
+
     private array $resources = [];
+
     private ?MessageCatalogueInterface $fallbackCatalogue = null;
+
     private ?self $parent = null;
 
     /**
-     * @param array $messages An array of messages classified by domain
+     * @param  array  $messages  An array of messages classified by domain
      */
     public function __construct(
         private string $locale,
         private array $messages = [],
-    ) {
-    }
+    ) {}
 
     public function getLocale(): string
     {
@@ -55,7 +58,7 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
 
     public function all(?string $domain = null): array
     {
-        if (null !== $domain) {
+        if ($domain !== null) {
             // skip messages merge if intl-icu requested explicitly
             if (str_ends_with($domain, self::INTL_DOMAIN_SUFFIX)) {
                 return $this->messages[$domain] ?? [];
@@ -89,7 +92,7 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
             return true;
         }
 
-        if (null !== $this->fallbackCatalogue) {
+        if ($this->fallbackCatalogue !== null) {
             return $this->fallbackCatalogue->has($id, $domain);
         }
 
@@ -111,7 +114,7 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
             return $this->messages[$domain][$id];
         }
 
-        if (null !== $this->fallbackCatalogue) {
+        if ($this->fallbackCatalogue !== null) {
             return $this->fallbackCatalogue->get($id, $domain);
         }
 
@@ -213,12 +216,12 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
 
     public function getMetadata(string $key = '', string $domain = 'messages'): mixed
     {
-        if ('' == $domain) {
+        if ($domain == '') {
             return $this->metadata;
         }
 
         if (isset($this->metadata[$domain.self::INTL_DOMAIN_SUFFIX])) {
-            if ('' === $key) {
+            if ($key === '') {
                 return $this->metadata[$domain.self::INTL_DOMAIN_SUFFIX];
             }
 
@@ -228,7 +231,7 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
         }
 
         if (isset($this->metadata[$domain])) {
-            if ('' == $key) {
+            if ($key == '') {
                 return $this->metadata[$domain];
             }
 
@@ -247,9 +250,9 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
 
     public function deleteMetadata(string $key = '', string $domain = 'messages'): void
     {
-        if ('' == $domain) {
+        if ($domain == '') {
             $this->metadata = [];
-        } elseif ('' == $key) {
+        } elseif ($key == '') {
             unset($this->metadata[$domain]);
         } else {
             unset($this->metadata[$domain][$key]);
@@ -258,12 +261,12 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
 
     public function getCatalogueMetadata(string $key = '', string $domain = 'messages'): mixed
     {
-        if (!$domain) {
+        if (! $domain) {
             return $this->catalogueMetadata;
         }
 
         if (isset($this->catalogueMetadata[$domain])) {
-            if (!$key) {
+            if (! $key) {
                 return $this->catalogueMetadata[$domain];
             }
 
@@ -282,9 +285,9 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
 
     public function deleteCatalogueMetadata(string $key = '', string $domain = 'messages'): void
     {
-        if (!$domain) {
+        if (! $domain) {
             $this->catalogueMetadata = [];
-        } elseif (!$key) {
+        } elseif (! $key) {
             unset($this->catalogueMetadata[$domain]);
         } else {
             unset($this->catalogueMetadata[$domain][$key]);
@@ -294,7 +297,7 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
     /**
      * Adds current values with the new values.
      *
-     * @param array $values Values to add
+     * @param  array  $values  Values to add
      */
     private function addMetadata(array $values): void
     {

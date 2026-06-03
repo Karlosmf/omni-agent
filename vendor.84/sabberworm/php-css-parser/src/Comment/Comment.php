@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Sabberworm\CSS\Comment;
 
 use Sabberworm\CSS\OutputFormat;
-use Sabberworm\CSS\Renderable;
 use Sabberworm\CSS\Position\Position;
 use Sabberworm\CSS\Position\Positionable;
+use Sabberworm\CSS\Renderable;
 
 class Comment implements Positionable, Renderable
 {
@@ -21,7 +21,7 @@ class Comment implements Positionable, Renderable
     protected $commentText;
 
     /**
-     * @param int<1, max>|null $lineNumber
+     * @param  int<1, max>|null  $lineNumber
      */
     public function __construct(string $commentText = '', ?int $lineNumber = null)
     {
@@ -44,6 +44,6 @@ class Comment implements Positionable, Renderable
      */
     public function render(OutputFormat $outputFormat): string
     {
-        return '/*' . $this->commentText . '*/';
+        return '/*'.$this->commentText.'*/';
     }
 }

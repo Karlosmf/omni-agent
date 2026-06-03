@@ -1,8 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace PhpParser;
 
-interface NodeVisitor {
+interface NodeVisitor
+{
     /**
      * If NodeVisitor::enterNode() returns DONT_TRAVERSE_CHILDREN, child nodes
      * of the current node will not be traversed for any visitors.
@@ -52,8 +55,7 @@ interface NodeVisitor {
      *  * null:      $nodes stays as-is
      *  * otherwise: $nodes is set to the return value
      *
-     * @param Node[] $nodes Array of nodes
-     *
+     * @param  Node[]  $nodes  Array of nodes
      * @return null|Node[] Array of nodes
      */
     public function beforeTraverse(array $nodes);
@@ -80,8 +82,7 @@ interface NodeVisitor {
      *  * otherwise
      *        => $node is set to the return value
      *
-     * @param Node $node Node
-     *
+     * @param  Node  $node  Node
      * @return null|int|Node|Node[] Replacement node (or special return value)
      */
     public function enterNode(Node $node);
@@ -103,8 +104,7 @@ interface NodeVisitor {
      *  * otherwise
      *        => $node is set to the return value
      *
-     * @param Node $node Node
-     *
+     * @param  Node  $node  Node
      * @return null|int|Node|Node[] Replacement node (or special return value)
      */
     public function leaveNode(Node $node);
@@ -116,8 +116,7 @@ interface NodeVisitor {
      *  * null:      $nodes stays as-is
      *  * otherwise: $nodes is set to the return value
      *
-     * @param Node[] $nodes Array of nodes
-     *
+     * @param  Node[]  $nodes  Array of nodes
      * @return null|Node[] Array of nodes
      */
     public function afterTraverse(array $nodes);

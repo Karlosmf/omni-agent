@@ -24,13 +24,16 @@ use Symfony\Component\HttpFoundation\Exception\UnverifiedSignedUriException;
 class UriSigner
 {
     private const STATUS_VALID = 1;
+
     private const STATUS_INVALID = 2;
+
     private const STATUS_MISSING = 3;
+
     private const STATUS_EXPIRED = 4;
 
     /**
-     * @param string $hashParameter       Query string parameter to use
-     * @param string $expirationParameter Query string parameter to use for expiration
+     * @param  string  $hashParameter  Query string parameter to use
+     * @param  string  $expirationParameter  Query string parameter to use for expiration
      */
     public function __construct(
         #[\SensitiveParameter] private string $secret,
@@ -38,7 +41,7 @@ class UriSigner
         private string $expirationParameter = '_expiration',
         private ?ClockInterface $clock = null,
     ) {
-        if (!$secret) {
+        if (! $secret) {
             throw new \InvalidArgumentException('A non-empty secret is required.');
         }
     }
@@ -49,11 +52,11 @@ class UriSigner
      * The given URI is signed by adding the query string parameter
      * which value depends on the URI and the secret.
      *
-     * @param \DateTimeInterface|\DateInterval|int|null $expiration The expiration for the given URI.
-     *                                                              If $expiration is a \DateTimeInterface, it's expected to be the exact date + time.
-     *                                                              If $expiration is a \DateInterval, the interval is added to "now" to get the date + time.
-     *                                                              If $expiration is an int, it's expected to be a timestamp in seconds of the exact date + time.
-     *                                                              If $expiration is null, no expiration.
+     * @param  \DateTimeInterface|\DateInterval|int|null  $expiration  The expiration for the given URI.
+     *                                                                 If $expiration is a \DateTimeInterface, it's expected to be the exact date + time.
+     *                                                                 If $expiration is a \DateInterval, the interval is added to "now" to get the date + time.
+     *                                                                 If $expiration is an int, it's expected to be a timestamp in seconds of the exact date + time.
+     *                                                                 If $expiration is null, no expiration.
      *
      * The expiration is added as a query string parameter.
      */
@@ -61,11 +64,11 @@ class UriSigner
     {
         $expiration = null;
 
-        if (1 < \func_num_args()) {
+        if (\func_num_args() > 1) {
             $expiration = func_get_arg(1);
         }
 
-        if (null !== $expiration && !$expiration instanceof \DateTimeInterface && !$expiration instanceof \DateInterval && !\is_int($expiration)) {
+        if ($expiration !== null && ! $expiration instanceof \DateTimeInterface && ! $expiration instanceof \DateInterval && ! \is_int($expiration)) {
             throw new \TypeError(\sprintf('The second argument of "%s()" must be an instance of "%s" or "%s", an integer or null (%s given).', __METHOD__, \DateTimeInterface::class, \DateInterval::class, get_debug_type($expiration)));
         }
 
@@ -84,7 +87,7 @@ class UriSigner
             throw new LogicException(\sprintf('URI query parameter conflict: parameter name "%s" is reserved.', $this->expirationParameter));
         }
 
-        if (null !== $expiration) {
+        if ($expiration !== null) {
             $params[$this->expirationParameter] = $this->getExpirationTime($expiration);
         }
 
@@ -100,20 +103,20 @@ class UriSigner
      */
     public function check(string $uri): bool
     {
-        return self::STATUS_VALID === $this->doVerify($uri);
+        return $this->doVerify($uri) === self::STATUS_VALID;
     }
 
     public function checkRequest(Request $request): bool
     {
-        return self::STATUS_VALID === $this->doVerify(self::normalize($request));
+        return $this->doVerify(self::normalize($request)) === self::STATUS_VALID;
     }
 
     /**
      * Verify a Request or string URI.
      *
-     * @throws UnsignedUriException         If the URI is not signed
+     * @throws UnsignedUriException If the URI is not signed
      * @throws UnverifiedSignedUriException If the signature is invalid
-     * @throws ExpiredSignedUriException    If the URI has expired
+     * @throws ExpiredSignedUriException If the URI has expired
      * @throws SignedUriException
      */
     public function verify(Request|string $uri): void
@@ -123,9 +126,9 @@ class UriSigner
 
         match ($status) {
             self::STATUS_VALID => null,
-            self::STATUS_INVALID => throw new UnverifiedSignedUriException(),
-            self::STATUS_EXPIRED => throw new ExpiredSignedUriException(),
-            default => throw new UnsignedUriException(),
+            self::STATUS_INVALID => throw new UnverifiedSignedUriException,
+            self::STATUS_EXPIRED => throw new ExpiredSignedUriException,
+            default => throw new UnsignedUriException,
         };
     }
 
@@ -189,11 +192,11 @@ class UriSigner
         $hash = $params[$this->hashParameter];
         unset($params[$this->hashParameter]);
 
-        if (!hash_equals($this->computeHash($this->buildUrl($url, $params)), strtr(rtrim($hash, '='), ['/' => '_', '+' => '-']))) {
+        if (! hash_equals($this->computeHash($this->buildUrl($url, $params)), strtr(rtrim($hash, '='), ['/' => '_', '+' => '-']))) {
             return self::STATUS_INVALID;
         }
 
-        if (!$expiration = $params[$this->expirationParameter] ?? false) {
+        if (! $expiration = $params[$this->expirationParameter] ?? false) {
             return self::STATUS_VALID;
         }
 

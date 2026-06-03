@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TestRunner;
 
 use PHPUnit\Event\Test\DeprecationTriggered;
@@ -35,7 +38,7 @@ final readonly class IssueFilter
 
     public function shouldBeProcessed(DeprecationTriggered|ErrorTriggered|NoticeTriggered|PhpDeprecationTriggered|PhpNoticeTriggered|PhpWarningTriggered|WarningTriggered $event, bool $onlyTestMethods = false): bool
     {
-        if ($onlyTestMethods && !$event->test()->isTestMethod()) {
+        if ($onlyTestMethods && ! $event->test()->isTestMethod()) {
             return false;
         }
 
@@ -57,53 +60,53 @@ final readonly class IssueFilter
                 return false;
             }
 
-            if (!$this->source->ignoreSuppressionOfDeprecations() && $event->wasSuppressed()) {
+            if (! $this->source->ignoreSuppressionOfDeprecations() && $event->wasSuppressed()) {
                 return false;
             }
         }
 
         if ($event instanceof NoticeTriggered) {
-            if (!$this->source->ignoreSuppressionOfNotices() && $event->wasSuppressed()) {
+            if (! $this->source->ignoreSuppressionOfNotices() && $event->wasSuppressed()) {
                 return false;
             }
 
-            if ($this->source->restrictNotices() && !SourceFilter::instance()->includes($event->file())) {
+            if ($this->source->restrictNotices() && ! SourceFilter::instance()->includes($event->file())) {
                 return false;
             }
         }
 
         if ($event instanceof PhpNoticeTriggered) {
-            if (!$this->source->ignoreSuppressionOfPhpNotices() && $event->wasSuppressed()) {
+            if (! $this->source->ignoreSuppressionOfPhpNotices() && $event->wasSuppressed()) {
                 return false;
             }
 
-            if ($this->source->restrictNotices() && !SourceFilter::instance()->includes($event->file())) {
+            if ($this->source->restrictNotices() && ! SourceFilter::instance()->includes($event->file())) {
                 return false;
             }
         }
 
         if ($event instanceof WarningTriggered) {
-            if (!$this->source->ignoreSuppressionOfWarnings() && $event->wasSuppressed()) {
+            if (! $this->source->ignoreSuppressionOfWarnings() && $event->wasSuppressed()) {
                 return false;
             }
 
-            if ($this->source->restrictWarnings() && !SourceFilter::instance()->includes($event->file())) {
+            if ($this->source->restrictWarnings() && ! SourceFilter::instance()->includes($event->file())) {
                 return false;
             }
         }
 
         if ($event instanceof PhpWarningTriggered) {
-            if (!$this->source->ignoreSuppressionOfPhpWarnings() && $event->wasSuppressed()) {
+            if (! $this->source->ignoreSuppressionOfPhpWarnings() && $event->wasSuppressed()) {
                 return false;
             }
 
-            if ($this->source->restrictWarnings() && !SourceFilter::instance()->includes($event->file())) {
+            if ($this->source->restrictWarnings() && ! SourceFilter::instance()->includes($event->file())) {
                 return false;
             }
         }
 
         if ($event instanceof ErrorTriggered) {
-            if (!$this->source->ignoreSuppressionOfErrors() && $event->wasSuppressed()) {
+            if (! $this->source->ignoreSuppressionOfErrors() && $event->wasSuppressed()) {
                 return false;
             }
         }

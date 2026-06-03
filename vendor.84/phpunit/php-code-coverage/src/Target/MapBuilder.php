@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,7 +9,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Test\Target;
+
+use SebastianBergmann\CodeCoverage\Filter;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\Class_;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\Trait_;
 
 use function array_keys;
 use function array_merge;
@@ -17,10 +25,6 @@ use function count;
 use function explode;
 use function implode;
 use function range;
-use SebastianBergmann\CodeCoverage\Filter;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\Class_;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\Trait_;
 
 /**
  * @phpstan-import-type TargetMap from Mapper
@@ -44,14 +48,14 @@ final readonly class MapBuilder
          */
         $classDetails = [];
 
-        $namespaces                    = [];
-        $classes                       = [];
-        $classesThatExtendClass        = [];
+        $namespaces = [];
+        $classes = [];
+        $classesThatExtendClass = [];
         $classesThatImplementInterface = [];
-        $traits                        = [];
-        $methods                       = [];
-        $functions                     = [];
-        $reverseLookup                 = [];
+        $traits = [];
+        $methods = [];
+        $functions = [];
+        $reverseLookup = [];
 
         foreach ($filter->files() as $file) {
             foreach ($analyser->analyse($file)->traits() as $trait) {
@@ -67,7 +71,7 @@ final readonly class MapBuilder
         foreach ($filter->files() as $file) {
             foreach ($analyser->analyse($file)->traits() as $trait) {
                 foreach ($trait->traits() as $traitName) {
-                    if (!isset($traits[$traitName])) {
+                    if (! isset($traits[$traitName])) {
                         continue;
                     }
 
@@ -91,7 +95,7 @@ final readonly class MapBuilder
                 $this->process($classes, $class->namespacedName(), $file, $class->startLine(), $class->endLine());
 
                 foreach ($class->traits() as $traitName) {
-                    if (!isset($traits[$traitName])) {
+                    if (! isset($traits[$traitName])) {
                         continue;
                     }
 
@@ -101,7 +105,7 @@ final readonly class MapBuilder
                 $this->processMethods($class, $file, $methods, $reverseLookup);
 
                 $classesThatExtendClass[$class->namespacedName()] = [];
-                $classDetails[$class->namespacedName()]           = $class;
+                $classDetails[$class->namespacedName()] = $class;
             }
 
             foreach ($analysisResult->functions() as $function) {
@@ -112,7 +116,7 @@ final readonly class MapBuilder
                 $this->process($functions, $function->namespacedName(), $file, $function->startLine(), $function->endLine());
 
                 foreach (range($function->startLine(), $function->endLine()) as $line) {
-                    $reverseLookup[$file . ':' . $line] = $function->namespacedName();
+                    $reverseLookup[$file.':'.$line] = $function->namespacedName();
                 }
             }
         }
@@ -125,7 +129,7 @@ final readonly class MapBuilder
 
         foreach ($classDetails as $class) {
             foreach ($class->interfaces() as $interfaceName) {
-                if (!isset($classesThatImplementInterface[$interfaceName])) {
+                if (! isset($classesThatImplementInterface[$interfaceName])) {
                     continue;
                 }
 
@@ -158,14 +162,14 @@ final readonly class MapBuilder
         }
 
         return [
-            'namespaces'                    => $namespaces,
-            'traits'                        => $traits,
-            'classes'                       => $classes,
-            'classesThatExtendClass'        => $classesThatExtendClass,
+            'namespaces' => $namespaces,
+            'traits' => $traits,
+            'classes' => $classes,
+            'classesThatExtendClass' => $classesThatExtendClass,
             'classesThatImplementInterface' => $classesThatImplementInterface,
-            'methods'                       => $methods,
-            'functions'                     => $functions,
-            'reverseLookup'                 => $reverseLookup,
+            'methods' => $methods,
+            'functions' => $functions,
+            'reverseLookup' => $reverseLookup,
         ];
     }
 
@@ -176,7 +180,7 @@ final readonly class MapBuilder
          * This loop needs to prevent unnecessary work whenever possible.
          */
         foreach ($sourceData as $file => $lines) {
-            if (!isset($data[$targetClass][$file])) {
+            if (! isset($data[$targetClass][$file])) {
                 $data[$targetClass][$file] = $lines;
 
                 continue;
@@ -198,22 +202,22 @@ final readonly class MapBuilder
     private function processMethods(Class_|Trait_ $classOrTrait, string $file, array &$methods, array &$reverseLookup): void
     {
         foreach ($classOrTrait->methods() as $method) {
-            $methodName = $classOrTrait->namespacedName() . '::' . $method->name();
+            $methodName = $classOrTrait->namespacedName().'::'.$method->name();
 
             $this->process($methods, $methodName, $file, $method->startLine(), $method->endLine());
 
             foreach (range($method->startLine(), $method->endLine()) as $line) {
-                $reverseLookup[$file . ':' . $line] = $methodName;
+                $reverseLookup[$file.':'.$line] = $methodName;
             }
         }
     }
 
     /**
-     * @param TargetMapPart    $data
-     * @param non-empty-string $namespace
-     * @param non-empty-string $file
-     * @param positive-int     $startLine
-     * @param positive-int     $endLine
+     * @param  TargetMapPart  $data
+     * @param  non-empty-string  $namespace
+     * @param  non-empty-string  $file
+     * @param  positive-int  $startLine
+     * @param  positive-int  $endLine
      *
      * @param-out TargetMapPart $data
      */
@@ -227,21 +231,21 @@ final readonly class MapBuilder
     }
 
     /**
-     * @param TargetMapPart    $data
-     * @param non-empty-string $unit
-     * @param non-empty-string $file
-     * @param positive-int     $startLine
-     * @param positive-int     $endLine
+     * @param  TargetMapPart  $data
+     * @param  non-empty-string  $unit
+     * @param  non-empty-string  $file
+     * @param  positive-int  $startLine
+     * @param  positive-int  $endLine
      *
      * @param-out TargetMapPart $data
      */
     private function process(array &$data, string $unit, string $file, int $startLine, int $endLine): void
     {
-        if (!isset($data[$unit])) {
+        if (! isset($data[$unit])) {
             $data[$unit] = [];
         }
 
-        if (!isset($data[$unit][$file])) {
+        if (! isset($data[$unit][$file])) {
             $data[$unit][$file] = [];
         }
 
@@ -252,17 +256,16 @@ final readonly class MapBuilder
     }
 
     /**
-     * @param array<non-empty-string, Class_> $classDetails
-     *
+     * @param  array<non-empty-string, Class_>  $classDetails
      * @return array<Class_>
      */
     private function parentClasses(array $classDetails, Class_ $class): array
     {
-        if (!$class->hasParent()) {
+        if (! $class->hasParent()) {
             return [];
         }
 
-        if (!isset($classDetails[$class->parentClass()])) {
+        if (! isset($classDetails[$class->parentClass()])) {
             return [];
         }
 

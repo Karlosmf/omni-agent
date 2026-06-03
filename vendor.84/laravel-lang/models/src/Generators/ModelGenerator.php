@@ -13,7 +13,7 @@ use function sprintf;
 
 class ModelGenerator extends Generator
 {
-    protected string $stub = __DIR__ . '/../../stubs/model.stub';
+    protected string $stub = __DIR__.'/../../stubs/model.stub';
 
     protected string $fillables = '\'%s\',';
 
@@ -31,19 +31,19 @@ class ModelGenerator extends Generator
     protected function data(): array
     {
         return [
-            'suffix'   => $this->modelSuffix(),
+            'suffix' => $this->modelSuffix(),
             'fillable' => $this->getFillable(),
-            'casts'    => $this->getCasts(),
+            'casts' => $this->getCasts(),
         ];
     }
 
     protected function filename(): string
     {
         $directory = dirname($path = $this->path());
-        $filename  = $this->getModel() . $this->modelSuffix();
+        $filename = $this->getModel().$this->modelSuffix();
         $extension = $this->extension($path);
 
-        return $directory . '/' . $filename . '.' . $extension;
+        return $directory.'/'.$filename.'.'.$extension;
     }
 
     protected function getFillable(): array

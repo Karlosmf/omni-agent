@@ -15,8 +15,7 @@ class ThirdPartyUpgradeNotice extends UpgradeStep
         $console->newLine();
         $console->line('You can abort this command at any time by pressing ctrl+c.');
 
-        if($console->confirm('Ready to continue?', true))
-        {
+        if ($console->confirm('Ready to continue?', true)) {
             return $next($console);
         }
     }

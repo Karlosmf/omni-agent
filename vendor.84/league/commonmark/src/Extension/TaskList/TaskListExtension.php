@@ -20,7 +20,7 @@ final class TaskListExtension implements ExtensionInterface
 {
     public function register(EnvironmentBuilderInterface $environment): void
     {
-        $environment->addInlineParser(new TaskListItemMarkerParser(), 35);
-        $environment->addRenderer(TaskListItemMarker::class, new TaskListItemMarkerRenderer());
+        $environment->addInlineParser(new TaskListItemMarkerParser, 35);
+        $environment->addRenderer(TaskListItemMarker::class, new TaskListItemMarkerRenderer);
     }
 }

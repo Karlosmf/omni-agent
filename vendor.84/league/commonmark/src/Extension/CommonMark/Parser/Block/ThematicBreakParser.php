@@ -26,7 +26,7 @@ final class ThematicBreakParser extends AbstractBlockContinueParser
 
     public function __construct()
     {
-        $this->block = new ThematicBreak();
+        $this->block = new ThematicBreak;
     }
 
     public function getBlock(): ThematicBreak

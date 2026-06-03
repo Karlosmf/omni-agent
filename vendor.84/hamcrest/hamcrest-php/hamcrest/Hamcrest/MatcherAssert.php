@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest;
 
 /*
@@ -7,7 +8,6 @@ namespace Hamcrest;
 
 class MatcherAssert
 {
-
     /**
      * Number of assertions performed.
      *
@@ -41,8 +41,8 @@ class MatcherAssert
         switch (count($args)) {
             case 1:
                 self::$_count++;
-                if (!$args[0]) {
-                    throw new AssertionError();
+                if (! $args[0]) {
+                    throw new AssertionError;
                 }
                 break;
 
@@ -50,7 +50,7 @@ class MatcherAssert
                 self::$_count++;
                 if ($args[1] instanceof Matcher) {
                     self::doAssert('', $args[0], $args[1]);
-                } elseif (!$args[1]) {
+                } elseif (! $args[1]) {
                     throw new AssertionError($args[0]);
                 }
                 break;
@@ -94,21 +94,22 @@ class MatcherAssert
      * throws a {@link Hamcrest\AssertionError} with a description
      * of the failure along with the optional <code>$identifier</code>.
      *
-     * @param string $identifier added to the message upon failure
-     * @param mixed $actual value to compare against <code>$matcher</code>
-     * @param \Hamcrest\Matcher $matcher applied to <code>$actual</code>
+     * @param  string  $identifier  added to the message upon failure
+     * @param  mixed  $actual  value to compare against <code>$matcher</code>
+     * @param  Matcher  $matcher  applied to <code>$actual</code>
+     *
      * @throws AssertionError
      */
     private static function doAssert($identifier, $actual, Matcher $matcher)
     {
-        if (!$matcher->matches($actual)) {
-            $description = new StringDescription();
-            if (!empty($identifier)) {
-                $description->appendText($identifier . PHP_EOL);
+        if (! $matcher->matches($actual)) {
+            $description = new StringDescription;
+            if (! empty($identifier)) {
+                $description->appendText($identifier.PHP_EOL);
             }
             $description->appendText('Expected: ')
-                                    ->appendDescriptionOf($matcher)
-                                    ->appendText(PHP_EOL . '     but: ');
+                ->appendDescriptionOf($matcher)
+                ->appendText(PHP_EOL.'     but: ');
 
             $matcher->describeMismatch($actual, $description);
 

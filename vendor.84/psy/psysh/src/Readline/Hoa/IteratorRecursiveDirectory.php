@@ -60,7 +60,7 @@ class IteratorRecursiveDirectory extends \RecursiveDirectoryIterator
      */
     public function __construct(string $path, ?int $flags = null, ?string $splFileInfoClass = null)
     {
-        if (null === $flags) {
+        if ($flags === null) {
             parent::__construct($path);
         } else {
             parent::__construct($path, $flags);
@@ -69,7 +69,6 @@ class IteratorRecursiveDirectory extends \RecursiveDirectoryIterator
         $this->_relativePath = $path;
         $this->setSplFileInfoClass($splFileInfoClass);
 
-        return;
     }
 
     /**
@@ -81,7 +80,7 @@ class IteratorRecursiveDirectory extends \RecursiveDirectoryIterator
     {
         $out = parent::current();
 
-        if (null !== $this->_splFileInfoClass &&
+        if ($this->_splFileInfoClass !== null &&
             $out instanceof \SplFileInfo) {
             $out->setInfoClass($this->_splFileInfoClass);
             $out = $out->getFileInfo();

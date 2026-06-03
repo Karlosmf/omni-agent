@@ -23,8 +23,6 @@ class FinalClassPass extends CodeCleanerPass
     private array $finalClasses = [];
 
     /**
-     * @param array $nodes
-     *
      * @return Node[]|null Array of nodes
      */
     public function beforeTraverse(array $nodes)
@@ -35,11 +33,9 @@ class FinalClassPass extends CodeCleanerPass
     }
 
     /**
-     * @throws FatalErrorException if the node is a class that extends a final class
-     *
-     * @param Node $node
-     *
      * @return int|Node|null Replacement node (or special return value)
+     *
+     * @throws FatalErrorException if the node is a class that extends a final class
      */
     public function enterNode(Node $node)
     {
@@ -61,11 +57,11 @@ class FinalClassPass extends CodeCleanerPass
     }
 
     /**
-     * @param string $name Class name
+     * @param  string  $name  Class name
      */
     private function isFinalClass(string $name): bool
     {
-        if (!\class_exists($name)) {
+        if (! \class_exists($name)) {
             return isset($this->finalClasses[\strtolower($name)]);
         }
 

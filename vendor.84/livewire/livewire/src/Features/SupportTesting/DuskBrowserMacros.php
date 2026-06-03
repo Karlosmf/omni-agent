@@ -2,16 +2,18 @@
 
 namespace Livewire\Features\SupportTesting;
 
-use function Livewire\str;
 use Facebook\WebDriver\WebDriverBy;
+use Laravel\Dusk\Browser;
 use PHPUnit\Framework\Assert as PHPUnit;
+
+use function Livewire\str;
 
 class DuskBrowserMacros
 {
     public function assertAttributeMissing()
     {
         return function ($selector, $attribute) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $fullSelector = $this->resolver->format($selector);
 
             $actual = $this->resolver->findOrFail($selector)->getAttribute($attribute);
@@ -28,7 +30,7 @@ class DuskBrowserMacros
     public function assertNotVisible()
     {
         return function ($selector) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $fullSelector = $this->resolver->format($selector);
 
             PHPUnit::assertFalse(
@@ -43,7 +45,7 @@ class DuskBrowserMacros
     public function assertNotPresent()
     {
         return function ($selector) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $fullSelector = $this->resolver->format($selector);
 
             PHPUnit::assertTrue(
@@ -58,7 +60,7 @@ class DuskBrowserMacros
     public function assertHasClass()
     {
         return function ($selector, $className) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $fullSelector = $this->resolver->format($selector);
 
             PHPUnit::assertContains(
@@ -74,7 +76,7 @@ class DuskBrowserMacros
     public function assertScript()
     {
         return function ($js, $expects = true) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             PHPUnit::assertEquals($expects, head($this->script(
                 str($js)->start('return ')
             )));
@@ -86,7 +88,7 @@ class DuskBrowserMacros
     public function runScript()
     {
         return function ($js) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $this->script([$js]);
 
             return $this;
@@ -97,6 +99,7 @@ class DuskBrowserMacros
     {
         return function ($selector) {
             $this->browser->scrollTo($selector);
+
             return $this;
         };
     }
@@ -104,7 +107,7 @@ class DuskBrowserMacros
     public function assertNotInViewPort()
     {
         return function ($selector) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             return $this->assertInViewPort($selector, invert: true);
         };
     }
@@ -112,8 +115,7 @@ class DuskBrowserMacros
     public function assertInViewPort()
     {
         return function ($selector, $invert = false) {
-            /** @var \Laravel\Dusk\Browser $this */
-
+            /** @var Browser $this */
             $fullSelector = $this->resolver->format($selector);
 
             $result = $this->script(
@@ -124,7 +126,7 @@ class DuskBrowserMacros
                      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
                      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
                  );',
-                 $selector
+                $selector
             )[0];
 
             PHPUnit::assertEquals($invert ? false : true, $result);
@@ -136,7 +138,7 @@ class DuskBrowserMacros
     public function assertClassMissing()
     {
         return function ($selector, $className) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $fullSelector = $this->resolver->format($selector);
 
             PHPUnit::assertNotContains(
@@ -152,7 +154,7 @@ class DuskBrowserMacros
     public function waitForLivewireToLoad()
     {
         return function () {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             return $this->waitUsing(6, 25, function () {
                 return $this->driver->executeScript('return !! window.Livewire.initialRenderIsFinished');
             });
@@ -162,7 +164,7 @@ class DuskBrowserMacros
     public function waitForLivewire()
     {
         return function ($callback = null) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $id = str()->random();
 
             $this->script([
@@ -191,11 +193,17 @@ class DuskBrowserMacros
             }
 
             // If no callback is passed, make ->waitForLivewire a higher-order method.
-            return new class($this, $id) {
+            return new class($this, $id)
+            {
                 protected $browser;
+
                 protected $id;
 
-                public function __construct($browser, $id) { $this->browser = $browser; $this->id = $id; }
+                public function __construct($browser, $id)
+                {
+                    $this->browser = $browser;
+                    $this->id = $id;
+                }
 
                 public function __call($method, $params)
                 {
@@ -212,7 +220,7 @@ class DuskBrowserMacros
     public function waitForNoLivewire()
     {
         return function ($callback = null) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $id = str()->random();
 
             $this->script([
@@ -240,11 +248,17 @@ class DuskBrowserMacros
             }
 
             // If no callback is passed, make ->waitForNoLivewire a higher-order method.
-            return new class($this, $id) {
+            return new class($this, $id)
+            {
                 protected $browser;
+
                 protected $id;
 
-                public function __construct($browser, $id) { $this->browser = $browser; $this->id = $id; }
+                public function __construct($browser, $id)
+                {
+                    $this->browser = $browser;
+                    $this->id = $id;
+                }
 
                 public function __call($method, $params)
                 {
@@ -261,7 +275,7 @@ class DuskBrowserMacros
     public function waitForNavigate()
     {
         return function ($callback = null) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $id = str()->random();
 
             $this->script([
@@ -287,10 +301,17 @@ class DuskBrowserMacros
             }
 
             // If no callback is passed, make ->waitForNavigate a higher-order method.
-            return new class($this, $id) {
+            return new class($this, $id)
+            {
                 protected $browser;
+
                 protected $id;
-                public function __construct($browser, $id) { $this->browser = $browser; $this->id = $id; }
+
+                public function __construct($browser, $id)
+                {
+                    $this->browser = $browser;
+                    $this->id = $id;
+                }
 
                 public function __call($method, $params)
                 {
@@ -307,7 +328,7 @@ class DuskBrowserMacros
     public function waitForNavigateRequest()
     {
         return function ($callback = null) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $id = str()->random();
 
             $this->script([
@@ -348,6 +369,7 @@ class DuskBrowserMacros
             return new class($this, $id)
             {
                 protected $browser;
+
                 protected $id;
 
                 public function __construct($browser, $id)
@@ -371,7 +393,7 @@ class DuskBrowserMacros
     public function waitForNoNavigateRequest()
     {
         return function ($callback = null) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $id = str()->random();
 
             $this->script([
@@ -400,6 +422,7 @@ class DuskBrowserMacros
             return new class($this, $id)
             {
                 protected $browser;
+
                 protected $id;
 
                 public function __construct($browser, $id)
@@ -423,7 +446,7 @@ class DuskBrowserMacros
     public function waitForNavigatePrefetchRequest()
     {
         return function ($callback = null) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $id = str()->random();
 
             $this->script([
@@ -452,6 +475,7 @@ class DuskBrowserMacros
             return new class($this, $id)
             {
                 protected $browser;
+
                 protected $id;
 
                 public function __construct($browser, $id)
@@ -476,7 +500,7 @@ class DuskBrowserMacros
     {
         // 60ms is the minimum delay for a hover event to trigger a prefetch plus a buffer...
         return function ($callback = null, $prefetchDelay = 70) {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             $id = str()->random();
 
             $this->script([
@@ -505,7 +529,9 @@ class DuskBrowserMacros
             return new class($this, $id, $prefetchDelay)
             {
                 protected $browser;
+
                 protected $id;
+
                 protected $prefetchDelay;
 
                 public function __construct($browser, $id, $prefetchDelay)
@@ -533,7 +559,7 @@ class DuskBrowserMacros
     public function online()
     {
         return function () {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             return tap($this)->script("window.dispatchEvent(new Event('online'))");
         };
     }
@@ -541,7 +567,7 @@ class DuskBrowserMacros
     public function offline()
     {
         return function () {
-            /** @var \Laravel\Dusk\Browser $this */
+            /** @var Browser $this */
             return tap($this)->script("window.dispatchEvent(new Event('offline'))");
         };
     }
@@ -554,14 +580,14 @@ class DuskBrowserMacros
             $options = $element->findElements(WebDriverBy::tagName('option'));
 
             if (empty($values)) {
-                $maxSelectValues = sizeof($options) - 1;
+                $maxSelectValues = count($options) - 1;
                 $minSelectValues = rand(0, $maxSelectValues);
                 foreach (range($minSelectValues, $maxSelectValues) as $optValue) {
                     $options[$optValue]->click();
                 }
             } else {
                 foreach ($options as $option) {
-                    $optValue = (string)$option->getAttribute('value');
+                    $optValue = (string) $option->getAttribute('value');
                     if (in_array($optValue, $values)) {
                         $option->click();
                     }
@@ -574,16 +600,17 @@ class DuskBrowserMacros
 
     public function assertConsoleLogHasWarning()
     {
-        return function($expectedMessage){
+        return function ($expectedMessage) {
             $logs = $this->driver->manage()->getLog('browser');
 
             $containsError = false;
 
             foreach ($logs as $log) {
-                if (! isset($log['message']) || ! isset($log['level']) || $log['level'] !== 'WARNING') continue;
+                if (! isset($log['message']) || ! isset($log['level']) || $log['level'] !== 'WARNING') {
+                    continue;
+                }
 
-
-                if(str($log['message'])->contains($expectedMessage)) {
+                if (str($log['message'])->contains($expectedMessage)) {
                     $containsError = true;
                 }
             }
@@ -596,16 +623,17 @@ class DuskBrowserMacros
 
     public function assertConsoleLogMissingWarning()
     {
-        return function($expectedMessage){
+        return function ($expectedMessage) {
             $logs = $this->driver->manage()->getLog('browser');
 
             $containsError = false;
 
             foreach ($logs as $log) {
-                if (! isset($log['message']) || ! isset($log['level']) || $log['level'] !== 'WARNING') continue;
+                if (! isset($log['message']) || ! isset($log['level']) || $log['level'] !== 'WARNING') {
+                    continue;
+                }
 
-
-                if(str($log['message'])->contains($expectedMessage)) {
+                if (str($log['message'])->contains($expectedMessage)) {
                     $containsError = true;
                 }
             }
@@ -618,20 +646,24 @@ class DuskBrowserMacros
 
     public function assertConsoleLogHasNoErrors()
     {
-        return function(){
+        return function () {
             $logs = $this->driver->manage()->getLog('browser');
 
             $errors = [];
             foreach ($logs as $log) {
-                if (! isset($log['message']) || ! isset($log['level']) || $log['level'] !== 'SEVERE') continue;
+                if (! isset($log['message']) || ! isset($log['level']) || $log['level'] !== 'SEVERE') {
+                    continue;
+                }
 
                 // Ignore favicon.ico
-                if(str($log['message'])->contains('favicon.ico')) continue;
+                if (str($log['message'])->contains('favicon.ico')) {
+                    continue;
+                }
 
                 $errors[] = $log['message'];
             }
 
-            PHPUnit::assertEmpty($errors, "Console log contained errors: " . implode(", ", $errors));
+            PHPUnit::assertEmpty($errors, 'Console log contained errors: '.implode(', ', $errors));
 
             return $this;
         };
@@ -639,20 +671,24 @@ class DuskBrowserMacros
 
     public function assertConsoleLogHasErrors()
     {
-        return function(){
+        return function () {
             $logs = $this->driver->manage()->getLog('browser');
 
             $errors = [];
             foreach ($logs as $log) {
-                if (! isset($log['message']) || ! isset($log['level']) || $log['level'] !== 'SEVERE') continue;
+                if (! isset($log['message']) || ! isset($log['level']) || $log['level'] !== 'SEVERE') {
+                    continue;
+                }
 
                 // Ignore favicon.ico
-                if(str($log['message'])->contains('favicon.ico')) continue;
+                if (str($log['message'])->contains('favicon.ico')) {
+                    continue;
+                }
 
                 $errors[] = $log['message'];
             }
 
-            PHPUnit::assertNotEmpty($errors, "Console log contained no errors");
+            PHPUnit::assertNotEmpty($errors, 'Console log contained no errors');
 
             return $this;
         };

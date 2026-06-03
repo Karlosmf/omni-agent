@@ -2,16 +2,16 @@
 
 namespace Livewire\Drawer;
 
-use Illuminate\Routing\Exceptions\BackedEnumCaseNotFoundException;
 use BackedEnum;
+use Illuminate\Contracts\Routing\UrlRoutable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Routing\Exceptions\BackedEnumCaseNotFoundException;
+use Illuminate\Routing\Route;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Reflector;
+use Livewire\Component;
 use ReflectionClass;
 use ReflectionMethod;
-use Livewire\Component;
-use Illuminate\Support\Reflector;
-use Illuminate\Support\Collection;
-use Illuminate\Routing\Route;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Contracts\Routing\UrlRoutable;
 
 /**
  * This class mirrors the functionality of Laravel's Illuminate\Routing\ImplicitRouteBinding class.
@@ -36,7 +36,7 @@ class ImplicitRouteBinding
     public function resolveMountParameters(Route $route, Component $component)
     {
         if (! method_exists($component, 'mount')) {
-            return new Collection();
+            return new Collection;
         }
 
         // Cache the current route action (this callback actually), just to be safe.
@@ -55,7 +55,7 @@ class ImplicitRouteBinding
 
             // Restore the original route action...
             $route->setAction($cache);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             // Restore the original route action before an exception is thrown...
             $route->setAction($cache);
 
@@ -102,7 +102,7 @@ class ImplicitRouteBinding
             return $parameterValue;
         }
 
-        if($enumValue = $this->resolveEnumParameter($parameterValue, $parameterClassName)) {
+        if ($enumValue = $this->resolveEnumParameter($parameterValue, $parameterClassName)) {
             return $enumValue;
         }
 
@@ -121,7 +121,7 @@ class ImplicitRouteBinding
         }
 
         if (! $model) {
-            throw (new ModelNotFoundException())->setModel(get_class($instance), [$parameterValue]);
+            throw (new ModelNotFoundException)->setModel(get_class($instance), [$parameterValue]);
         }
 
         return $model;

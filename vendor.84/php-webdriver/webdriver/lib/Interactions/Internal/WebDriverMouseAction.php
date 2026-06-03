@@ -14,6 +14,7 @@ class WebDriverMouseAction
      * @var WebDriverMouse
      */
     protected $mouse;
+
     /**
      * @var WebDriverLocatable
      */

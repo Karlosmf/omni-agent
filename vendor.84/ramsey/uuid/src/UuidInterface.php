@@ -26,11 +26,7 @@ use Stringable;
  *
  * @immutable
  */
-interface UuidInterface extends
-    DeprecatedUuidInterface,
-    JsonSerializable,
-    Serializable,
-    Stringable
+interface UuidInterface extends DeprecatedUuidInterface, JsonSerializable, Serializable, Stringable
 {
     /**
      * Returns -1, 0, or 1 if the UUID is less than, equal to, or greater than the other UUID
@@ -38,8 +34,7 @@ interface UuidInterface extends
      * The first of two UUIDs is greater than the second if the most significant field in which the UUIDs differ is
      * greater for the first UUID.
      *
-     * @param UuidInterface $other The UUID to compare
-     *
+     * @param  UuidInterface  $other  The UUID to compare
      * @return int<-1,1> -1, 0, or 1 if the UUID is less than, equal to, or greater than $other
      */
     public function compareTo(UuidInterface $other): int;
@@ -50,8 +45,7 @@ interface UuidInterface extends
      * The result is true if and only if the argument is not null, is a UUID object, has the same variant, and contains
      * the same value, bit-for-bit, as the UUID.
      *
-     * @param object | null $other An object to test for equality with this UUID
-     *
+     * @param  object | null  $other  An object to test for equality with this UUID
      * @return bool True if the other object is equal to this UUID
      */
     public function equals(?object $other): bool;

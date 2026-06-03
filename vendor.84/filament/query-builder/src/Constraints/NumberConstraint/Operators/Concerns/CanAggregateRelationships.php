@@ -96,7 +96,7 @@ trait CanAggregateRelationships
             return $query->whereRaw("({$subQuery->toSql()}) {$operator} ?", [...$subQuery->getBindings(), $value]);
         }
 
-        throw new LogicException('Relationship type [' . get_class($relationship) . '] is not supported for aggregate queries.');
+        throw new LogicException('Relationship type ['.get_class($relationship).'] is not supported for aggregate queries.');
     }
 
     protected function getAggregateSelect(): Select
@@ -135,7 +135,7 @@ trait CanAggregateRelationships
         $constraint = parent::getConstraint();
 
         if (! ($constraint instanceof NumberConstraint)) {
-            throw new LogicException('Constraint must be an instance of [' . NumberConstraint::class . '].');
+            throw new LogicException('Constraint must be an instance of ['.NumberConstraint::class.'].');
         }
 
         return $constraint;

@@ -16,6 +16,4 @@ namespace Symfony\Component\HttpFoundation\File\Exception;
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class UploadException extends FileException
-{
-}
+class UploadException extends FileException {}

@@ -24,14 +24,14 @@ class RepeatableEntry extends Entry implements HasEmbeddedView
     /**
      * @var array<TableColumn> | Closure | null
      */
-    protected array | Closure | null $tableColumns = null;
+    protected array|Closure|null $tableColumns = null;
 
     /**
      * Configure table columns for display
      *
      * @param  array<TableColumn> | Closure | null  $columns
      */
-    public function table(array | Closure | null $columns): static
+    public function table(array|Closure|null $columns): static
     {
         $this->tableColumns = $columns;
 
@@ -109,9 +109,9 @@ class RepeatableEntry extends Entry implements HasEmbeddedView
                 ->merge([
                     'x-tooltip' => filled($tooltip = $this->getEmptyTooltip())
                         ? '{
-                            content: ' . Js::from($tooltip) . ',
+                            content: '.Js::from($tooltip).',
                             theme: $store.theme,
-                            allowHTML: ' . Js::from($tooltip instanceof Htmlable) . ',
+                            allowHTML: '.Js::from($tooltip instanceof Htmlable).',
                         }'
                         : null,
                 ], escape: false);
@@ -161,9 +161,9 @@ class RepeatableEntry extends Entry implements HasEmbeddedView
                 ->merge([
                     'x-tooltip' => filled($tooltip = $this->getEmptyTooltip())
                         ? '{
-                            content: ' . Js::from($tooltip) . ',
+                            content: '.Js::from($tooltip).',
                             theme: $store.theme,
-                            allowHTML: ' . Js::from($tooltip instanceof Htmlable) . ',
+                            allowHTML: '.Js::from($tooltip instanceof Htmlable).',
                         }'
                         : null,
                 ], escape: false);
@@ -193,7 +193,7 @@ class RepeatableEntry extends Entry implements HasEmbeddedView
                             <th
                                 class="<?= Arr::toCssClasses([
                                     'fi-wrapped' => $column->canHeaderWrap(),
-                                    (($columnAlignment = $column->getAlignment()) instanceof Alignment) ? ('fi-align-' . $columnAlignment->value) : $columnAlignment,
+                                    (($columnAlignment = $column->getAlignment()) instanceof Alignment) ? ('fi-align-'.$columnAlignment->value) : $columnAlignment,
                                 ]) ?>"
                                 <?php if (filled($columnWidth = $column->getWidth())) { ?>
                                     style="width: <?= $columnWidth ?>"
@@ -219,7 +219,7 @@ class RepeatableEntry extends Entry implements HasEmbeddedView
                             <?php foreach ($item->getComponents(withHidden: true) as $component) { ?>
                                 <?php throw_unless(
                                     $component instanceof Component,
-                                    new Exception('Table repeatable entries must only contain schema components, but [' . $component::class . '] was used.'),
+                                    new Exception('Table repeatable entries must only contain schema components, but ['.$component::class.'] was used.'),
                                 ) ?>
 
                                 <?php if (count($tableColumns) > $counter) { ?>

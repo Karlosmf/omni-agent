@@ -12,8 +12,8 @@ namespace Sabberworm\CSS\Value;
 class RuleValueList extends ValueList
 {
     /**
-     * @param non-empty-string $separator
-     * @param int<1, max>|null $lineNumber
+     * @param  non-empty-string  $separator
+     * @param  int<1, max>|null  $lineNumber
      */
     public function __construct(string $separator = ',', ?int $lineNumber = null)
     {

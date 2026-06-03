@@ -38,14 +38,17 @@ class Company extends \Faker\Provider\Company
         '貴族', '趨勢', '遊戲橘子', '野火樂集', '金革',
         '銀魚', '阿爾發', '風和日麗', '風潮', '風雲',
     ];
+
     protected static $companyModifier = [
         '科技', '電腦', '國際', '電子', '娛樂', '音樂', '唱片',
         '證券', '集團', '企業', '機械', '工業', '文化', '汽車',
         '百貨', '酒店', '數位',
     ];
+
     protected static $companySuffix = [
         '公司', '有限公司', '股份有限公司',
     ];
+
     /**
      * @see https://zh-tw.facebook.com/notes/%E7%8E%A9%E5%BB%A3%E5%91%8Aplaying-with-advertising/%E5%9B%9E%E9%A1%A7%E8%87%BA%E7%81%A3%E6%AD%B7%E5%B1%86%E5%BB%A3%E5%91%8A%E9%87%91%E5%8F%A5%E7%8D%8E/294008963985215
      */

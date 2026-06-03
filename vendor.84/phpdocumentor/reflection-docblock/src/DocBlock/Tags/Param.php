@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace phpDocumentor\Reflection\DocBlock\Tags;
 
+use const PREG_SPLIT_DELIM_CAPTURE;
+
 use Doctrine\Deprecations\Deprecation;
 use phpDocumentor\Reflection\DocBlock\Description;
 use phpDocumentor\Reflection\DocBlock\DescriptionFactory;
@@ -27,8 +29,6 @@ use function array_unshift;
 use function implode;
 use function strpos;
 use function substr;
-
-use const PREG_SPLIT_DELIM_CAPTURE;
 
 /**
  * Reflection class for the {@}param tag in a Docblock.
@@ -50,12 +50,12 @@ final class Param extends TagWithType implements Factory\StaticMethod
         ?Description $description = null,
         bool $isReference = false
     ) {
-        $this->name         = 'param';
+        $this->name = 'param';
         $this->variableName = $variableName;
-        $this->type         = $type;
-        $this->isVariadic   = $isVariadic;
-        $this->description  = $description;
-        $this->isReference  = $isReference;
+        $this->type = $type;
+        $this->isVariadic = $isVariadic;
+        $this->description = $description;
+        $this->isReference = $isReference;
     }
 
     /**
@@ -81,14 +81,14 @@ final class Param extends TagWithType implements Factory\StaticMethod
 
         [$firstPart, $body] = self::extractTypeFromBody($body);
 
-        $type         = null;
-        $parts        = Utils::pregSplit('/(\s+)/Su', $body, 2, PREG_SPLIT_DELIM_CAPTURE);
+        $type = null;
+        $parts = Utils::pregSplit('/(\s+)/Su', $body, 2, PREG_SPLIT_DELIM_CAPTURE);
         $variableName = '';
-        $isVariadic   = false;
-        $isReference   = false;
+        $isVariadic = false;
+        $isReference = false;
 
         // if the first item that is encountered is not a variable; it is a type
-        if ($firstPart && !self::strStartsWithVariable($firstPart)) {
+        if ($firstPart && ! self::strStartsWithVariable($firstPart)) {
             $type = $typeResolver->resolve($firstPart, $context);
         } else {
             // first part is not a type; we should prepend it to the parts array for further processing
@@ -113,15 +113,15 @@ final class Param extends TagWithType implements Factory\StaticMethod
                 $isVariadic = true;
                 $variableName = substr($variableName, 4);
             } elseif (strpos($variableName, '&...$') === 0) {
-                $isVariadic   = true;
-                $isReference  = true;
+                $isVariadic = true;
+                $isReference = true;
                 $variableName = substr($variableName, 5);
             }
         }
 
         $description = $descriptionFactory->create(implode('', $parts), $context);
 
-        return new static($variableName, $type, $isVariadic, $description, $isReference);
+        return new self($variableName, $type, $isVariadic, $description, $isReference);
     }
 
     /**
@@ -161,15 +161,15 @@ final class Param extends TagWithType implements Factory\StaticMethod
 
         $variableName = '';
         if ($this->variableName !== null && $this->variableName !== '') {
-            $variableName .= ($this->isReference ? '&' : '') . ($this->isVariadic ? '...' : '');
-            $variableName .= '$' . $this->variableName;
+            $variableName .= ($this->isReference ? '&' : '').($this->isVariadic ? '...' : '');
+            $variableName .= '$'.$this->variableName;
         }
 
         $type = (string) $this->type;
 
         return $type
-            . ($variableName !== '' ? ($type !== '' ? ' ' : '') . $variableName : '')
-            . ($description !== '' ? ($type !== '' || $variableName !== '' ? ' ' : '') . $description : '');
+            .($variableName !== '' ? ($type !== '' ? ' ' : '').$variableName : '')
+            .($description !== '' ? ($type !== '' || $variableName !== '' ? ' ' : '').$description : '');
     }
 
     private static function strStartsWithVariable(string $str): bool

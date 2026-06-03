@@ -7,6 +7,4 @@ namespace Faker\Extension;
 /**
  * @experimental This class is experimental and does not fall under our BC promise
  */
-final class ExtensionNotFound extends \LogicException
-{
-}
+final class ExtensionNotFound extends \LogicException {}

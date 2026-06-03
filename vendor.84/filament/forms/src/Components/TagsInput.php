@@ -28,23 +28,23 @@ class TagsInput extends Field implements Contracts\HasNestedRecursiveValidationR
      */
     protected string $view = 'filament-forms::components.tags-input';
 
-    protected bool | Closure $isReorderable = false;
+    protected bool|Closure $isReorderable = false;
 
-    protected string | Closure | null $separator = null;
+    protected string|Closure|null $separator = null;
 
     /**
      * @var array<string> | Closure
      */
-    protected array | Closure $splitKeys = [];
+    protected array|Closure $splitKeys = [];
 
     /**
      * @var array<string> | Arrayable | Closure | null
      */
-    protected array | Arrayable | Closure | null $suggestions = null;
+    protected array|Arrayable|Closure|null $suggestions = null;
 
-    protected string | Closure | null $tagPrefix = null;
+    protected string|Closure|null $tagPrefix = null;
 
-    protected string | Closure | null $tagSuffix = null;
+    protected string|Closure|null $tagSuffix = null;
 
     protected function setUp(): void
     {
@@ -85,28 +85,28 @@ class TagsInput extends Field implements Contracts\HasNestedRecursiveValidationR
         $this->reorderAnimationDuration(100);
     }
 
-    public function tagPrefix(string | Closure | null $prefix): static
+    public function tagPrefix(string|Closure|null $prefix): static
     {
         $this->tagPrefix = $prefix;
 
         return $this;
     }
 
-    public function tagSuffix(string | Closure | null $suffix): static
+    public function tagSuffix(string|Closure|null $suffix): static
     {
         $this->tagSuffix = $suffix;
 
         return $this;
     }
 
-    public function reorderable(bool | Closure $condition = true): static
+    public function reorderable(bool|Closure $condition = true): static
     {
         $this->isReorderable = $condition;
 
         return $this;
     }
 
-    public function separator(string | Closure | null $separator = ','): static
+    public function separator(string|Closure|null $separator = ','): static
     {
         $this->separator = $separator;
 
@@ -116,7 +116,7 @@ class TagsInput extends Field implements Contracts\HasNestedRecursiveValidationR
     /**
      * @param  array<string> | Closure  $keys
      */
-    public function splitKeys(array | Closure $keys): static
+    public function splitKeys(array|Closure $keys): static
     {
         $this->splitKeys = $keys;
 
@@ -126,7 +126,7 @@ class TagsInput extends Field implements Contracts\HasNestedRecursiveValidationR
     /**
      * @param  array<string> | Arrayable | Closure  $suggestions
      */
-    public function suggestions(array | Arrayable | Closure $suggestions): static
+    public function suggestions(array|Arrayable|Closure $suggestions): static
     {
         $this->suggestions = $suggestions;
 

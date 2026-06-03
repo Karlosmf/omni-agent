@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,7 +9,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner;
+
+use SebastianBergmann\Version as VersionId;
 
 use function array_slice;
 use function assert;
@@ -15,7 +20,6 @@ use function dirname;
 use function explode;
 use function implode;
 use function str_contains;
-use SebastianBergmann\Version as VersionId;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -23,7 +27,8 @@ use SebastianBergmann\Version as VersionId;
 final class Version
 {
     private static string $pharVersion = '';
-    private static string $version     = '';
+
+    private static string $version = '';
 
     /**
      * @return non-empty-string
@@ -71,6 +76,6 @@ final class Version
      */
     public static function getVersionString(): string
     {
-        return 'PHPUnit ' . self::id() . ' by Sebastian Bergmann and contributors.';
+        return 'PHPUnit '.self::id().' by Sebastian Bergmann and contributors.';
     }
 }

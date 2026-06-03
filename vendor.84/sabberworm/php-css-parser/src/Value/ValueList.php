@@ -29,14 +29,14 @@ abstract class ValueList extends Value
     protected $separator;
 
     /**
-     * @param array<Value|string>|Value|string $components
-     * @param non-empty-string $separator
-     * @param int<1, max>|null $lineNumber
+     * @param  array<Value|string>|Value|string  $components
+     * @param  non-empty-string  $separator
+     * @param  int<1, max>|null  $lineNumber
      */
     public function __construct($components = [], $separator = ',', ?int $lineNumber = null)
     {
         parent::__construct($lineNumber);
-        if (!\is_array($components)) {
+        if (! \is_array($components)) {
             $components = [$components];
         }
         $this->components = $components;
@@ -44,7 +44,7 @@ abstract class ValueList extends Value
     }
 
     /**
-     * @param Value|string $component
+     * @param  Value|string  $component
      */
     public function addListComponent($component): void
     {
@@ -60,7 +60,7 @@ abstract class ValueList extends Value
     }
 
     /**
-     * @param array<Value|string> $components
+     * @param  array<Value|string>  $components
      */
     public function setListComponents(array $components): void
     {
@@ -76,7 +76,7 @@ abstract class ValueList extends Value
     }
 
     /**
-     * @param non-empty-string $separator
+     * @param  non-empty-string  $separator
      */
     public function setListSeparator(string $separator): void
     {
@@ -88,8 +88,8 @@ abstract class ValueList extends Value
         $formatter = $outputFormat->getFormatter();
 
         return $formatter->implode(
-            $formatter->spaceBeforeListArgumentSeparator($this->separator) . $this->separator
-            . $formatter->spaceAfterListArgumentSeparator($this->separator),
+            $formatter->spaceBeforeListArgumentSeparator($this->separator).$this->separator
+            .$formatter->spaceAfterListArgumentSeparator($this->separator),
             $this->components
         );
     }

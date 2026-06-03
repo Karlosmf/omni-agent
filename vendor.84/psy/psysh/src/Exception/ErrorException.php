@@ -21,18 +21,18 @@ class ErrorException extends \ErrorException implements Exception
     /**
      * Construct a Psy ErrorException.
      *
-     * @param string          $message  (default: "")
-     * @param int             $code     (default: 0)
-     * @param int             $severity (default: 1)
-     * @param string|null     $filename (default: null)
-     * @param int|null        $lineno   (default: null)
-     * @param \Throwable|null $previous (default: null)
+     * @param  string  $message  (default: "")
+     * @param  int  $code  (default: 0)
+     * @param  int  $severity  (default: 1)
+     * @param  string|null  $filename  (default: null)
+     * @param  int|null  $lineno  (default: null)
+     * @param  \Throwable|null  $previous  (default: null)
      */
     public function __construct($message = '', $code = 0, $severity = 1, $filename = null, $lineno = null, ?\Throwable $previous = null)
     {
         $this->rawMessage = $message;
 
-        if (!empty($filename) && \preg_match('{Psy[/\\\\]ExecutionLoop}', $filename)) {
+        if (! empty($filename) && \preg_match('{Psy[/\\\\]ExecutionLoop}', $filename)) {
             $filename = '';
         }
 
@@ -86,12 +86,13 @@ class ErrorException extends \ErrorException implements Exception
      *
      *     set_error_handler([ErrorException::class, 'throwException']);
      *
-     * @throws self
      *
-     * @param int    $errno   Error type
-     * @param string $errstr  Message
-     * @param string $errfile Filename
-     * @param int    $errline Line number
+     * @param  int  $errno  Error type
+     * @param  string  $errstr  Message
+     * @param  string  $errfile  Filename
+     * @param  int  $errline  Line number
+     *
+     * @throws self
      */
     public static function throwException($errno, $errstr, $errfile, $errline)
     {
@@ -102,8 +103,6 @@ class ErrorException extends \ErrorException implements Exception
      * Create an ErrorException from an Error.
      *
      * @deprecated PsySH no longer wraps Errors
-     *
-     * @param \Error $e
      */
     public static function fromError(\Error $e)
     {

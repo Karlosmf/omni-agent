@@ -15,7 +15,7 @@ trait HasExtraFieldWrapperAttributes
     /**
      * @param  array<mixed> | Closure  $attributes
      */
-    public function extraFieldWrapperAttributes(array | Closure $attributes, bool $merge = false): static
+    public function extraFieldWrapperAttributes(array|Closure $attributes, bool $merge = false): static
     {
         if ($merge) {
             $this->extraFieldWrapperAttributes[] = $attributes;

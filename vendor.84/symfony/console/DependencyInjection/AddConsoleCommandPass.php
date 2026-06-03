@@ -41,12 +41,12 @@ class AddConsoleCommandPass implements CompilerPassInterface
             $definition = $container->getDefinition($id);
             $class = $container->getParameterBag()->resolveValue($definition->getClass());
 
-            if (!$r = $container->getReflectionClass($class)) {
+            if (! $r = $container->getReflectionClass($class)) {
                 throw new InvalidArgumentException(\sprintf('Class "%s" used for service "%s" cannot be found.', $class, $id));
             }
 
-            if (!$r->isSubclassOf(Command::class)) {
-                if (!$r->hasMethod('__invoke')) {
+            if (! $r->isSubclassOf(Command::class)) {
+                if (! $r->hasMethod('__invoke')) {
                     throw new InvalidArgumentException(\sprintf('The service "%s" tagged "%s" must either be a subclass of "%s" or have an "__invoke()" method.', $id, 'console.command', Command::class));
                 }
 
@@ -62,7 +62,7 @@ class AddConsoleCommandPass implements CompilerPassInterface
             /** @var AsCommand|null $attribute */
             $attribute = ($r->getAttributes(AsCommand::class)[0] ?? null)?->newInstance();
 
-            if (Command::class !== (new \ReflectionMethod($class, 'getDefaultName'))->class) {
+            if ((new \ReflectionMethod($class, 'getDefaultName'))->class !== Command::class) {
                 trigger_deprecation('symfony/console', '7.3', 'Overriding "Command::getDefaultName()" in "%s" is deprecated and will be removed in Symfony 8.0, use the #[AsCommand] attribute instead.', $class);
 
                 $defaultName = $class::getDefaultName();
@@ -74,11 +74,11 @@ class AddConsoleCommandPass implements CompilerPassInterface
             $aliases = explode('|', $aliases);
             $commandName = array_shift($aliases);
 
-            if ($isHidden = '' === $commandName) {
+            if ($isHidden = $commandName === '') {
                 $commandName = array_shift($aliases);
             }
 
-            if (null === $commandName) {
+            if ($commandName === null) {
                 if ($definition->isPrivate() || $definition->hasTag('container.private')) {
                     $commandId = 'console.command.public_alias.'.$id;
                     $container->setAlias($commandId, $id)->setPublic(true);
@@ -132,8 +132,8 @@ class AddConsoleCommandPass implements CompilerPassInterface
                 }
             }
 
-            if (!$description) {
-                if (Command::class !== (new \ReflectionMethod($class, 'getDefaultDescription'))->class) {
+            if (! $description) {
+                if ((new \ReflectionMethod($class, 'getDefaultDescription'))->class !== Command::class) {
                     trigger_deprecation('symfony/console', '7.3', 'Overriding "Command::getDefaultDescription()" in "%s" is deprecated and will be removed in Symfony 8.0, use the #[AsCommand] attribute instead.', $class);
 
                     $description = $class::getDefaultDescription();

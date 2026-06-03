@@ -6,9 +6,9 @@ use Closure;
 
 trait CanBeHidden
 {
-    protected bool | Closure $isHidden = false;
+    protected bool|Closure $isHidden = false;
 
-    public function hidden(bool | Closure $hidden = true): static
+    public function hidden(bool|Closure $hidden = true): static
     {
         $this->isHidden = $hidden;
 

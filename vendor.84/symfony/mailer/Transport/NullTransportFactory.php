@@ -20,7 +20,7 @@ final class NullTransportFactory extends AbstractTransportFactory
 {
     public function create(Dsn $dsn): TransportInterface
     {
-        if ('null' === $dsn->getScheme()) {
+        if ($dsn->getScheme() === 'null') {
             return new NullTransport($this->dispatcher, $this->logger);
         }
 

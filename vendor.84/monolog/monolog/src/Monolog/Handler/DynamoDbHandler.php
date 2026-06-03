@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -11,10 +13,10 @@
 
 namespace Monolog\Handler;
 
-use Aws\Sdk;
 use Aws\DynamoDb\DynamoDbClient;
-use Monolog\Formatter\FormatterInterface;
 use Aws\DynamoDb\Marshaler;
+use Aws\Sdk;
+use Monolog\Formatter\FormatterInterface;
 use Monolog\Formatter\ScalarFormatter;
 use Monolog\Level;
 use Monolog\LogRecord;
@@ -23,6 +25,7 @@ use Monolog\LogRecord;
  * Amazon DynamoDB handler (http://aws.amazon.com/dynamodb/)
  *
  * @link https://github.com/aws/aws-sdk-php/
+ *
  * @author Andrew Lawson <adlawson@gmail.com>
  */
 class DynamoDbHandler extends AbstractProcessingHandler
@@ -46,7 +49,7 @@ class DynamoDbHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function write(LogRecord $record): void
     {
@@ -60,18 +63,18 @@ class DynamoDbHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @param  mixed[] $record
+     * @param  mixed[]  $record
      * @return mixed[]
      */
     protected function filterEmptyFields(array $record): array
     {
         return array_filter($record, function ($value) {
-            return [] !== $value;
+            return $value !== [];
         });
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function getDefaultFormatter(): FormatterInterface
     {

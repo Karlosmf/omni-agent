@@ -22,12 +22,12 @@ abstract class Widget extends Component
     /**
      * @var int | string | array<string, int | null>
      */
-    protected int | string | array $columnSpan = 1;
+    protected int|string|array $columnSpan = 1;
 
     /**
      * @var int | string | array<string, int | null>
      */
-    protected int | string | array $columnStart = [];
+    protected int|string|array $columnStart = [];
 
     public static function canView(): bool
     {
@@ -42,7 +42,7 @@ abstract class Widget extends Component
     /**
      * @return int | string | array<string, int | null>
      */
-    public function getColumnSpan(): int | string | array
+    public function getColumnSpan(): int|string|array
     {
         return $this->columnSpan;
     }
@@ -50,7 +50,7 @@ abstract class Widget extends Component
     /**
      * @return int | string | array<string, int | null>
      */
-    public function getColumnStart(): int | string | array
+    public function getColumnStart(): int|string|array
     {
         return $this->columnStart;
     }

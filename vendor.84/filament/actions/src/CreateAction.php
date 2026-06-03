@@ -21,9 +21,9 @@ class CreateAction extends Action
 {
     use CanCustomizeProcess;
 
-    protected bool | Closure $canCreateAnother = true;
+    protected bool|Closure $canCreateAnother = true;
 
-    protected bool | Closure $shouldForceRenderAfterCreateAnother = false;
+    protected bool|Closure $shouldForceRenderAfterCreateAnother = false;
 
     protected ?Closure $modifyCreateAnotherActionUsing = null;
 
@@ -65,7 +65,7 @@ class CreateAction extends Action
 
             $model = $this->getModel();
 
-            $record = $this->process(function (array $data, HasActions & HasSchemas $livewire) use ($model): Model {
+            $record = $this->process(function (array $data, HasActions&HasSchemas $livewire) use ($model): Model {
                 $relationship = $this->getRelationship();
 
                 $pivotData = [];
@@ -144,7 +144,7 @@ class CreateAction extends Action
     /**
      * @param  array<string>  $fields
      */
-    public function preserveFormDataWhenCreatingAnother(array | Closure | null $fields): static
+    public function preserveFormDataWhenCreatingAnother(array|Closure|null $fields): static
     {
         $this->preserveFormDataWhenCreatingAnotherUsing = is_array($fields) ?
             fn (array $data): array => Arr::only($data, $fields) :
@@ -160,14 +160,14 @@ class CreateAction extends Action
         return $this;
     }
 
-    public function createAnother(bool | Closure $condition = true): static
+    public function createAnother(bool|Closure $condition = true): static
     {
         $this->canCreateAnother = $condition;
 
         return $this;
     }
 
-    public function forceRenderAfterCreateAnother(bool | Closure $condition = true): static
+    public function forceRenderAfterCreateAnother(bool|Closure $condition = true): static
     {
         $this->shouldForceRenderAfterCreateAnother = $condition;
 
@@ -177,7 +177,7 @@ class CreateAction extends Action
     /**
      * @deprecated Use `createAnother()` instead.
      */
-    public function disableCreateAnother(bool | Closure $condition = true): static
+    public function disableCreateAnother(bool|Closure $condition = true): static
     {
         $this->createAnother(fn (CreateAction $action): bool => ! $action->evaluate($condition));
 
@@ -214,7 +214,7 @@ class CreateAction extends Action
         return (bool) $this->evaluate($this->shouldForceRenderAfterCreateAnother);
     }
 
-    public function getRelationship(): Relation | Builder | null
+    public function getRelationship(): Relation|Builder|null
     {
         return $this->evaluate($this->getRelationshipUsing) ?? $this->getTable()?->getRelationship() ?? $this->getHasActionsLivewire()?->getDefaultActionRelationship($this);
     }

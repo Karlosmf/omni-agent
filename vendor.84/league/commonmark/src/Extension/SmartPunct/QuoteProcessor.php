@@ -34,8 +34,8 @@ final class QuoteProcessor implements DelimiterProcessorInterface
     private function __construct(string $char, string $opener, string $closer)
     {
         $this->normalizedCharacter = $char;
-        $this->openerCharacter     = $opener;
-        $this->closerCharacter     = $closer;
+        $this->openerCharacter = $opener;
+        $this->closerCharacter = $closer;
     }
 
     public function getOpeningCharacter(): string

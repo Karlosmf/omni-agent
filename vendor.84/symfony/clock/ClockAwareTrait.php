@@ -31,7 +31,7 @@ trait ClockAwareTrait
 
     protected function now(): DatePoint
     {
-        $now = ($this->clock ??= new Clock())->now();
+        $now = ($this->clock ??= new Clock)->now();
 
         return $now instanceof DatePoint ? $now : DatePoint::createFromInterface($now);
     }

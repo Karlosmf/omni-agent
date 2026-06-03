@@ -6,16 +6,16 @@ use Closure;
 
 trait HasSpaMode
 {
-    protected bool | Closure $hasSpaMode = false;
+    protected bool|Closure $hasSpaMode = false;
 
-    protected bool | Closure $hasSpaPrefetching = false;
+    protected bool|Closure $hasSpaPrefetching = false;
 
     /**
      * @var array<string> | Closure
      */
-    protected array | Closure $spaModeUrlExceptions = [];
+    protected array|Closure $spaModeUrlExceptions = [];
 
-    public function spa(bool | Closure $condition = true, bool | Closure $hasPrefetching = false): static
+    public function spa(bool|Closure $condition = true, bool|Closure $hasPrefetching = false): static
     {
         $this->hasSpaMode = $condition;
         $this->hasSpaPrefetching = $hasPrefetching;
@@ -26,7 +26,7 @@ trait HasSpaMode
     /**
      * @param  array<string>| Closure  $exceptions
      */
-    public function spaUrlExceptions(array | Closure $exceptions): static
+    public function spaUrlExceptions(array|Closure $exceptions): static
     {
         $this->spaModeUrlExceptions = $exceptions;
 

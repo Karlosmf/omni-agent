@@ -2,16 +2,18 @@
 
 namespace Livewire\Features\SupportFileUploads;
 
-use Illuminate\Support\Arr;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use League\MimeTypeDetection\FinfoMimeTypeDetector;
 
 class TemporaryUploadedFile extends UploadedFile
 {
     protected $disk;
+
     protected $storage;
+
     protected $path;
 
     public function __construct($path, $disk)
@@ -27,8 +29,7 @@ class TemporaryUploadedFile extends UploadedFile
         // While running tests, update the last modified timestamp to the current
         // Carbon timestamp (which respects time traveling), because otherwise
         // cleanupOldUploads() will mess up with the filesystem...
-        if (app()->runningUnitTests())
-        {
+        if (app()->runningUnitTests()) {
             @touch($this->path(), now()->timestamp);
         }
     }
@@ -67,7 +68,7 @@ class TemporaryUploadedFile extends UploadedFile
         // Flysystem V2.0+ removed guess mimeType from extension support, so it has been re-added back
         // in here to ensure the correct mimeType is returned when using faked files in tests
         if (in_array($mimeType, ['application/octet-stream', 'inode/x-empty', 'application/x-empty'])) {
-            $detector = new FinfoMimeTypeDetector();
+            $detector = new FinfoMimeTypeDetector;
 
             $mimeType = $detector->detectMimeTypeFromPath($this->path) ?: 'text/plain';
         }
@@ -104,7 +105,7 @@ class TemporaryUploadedFile extends UploadedFile
 
     public function temporaryUrl()
     {
-        if (!$this->isPreviewable()) {
+        if (! $this->isPreviewable()) {
             throw new FileNotPreviewableException($this);
         }
 
@@ -112,7 +113,7 @@ class TemporaryUploadedFile extends UploadedFile
             return $this->storage->temporaryUrl(
                 $this->path,
                 now()->addDay()->endOfHour(),
-                ['ResponseContentDisposition' => 'attachment; filename="' . urlencode($this->getClientOriginalName()) . '"']
+                ['ResponseContentDisposition' => 'attachment; filename="'.urlencode($this->getClientOriginalName()).'"']
             );
         }
 
@@ -134,7 +135,7 @@ class TemporaryUploadedFile extends UploadedFile
             'jpg', 'jpeg', 'mpga', 'webp', 'wma',
         ]);
 
-        return in_array($this->guessExtension(),  $supportedPreviewTypes);
+        return in_array($this->guessExtension(), $supportedPreviewTypes);
     }
 
     public function readStream()
@@ -225,13 +226,15 @@ class TemporaryUploadedFile extends UploadedFile
             if (str($subject)->startsWith('livewire-files:')) {
                 $paths = json_decode(str($subject)->after('livewire-files:'), true);
 
-                return collect($paths)->map(function ($path) { return static::createFromLivewire($path); })->toArray();
+                return collect($paths)->map(function ($path) {
+                    return static::createFromLivewire($path);
+                })->toArray();
             }
         }
 
         if (is_array($subject)) {
             foreach ($subject as $key => $value) {
-                $subject[$key] =  static::unserializeFromLivewireRequest($value);
+                $subject[$key] = static::unserializeFromLivewireRequest($value);
             }
         }
 

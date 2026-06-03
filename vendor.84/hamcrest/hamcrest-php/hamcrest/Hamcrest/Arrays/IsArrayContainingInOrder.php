@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Arrays;
 
 /*
@@ -13,7 +14,6 @@ use Hamcrest\Util;
  */
 class IsArrayContainingInOrder extends TypeSafeDiagnosingMatcher
 {
-
     private $_elementMatchers;
 
     public function __construct(array $elementMatchers)
@@ -30,7 +30,7 @@ class IsArrayContainingInOrder extends TypeSafeDiagnosingMatcher
         $series = new SeriesMatchingOnce($this->_elementMatchers, $mismatchDescription);
 
         foreach ($array as $element) {
-            if (!$series->matches($element)) {
+            if (! $series->matches($element)) {
                 return false;
             }
         }

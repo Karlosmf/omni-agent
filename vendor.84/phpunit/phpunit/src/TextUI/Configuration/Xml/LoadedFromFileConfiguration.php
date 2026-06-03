@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\XmlConfiguration;
 
 use PHPUnit\TextUI\Configuration\ExtensionBootstrapCollection;
@@ -29,14 +32,15 @@ final readonly class LoadedFromFileConfiguration extends Configuration
      * @var non-empty-string
      */
     private string $filename;
+
     private ValidationResult $validationResult;
 
     /**
-     * @param non-empty-string $filename
+     * @param  non-empty-string  $filename
      */
     public function __construct(string $filename, ValidationResult $validationResult, ExtensionBootstrapCollection $extensions, Source $source, CodeCoverage $codeCoverage, Groups $groups, Logging $logging, Php $php, PHPUnit $phpunit, TestSuiteCollection $testSuite)
     {
-        $this->filename         = $filename;
+        $this->filename = $filename;
         $this->validationResult = $validationResult;
 
         parent::__construct(

@@ -93,7 +93,6 @@ class FileFinder implements \IteratorAggregate
                         | IteratorFileSystem::SKIP_DOTS;
         $this->_first = \RecursiveIteratorIterator::SELF_FIRST;
 
-        return;
     }
 
     /**
@@ -101,12 +100,12 @@ class FileFinder implements \IteratorAggregate
      */
     public function in($paths): self
     {
-        if (!\is_array($paths)) {
+        if (! \is_array($paths)) {
             $paths = [$paths];
         }
 
         foreach ($paths as $path) {
-            if (1 === \preg_match('/[\*\?\[\]]/', $path)) {
+            if (\preg_match('/[\*\?\[\]]/', $path) === 1) {
                 $iterator = new \CallbackFilterIterator(
                     new \GlobIterator(\rtrim($path, \DIRECTORY_SEPARATOR)),
                     function ($current) {
@@ -170,7 +169,7 @@ class FileFinder implements \IteratorAggregate
      */
     public function followSymlinks(bool $flag = true): self
     {
-        if (true === $flag) {
+        if ($flag === true) {
             $this->_flags ^= IteratorFileSystem::FOLLOW_SYMLINKS;
         } else {
             $this->_flags |= IteratorFileSystem::FOLLOW_SYMLINKS;
@@ -187,7 +186,7 @@ class FileFinder implements \IteratorAggregate
     public function name(string $regex): self
     {
         $this->_filters[] = function (\SplFileInfo $current) use ($regex) {
-            return 0 !== \preg_match($regex, $current->getBasename());
+            return \preg_match($regex, $current->getBasename()) !== 0;
         };
 
         return $this;
@@ -202,7 +201,7 @@ class FileFinder implements \IteratorAggregate
     {
         $this->_filters[] = function (\SplFileInfo $current) use ($regex) {
             foreach (\explode(\DIRECTORY_SEPARATOR, $current->getPathname()) as $part) {
-                if (0 !== \preg_match($regex, $part)) {
+                if (\preg_match($regex, $part) !== 0) {
                     return false;
                 }
             }
@@ -226,7 +225,7 @@ class FileFinder implements \IteratorAggregate
      */
     public function size(string $size): self
     {
-        if (0 === \preg_match('#^(<|<=|>|>=|=)\s*(\d+)\s*((?:[KMGTPEZY])b)?$#', $size, $matches)) {
+        if (\preg_match('#^(<|<=|>|>=|=)\s*(\d+)\s*((?:[KMGTPEZY])b)?$#', $size, $matches) === 0) {
             return $this;
         }
 
@@ -238,49 +237,49 @@ class FileFinder implements \IteratorAggregate
             case 'b':
                 break;
 
-            // kilo
+                // kilo
             case 'Kb':
                 $number <<= 10;
 
                 break;
 
-            // mega.
+                // mega.
             case 'Mb':
                 $number <<= 20;
 
                 break;
 
-            // giga.
+                // giga.
             case 'Gb':
                 $number <<= 30;
 
                 break;
 
-            // tera.
+                // tera.
             case 'Tb':
                 $number *= 1099511627776;
 
                 break;
 
-            // peta.
+                // peta.
             case 'Pb':
                 $number *= 1024 ** 5;
 
                 break;
 
-            // exa.
+                // exa.
             case 'Eb':
                 $number *= 1024 ** 6;
 
                 break;
 
-            // zetta.
+                // zetta.
             case 'Zb':
                 $number *= 1024 ** 7;
 
                 break;
 
-            // yota.
+                // yota.
             case 'Yb':
                 $number *= 1024 ** 8;
 
@@ -336,7 +335,7 @@ class FileFinder implements \IteratorAggregate
      */
     public function dots(bool $flag = true): self
     {
-        if (true === $flag) {
+        if ($flag === true) {
             $this->_flags ^= IteratorFileSystem::SKIP_DOTS;
         } else {
             $this->_flags |= IteratorFileSystem::SKIP_DOTS;
@@ -371,14 +370,14 @@ class FileFinder implements \IteratorAggregate
     {
         $operator = -1;
 
-        if (0 === \preg_match('#\bago\b#', $date)) {
+        if (\preg_match('#\bago\b#', $date) === 0) {
             $date .= ' ago';
         }
 
-        if (0 !== \preg_match('#^(since|until)\b(.+)$#', $date, $matches)) {
+        if (\preg_match('#^(since|until)\b(.+)$#', $date, $matches) !== 0) {
             $time = \strtotime($matches[2]);
 
-            if ('until' === $matches[1]) {
+            if ($matches[1] === 'until') {
                 $operator = 1;
             }
         } else {
@@ -397,7 +396,7 @@ class FileFinder implements \IteratorAggregate
     {
         $time = $this->formatDate($date, $operator);
 
-        if (-1 === $operator) {
+        if ($operator === -1) {
             $this->_filters[] = function (\SplFileInfo $current) use ($time) {
                 return $current->getCTime() >= $time;
             };
@@ -419,7 +418,7 @@ class FileFinder implements \IteratorAggregate
     {
         $time = $this->formatDate($date, $operator);
 
-        if (-1 === $operator) {
+        if ($operator === -1) {
             $this->_filters[] = function (\SplFileInfo $current) use ($time) {
                 return $current->getMTime() >= $time;
             };
@@ -458,7 +457,7 @@ class FileFinder implements \IteratorAggregate
      */
     public function sortByName(string $locale = 'root'): self
     {
-        if (true === \class_exists('Collator', false)) {
+        if (\class_exists('Collator', false) === true) {
             $collator = new \Collator($locale);
 
             $this->_sorts[] = function (\SplFileInfo $a, \SplFileInfo $b) use ($collator) {
@@ -519,10 +518,10 @@ class FileFinder implements \IteratorAggregate
      */
     public function getIterator()
     {
-        $_iterator = new \AppendIterator();
+        $_iterator = new \AppendIterator;
         $types = $this->getTypes();
 
-        if (!empty($types)) {
+        if (! empty($types)) {
             $this->_filters[] = function (\SplFileInfo $current) use ($types) {
                 return \in_array($current->getType(), $types);
             };
@@ -532,7 +531,7 @@ class FileFinder implements \IteratorAggregate
         $splFileInfo = $this->getSplFileInfo();
 
         foreach ($this->getPaths() as $path) {
-            if (1 === $maxDepth) {
+            if ($maxDepth === 1) {
                 $iterator = new \IteratorIterator(
                     new IteratorRecursiveDirectory(
                         $path,
@@ -551,7 +550,7 @@ class FileFinder implements \IteratorAggregate
                     $this->getFirst()
                 );
 
-                if (1 < $maxDepth) {
+                if ($maxDepth > 1) {
                     $iterator->setMaxDepth($maxDepth - 1);
                 }
             }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\XmlConfiguration;
 
 use PHPUnit\TextUI\Configuration\ExtensionBootstrapCollection;
@@ -26,24 +29,31 @@ use PHPUnit\TextUI\XmlConfiguration\Logging\Logging;
 abstract readonly class Configuration
 {
     private ExtensionBootstrapCollection $extensions;
+
     private Source $source;
+
     private CodeCoverage $codeCoverage;
+
     private Groups $groups;
+
     private Logging $logging;
+
     private Php $php;
+
     private PHPUnit $phpunit;
+
     private TestSuiteCollection $testSuite;
 
     public function __construct(ExtensionBootstrapCollection $extensions, Source $source, CodeCoverage $codeCoverage, Groups $groups, Logging $logging, Php $php, PHPUnit $phpunit, TestSuiteCollection $testSuite)
     {
-        $this->extensions   = $extensions;
-        $this->source       = $source;
+        $this->extensions = $extensions;
+        $this->source = $source;
         $this->codeCoverage = $codeCoverage;
-        $this->groups       = $groups;
-        $this->logging      = $logging;
-        $this->php          = $php;
-        $this->phpunit      = $phpunit;
-        $this->testSuite    = $testSuite;
+        $this->groups = $groups;
+        $this->logging = $logging;
+        $this->php = $php;
+        $this->phpunit = $phpunit;
+        $this->testSuite = $testSuite;
     }
 
     public function extensions(): ExtensionBootstrapCollection

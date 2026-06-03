@@ -13,6 +13,7 @@ namespace Psy;
 
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
@@ -22,8 +23,11 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 class ProjectTrust
 {
     private string $mode = Configuration::PROJECT_TRUST_PROMPT;
+
     private bool $forceTrust = false;
+
     private bool $forceUntrust = false;
+
     private bool $warnedUntrustedAutoload = false;
 
     /** @var string[] Project roots trusted for this session only (when persistence fails) */
@@ -173,11 +177,11 @@ class ProjectTrust
     {
         $root = $this->normalizeProjectRoot($root);
         $trustedRoots = $this->getTrustedProjectRoots();
-        if (!\in_array($root, $trustedRoots, true)) {
+        if (! \in_array($root, $trustedRoots, true)) {
             $trustedRoots[] = $root;
         }
 
-        if (!$this->saveTrustedProjectRoots($trustedRoots)) {
+        if (! $this->saveTrustedProjectRoots($trustedRoots)) {
             if ($output !== null) {
                 $this->warnTrustPersistenceFailed($root, $output);
             }
@@ -194,7 +198,7 @@ class ProjectTrust
      */
     public function warnTrustPersistenceFailed(string $root, OutputInterface $output): void
     {
-        if ($output instanceof \Symfony\Component\Console\Output\ConsoleOutput) {
+        if ($output instanceof ConsoleOutput) {
             $output = $output->getErrorOutput();
         }
 
@@ -214,7 +218,7 @@ class ProjectTrust
         }
 
         $this->warnedUntrustedAutoload = true;
-        if ($output instanceof \Symfony\Component\Console\Output\ConsoleOutput) {
+        if ($output instanceof ConsoleOutput) {
             $output = $output->getErrorOutput();
         }
 
@@ -227,13 +231,12 @@ class ProjectTrust
     /**
      * Display the interactive trust prompt and trust the project on approval.
      *
-     * @param string[] $features Features that need trust
-     *
+     * @param  string[]  $features  Features that need trust
      * @return bool true if user approved
      */
     public function promptForTrust(InputInterface $input, OutputInterface $output, string $root, array $features): bool
     {
-        $helper = new QuestionHelper();
+        $helper = new QuestionHelper;
         $prettyDir = ConfigPaths::prettyPath($root);
 
         $output->writeln('');
@@ -369,7 +372,7 @@ class ProjectTrust
     public function getTrustedProjectRoots(): array
     {
         $trustFile = $this->getProjectTrustFilePath();
-        if ($trustFile === null || !@\is_file($trustFile)) {
+        if ($trustFile === null || ! @\is_file($trustFile)) {
             return [];
         }
 
@@ -379,7 +382,7 @@ class ProjectTrust
         }
 
         $data = \json_decode($contents, true);
-        if (!\is_array($data)) {
+        if (! \is_array($data)) {
             return [];
         }
 
@@ -396,7 +399,7 @@ class ProjectTrust
     /**
      * Save trusted project roots to the trust file.
      *
-     * @param string[] $roots
+     * @param  string[]  $roots
      */
     public function saveTrustedProjectRoots(array $roots): bool
     {

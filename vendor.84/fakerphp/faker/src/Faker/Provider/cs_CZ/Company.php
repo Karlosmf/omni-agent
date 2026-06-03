@@ -120,6 +120,6 @@ class Company extends \Faker\Provider\Company
             return "{$ico}0";
         }
 
-        return $ico . (11 - $mod);
+        return $ico.(11 - $mod);
     }
 }

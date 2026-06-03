@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,7 +9,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework;
+
+use PHPUnit\Metadata\DependsOnClass;
+use PHPUnit\Metadata\DependsOnMethod;
+use Stringable;
 
 use function array_filter;
 use function array_map;
@@ -17,9 +24,6 @@ use function count;
 use function explode;
 use function in_array;
 use function str_contains;
-use PHPUnit\Metadata\DependsOnClass;
-use PHPUnit\Metadata\DependsOnMethod;
-use Stringable;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -28,9 +32,12 @@ use Stringable;
  */
 final class ExecutionOrderDependency implements Stringable
 {
-    private string $className  = '';
+    private string $className = '';
+
     private string $methodName = '';
+
     private readonly bool $shallowClone;
+
     private readonly bool $deepClone;
 
     public static function invalid(): self
@@ -64,8 +71,7 @@ final class ExecutionOrderDependency implements Stringable
     }
 
     /**
-     * @param list<ExecutionOrderDependency> $dependencies
-     *
+     * @param  list<ExecutionOrderDependency>  $dependencies
      * @return list<ExecutionOrderDependency>
      */
     public static function filterInvalid(array $dependencies): array
@@ -79,9 +85,8 @@ final class ExecutionOrderDependency implements Stringable
     }
 
     /**
-     * @param list<ExecutionOrderDependency> $existing
-     * @param list<ExecutionOrderDependency> $additional
-     *
+     * @param  list<ExecutionOrderDependency>  $existing
+     * @param  list<ExecutionOrderDependency>  $additional
      * @return list<ExecutionOrderDependency>
      */
     public static function mergeUnique(array $existing, array $additional): array
@@ -99,16 +104,15 @@ final class ExecutionOrderDependency implements Stringable
             }
 
             $existingTargets[] = $additionalTarget;
-            $existing[]        = $dependency;
+            $existing[] = $dependency;
         }
 
         return $existing;
     }
 
     /**
-     * @param list<ExecutionOrderDependency> $left
-     * @param list<ExecutionOrderDependency> $right
-     *
+     * @param  list<ExecutionOrderDependency>  $left
+     * @param  list<ExecutionOrderDependency>  $right
      * @return list<ExecutionOrderDependency>
      */
     public static function diff(array $left, array $right): array
@@ -121,7 +125,7 @@ final class ExecutionOrderDependency implements Stringable
             return [];
         }
 
-        $diff         = [];
+        $diff = [];
         $rightTargets = array_map(
             static fn (ExecutionOrderDependency $dependency) => $dependency->getTarget(),
             $right,
@@ -140,7 +144,7 @@ final class ExecutionOrderDependency implements Stringable
 
     public function __construct(string $classOrCallableName, ?string $methodName = null, bool $deepClone = false, bool $shallowClone = false)
     {
-        $this->deepClone    = $deepClone;
+        $this->deepClone = $deepClone;
         $this->shallowClone = $shallowClone;
 
         if ($classOrCallableName === '') {
@@ -151,7 +155,7 @@ final class ExecutionOrderDependency implements Stringable
             assert(count(explode('::', $classOrCallableName)) === 2);
             [$this->className, $this->methodName] = explode('::', $classOrCallableName);
         } else {
-            $this->className  = $classOrCallableName;
+            $this->className = $classOrCallableName;
             $this->methodName = $methodName !== null && $methodName !== '' ? $methodName : 'class';
         }
     }
@@ -188,7 +192,7 @@ final class ExecutionOrderDependency implements Stringable
     public function getTarget(): string
     {
         return $this->isValid()
-            ? $this->className . '::' . $this->methodName
+            ? $this->className.'::'.$this->methodName
             : '';
     }
 

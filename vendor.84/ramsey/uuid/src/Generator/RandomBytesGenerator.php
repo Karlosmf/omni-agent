@@ -27,7 +27,7 @@ class RandomBytesGenerator implements RandomGeneratorInterface
     /**
      * @throws RandomSourceException if random_bytes() throws an exception/error
      *
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function generate(int $length): string
     {

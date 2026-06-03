@@ -24,8 +24,7 @@ final class XLSX implements EscaperInterface
     /**
      * Escapes the given string to make it compatible with XLSX.
      *
-     * @param string $string The string to escape
-     *
+     * @param  string  $string  The string to escape
      * @return string The escaped string
      */
     public function escape(string $string): string
@@ -42,8 +41,7 @@ final class XLSX implements EscaperInterface
     /**
      * Unescapes the given string to make it compatible with XLSX.
      *
-     * @param string $string The string to unescape
-     *
+     * @param  string  $string  The string to unescape
      * @return string The unescaped string
      */
     public function unescape(string $string): string
@@ -64,7 +62,7 @@ final class XLSX implements EscaperInterface
      */
     private function initIfNeeded(): void
     {
-        if (!$this->isAlreadyInitialized) {
+        if (! $this->isAlreadyInitialized) {
             $this->escapableControlCharactersPattern = $this->getEscapableControlCharactersPattern();
             $this->controlCharactersEscapingMap = $this->getControlCharactersEscapingMap();
             $this->controlCharactersEscapingReverseMap = array_flip($this->controlCharactersEscapingMap);
@@ -103,9 +101,9 @@ final class XLSX implements EscaperInterface
         $controlCharactersEscapingMap = [];
 
         // control characters values are from 0 to 1F (hex values) in the ASCII table
-        for ($charValue = 0x00; $charValue <= 0x1F; ++$charValue) {
+        for ($charValue = 0x00; $charValue <= 0x1F; $charValue++) {
             $character = \chr($charValue);
-            if (1 === preg_match("/{$this->escapableControlCharactersPattern}/", $character)) {
+            if (preg_match("/{$this->escapableControlCharactersPattern}/", $character) === 1) {
                 $charHexValue = dechex($charValue);
                 $escapedChar = '_x'.\sprintf('%04s', strtoupper($charHexValue)).'_';
                 $controlCharactersEscapingMap[$escapedChar] = $character;
@@ -126,14 +124,14 @@ final class XLSX implements EscaperInterface
      *
      * @see https://github.com/jmcnamara/XlsxWriter/blob/f1e610f29/xlsxwriter/sharedstrings.py#L89
      *
-     * @param string $string String to escape
+     * @param  string  $string  String to escape
      */
     private function escapeControlCharacters(string $string): string
     {
         $escapedString = $this->escapeEscapeCharacter($string);
 
         // if no control characters
-        if (1 !== preg_match("/{$this->escapableControlCharactersPattern}/", $escapedString)) {
+        if (preg_match("/{$this->escapableControlCharactersPattern}/", $escapedString) !== 1) {
             return $escapedString;
         }
 
@@ -145,8 +143,7 @@ final class XLSX implements EscaperInterface
     /**
      * Escapes the escape character: "_x0000_" -> "_x005F_x0000_".
      *
-     * @param string $string String to escape
-     *
+     * @param  string  $string  String to escape
      * @return string The escaped string
      */
     private function escapeEscapeCharacter(string $string): string
@@ -165,7 +162,7 @@ final class XLSX implements EscaperInterface
      *
      * @see https://github.com/jmcnamara/XlsxWriter/blob/f1e610f29/xlsxwriter/sharedstrings.py#L89
      *
-     * @param string $string String to unescape
+     * @param  string  $string  String to unescape
      */
     private function unescapeControlCharacters(string $string): string
     {
@@ -182,8 +179,7 @@ final class XLSX implements EscaperInterface
     /**
      * Unecapes the escape character: "_x005F_x0000_" => "_x0000_".
      *
-     * @param string $string String to unescape
-     *
+     * @param  string  $string  String to unescape
      * @return string The unescaped string
      */
     private function unescapeEscapeCharacter(string $string): string

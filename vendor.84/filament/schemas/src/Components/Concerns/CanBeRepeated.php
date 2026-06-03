@@ -8,9 +8,9 @@ use Filament\Schemas\Schema;
 
 trait CanBeRepeated
 {
-    protected Schema | bool | null $cachedParentRepeaterItem = null;
+    protected Schema|bool|null $cachedParentRepeaterItem = null;
 
-    public function getParentRepeater(): Repeater | Builder | null
+    public function getParentRepeater(): Repeater|Builder|null
     {
         $repeater = $this->getParentRepeaterItem()?->getParentComponent();
 

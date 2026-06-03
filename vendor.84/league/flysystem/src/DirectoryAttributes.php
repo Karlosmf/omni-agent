@@ -7,6 +7,7 @@ namespace League\Flysystem;
 class DirectoryAttributes implements StorageAttributes
 {
     use ProxyArrayAccessToProperties;
+
     private string $type = StorageAttributes::TYPE_DIRECTORY;
 
     public function __construct(
@@ -72,7 +73,7 @@ class DirectoryAttributes implements StorageAttributes
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function jsonSerialize(): array
     {

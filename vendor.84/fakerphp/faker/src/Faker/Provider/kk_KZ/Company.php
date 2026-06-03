@@ -58,7 +58,7 @@ class Company extends \Faker\Provider\Company
      */
     public static function businessIdentificationNumber(?\DateTime $registrationDate = null)
     {
-        if (!$registrationDate) {
+        if (! $registrationDate) {
             $registrationDate = \Faker\Provider\DateTime::dateTimeThisYear();
         }
 
@@ -67,6 +67,6 @@ class Company extends \Faker\Provider\Company
         $legalEntityAdditionalType = (string) self::numberBetween(0, 3);
         $randomDigits = (string) static::numerify('######');
 
-        return $dateAsString . $legalEntityType . $legalEntityAdditionalType . $randomDigits;
+        return $dateAsString.$legalEntityType.$legalEntityAdditionalType.$randomDigits;
     }
 }

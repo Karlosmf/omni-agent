@@ -48,12 +48,12 @@ class ValidConstructorPass extends CodeCleanerPass
     /**
      * Validate that the constructor is not static and does not have a return type.
      *
-     * @throws FatalErrorException the constructor function is static
-     * @throws FatalErrorException the constructor function has a return type
      *
-     * @param Node $node
      *
      * @return int|Node|null Replacement node (or special return value)
+     *
+     * @throws FatalErrorException the constructor function is static
+     * @throws FatalErrorException the constructor function has a return type
      */
     public function enterNode(Node $node)
     {
@@ -88,9 +88,6 @@ class ValidConstructorPass extends CodeCleanerPass
     /**
      * @throws FatalErrorException the constructor function is static
      * @throws FatalErrorException the constructor function has a return type
-     *
-     * @param Node $constructor
-     * @param Node $classNode
      */
     private function validateConstructor(Node $constructor, Node $classNode)
     {

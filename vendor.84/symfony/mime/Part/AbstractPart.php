@@ -22,7 +22,7 @@ abstract class AbstractPart
 
     public function __construct()
     {
-        $this->headers = new Headers();
+        $this->headers = new Headers;
     }
 
     public function getHeaders(): Headers
@@ -65,7 +65,7 @@ abstract class AbstractPart
 
     public function __serialize(): array
     {
-        if (!method_exists($this, '__sleep')) {
+        if (! method_exists($this, '__sleep')) {
             return ['headers' => $this->headers];
         }
 
@@ -87,7 +87,7 @@ abstract class AbstractPart
 
     public function __unserialize(array $data): void
     {
-        if ($wakeup = method_exists($this, '__wakeup') && self::class === (new \ReflectionMethod($this, '__unserialize'))->class) {
+        if ($wakeup = method_exists($this, '__wakeup') && (new \ReflectionMethod($this, '__unserialize'))->class === self::class) {
             trigger_deprecation('symfony/mime', '7.4', 'Implementing "%s::__wakeup()" is deprecated, use "__unserialize()" instead.', get_debug_type($this));
         }
 
@@ -105,7 +105,7 @@ abstract class AbstractPart
 
         \Closure::bind(function ($data) use ($wakeup) {
             foreach ($data as $key => $value) {
-                $this->{("\0" === $key[0] ?? '') ? substr($key, 1 + strrpos($key, "\0")) : $key} = $value;
+                $this->{($key[0] === "\0" ?? '') ? substr($key, 1 + strrpos($key, "\0")) : $key} = $value;
             }
 
             if ($wakeup) {

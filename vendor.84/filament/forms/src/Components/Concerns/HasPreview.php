@@ -7,9 +7,9 @@ use Illuminate\Contracts\View\View;
 
 trait HasPreview
 {
-    protected string | Closure | null $preview = null;
+    protected string|Closure|null $preview = null;
 
-    public function preview(string | Closure | null $preview): static
+    public function preview(string|Closure|null $preview): static
     {
         $this->preview = $preview;
 

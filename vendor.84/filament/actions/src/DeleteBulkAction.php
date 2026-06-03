@@ -79,7 +79,7 @@ class DeleteBulkAction extends BulkAction
         $this->modalIcon(FilamentIcon::resolve(ActionsIconAlias::DELETE_ACTION_MODAL) ?? Heroicon::OutlinedTrash);
 
         $this->action(function (): void {
-            $this->process(static function (DeleteBulkAction $action, EloquentCollection | Collection | LazyCollection $records): void {
+            $this->process(static function (DeleteBulkAction $action, EloquentCollection|Collection|LazyCollection $records): void {
                 if (! $action->shouldFetchSelectedRecords()) {
                     try {
                         $action->reportBulkProcessingSuccessfulRecordsCount(

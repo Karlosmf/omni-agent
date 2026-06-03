@@ -30,18 +30,18 @@ class Stat extends Component
     /**
      * @var string | array<string> | null
      */
-    protected string | array | null $chartColor = null;
+    protected string|array|null $chartColor = null;
 
-    protected string | BackedEnum | null $icon = null;
+    protected string|BackedEnum|null $icon = null;
 
-    protected string | BackedEnum | null $descriptionIcon = null;
+    protected string|BackedEnum|null $descriptionIcon = null;
 
-    protected IconPosition | string | null $descriptionIconPosition = null;
+    protected IconPosition|string|null $descriptionIconPosition = null;
 
     /**
      * @var string | array<string> | null
      */
-    protected string | array | null $descriptionColor = null;
+    protected string|array|null $descriptionColor = null;
 
     /**
      * @var scalar | Htmlable | Closure
@@ -51,7 +51,7 @@ class Stat extends Component
     /**
      * @param  scalar | Htmlable | Closure  $value
      */
-    final public function __construct(string | Htmlable $label, $value)
+    final public function __construct(string|Htmlable $label, $value)
     {
         $this->label($label);
         $this->value($value);
@@ -60,7 +60,7 @@ class Stat extends Component
     /**
      * @param  scalar | Htmlable | Closure  $value
      */
-    public static function make(string | Htmlable $label, $value): static
+    public static function make(string|Htmlable $label, $value): static
     {
         return app(static::class, ['label' => $label, 'value' => $value]);
     }
@@ -68,14 +68,14 @@ class Stat extends Component
     /**
      * @param  string | array<string> | null  $color
      */
-    public function chartColor(string | array | null $color): static
+    public function chartColor(string|array|null $color): static
     {
         $this->chartColor = $color;
 
         return $this;
     }
 
-    public function icon(string | BackedEnum | null $icon): static
+    public function icon(string|BackedEnum|null $icon): static
     {
         $this->icon = $icon;
 
@@ -85,14 +85,14 @@ class Stat extends Component
     /**
      * @param  string | array<string> | null  $color
      */
-    public function descriptionColor(string | array | null $color): static
+    public function descriptionColor(string|array|null $color): static
     {
         $this->descriptionColor = $color;
 
         return $this;
     }
 
-    public function descriptionIcon(string | BackedEnum | null $icon, IconPosition | string | null $position = null): static
+    public function descriptionIcon(string|BackedEnum|null $icon, IconPosition|string|null $position = null): static
     {
         $this->descriptionIcon = $icon;
         $this->descriptionIconPosition = $position;
@@ -103,7 +103,7 @@ class Stat extends Component
     /**
      * @param  array<float> | Arrayable | null  $chart
      */
-    public function chart(array | Arrayable | null $chart): static
+    public function chart(array|Arrayable|null $chart): static
     {
         if (is_null($chart)) {
             return $this;
@@ -139,12 +139,12 @@ class Stat extends Component
     /**
      * @return string | array<string> | null
      */
-    public function getChartColor(): string | array | null
+    public function getChartColor(): string|array|null
     {
         return $this->chartColor ?? $this->getColor();
     }
 
-    public function getIcon(): string | BackedEnum | Htmlable | null
+    public function getIcon(): string|BackedEnum|Htmlable|null
     {
         return $this->icon;
     }
@@ -152,17 +152,17 @@ class Stat extends Component
     /**
      * @return string | array<string> | null
      */
-    public function getDescriptionColor(): string | array | null
+    public function getDescriptionColor(): string|array|null
     {
         return $this->descriptionColor ?? $this->getColor();
     }
 
-    public function getDescriptionIcon(): string | BackedEnum | Htmlable | null
+    public function getDescriptionIcon(): string|BackedEnum|Htmlable|null
     {
         return $this->descriptionIcon;
     }
 
-    public function getDescriptionIconPosition(): IconPosition | string
+    public function getDescriptionIconPosition(): IconPosition|string
     {
         return $this->descriptionIconPosition ?? IconPosition::After;
     }
@@ -177,6 +177,6 @@ class Stat extends Component
 
     public function generateChartDataChecksum(): string
     {
-        return md5(json_encode($this->getChart()) . now());
+        return md5(json_encode($this->getChart()).now());
     }
 }

@@ -16,6 +16,4 @@ use Symfony\Contracts\Service\ResetInterface;
 /**
  * Resets provided services.
  */
-interface ServicesResetterInterface extends ResetInterface
-{
-}
+interface ServicesResetterInterface extends ResetInterface {}

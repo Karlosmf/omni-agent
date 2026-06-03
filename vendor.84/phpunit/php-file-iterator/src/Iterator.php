@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-file-iterator.
  *
@@ -7,15 +9,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\FileIterator;
+
+use FilterIterator;
+use SplFileInfo;
 
 use function preg_match;
 use function realpath;
 use function str_ends_with;
 use function str_replace;
 use function str_starts_with;
-use FilterIterator;
-use SplFileInfo;
 
 /**
  * @template-extends FilterIterator<int, SplFileInfo, \Iterator>
@@ -25,7 +29,9 @@ use SplFileInfo;
 final class Iterator extends FilterIterator
 {
     public const int PREFIX = 0;
+
     public const int SUFFIX = 1;
+
     private false|string $basePath;
 
     /**
@@ -39,8 +45,8 @@ final class Iterator extends FilterIterator
     private array $prefixes;
 
     /**
-     * @param list<string> $suffixes
-     * @param list<string> $prefixes
+     * @param  list<string>  $suffixes
+     * @param  list<string>  $prefixes
      */
     public function __construct(string $basePath, \Iterator $iterator, array $suffixes = [], array $prefixes = [])
     {
@@ -90,7 +96,7 @@ final class Iterator extends FilterIterator
     }
 
     /**
-     * @param list<string> $subStrings
+     * @param  list<string>  $subStrings
      */
     private function acceptSubString(string $filename, array $subStrings, int $type): bool
     {

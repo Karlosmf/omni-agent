@@ -21,7 +21,7 @@ class Shiki
     }
 
     /**
-     * @param string|array<string, string>|null $theme Can be a single theme or an array with a light and a dark theme.
+     * @param  string|array<string, string>|null  $theme  Can be a single theme or an array with a light and a dark theme.
      */
     public static function highlight(
         string $code,
@@ -35,7 +35,7 @@ class Shiki
         $language = $language ?? 'php';
         $theme = $theme ?? 'nord';
 
-        return (new static())->highlightCode($code, $language, $theme, [
+        return (new static)->highlightCode($code, $language, $theme, [
             'highlightLines' => $highlightLines ?? [],
             'addLines' => $addLines ?? [],
             'deleteLines' => $deleteLines ?? [],
@@ -55,7 +55,7 @@ class Shiki
     }
 
     /**
-     * @param string|array<string, string> $defaultTheme Can be a single theme or an array with a light and a dark theme.
+     * @param  string|array<string, string>  $defaultTheme  Can be a single theme or an array with a light and a dark theme.
      */
     public function __construct(mixed $defaultTheme = 'nord')
     {
@@ -96,17 +96,17 @@ class Shiki
             return $path;
         }
 
-        return realpath(dirname(__DIR__) . '/bin');
+        return realpath(dirname(__DIR__).'/bin');
     }
 
     protected function callShiki(...$arguments): string
     {
-        $home = getenv("HOME");
+        $home = getenv('HOME');
         $command = [
-            (new ExecutableFinder())->find('node', 'node', [
+            (new ExecutableFinder)->find('node', 'node', [
                 '/usr/local/bin',
                 '/opt/homebrew/bin',
-                $home . '/n/bin', // support https://github.com/tj/n
+                $home.'/n/bin', // support https://github.com/tj/n
             ]),
             'shiki.js',
         ];

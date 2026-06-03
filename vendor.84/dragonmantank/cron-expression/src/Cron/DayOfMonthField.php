@@ -40,11 +40,10 @@ class DayOfMonthField extends AbstractField
     /**
      * Get the nearest day of the week for a given day in a month.
      *
-     * @param int $currentYear Current year
-     * @param int $currentMonth Current month
-     * @param int $targetDay Target day of the month
-     *
-     * @return \DateTime|null Returns the nearest date
+     * @param  int  $currentYear  Current year
+     * @param  int  $currentMonth  Current month
+     * @param  int  $targetDay  Target day of the month
+     * @return DateTime|null Returns the nearest date
      */
     private static function getNearestWeekday(int $currentYear, int $currentMonth, int $targetDay): ?DateTime
     {
@@ -82,14 +81,14 @@ class DayOfMonthField extends AbstractField
     public function isSatisfiedBy(DateTimeInterface $date, $value, bool $invert): bool
     {
         // ? states that the field value is to be skipped
-        if ('?' === $value) {
+        if ($value === '?') {
             return true;
         }
 
         $fieldValue = $date->format('d');
 
         // Check to see if this is the last day of the month
-        if ('L' === $value) {
+        if ($value === 'L') {
             return $fieldValue === $date->format('t');
         }
 
@@ -114,9 +113,9 @@ class DayOfMonthField extends AbstractField
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
-     * @param \DateTime|\DateTimeImmutable $date
+     * @param  DateTime|\DateTimeImmutable  $date
      */
     public function increment(DateTimeInterface &$date, $invert = false, $parts = null): FieldInterface
     {
@@ -139,16 +138,16 @@ class DayOfMonthField extends AbstractField
         $basicChecks = parent::validate($value);
 
         // Validate that a list don't have W or L
-        if (false !== strpos($value, ',') && (false !== strpos($value, 'W') || false !== strpos($value, 'L'))) {
+        if (strpos($value, ',') !== false && (strpos($value, 'W') !== false || strpos($value, 'L') !== false)) {
             return false;
         }
 
-        if (!$basicChecks) {
-            if ('?' === $value) {
+        if (! $basicChecks) {
+            if ($value === '?') {
                 return true;
             }
 
-            if ('L' === $value) {
+            if ($value === 'L') {
                 return true;
             }
 

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,12 +9,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TestRunner\TestResult;
 
-use function array_values;
-use function assert;
-use function count;
-use function implode;
 use PHPUnit\Event\Code\TestMethod;
 use PHPUnit\Event\Facade;
 use PHPUnit\Event\Test\AfterLastTestMethodErrored;
@@ -49,6 +48,11 @@ use PHPUnit\Event\TestSuite\TestSuiteForTestMethodWithDataProvider;
 use PHPUnit\TestRunner\IssueFilter;
 use PHPUnit\TestRunner\TestResult\Issues\Issue;
 
+use function array_values;
+use function assert;
+use function count;
+use function implode;
+
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  *
@@ -57,10 +61,15 @@ use PHPUnit\TestRunner\TestResult\Issues\Issue;
 final class Collector
 {
     private readonly IssueFilter $issueFilter;
-    private int $numberOfTests        = 0;
-    private int $numberOfTestsRun     = 0;
-    private int $numberOfAssertions   = 0;
-    private bool $prepared            = false;
+
+    private int $numberOfTests = 0;
+
+    private int $numberOfTestsRun = 0;
+
+    private int $numberOfAssertions = 0;
+
+    private bool $prepared = false;
+
     private bool $childProcessErrored = false;
 
     /**
@@ -245,7 +254,7 @@ final class Collector
     {
         $testSuite = $event->testSuite();
 
-        if (!$testSuite->isForTestClass()) {
+        if (! $testSuite->isForTestClass()) {
             return;
         }
 
@@ -256,7 +265,7 @@ final class Collector
     {
         $testSuite = $event->testSuite();
 
-        if (!$testSuite->isForTestClass()) {
+        if (! $testSuite->isForTestClass()) {
             return;
         }
     }
@@ -304,7 +313,7 @@ final class Collector
 
         $this->numberOfTestsRun++;
 
-        $this->prepared            = false;
+        $this->prepared = false;
         $this->childProcessErrored = false;
     }
 
@@ -340,7 +349,7 @@ final class Collector
             return;
         }
 
-        if (!$this->prepared) {
+        if (! $this->prepared) {
             $this->numberOfTestsRun++;
         }
     }
@@ -359,14 +368,14 @@ final class Collector
     {
         $this->testSkippedEvents[] = $event;
 
-        if (!$this->prepared) {
+        if (! $this->prepared) {
             $this->numberOfTestsRun++;
         }
     }
 
     public function testConsideredRisky(ConsideredRisky $event): void
     {
-        if (!isset($this->testConsideredRiskyEvents[$event->test()->id()])) {
+        if (! isset($this->testConsideredRiskyEvents[$event->test()->id()])) {
             $this->testConsideredRiskyEvents[$event->test()->id()] = [];
         }
 
@@ -375,7 +384,7 @@ final class Collector
 
     public function testTriggeredDeprecation(DeprecationTriggered $event): void
     {
-        if (!$this->issueFilter->shouldBeProcessed($event)) {
+        if (! $this->issueFilter->shouldBeProcessed($event)) {
             return;
         }
 
@@ -387,7 +396,7 @@ final class Collector
 
         $id = $this->issueId($event);
 
-        if (!isset($this->deprecations[$id])) {
+        if (! isset($this->deprecations[$id])) {
             $this->deprecations[$id] = Issue::from(
                 $event->file(),
                 $event->line(),
@@ -404,7 +413,7 @@ final class Collector
 
     public function testTriggeredPhpDeprecation(PhpDeprecationTriggered $event): void
     {
-        if (!$this->issueFilter->shouldBeProcessed($event)) {
+        if (! $this->issueFilter->shouldBeProcessed($event)) {
             return;
         }
 
@@ -416,7 +425,7 @@ final class Collector
 
         $id = $this->issueId($event);
 
-        if (!isset($this->phpDeprecations[$id])) {
+        if (! isset($this->phpDeprecations[$id])) {
             $this->phpDeprecations[$id] = Issue::from(
                 $event->file(),
                 $event->line(),
@@ -432,7 +441,7 @@ final class Collector
 
     public function testTriggeredPhpunitDeprecation(PhpunitDeprecationTriggered $event): void
     {
-        if (!isset($this->testTriggeredPhpunitDeprecationEvents[$event->test()->id()])) {
+        if (! isset($this->testTriggeredPhpunitDeprecationEvents[$event->test()->id()])) {
             $this->testTriggeredPhpunitDeprecationEvents[$event->test()->id()] = [];
         }
 
@@ -441,7 +450,7 @@ final class Collector
 
     public function testTriggeredPhpunitNotice(PhpunitNoticeTriggered $event): void
     {
-        if (!isset($this->testTriggeredPhpunitNoticeEvents[$event->test()->id()])) {
+        if (! isset($this->testTriggeredPhpunitNoticeEvents[$event->test()->id()])) {
             $this->testTriggeredPhpunitNoticeEvents[$event->test()->id()] = [];
         }
 
@@ -450,13 +459,13 @@ final class Collector
 
     public function testTriggeredError(ErrorTriggered $event): void
     {
-        if (!$this->issueFilter->shouldBeProcessed($event)) {
+        if (! $this->issueFilter->shouldBeProcessed($event)) {
             return;
         }
 
         $id = $this->issueId($event);
 
-        if (!isset($this->errors[$id])) {
+        if (! isset($this->errors[$id])) {
             $this->errors[$id] = Issue::from(
                 $event->file(),
                 $event->line(),
@@ -472,7 +481,7 @@ final class Collector
 
     public function testTriggeredNotice(NoticeTriggered $event): void
     {
-        if (!$this->issueFilter->shouldBeProcessed($event)) {
+        if (! $this->issueFilter->shouldBeProcessed($event)) {
             return;
         }
 
@@ -484,7 +493,7 @@ final class Collector
 
         $id = $this->issueId($event);
 
-        if (!isset($this->notices[$id])) {
+        if (! isset($this->notices[$id])) {
             $this->notices[$id] = Issue::from(
                 $event->file(),
                 $event->line(),
@@ -500,7 +509,7 @@ final class Collector
 
     public function testTriggeredPhpNotice(PhpNoticeTriggered $event): void
     {
-        if (!$this->issueFilter->shouldBeProcessed($event)) {
+        if (! $this->issueFilter->shouldBeProcessed($event)) {
             return;
         }
 
@@ -512,7 +521,7 @@ final class Collector
 
         $id = $this->issueId($event);
 
-        if (!isset($this->phpNotices[$id])) {
+        if (! isset($this->phpNotices[$id])) {
             $this->phpNotices[$id] = Issue::from(
                 $event->file(),
                 $event->line(),
@@ -528,7 +537,7 @@ final class Collector
 
     public function testTriggeredWarning(WarningTriggered $event): void
     {
-        if (!$this->issueFilter->shouldBeProcessed($event)) {
+        if (! $this->issueFilter->shouldBeProcessed($event)) {
             return;
         }
 
@@ -540,7 +549,7 @@ final class Collector
 
         $id = $this->issueId($event);
 
-        if (!isset($this->warnings[$id])) {
+        if (! isset($this->warnings[$id])) {
             $this->warnings[$id] = Issue::from(
                 $event->file(),
                 $event->line(),
@@ -556,7 +565,7 @@ final class Collector
 
     public function testTriggeredPhpWarning(PhpWarningTriggered $event): void
     {
-        if (!$this->issueFilter->shouldBeProcessed($event)) {
+        if (! $this->issueFilter->shouldBeProcessed($event)) {
             return;
         }
 
@@ -568,7 +577,7 @@ final class Collector
 
         $id = $this->issueId($event);
 
-        if (!isset($this->phpWarnings[$id])) {
+        if (! isset($this->phpWarnings[$id])) {
             $this->phpWarnings[$id] = Issue::from(
                 $event->file(),
                 $event->line(),
@@ -584,7 +593,7 @@ final class Collector
 
     public function testTriggeredPhpunitError(PhpunitErrorTriggered $event): void
     {
-        if (!isset($this->testTriggeredPhpunitErrorEvents[$event->test()->id()])) {
+        if (! isset($this->testTriggeredPhpunitErrorEvents[$event->test()->id()])) {
             $this->testTriggeredPhpunitErrorEvents[$event->test()->id()] = [];
         }
 
@@ -597,7 +606,7 @@ final class Collector
             return;
         }
 
-        if (!isset($this->testTriggeredPhpunitWarningEvents[$event->test()->id()])) {
+        if (! isset($this->testTriggeredPhpunitWarningEvents[$event->test()->id()])) {
             $this->testTriggeredPhpunitWarningEvents[$event->test()->id()] = [];
         }
 

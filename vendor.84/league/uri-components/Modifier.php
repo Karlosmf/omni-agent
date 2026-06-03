@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace League\Uri;
 
+use const FILTER_FLAG_IPV4;
+use const FILTER_VALIDATE_IP;
+
 use BackedEnum;
 use Deprecated;
 use Dom\HTMLDocument;
@@ -67,16 +70,11 @@ use function strtolower;
 use function substr;
 use function trim;
 
-use const FILTER_FLAG_IPV4;
-use const FILTER_VALIDATE_IP;
-
-class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable, Transformable
+class Modifier implements Conditionable, JsonSerializable, Stringable, Transformable, UriAccess
 {
     private const MASK = '*****';
 
-    final public function __construct(protected readonly Rfc3986Uri|WhatWgUrl|Psr7UriInterface|UriInterface $uri)
-    {
-    }
+    final public function __construct(protected readonly Rfc3986Uri|WhatWgUrl|Psr7UriInterface|UriInterface $uri) {}
 
     public static function wrap(Rfc3986Uri|WhatWgUrl|BackedEnum|Stringable|string $uri): static
     {
@@ -131,7 +129,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
     /**
      * Returns the HTML string representation of the anchor tag with the current instance as its href attribute.
      *
-     * @param iterable<string, string|null|array<string>> $attributes an ordered map of key value. you must quote the value if needed
+     * @param  iterable<string, string|null|array<string>>  $attributes  an ordered map of key value. you must quote the value if needed
      *
      * @throws DOMException
      */
@@ -140,16 +138,16 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
         FeatureDetection::supportsDom();
         $uriString = $this->toString();
         $rfc3987String = UriString::toIriString($uriString);
-        $doc = class_exists(HTMLDocument::class) ? HTMLDocument::createEmpty() : new DOMDocument(encoding:'utf-8'); /* @phpstan-ignore-line */
+        $doc = class_exists(HTMLDocument::class) ? HTMLDocument::createEmpty() : new DOMDocument(encoding: 'utf-8'); /* @phpstan-ignore-line */
         $element = $doc->createElement('a');
         $element->setAttribute('href', $uriString);
         $element->appendChild(match (true) {
-            null === $textContent => $doc->createTextNode($rfc3987String),
+            $textContent === null => $doc->createTextNode($rfc3987String),
             default => $doc->createTextNode(strtr((string) $textContent, ['{uri}' => $rfc3987String])),
         });
 
         foreach ($attributes as $name => $value) {
-            if ('href' === strtolower($name) || null === $value) {
+            if (strtolower($name) === 'href' || $value === null) {
                 continue;
             }
 
@@ -159,7 +157,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
 
             is_string($value) || throw new ValueError('The attribute `'.$name.'` contains an invalid value.');
             $value = trim($value);
-            if ('' === $value) {
+            if ($value === '') {
                 continue;
             }
 
@@ -181,7 +179,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
             default => (string) $uri,
         };
 
-        if (!$this->uri instanceof Psr7UriInterface) {
+        if (! $this->uri instanceof Psr7UriInterface) {
             return new static($this->uri->resolve($uriString));
         }
 
@@ -237,7 +235,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
     ): static {
         if ($this->uri instanceof Rfc3986Uri) {
             $userInfo = Encoder::encodeUser($username);
-            if (null !== $password) {
+            if ($password !== null) {
                 $userInfo .= ':'.Encoder::encodePassword($password);
             }
 
@@ -245,14 +243,14 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
         }
 
         if ($this->uri instanceof WhatWgUrl) {
-            if (null !== $username) {
+            if ($username !== null) {
                 if ($username instanceof BackedEnum) {
                     $username = $username->value;
                 }
                 $username = (string) $username;
             }
 
-            if (null !== $password) {
+            if ($password !== null) {
                 if ($password instanceof BackedEnum) {
                     $password = $password->value;
                 }
@@ -262,7 +260,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
             return new static($this->uri->withUsername($username)->withPassword($password));
         }
 
-        if (null == $username && $this->uri instanceof Psr7UriInterface) {
+        if ($username == null && $this->uri instanceof Psr7UriInterface) {
             $username = '';
         }
 
@@ -290,14 +288,14 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
     public function redactUserInfo(): static
     {
         if ($this->uri instanceof WhatWgUrl) {
-            if (null !== $this->uri->getUsername() || null !== $this->uri->getPassword()) {
+            if ($this->uri->getUsername() !== null || $this->uri->getPassword() !== null) {
                 return new static($this->uri->withUsername(self::MASK)->withPassword(null));
             }
 
             return $this;
         }
 
-        if (null === $this->uri->getUserInfo()) {
+        if ($this->uri->getUserInfo() === null) {
             return $this;
         }
 
@@ -308,7 +306,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
     {
         $host = self::normalizeComponent($host, $this->uri);
         if ($this->uri instanceof Rfc3986Uri) {
-            if (null !== $host) {
+            if ($host !== null) {
                 $host = IdnaConverter::toAscii($host)->domain();
             }
         }
@@ -326,7 +324,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
             $fragment = (string) $fragment->value;
         }
 
-        if (!$fragment instanceof FragmentInterface) {
+        if (! $fragment instanceof FragmentInterface) {
             $fragment = str_starts_with((string) $fragment, FragmentDirectives::DELIMITER)
                 ? FragmentDirectives::fromFragment($fragment)
                 : Fragment::new($fragment);
@@ -360,13 +358,13 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
 
     final public function when(callable|bool $condition, callable $onSuccess, ?callable $onFail = null): static
     {
-        if (!is_bool($condition)) {
+        if (! is_bool($condition)) {
             $condition = $condition($this);
         }
 
         return match (true) {
             $condition => $onSuccess($this),
-            null !== $onFail => $onFail($this),
+            $onFail !== null => $onFail($this),
             default => $this,
         } ?? $this;
     }
@@ -399,13 +397,13 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
      */
     public function encodeQuery(KeyValuePairConverter|int $to, KeyValuePairConverter|int|null $from = null, StringCoercionMode $coercionMode = StringCoercionMode::Native): static
     {
-        if (!$to instanceof KeyValuePairConverter) {
+        if (! $to instanceof KeyValuePairConverter) {
             $to = KeyValuePairConverter::fromEncodingType($to);
         }
 
         $from = match (true) {
-            null === $from => KeyValuePairConverter::fromRFC3986(),
-            !$from instanceof KeyValuePairConverter => KeyValuePairConverter::fromEncodingType($from),
+            $from === null => KeyValuePairConverter::fromRFC3986(),
+            ! $from instanceof KeyValuePairConverter => KeyValuePairConverter::fromEncodingType($from),
             default => $from,
         };
 
@@ -414,7 +412,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
         }
 
         $originalQuery = $this->uri->getQuery();
-        if (null === $originalQuery || '' === trim($originalQuery)) {
+        if ($originalQuery === null || trim($originalQuery) === '') {
             return $this;
         }
 
@@ -454,7 +452,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
     /**
      * Merge query pairs with the existing URI query.
      *
-     * @param iterable<int, array{0:string, 1:string|null}> $pairs
+     * @param  iterable<int, array{0:string, 1:string|null}>  $pairs
      */
     public function appendQueryPairs(iterable $pairs, string $prefix = '', StringCoercionMode $coercionMode = StringCoercionMode::Native): self
     {
@@ -510,7 +508,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
      */
     public function redactQueryPairs(string ...$keys): static
     {
-        if ([] === $keys) {
+        if ($keys === []) {
             return $this;
         }
 
@@ -531,7 +529,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
     /**
      * Merge query pairs with the existing URI query.
      *
-     * @param iterable<int, array{0:string, 1:string|null}> $pairs
+     * @param  iterable<int, array{0:string, 1:string|null}>  $pairs
      */
     public function mergeQueryPairs(iterable $pairs, string $prefix = '', StringCoercionMode $coercionMode = StringCoercionMode::Native): self
     {
@@ -539,7 +537,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
         $pairs = [...$pairs];
 
         return match (true) {
-            [] === $pairs,
+            $pairs === [],
             $currentPairs === $pairs => $this,
             default => $this->mergeQuery(Query::fromPairs($pairs, prefix: $prefix, coercionMode: $coercionMode)->value()),
         };
@@ -645,7 +643,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
         $host = $this->uri instanceof WhatWgUrl ? $this->uri->getAsciiHost() : $this->uri->getHost();
 
         return match (true) {
-            null === $host,
+            $host === null,
             str_ends_with($host, '.') => $this,
             default => $this->withHost($host.'.'),
         };
@@ -659,12 +657,12 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
     public function appendLabel(BackedEnum|Stringable|string|null $label): static
     {
         $host = $this->uri instanceof WhatWgUrl ? $this->uri->getAsciiHost() : $this->uri->getHost();
-        $isAsciiDomain = null === $host || IdnaConverter::toAscii($host)->domain() === $host;
+        $isAsciiDomain = $host === null || IdnaConverter::toAscii($host)->domain() === $host;
 
         $host = Host::new($host);
         $label = Host::new($label);
 
-        if (null === $label->value()) {
+        if ($label->value() === null) {
             return $this;
         }
 
@@ -672,12 +670,12 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
             return $this->withHost($host->value().'.'.ltrim($label->value(), '.'));
         }
 
-        if (!$host->isDomain()) {
+        if (! $host->isDomain()) {
             throw new SyntaxError('The URI host '.$host->toString().' cannot be appended.');
         }
 
         $newHost = Domain::new($host)->append($label);
-        $newHost = !$isAsciiDomain ? $newHost->toUnicode() : $newHost->toAscii();
+        $newHost = ! $isAsciiDomain ? $newHost->toUnicode() : $newHost->toAscii();
 
         return $this->withHost($newHost);
     }
@@ -691,8 +689,8 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
         $host = IdnaConverter::toAsciiOrFail((string) $currentHost);
 
         return match (true) {
-            null === $currentHost,
-            '' === $currentHost,
+            $currentHost === null,
+            $currentHost === '',
             $host === $currentHost => $this,
             default => $this->withHost($host),
         };
@@ -707,8 +705,8 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
         $host = IdnaConverter::toUnicode((string) $currentHost)->domain();
 
         return match (true) {
-            null === $currentHost,
-            '' === $currentHost,
+            $currentHost === null,
+            $currentHost === '',
             $host === $currentHost => $this,
             default => $this->withHost($host),
         };
@@ -726,9 +724,9 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
         $hostIp = self::ipv4Converter()->toDecimal($currentHost);
 
         return match (true) {
-            null === $currentHost,
-            '' === $currentHost,
-            null === $hostIp,
+            $currentHost === null,
+            $currentHost === '',
+            $hostIp === null,
             $currentHost === $hostIp => $this,
             default => $this->withHost($hostIp),
         };
@@ -746,10 +744,10 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
         $hostIp = self::ipv4Converter()->toOctal($currentHost);
 
         return match (true) {
-            null === $currentHost,
-            '' === $currentHost,
-            null === $hostIp,
-            $currentHost === $hostIp  => $this,
+            $currentHost === null,
+            $currentHost === '',
+            $hostIp === null,
+            $currentHost === $hostIp => $this,
             default => $this->withHost($hostIp),
         };
     }
@@ -766,10 +764,10 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
         $hostIp = self::ipv4Converter()->toHexadecimal($currentHost);
 
         return match (true) {
-            null === $currentHost,
-            '' === $currentHost,
-            null === $hostIp,
-            $currentHost === $hostIp  => $this,
+            $currentHost === null,
+            $currentHost === '',
+            $hostIp === null,
+            $currentHost === $hostIp => $this,
             default => $this->withHost($hostIp),
         };
     }
@@ -792,12 +790,12 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
     public function prependLabel(BackedEnum|Stringable|string|null $label): static
     {
         $host = $this->uri instanceof WhatWgUrl ? $this->uri->getAsciiHost() : $this->uri->getHost();
-        $isAsciiDomain = null === $host || IdnaConverter::toAscii($host)->domain() === $host;
+        $isAsciiDomain = $host === null || IdnaConverter::toAscii($host)->domain() === $host;
 
         $host = Host::new($host);
         $label = Host::new($label);
 
-        if (null === $label->value()) {
+        if ($label->value() === null) {
             return $this;
         }
 
@@ -805,12 +803,12 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
             return $this->withHost(rtrim($label->value(), '.').'.'.$host->value());
         }
 
-        if (!$host->isDomain()) {
+        if (! $host->isDomain()) {
             throw new SyntaxError('The URI host '.$host->toString().' cannot be prepended.');
         }
 
         $newHost = Domain::new($host)->prepend($label);
-        $newHost = !$isAsciiDomain ? $newHost->toUnicode() : $newHost->toAscii();
+        $newHost = ! $isAsciiDomain ? $newHost->toUnicode() : $newHost->toAscii();
 
         return $this->withHost($newHost);
     }
@@ -821,13 +819,13 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
     public function removeLabels(int ...$keys): static
     {
         $host = $this->uri instanceof WhatWgUrl ? $this->uri->getAsciiHost() : $this->uri->getHost();
-        if (null === $host || ('' === $host && $this->uri instanceof Psr7UriInterface)) {
+        if ($host === null || ($host === '' && $this->uri instanceof Psr7UriInterface)) {
             return $this;
         }
 
         $isAsciiDomain = IdnaConverter::toAscii($host)->domain() === $host;
         $newHost = Domain::new($host)->withoutLabel(...$keys);
-        $newHost = !$isAsciiDomain ? $newHost->toUnicode() : $newHost->toAscii();
+        $newHost = ! $isAsciiDomain ? $newHost->toUnicode() : $newHost->toAscii();
 
         return $this->withHost($newHost);
     }
@@ -840,9 +838,9 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
         $host = $this->uri instanceof WhatWgUrl ? $this->uri->getAsciiHost() : $this->uri->getHost();
 
         return match (true) {
-            null === $host,
-            '' === $host,
-            !str_ends_with($host, '.') => $this,
+            $host === null,
+            $host === '',
+            ! str_ends_with($host, '.') => $this,
             default => $this->withHost(substr($host, 0, -1)),
         };
     }
@@ -853,13 +851,13 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
     public function sliceLabels(int $offset, ?int $length = null): static
     {
         $currentHost = $this->uri instanceof WhatWgUrl ? $this->uri->getAsciiHost() : $this->uri->getHost();
-        if (null === $currentHost || ('' === $currentHost && $this->uri instanceof Psr7UriInterface)) {
+        if ($currentHost === null || ($currentHost === '' && $this->uri instanceof Psr7UriInterface)) {
             return $this;
         }
 
         $isAsciiDomain = IdnaConverter::toAscii($currentHost)->domain() === $currentHost;
         $host = Domain::new($currentHost)->slice($offset, $length);
-        $host = !$isAsciiDomain ? $host->toUnicode() : $host->toAscii();
+        $host = ! $isAsciiDomain ? $host->toUnicode() : $host->toAscii();
 
         if ($currentHost === $host) {
             return $this;
@@ -887,9 +885,9 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
     public function replaceLabel(int $offset, Stringable|string|null $label): static
     {
         $host = $this->uri instanceof WhatWgUrl ? $this->uri->getAsciiHost() : $this->uri->getHost();
-        $isAsciiDomain = null === $host || IdnaConverter::toAscii($host)->domain() === $host;
+        $isAsciiDomain = $host === null || IdnaConverter::toAscii($host)->domain() === $host;
         $newHost = Domain::new($host)->withLabel($offset, $label);
-        $newHost = !$isAsciiDomain ? $newHost->toUnicode() : $newHost->toAscii();
+        $newHost = ! $isAsciiDomain ? $newHost->toUnicode() : $newHost->toAscii();
 
         return $this->withHost($newHost);
     }
@@ -907,7 +905,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
             $converted = null;
         }
 
-        if (false === filter_var($converted, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+        if (filter_var($converted, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false) {
             $converted = IPv6Converter::compress($host);
         }
 
@@ -949,7 +947,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
         $currentPath = HierarchicalPath::fromUri($this->uri)->withLeadingSlash();
 
         return match (true) {
-            !str_starts_with($currentPath->toString(), $path->toString()) => $this->withPath($path->append($currentPath)->toString()),
+            ! str_starts_with($currentPath->toString(), $path->toString()) => $this->withPath($path->append($currentPath)->toString()),
             default => $this->withPath($currentPath),
         };
     }
@@ -999,7 +997,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
     /**
      * Append a list of segments or a new path to the URI path.
      *
-     * @param iterable<BackedEnum|Stringable|string> $segments
+     * @param  iterable<BackedEnum|Stringable|string>  $segments
      */
     public function appendSegments(iterable $segments): static
     {
@@ -1009,7 +1007,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
     /**
      * Prepend a list of segments or a new path to the URI path.
      *
-     * @param iterable<BackedEnum|Stringable|string> $segments
+     * @param  iterable<BackedEnum|Stringable|string>  $segments
      */
     public function prependSegments(iterable $segments): static
     {
@@ -1042,9 +1040,9 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
         $newPath = substr($currentPath, strlen($basePath));
 
         return match (true) {
-            '/' === $basePath,
-            !str_starts_with($currentPath, $basePath),
-            !str_starts_with($newPath, '/') => $this,
+            $basePath === '/',
+            ! str_starts_with($currentPath, $basePath),
+            ! str_starts_with($newPath, '/') => $this,
             default => $this->withPath($newPath),
         };
     }
@@ -1081,7 +1079,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
         $path = $this->uri->getPath();
 
         return match (true) {
-            !str_ends_with($path, '/') => $this,
+            ! str_ends_with($path, '/') => $this,
             default => $this->withPath(substr($path, 0, -1)),
         };
     }
@@ -1154,28 +1152,28 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
      */
     public function redactPathSegmentsByOffset(int ...$offsets): static
     {
-        if ([] === $offsets || [] === ($path = [...HierarchicalPath::fromUri($this->uri)])) {
+        if ($offsets === [] || [] === ($path = [...HierarchicalPath::fromUri($this->uri)])) {
             return $this;
         }
 
         $nbSegments = count($path);
         $hasChanged = false;
         foreach ($offsets as $offset) {
-            if ($offset < - $nbSegments - 1 || $offset > $nbSegments) {
+            if ($offset < -$nbSegments - 1 || $offset > $nbSegments) {
                 continue;
             }
 
-            if (0 > $offset) {
+            if ($offset < 0) {
                 $offset += $nbSegments;
             }
 
-            if (!in_array($path[$offset] ?? null, [null, self::MASK], true)) {
+            if (! in_array($path[$offset] ?? null, [null, self::MASK], true)) {
                 $hasChanged = true;
                 $path[$offset] = self::MASK;
             }
         }
 
-        return !$hasChanged ? $this : $this->withPath(implode('/', $path));
+        return ! $hasChanged ? $this : $this->withPath(implode('/', $path));
     }
 
     /**
@@ -1188,7 +1186,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
      */
     public function redactPathSegments(BackedEnum|Stringable|string ...$segments): static
     {
-        if ([] === $segments || [] === ($path = [...HierarchicalPath::fromUri($this->uri)])) {
+        if ($segments === [] || [] === ($path = [...HierarchicalPath::fromUri($this->uri)])) {
             return $this;
         }
 
@@ -1204,7 +1202,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
             }
         }
 
-        return !$hasChanged ? $this : $this->withPath(implode('/', $path));
+        return ! $hasChanged ? $this : $this->withPath(implode('/', $path));
     }
 
     /**
@@ -1219,7 +1217,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
      */
     public function redactPathNextSegments(BackedEnum|Stringable|string ...$segments): static
     {
-        if ([] === $segments || [] === ($path = [...HierarchicalPath::fromUri($this->uri)])) {
+        if ($segments === [] || [] === ($path = [...HierarchicalPath::fromUri($this->uri)])) {
             return $this;
         }
 
@@ -1230,14 +1228,14 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
             }
             foreach (array_keys($path, (string) $segment, true) as $key) {
                 $nextKey = $key + 1;
-                if (!in_array($path[$nextKey] ?? null, [null, self::MASK], true)) {
+                if (! in_array($path[$nextKey] ?? null, [null, self::MASK], true)) {
                     $hasChanged = true;
                     $path[$nextKey] = self::MASK;
                 }
             }
         }
 
-        return !$hasChanged ? $this : $this->withPath(implode('/', $path));
+        return ! $hasChanged ? $this : $this->withPath(implode('/', $path));
     }
 
     /**
@@ -1248,17 +1246,17 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
      */
     final protected static function normalizePath(WhatWgUrl|Rfc3986Uri|Psr7UriInterface|UriInterface $uri, PathInterface $path): WhatWgUrl|Rfc3986Uri|Psr7UriInterface|UriInterface
     {
-        if (!$uri instanceof Psr7UriInterface) {
+        if (! $uri instanceof Psr7UriInterface) {
             return $uri->withPath($path->toString());
         }
 
         $pathString = $path->toString();
-        if ('' === $pathString) {
+        if ($pathString === '') {
             return $uri->withPath($pathString);
         }
 
         $authority = $uri->getAuthority();
-        if ('' !== $authority) {
+        if ($authority !== '') {
             return $uri->withPath(str_starts_with($pathString, '/') ? $pathString : '/'.$pathString);
         }
 
@@ -1268,11 +1266,11 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
         }
 
         $colonPos = strpos($pathString, ':');
-        if (false !== $colonPos && '' === $uri->getScheme()) {
+        if ($colonPos !== false && $uri->getScheme() === '') {
             // In the absence of a scheme and of an authority,
             // the first path segment cannot contain a colon (":") character.'
             $slashPos = strpos($pathString, '/');
-            (false !== $slashPos && $colonPos > $slashPos) || throw new SyntaxError(
+            ($slashPos !== false && $colonPos > $slashPos) || throw new SyntaxError(
                 'In absence of the scheme and authority components, the first path segment cannot contain a colon (":") character.'
             );
         }
@@ -1325,12 +1323,12 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
     final protected function applyFragmentChanges(FragmentDirectives $fragmentDirectives): static
     {
         $fValue = Fragment::fromUri($this->unwrap())->value();
-        if (null === $fValue) {
+        if ($fValue === null) {
             return $this->withFragment($fragmentDirectives);
         }
 
         $pos = strpos($fValue, FragmentDirectives::DELIMITER);
-        if (false === $pos) {
+        if ($pos === false) {
             return $this->withFragment($fValue.$fragmentDirectives->value());
         }
 
@@ -1365,7 +1363,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
     public function stripFragmentDirectives(): static
     {
         $fragment = Fragment::fromUri($this->unwrap())->value();
-        if (null === $fragment || (false === ($pos = strpos($fragment, FragmentDirectives::DELIMITER)))) {
+        if ($fragment === null || (false === ($pos = strpos($fragment, FragmentDirectives::DELIMITER)))) {
             return $this;
         }
 
@@ -1381,12 +1379,14 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @deprecated Since version 7.6.0
+     *
      * @codeCoverageIgnore
+     *
      * @see Modifier::displayUriString()
      *
      * Remove query data according to their key name.
      */
-    #[Deprecated(message:'use League\Uri\Modifier::displayUriString() instead', since:'league/uri-components:7.6.0')]
+    #[Deprecated(message: 'use League\Uri\Modifier::displayUriString() instead', since: 'league/uri-components:7.6.0')]
     public function getIdnUriString(): string
     {
         if ($this->uri instanceof WhatWgUrl) {
@@ -1394,7 +1394,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
         }
 
         $currentHost = $this->uri->getHost();
-        if (null === $currentHost || '' === $currentHost) {
+        if ($currentHost === null || $currentHost === '') {
             return $this->toString();
         }
 
@@ -1417,10 +1417,12 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @deprecated Since version 7.7.0
+     *
      * @codeCoverageIgnore
+     *
      * @see Modifier::appendPath
      */
-    #[Deprecated(message:'use League\Uri\Modifier::appendPath() instead', since:'league/uri-components:7.7.0')]
+    #[Deprecated(message: 'use League\Uri\Modifier::appendPath() instead', since: 'league/uri-components:7.7.0')]
     public function appendSegment(Stringable|string $segment): static
     {
         return $this->appendPath($segment);
@@ -1430,10 +1432,12 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @deprecated Since version 7.7.0
+     *
      * @codeCoverageIgnore
+     *
      * @see Modifier::prependPath
      */
-    #[Deprecated(message:'use League\Uri\Modifier::prependPath() instead', since:'league/uri-components:7.7.0')]
+    #[Deprecated(message: 'use League\Uri\Modifier::prependPath() instead', since: 'league/uri-components:7.7.0')]
     public function prependSegment(Stringable|string $segment): static
     {
         return $this->prependPath($segment);
@@ -1443,12 +1447,14 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @deprecated Since version 7.6.0
+     *
      * @codeCoverageIgnore
+     *
      * @see Modifier::wrap()
      *
-     * @param UriFactoryInterface|null $uriFactory deprecated, will be removed in the next major release
+     * @param  UriFactoryInterface|null  $uriFactory  deprecated, will be removed in the next major release
      */
-    #[Deprecated(message:'use League\Uri\Modifier::wrap() instead', since:'league/uri-components:7.6.0')]
+    #[Deprecated(message: 'use League\Uri\Modifier::wrap() instead', since: 'league/uri-components:7.6.0')]
     public static function from(Rfc3986Uri|WhatWgUrl|Stringable|string $uri, ?UriFactoryInterface $uriFactory = null): static
     {
         return new static(match (true) {
@@ -1466,12 +1472,14 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @deprecated Since version 7.2.0
+     *
      * @codeCoverageIgnore
+     *
      * @see Modifier::removeQueryParameters()
      *
      * Remove query data according to their key name.
      */
-    #[Deprecated(message:'use League\Uri\Modifier::removeQueryParameters() instead', since:'league/uri-components:7.2.0')]
+    #[Deprecated(message: 'use League\Uri\Modifier::removeQueryParameters() instead', since: 'league/uri-components:7.2.0')]
     public function removeParams(string ...$keys): static
     {
         return $this->removeQueryParameters(...$keys);
@@ -1481,7 +1489,9 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @deprecated Since version 7.2.0
+     *
      * @codeCoverageIgnore
+     *
      * @see Modifier::removeEmptyQueryPairs()
      *
      * Remove empty pairs from the URL query component.
@@ -1489,7 +1499,7 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
      * A pair is considered empty if it's name is the empty string
      * and its value is either the empty string or the null value
      */
-    #[Deprecated(message:'use League\Uri\Modifier::removeEmptyQueryPairs() instead', since:'league/uri-components:7.2.0')]
+    #[Deprecated(message: 'use League\Uri\Modifier::removeEmptyQueryPairs() instead', since: 'league/uri-components:7.2.0')]
     public function removeEmptyPairs(): static
     {
         return $this->removeEmptyQueryPairs();
@@ -1499,12 +1509,14 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @deprecated Since version 7.2.0
+     *
      * @codeCoverageIgnore
+     *
      * @see Modifier::removeQueryPairsByKey()
      *
      * Remove query data according to their key name.
      */
-    #[Deprecated(message:'use League\Uri\Modifier::removeQueryPairsByKey() instead', since:'league/uri-components:7.2.0')]
+    #[Deprecated(message: 'use League\Uri\Modifier::removeQueryPairsByKey() instead', since: 'league/uri-components:7.2.0')]
     public function removePairs(string ...$keys): static
     {
         return $this->removeQueryPairsByKey(...$keys);
@@ -1514,12 +1526,14 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @deprecated Since version 7.2.0
+     *
      * @codeCoverageIgnore
+     *
      * @see Modifier::removeQueryPairsByKey()
      *
      * Remove query data according to their key name.
      */
-    #[Deprecated(message:'use League\Uri\Modifier::removeQueryPairsByKey() instead', since:'league/uri-components:7.2.0')]
+    #[Deprecated(message: 'use League\Uri\Modifier::removeQueryPairsByKey() instead', since: 'league/uri-components:7.2.0')]
     public function removeQueryPairs(string ...$keys): static
     {
         return $this->removeQueryPairsByKey(...$keys);
@@ -1529,12 +1543,14 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @deprecated Since version 7.6.0
+     *
      * @codeCoverageIgnore
+     *
      * @see Modifier::unwrap()
      *
      * Remove query data according to their key name.
      */
-    #[Deprecated(message:'use League\Uri\Modifier::unwrap() instead', since:'league/uri-components:7.6.0')]
+    #[Deprecated(message: 'use League\Uri\Modifier::unwrap() instead', since: 'league/uri-components:7.6.0')]
     public function getUri(): Psr7UriInterface|UriInterface
     {
         if ($this->uri instanceof Rfc3986Uri || $this->uri instanceof WhatWgUrl) {
@@ -1548,12 +1564,14 @@ class Modifier implements Stringable, JsonSerializable, UriAccess, Conditionable
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @deprecated Since version 7.6.0
+     *
      * @codeCoverageIgnore
+     *
      * @see Modifier::toString()
      *
      * Remove query data according to their key name.
      */
-    #[Deprecated(message:'use League\Uri\Modifier::toString() instead', since:'league/uri-components:7.6.0')]
+    #[Deprecated(message: 'use League\Uri\Modifier::toString() instead', since: 'league/uri-components:7.6.0')]
     public function getUriString(): string
     {
         return $this->toString();

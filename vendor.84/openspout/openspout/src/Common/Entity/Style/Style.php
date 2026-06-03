@@ -15,7 +15,9 @@ final class Style
      * Default values.
      */
     public const DEFAULT_FONT_SIZE = 11;
+
     public const DEFAULT_FONT_COLOR = Color::BLACK;
+
     public const DEFAULT_FONT_NAME = 'Arial';
 
     /** @var int Style ID */
@@ -124,7 +126,7 @@ final class Style
 
     public function getId(): int
     {
-        \assert(0 <= $this->id);
+        \assert($this->id >= 0);
 
         return $this->id;
     }
@@ -235,7 +237,7 @@ final class Style
     }
 
     /**
-     * @param int $fontSize Font size, in pixels
+     * @param  int  $fontSize  Font size, in pixels
      */
     public function setFontSize(int $fontSize): self
     {
@@ -260,7 +262,7 @@ final class Style
     /**
      * Sets the font color.
      *
-     * @param string $fontColor ARGB color (@see Color)
+     * @param  string  $fontColor  ARGB color (@see Color)
      */
     public function setFontColor(string $fontColor): self
     {
@@ -283,7 +285,7 @@ final class Style
     }
 
     /**
-     * @param string $fontName Name of the font to use
+     * @param  string  $fontName  Name of the font to use
      */
     public function setFontName(string $fontName): self
     {
@@ -311,11 +313,11 @@ final class Style
     }
 
     /**
-     * @param string $cellAlignment The cell alignment
+     * @param  string  $cellAlignment  The cell alignment
      */
     public function setCellAlignment(string $cellAlignment): self
     {
-        if (!CellAlignment::isValid($cellAlignment)) {
+        if (! CellAlignment::isValid($cellAlignment)) {
             throw new InvalidArgumentException('Invalid cell alignment value');
         }
 
@@ -328,11 +330,11 @@ final class Style
     }
 
     /**
-     * @param string $cellVerticalAlignment The cell vertical alignment
+     * @param  string  $cellVerticalAlignment  The cell vertical alignment
      */
     public function setCellVerticalAlignment(string $cellVerticalAlignment): self
     {
-        if (!CellVerticalAlignment::isValid($cellVerticalAlignment)) {
+        if (! CellVerticalAlignment::isValid($cellVerticalAlignment)) {
             throw new InvalidArgumentException('Invalid cell vertical alignment value');
         }
 
@@ -373,7 +375,7 @@ final class Style
     }
 
     /**
-     * @param bool $shouldWrap Should the text be wrapped
+     * @param  bool  $shouldWrap  Should the text be wrapped
      */
     public function setShouldWrapText(bool $shouldWrap = true): self
     {
@@ -395,7 +397,7 @@ final class Style
     }
 
     /**
-     * @param int $rotation Rotate text
+     * @param  int  $rotation  Rotate text
      */
     public function setTextRotation(int $rotation): self
     {
@@ -422,7 +424,7 @@ final class Style
     /**
      * Sets the background color.
      *
-     * @param string $color ARGB color (@see Color)
+     * @param  string  $color  ARGB color (@see Color)
      */
     public function setBackgroundColor(string $color): self
     {

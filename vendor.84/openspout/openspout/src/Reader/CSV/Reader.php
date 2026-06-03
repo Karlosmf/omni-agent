@@ -20,13 +20,14 @@ final class Reader extends AbstractReader
     private SheetIterator $sheetIterator;
 
     private readonly Options $options;
+
     private readonly EncodingHelper $encodingHelper;
 
     public function __construct(
         ?Options $options = null,
         ?EncodingHelper $encodingHelper = null
     ) {
-        $this->options = $options ?? new Options();
+        $this->options = $options ?? new Options;
         $this->encodingHelper = $encodingHelper ?? EncodingHelper::factory();
     }
 
@@ -49,14 +50,14 @@ final class Reader extends AbstractReader
      * Opens the file at the given path to make it ready to be read.
      * If setEncoding() was not called, it assumes that the file is encoded in UTF-8.
      *
-     * @param string $filePath Path of the CSV file to be read
+     * @param  string  $filePath  Path of the CSV file to be read
      *
      * @throws IOException
      */
     protected function openReader(string $filePath): void
     {
         $resource = fopen($filePath, 'r');
-        \assert(false !== $resource);
+        \assert($resource !== false);
         $this->filePointer = $resource;
 
         $this->sheetIterator = new SheetIterator(

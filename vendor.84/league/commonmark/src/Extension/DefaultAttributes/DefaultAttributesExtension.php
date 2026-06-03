@@ -34,6 +34,6 @@ final class DefaultAttributesExtension implements ConfigurableExtensionInterface
 
     public function register(EnvironmentBuilderInterface $environment): void
     {
-        $environment->addEventListener(DocumentParsedEvent::class, [new ApplyDefaultAttributesProcessor(), 'onDocumentParsed']);
+        $environment->addEventListener(DocumentParsedEvent::class, [new ApplyDefaultAttributesProcessor, 'onDocumentParsed']);
     }
 }

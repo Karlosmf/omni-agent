@@ -27,27 +27,27 @@ trait HasFilters
     /**
      * @var int | array<string, int | null> | Closure
      */
-    protected int | array | Closure | null $filtersFormColumns = null;
+    protected int|array|Closure|null $filtersFormColumns = null;
 
-    protected string | Closure | null $filtersFormMaxHeight = null;
+    protected string|Closure|null $filtersFormMaxHeight = null;
 
-    protected Width | string | Closure | null $filtersFormWidth = null;
+    protected Width|string|Closure|null $filtersFormWidth = null;
 
-    protected FiltersLayout | Closure | null $filtersLayout = null;
+    protected FiltersLayout|Closure|null $filtersLayout = null;
 
     protected ?Closure $modifyFiltersTriggerActionUsing = null;
 
-    protected bool | Closure | null $persistsFiltersInSession = false;
+    protected bool|Closure|null $persistsFiltersInSession = false;
 
-    protected bool | Closure $shouldDeselectAllRecordsWhenFiltered = true;
+    protected bool|Closure $shouldDeselectAllRecordsWhenFiltered = true;
 
-    protected bool | Closure $hasDeferredFilters = true;
+    protected bool|Closure $hasDeferredFilters = true;
 
     protected ?Closure $modifyFiltersApplyActionUsing = null;
 
-    protected FiltersResetActionPosition | Closure | null $filtersResetActionPosition = null;
+    protected FiltersResetActionPosition|Closure|null $filtersResetActionPosition = null;
 
-    public function deferFilters(bool | Closure $condition = true): static
+    public function deferFilters(bool|Closure $condition = true): static
     {
         $this->hasDeferredFilters = $condition;
 
@@ -66,7 +66,7 @@ trait HasFilters
         return $this;
     }
 
-    public function deselectAllRecordsWhenFiltered(bool | Closure $condition = true): static
+    public function deselectAllRecordsWhenFiltered(bool|Closure $condition = true): static
     {
         $this->shouldDeselectAllRecordsWhenFiltered = $condition;
 
@@ -76,7 +76,7 @@ trait HasFilters
     /**
      * @param  array<BaseFilter>  $filters
      */
-    public function filters(array $filters, FiltersLayout | string | Closure | null $layout = null): static
+    public function filters(array $filters, FiltersLayout|string|Closure|null $layout = null): static
     {
         $this->filters = [];
         $this->pushFilters($filters);
@@ -105,28 +105,28 @@ trait HasFilters
     /**
      * @param  int | array<string, int | null> | Closure  $columns
      */
-    public function filtersFormColumns(int | array | Closure | null $columns): static
+    public function filtersFormColumns(int|array|Closure|null $columns): static
     {
         $this->filtersFormColumns = $columns;
 
         return $this;
     }
 
-    public function filtersFormMaxHeight(string | Closure | null $height): static
+    public function filtersFormMaxHeight(string|Closure|null $height): static
     {
         $this->filtersFormMaxHeight = $height;
 
         return $this;
     }
 
-    public function filtersFormWidth(Width | string | Closure | null $width): static
+    public function filtersFormWidth(Width|string|Closure|null $width): static
     {
         $this->filtersFormWidth = $width;
 
         return $this;
     }
 
-    public function filtersResetActionPosition(FiltersResetActionPosition | Closure | null $position): static
+    public function filtersResetActionPosition(FiltersResetActionPosition|Closure|null $position): static
     {
         $this->filtersResetActionPosition = $position;
 
@@ -138,7 +138,7 @@ trait HasFilters
         return $this->evaluate($this->filtersResetActionPosition) ?? FiltersResetActionPosition::Header;
     }
 
-    public function filtersLayout(FiltersLayout | Closure | null $filtersLayout): static
+    public function filtersLayout(FiltersLayout|Closure|null $filtersLayout): static
     {
         $this->filtersLayout = $filtersLayout;
 
@@ -152,7 +152,7 @@ trait HasFilters
         return $this;
     }
 
-    public function persistFiltersInSession(bool | Closure $condition = true): static
+    public function persistFiltersInSession(bool|Closure $condition = true): static
     {
         $this->persistsFiltersInSession = $condition;
 
@@ -270,7 +270,7 @@ trait HasFilters
     /**
      * @return int | array<string, int | null>
      */
-    public function getFiltersFormColumns(): int | array
+    public function getFiltersFormColumns(): int|array
     {
         return $this->evaluate($this->filtersFormColumns) ?? match ($this->getFiltersLayout()) {
             FiltersLayout::AboveContent, FiltersLayout::AboveContentCollapsible, FiltersLayout::BelowContent => [
@@ -288,7 +288,7 @@ trait HasFilters
         return $this->evaluate($this->filtersFormMaxHeight);
     }
 
-    public function getFiltersFormWidth(): Width | string | null
+    public function getFiltersFormWidth(): Width|string|null
     {
         return $this->evaluate($this->filtersFormWidth) ?? match ($this->getFiltersFormColumns()) {
             2 => Width::TwoExtraLarge,

@@ -14,9 +14,13 @@ namespace Psy\ManualUpdater;
 interface Checker
 {
     const ALWAYS = 'always';
+
     const DAILY = 'daily';
+
     const WEEKLY = 'weekly';
+
     const MONTHLY = 'monthly';
+
     const NEVER = 'never';
 
     /**

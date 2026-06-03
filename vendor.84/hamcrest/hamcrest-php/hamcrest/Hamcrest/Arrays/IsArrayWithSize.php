@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Arrays;
 
 /*
@@ -15,7 +16,6 @@ use Hamcrest\Util;
  */
 class IsArrayWithSize extends FeatureMatcher
 {
-
     public function __construct(Matcher $sizeMatcher)
     {
         parent::__construct(
@@ -35,9 +35,9 @@ class IsArrayWithSize extends FeatureMatcher
     /**
      * Does array size satisfy a given matcher?
      *
-     * @param \Hamcrest\Matcher|int $size as a {@link Hamcrest\Matcher} or a value.
+     * @param  Matcher|int  $size  as a {@link Hamcrest\Matcher} or a value.
+     * @return IsArrayWithSize
      *
-     * @return \Hamcrest\Arrays\IsArrayWithSize
      * @factory
      */
     public static function arrayWithSize($size)

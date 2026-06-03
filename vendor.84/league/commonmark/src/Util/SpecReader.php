@@ -20,9 +20,7 @@ use League\CommonMark\Exception\IOException;
  */
 final class SpecReader
 {
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * @return iterable<string, array{input: string, output: string, type: string, section: string, number: int}>
@@ -37,21 +35,22 @@ final class SpecReader
         \preg_match_all('/^`{32} (example ?\w*)\n([\s\S]*?)^\.\n([\s\S]*?)^`{32}$|^#{1,6} *(.*)$/m', $data, $matches, PREG_SET_ORDER);
 
         $currentSection = 'Example';
-        $exampleNumber  = 0;
+        $exampleNumber = 0;
 
         foreach ($matches as $match) {
             \assert(isset($match[1], $match[2], $match[3]));
             if (isset($match[4])) {
                 $currentSection = $match[4];
+
                 continue;
             }
 
-            yield \trim($currentSection . ' #' . $exampleNumber) => [
-                'input'   => \str_replace('→', "\t", $match[2]),
-                'output'  => \str_replace('→', "\t", $match[3]),
-                'type'    => $match[1],
+            yield \trim($currentSection.' #'.$exampleNumber) => [
+                'input' => \str_replace('→', "\t", $match[2]),
+                'output' => \str_replace('→', "\t", $match[3]),
+                'type' => $match[1],
                 'section' => $currentSection,
-                'number'  => $exampleNumber++,
+                'number' => $exampleNumber++,
             ];
         }
     }

@@ -30,6 +30,7 @@ class Person extends \Faker\Provider\Person
      * @see http://goo.gl/v6bScG document with all pt abreviations *
      */
     protected static $titleMale = ['Sr.', 'Dr.', 'Exmo.', 'Eng.', 'Eng.º', 'Ex.', 'Exº'];
+
     protected static $titleFemale = ['Sra.', 'Dra.', 'Exma', 'Eng.ª', 'Exª'];
 
     protected static $firstEightDigitsFormat = [
@@ -62,7 +63,7 @@ class Person extends \Faker\Provider\Person
         $firstEightDigits = static::numerify(static::randomElement(static::$firstEightDigitsFormat));
         $lastDigit = static::dvCalcMod11($firstEightDigits);
 
-        return $firstEightDigits . $lastDigit;
+        return $firstEightDigits.$lastDigit;
     }
 
     /**
@@ -70,8 +71,7 @@ class Person extends \Faker\Provider\Person
      *
      * @see http://pt.wikipedia.org/wiki/D%C3%ADgito_verificador
      *
-     * @param string $number number
-     *
+     * @param  string  $number  number
      * @return int
      */
     public static function dvCalcMod11($number)
@@ -80,7 +80,7 @@ class Person extends \Faker\Provider\Person
         $sum = 0;
         $factor = 2;
 
-        for ($i = strlen($number); $i > 0; --$i) {
+        for ($i = strlen($number); $i > 0; $i--) {
             $numbers[$i] = substr($number, $i - 1, 1);
             $partial[$i] = $numbers[$i] * $factor;
             $sum += $partial[$i];
@@ -88,7 +88,7 @@ class Person extends \Faker\Provider\Person
             if ($factor == $base) {
                 $factor = 1;
             }
-            ++$factor;
+            $factor++;
         }
         $res = $sum % 11;
 

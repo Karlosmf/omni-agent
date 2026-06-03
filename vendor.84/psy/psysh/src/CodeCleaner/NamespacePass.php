@@ -30,7 +30,7 @@ use Psy\CodeCleaner;
 class NamespacePass extends NamespaceAwarePass
 {
     /**
-     * @param ?CodeCleaner $cleaner deprecated parameter, use setCleaner() instead
+     * @param  ?CodeCleaner  $cleaner  deprecated parameter, use setCleaner() instead
      *
      * @phpstan-ignore-next-line method.unused
      */
@@ -45,7 +45,6 @@ class NamespacePass extends NamespaceAwarePass
      * Otherwise, apply remembered namespaces to the code until a new namespace
      * is encountered.
      *
-     * @param array $nodes
      *
      * @return Node[]|null Array of nodes
      */
@@ -74,7 +73,7 @@ class NamespacePass extends NamespaceAwarePass
         // Wrap in current namespace if one is set
         $currentNamespace = $this->getCurrentNamespace();
 
-        if (!$currentNamespace) {
+        if (! $currentNamespace) {
             return $nodes;
         }
 
@@ -86,8 +85,6 @@ class NamespacePass extends NamespaceAwarePass
      * Get the current namespace as a Name node.
      *
      * This is more complicated than it needs to be, because we're not storing namespace as a Name.
-     *
-     * @return Name|null
      */
     private function getCurrentNamespace(): ?Name
     {
@@ -98,8 +95,6 @@ class NamespacePass extends NamespaceAwarePass
 
     /**
      * Update the namespace in CodeCleaner and clear aliases.
-     *
-     * @param Name|null $namespace
      */
     private function setNamespace(?Name $namespace)
     {

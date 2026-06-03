@@ -17,6 +17,7 @@ class WebDriverWindow
      * @var ExecuteMethod
      */
     protected $executor;
+
     /**
      * @var bool
      */
@@ -73,7 +74,7 @@ class WebDriverWindow
      */
     public function minimize()
     {
-        if (!$this->isW3cCompliant) {
+        if (! $this->isW3cCompliant) {
             throw new UnsupportedOperationException('Minimize window is only supported in W3C mode');
         }
 
@@ -108,7 +109,7 @@ class WebDriverWindow
      */
     public function fullscreen()
     {
-        if (!$this->isW3cCompliant) {
+        if (! $this->isW3cCompliant) {
             throw new UnsupportedOperationException('The Fullscreen window command is only supported in W3C mode');
         }
 
@@ -167,14 +168,15 @@ class WebDriverWindow
      * Set the browser orientation. The orientation should either
      * LANDSCAPE|PORTRAIT
      *
-     * @param string $orientation
-     * @throws IndexOutOfBoundsException
+     * @param  string  $orientation
      * @return WebDriverWindow The instance.
+     *
+     * @throws IndexOutOfBoundsException
      */
     public function setScreenOrientation($orientation)
     {
         $orientation = mb_strtoupper($orientation);
-        if (!in_array($orientation, ['PORTRAIT', 'LANDSCAPE'], true)) {
+        if (! in_array($orientation, ['PORTRAIT', 'LANDSCAPE'], true)) {
             throw LogicException::forError('Orientation must be either PORTRAIT, or LANDSCAPE');
         }
 

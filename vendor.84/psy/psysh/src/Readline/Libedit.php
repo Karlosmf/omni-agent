@@ -33,7 +33,7 @@ class Libedit extends GNUReadline
      */
     public static function isSupported(): bool
     {
-        return \function_exists('readline') && !\function_exists('readline_list_history');
+        return \function_exists('readline') && ! \function_exists('readline_list_history');
     }
 
     /**
@@ -54,7 +54,7 @@ class Libedit extends GNUReadline
         }
 
         $history = \file_get_contents($this->historyFile);
-        if (!$history) {
+        if (! $history) {
             return [];
         }
 
@@ -84,7 +84,7 @@ class Libedit extends GNUReadline
         // owned by the user, even if it is writable. Warn when this happens.
         //
         // See https://github.com/bobthecow/psysh/issues/552
-        if ($res === false && !$this->hasWarnedOwnership) {
+        if ($res === false && ! $this->hasWarnedOwnership) {
             if (\is_file($this->historyFile) && \is_writable($this->historyFile)) {
                 $this->hasWarnedOwnership = true;
                 $msg = \sprintf('Error writing history file, check file ownership: %s', ConfigPaths::prettyPath($this->historyFile));
@@ -101,14 +101,13 @@ class Libedit extends GNUReadline
      * if "\0" is found in an entry,
      * everything from it until the next line is a comment.
      *
-     * @param string $line The history line to parse
-     *
+     * @param  string  $line  The history line to parse
      * @return string|null
      */
     protected function parseHistoryLine(string $line)
     {
         // empty line, comment or timestamp
-        if (!$line || $line[0] === "\0") {
+        if (! $line || $line[0] === "\0") {
             return null;
         }
         // if "\0" is found in an entry, then

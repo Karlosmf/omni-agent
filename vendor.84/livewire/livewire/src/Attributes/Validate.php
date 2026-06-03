@@ -10,4 +10,3 @@ class Validate extends BaseValidate
 {
     //
 }
-

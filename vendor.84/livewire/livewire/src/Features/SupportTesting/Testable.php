@@ -2,24 +2,29 @@
 
 namespace Livewire\Features\SupportTesting;
 
-use Livewire\Features\SupportFileDownloads\TestsFileDownloads;
-use Livewire\Features\SupportValidation\TestsValidation;
-use Livewire\Features\SupportRedirects\TestsRedirects;
-use Livewire\Features\SupportEvents\TestsEvents;
-use Illuminate\Support\Traits\Macroable;
 use BackedEnum;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Traits\Macroable;
+use Illuminate\Testing\TestResponse;
+use Illuminate\Validation\ValidationException;
+use Livewire\Component;
+use Livewire\Features\SupportEvents\TestsEvents;
+use Livewire\Features\SupportFileDownloads\TestsFileDownloads;
+use Livewire\Features\SupportFileUploads\FileUploadConfiguration;
+use Livewire\Features\SupportFileUploads\FileUploadController;
+use Livewire\Features\SupportRedirects\TestsRedirects;
+use Livewire\Features\SupportValidation\TestsValidation;
 
-/** @mixin \Illuminate\Testing\TestResponse */
-
+/** @mixin TestResponse */
 class Testable
 {
+    use Macroable { Macroable::__call as macroCall; }
     use MakesAssertions,
         TestsEvents,
+        TestsFileDownloads,
         TestsRedirects,
-        TestsValidation,
-        TestsFileDownloads;
-
-    use Macroable { Macroable::__call as macroCall; }
+        TestsValidation;
 
     protected function __construct(
         protected RequestBroker $requestBroker,
@@ -27,15 +32,14 @@ class Testable
     ) {}
 
     /**
-     * @param string $name
-     * @param array $params
-     * @param array $fromQueryString
-     * @param array $cookies
-     * @param array $headers
-     *
+     * @param  string  $name
+     * @param  array  $params
+     * @param  array  $fromQueryString
+     * @param  array  $cookies
+     * @param  array  $headers
      * @return static
      */
-    static function create($name, $params = [], $fromQueryString = [], $cookies = [], $headers = [])
+    public static function create($name, $params = [], $fromQueryString = [], $cookies = [], $headers = [])
     {
         $name = static::normalizeAndRegisterComponentName($name);
 
@@ -54,11 +58,10 @@ class Testable
     }
 
     /**
-     * @param string|array<string>|object $name
-     *
+     * @param  string|array<string>|object  $name
      * @return string
      */
-    static function normalizeAndRegisterComponentName($name)
+    public static function normalizeAndRegisterComponentName($name)
     {
         if (is_array($otherComponents = $name)) {
             $name = array_shift($otherComponents);
@@ -84,11 +87,10 @@ class Testable
     }
 
     /**
-     * @param ?string $driver
-     *
+     * @param  ?string  $driver
      * @return void
      */
-    static function actingAs(\Illuminate\Contracts\Auth\Authenticatable $user, $driver = null)
+    public static function actingAs(Authenticatable $user, $driver = null)
     {
         if (isset($user->wasRecentlyCreated) && $user->wasRecentlyCreated) {
             $user->wasRecentlyCreated = false;
@@ -99,44 +101,42 @@ class Testable
         auth()->shouldUse($driver);
     }
 
-    function id() {
+    public function id()
+    {
         return $this->lastState->getComponent()->getId();
     }
 
     /**
-     * @param string $key
+     * @param  string  $key
      */
-    function get($key)
+    public function get($key)
     {
         return data_get($this->lastState->getComponent(), $key);
     }
 
     /**
-     * @param bool $stripInitialData
-     *
+     * @param  bool  $stripInitialData
      * @return string
      */
-    function html($stripInitialData = false)
+    public function html($stripInitialData = false)
     {
         return $this->lastState->getHtml($stripInitialData);
     }
 
     /**
-     * @param string $name
-     *
+     * @param  string  $name
      * @return $this
      */
-    function updateProperty($name, $value = null)
+    public function updateProperty($name, $value = null)
     {
         return $this->set($name, $value);
     }
 
     /**
-     * @param array $values
-     *
+     * @param  array  $values
      * @return $this
      */
-    function fill($values)
+    public function fill($values)
     {
         foreach ($values as $name => $value) {
             $this->set($name, $value);
@@ -146,21 +146,19 @@ class Testable
     }
 
     /**
-     * @param string $name
-     *
+     * @param  string  $name
      * @return $this
      */
-    function toggle($name)
+    public function toggle($name)
     {
         return $this->set($name, ! $this->get($name));
     }
 
     /**
      * @param string|array<string mixed> $name
-     *
      * @return $this
      */
-    function set($name, $value = null)
+    public function set($name, $value = null)
     {
         if (is_array($name)) {
             foreach ($name as $key => $value) {
@@ -174,15 +172,14 @@ class Testable
     }
 
     /**
-     * @param string $name
-     *
+     * @param  string  $name
      * @return $this
      */
-    function setProperty($name, $value)
+    public function setProperty($name, $value)
     {
-        if ($value instanceof \Illuminate\Http\UploadedFile) {
+        if ($value instanceof UploadedFile) {
             return $this->upload($name, [$value]);
-        } elseif (is_array($value) && isset($value[0]) && $value[0] instanceof \Illuminate\Http\UploadedFile) {
+        } elseif (is_array($value) && isset($value[0]) && $value[0] instanceof UploadedFile) {
             return $this->upload($name, $value, $isMultiple = true);
         } elseif ($value instanceof BackedEnum) {
             $value = $value->value;
@@ -192,21 +189,19 @@ class Testable
     }
 
     /**
-     * @param string $method
-     *
+     * @param  string  $method
      * @return $this
      */
-    function runAction($method, ...$params)
+    public function runAction($method, ...$params)
     {
         return $this->call($method, ...$params);
     }
 
     /**
-     * @param string $method
-     *
+     * @param  string  $method
      * @return $this
      */
-    function call($method, ...$params)
+    public function call($method, ...$params)
     {
         if ($method === '$refresh') {
             return $this->commit();
@@ -221,14 +216,14 @@ class Testable
                 'method' => $method,
                 'params' => $params,
                 'path' => '',
-            ]
+            ],
         ]);
     }
 
     /**
      * @return $this
      */
-    function commit()
+    public function commit()
     {
         return $this->update();
     }
@@ -236,18 +231,17 @@ class Testable
     /**
      * @return $this
      */
-    function refresh()
+    public function refresh()
     {
         return $this->update();
     }
 
     /**
-     * @param array $calls
-     * @param array $updates
-     *
+     * @param  array  $calls
+     * @param  array  $updates
      * @return $this
      */
-    function update($calls = [], $updates = [])
+    public function update($calls = [], $updates = [])
     {
         $newState = SubsequentRender::make(
             $this->requestBroker,
@@ -265,13 +259,12 @@ class Testable
     /**
      * @todo Move me outta here and into the file upload folder somehow...
      *
-     * @param string $name
-     * @param array $files
-     * @param bool $isMultiple
-     *
+     * @param  string  $name
+     * @param  array  $files
+     * @param  bool  $isMultiple
      * @return $this
      */
-    function upload($name, $files, $isMultiple = false)
+    public function upload($name, $files, $isMultiple = false)
     {
         // This method simulates the calls Livewire's JavaScript
         // normally makes for file uploads.
@@ -291,10 +284,10 @@ class Testable
         // This is where either the pre-signed S3 url or the regular Livewire signed
         // upload url would do its thing and return a hashed version of the uploaded
         // file in a tmp directory.
-        $storage = \Livewire\Features\SupportFileUploads\FileUploadConfiguration::storage();
+        $storage = FileUploadConfiguration::storage();
         try {
-            $fileHashes = (new \Livewire\Features\SupportFileUploads\FileUploadController)->validateAndStore($files, \Livewire\Features\SupportFileUploads\FileUploadConfiguration::disk());
-        } catch (\Illuminate\Validation\ValidationException $e) {
+            $fileHashes = (new FileUploadController)->validateAndStore($files, FileUploadConfiguration::disk());
+        } catch (ValidationException $e) {
             $this->call('_uploadErrored', $name, json_encode(['errors' => $e->errors()]), $isMultiple);
 
             return $this;
@@ -311,7 +304,7 @@ class Testable
         })->toArray();
 
         collect($fileHashes)->zip($newFileHashes)->mapSpread(function ($fileHash, $newFileHash) use ($storage) {
-            $storage->move('/'.\Livewire\Features\SupportFileUploads\FileUploadConfiguration::path($fileHash), '/'.\Livewire\Features\SupportFileUploads\FileUploadConfiguration::path($newFileHash));
+            $storage->move('/'.FileUploadConfiguration::path($fileHash), '/'.FileUploadConfiguration::path($newFileHash));
         });
 
         // Now we finish the upload with a final call to the Livewire component
@@ -322,27 +315,27 @@ class Testable
     }
 
     /**
-     * @param string $key
+     * @param  string  $key
      */
-    function viewData($key)
+    public function viewData($key)
     {
         return $this->lastState->getView()->getData()[$key];
     }
 
-    function getData()
+    public function getData()
     {
         return $this->lastState->getSnapshotData();
     }
 
-    function instance()
+    public function instance()
     {
         return $this->lastState->getComponent();
     }
 
     /**
-     * @return \Livewire\Component
+     * @return Component
      */
-    function invade()
+    public function invade()
     {
         return \Livewire\invade($this->lastState->getComponent());
     }
@@ -350,7 +343,7 @@ class Testable
     /**
      * @return $this
      */
-    function dump()
+    public function dump()
     {
         dump($this->lastState->getHtml());
 
@@ -360,7 +353,7 @@ class Testable
     /**
      * @return void
      */
-    function dd()
+    public function dd()
     {
         dd($this->lastState->getHtml());
     }
@@ -368,7 +361,7 @@ class Testable
     /**
      * @return $this
      */
-    function tap($callback)
+    public function tap($callback)
     {
         $callback($this);
 
@@ -376,23 +369,28 @@ class Testable
     }
 
     /**
-     * @param string $property
+     * @param  string  $property
      */
-    function __get($property)
+    public function __get($property)
     {
-        if ($property === 'effects') return $this->lastState->getEffects();
-        if ($property === 'snapshot') return $this->lastState->getSnapshot();
-        if ($property === 'target') return $this->lastState->getComponent();
+        if ($property === 'effects') {
+            return $this->lastState->getEffects();
+        }
+        if ($property === 'snapshot') {
+            return $this->lastState->getSnapshot();
+        }
+        if ($property === 'target') {
+            return $this->lastState->getComponent();
+        }
 
         return $this->instance()->$property;
     }
 
     /**
-     * @param string $method
-     *
+     * @param  string  $method
      * @return $this
      */
-    function __call($method, $params)
+    public function __call($method, $params)
     {
         if (static::hasMacro($method)) {
             return $this->macroCall($method, $params);

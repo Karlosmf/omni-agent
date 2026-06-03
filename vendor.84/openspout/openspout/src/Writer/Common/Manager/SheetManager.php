@@ -41,7 +41,7 @@ final class SheetManager
      *
      * @see Sheet::setName for validity rules.
      *
-     * @param Sheet $sheet The sheet whose future name is checked
+     * @param  Sheet  $sheet  The sheet whose future name is checked
      *
      * @throws InvalidSheetNameException if the sheet's name is invalid
      */
@@ -50,9 +50,9 @@ final class SheetManager
         $failedRequirements = [];
         $nameLength = $this->stringHelper->getStringLength($name);
 
-        if (!$this->isNameUnique($name, $sheet)) {
+        if (! $this->isNameUnique($name, $sheet)) {
             $failedRequirements[] = 'It should be unique';
-        } elseif (0 === $nameLength) {
+        } elseif ($nameLength === 0) {
             $failedRequirements[] = 'It should not be blank';
         } else {
             if ($nameLength > self::MAX_LENGTH_SHEET_NAME) {
@@ -68,7 +68,7 @@ final class SheetManager
             }
         }
 
-        if (0 !== \count($failedRequirements)) {
+        if (\count($failedRequirements) !== 0) {
             $errorMessage = "The sheet's name (\"{$name}\") is invalid. It did not respect these rules:\n - ";
             $errorMessage .= implode("\n - ", $failedRequirements);
 
@@ -77,11 +77,11 @@ final class SheetManager
     }
 
     /**
-     * @param string $workbookId Workbook ID associated to a Sheet
+     * @param  string  $workbookId  Workbook ID associated to a Sheet
      */
     public function markWorkbookIdAsUsed(string $workbookId): void
     {
-        if (!isset(self::$SHEETS_NAME_USED[$workbookId])) {
+        if (! isset(self::$SHEETS_NAME_USED[$workbookId])) {
             self::$SHEETS_NAME_USED[$workbookId] = [];
         }
     }
@@ -108,7 +108,7 @@ final class SheetManager
      */
     private function doesStartOrEndWithSingleQuote(string $name): bool
     {
-        $startsWithSingleQuote = (0 === $this->stringHelper->getCharFirstOccurrencePosition('\'', $name));
+        $startsWithSingleQuote = ($this->stringHelper->getCharFirstOccurrencePosition('\'', $name) === 0);
         $endsWithSingleQuote = ($this->stringHelper->getCharLastOccurrencePosition('\'', $name) === ($this->stringHelper->getStringLength($name) - 1));
 
         return $startsWithSingleQuote || $endsWithSingleQuote;
@@ -117,8 +117,7 @@ final class SheetManager
     /**
      * Returns whether the given name is unique.
      *
-     * @param Sheet $sheet The sheet whose future name is checked
-     *
+     * @param  Sheet  $sheet  The sheet whose future name is checked
      * @return bool TRUE if the name is unique, FALSE otherwise
      */
     private function isNameUnique(string $name, Sheet $sheet): bool

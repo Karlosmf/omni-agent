@@ -10,14 +10,15 @@ trait IteratorAsserts
 
     /**
      * @template TItemValue
-     * @param iterable<string|int, TItemValue>|array<string|int, TItemValue> $list
-     * @param callable(TItemValue $item): bool $check
-     * @param callable(string|int $key, TItemValue $item): string $message
+     *
+     * @param  iterable<string|int, TItemValue>|array<string|int, TItemValue>  $list
+     * @param  callable(TItemValue $item): bool  $check
+     * @param  callable(string|int $key, TItemValue $item): string  $message
      */
     public function assertEach($list, callable $check, callable $message): void
     {
         foreach ($list as $key => $item) {
-            if (!$check($item)) {
+            if (! $check($item)) {
                 self::assertTrue(false, $message($key, $item));
             }
         }
@@ -27,9 +28,10 @@ trait IteratorAsserts
 
     /**
      * @template TItemValue
-     * @param iterable<string|int, TItemValue>|array<string|int, TItemValue> $list
-     * @param callable(TItemValue $item): bool $check
-     * @param callable(string|int $key, TItemValue $item): string $message
+     *
+     * @param  iterable<string|int, TItemValue>|array<string|int, TItemValue>  $list
+     * @param  callable(TItemValue $item): bool  $check
+     * @param  callable(string|int $key, TItemValue $item): string  $message
      */
     public function assertNotOne($list, callable $check, callable $message): void
     {
@@ -44,8 +46,9 @@ trait IteratorAsserts
 
     /**
      * @template TItemValue
-     * @param iterable<string|int, TItemValue>|array<string|int, TItemValue> $list
-     * @param callable(TItemValue $item): bool $check
+     *
+     * @param  iterable<string|int, TItemValue>|array<string|int, TItemValue>  $list
+     * @param  callable(TItemValue $item): bool  $check
      */
     public function assertAny($list, callable $check, string $message): void
     {

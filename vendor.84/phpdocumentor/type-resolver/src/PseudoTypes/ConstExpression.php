@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of phpDocumentor.
  *
@@ -24,6 +25,7 @@ final class ConstExpression implements PseudoType
 {
     /** @var Type */
     private $owner;
+
     /** @var string */
     private $expression;
 
@@ -45,7 +47,7 @@ final class ConstExpression implements PseudoType
 
     public function underlyingType(): Type
     {
-        return new Mixed_();
+        return new Mixed_;
     }
 
     public function __toString(): string

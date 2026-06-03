@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -11,11 +13,12 @@
 
 namespace Monolog\Test;
 
+use Monolog\Formatter\FormatterInterface;
+use Monolog\JsonSerializableDateTimeImmutable;
 use Monolog\Level;
 use Monolog\Logger;
 use Monolog\LogRecord;
-use Monolog\JsonSerializableDateTimeImmutable;
-use Monolog\Formatter\FormatterInterface;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 
 /**
@@ -23,11 +26,11 @@ use Psr\Log\LogLevel;
  *
  * @author Jordi Boggiano <j.boggiano@seld.be>
  */
-class MonologTestCase extends \PHPUnit\Framework\TestCase
+class MonologTestCase extends TestCase
 {
     /**
-     * @param array<mixed> $context
-     * @param array<mixed> $extra
+     * @param  array<mixed>  $context
+     * @param  array<mixed>  $extra
      *
      * @phpstan-param value-of<Level::VALUES>|value-of<Level::NAMES>|Level|LogLevel::* $level
      */

@@ -2,17 +2,18 @@
 
 namespace Livewire\Features\SupportEvents;
 
-use function Livewire\wrap;
-use function Livewire\store;
-use function Livewire\invade;
-use Livewire\Features\SupportAttributes\AttributeLevel;
 use Livewire\ComponentHook;
 use Livewire\Exceptions\EventHandlerDoesNotExist;
+use Livewire\Features\SupportAttributes\AttributeLevel;
 use Livewire\Mechanisms\HandleComponents\BaseRenderless;
+
+use function Livewire\invade;
+use function Livewire\store;
+use function Livewire\wrap;
 
 class SupportEvents extends ComponentHook
 {
-    function call($method, $params, $returnEarly)
+    public function call($method, $params, $returnEarly)
     {
         if ($method === '__dispatch') {
             [$name, $params] = $params;
@@ -38,11 +39,13 @@ class SupportEvents extends ComponentHook
                 ->filter(fn ($i) => $i->getLevel() === AttributeLevel::METHOD)
                 ->count() > 0;
 
-            if ($isRenderless) $this->component->skipRender();
+            if ($isRenderless) {
+                $this->component->skipRender();
+            }
         }
     }
 
-    function dehydrate($context)
+    public function dehydrate($context)
     {
         if ($context->mounting) {
             $listeners = static::getListenerEventNames($this->component);
@@ -55,7 +58,7 @@ class SupportEvents extends ComponentHook
         $dispatches && $context->addEffect('dispatches', $dispatches);
     }
 
-    static function getListenerEventNames($component)
+    public static function getListenerEventNames($component)
     {
         $listeners = static::getComponentListeners($component);
 
@@ -65,20 +68,24 @@ class SupportEvents extends ComponentHook
             ->toArray();
     }
 
-    static function getListenerMethodName($component, $name)
+    public static function getListenerMethodName($component, $name)
     {
         $listeners = static::getComponentListeners($component);
 
         foreach ($listeners as $event => $method) {
-            if (is_numeric($event)) $event = $method;
+            if (is_numeric($event)) {
+                $event = $method;
+            }
 
-            if ($name === $event) return $method;
+            if ($name === $event) {
+                return $method;
+            }
         }
 
         throw new \Exception('Event method not found');
     }
 
-    static function getComponentListeners($component)
+    public static function getComponentListeners($component)
     {
         $fromClass = invade($component)->getListeners();
 
@@ -89,17 +96,19 @@ class SupportEvents extends ComponentHook
         return static::replaceDynamicEventNamePlaceholders($listeners, $component);
     }
 
-    function getServerDispatchedEvents($component)
+    public function getServerDispatchedEvents($component)
     {
         return collect(store($component)->get('dispatched', []))
             ->map(fn ($event) => $event->serialize())
             ->toArray();
     }
 
-    static function replaceDynamicEventNamePlaceholders($listeners, $component)
+    public static function replaceDynamicEventNamePlaceholders($listeners, $component)
     {
         foreach ($listeners as $event => $method) {
-            if (is_numeric($event)) continue;
+            if (is_numeric($event)) {
+                continue;
+            }
 
             $replaced = static::replaceDynamicPlaceholders($event, $component);
 
@@ -111,7 +120,7 @@ class SupportEvents extends ComponentHook
         return $listeners;
     }
 
-    static function replaceDynamicPlaceholders($event, $component)
+    public static function replaceDynamicPlaceholders($event, $component)
     {
         return preg_replace_callback('/\{(.*)\}/U', function ($matches) use ($component) {
             return data_get($component, $matches[1], function () use ($matches) {

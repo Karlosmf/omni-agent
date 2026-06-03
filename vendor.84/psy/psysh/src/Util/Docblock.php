@@ -35,7 +35,7 @@ class Docblock
      */
     public static $vectors = [
         'throws' => ['type', 'desc'],
-        'param'  => ['type', 'var', 'desc'],
+        'param' => ['type', 'var', 'desc'],
         'return' => ['type', 'desc'],
     ];
 
@@ -77,8 +77,6 @@ class Docblock
 
     /**
      * Docblock constructor.
-     *
-     * @param \Reflector $reflector
      */
     public function __construct(\Reflector $reflector)
     {
@@ -92,7 +90,7 @@ class Docblock
     /**
      * Set and parse the docblock comment.
      *
-     * @param string $comment The docblock
+     * @param  string  $comment  The docblock
      */
     protected function setComment(string $comment)
     {
@@ -106,7 +104,6 @@ class Docblock
     /**
      * Find the length of the docblock prefix.
      *
-     * @param array $lines
      *
      * @return int Prefix length
      */
@@ -142,7 +139,7 @@ class Docblock
     /**
      * Parse the comment into the component parts and set the state of the object.
      *
-     * @param string $comment The docblock
+     * @param  string  $comment  The docblock
      */
     protected function parseComment(string $comment)
     {
@@ -176,7 +173,7 @@ class Docblock
         foreach ($blocks as $block => $body) {
             $body = \trim(\implode("\n", $body));
 
-            if ($block === 0 && !self::isTagged($body)) {
+            if ($block === 0 && ! self::isTagged($body)) {
                 // This is the description block
                 $this->desc = $body;
             } else {
@@ -209,7 +206,7 @@ class Docblock
     /**
      * Whether or not a docblock contains a given @tag.
      *
-     * @param string $tag The name of the @tag to check for
+     * @param  string  $tag  The name of the @tag to check for
      */
     public function hasTag(string $tag): bool
     {
@@ -218,10 +215,6 @@ class Docblock
 
     /**
      * The value of a tag.
-     *
-     * @param string $tag
-     *
-     * @return array|null
      */
     public function tag(string $tag): ?array
     {
@@ -230,18 +223,15 @@ class Docblock
 
     /**
      * Whether or not a string begins with a @tag.
-     *
-     * @param string $str
      */
     public static function isTagged(string $str): bool
     {
-        return isset($str[1]) && $str[0] === '@' && !\preg_match('/[^A-Za-z]/', $str[1]);
+        return isset($str[1]) && $str[0] === '@' && ! \preg_match('/[^A-Za-z]/', $str[1]);
     }
 
     /**
      * The tag at the beginning of a string.
      *
-     * @param string $str
      *
      * @return string|null
      */
@@ -263,9 +253,8 @@ class Docblock
      *
      * Uses a stack to ensure proper nesting (e.g. `<(>)` won't break).
      *
-     * @param string $str   The string to split
-     * @param int    $limit Maximum number of parts (0 = unlimited)
-     *
+     * @param  string  $str  The string to split
+     * @param  int  $limit  Maximum number of parts (0 = unlimited)
      * @return string[]
      */
     private static function splitOnWhitespace(string $str, int $limit = 0): array
@@ -285,7 +274,7 @@ class Docblock
                 // Opening bracket; push onto stack
                 $stack[] = $char;
                 $current .= $char;
-            } elseif (!empty($stack) && $brackets[\end($stack)] === $char) {
+            } elseif (! empty($stack) && $brackets[\end($stack)] === $char) {
                 // Closing bracket matching the current opener; pop stack
                 \array_pop($stack);
                 $current .= $char;
@@ -332,7 +321,7 @@ class Docblock
      */
     public function getMethods(): array
     {
-        if (empty($this->comment) || !$this->reflector instanceof \ReflectionClass) {
+        if (empty($this->comment) || ! $this->reflector instanceof \ReflectionClass) {
             return [];
         }
 
@@ -349,7 +338,7 @@ class Docblock
      */
     public function getProperties(): array
     {
-        if (empty($this->comment) || !$this->reflector instanceof \ReflectionClass) {
+        if (empty($this->comment) || ! $this->reflector instanceof \ReflectionClass) {
             return [];
         }
 
@@ -384,7 +373,7 @@ class Docblock
         // Walk interfaces
         foreach ($class->getInterfaces() as $interface) {
             foreach (self::getMagicMethods($interface) as $method) {
-                if (!isset($methods[$method->getName()])) {
+                if (! isset($methods[$method->getName()])) {
                     $methods[$method->getName()] = $method;
                 }
             }
@@ -393,7 +382,7 @@ class Docblock
         // Walk traits
         foreach ($class->getTraits() as $trait) {
             foreach (self::getMagicMethods($trait) as $method) {
-                if (!isset($methods[$method->getName()])) {
+                if (! isset($methods[$method->getName()])) {
                     $methods[$method->getName()] = $method;
                 }
             }
@@ -440,7 +429,7 @@ class Docblock
         // Walk interfaces
         foreach ($class->getInterfaces() as $interface) {
             foreach (self::getMagicProperties($interface) as $property) {
-                if (!isset($properties[$property->getName()])) {
+                if (! isset($properties[$property->getName()])) {
                     $properties[$property->getName()] = $property;
                 }
             }
@@ -449,7 +438,7 @@ class Docblock
         // Walk traits
         foreach ($class->getTraits() as $trait) {
             foreach (self::getMagicProperties($trait) as $property) {
-                if (!isset($properties[$property->getName()])) {
+                if (! isset($properties[$property->getName()])) {
                     $properties[$property->getName()] = $property;
                 }
             }
@@ -570,12 +559,12 @@ class Docblock
         }
 
         return [
-            'name'             => $name,
-            'static'           => $isStatic,
-            'returnType'       => $returnType,
+            'name' => $name,
+            'static' => $isStatic,
+            'returnType' => $returnType,
             'returnsReference' => $returnsReference,
-            'parameters'       => $parameters,
-            'description'      => $description !== '' ? $description : null,
+            'parameters' => $parameters,
+            'description' => $description !== '' ? $description : null,
         ];
     }
 
@@ -584,8 +573,7 @@ class Docblock
      *
      * Handles: [type] $name [description]
      *
-     * @param string $tagName One of 'property', 'property-read', 'property-write'
-     *
+     * @param  string  $tagName  One of 'property', 'property-read', 'property-write'
      * @return array|null Parsed property data or null if invalid
      */
     private static function parsePropertyTag(string $body, string $tagName): ?array
@@ -641,10 +629,10 @@ class Docblock
         }
 
         return [
-            'name'        => $name,
-            'type'        => $type,
-            'readOnly'    => $tagName === 'property-read',
-            'writeOnly'   => $tagName === 'property-write',
+            'name' => $name,
+            'type' => $type,
+            'readOnly' => $tagName === 'property-read',
+            'writeOnly' => $tagName === 'property-write',
             'description' => $description !== '' ? $description : null,
         ];
     }

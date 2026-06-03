@@ -20,15 +20,22 @@ final class HtmlBlock extends AbstractBlock implements RawMarkupContainerInterfa
 {
     // Any changes to these constants should be reflected in .phpstorm.meta.php
     public const TYPE_1_CODE_CONTAINER = 1;
-    public const TYPE_2_COMMENT        = 2;
-    public const TYPE_3                = 3;
-    public const TYPE_4                = 4;
-    public const TYPE_5_CDATA          = 5;
-    public const TYPE_6_BLOCK_ELEMENT  = 6;
-    public const TYPE_7_MISC_ELEMENT   = 7;
+
+    public const TYPE_2_COMMENT = 2;
+
+    public const TYPE_3 = 3;
+
+    public const TYPE_4 = 4;
+
+    public const TYPE_5_CDATA = 5;
+
+    public const TYPE_6_BLOCK_ELEMENT = 6;
+
+    public const TYPE_7_MISC_ELEMENT = 7;
 
     /**
      * @psalm-var self::TYPE_* $type
+     *
      * @phpstan-var self::TYPE_* $type
      */
     private int $type;
@@ -36,9 +43,9 @@ final class HtmlBlock extends AbstractBlock implements RawMarkupContainerInterfa
     private string $literal = '';
 
     /**
-     * @psalm-param self::TYPE_* $type
-     *
      * @phpstan-param self::TYPE_* $type
+     *
+     * @psalm-param self::TYPE_* $type
      */
     public function __construct(int $type)
     {
@@ -48,9 +55,9 @@ final class HtmlBlock extends AbstractBlock implements RawMarkupContainerInterfa
     }
 
     /**
-     * @psalm-return self::TYPE_*
-     *
      * @phpstan-return self::TYPE_*
+     *
+     * @psalm-return self::TYPE_*
      */
     public function getType(): int
     {
@@ -58,9 +65,9 @@ final class HtmlBlock extends AbstractBlock implements RawMarkupContainerInterfa
     }
 
     /**
-     * @psalm-param self::TYPE_* $type
-     *
      * @phpstan-param self::TYPE_* $type
+     *
+     * @psalm-param self::TYPE_* $type
      */
     public function setType(int $type): void
     {

@@ -14,7 +14,7 @@ trait HasColors
     /**
      * @param  array<string, array<int | string, string | int> | string> | Closure  $colors
      */
-    public function colors(array | Closure $colors): static
+    public function colors(array|Closure $colors): static
     {
         $this->colors[] = $colors;
 

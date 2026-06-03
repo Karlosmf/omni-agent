@@ -10,7 +10,7 @@ trait HasNames
 {
     public function translationModelName(): string
     {
-        return static::class . Config::shared()->models->suffix;
+        return static::class.Config::shared()->models->suffix;
     }
 
     public function getTranslationTable(): string

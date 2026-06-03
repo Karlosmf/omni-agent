@@ -22,7 +22,7 @@ use League\Config\Exception\ValidationException;
 interface ConfigurationInterface
 {
     /**
-     * @param string $key Configuration option path/key
+     * @param  string  $key  Configuration option path/key
      *
      * @psalm-param non-empty-string $key
      *
@@ -34,7 +34,7 @@ interface ConfigurationInterface
     public function get(string $key);
 
     /**
-     * @param string $key Configuration option path/key
+     * @param  string  $key  Configuration option path/key
      *
      * @psalm-param non-empty-string $key
      *

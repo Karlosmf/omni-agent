@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -11,8 +13,8 @@
 
 namespace Monolog\Processor;
 
-use Monolog\ResettableInterface;
 use Monolog\LogRecord;
+use Monolog\ResettableInterface;
 
 /**
  * Adds a unique identifier into records
@@ -25,7 +27,7 @@ class UidProcessor implements ProcessorInterface, ResettableInterface
     private string $uid;
 
     /**
-     * @param int<1, 32> $length
+     * @param  int<1, 32>  $length
      */
     public function __construct(int $length = 7)
     {
@@ -37,7 +39,7 @@ class UidProcessor implements ProcessorInterface, ResettableInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __invoke(LogRecord $record): LogRecord
     {
@@ -57,7 +59,7 @@ class UidProcessor implements ProcessorInterface, ResettableInterface
     }
 
     /**
-     * @param  positive-int     $length
+     * @param  positive-int  $length
      * @return non-empty-string
      */
     private function generateUid(int $length): string

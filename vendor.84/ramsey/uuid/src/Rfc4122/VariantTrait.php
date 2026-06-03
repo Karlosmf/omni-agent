@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Ramsey\Uuid\Rfc4122;
 
+use const STR_PAD_LEFT;
+
 use Ramsey\Uuid\Exception\InvalidBytesException;
 use Ramsey\Uuid\Uuid;
 
@@ -23,8 +25,6 @@ use function str_starts_with;
 use function strlen;
 use function substr;
 use function unpack;
-
-use const STR_PAD_LEFT;
 
 /**
  * Provides common functionality for handling the variant, as defined by RFC 9562 (formerly RFC 4122)

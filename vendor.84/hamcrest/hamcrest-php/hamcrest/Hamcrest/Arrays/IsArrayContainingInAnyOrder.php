@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Arrays;
 
 /*
@@ -13,7 +14,6 @@ use Hamcrest\Util;
  */
 class IsArrayContainingInAnyOrder extends TypeSafeDiagnosingMatcher
 {
-
     private $_elementMatchers;
 
     public function __construct(array $elementMatchers)
@@ -30,7 +30,7 @@ class IsArrayContainingInAnyOrder extends TypeSafeDiagnosingMatcher
         $matching = new MatchingOnce($this->_elementMatchers, $mismatchDescription);
 
         foreach ($array as $element) {
-            if (!$matching->matches($element)) {
+            if (! $matching->matches($element)) {
                 return false;
             }
         }
@@ -41,8 +41,7 @@ class IsArrayContainingInAnyOrder extends TypeSafeDiagnosingMatcher
     public function describeTo(Description $description)
     {
         $description->appendList('[', ', ', ']', $this->_elementMatchers)
-                                ->appendText(' in any order')
-                                ;
+            ->appendText(' in any order');
     }
 
     /**

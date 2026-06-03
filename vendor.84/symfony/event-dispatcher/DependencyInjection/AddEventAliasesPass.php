@@ -23,8 +23,7 @@ class AddEventAliasesPass implements CompilerPassInterface
 {
     public function __construct(
         private array $eventAliases,
-    ) {
-    }
+    ) {}
 
     public function process(ContainerBuilder $container): void
     {

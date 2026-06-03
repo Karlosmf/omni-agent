@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,15 +9,18 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\Command;
 
 use const PHP_EOL;
+
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Runner\Phpt\TestCase as PhptTestCase;
+
 use function count;
 use function ksort;
 use function sprintf;
 use function str_starts_with;
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Runner\Phpt\TestCase as PhptTestCase;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -30,7 +35,7 @@ final readonly class ListGroupsCommand implements Command
     private array $tests;
 
     /**
-     * @param list<PhptTestCase|TestCase> $tests
+     * @param  list<PhptTestCase|TestCase>  $tests
      */
     public function __construct(array $tests)
     {
@@ -50,7 +55,7 @@ final readonly class ListGroupsCommand implements Command
             }
 
             foreach ($_groups as $group) {
-                if (!isset($groups[$group])) {
+                if (! isset($groups[$group])) {
                     $groups[$group] = 1;
                 } else {
                     $groups[$group]++;
@@ -61,7 +66,7 @@ final readonly class ListGroupsCommand implements Command
         ksort($groups);
 
         $buffer = sprintf(
-            'Available test group%s:' . PHP_EOL,
+            'Available test group%s:'.PHP_EOL,
             count($groups) > 1 ? 's' : '',
         );
 
@@ -71,7 +76,7 @@ final readonly class ListGroupsCommand implements Command
             }
 
             $buffer .= sprintf(
-                ' - %s (%d test%s)' . PHP_EOL,
+                ' - %s (%d test%s)'.PHP_EOL,
                 (string) $group,
                 $numberOfTests,
                 $numberOfTests > 1 ? 's' : '',

@@ -328,7 +328,7 @@ class ResourceClassGenerator extends ClassGenerator
             array_keys($pageRoutes),
         );
 
-        $pagesOutput = implode(PHP_EOL . '    ', $pages);
+        $pagesOutput = implode(PHP_EOL.'    ', $pages);
 
         $method = $class->addMethod('getPages')
             ->setPublic()

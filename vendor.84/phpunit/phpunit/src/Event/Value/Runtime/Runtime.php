@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\Runtime;
 
 use function sprintf;
@@ -19,14 +22,16 @@ use function sprintf;
 final readonly class Runtime
 {
     private OperatingSystem $operatingSystem;
+
     private PHP $php;
+
     private PHPUnit $phpunit;
 
     public function __construct()
     {
         $this->operatingSystem = new OperatingSystem;
-        $this->php             = new PHP;
-        $this->phpunit         = new PHPUnit;
+        $this->php = new PHP;
+        $this->phpunit = new PHPUnit;
     }
 
     public function asString(): string

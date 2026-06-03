@@ -22,11 +22,12 @@ final class Writer extends AbstractWriterMultiSheets
 
     /** @var string document creator */
     protected string $creator = 'OpenSpout';
+
     private readonly Options $options;
 
     public function __construct(?Options $options = null)
     {
-        $this->options = $options ?? new Options();
+        $this->options = $options ?? new Options;
     }
 
     public function getOptions(): Options
@@ -41,14 +42,14 @@ final class Writer extends AbstractWriterMultiSheets
 
     protected function createWorkbookManager(): WorkbookManager
     {
-        $workbook = new Workbook();
+        $workbook = new Workbook;
 
-        $fileSystemHelper = new FileSystemHelper($this->options->getTempFolder(), new ZipHelper(), $this->creator);
+        $fileSystemHelper = new FileSystemHelper($this->options->getTempFolder(), new ZipHelper, $this->creator);
         $fileSystemHelper->createBaseFilesAndFolders();
 
-        $styleMerger = new StyleMerger();
+        $styleMerger = new StyleMerger;
         $styleManager = new StyleManager(new StyleRegistry($this->options->DEFAULT_ROW_STYLE), $this->options);
-        $worksheetManager = new WorksheetManager($styleManager, $styleMerger, new ODS());
+        $worksheetManager = new WorksheetManager($styleManager, $styleMerger, new ODS);
 
         return new WorkbookManager(
             $workbook,

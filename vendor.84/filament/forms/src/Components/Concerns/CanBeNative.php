@@ -6,9 +6,9 @@ use Closure;
 
 trait CanBeNative
 {
-    protected bool | Closure $isNative = true;
+    protected bool|Closure $isNative = true;
 
-    public function native(bool | Closure $condition = true): static
+    public function native(bool|Closure $condition = true): static
     {
         $this->isNative = $condition;
 

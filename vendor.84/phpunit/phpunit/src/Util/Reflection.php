@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,17 +9,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Util;
 
-use function array_keys;
-use function array_merge;
-use function array_reverse;
-use function assert;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
+
+use function array_keys;
+use function array_merge;
+use function array_reverse;
+use function assert;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -27,9 +31,8 @@ use ReflectionMethod;
 final readonly class Reflection
 {
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
-     *
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      * @return array{file: non-empty-string, line: non-negative-int}
      */
     public static function sourceLocationFor(string $className, string $methodName): array
@@ -54,8 +57,7 @@ final readonly class Reflection
     }
 
     /**
-     * @param ReflectionClass<TestCase> $class
-     *
+     * @param  ReflectionClass<TestCase>  $class
      * @return list<ReflectionMethod>
      */
     public static function publicMethodsDeclaredDirectlyInTestClass(ReflectionClass $class): array
@@ -64,8 +66,7 @@ final readonly class Reflection
     }
 
     /**
-     * @param ReflectionClass<TestCase> $class
-     *
+     * @param  ReflectionClass<TestCase>  $class
      * @return list<ReflectionMethod>
      */
     public static function methodsDeclaredDirectlyInTestClass(ReflectionClass $class): array
@@ -74,8 +75,7 @@ final readonly class Reflection
     }
 
     /**
-     * @param ReflectionClass<TestCase> $class
-     *
+     * @param  ReflectionClass<TestCase>  $class
      * @return list<ReflectionMethod>
      */
     private static function filterAndSortMethods(ReflectionClass $class, ?int $filter, bool $sortHighestToLowest): array
@@ -93,7 +93,7 @@ final readonly class Reflection
                 continue;
             }
 
-            if (!isset($methodsByClass[$declaringClassName])) {
+            if (! isset($methodsByClass[$declaringClassName])) {
                 $methodsByClass[$declaringClassName] = [];
             }
 

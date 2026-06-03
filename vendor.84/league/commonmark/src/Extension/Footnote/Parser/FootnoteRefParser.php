@@ -22,7 +22,7 @@ use League\CommonMark\Reference\Reference;
 use League\Config\ConfigurationAwareInterface;
 use League\Config\ConfigurationInterface;
 
-final class FootnoteRefParser implements InlineParserInterface, ConfigurationAwareInterface
+final class FootnoteRefParser implements ConfigurationAwareInterface, InlineParserInterface
 {
     private ConfigurationInterface $config;
 
@@ -45,7 +45,7 @@ final class FootnoteRefParser implements InlineParserInterface, ConfigurationAwa
     {
         return new Reference(
             $label,
-            '#' . $this->config->get('footnote/footnote_id_prefix') . $label,
+            '#'.$this->config->get('footnote/footnote_id_prefix').$label,
             $label
         );
     }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\Configuration;
 
 use IteratorAggregate;
@@ -26,7 +29,7 @@ final readonly class GroupCollection implements IteratorAggregate
     private array $groups;
 
     /**
-     * @param list<Group> $groups
+     * @param  list<Group>  $groups
      */
     public static function fromArray(array $groups): self
     {

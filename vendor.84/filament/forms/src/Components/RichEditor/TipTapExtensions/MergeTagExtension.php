@@ -29,7 +29,7 @@ class MergeTagExtension extends Node
     {
         return [
             [
-                'tag' => 'span[data-type="' . self::$name . '"]',
+                'tag' => 'span[data-type="'.self::$name.'"]',
             ],
         ];
     }

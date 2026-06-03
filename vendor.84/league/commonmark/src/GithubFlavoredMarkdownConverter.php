@@ -25,13 +25,13 @@ final class GithubFlavoredMarkdownConverter extends MarkdownConverter
     /**
      * Create a new Markdown converter pre-configured for GFM
      *
-     * @param array<string, mixed> $config
+     * @param  array<string, mixed>  $config
      */
     public function __construct(array $config = [])
     {
         $environment = new Environment($config);
-        $environment->addExtension(new CommonMarkCoreExtension());
-        $environment->addExtension(new GithubFlavoredMarkdownExtension());
+        $environment->addExtension(new CommonMarkCoreExtension);
+        $environment->addExtension(new GithubFlavoredMarkdownExtension);
 
         parent::__construct($environment);
     }

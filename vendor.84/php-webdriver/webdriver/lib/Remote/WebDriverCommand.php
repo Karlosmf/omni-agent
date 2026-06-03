@@ -6,15 +6,18 @@ class WebDriverCommand
 {
     /** @var string|null */
     protected $sessionID;
+
     /** @var string */
     protected $name;
+
     /** @var array */
     protected $parameters;
 
     /**
-     * @param string $session_id
-     * @param string $name Constant from DriverCommand
-     * @param array $parameters
+     * @param  string  $session_id
+     * @param  string  $name  Constant from DriverCommand
+     * @param  array  $parameters
+     *
      * @todo In 2.0 force parameters to be an array, then remove is_array() checks in HttpCommandExecutor
      * @todo In 2.0 make constructor private. Use by default static `::create()` with sessionID type string.
      */

@@ -27,18 +27,20 @@ use League\CommonMark\Node\Node;
 final class AttributesListener
 {
     private const DIRECTION_PREFIX = 'prefix';
+
     private const DIRECTION_SUFFIX = 'suffix';
 
     /** @var list<string> */
     private array $allowList;
+
     private bool $allowUnsafeLinks;
 
     /**
-     * @param list<string> $allowList
+     * @param  list<string>  $allowList
      */
     public function __construct(array $allowList = [], bool $allowUnsafeLinks = true)
     {
-        $this->allowList        = $allowList;
+        $this->allowList = $allowList;
         $this->allowUnsafeLinks = $allowUnsafeLinks;
     }
 
@@ -71,22 +73,21 @@ final class AttributesListener
     }
 
     /**
-     * @param Attributes|AttributesInline $node
-     *
+     * @param  Attributes|AttributesInline  $node
      * @return array<Node|string|null>
      */
     private static function findTargetAndDirection($node): array
     {
-        $target    = null;
+        $target = null;
         $direction = null;
-        $previous  = $next = $node;
+        $previous = $next = $node;
         while (true) {
             $previous = self::getPrevious($previous);
-            $next     = self::getNext($next);
+            $next = self::getNext($next);
 
             if ($previous === null && $next === null) {
                 if (! $node->parent() instanceof FencedCode) {
-                    $target    = $node->parent();
+                    $target = $node->parent();
                     $direction = self::DIRECTION_SUFFIX;
                 }
 
@@ -98,14 +99,14 @@ final class AttributesListener
             }
 
             if ($previous !== null && ! self::isAttributesNode($previous)) {
-                $target    = $previous;
+                $target = $previous;
                 $direction = self::DIRECTION_SUFFIX;
 
                 break;
             }
 
             if ($next !== null && ! self::isAttributesNode($next)) {
-                $target    = $next;
+                $target = $next;
                 $direction = self::DIRECTION_PREFIX;
 
                 break;

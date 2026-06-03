@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Internal;
 
 /*
@@ -12,7 +13,6 @@ use Hamcrest\SelfDescribing;
  */
 class SelfDescribingValue implements SelfDescribing
 {
-
     private $_value;
 
     public function __construct($value)

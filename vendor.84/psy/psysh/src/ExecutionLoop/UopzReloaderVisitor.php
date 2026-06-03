@@ -43,7 +43,9 @@ class UopzReloaderVisitor extends NodeVisitorAbstract
     private bool $forceReload;
 
     private string $namespace = '';
+
     private ?string $currentClass = null;
+
     private ?string $currentFunction = null;
 
     /** @var string[] Warning messages generated during traversal */
@@ -56,7 +58,7 @@ class UopzReloaderVisitor extends NodeVisitorAbstract
     private int $conditionalDepth = 0;
 
     /**
-     * @param bool $forceReload Whether to bypass safety warnings
+     * @param  bool  $forceReload  Whether to bypass safety warnings
      */
     public function __construct(PrettyPrinter\Standard $printer, bool $forceReload = false)
     {
@@ -239,7 +241,7 @@ class UopzReloaderVisitor extends NodeVisitorAbstract
         $functionName = $this->getFullyQualifiedName($function->name->toString());
 
         // New function; just define it via eval
-        if (!\function_exists($functionName)) {
+        if (! \function_exists($functionName)) {
             try {
                 $code = '';
                 if ($this->namespace !== '') {
@@ -274,11 +276,8 @@ class UopzReloaderVisitor extends NodeVisitorAbstract
     /**
      * Create a closure from parameters and statements.
      *
-     * @param Node\Param[] $params
-     * @param Stmt[]|null  $stmts
-     * @param Node|null    $returnType
-     *
-     * @return \Closure|null
+     * @param  Node\Param[]  $params
+     * @param  Stmt[]|null  $stmts
      */
     private function createClosure(array $params, ?array $stmts, ?Node $returnType = null): ?\Closure
     {
@@ -412,7 +411,7 @@ class UopzReloaderVisitor extends NodeVisitorAbstract
     /**
      * Check if statements contain static variable declarations.
      *
-     * @param Stmt[]|null $stmts
+     * @param  Stmt[]|null  $stmts
      */
     private function hasStaticVariables(?array $stmts): bool
     {
@@ -580,7 +579,7 @@ class UopzReloaderVisitor extends NodeVisitorAbstract
     private function checkClassLimitations(string $className, Node $node): void
     {
         // Check if class already exists
-        if (!\class_exists($className, false) && !\interface_exists($className, false) && !\trait_exists($className, false)) {
+        if (! \class_exists($className, false) && ! \interface_exists($className, false) && ! \trait_exists($className, false)) {
             // New class/interface/trait - uopz cannot add these
             $type = $node instanceof Stmt\Interface_ ? 'interface' : ($node instanceof Stmt\Trait_ ? 'trait' : 'class');
             $this->addWarning(\sprintf('Cannot add %s %s', $type, $className));
@@ -589,7 +588,7 @@ class UopzReloaderVisitor extends NodeVisitorAbstract
         }
 
         // For existing classes, check for structural changes
-        if (!($node instanceof Stmt\Class_)) {
+        if (! ($node instanceof Stmt\Class_)) {
             return;
         }
 
@@ -598,7 +597,7 @@ class UopzReloaderVisitor extends NodeVisitorAbstract
             if ($stmt instanceof Stmt\Property) {
                 foreach ($stmt->props as $prop) {
                     $propName = $prop->name->toString();
-                    if (!\property_exists($className, $propName)) {
+                    if (! \property_exists($className, $propName)) {
                         $visibility = $stmt->isPublic() ? 'public' : ($stmt->isProtected() ? 'protected' : 'private');
                         $static = $stmt->isStatic() ? 'static ' : '';
                         $this->addWarning(\sprintf('Cannot add %s$%s', $static.$visibility.' ', $propName));
@@ -609,7 +608,7 @@ class UopzReloaderVisitor extends NodeVisitorAbstract
             // Check for new methods (will try to add but may fail silently)
             if ($stmt instanceof Stmt\ClassMethod) {
                 $methodName = $stmt->name->toString();
-                if (!\method_exists($className, $methodName)) {
+                if (! \method_exists($className, $methodName)) {
                     $this->addWarning(\sprintf('Cannot add %s::%s()', $className, $methodName));
                 }
             }

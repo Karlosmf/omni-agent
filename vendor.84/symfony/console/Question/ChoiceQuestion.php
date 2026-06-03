@@ -21,20 +21,22 @@ use Symfony\Component\Console\Exception\InvalidArgumentException;
 class ChoiceQuestion extends Question
 {
     private bool $multiselect = false;
+
     private string $prompt = ' > ';
+
     private string $errorMessage = 'Value "%s" is invalid';
 
     /**
-     * @param string                                   $question The question to ask to the user
-     * @param array<string|bool|int|float|\Stringable> $choices  The list of available choices
-     * @param string|bool|int|float|null               $default  The default answer to return
+     * @param  string  $question  The question to ask to the user
+     * @param  array<string|bool|int|float|\Stringable>  $choices  The list of available choices
+     * @param  string|bool|int|float|null  $default  The default answer to return
      */
     public function __construct(
         string $question,
         private array $choices,
         string|bool|int|float|null $default = null,
     ) {
-        if (!$choices) {
+        if (! $choices) {
             throw new \LogicException('Choice question must have at least 1 choice available.');
         }
 
@@ -120,7 +122,7 @@ class ChoiceQuestion extends Question
         return function ($selected) use ($choices, $errorMessage, $multiselect, $isAssoc) {
             if ($multiselect) {
                 // Check for a separated comma values
-                if (!preg_match('/^[^,]+(?:,[^,]+)*$/', (string) $selected, $matches)) {
+                if (! preg_match('/^[^,]+(?:,[^,]+)*$/', (string) $selected, $matches)) {
                     throw new InvalidArgumentException(\sprintf($errorMessage, $selected));
                 }
 
@@ -150,17 +152,17 @@ class ChoiceQuestion extends Question
 
                 $result = array_search($value, $choices);
 
-                if (!$isAssoc) {
-                    if (false !== $result) {
+                if (! $isAssoc) {
+                    if ($result !== false) {
                         $result = $choices[$result];
                     } elseif (isset($choices[$value])) {
                         $result = $choices[$value];
                     }
-                } elseif (false === $result && isset($choices[$value])) {
+                } elseif ($result === false && isset($choices[$value])) {
                     $result = $value;
                 }
 
-                if (false === $result) {
+                if ($result === false) {
                     throw new InvalidArgumentException(\sprintf($errorMessage, $value));
                 }
 

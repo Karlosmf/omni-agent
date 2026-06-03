@@ -36,6 +36,7 @@ namespace Ramsey\Collection;
  * ```
  *
  * @template T
+ *
  * @extends AbstractSet<T>
  */
 class Set extends AbstractSet
@@ -44,8 +45,8 @@ class Set extends AbstractSet
      * Constructs a set object of the specified type, optionally with the
      * specified data.
      *
-     * @param string $setType The type or class name associated with this set.
-     * @param array<array-key, T> $data The initial items to store in the set.
+     * @param  string  $setType  The type or class name associated with this set.
+     * @param  array<array-key, T>  $data  The initial items to store in the set.
      */
     public function __construct(private readonly string $setType, array $data = [])
     {

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,19 +9,22 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\Command;
 
 use const E_ALL;
 use const PHP_EOL;
+
+use PHPUnit\Runner\Version;
+use PHPUnit\Util\Color;
+use SebastianBergmann\Environment\Console;
+
 use function extension_loaded;
 use function in_array;
 use function ini_get;
 use function max;
 use function sprintf;
 use function strlen;
-use PHPUnit\Runner\Version;
-use PHPUnit\Util\Color;
-use SebastianBergmann\Environment\Console;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -37,12 +42,12 @@ final readonly class CheckPhpConfigurationCommand implements Command
 
     public function execute(): Result
     {
-        $lines         = [];
+        $lines = [];
         $shellExitCode = 0;
 
         foreach ($this->settings() as $name => $setting) {
             foreach ($setting['requiredExtensions'] as $extension) {
-                if (!extension_loaded($extension)) {
+                if (! extension_loaded($extension)) {
                     // @codeCoverageIgnoreStart
                     continue 2;
                     // @codeCoverageIgnoreEnd
@@ -54,7 +59,7 @@ final readonly class CheckPhpConfigurationCommand implements Command
             if (in_array($actualValue, $setting['expectedValues'], true)) {
                 $check = $this->ok();
             } else {
-                $check         = $this->notOk($actualValue);
+                $check = $this->notOk($actualValue);
                 $shellExitCode = 1;
             }
 
@@ -75,13 +80,13 @@ final readonly class CheckPhpConfigurationCommand implements Command
         }
 
         $buffer = sprintf(
-            'Checking whether PHP is configured according to https://docs.phpunit.de/en/%s/installation.html#configuring-php-for-development' . PHP_EOL . PHP_EOL,
+            'Checking whether PHP is configured according to https://docs.phpunit.de/en/%s/installation.html#configuring-php-for-development'.PHP_EOL.PHP_EOL,
             Version::series(),
         );
 
         foreach ($lines as $line) {
             $buffer .= sprintf(
-                '%-' . $maxLength . 's ... %s' . PHP_EOL,
+                '%-'.$maxLength.'s ... %s'.PHP_EOL,
                 $line[0],
                 $line[1],
             );
@@ -95,7 +100,7 @@ final readonly class CheckPhpConfigurationCommand implements Command
      */
     private function ok(): string
     {
-        if (!$this->colorize) {
+        if (! $this->colorize) {
             return 'ok';
         }
 
@@ -111,7 +116,7 @@ final readonly class CheckPhpConfigurationCommand implements Command
     {
         $message = sprintf('not ok (%s)', $actualValue);
 
-        if (!$this->colorize) {
+        if (! $this->colorize) {
             return $message;
         }
 
@@ -127,39 +132,39 @@ final readonly class CheckPhpConfigurationCommand implements Command
     {
         return [
             'display_errors' => [
-                'expectedValues'        => ['1'],
+                'expectedValues' => ['1'],
                 'valueForConfiguration' => 'On',
-                'requiredExtensions'    => [],
+                'requiredExtensions' => [],
             ],
             'display_startup_errors' => [
-                'expectedValues'        => ['1'],
+                'expectedValues' => ['1'],
                 'valueForConfiguration' => 'On',
-                'requiredExtensions'    => [],
+                'requiredExtensions' => [],
             ],
             'error_reporting' => [
-                'expectedValues'        => ['-1', (string) E_ALL],
+                'expectedValues' => ['-1', (string) E_ALL],
                 'valueForConfiguration' => '-1',
-                'requiredExtensions'    => [],
+                'requiredExtensions' => [],
             ],
             'xdebug.show_exception_trace' => [
-                'expectedValues'        => ['0'],
+                'expectedValues' => ['0'],
                 'valueForConfiguration' => '0',
-                'requiredExtensions'    => ['xdebug'],
+                'requiredExtensions' => ['xdebug'],
             ],
             'zend.assertions' => [
-                'expectedValues'        => ['1'],
+                'expectedValues' => ['1'],
                 'valueForConfiguration' => '1',
-                'requiredExtensions'    => [],
+                'requiredExtensions' => [],
             ],
             'assert.exception' => [
-                'expectedValues'        => ['1'],
+                'expectedValues' => ['1'],
                 'valueForConfiguration' => '1',
-                'requiredExtensions'    => [],
+                'requiredExtensions' => [],
             ],
             'memory_limit' => [
-                'expectedValues'        => ['-1'],
+                'expectedValues' => ['-1'],
                 'valueForConfiguration' => '-1',
-                'requiredExtensions'    => [],
+                'requiredExtensions' => [],
             ],
         ];
     }

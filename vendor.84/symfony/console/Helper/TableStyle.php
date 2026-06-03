@@ -24,29 +24,53 @@ use Symfony\Component\Console\Exception\LogicException;
 class TableStyle
 {
     private string $paddingChar = ' ';
+
     private string $horizontalOutsideBorderChar = '-';
+
     private string $horizontalInsideBorderChar = '-';
+
     private string $verticalOutsideBorderChar = '|';
+
     private string $verticalInsideBorderChar = '|';
+
     private string $crossingChar = '+';
+
     private string $crossingTopRightChar = '+';
+
     private string $crossingTopMidChar = '+';
+
     private string $crossingTopLeftChar = '+';
+
     private string $crossingMidRightChar = '+';
+
     private string $crossingBottomRightChar = '+';
+
     private string $crossingBottomMidChar = '+';
+
     private string $crossingBottomLeftChar = '+';
+
     private string $crossingMidLeftChar = '+';
+
     private string $crossingTopLeftBottomChar = '+';
+
     private string $crossingTopMidBottomChar = '+';
+
     private string $crossingTopRightBottomChar = '+';
+
     private string $headerTitleFormat = '<fg=black;bg=white;options=bold> %s </>';
+
     private string $footerTitleFormat = '<fg=black;bg=white;options=bold> %s </>';
+
     private string $cellHeaderFormat = '<info>%s</info>';
+
     private string $cellRowFormat = '%s';
+
     private string $cellRowContentFormat = ' %s ';
+
     private string $borderFormat = '%s';
+
     private bool $displayOutsideBorder = true;
+
     private int $padType = \STR_PAD_RIGHT;
 
     /**
@@ -56,7 +80,7 @@ class TableStyle
      */
     public function setPaddingChar(string $paddingChar): static
     {
-        if (!$paddingChar) {
+        if (! $paddingChar) {
             throw new LogicException('The padding char must not be empty.');
         }
 
@@ -153,19 +177,18 @@ class TableStyle
      * 7═══════════════6══════════════════════════6══════════════════5
      * </code>
      *
-     * @param string      $cross          Crossing char (see #0 of example)
-     * @param string      $topLeft        Top left char (see #1 of example)
-     * @param string      $topMid         Top mid char (see #2 of example)
-     * @param string      $topRight       Top right char (see #3 of example)
-     * @param string      $midRight       Mid right char (see #4 of example)
-     * @param string      $bottomRight    Bottom right char (see #5 of example)
-     * @param string      $bottomMid      Bottom mid char (see #6 of example)
-     * @param string      $bottomLeft     Bottom left char (see #7 of example)
-     * @param string      $midLeft        Mid left char (see #8 of example)
-     * @param string|null $topLeftBottom  Top left bottom char (see #8' of example), equals to $midLeft if null
-     * @param string|null $topMidBottom   Top mid bottom char (see #0' of example), equals to $cross if null
-     * @param string|null $topRightBottom Top right bottom char (see #4' of example), equals to $midRight if null
-     *
+     * @param  string  $cross  Crossing char (see #0 of example)
+     * @param  string  $topLeft  Top left char (see #1 of example)
+     * @param  string  $topMid  Top mid char (see #2 of example)
+     * @param  string  $topRight  Top right char (see #3 of example)
+     * @param  string  $midRight  Mid right char (see #4 of example)
+     * @param  string  $bottomRight  Bottom right char (see #5 of example)
+     * @param  string  $bottomMid  Bottom mid char (see #6 of example)
+     * @param  string  $bottomLeft  Bottom left char (see #7 of example)
+     * @param  string  $midLeft  Mid left char (see #8 of example)
+     * @param  string|null  $topLeftBottom  Top left bottom char (see #8' of example), equals to $midLeft if null
+     * @param  string|null  $topMidBottom  Top mid bottom char (see #0' of example), equals to $cross if null
+     * @param  string|null  $topRightBottom  Top right bottom char (see #4' of example), equals to $midRight if null
      * @return $this
      */
     public function setCrossingChars(string $cross, string $topLeft, string $topMid, string $topRight, string $midRight, string $bottomRight, string $bottomMid, string $bottomLeft, string $midLeft, ?string $topLeftBottom = null, ?string $topMidBottom = null, ?string $topRightBottom = null): static
@@ -314,7 +337,7 @@ class TableStyle
      */
     public function setPadType(int $padType): static
     {
-        if (!\in_array($padType, [\STR_PAD_LEFT, \STR_PAD_RIGHT, \STR_PAD_BOTH], true)) {
+        if (! \in_array($padType, [\STR_PAD_LEFT, \STR_PAD_RIGHT, \STR_PAD_BOTH], true)) {
             throw new InvalidArgumentException('Invalid padding type. Expected one of (STR_PAD_LEFT, STR_PAD_RIGHT, STR_PAD_BOTH).');
         }
 

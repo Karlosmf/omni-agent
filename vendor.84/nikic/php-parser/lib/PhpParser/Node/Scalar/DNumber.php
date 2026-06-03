@@ -1,8 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace PhpParser\Node\Scalar;
 
-require __DIR__ . '/Float_.php';
+require __DIR__.'/Float_.php';
 
 if (false) {
     /**
@@ -10,6 +12,5 @@ if (false) {
      *
      * @deprecated use \PhpParser\Node\Scalar\Float_ instead.
      */
-    class DNumber extends Float_ {
-    }
+    class DNumber extends Float_ {}
 }

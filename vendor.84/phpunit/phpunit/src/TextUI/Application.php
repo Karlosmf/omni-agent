@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,25 +9,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI;
 
 use const PHP_EOL;
 use const PHP_VERSION;
-use function assert;
-use function class_exists;
-use function defined;
-use function dirname;
-use function explode;
-use function function_exists;
-use function is_file;
-use function method_exists;
-use function printf;
-use function realpath;
-use function sprintf;
-use function str_contains;
-use function str_starts_with;
-use function trim;
-use function unlink;
+
 use PHPUnit\Event\EventFacadeIsSealedException;
 use PHPUnit\Event\Facade as EventFacade;
 use PHPUnit\Event\UnknownSubscriberTypeException;
@@ -97,6 +86,22 @@ use PHPUnit\Util\Http\PhpDownloader;
 use SebastianBergmann\Timer\Timer;
 use Throwable;
 
+use function assert;
+use function class_exists;
+use function defined;
+use function dirname;
+use function explode;
+use function function_exists;
+use function is_file;
+use function method_exists;
+use function printf;
+use function realpath;
+use function sprintf;
+use function str_contains;
+use function str_starts_with;
+use function trim;
+use function unlink;
+
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  *
@@ -105,7 +110,7 @@ use Throwable;
 final readonly class Application
 {
     /**
-     * @param list<string> $argv
+     * @param  list<string>  $argv
      */
     public function run(array $argv): int
     {
@@ -114,7 +119,7 @@ final readonly class Application
         try {
             EventFacade::emitter()->applicationStarted();
 
-            $cliConfiguration           = $this->buildCliConfiguration($argv);
+            $cliConfiguration = $this->buildCliConfiguration($argv);
             $pathToXmlConfigurationFile = (new XmlConfigurationFileFinder)->find($cliConfiguration);
 
             $this->executeCommandsThatOnlyRequireCliConfiguration($cliConfiguration, $pathToXmlConfigurationFile);
@@ -136,24 +141,24 @@ final readonly class Application
 
             $this->executeCommandsThatDoNotRequireTheTestSuite($configuration, $cliConfiguration);
 
-            $pharExtensions                          = null;
+            $pharExtensions = null;
             $extensionRequiresCodeCoverageCollection = false;
-            $extensionReplacesOutput                 = false;
-            $extensionReplacesProgressOutput         = false;
-            $extensionReplacesResultOutput           = false;
+            $extensionReplacesOutput = false;
+            $extensionReplacesProgressOutput = false;
+            $extensionReplacesResultOutput = false;
 
-            if (!$configuration->noExtensions()) {
+            if (! $configuration->noExtensions()) {
                 if ($configuration->hasPharExtensionDirectory()) {
                     $pharExtensions = (new PharLoader)->loadPharExtensionsInDirectory(
                         $configuration->pharExtensionDirectory(),
                     );
                 }
 
-                $bootstrappedExtensions                  = $this->bootstrapExtensions($configuration);
+                $bootstrappedExtensions = $this->bootstrapExtensions($configuration);
                 $extensionRequiresCodeCoverageCollection = $bootstrappedExtensions['requiresCodeCoverageCollection'];
-                $extensionReplacesOutput                 = $bootstrappedExtensions['replacesOutput'];
-                $extensionReplacesProgressOutput         = $bootstrappedExtensions['replacesProgressOutput'];
-                $extensionReplacesResultOutput           = $bootstrappedExtensions['replacesResultOutput'];
+                $extensionReplacesOutput = $bootstrappedExtensions['replacesOutput'];
+                $extensionReplacesProgressOutput = $bootstrappedExtensions['replacesProgressOutput'];
+                $extensionReplacesResultOutput = $bootstrappedExtensions['replacesResultOutput'];
             }
 
             $printer = OutputFacade::init(
@@ -199,7 +204,7 @@ final readonly class Application
 
             $this->executeCommandsThatRequireTheTestSuite($configuration, $cliConfiguration, $testSuite);
 
-            if ($testSuite->isEmpty() && !$configuration->hasCliArguments() && $configuration->testSuite()->isEmpty()) {
+            if ($testSuite->isEmpty() && ! $configuration->hasCliArguments() && $configuration->testSuite()->isEmpty()) {
                 $this->execute(new ShowHelpCommand(Result::FAILURE));
             }
 
@@ -209,7 +214,7 @@ final readonly class Application
                 $extensionRequiresCodeCoverageCollection,
             );
 
-            if (!$configuration->debug() && !$extensionReplacesOutput) {
+            if (! $configuration->debug() && ! $extensionReplacesOutput) {
                 $this->writeRuntimeInformation($printer, $configuration);
                 $this->writePharExtensionInformation($printer, $pharExtensions);
                 $this->writeRandomSeedInformation($printer, $configuration);
@@ -277,7 +282,7 @@ final readonly class Application
 
             $result = TestResultFacade::result();
 
-            if (!$extensionReplacesResultOutput && !$configuration->debug()) {
+            if (! $extensionReplacesResultOutput && ! $configuration->debug()) {
                 OutputFacade::printResult(
                     $result,
                     $testDoxResult,
@@ -296,7 +301,7 @@ final readonly class Application
 
                 $printer->print(
                     sprintf(
-                        PHP_EOL . 'Baseline written to %s.' . PHP_EOL,
+                        PHP_EOL.'Baseline written to %s.'.PHP_EOL,
                         realpath($configuration->generateBaseline()),
                     ),
                 );
@@ -333,23 +338,23 @@ final readonly class Application
             }
         }
 
-        print Version::getVersionString() . PHP_EOL . PHP_EOL;
+        echo Version::getVersionString().PHP_EOL.PHP_EOL;
 
-        if (!$errored) {
+        if (! $errored) {
             $result = $command->execute();
 
-            print $result->output();
+            echo $result->output();
 
             exit($result->shellExitCode());
         }
 
         assert(isset($resultCollectedFromEvents));
 
-        print 'There were errors:' . PHP_EOL;
+        echo 'There were errors:'.PHP_EOL;
 
         foreach ($resultCollectedFromEvents->testTriggeredPhpunitErrorEvents() as $events) {
             foreach ($events as $event) {
-                print PHP_EOL . trim($event->message()) . PHP_EOL;
+                echo PHP_EOL.trim($event->message()).PHP_EOL;
             }
         }
 
@@ -357,7 +362,7 @@ final readonly class Application
     }
 
     /**
-     * @param list<string> $argv
+     * @param  list<string>  $argv
      */
     private function buildCliConfiguration(array $argv): CliConfiguration
     {
@@ -413,9 +418,9 @@ final readonly class Application
 
         return [
             'requiresCodeCoverageCollection' => $facade->requiresCodeCoverageCollection(),
-            'replacesOutput'                 => $facade->replacesOutput(),
-            'replacesProgressOutput'         => $facade->replacesProgressOutput(),
-            'replacesResultOutput'           => $facade->replacesResultOutput(),
+            'replacesOutput' => $facade->replacesOutput(),
+            'replacesProgressOutput' => $facade->replacesProgressOutput(),
+            'replacesResultOutput' => $facade->replacesResultOutput(),
         ];
     }
 
@@ -519,12 +524,12 @@ final readonly class Application
 
     private function writeRuntimeInformation(Printer $printer, Configuration $configuration): void
     {
-        $printer->print(Version::getVersionString() . PHP_EOL . PHP_EOL);
+        $printer->print(Version::getVersionString().PHP_EOL.PHP_EOL);
 
-        $runtime = 'PHP ' . PHP_VERSION;
+        $runtime = 'PHP '.PHP_VERSION;
 
         if (CodeCoverage::instance()->isActive()) {
-            $runtime .= ' with ' . CodeCoverage::instance()->driverNameAndVersion();
+            $runtime .= ' with '.CodeCoverage::instance()->driverNameAndVersion();
         }
 
         $this->writeMessage($printer, 'Runtime', $runtime);
@@ -539,7 +544,7 @@ final readonly class Application
     }
 
     /**
-     * @param ?list<string> $pharExtensions
+     * @param  ?list<string>  $pharExtensions
      */
     private function writePharExtensionInformation(Printer $printer, ?array $pharExtensions): void
     {
@@ -561,7 +566,7 @@ final readonly class Application
         $printer->print(
             sprintf(
                 "%-15s%s\n",
-                $type . ':',
+                $type.':',
                 $message,
             ),
         );
@@ -699,7 +704,7 @@ final readonly class Application
 
         if ($configuration->source()->useBaseline()) {
             $baselineFile = $configuration->source()->baseline();
-            $baseline     = null;
+            $baseline = null;
 
             try {
                 $baseline = (new Reader)->read($baselineFile);
@@ -762,7 +767,7 @@ final readonly class Application
 
     private function exitWithErrorMessage(string $message): never
     {
-        print Version::getVersionString() . PHP_EOL . PHP_EOL . $message . PHP_EOL;
+        echo Version::getVersionString().PHP_EOL.PHP_EOL.$message.PHP_EOL;
 
         exit(Result::EXCEPTION);
     }
@@ -781,11 +786,11 @@ final readonly class Application
     {
         $deprecationTriggers = [
             'functions' => [],
-            'methods'   => [],
+            'methods' => [],
         ];
 
         foreach ($configuration->source()->deprecationTriggers()['functions'] as $function) {
-            if (!function_exists($function)) {
+            if (! function_exists($function)) {
                 EventFacade::emitter()->testRunnerTriggeredPhpunitWarning(
                     sprintf(
                         'Function %s cannot be configured as a deprecation trigger because it is not declared',
@@ -800,7 +805,7 @@ final readonly class Application
         }
 
         foreach ($configuration->source()->deprecationTriggers()['methods'] as $method) {
-            if (!str_contains($method, '::')) {
+            if (! str_contains($method, '::')) {
                 EventFacade::emitter()->testRunnerTriggeredPhpunitWarning(
                     sprintf(
                         '%s cannot be configured as a deprecation trigger because it is not in ClassName::methodName format',
@@ -813,7 +818,7 @@ final readonly class Application
 
             [$className, $methodName] = explode('::', $method);
 
-            if (!class_exists($className) || !method_exists($className, $methodName)) {
+            if (! class_exists($className) || ! method_exists($className, $methodName)) {
                 EventFacade::emitter()->testRunnerTriggeredPhpunitWarning(
                     sprintf(
                         'Method %s::%s cannot be configured as a deprecation trigger because it is not declared',
@@ -826,7 +831,7 @@ final readonly class Application
             }
 
             $deprecationTriggers['methods'][] = [
-                'className'  => $className,
+                'className' => $className,
                 'methodName' => $methodName,
             ];
         }
@@ -836,19 +841,19 @@ final readonly class Application
 
     private function preload(): void
     {
-        if (!defined('PHPUNIT_COMPOSER_INSTALL')) {
+        if (! defined('PHPUNIT_COMPOSER_INSTALL')) {
             return;
         }
 
-        $classMapFile = dirname(PHPUNIT_COMPOSER_INSTALL) . '/composer/autoload_classmap.php';
+        $classMapFile = dirname(PHPUNIT_COMPOSER_INSTALL).'/composer/autoload_classmap.php';
 
-        if (!is_file($classMapFile)) {
+        if (! is_file($classMapFile)) {
             return;
         }
 
         foreach (require $classMapFile as $codeUnitName => $sourceCodeFile) {
-            if (!str_starts_with($codeUnitName, 'PHPUnit\\') &&
-                !str_starts_with($codeUnitName, 'SebastianBergmann\\')) {
+            if (! str_starts_with($codeUnitName, 'PHPUnit\\') &&
+                ! str_starts_with($codeUnitName, 'SebastianBergmann\\')) {
                 continue;
             }
 

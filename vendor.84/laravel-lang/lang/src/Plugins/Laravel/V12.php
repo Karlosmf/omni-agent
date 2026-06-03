@@ -19,9 +19,9 @@ class V12 extends Plugin
 
             'framework/extended.json' => '{locale}.json',
 
-            'framework/12.x/auth.php'       => '{locale}/auth.php',
+            'framework/12.x/auth.php' => '{locale}/auth.php',
             'framework/12.x/pagination.php' => '{locale}/pagination.php',
-            'framework/12.x/passwords.php'  => '{locale}/passwords.php',
+            'framework/12.x/passwords.php' => '{locale}/passwords.php',
             'framework/12.x/validation.php' => '{locale}/validation.php',
         ];
     }

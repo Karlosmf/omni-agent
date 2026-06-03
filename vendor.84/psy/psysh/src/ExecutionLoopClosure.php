@@ -22,9 +22,6 @@ use Psy\Exception\ThrowUpException;
  */
 class ExecutionLoopClosure extends ExecutionClosure
 {
-    /**
-     * @param Shell $__psysh__
-     */
     public function __construct(Shell $__psysh__)
     {
         $this->setClosure($__psysh__, function () use ($__psysh__) {

@@ -6,9 +6,9 @@ use Closure;
 
 trait HasQueryStringIdentifier
 {
-    protected string | Closure | null $queryStringIdentifier = null;
+    protected string|Closure|null $queryStringIdentifier = null;
 
-    public function queryStringIdentifier(string | Closure | null $identifier): static
+    public function queryStringIdentifier(string|Closure|null $identifier): static
     {
         $this->queryStringIdentifier = $identifier;
 

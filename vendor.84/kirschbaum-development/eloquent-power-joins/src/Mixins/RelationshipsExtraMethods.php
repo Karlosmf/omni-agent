@@ -2,16 +2,19 @@
 
 namespace Kirschbaum\PowerJoins\Mixins;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOneOrMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\MySqlConnection;
@@ -35,11 +38,11 @@ use Kirschbaum\PowerJoins\StaticCache;
  * @method string getQualifiedLocalKeyName()
  * @method string getExistenceCompareKey()
  *
- * @mixin \Illuminate\Database\Eloquent\Relations\Relation
- * @mixin \Illuminate\Database\Eloquent\Relations\HasOneOrMany
- * @mixin \Illuminate\Database\Eloquent\Relations\BelongsToMany
+ * @mixin Relation
+ * @mixin HasOneOrMany
+ * @mixin BelongsToMany
  *
- * @property \Illuminate\Database\Eloquent\Builder $query
+ * @property Builder $query
  * @property Model $parent
  * @property Model $throughParent
  * @property string $foreignKey
@@ -258,7 +261,7 @@ class RelationshipsExtraMethods
     {
         return function ($builder, $joinType, $callback = null, $alias = null, bool $disableExtraConditions = false, ?string $morphable = null) {
             /** @var Model */
-            $modelInstance = new $morphable();
+            $modelInstance = new $morphable;
 
             $builder->{$joinType}($modelInstance->getTable(), function ($join) use ($modelInstance, $callback, $disableExtraConditions) {
                 $join->on(
@@ -295,7 +298,7 @@ class RelationshipsExtraMethods
             $parentTable = StaticCache::getTableOrAliasForModel($this->parent);
             $isOneOfMany = method_exists($this, 'isOneOfMany') ? $this->isOneOfMany() : false;
 
-            if ($isOneOfMany && !$hasCheck) {
+            if ($isOneOfMany && ! $hasCheck) {
                 $column = $this->getOneOfManySubQuery()->getQuery()->columns[0];
                 $fkColumn = $this->getOneOfManySubQuery()->getQuery()->columns[1];
                 $localKey = $this->localKey;
@@ -432,7 +435,7 @@ class RelationshipsExtraMethods
     {
         return function ($builder, $operator, $count, ?string $morphable = null) {
             if ($morphable) {
-                $modelInstance = new $morphable();
+                $modelInstance = new $morphable;
 
                 $builder
                     ->selectRaw(sprintf('count(%s) as %s_count', $modelInstance->getQualifiedKeyName(), Str::replace('.', '_', $modelInstance->getTable())))
@@ -490,7 +493,7 @@ class RelationshipsExtraMethods
                     continue;
                 }
 
-                if (!in_array($condition['type'], ['Basic', 'Null', 'NotNull', 'Nested'], true)) {
+                if (! in_array($condition['type'], ['Basic', 'Null', 'NotNull', 'Nested'], true)) {
                     continue;
                 }
 
@@ -540,7 +543,7 @@ class RelationshipsExtraMethods
                 return true;
             }
 
-            if (!$key = $this->getPowerJoinExistenceCompareKey()) {
+            if (! $key = $this->getPowerJoinExistenceCompareKey()) {
                 return true;
             }
 

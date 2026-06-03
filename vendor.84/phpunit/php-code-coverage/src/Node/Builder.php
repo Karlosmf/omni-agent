@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,9 +9,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Node;
 
 use const DIRECTORY_SEPARATOR;
+
+use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
+use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
+
 use function array_shift;
 use function basename;
 use function count;
@@ -22,9 +30,6 @@ use function str_ends_with;
 use function str_replace;
 use function str_starts_with;
 use function substr;
-use SebastianBergmann\CodeCoverage\CodeCoverage;
-use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
-use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -42,9 +47,9 @@ final readonly class Builder
 
     public function build(CodeCoverage $coverage): Directory
     {
-        $data       = clone $coverage->getData(); // clone because path munging is destructive to the original data
+        $data = clone $coverage->getData(); // clone because path munging is destructive to the original data
         $commonPath = $this->reducePaths($data);
-        $root       = new Directory(
+        $root = new Directory(
             $commonPath,
             null,
         );
@@ -59,7 +64,7 @@ final readonly class Builder
     }
 
     /**
-     * @param array<string, TestType> $tests
+     * @param  array<string, TestType>  $tests
      */
     private function addItems(Directory $root, array $items, array $tests): void
     {
@@ -67,8 +72,8 @@ final readonly class Builder
             $key = (string) $key;
 
             if (str_ends_with($key, '/f')) {
-                $key      = substr($key, 0, -2);
-                $filename = $root->pathAsString() . DIRECTORY_SEPARATOR . $key;
+                $key = substr($key, 0, -2);
+                $filename = $root->pathAsString().DIRECTORY_SEPARATOR.$key;
 
                 if (is_file($filename)) {
                     $analysisResult = $this->analyser->analyse($filename);
@@ -142,13 +147,13 @@ final readonly class Builder
     {
         $result = [];
 
-        $lineCoverage     = $data->lineCoverage();
+        $lineCoverage = $data->lineCoverage();
         $functionCoverage = $data->functionCoverage();
 
         foreach ($data->coveredFiles() as $originalPath) {
-            $path    = explode(DIRECTORY_SEPARATOR, $originalPath);
+            $path = explode(DIRECTORY_SEPARATOR, $originalPath);
             $pointer = &$result;
-            $max     = count($path);
+            $max = count($path);
 
             for ($i = 0; $i < $max; $i++) {
                 $type = '';
@@ -157,11 +162,11 @@ final readonly class Builder
                     $type = '/f';
                 }
 
-                $pointer = &$pointer[$path[$i] . $type];
+                $pointer = &$pointer[$path[$i].$type];
             }
 
             $pointer = [
-                'lineCoverage'     => $lineCoverage[$originalPath] ?? [],
+                'lineCoverage' => $lineCoverage[$originalPath] ?? [],
                 'functionCoverage' => $functionCoverage[$originalPath] ?? [],
             ];
         }
@@ -215,10 +220,10 @@ final readonly class Builder
         }
 
         $commonPath = '';
-        $paths      = $coveredFiles;
+        $paths = $coveredFiles;
 
         if (count($paths) === 1) {
-            $commonPath = dirname($paths[0]) . DIRECTORY_SEPARATOR;
+            $commonPath = dirname($paths[0]).DIRECTORY_SEPARATOR;
             $coverage->renameFile($paths[0], basename($paths[0]));
 
             return $commonPath;
@@ -241,12 +246,12 @@ final readonly class Builder
         }
 
         $done = false;
-        $max  = count($paths);
+        $max = count($paths);
 
-        while (!$done) {
+        while (! $done) {
             for ($i = 0; $i < $max - 1; $i++) {
-                if (!isset($paths[$i][0]) ||
-                    !isset($paths[$i + 1][0]) ||
+                if (! isset($paths[$i][0]) ||
+                    ! isset($paths[$i + 1][0]) ||
                     $paths[$i][0] !== $paths[$i + 1][0]) {
                     $done = true;
 
@@ -254,7 +259,7 @@ final readonly class Builder
                 }
             }
 
-            if (!$done) {
+            if (! $done) {
                 $commonPath .= $paths[0][0];
 
                 if ($paths[0][0] !== DIRECTORY_SEPARATOR) {
@@ -268,7 +273,7 @@ final readonly class Builder
         }
 
         $original = $coveredFiles;
-        $max      = count($original);
+        $max = count($original);
 
         for ($i = 0; $i < $max; $i++) {
             $coverage->renameFile($original[$i], implode(DIRECTORY_SEPARATOR, $paths[$i]));

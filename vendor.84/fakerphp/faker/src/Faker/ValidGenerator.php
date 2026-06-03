@@ -13,21 +13,23 @@ use Faker\Extension\Extension;
 class ValidGenerator
 {
     protected $generator;
+
     protected $validator;
+
     protected $maxRetries;
 
     /**
-     * @param Extension|Generator $generator
-     * @param callable|null       $validator
-     * @param int                 $maxRetries
+     * @param  Extension|Generator  $generator
+     * @param  callable|null  $validator
+     * @param  int  $maxRetries
      */
     public function __construct($generator, $validator = null, $maxRetries = 10000)
     {
-        if (null === $validator) {
+        if ($validator === null) {
             $validator = static function () {
                 return true;
             };
-        } elseif (!is_callable($validator)) {
+        } elseif (! is_callable($validator)) {
             throw new \InvalidArgumentException('valid() only accepts callables as first argument');
         }
         $this->generator = $generator;
@@ -43,7 +45,7 @@ class ValidGenerator
     /**
      * Catch and proxy all generator calls but return only valid values
      *
-     * @param string $attribute
+     * @param  string  $attribute
      *
      * @deprecated Use a method instead.
      */
@@ -57,8 +59,8 @@ class ValidGenerator
     /**
      * Catch and proxy all generator calls with arguments but return only valid values
      *
-     * @param string $name
-     * @param array  $arguments
+     * @param  string  $name
+     * @param  array  $arguments
      */
     public function __call($name, $arguments)
     {
@@ -66,12 +68,12 @@ class ValidGenerator
 
         do {
             $res = call_user_func_array([$this->generator, $name], $arguments);
-            ++$i;
+            $i++;
 
             if ($i > $this->maxRetries) {
                 throw new \OverflowException(sprintf('Maximum retries of %d reached without finding a valid value', $this->maxRetries));
             }
-        } while (!call_user_func($this->validator, $res));
+        } while (! call_user_func($this->validator, $res));
 
         return $res;
     }

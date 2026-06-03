@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Metadata;
 
 /**
@@ -24,8 +27,8 @@ final readonly class TestWith extends Metadata
     private ?string $name;
 
     /**
-     * @param int<0, 1>         $level
-     * @param ?non-empty-string $name
+     * @param  int<0, 1>  $level
+     * @param  ?non-empty-string  $name
      */
     protected function __construct(int $level, mixed $data, ?string $name = null)
     {

@@ -57,6 +57,6 @@ final class OnlyInPowerShellFinder implements CpuCoreFinder
 
     private function skip(): bool
     {
-        return false === getenv('PSModulePath');
+        return getenv('PSModulePath') === false;
     }
 }

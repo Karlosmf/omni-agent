@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ParaTest\JUnit;
 
+use const ENT_XML1;
+
 use DOMDocument;
 use DOMElement;
 
@@ -18,8 +20,6 @@ use function mkdir;
 use function sprintf;
 use function str_replace;
 
-use const ENT_XML1;
-
 /** @internal */
 final readonly class Writer
 {
@@ -27,7 +27,7 @@ final readonly class Writer
 
     public function __construct()
     {
-        $this->document               = new DOMDocument('1.0', 'UTF-8');
+        $this->document = new DOMDocument('1.0', 'UTF-8');
         $this->document->formatOutput = true;
     }
 
@@ -39,7 +39,7 @@ final readonly class Writer
         }
 
         $result = file_put_contents($path, $this->getXml($testSuite));
-        assert(is_int($result) && 0 < $result);
+        assert(is_int($result) && $result > 0);
     }
 
     /** @return non-empty-string */
@@ -98,7 +98,7 @@ final readonly class Writer
                 $defectNode = $this->document->createElement($case->xmlTagName->toString());
             } else {
                 $defectNode = $this->document->createElement($case->xmlTagName->toString(), htmlspecialchars($case->text, ENT_XML1));
-                $type       = $case->type;
+                $type = $case->type;
                 if ($type !== null) {
                     $defectNode->setAttribute('type', $type);
                 }

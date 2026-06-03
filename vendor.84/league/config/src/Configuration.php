@@ -51,13 +51,13 @@ final class Configuration implements ConfigurationBuilderInterface, Configuratio
     private ConfigurationInterface $reader;
 
     /**
-     * @param array<string, Schema> $baseSchemas
+     * @param  array<string, Schema>  $baseSchemas
      */
     public function __construct(array $baseSchemas = [])
     {
         $this->configSchemas = $baseSchemas;
-        $this->userConfig    = new Data();
-        $this->finalConfig   = new Data();
+        $this->userConfig = new Data;
+        $this->finalConfig = new Data;
 
         $this->reader = new ReadOnlyConfiguration($this);
     }
@@ -117,7 +117,7 @@ final class Configuration implements ConfigurationBuilderInterface, Configuratio
             $this->build(self::getTopLevelKey($key));
 
             return $this->cache[$key] = $this->finalConfig->get($key);
-        } catch (InvalidPathException | MissingPathException $ex) {
+        } catch (InvalidPathException|MissingPathException $ex) {
             throw new UnknownOptionException($ex->getMessage(), $key, (int) $ex->getCode(), $ex);
         }
     }
@@ -137,7 +137,7 @@ final class Configuration implements ConfigurationBuilderInterface, Configuratio
             $this->build(self::getTopLevelKey($key));
 
             return $this->finalConfig->has($key);
-        } catch (InvalidPathException | UnknownOptionException $ex) {
+        } catch (InvalidPathException|UnknownOptionException $ex) {
             return false;
         }
     }
@@ -155,8 +155,8 @@ final class Configuration implements ConfigurationBuilderInterface, Configuratio
      */
     private function invalidate(): void
     {
-        $this->cache       = [];
-        $this->finalConfig = new Data();
+        $this->cache = [];
+        $this->finalConfig = new Data;
     }
 
     /**
@@ -183,8 +183,8 @@ final class Configuration implements ConfigurationBuilderInterface, Configuratio
         }
 
         try {
-            $schema    = $this->configSchemas[$topLevelKey];
-            $processor = new Processor();
+            $schema = $this->configSchemas[$topLevelKey];
+            $processor = new Processor;
 
             $processed = $processor->process(Expect::structure([$topLevelKey => $schema]), $userData);
 
@@ -201,8 +201,7 @@ final class Configuration implements ConfigurationBuilderInterface, Configuratio
      *
      * @phpstan-template T
      *
-     * @param T $data
-     *
+     * @param  T  $data
      * @return mixed
      *
      * @phpstan-return ($data is \stdClass ? array<string, mixed> : T)
@@ -225,7 +224,7 @@ final class Configuration implements ConfigurationBuilderInterface, Configuratio
     }
 
     /**
-     * @param string[] $warnings
+     * @param  string[]  $warnings
      */
     private function raiseAnyDeprecationNotices(array $warnings): void
     {

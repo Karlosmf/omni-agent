@@ -92,10 +92,10 @@ class FilamentServiceProvider extends PackageServiceProvider
         ]);
 
         FilamentAsset::register([
-            Font::make('inter', __DIR__ . '/../dist/fonts/inter'),
-            Js::make('app', __DIR__ . '/../dist/index.js')->core(),
-            Js::make('echo', __DIR__ . '/../dist/echo.js')->core(),
-            Theme::make('app', __DIR__ . '/../dist/theme.css'),
+            Font::make('inter', __DIR__.'/../dist/fonts/inter'),
+            Js::make('app', __DIR__.'/../dist/index.js')->core(),
+            Js::make('echo', __DIR__.'/../dist/echo.js')->core(),
+            Theme::make('app', __DIR__.'/../dist/theme.css'),
         ], 'filament/filament');
 
         Livewire::addPersistentMiddleware([
@@ -115,7 +115,7 @@ class FilamentServiceProvider extends PackageServiceProvider
         });
 
         if ($this->app->runningInConsole()) {
-            foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
+            foreach (app(Filesystem::class)->files(__DIR__.'/../stubs/') as $file) {
                 $this->publishes([
                     $file->getRealPath() => base_path("stubs/filament/{$file->getFilename()}"),
                 ], 'filament-stubs');

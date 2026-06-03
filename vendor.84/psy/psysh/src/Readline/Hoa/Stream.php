@@ -41,7 +41,7 @@ namespace Psy\Readline\Hoa;
  *
  * Static register for all streams (files, sockets etc.).
  */
-abstract class Stream implements IStream, EventListenable
+abstract class Stream implements EventListenable, IStream
 {
     use EventListens;
 
@@ -133,13 +133,12 @@ abstract class Stream implements IStream, EventListenable
             )
         );
 
-        if (true === $wait) {
+        if ($wait === true) {
             return;
         }
 
         $this->open();
 
-        return;
     }
 
     /**
@@ -154,20 +153,20 @@ abstract class Stream implements IStream, EventListenable
     ): array {
         $name = \md5($streamName);
 
-        if (null !== $context) {
-            if (false === StreamContext::contextExists($context)) {
+        if ($context !== null) {
+            if (StreamContext::contextExists($context) === false) {
                 throw new StreamException('Context %s was not previously declared, cannot retrieve '.'this context.', 0, $context);
             }
 
             $context = StreamContext::getInstance($context);
         }
 
-        if (!isset(self::$_register[$name])) {
+        if (! isset(self::$_register[$name])) {
             self::$_register[$name] = [
-                self::NAME     => $streamName,
-                self::HANDLER  => $handler,
+                self::NAME => $streamName,
+                self::HANDLER => $handler,
                 self::RESOURCE => $handler->_open($streamName, $context),
-                self::CONTEXT  => $context,
+                self::CONTEXT => $context,
             ];
             Event::register(
                 'hoa://Event/Stream/'.$streamName,
@@ -182,7 +181,7 @@ abstract class Stream implements IStream, EventListenable
             $handler->_borrowing = true;
         }
 
-        if (null === self::$_register[$name][self::RESOURCE]) {
+        if (self::$_register[$name][self::RESOURCE] === null) {
             self::$_register[$name][self::RESOURCE]
                 = $handler->_open($streamName, $context);
         }
@@ -211,18 +210,18 @@ abstract class Stream implements IStream, EventListenable
     {
         $context = $this->_context;
 
-        if (true === $this->hasBeenDeferred()) {
-            if (null === $context) {
+        if ($this->hasBeenDeferred() === true) {
+            if ($context === null) {
                 $handle = StreamContext::getInstance(\uniqid());
                 $handle->setParameters([
                     'notification' => [$this, '_notify'],
                 ]);
                 $context = $handle->getId();
-            } elseif (true === StreamContext::contextExists($context)) {
+            } elseif (StreamContext::contextExists($context) === true) {
                 $handle = StreamContext::getInstance($context);
                 $parameters = $handle->getParameters();
 
-                if (!isset($parameters['notification'])) {
+                if (! isset($parameters['notification'])) {
                     $handle->setParameters([
                         'notification' => [$this, '_notify'],
                     ]);
@@ -247,23 +246,23 @@ abstract class Stream implements IStream, EventListenable
     {
         $streamName = $this->getStreamName();
 
-        if (null === $streamName) {
+        if ($streamName === null) {
             return;
         }
 
         $name = \md5($streamName);
 
-        if (!isset(self::$_register[$name])) {
+        if (! isset(self::$_register[$name])) {
             return;
         }
 
         Event::notify(
             'hoa://Event/Stream/'.$streamName.':close-before',
             $this,
-            new EventBucket()
+            new EventBucket
         );
 
-        if (false === $this->_close()) {
+        if ($this->_close() === false) {
             return;
         }
 
@@ -276,7 +275,6 @@ abstract class Stream implements IStream, EventListenable
             'hoa://Event/Stream/'.$streamName.':close-before'
         );
 
-        return;
     }
 
     /**
@@ -322,7 +320,7 @@ abstract class Stream implements IStream, EventListenable
     {
         $name = \md5($streamName);
 
-        if (!isset(self::$_register[$name])) {
+        if (! isset(self::$_register[$name])) {
             return null;
         }
 
@@ -337,9 +335,9 @@ abstract class Stream implements IStream, EventListenable
      */
     public function _setStream($stream)
     {
-        if (false === \is_resource($stream) &&
-            ('resource' !== \gettype($stream) ||
-             'Unknown' !== \get_resource_type($stream))) {
+        if (\is_resource($stream) === false &&
+            (\gettype($stream) !== 'resource' ||
+             \get_resource_type($stream) !== 'Unknown')) {
             throw new StreamException('Try to change the stream resource with an invalid one; '.'given %s.', 1, \gettype($stream));
         }
 
@@ -382,7 +380,7 @@ abstract class Stream implements IStream, EventListenable
     {
         $metaData = $this->getStreamMetaData();
 
-        return true === $metaData['timed_out'];
+        return $metaData['timed_out'] === true;
     }
 
     /**
@@ -403,9 +401,9 @@ abstract class Stream implements IStream, EventListenable
     public function setStreamBuffer(int $buffer): bool
     {
         // Zero means success.
-        $out = 0 === \stream_set_write_buffer($this->getStream(), $buffer);
+        $out = \stream_set_write_buffer($this->getStream(), $buffer) === 0;
 
-        if (true === $out) {
+        if ($out === true) {
             $this->_bufferSize = $buffer;
         }
 
@@ -470,23 +468,23 @@ abstract class Stream implements IStream, EventListenable
     ) {
         static $_map = [
             \STREAM_NOTIFY_AUTH_REQUIRED => 'authrequire',
-            \STREAM_NOTIFY_AUTH_RESULT   => 'authresult',
-            \STREAM_NOTIFY_COMPLETED     => 'complete',
-            \STREAM_NOTIFY_CONNECT       => 'connect',
-            \STREAM_NOTIFY_FAILURE       => 'failure',
-            \STREAM_NOTIFY_MIME_TYPE_IS  => 'mimetype',
-            \STREAM_NOTIFY_PROGRESS      => 'progress',
-            \STREAM_NOTIFY_REDIRECTED    => 'redirect',
-            \STREAM_NOTIFY_RESOLVE       => 'resolve',
-            \STREAM_NOTIFY_FILE_SIZE_IS  => 'size',
+            \STREAM_NOTIFY_AUTH_RESULT => 'authresult',
+            \STREAM_NOTIFY_COMPLETED => 'complete',
+            \STREAM_NOTIFY_CONNECT => 'connect',
+            \STREAM_NOTIFY_FAILURE => 'failure',
+            \STREAM_NOTIFY_MIME_TYPE_IS => 'mimetype',
+            \STREAM_NOTIFY_PROGRESS => 'progress',
+            \STREAM_NOTIFY_REDIRECTED => 'redirect',
+            \STREAM_NOTIFY_RESOLVE => 'resolve',
+            \STREAM_NOTIFY_FILE_SIZE_IS => 'size',
         ];
 
         $this->getListener()->fire($_map[$ncode], new EventBucket([
-            'code'        => $code,
-            'severity'    => $severity,
-            'message'     => $message,
+            'code' => $code,
+            'severity' => $severity,
+            'message' => $message,
             'transferred' => $transferred,
-            'max'         => $max,
+            'max' => $max,
         ]));
     }
 
@@ -503,7 +501,6 @@ abstract class Stream implements IStream, EventListenable
             $entry[self::HANDLER]->close();
         }
 
-        return;
     }
 
     /**
@@ -519,13 +516,12 @@ abstract class Stream implements IStream, EventListenable
      */
     public function __destruct()
     {
-        if (false === $this->isOpened()) {
+        if ($this->isOpened() === false) {
             return;
         }
 
         $this->close();
 
-        return;
     }
 }
 
@@ -548,8 +544,7 @@ class _Protocol extends ProtocolNode
     /**
      * ID of the component.
      *
-     * @param string $id ID of the component
-     *
+     * @param  string  $id  ID of the component
      * @return mixed
      */
     public function reachId(string $id)
@@ -568,4 +563,4 @@ class _Protocol extends ProtocolNode
  * in the stream register.
  */
 $protocol = Protocol::getInstance();
-$protocol['Library'][] = new _Protocol();
+$protocol['Library'][] = new _Protocol;

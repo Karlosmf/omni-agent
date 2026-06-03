@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Composer\Pcre\PHPStan;
 
@@ -21,8 +23,7 @@ final class PregMatchParameterOutTypeExtension implements StaticMethodParameterO
 
     public function __construct(
         RegexArrayShapeMatcher $regexShapeMatcher
-    )
-    {
+    ) {
         $this->regexShapeMatcher = $regexShapeMatcher;
     }
 
@@ -32,7 +33,7 @@ final class PregMatchParameterOutTypeExtension implements StaticMethodParameterO
             $methodReflection->getDeclaringClass()->getName() === Preg::class
             && in_array($methodReflection->getName(), [
                 'match', 'isMatch', 'matchStrictGroups', 'isMatchStrictGroups',
-                'matchAll', 'isMatchAll', 'matchAllStrictGroups', 'isMatchAllStrictGroups'
+                'matchAll', 'isMatchAll', 'matchAllStrictGroups', 'isMatchAllStrictGroups',
             ], true)
             && $parameter->getName() === 'matches';
     }
@@ -61,5 +62,4 @@ final class PregMatchParameterOutTypeExtension implements StaticMethodParameterO
 
         return $this->regexShapeMatcher->matchExpr($patternArg->value, $flagsType, TrinaryLogic::createMaybe(), $scope);
     }
-
 }

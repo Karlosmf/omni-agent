@@ -7,6 +7,7 @@ namespace League\Flysystem;
 class FileAttributes implements StorageAttributes
 {
     use ProxyArrayAccessToProperties;
+
     private string $type = StorageAttributes::TYPE_FILE;
 
     public function __construct(

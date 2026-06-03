@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\Uri\Components;
 
+use const ARRAY_FILTER_USE_BOTH;
+
 use BackedEnum;
 use Countable;
 use IteratorAggregate;
@@ -52,16 +54,15 @@ use function str_replace;
 use function strpos;
 use function substr;
 
-use const ARRAY_FILTER_USE_BOTH;
-
 /**
  * @see https://wicg.github.io/scroll-to-text-fragment/
  *
  * @implements IteratorAggregate<int, FragmentDirective>
  */
-final class FragmentDirectives implements FragmentInterface, IteratorAggregate, Countable, Conditionable, Transformable
+final class FragmentDirectives implements Conditionable, Countable, FragmentInterface, IteratorAggregate, Transformable
 {
     public const DELIMITER = ':~:';
+
     public const SEPARATOR = '&';
 
     /** @var list<FragmentDirective> */
@@ -87,14 +88,14 @@ final class FragmentDirectives implements FragmentInterface, IteratorAggregate, 
             $fragment = $fragment->value;
         }
 
-        if (null === $fragment) {
-            return new self();
+        if ($fragment === null) {
+            return new self;
         }
 
         $fragment = (string) $fragment;
         $pos = strpos($fragment, self::DELIMITER);
-        if (false === $pos) {
-            return new self();
+        if ($pos === false) {
+            return new self;
         }
 
         return self::new(substr($fragment, $pos + 3));
@@ -109,8 +110,8 @@ final class FragmentDirectives implements FragmentInterface, IteratorAggregate, 
             $value = $value->value;
         }
 
-        return null === $value
-             ? new self()
+        return $value === null
+             ? new self
              : new self(...explode(self::SEPARATOR, (string) $value));
     }
 
@@ -167,7 +168,7 @@ final class FragmentDirectives implements FragmentInterface, IteratorAggregate, 
 
     public function value(): ?string
     {
-        return [] === $this->directives
+        return $this->directives === []
             ? null
             : self::DELIMITER.implode(
                 self::SEPARATOR,
@@ -184,12 +185,12 @@ final class FragmentDirectives implements FragmentInterface, IteratorAggregate, 
     {
         $fragment = $this->value();
 
-        return (null === $fragment ? '' : '#').$fragment;
+        return ($fragment === null ? '' : '#').$fragment;
     }
 
     public function decoded(): ?string
     {
-        return [] === $this->directives
+        return $this->directives === []
             ? null
             : str_replace('%20', ' ', (string) Encoder::decodeFragment($this->toString()));
     }
@@ -242,23 +243,23 @@ final class FragmentDirectives implements FragmentInterface, IteratorAggregate, 
             }
         }
 
-        return [] !== $offsets;
+        return $offsets !== [];
     }
 
     public function isEmpty(): bool
     {
-        return [] === $this->directives;
+        return $this->directives === [];
     }
 
     public function equals(mixed $value): bool
     {
-        if (!$value instanceof BackedEnum && !$value instanceof Stringable && !is_string($value) && null !== $value) {
+        if (! $value instanceof BackedEnum && ! $value instanceof Stringable && ! is_string($value) && $value !== null) {
             return false;
         }
 
-        if (!$value instanceof UriComponentInterface) {
+        if (! $value instanceof UriComponentInterface) {
             $value = self::tryNew($value);
-            if (null === $value) {
+            if ($value === null) {
                 return false;
             }
         }
@@ -280,7 +281,7 @@ final class FragmentDirectives implements FragmentInterface, IteratorAggregate, 
 
     public function contains(FragmentDirective|BackedEnum|Stringable|string $directive): bool
     {
-        return null !== $this->indexOf($directive);
+        return $this->indexOf($directive) !== null;
     }
 
     /**
@@ -290,7 +291,7 @@ final class FragmentDirectives implements FragmentInterface, IteratorAggregate, 
     {
         $items = self::implodeDirectives(...$directives);
 
-        return [] === $items ? $this : new self(...$this->directives, ...$items);
+        return $items === [] ? $this : new self(...$this->directives, ...$items);
     }
 
     /**
@@ -300,7 +301,7 @@ final class FragmentDirectives implements FragmentInterface, IteratorAggregate, 
     {
         $items = self::implodeDirectives(...$directives);
 
-        return [] === $items ? $this : new self(...$items, ...$this->directives);
+        return $items === [] ? $this : new self(...$items, ...$this->directives);
     }
 
     /**
@@ -316,7 +317,7 @@ final class FragmentDirectives implements FragmentInterface, IteratorAggregate, 
      */
     public function remove(int ...$keys): self
     {
-        if ([] === $keys) {
+        if ($keys === []) {
             return $this;
         }
 
@@ -334,7 +335,7 @@ final class FragmentDirectives implements FragmentInterface, IteratorAggregate, 
 
         $deletedKeys = array_keys(array_count_values($deletedKeys));
 
-        return $this->filter(fn (FragmentDirective $directive, int $offset): bool => !in_array($offset, $deletedKeys, true)); /* @phpstan-ignore-line */
+        return $this->filter(fn (FragmentDirective $directive, int $offset): bool => ! in_array($offset, $deletedKeys, true)); /* @phpstan-ignore-line */
     }
 
     /**
@@ -352,7 +353,7 @@ final class FragmentDirectives implements FragmentInterface, IteratorAggregate, 
     /**
      * Filter the Directives to return a new instance based on the callback.
      *
-     * @param callable(FragmentDirective, int=): bool $callback
+     * @param  callable(FragmentDirective, int=): bool  $callback
      */
     public function filter(callable $callback): self
     {
@@ -370,7 +371,7 @@ final class FragmentDirectives implements FragmentInterface, IteratorAggregate, 
     public function replace(int $offset, FragmentDirective|BackedEnum|Stringable|string $directive): self
     {
         $currentDirective = $this->nth($offset);
-        null !== $currentDirective || throw new OffsetOutOfBounds(sprintf('The key `%s` is invalid.', $offset));
+        $currentDirective !== null || throw new OffsetOutOfBounds(sprintf('The key `%s` is invalid.', $offset));
 
         $directive = self::filterDirective($directive);
         if ($directive::class === $currentDirective::class && $currentDirective->equals($directive)) {
@@ -389,13 +390,13 @@ final class FragmentDirectives implements FragmentInterface, IteratorAggregate, 
 
     public function when(callable|bool $condition, callable $onSuccess, ?callable $onFail = null): static
     {
-        if (!is_bool($condition)) {
+        if (! is_bool($condition)) {
             $condition = $condition($this);
         }
 
         return match (true) {
             $condition => $onSuccess($this),
-            null !== $onFail => $onFail($this),
+            $onFail !== null => $onFail($this),
             default => $this,
         } ?? $this;
     }

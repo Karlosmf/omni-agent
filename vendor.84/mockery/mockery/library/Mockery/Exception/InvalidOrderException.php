@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -82,35 +83,35 @@ class InvalidOrderException extends Exception
     }
 
     /**
-     * @param int $count
-     *
+     * @param  int  $count
      * @return self
      */
     public function setActualOrder($count)
     {
         $this->actual = $count;
+
         return $this;
     }
 
     /**
-     * @param int $count
-     *
+     * @param  int  $count
      * @return self
      */
     public function setExpectedOrder($count)
     {
         $this->expected = $count;
+
         return $this;
     }
 
     /**
-     * @param string $name
-     *
+     * @param  string  $name
      * @return self
      */
     public function setMethodName($name)
     {
         $this->method = $name;
+
         return $this;
     }
 
@@ -120,6 +121,7 @@ class InvalidOrderException extends Exception
     public function setMock(LegacyMockInterface $mock)
     {
         $this->mockObject = $mock;
+
         return $this;
     }
 }

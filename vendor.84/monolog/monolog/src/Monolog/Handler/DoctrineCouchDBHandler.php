@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -11,10 +13,10 @@
 
 namespace Monolog\Handler;
 
-use Monolog\Level;
-use Monolog\Formatter\NormalizerFormatter;
-use Monolog\Formatter\FormatterInterface;
 use Doctrine\CouchDB\CouchDBClient;
+use Monolog\Formatter\FormatterInterface;
+use Monolog\Formatter\NormalizerFormatter;
+use Monolog\Level;
 use Monolog\LogRecord;
 
 /**
@@ -33,7 +35,7 @@ class DoctrineCouchDBHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function write(LogRecord $record): void
     {

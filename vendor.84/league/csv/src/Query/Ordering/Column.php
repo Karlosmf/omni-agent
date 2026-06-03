@@ -34,20 +34,20 @@ use function trim;
 final class Column implements Sort
 {
     private const ASCENDING = 'ASC';
+
     private const DESCENDING = 'DESC';
 
     /**
-     * @param Closure(mixed, mixed): int $callback
+     * @param  Closure(mixed, mixed): int  $callback
      */
     private function __construct(
         public readonly string $direction,
         public readonly string|int $column,
         public readonly Closure $callback,
-    ) {
-    }
+    ) {}
 
     /**
-     * @param (callable(mixed, mixed): int)|(Closure(mixed, mixed): int)|null $callback
+     * @param  (callable(mixed, mixed): int)|(Closure(mixed, mixed): int)|null  $callback
      *
      * @throws QueryException
      */
@@ -58,8 +58,8 @@ final class Column implements Sort
     ): self {
 
         $operator = match (true) {
-            SORT_ASC === $direction => self::ASCENDING,
-            SORT_DESC === $direction => self::DESCENDING,
+            $direction === SORT_ASC => self::ASCENDING,
+            $direction === SORT_DESC => self::DESCENDING,
             is_string($direction) => match (strtoupper(trim($direction))) {
                 'ASC', 'ASCENDING', 'UP' => self::ASCENDING,
                 'DESC', 'DESCENDING', 'DOWN' => self::DESCENDING,
@@ -69,7 +69,7 @@ final class Column implements Sort
         };
 
         $callback = match (true) {
-            null === $callback => static fn (mixed $first, mixed $second): int => $first <=> $second,
+            $callback === null => static fn (mixed $first, mixed $second): int => $first <=> $second,
             $callback instanceof Closure => $callback,
             default => $callback(...),
         };
@@ -94,7 +94,8 @@ final class Column implements Sort
 
     public function sort(iterable $value): Iterator
     {
-        $class = new class () extends ArrayIterator {
+        $class = new class extends ArrayIterator
+        {
             public function seek(int $offset): void
             {
                 try {
@@ -105,7 +106,7 @@ final class Column implements Sort
             }
         };
 
-        $it = new $class(!is_array($value) ? iterator_to_array($value) : $value);
+        $it = new $class(! is_array($value) ? iterator_to_array($value) : $value);
         $it->uasort($this);
 
         return $it;

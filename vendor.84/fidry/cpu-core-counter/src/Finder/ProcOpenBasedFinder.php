@@ -13,15 +13,17 @@ declare(strict_types=1);
 
 namespace Fidry\CpuCoreCounter\Finder;
 
+use const FILTER_VALIDATE_INT;
+use const PHP_EOL;
+
 use Fidry\CpuCoreCounter\Executor\ProcessExecutor;
 use Fidry\CpuCoreCounter\Executor\ProcOpenExecutor;
+
 use function filter_var;
 use function function_exists;
 use function is_int;
 use function sprintf;
 use function trim;
-use const FILTER_VALIDATE_INT;
-use const PHP_EOL;
 
 abstract class ProcOpenBasedFinder implements CpuCoreFinder
 {
@@ -32,19 +34,19 @@ abstract class ProcOpenBasedFinder implements CpuCoreFinder
 
     public function __construct(?ProcessExecutor $executor = null)
     {
-        $this->executor = $executor ?? new ProcOpenExecutor();
+        $this->executor = $executor ?? new ProcOpenExecutor;
     }
 
     public function diagnose(): string
     {
-        if (!function_exists('proc_open')) {
+        if (! function_exists('proc_open')) {
             return 'The function "proc_open" is not available.';
         }
 
         $command = $this->getCommand();
         $output = $this->executor->execute($command);
 
-        if (null === $output) {
+        if ($output === null) {
             return sprintf(
                 'Failed to execute the command "%s".',
                 $command
@@ -52,7 +54,7 @@ abstract class ProcOpenBasedFinder implements CpuCoreFinder
         }
 
         [$stdout, $stderr] = $output;
-        $failed = '' !== trim($stderr);
+        $failed = trim($stderr) !== '';
 
         return $failed
             ? sprintf(
@@ -79,12 +81,12 @@ abstract class ProcOpenBasedFinder implements CpuCoreFinder
     {
         $output = $this->executor->execute($this->getCommand());
 
-        if (null === $output) {
+        if ($output === null) {
             return null;
         }
 
         [$stdout, $stderr] = $output;
-        $failed = '' !== trim($stderr);
+        $failed = trim($stderr) !== '';
 
         return $failed
             ? null

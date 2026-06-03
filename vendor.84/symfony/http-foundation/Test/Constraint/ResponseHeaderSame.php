@@ -19,8 +19,7 @@ final class ResponseHeaderSame extends Constraint
     public function __construct(
         private string $headerName,
         private string $expectedValue,
-    ) {
-    }
+    ) {}
 
     public function toString(): string
     {
@@ -28,7 +27,7 @@ final class ResponseHeaderSame extends Constraint
     }
 
     /**
-     * @param Response $response
+     * @param  Response  $response
      */
     protected function matches($response): bool
     {
@@ -36,7 +35,7 @@ final class ResponseHeaderSame extends Constraint
     }
 
     /**
-     * @param Response $response
+     * @param  Response  $response
      */
     protected function failureDescription($response): string
     {

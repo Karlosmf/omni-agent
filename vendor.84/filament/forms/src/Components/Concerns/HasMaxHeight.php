@@ -6,9 +6,9 @@ use Closure;
 
 trait HasMaxHeight
 {
-    protected string | Closure | null $maxHeight = null;
+    protected string|Closure|null $maxHeight = null;
 
-    public function maxHeight(string | Closure | null $height): static
+    public function maxHeight(string|Closure|null $height): static
     {
         $this->maxHeight = $height;
 

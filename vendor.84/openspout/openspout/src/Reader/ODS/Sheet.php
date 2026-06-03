@@ -27,11 +27,11 @@ final readonly class Sheet implements SheetWithVisibilityInterface
     private bool $isVisible;
 
     /**
-     * @param RowIterator $rowIterator    The corresponding row iterator
-     * @param int         $sheetIndex     Index of the sheet, based on order in the workbook (zero-based)
-     * @param string      $sheetName      Name of the sheet
-     * @param bool        $isSheetActive  Whether the sheet was defined as active
-     * @param bool        $isSheetVisible Whether the sheet is visible
+     * @param  RowIterator  $rowIterator  The corresponding row iterator
+     * @param  int  $sheetIndex  Index of the sheet, based on order in the workbook (zero-based)
+     * @param  string  $sheetName  Name of the sheet
+     * @param  bool  $isSheetActive  Whether the sheet was defined as active
+     * @param  bool  $isSheetVisible  Whether the sheet is visible
      */
     public function __construct(RowIterator $rowIterator, int $sheetIndex, string $sheetName, bool $isSheetActive, bool $isSheetVisible)
     {

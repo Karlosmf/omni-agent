@@ -42,7 +42,7 @@ interface WorkbookManagerInterface
      * Sets the given sheet as the current one. New data will be written to this sheet.
      * The writing will resume where it stopped (i.e. data won't be truncated).
      *
-     * @param Sheet $sheet The "external" sheet to set as current
+     * @param  Sheet  $sheet  The "external" sheet to set as current
      *
      * @throws SheetNotFoundException If the given sheet does not exist in the workbook
      */
@@ -53,9 +53,9 @@ interface WorkbookManagerInterface
      * If shouldCreateNewSheetsAutomatically option is set to true, it will handle pagination
      * with the creation of new worksheets if one worksheet has reached its maximum capicity.
      *
-     * @param Row $row The row to be added
+     * @param  Row  $row  The row to be added
      *
-     * @throws IOException     If trying to create a new sheet and unable to open the sheet for writing
+     * @throws IOException If trying to create a new sheet and unable to open the sheet for writing
      * @throws WriterException If unable to write data
      */
     public function addRowToCurrentWorksheet(Row $row): void;
@@ -65,7 +65,7 @@ interface WorkbookManagerInterface
      * All the necessary files are written to disk and zipped together to create the final file.
      * All the temporary files are then deleted.
      *
-     * @param resource $finalFilePointer Pointer to the spreadsheet that will be created
+     * @param  resource  $finalFilePointer  Pointer to the spreadsheet that will be created
      */
     public function close($finalFilePointer): void;
 }

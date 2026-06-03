@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace League\Uri;
 
+use const FILTER_FLAG_IPV4;
+use const FILTER_VALIDATE_IP;
+
 use BackedEnum;
 use Closure;
 use Deprecated;
@@ -35,13 +38,12 @@ use function str_starts_with;
 use function strtolower;
 use function strtoupper;
 
-use const FILTER_FLAG_IPV4;
-use const FILTER_VALIDATE_IP;
-
 final class Encoder
 {
     private const REGEXP_CHARS_INVALID = '/[\x00-\x1f\x7f]/';
+
     private const REGEXP_CHARS_ENCODED = ',%[A-Fa-f0-9]{2},';
+
     private const REGEXP_CHARS_PREVENTS_DECODING = ',%
      	2[A-F|1-2|4-9]|
         3[0-9|B|D]|
@@ -50,8 +52,11 @@ final class Encoder
         6[1-9|A-F]|
         7[0-9|E]
     ,ix';
+
     private const REGEXP_PART_SUBDELIM = "\!\$&'\(\)\*\+,;\=%";
+
     private const REGEXP_PART_UNRESERVED = 'A-Za-z\d_\-.~';
+
     private const REGEXP_PART_ENCODED = '%(?![A-Fa-f\d]{2})';
 
     /**
@@ -72,7 +77,7 @@ final class Encoder
             $encoded = $encoded->value;
         }
 
-        return null === $encoded || 1 !== preg_match($pattern, (string) $encoded);
+        return $encoded === null || preg_match($pattern, (string) $encoded) !== 1;
     }
 
     /**
@@ -101,7 +106,7 @@ final class Encoder
 
     private static function normalize(?string $component): ?string
     {
-        if (null === $component) {
+        if ($component === null) {
             return null;
         }
 
@@ -123,7 +128,7 @@ final class Encoder
             $encoded = $encoded->value;
         }
 
-        return null === $encoded || 1 !== preg_match($pattern, (string) $encoded);
+        return $encoded === null || preg_match($pattern, (string) $encoded) !== 1;
     }
 
     /**
@@ -155,7 +160,7 @@ final class Encoder
      */
     public static function isUserInfoEncoded(#[SensitiveParameter] BackedEnum|Stringable|string|null $userInfo): bool
     {
-        if (null === $userInfo) {
+        if ($userInfo === null) {
             return true;
         }
 
@@ -171,7 +176,7 @@ final class Encoder
 
     public static function encodeUserInfo(#[SensitiveParameter] BackedEnum|Stringable|string|null $userInfo): ?string
     {
-        if (null === $userInfo) {
+        if ($userInfo === null) {
             return null;
         }
 
@@ -181,7 +186,7 @@ final class Encoder
 
         [$user, $password] = explode(':', (string) $userInfo, 2) + [1 => null];
         $userInfo = self::encodeUser($user);
-        if (null === $password) {
+        if ($password === null) {
             return $userInfo;
         }
 
@@ -190,7 +195,7 @@ final class Encoder
 
     public static function normalizeUserInfo(#[SensitiveParameter] BackedEnum|Stringable|string|null $userInfo): ?string
     {
-        if (null === $userInfo) {
+        if ($userInfo === null) {
             return null;
         }
 
@@ -200,7 +205,7 @@ final class Encoder
 
         [$user, $password] = explode(':', (string) $userInfo, 2) + [1 => null];
         $userInfo = self::normalizeUser($user);
-        if (null === $password) {
+        if ($password === null) {
             return $userInfo;
         }
 
@@ -221,7 +226,7 @@ final class Encoder
     public static function decodeNecessary(BackedEnum|Stringable|string|int|null $component): ?string
     {
         $decoder = static function (array $matches): string {
-            if (1 === preg_match(self::REGEXP_CHARS_PREVENTS_DECODING, $matches[0])) {
+            if (preg_match(self::REGEXP_CHARS_PREVENTS_DECODING, $matches[0]) === 1) {
                 return strtoupper($matches[0]);
             }
 
@@ -240,7 +245,7 @@ final class Encoder
             $str = $str->value;
         }
 
-        if (null === $str) {
+        if ($str === null) {
             return null;
         }
 
@@ -262,7 +267,7 @@ final class Encoder
             $encoded = $encoded->value;
         }
 
-        return null === $encoded || 1 !== preg_match($pattern, (string) $encoded);
+        return $encoded === null || preg_match($pattern, (string) $encoded) !== 1;
     }
 
     /**
@@ -313,7 +318,7 @@ final class Encoder
             $encoded = $encoded->value;
         }
 
-        return null === $encoded || 1 !== preg_match($pattern, (string) $encoded);
+        return $encoded === null || preg_match($pattern, (string) $encoded) !== 1;
     }
 
     /**
@@ -353,7 +358,7 @@ final class Encoder
             $encoded = $encoded->value;
         }
 
-        return null === $encoded || 1 !== preg_match($pattern, (string) $encoded);
+        return $encoded === null || preg_match($pattern, (string) $encoded) !== 1;
     }
 
     /**
@@ -361,7 +366,7 @@ final class Encoder
      */
     public static function decodeFragment(BackedEnum|Stringable|string|null $path): ?string
     {
-        return self::decode($path, static fn (array $matches): string => '%20' === $matches[0] ? $matches[0] : rawurldecode($matches[0]));
+        return self::decode($path, static fn (array $matches): string => $matches[0] === '%20' ? $matches[0] : rawurldecode($matches[0]));
     }
 
     /**
@@ -395,7 +400,7 @@ final class Encoder
             $host = (string) $host;
         }
 
-        if (null === $host || '' === $host || false !== filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+        if ($host === null || $host === '' || filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false) {
             return $host;
         }
 
@@ -405,9 +410,9 @@ final class Encoder
 
         $host = strtolower($host);
 
-        return (!str_contains($host, '%')) ? $host : preg_replace_callback(
+        return (! str_contains($host, '%')) ? $host : preg_replace_callback(
             '/%[a-f0-9]{2}/',
-            fn (array $matches) => 1 === preg_match('/%([0-7][0-9a-f])/', $matches[0]) ? rawurldecode($matches[0]) : strtoupper($matches[0]),
+            fn (array $matches) => preg_match('/%([0-7][0-9a-f])/', $matches[0]) === 1 ? rawurldecode($matches[0]) : strtoupper($matches[0]),
             $host
         );
     }
@@ -427,12 +432,12 @@ final class Encoder
     public static function encodeQueryKeyValue(mixed $component): ?string
     {
         static $pattern = '/[^'.self::REGEXP_PART_UNRESERVED.']+|'.self::REGEXP_PART_ENCODED.'/';
-        $encoder = static fn (array $found): string => 1 === preg_match('/[^'.self::REGEXP_PART_UNRESERVED.']/', rawurldecode($found[0])) ? rawurlencode($found[0]) : $found[0];
+        $encoder = static fn (array $found): string => preg_match('/[^'.self::REGEXP_PART_UNRESERVED.']/', rawurldecode($found[0])) === 1 ? rawurlencode($found[0]) : $found[0];
         $filteredComponent = self::filterComponent($component);
 
         return match (true) {
-            null === $filteredComponent => throw new SyntaxError(sprintf('A pair key/value must be a scalar value `%s` given.', gettype($component))),
-            1 === preg_match(self::REGEXP_CHARS_INVALID, $filteredComponent) => rawurlencode($filteredComponent),
+            $filteredComponent === null => throw new SyntaxError(sprintf('A pair key/value must be a scalar value `%s` given.', gettype($component))),
+            preg_match(self::REGEXP_CHARS_INVALID, $filteredComponent) === 1 => rawurlencode($filteredComponent),
             default => (string) preg_replace_callback($pattern, $encoder, $filteredComponent),
         };
     }
@@ -455,13 +460,13 @@ final class Encoder
     private static function encode(BackedEnum|Stringable|string|int|bool|null $component, string $pattern): ?string
     {
         $component = self::filterComponent($component);
-        if (null === $component || '' === $component) {
+        if ($component === null || $component === '') {
             return $component;
         }
 
         return (string) preg_replace_callback(
             $pattern,
-            static fn (array $found): string => 1 === preg_match('/[^'.self::REGEXP_PART_UNRESERVED.']/', rawurldecode($found[0])) ? rawurlencode($found[0]) : $found[0],
+            static fn (array $found): string => preg_match('/[^'.self::REGEXP_PART_UNRESERVED.']/', rawurldecode($found[0])) === 1 ? rawurlencode($found[0]) : $found[0],
             $component
         );
     }
@@ -472,15 +477,15 @@ final class Encoder
     private static function decode(BackedEnum|Stringable|string|int|null $component, Closure $decoder): ?string
     {
         $component = self::filterComponent($component);
-        if (null === $component || '' === $component) {
+        if ($component === null || $component === '') {
             return $component;
         }
 
-        if (1 === preg_match(self::REGEXP_CHARS_INVALID, $component)) {
+        if (preg_match(self::REGEXP_CHARS_INVALID, $component) === 1) {
             throw new SyntaxError('Invalid component string: '.$component.'.');
         }
 
-        if (1 === preg_match(self::REGEXP_CHARS_ENCODED, $component)) {
+        if (preg_match(self::REGEXP_CHARS_ENCODED, $component) === 1) {
             return (string) preg_replace_callback(self::REGEXP_CHARS_ENCODED, $decoder, $component);
         }
 
@@ -493,12 +498,14 @@ final class Encoder
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @deprecated Since version 7.6.0
+     *
      * @codeCoverageIgnore
+     *
      * @see Encoder::decodeNecessary()
      *
      * Create a new instance from the environment.
      */
-    #[Deprecated(message:'use League\Uri\Encoder::decodeNecessary() instead', since:'league/uri:7.6.0')]
+    #[Deprecated(message: 'use League\Uri\Encoder::decodeNecessary() instead', since: 'league/uri:7.6.0')]
     public static function decodePartial(BackedEnum|Stringable|string|int|null $component): ?string
     {
         return self::decodeNecessary($component);

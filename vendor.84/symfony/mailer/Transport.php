@@ -89,12 +89,11 @@ final class Transport
     }
 
     /**
-     * @param TransportFactoryInterface[] $factories
+     * @param  TransportFactoryInterface[]  $factories
      */
     public function __construct(
         private iterable $factories,
-    ) {
-    }
+    ) {}
 
     public function fromStrings(#[\SensitiveParameter] array $dsns): Transports
     {
@@ -129,11 +128,11 @@ final class Transport
                 if ($name === substr($dsn, $offset, \strlen($name))) {
                     $offset += \strlen($name) - 1;
                     preg_match('{\(([^()]|(?R))*\)}A', $dsn, $matches, 0, $offset);
-                    if (!isset($matches[0])) {
+                    if (! isset($matches[0])) {
                         continue;
                     }
 
-                    ++$offset;
+                    $offset++;
                     $args = [];
                     while (true) {
                         [$arg, $offset] = $this->parseDsn($dsn, $offset);
@@ -141,8 +140,8 @@ final class Transport
                         if (\strlen($dsn) === $offset) {
                             break;
                         }
-                        ++$offset;
-                        if (')' === $dsn[$offset - 1]) {
+                        $offset++;
+                        if ($dsn[$offset - 1] === ')') {
                             break;
                         }
                     }

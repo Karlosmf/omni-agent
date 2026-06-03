@@ -9,12 +9,11 @@ class Text extends \Faker\Provider\Text
      *
      * @example 'از تاریخ‌الشعرا را بکوبند روی نبش دیوار کوچه‌شان. تابلوی مدرسه.'
      *
-     * @param int $maxNbChars
-     * @param int $indexSize
+     * @param  int  $maxNbChars
+     * @param  int  $indexSize
+     * @return string
      *
      * @throws \InvalidArgumentException
-     *
-     * @return string
      */
     public function realText($maxNbChars = 200, $indexSize = 2)
     {
@@ -47,7 +46,7 @@ class Text extends \Faker\Provider\Text
             array_shift($currentWords);
             $next = implode(' ', $currentWords);
 
-            if ($resultLength == 0 && !preg_match('/^[\x{0600}-\x{06FF}]/u', $word)) {
+            if ($resultLength == 0 && ! preg_match('/^[\x{0600}-\x{06FF}]/u', $word)) {
                 continue;
             }
             // append the element
@@ -61,7 +60,7 @@ class Text extends \Faker\Provider\Text
         // build result
         $result = implode(' ', $result);
 
-        return $result . '.';
+        return $result.'.';
     }
 
     /**

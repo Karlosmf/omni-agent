@@ -23,11 +23,11 @@ trait CanGenerateModelForms
     public function generateFormMethodBody(?string $model = null, ?string $statePath = null, ?string $modelMethodOutput = null, array $exceptColumns = []): string
     {
         $statePathOutput = filled($statePath)
-            ? PHP_EOL . new Literal('    ->statePath(?)', [$statePath])
+            ? PHP_EOL.new Literal('    ->statePath(?)', [$statePath])
             : '';
 
         $modelMethodOutput = filled($modelMethodOutput)
-            ? PHP_EOL . '    ' . $modelMethodOutput
+            ? PHP_EOL.'    '.$modelMethodOutput
             : '';
 
         return <<<PHP
@@ -107,7 +107,7 @@ trait CanGenerateModelForms
 
                     $this->namespace->addUse($enumClass);
 
-                    $componentData['options'] = [new Literal(class_basename($enumClass) . '::class')];
+                    $componentData['options'] = [new Literal(class_basename($enumClass).'::class')];
                 } else {
                     $componentData['options'] = [array_combine(
                         $type['values'],
@@ -233,7 +233,7 @@ trait CanGenerateModelForms
                 unset($componentData['type']);
 
                 foreach ($componentData as $methodName => $parameters) {
-                    $component .= new Literal(PHP_EOL . "            ->{$methodName}(...?:)", [$parameters]);
+                    $component .= new Literal(PHP_EOL."            ->{$methodName}(...?:)", [$parameters]);
                 }
 
                 return "{$component},";
@@ -255,7 +255,7 @@ trait CanGenerateModelForms
             return '//';
         }
 
-        return implode(PHP_EOL . '        ', $components);
+        return implode(PHP_EOL.'        ', $components);
     }
 
     public function isGenerated(): bool

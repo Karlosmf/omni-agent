@@ -24,36 +24,38 @@ abstract class Enumerator
 {
     // Output styles
     const IS_PUBLIC = 'public';
+
     const IS_PROTECTED = 'protected';
+
     const IS_PRIVATE = 'private';
+
     const IS_GLOBAL = 'global';
+
     const IS_CONSTANT = 'const';
+
     const IS_CLASS = 'class';
+
     const IS_FUNCTION = 'function';
+
     const IS_VIRTUAL = 'virtual';
 
     private FilterOptions $filter;
+
     private Presenter $presenter;
 
     /**
      * Enumerator constructor.
-     *
-     * @param Presenter $presenter
      */
     public function __construct(Presenter $presenter)
     {
-        $this->filter = new FilterOptions();
+        $this->filter = new FilterOptions;
         $this->presenter = $presenter;
     }
 
     /**
      * Return a list of categorized things with the given input options and target.
      *
-     * @param InputInterface  $input
-     * @param \Reflector|null $reflector
-     * @param mixed           $target
-     *
-     * @return array
+     * @param  mixed  $target
      */
     public function enumerate(InputInterface $input, ?\Reflector $reflector = null, $target = null): array
     {
@@ -77,11 +79,7 @@ abstract class Enumerator
      *         ],
      *     ]
      *
-     * @param InputInterface  $input
-     * @param \Reflector|null $reflector
-     * @param mixed           $target
-     *
-     * @return array
+     * @param  mixed  $target
      */
     abstract protected function listItems(InputInterface $input, ?\Reflector $reflector = null, $target = null): array;
 
@@ -98,7 +96,7 @@ abstract class Enumerator
     protected function presentSignature($target)
     {
         // This might get weird if the signature is actually for a reflector. Hrm.
-        if (!$target instanceof \Reflector) {
+        if (! $target instanceof \Reflector) {
             $target = Mirror::get($target);
         }
 

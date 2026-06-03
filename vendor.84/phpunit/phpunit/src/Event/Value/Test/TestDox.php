@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\Code;
 
 /**
@@ -17,13 +20,15 @@ namespace PHPUnit\Event\Code;
 final readonly class TestDox
 {
     private string $prettifiedClassName;
+
     private string $prettifiedMethodName;
+
     private string $prettifiedAndColorizedMethodName;
 
     public function __construct(string $prettifiedClassName, string $prettifiedMethodName, string $prettifiedAndColorizedMethodName)
     {
-        $this->prettifiedClassName              = $prettifiedClassName;
-        $this->prettifiedMethodName             = $prettifiedMethodName;
+        $this->prettifiedClassName = $prettifiedClassName;
+        $this->prettifiedMethodName = $prettifiedMethodName;
         $this->prettifiedAndColorizedMethodName = $prettifiedAndColorizedMethodName;
     }
 

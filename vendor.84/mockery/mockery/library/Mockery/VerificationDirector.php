@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -45,9 +46,8 @@ class VerificationDirector
     }
 
     /**
-     * @param int $minimum
-     * @param int $maximum
-     *
+     * @param  int  $minimum
+     * @param  int  $maximum
      * @return self
      */
     public function between($minimum, $maximum)
@@ -64,8 +64,7 @@ class VerificationDirector
     }
 
     /**
-     * @param int $limit
-     *
+     * @param  int  $limit
      * @return self
      */
     public function times($limit = null)
@@ -89,8 +88,7 @@ class VerificationDirector
     /**
      * @template TArgs
      *
-     * @param TArgs $args
-     *
+     * @param  TArgs  $args
      * @return self
      */
     public function with(...$args)
@@ -109,8 +107,7 @@ class VerificationDirector
     /**
      * @template TArgs
      *
-     * @param TArgs $args
-     *
+     * @param  TArgs  $args
      * @return self
      */
     public function withArgs($args)
@@ -127,9 +124,8 @@ class VerificationDirector
     }
 
     /**
-     * @param string $method
-     * @param array  $args
-     *
+     * @param  string  $method
+     * @param  array  $args
      * @return self
      */
     protected function cloneApplyAndVerify($method, $args)
@@ -146,9 +142,8 @@ class VerificationDirector
     }
 
     /**
-     * @param string $method
-     * @param array  $args
-     *
+     * @param  string  $method
+     * @param  array  $args
      * @return self
      */
     protected function cloneWithoutCountValidatorsApplyAndVerify($method, $args)

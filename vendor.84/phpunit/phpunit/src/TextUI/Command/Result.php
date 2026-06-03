@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\Command;
 
 /**
@@ -18,11 +21,16 @@ namespace PHPUnit\TextUI\Command;
  */
 final readonly class Result
 {
-    public const int SUCCESS   = 0;
-    public const int FAILURE   = 1;
+    public const int SUCCESS = 0;
+
+    public const int FAILURE = 1;
+
     public const int EXCEPTION = 2;
-    public const int CRASH     = 255;
+
+    public const int CRASH = 255;
+
     private string $output;
+
     private int $shellExitCode;
 
     public static function from(string $output = '', int $shellExitCode = self::SUCCESS): self
@@ -32,7 +40,7 @@ final readonly class Result
 
     private function __construct(string $output, int $shellExitCode)
     {
-        $this->output        = $output;
+        $this->output = $output;
         $this->shellExitCode = $shellExitCode;
     }
 

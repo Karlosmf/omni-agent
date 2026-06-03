@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -18,7 +20,5 @@ if (false) {
     /**
      * @deprecated Use \Monolog\JsonSerializableDateTimeImmutable instead.
      */
-    class DateTimeImmutable extends JsonSerializableDateTimeImmutable
-    {
-    }
+    class DateTimeImmutable extends JsonSerializableDateTimeImmutable {}
 }

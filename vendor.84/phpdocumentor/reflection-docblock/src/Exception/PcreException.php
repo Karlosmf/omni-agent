@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace phpDocumentor\Reflection\Exception;
 
-use InvalidArgumentException;
-
 use const PREG_BACKTRACK_LIMIT_ERROR;
 use const PREG_BAD_UTF8_ERROR;
 use const PREG_BAD_UTF8_OFFSET_ERROR;
@@ -13,6 +11,8 @@ use const PREG_INTERNAL_ERROR;
 use const PREG_JIT_STACKLIMIT_ERROR;
 use const PREG_NO_ERROR;
 use const PREG_RECURSION_LIMIT_ERROR;
+
+use InvalidArgumentException;
 
 final class PcreException extends InvalidArgumentException
 {

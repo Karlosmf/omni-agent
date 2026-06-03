@@ -4,6 +4,11 @@ namespace App\Filament\Admin\Resources\Bookings\Schemas;
 
 use App\Enums\BookingStatus;
 use App\Enums\Currency;
+use App\Enums\UserRole;
+use App\Models\Lead;
+use App\Models\ServiceType;
+use App\Models\User;
+use App\Services\CurrencyService;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -14,6 +19,8 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class BookingForm
 {
@@ -44,16 +51,16 @@ class BookingForm
                                             ->email(),
                                     ])
                                     ->createOptionUsing(function (array $data) {
-                                        $data['role'] = \App\Enums\UserRole::Customer;
-                                        $data['password'] = \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(12));
+                                        $data['role'] = UserRole::Customer;
+                                        $data['password'] = Hash::make(Str::random(12));
 
-                                        return \App\Models\User::create($data)->id;
+                                        return User::create($data)->id;
                                     })
                                     ->required()
                                     ->live()
                                     ->afterStateUpdated(function (Set $set, $state) {
                                         if ($state) {
-                                            $customer = \App\Models\User::find($state);
+                                            $customer = User::find($state);
                                             if ($customer) {
                                                 $set('holder_name', $customer->name);
                                             }
@@ -80,7 +87,7 @@ class BookingForm
                                     ->live()
                                     ->afterStateUpdated(function (Set $set, $state) {
                                         if ($state) {
-                                            $lead = \App\Models\Lead::find($state);
+                                            $lead = Lead::find($state);
                                             if ($lead) {
                                                 $set('holder_name', $lead->customer_name);
                                                 if ($lead->customer_id) {
@@ -161,7 +168,7 @@ class BookingForm
                                         Select::make('currency')
                                             ->label('Moneda')
                                             ->options(function () {
-                                                $service = app(\App\Services\CurrencyService::class);
+                                                $service = app(CurrencyService::class);
                                                 $data = $service->getAllData();
 
                                                 $options = ['ARS' => 'Pesos Argentinos (ARS)'];
@@ -180,7 +187,7 @@ class BookingForm
                                             ->afterStateUpdated(function (Set $set, Get $get) {
                                                 $currency = $get('currency');
                                                 if ($currency !== 'ARS' && $currency !== 'OTHER') {
-                                                    $service = app(\App\Services\CurrencyService::class);
+                                                    $service = app(CurrencyService::class);
                                                     $rate = $service->getRate($currency, 'sell');
                                                     if ($rate > 1) {
                                                         $set('exchange_rate', $rate);
@@ -221,7 +228,7 @@ class BookingForm
                             ->columns(1)
                             ->itemLabel(function (array $state): ?string {
                                 $typeId = $state['service_type_id'] ?? null;
-                                $serviceType = \App\Models\ServiceType::find($typeId);
+                                $serviceType = ServiceType::find($typeId);
                                 $label = $serviceType ? $serviceType->name : 'N/A';
 
                                 return $label.': '.($state['description'] ?? '');

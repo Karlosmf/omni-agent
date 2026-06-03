@@ -3,6 +3,7 @@
 namespace Barryvdh\DomPDF\Facade;
 
 use Barryvdh\DomPDF\PDF as BasePDF;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Facade as IlluminateFacade;
 use RuntimeException;
 
@@ -46,15 +47,15 @@ class Pdf extends IlluminateFacade
     /**
      * Handle dynamic, static calls to the object.
      *
-     * @param string $method
-     * @param array<mixed> $args
+     * @param  string  $method
+     * @param  array<mixed>  $args
      * @return mixed
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public static function __callStatic($method, $args)
     {
-        /** @var \Illuminate\Contracts\Foundation\Application|null */
+        /** @var Application|null */
         $app = static::getFacadeApplication();
         if (! $app) {
             throw new RuntimeException('Facade application has not been set.');

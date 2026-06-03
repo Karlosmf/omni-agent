@@ -39,6 +39,4 @@ namespace Psy\Readline\Hoa;
 /**
  * Extending the `Hoa\Exception\Exception` class.
  */
-class EventException extends Exception
-{
-}
+class EventException extends Exception {}

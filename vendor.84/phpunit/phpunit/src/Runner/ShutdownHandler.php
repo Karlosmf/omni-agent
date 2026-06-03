@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,9 +9,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner;
 
 use const PHP_EOL;
+
 use function getmypid;
 use function register_shutdown_function;
 use function rtrim;
@@ -22,7 +26,8 @@ use function rtrim;
 final class ShutdownHandler
 {
     private static bool $registered = false;
-    private static string $message  = '';
+
+    private static string $message = '';
 
     public static function setMessage(string $message): void
     {
@@ -43,18 +48,17 @@ final class ShutdownHandler
         }
 
         self::$registered = true;
-        $pid              = getmypid();
+        $pid = getmypid();
 
         register_shutdown_function(
-            static function () use ($pid): void
-            {
+            static function () use ($pid): void {
                 $message = rtrim(self::$message);
 
                 if ($message === '' || $pid !== getmypid()) {
                     return;
                 }
 
-                print $message . PHP_EOL;
+                echo $message.PHP_EOL;
             },
         );
     }

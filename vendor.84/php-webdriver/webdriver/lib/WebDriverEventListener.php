@@ -9,12 +9,12 @@ use Facebook\WebDriver\Support\Events\EventFiringWebElement;
 interface WebDriverEventListener
 {
     /**
-     * @param string $url
+     * @param  string  $url
      */
     public function beforeNavigateTo($url, EventFiringWebDriver $driver);
 
     /**
-     * @param string $url
+     * @param  string  $url
      */
     public function afterNavigateTo($url, EventFiringWebDriver $driver);
 
@@ -31,12 +31,12 @@ interface WebDriverEventListener
     public function afterFindBy(WebDriverBy $by, $element, EventFiringWebDriver $driver);
 
     /**
-     * @param string $script
+     * @param  string  $script
      */
     public function beforeScript($script, EventFiringWebDriver $driver);
 
     /**
-     * @param string $script
+     * @param  string  $script
      */
     public function afterScript($script, EventFiringWebDriver $driver);
 

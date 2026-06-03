@@ -84,9 +84,9 @@ class XmlDescriptor extends Descriptor
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $dom->appendChild($rootXml = $dom->createElement('symfony'));
 
-        if ('UNKNOWN' !== $application->getName()) {
+        if ($application->getName() !== 'UNKNOWN') {
             $rootXml->setAttribute('name', $application->getName());
-            if ('UNKNOWN' !== $application->getVersion()) {
+            if ($application->getVersion() !== 'UNKNOWN') {
                 $rootXml->setAttribute('version', $application->getVersion());
             }
         }
@@ -103,7 +103,7 @@ class XmlDescriptor extends Descriptor
             $this->appendDocument($commandsXML, $this->getCommandDocument($command, $short));
         }
 
-        if (!$namespace) {
+        if (! $namespace) {
             $rootXml->appendChild($namespacesXML = $dom->createElement('namespaces'));
 
             foreach ($description->getNamespaces() as $namespaceDescription) {
@@ -192,7 +192,7 @@ class XmlDescriptor extends Descriptor
         $dom->appendChild($objectXML = $dom->createElement('option'));
         $objectXML->setAttribute('name', '--'.$option->getName());
         $pos = strpos($option->getShortcut() ?? '', '|');
-        if (false !== $pos) {
+        if ($pos !== false) {
             $objectXML->setAttribute('shortcut', '-'.substr($option->getShortcut(), 0, $pos));
             $objectXML->setAttribute('shortcuts', '-'.str_replace('|', '|-', $option->getShortcut()));
         } else {

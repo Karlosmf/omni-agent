@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Core;
 
 /*
@@ -12,7 +13,6 @@ use Hamcrest\Description;
  */
 class IsIdentical extends IsSame
 {
-
     private $_value;
 
     public function __construct($value)

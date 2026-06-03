@@ -50,7 +50,7 @@ final class Version extends BaseTag implements Factory\StaticMethod
     {
         Assert::nullOrStringNotEmpty($version);
 
-        $this->version     = $version;
+        $this->version = $version;
         $this->description = $description;
     }
 
@@ -60,11 +60,11 @@ final class Version extends BaseTag implements Factory\StaticMethod
         ?TypeContext $context = null
     ): ?self {
         if ($body === null || $body === '') {
-            return new static();
+            return new self;
         }
 
         $matches = [];
-        if (!preg_match('/^(' . self::REGEX_VECTOR . ')\s*(.+)?$/sux', $body, $matches)) {
+        if (! preg_match('/^('.self::REGEX_VECTOR.')\s*(.+)?$/sux', $body, $matches)) {
             return null;
         }
 
@@ -73,7 +73,7 @@ final class Version extends BaseTag implements Factory\StaticMethod
             $description = $descriptionFactory->create($matches[2] ?? '', $context);
         }
 
-        return new static(
+        return new self(
             $matches[1],
             $description
         );
@@ -100,6 +100,6 @@ final class Version extends BaseTag implements Factory\StaticMethod
 
         $version = (string) $this->version;
 
-        return $version . ($description !== '' ? ($version !== '' ? ' ' : '') . $description : '');
+        return $version.($description !== '' ? ($version !== '' ? ' ' : '').$description : '');
     }
 }

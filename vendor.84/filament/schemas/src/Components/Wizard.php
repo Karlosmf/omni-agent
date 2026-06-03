@@ -21,25 +21,25 @@ class Wizard extends Component
     use Concerns\HasExtraAlpineAttributes;
     use HasLabel;
 
-    protected string | Htmlable | null $cancelAction = null;
+    protected string|Htmlable|null $cancelAction = null;
 
-    protected bool | Closure $isSkippable = false;
+    protected bool|Closure $isSkippable = false;
 
-    protected string | Closure | null $stepQueryStringKey = null;
+    protected string|Closure|null $stepQueryStringKey = null;
 
-    protected string | Htmlable | null $submitAction = null;
+    protected string|Htmlable|null $submitAction = null;
 
     protected ?Closure $modifyNextActionUsing = null;
 
     protected ?Closure $modifyPreviousActionUsing = null;
 
-    protected int | Closure $startStep = 1;
+    protected int|Closure $startStep = 1;
 
     protected ?int $currentStepIndex = null;
 
-    protected string | Closure | null $alpineSubmitHandler = null;
+    protected string|Closure|null $alpineSubmitHandler = null;
 
-    protected bool | Closure $isHeaderHidden = false;
+    protected bool|Closure $isHeaderHidden = false;
 
     /**
      * @var view-string
@@ -49,7 +49,7 @@ class Wizard extends Component
     /**
      * @param  array<Step> | Closure  $steps
      */
-    final public function __construct(array | Closure $steps = [])
+    final public function __construct(array|Closure $steps = [])
     {
         $this->steps($steps);
     }
@@ -57,7 +57,7 @@ class Wizard extends Component
     /**
      * @param  array<Step> | Closure  $steps
      */
-    public static function make(array | Closure $steps = []): static
+    public static function make(array|Closure $steps = []): static
     {
         $static = app(static::class, ['steps' => $steps]);
         $static->configure();
@@ -77,7 +77,7 @@ class Wizard extends Component
                 return filled($statePath) ? "{$statePath}::wizard" : 'wizard';
             }
 
-            return Str::slug(Str::transliterate($label, strict: true)) . '::' . (filled($statePath) ? "{$statePath}::wizard" : 'wizard');
+            return Str::slug(Str::transliterate($label, strict: true)).'::'.(filled($statePath) ? "{$statePath}::wizard" : 'wizard');
         }, isInheritable: false);
 
         $this->registerActions([
@@ -220,54 +220,54 @@ class Wizard extends Component
     /**
      * @param  array<Step> | Closure  $steps
      */
-    public function steps(array | Closure $steps): static
+    public function steps(array|Closure $steps): static
     {
         $this->components($steps);
 
         return $this;
     }
 
-    public function startOnStep(int | Closure $startStep): static
+    public function startOnStep(int|Closure $startStep): static
     {
         $this->startStep = $startStep;
 
         return $this;
     }
 
-    public function cancelAction(string | Htmlable | null $action): static
+    public function cancelAction(string|Htmlable|null $action): static
     {
         $this->cancelAction = $action;
 
         return $this;
     }
 
-    public function submitAction(string | Htmlable | null $action): static
+    public function submitAction(string|Htmlable|null $action): static
     {
         $this->submitAction = $action;
 
         return $this;
     }
 
-    public function skippable(bool | Closure $condition = true): static
+    public function skippable(bool|Closure $condition = true): static
     {
         $this->isSkippable = $condition;
 
         return $this;
     }
 
-    public function persistStepInQueryString(string | Closure | null $key = 'step'): static
+    public function persistStepInQueryString(string|Closure|null $key = 'step'): static
     {
         $this->stepQueryStringKey = $key;
 
         return $this;
     }
 
-    public function getCancelAction(): string | Htmlable | null
+    public function getCancelAction(): string|Htmlable|null
     {
         return $this->cancelAction;
     }
 
-    public function getSubmitAction(): string | Htmlable | null
+    public function getSubmitAction(): string|Htmlable|null
     {
         return $this->submitAction;
     }
@@ -316,7 +316,7 @@ class Wizard extends Component
         return $this;
     }
 
-    public function alpineSubmitHandler(string | Closure | null $handler): static
+    public function alpineSubmitHandler(string|Closure|null $handler): static
     {
         $this->alpineSubmitHandler = $handler;
 
@@ -328,7 +328,7 @@ class Wizard extends Component
         return $this->evaluate($this->alpineSubmitHandler);
     }
 
-    public function hiddenHeader(bool | Closure $condition = true): static
+    public function hiddenHeader(bool|Closure $condition = true): static
     {
         $this->isHeaderHidden = $condition;
 

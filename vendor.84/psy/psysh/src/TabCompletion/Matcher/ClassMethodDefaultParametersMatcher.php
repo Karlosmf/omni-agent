@@ -49,13 +49,13 @@ class ClassMethodDefaultParametersMatcher extends AbstractDefaultParametersMatch
 
         $functionName = \array_pop($tokens);
 
-        if (!self::tokenIs($functionName, self::T_STRING)) {
+        if (! self::tokenIs($functionName, self::T_STRING)) {
             return false;
         }
 
         $operator = \array_pop($tokens);
 
-        if (!self::tokenIs($operator, self::T_DOUBLE_COLON)) {
+        if (! self::tokenIs($operator, self::T_DOUBLE_COLON)) {
             return false;
         }
 

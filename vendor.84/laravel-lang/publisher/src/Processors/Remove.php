@@ -68,7 +68,7 @@ class Remove extends Processor
         foreach ($this->paths() as $path) {
             $items = $filesystem::names($path, $callback, true);
 
-            $names[] = Arr::map($items, static fn (string $name) => Str::prepend($name, $path . '/'));
+            $names[] = Arr::map($items, static fn (string $name) => Str::prepend($name, $path.'/'));
         }
 
         return Arr::of($names)->flatten()->unique()->toArray();
@@ -87,8 +87,8 @@ class Remove extends Processor
             $this->config->langPath(),
             base_path('vendor/laravel/framework/src/Illuminate/Translation/lang'),
             base_path('vendor/illuminate/translation/src/Illuminate/Translation/lang'),
-            __DIR__ . '/../../vendor/laravel/framework/src/Illuminate/Translation/lang',
-            __DIR__ . '/../../vendor/illuminate/translation/src/Illuminate/Translation/lang',
+            __DIR__.'/../../vendor/laravel/framework/src/Illuminate/Translation/lang',
+            __DIR__.'/../../vendor/illuminate/translation/src/Illuminate/Translation/lang',
         ])
             ->flatten()
             ->filter(static fn (string $path) => is_dir($path) && file_exists($path))

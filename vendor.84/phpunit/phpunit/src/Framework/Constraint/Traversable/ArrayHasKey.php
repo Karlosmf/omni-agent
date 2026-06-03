@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,12 +9,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\Constraint;
+
+use ArrayAccess;
+use PHPUnit\Util\Exporter;
 
 use function array_key_exists;
 use function is_array;
-use ArrayAccess;
-use PHPUnit\Util\Exporter;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -31,7 +35,7 @@ final class ArrayHasKey extends Constraint
      */
     public function toString(): string
     {
-        return 'has the key ' . Exporter::export($this->key);
+        return 'has the key '.Exporter::export($this->key);
     }
 
     /**
@@ -59,6 +63,6 @@ final class ArrayHasKey extends Constraint
      */
     protected function failureDescription(mixed $other): string
     {
-        return 'an array ' . $this->toString();
+        return 'an array '.$this->toString();
     }
 }

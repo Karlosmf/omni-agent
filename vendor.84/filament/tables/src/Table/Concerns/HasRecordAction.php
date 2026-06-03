@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 
 trait HasRecordAction
 {
-    protected string | Closure | null $recordAction = null;
+    protected string|Closure|null $recordAction = null;
 
-    public function recordAction(string | Closure | null $action): static
+    public function recordAction(string|Closure|null $action): static
     {
         $this->recordAction = $action;
 
@@ -20,7 +20,7 @@ trait HasRecordAction
     /**
      * @param  Model | array<string, mixed>  $record
      */
-    public function getRecordAction(Model | array $record): ?string
+    public function getRecordAction(Model|array $record): ?string
     {
         $action = $this->evaluate(
             $this->recordAction,

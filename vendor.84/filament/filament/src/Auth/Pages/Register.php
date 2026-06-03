@@ -234,12 +234,12 @@ class Register extends SimplePage
         return $this->userModel = $provider->getModel();
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('filament-panels::auth/pages/register.title');
     }
 
-    public function getHeading(): string | Htmlable | null
+    public function getHeading(): string|Htmlable|null
     {
         return __('filament-panels::auth/pages/register.heading');
     }
@@ -275,13 +275,13 @@ class Register extends SimplePage
         return $data;
     }
 
-    public function getSubheading(): string | Htmlable | null
+    public function getSubheading(): string|Htmlable|null
     {
         if (! filament()->hasLogin()) {
             return null;
         }
 
-        return new HtmlString(__('filament-panels::auth/pages/register.actions.login.before') . ' ' . $this->loginAction->toHtml());
+        return new HtmlString(__('filament-panels::auth/pages/register.actions.login.before').' '.$this->loginAction->toHtml());
     }
 
     public function content(Schema $schema): Schema

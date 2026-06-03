@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\MockObject;
 
 use SebastianBergmann\Type\Type;
@@ -32,19 +35,20 @@ final readonly class ConfigurableMethod
      * @var non-negative-int
      */
     private int $numberOfParameters;
+
     private Type $returnType;
 
     /**
-     * @param non-empty-string  $name
-     * @param array<int, mixed> $defaultParameterValues
-     * @param non-negative-int  $numberOfParameters
+     * @param  non-empty-string  $name
+     * @param  array<int, mixed>  $defaultParameterValues
+     * @param  non-negative-int  $numberOfParameters
      */
     public function __construct(string $name, array $defaultParameterValues, int $numberOfParameters, Type $returnType)
     {
-        $this->name                   = $name;
+        $this->name = $name;
         $this->defaultParameterValues = $defaultParameterValues;
-        $this->numberOfParameters     = $numberOfParameters;
-        $this->returnType             = $returnType;
+        $this->numberOfParameters = $numberOfParameters;
+        $this->returnType = $returnType;
     }
 
     /**

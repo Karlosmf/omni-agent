@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Users\Tables;
 
+use App\Enums\UserRole;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -24,7 +25,7 @@ class UsersTable
                 TextColumn::make('role')
                     ->label('Rol')
                     ->badge()
-                    ->formatStateUsing(fn ($state) => $state instanceof \App\Enums\UserRole ? $state->label() : ($state ? \App\Enums\UserRole::tryFrom($state)?->label() ?? $state : '-'))
+                    ->formatStateUsing(fn ($state) => $state instanceof UserRole ? $state->label() : ($state ? UserRole::tryFrom($state)?->label() ?? $state : '-'))
                     ->sortable(),
                 TextColumn::make('email_verified_at')
                     ->label('Verificado')

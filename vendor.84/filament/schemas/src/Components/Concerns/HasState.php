@@ -50,13 +50,13 @@ trait HasState
 
     protected bool $hasDefaultState = false;
 
-    protected bool | Closure | null $isDehydrated = null;
+    protected bool|Closure|null $isDehydrated = null;
 
-    protected bool | Closure $isDehydratedWhenHidden = false;
+    protected bool|Closure $isDehydratedWhenHidden = false;
 
-    protected bool | Closure $isSaved = true;
+    protected bool|Closure $isSaved = true;
 
-    protected bool | Closure $isValidatedWhenNotDehydrated = true;
+    protected bool|Closure $isValidatedWhenNotDehydrated = true;
 
     protected ?string $statePath = null;
 
@@ -66,16 +66,16 @@ trait HasState
 
     protected bool $hasConstantState = false;
 
-    protected string | Closure | null $separator = null;
+    protected string|Closure|null $separator = null;
 
-    protected bool | Closure $isDistinctList = false;
+    protected bool|Closure $isDistinctList = false;
 
     /**
      * @var array<StateCast | Closure>
      */
     protected array $stateCasts = [];
 
-    public function stateCast(StateCast | Closure $cast): static
+    public function stateCast(StateCast|Closure $cast): static
     {
         $this->stateCasts[] = $cast;
 
@@ -136,7 +136,7 @@ trait HasState
         return $this;
     }
 
-    public function afterStateUpdatedJs(string | Closure | null $js): static
+    public function afterStateUpdatedJs(string|Closure|null $js): static
     {
         if (blank($js)) {
             $this->afterStateUpdatedJs = [];
@@ -200,7 +200,7 @@ trait HasState
     protected function callAfterStateUpdatedHooks(): static
     {
         foreach ($this->afterStateUpdated as $callback) {
-            $runId = spl_object_id($callback) . md5(json_encode($this->getState()));
+            $runId = spl_object_id($callback).md5(json_encode($this->getState()));
 
             if (store($this)->has('executedAfterStateUpdatedCallbacks', iKey: $runId)) {
                 continue;
@@ -250,28 +250,28 @@ trait HasState
         return $this;
     }
 
-    public function dehydrated(bool | Closure $condition = true): static
+    public function dehydrated(bool|Closure $condition = true): static
     {
         $this->isDehydrated = $condition;
 
         return $this;
     }
 
-    public function dehydratedWhenHidden(bool | Closure $condition = true): static
+    public function dehydratedWhenHidden(bool|Closure $condition = true): static
     {
         $this->isDehydratedWhenHidden = $condition;
 
         return $this;
     }
 
-    public function saved(bool | Closure $condition = true): static
+    public function saved(bool|Closure $condition = true): static
     {
         $this->isSaved = $condition;
 
         return $this;
     }
 
-    public function validatedWhenNotDehydrated(bool | Closure $condition = true): static
+    public function validatedWhenNotDehydrated(bool|Closure $condition = true): static
     {
         $this->isValidatedWhenNotDehydrated = $condition;
 
@@ -647,7 +647,7 @@ trait HasState
     {
         return array_reduce(
             $this->afterStateUpdatedJs,
-            function (array $carry, string | Closure $js): array {
+            function (array $carry, string|Closure $js): array {
                 $js = $this->evaluate($js);
 
                 if (blank($js)) {
@@ -746,7 +746,7 @@ trait HasState
         return $this->makeSetUtility();
     }
 
-    public function resolveRelativeStatePath(string | Component $path = '', bool $isAbsolute = false): string
+    public function resolveRelativeStatePath(string|Component $path = '', bool $isAbsolute = false): string
     {
         if ($path instanceof Component) {
             return $path->getStatePath();
@@ -778,7 +778,7 @@ trait HasState
         return filled(ltrim($path, './')) ? "{$containerPath}.{$path}" : $containerPath;
     }
 
-    public function resolveRelativeKey(string | Component $key = '', bool $isAbsolute = false): string
+    public function resolveRelativeKey(string|Component $key = '', bool $isAbsolute = false): string
     {
         if ($key instanceof Component) {
             return $key->getKey();
@@ -831,7 +831,7 @@ trait HasState
         return $this;
     }
 
-    public function distinctList(bool | Closure $condition = true): static
+    public function distinctList(bool|Closure $condition = true): static
     {
         $this->isDistinctList = $condition;
 
@@ -936,7 +936,7 @@ trait HasState
         return $this->getContainer()->getConstantStatePath();
     }
 
-    public function separator(string | Closure | null $separator = ','): static
+    public function separator(string|Closure|null $separator = ','): static
     {
         $this->separator = $separator;
 

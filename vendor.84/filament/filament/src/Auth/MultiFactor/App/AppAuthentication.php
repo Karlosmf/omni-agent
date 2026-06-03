@@ -65,7 +65,7 @@ class AppAuthentication implements MultiFactorAuthenticationProvider
     public function isEnabled(Authenticatable $user): bool
     {
         if (! ($user instanceof HasAppAuthentication)) {
-            throw new LogicException('The user model must implement the [' . HasAppAuthentication::class . '] interface to use app authentication.');
+            throw new LogicException('The user model must implement the ['.HasAppAuthentication::class.'] interface to use app authentication.');
         }
 
         return filled($user->getAppAuthenticationSecret());
@@ -150,7 +150,7 @@ class AppAuthentication implements MultiFactorAuthenticationProvider
             && class_exists(ImageRenderer::class)
             && (! extension_loaded('imagick'))
         ) {
-            $inlineQrCode = 'data:image/svg+xml;base64,' . base64_encode($inlineQrCode);
+            $inlineQrCode = 'data:image/svg+xml;base64,'.base64_encode($inlineQrCode);
         }
 
         return $inlineQrCode;
@@ -161,7 +161,7 @@ class AppAuthentication implements MultiFactorAuthenticationProvider
      */
     public function generateRecoveryCodes(): array
     {
-        return Collection::times($this->getRecoveryCodeCount(), fn (): string => Str::random(10) . '-' . Str::random(10))->all();
+        return Collection::times($this->getRecoveryCodeCount(), fn (): string => Str::random(10).'-'.Str::random(10))->all();
     }
 
     public function verifyCode(string $code, ?string $secret = null): bool

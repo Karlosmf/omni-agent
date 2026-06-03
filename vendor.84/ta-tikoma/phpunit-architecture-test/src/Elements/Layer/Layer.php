@@ -15,8 +15,8 @@ use Traversable;
  */
 final class Layer implements IteratorAggregate
 {
-    use LayerLeave;
     use LayerExclude;
+    use LayerLeave;
     use LayerSplit;
 
     protected ?string $name = null;
@@ -27,7 +27,7 @@ final class Layer implements IteratorAggregate
     protected array $objects = [];
 
     /**
-     * @param ObjectDescription[] $objects
+     * @param  ObjectDescription[]  $objects
      */
     public function __construct(
         array $objects
@@ -65,7 +65,7 @@ final class Layer implements IteratorAggregate
     }
 
     /**
-     * @param Closure $closure static function(ObjectDescription $objectDescription): bool
+     * @param  Closure  $closure  static function(ObjectDescription $objectDescription): bool
      */
     public function leave(Closure $closure): self
     {
@@ -73,17 +73,17 @@ final class Layer implements IteratorAggregate
     }
 
     /**
-     * @param Closure $closure static function(ObjectDescription $objectDescription): bool
+     * @param  Closure  $closure  static function(ObjectDescription $objectDescription): bool
      */
     public function exclude(Closure $closure): self
     {
         return new Layer(array_filter($this->objects, static function ($item) use ($closure): bool {
-            return !$closure($item);
+            return ! $closure($item);
         }));
     }
 
     /**
-     * @param Closure $closure static function(ObjectDescription $objectDescription): ?string
+     * @param  Closure  $closure  static function(ObjectDescription $objectDescription): ?string
      * @return static[]
      */
     public function split(Closure $closure): array
@@ -98,7 +98,7 @@ final class Layer implements IteratorAggregate
                 continue;
             }
 
-            if (!isset($objects[$key])) {
+            if (! isset($objects[$key])) {
                 $objects[$key] = [];
             }
 
@@ -123,9 +123,8 @@ final class Layer implements IteratorAggregate
     }
 
     /**
-     * @param string[] $parts
-     * @param array<string, mixed> $list
-     *
+     * @param  string[]  $parts
+     * @param  array<string, mixed>  $list
      * @return array<string, mixed>
      */
     private function essenceRecursion(string $path, array $parts, $list): array

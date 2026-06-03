@@ -25,8 +25,8 @@ class Extends_ extends TagWithType
 {
     public function __construct(Type $type, ?Description $description = null)
     {
-        $this->name        = 'extends';
-        $this->type        = $type;
+        $this->name = 'extends';
+        $this->type = $type;
         $this->description = $description;
     }
 

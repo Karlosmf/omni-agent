@@ -21,8 +21,7 @@ class MarshallingSessionHandler implements \SessionHandlerInterface, \SessionUpd
     public function __construct(
         private AbstractSessionHandler $handler,
         private MarshallerInterface $marshaller,
-    ) {
-    }
+    ) {}
 
     public function open(string $savePath, string $name): bool
     {

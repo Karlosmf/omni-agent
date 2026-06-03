@@ -17,9 +17,7 @@ trait ProxyArrayAccessToProperties
     }
 
     /**
-     * @param mixed $offset
-     *
-     * @return bool
+     * @param  mixed  $offset
      */
     public function offsetExists($offset): bool
     {
@@ -29,8 +27,7 @@ trait ProxyArrayAccessToProperties
     }
 
     /**
-     * @param mixed $offset
-     *
+     * @param  mixed  $offset
      * @return mixed
      */
     #[\ReturnTypeWillChange]
@@ -42,8 +39,8 @@ trait ProxyArrayAccessToProperties
     }
 
     /**
-     * @param mixed $offset
-     * @param mixed $value
+     * @param  mixed  $offset
+     * @param  mixed  $value
      */
     #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value): void
@@ -52,7 +49,7 @@ trait ProxyArrayAccessToProperties
     }
 
     /**
-     * @param mixed $offset
+     * @param  mixed  $offset
      */
     #[\ReturnTypeWillChange]
     public function offsetUnset($offset): void

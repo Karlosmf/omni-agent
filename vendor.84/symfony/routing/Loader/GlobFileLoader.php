@@ -23,7 +23,7 @@ class GlobFileLoader extends FileLoader
 {
     public function load(mixed $resource, ?string $type = null): mixed
     {
-        $collection = new RouteCollection();
+        $collection = new RouteCollection;
 
         foreach ($this->glob($resource, false, $globResource) as $path => $info) {
             $collection->addCollection($this->import($path));
@@ -36,6 +36,6 @@ class GlobFileLoader extends FileLoader
 
     public function supports(mixed $resource, ?string $type = null): bool
     {
-        return 'glob' === $type;
+        return $type === 'glob';
     }
 }

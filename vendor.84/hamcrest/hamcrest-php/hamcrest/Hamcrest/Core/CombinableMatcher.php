@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Core;
 
 /*
@@ -11,7 +12,6 @@ use Hamcrest\Matcher;
 
 class CombinableMatcher extends BaseMatcher
 {
-
     private $_matcher;
 
     public function __construct(Matcher $matcher)
@@ -73,6 +73,6 @@ class CombinableMatcher extends BaseMatcher
 
     private function _templatedListWith(Matcher $other)
     {
-        return array($this->_matcher, $other);
+        return [$this->_matcher, $other];
     }
 }

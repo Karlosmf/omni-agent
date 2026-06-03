@@ -13,24 +13,24 @@ use function sprintf;
 
 class HelperGenerator extends Generator
 {
-    protected string $stub = __DIR__ . '/../../stubs/helper.stub';
+    protected string $stub = __DIR__.'/../../stubs/helper.stub';
 
     protected string $properties = '     * @property string|null $%s';
 
     protected function data(): array
     {
         return [
-            'hash'       => $this->getHash(),
+            'hash' => $this->getHash(),
             'properties' => $this->getProperties(),
 
             'translationNamespace' => $this->translationModelNamespace(),
-            'translationModel'     => $this->getTranslationModel(),
+            'translationModel' => $this->getTranslationModel(),
         ];
     }
 
     protected function filename(): string
     {
-        return Config::shared()->models->helpers . '/_ide_helper_models_' . $this->getHash() . '.php';
+        return Config::shared()->models->helpers.'/_ide_helper_models_'.$this->getHash().'.php';
     }
 
     protected function getProperties(): array

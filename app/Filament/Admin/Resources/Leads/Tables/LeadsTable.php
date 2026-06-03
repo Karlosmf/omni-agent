@@ -3,13 +3,21 @@
 namespace App\Filament\Admin\Resources\Leads\Tables;
 
 use App\Enums\LeadStatus;
+use App\Filament\Admin\Resources\Customers\CustomerResource;
+use App\Filament\Exporters\LeadExporter;
+use App\Models\Lead;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 
 class LeadsTable
@@ -43,15 +51,15 @@ class LeadsTable
             ])
             ->defaultGroup('status')
             ->groups([
-                \Filament\Tables\Grouping\Group::make('status')
+                Group::make('status')
                     ->label('Estado')
                     ->collapsible(),
             ])
             ->filters([
-                \Filament\Tables\Filters\SelectFilter::make('status')
+                SelectFilter::make('status')
                     ->label('Estado')
                     ->options(LeadStatus::class),
-                \Filament\Tables\Filters\TernaryFilter::make('needs_human_attention')
+                TernaryFilter::make('needs_human_attention')
                     ->label('Atención Requerida'),
             ])
             ->recordActions([
@@ -60,14 +68,14 @@ class LeadsTable
                     ->icon('heroicon-o-user-plus')
                     ->color('primary')
                     ->button()
-                    ->url(fn (\App\Models\Lead $record) => \App\Filament\Admin\Resources\Customers\CustomerResource::getUrl('create', [
+                    ->url(fn (Lead $record) => CustomerResource::getUrl('create', [
                         'name' => $record->customer_name,
                         'phone' => $record->customer_phone,
                         'email' => $record->customer_email,
                         'lead_id' => $record->id,
                     ]))
-                    ->visible(fn (\App\Models\Lead $record) => is_null($record->customer_id)),
-                \Filament\Actions\ActionGroup::make([
+                    ->visible(fn (Lead $record) => is_null($record->customer_id)),
+                ActionGroup::make([
                     Action::make('whatsapp')
                         ->label('WhatsApp')
                         ->icon('heroicon-o-chat-bubble-left-ellipsis')
@@ -76,6 +84,7 @@ class LeadsTable
                             $settings = get_agency_settings();
                             $companyName = $settings?->company_name ?? config('app.name', 'nuestra agencia de viajes');
                             $text = urlencode("Hola {$record->customer_name}, soy del equipo de {$companyName}. Te contacto por tu consulta sobre viajes. ¿En qué puedo ayudarte?");
+
                             return "https://wa.me/{$record->customer_phone}?text={$text}";
                         })
                         ->openUrlInNewTab()
@@ -94,8 +103,8 @@ class LeadsTable
                 ]),
             ])
             ->toolbarActions([
-                \Filament\Actions\ExportAction::make()
-                    ->exporter(\App\Filament\Exporters\LeadExporter::class)
+                ExportAction::make()
+                    ->exporter(LeadExporter::class)
                     ->label('Exportar')
                     ->icon('heroicon-o-arrow-down-tray'),
                 BulkActionGroup::make([

@@ -17,6 +17,7 @@ use Psy\VersionUpdater\Downloader;
 class FileDownloader implements Downloader
 {
     private ?string $tempDir = null;
+
     private ?string $outputFile = null;
 
     /** {@inheritDoc} */
@@ -32,7 +33,7 @@ class FileDownloader implements Downloader
         $this->outputFile = \tempnam($tempDir, 'psysh-archive-');
         $targetName = $this->outputFile.'.tar.gz';
 
-        if (!\rename($this->outputFile, $targetName)) {
+        if (! \rename($this->outputFile, $targetName)) {
             return false;
         }
 

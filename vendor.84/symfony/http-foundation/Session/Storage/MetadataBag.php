@@ -23,23 +23,25 @@ use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
 class MetadataBag implements SessionBagInterface
 {
     public const CREATED = 'c';
+
     public const UPDATED = 'u';
+
     public const LIFETIME = 'l';
 
     protected array $meta = [self::CREATED => 0, self::UPDATED => 0, self::LIFETIME => 0];
 
     private string $name = '__metadata';
+
     private int $lastUsed;
 
     /**
-     * @param string $storageKey      The key used to store bag in the session
-     * @param int    $updateThreshold The time to wait between two UPDATED updates
+     * @param  string  $storageKey  The key used to store bag in the session
+     * @param  int  $updateThreshold  The time to wait between two UPDATED updates
      */
     public function __construct(
         private string $storageKey = '_sf2_meta',
         private int $updateThreshold = 0,
-    ) {
-    }
+    ) {}
 
     public function initialize(array &$array): void
     {
@@ -68,10 +70,10 @@ class MetadataBag implements SessionBagInterface
     /**
      * Stamps a new session's metadata.
      *
-     * @param int|null $lifetime Sets the cookie lifetime for the session cookie. A null value
-     *                           will leave the system settings unchanged, 0 sets the cookie
-     *                           to expire with browser session. Time is in seconds, and is
-     *                           not a Unix timestamp.
+     * @param  int|null  $lifetime  Sets the cookie lifetime for the session cookie. A null value
+     *                              will leave the system settings unchanged, 0 sets the cookie
+     *                              to expire with browser session. Time is in seconds, and is
+     *                              not a Unix timestamp.
      */
     public function stampNew(?int $lifetime = null): void
     {

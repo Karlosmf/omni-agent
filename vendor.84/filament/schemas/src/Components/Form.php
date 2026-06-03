@@ -20,7 +20,7 @@ class Form extends Component implements CanEntangleWithSingularRelationships, Ex
      */
     protected string $view = 'filament-schemas::components.form';
 
-    protected string | Closure | null $livewireSubmitHandler = null;
+    protected string|Closure|null $livewireSubmitHandler = null;
 
     const HEADER_SCHEMA_KEY = 'header';
 
@@ -29,7 +29,7 @@ class Form extends Component implements CanEntangleWithSingularRelationships, Ex
     /**
      * @param  array<Component | Action | ActionGroup> | Closure  $schema
      */
-    final public function __construct(array | Closure $schema = [])
+    final public function __construct(array|Closure $schema = [])
     {
         $this->schema($schema);
     }
@@ -37,7 +37,7 @@ class Form extends Component implements CanEntangleWithSingularRelationships, Ex
     /**
      * @param  array<Component | Action | ActionGroup> | Closure  $schema
      */
-    public static function make(array | Closure $schema = []): static
+    public static function make(array|Closure $schema = []): static
     {
         $static = app(static::class, ['schema' => $schema]);
         $static->configure();
@@ -45,7 +45,7 @@ class Form extends Component implements CanEntangleWithSingularRelationships, Ex
         return $static;
     }
 
-    public function action(Action | Closure | null $action): static
+    public function action(Action|Closure|null $action): static
     {
         if ($action instanceof Closure) {
             $action = Action::make('submit')->action($action);
@@ -56,7 +56,7 @@ class Form extends Component implements CanEntangleWithSingularRelationships, Ex
         return $this;
     }
 
-    public function livewireSubmitHandler(string | Closure | null $handler): static
+    public function livewireSubmitHandler(string|Closure|null $handler): static
     {
         $this->livewireSubmitHandler = $handler;
 
@@ -71,7 +71,7 @@ class Form extends Component implements CanEntangleWithSingularRelationships, Ex
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function header(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components): static
+    public function header(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components): static
     {
         $this->childComponents($components, static::HEADER_SCHEMA_KEY);
 
@@ -81,7 +81,7 @@ class Form extends Component implements CanEntangleWithSingularRelationships, Ex
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function footer(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components): static
+    public function footer(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components): static
     {
         $this->childComponents($components, static::FOOTER_SCHEMA_KEY);
 

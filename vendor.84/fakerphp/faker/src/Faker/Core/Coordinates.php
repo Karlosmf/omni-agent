@@ -15,7 +15,7 @@ final class Coordinates implements Extension\Extension
 
     public function __construct(?Extension\NumberExtension $numberExtension = null)
     {
-        $this->numberExtension = $numberExtension ?: new Number();
+        $this->numberExtension = $numberExtension ?: new Number;
     }
 
     /**

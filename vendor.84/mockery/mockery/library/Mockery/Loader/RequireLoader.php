@@ -5,10 +5,13 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
 namespace Mockery\Loader;
+
+use const DIRECTORY_SEPARATOR;
 
 use Mockery\Generator\MockDefinition;
 
@@ -23,8 +26,6 @@ use function sys_get_temp_dir;
 use function uniqid;
 use function unlink;
 
-use const DIRECTORY_SEPARATOR;
-
 class RequireLoader implements Loader
 {
     /**
@@ -38,7 +39,7 @@ class RequireLoader implements Loader
     protected $path;
 
     /**
-     * @param string|null $path
+     * @param  string|null  $path
      */
     public function __construct($path = null)
     {
@@ -51,7 +52,7 @@ class RequireLoader implements Loader
 
     public function __destruct()
     {
-        $files = array_diff(glob($this->path . DIRECTORY_SEPARATOR . 'Mockery_*.php') ?: [], [$this->lastPath]);
+        $files = array_diff(glob($this->path.DIRECTORY_SEPARATOR.'Mockery_*.php') ?: [], [$this->lastPath]);
 
         foreach ($files as $file) {
             @unlink($file);

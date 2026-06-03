@@ -58,7 +58,6 @@ class EventBucket
     {
         $this->setData($data);
 
-        return;
     }
 
     /**

@@ -14,19 +14,25 @@ class FirefoxOptions implements \JsonSerializable
 {
     /** @var string The key of FirefoxOptions in desired capabilities */
     public const CAPABILITY = 'moz:firefoxOptions';
+
     /** @var string */
     public const OPTION_ARGS = 'args';
+
     /** @var string */
     public const OPTION_PREFS = 'prefs';
+
     /** @var string */
     public const OPTION_PROFILE = 'profile';
 
     /** @var array */
     private $options = [];
+
     /** @var array */
     private $arguments = [];
+
     /** @var array */
     private $preferences = [];
+
     /** @var FirefoxProfile */
     private $profile;
 
@@ -43,8 +49,8 @@ class FirefoxOptions implements \JsonSerializable
      * Directly set firefoxOptions.
      * Use `addArguments` to add command line arguments and `setPreference` to set Firefox about:config entry.
      *
-     * @param string $name
-     * @param mixed $value
+     * @param  string  $name
+     * @param  mixed  $value
      * @return self
      */
     public function setOption($name, $value)
@@ -69,7 +75,8 @@ class FirefoxOptions implements \JsonSerializable
      * These must include the leading dash (-) where required, e.g. ['-headless'].
      *
      * @see https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions#args
-     * @param string[] $arguments
+     *
+     * @param  string[]  $arguments
      * @return self
      */
     public function addArguments(array $arguments)
@@ -84,8 +91,9 @@ class FirefoxOptions implements \JsonSerializable
      *
      * @see http://kb.mozillazine.org/About:config_entries
      * @see https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions#prefs
-     * @param string $name
-     * @param string|bool|int $value
+     *
+     * @param  string  $name
+     * @param  string|bool|int  $value
      * @return self
      */
     public function setPreference($name, $value)
@@ -97,6 +105,7 @@ class FirefoxOptions implements \JsonSerializable
 
     /**
      * @see https://github.com/php-webdriver/php-webdriver/wiki/Firefox#firefox-profile
+     *
      * @return self
      */
     public function setProfile(FirefoxProfile $profile)
@@ -112,13 +121,13 @@ class FirefoxOptions implements \JsonSerializable
     public function toArray()
     {
         $array = $this->options;
-        if (!empty($this->arguments)) {
+        if (! empty($this->arguments)) {
             $array[self::OPTION_ARGS] = $this->arguments;
         }
-        if (!empty($this->preferences)) {
+        if (! empty($this->preferences)) {
             $array[self::OPTION_PREFS] = $this->preferences;
         }
-        if (!empty($this->profile)) {
+        if (! empty($this->profile)) {
             $array[self::OPTION_PROFILE] = $this->profile->encode();
         }
 

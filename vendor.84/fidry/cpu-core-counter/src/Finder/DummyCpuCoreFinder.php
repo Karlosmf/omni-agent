@@ -35,7 +35,7 @@ final class DummyCpuCoreFinder implements CpuCoreFinder
     }
 
     /**
-     * @param positive-int $count
+     * @param  positive-int  $count
      */
     public function __construct(int $count)
     {

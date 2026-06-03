@@ -58,7 +58,7 @@ class DOMParser
 
     private function makeValidXMLDocument($value): string
     {
-        return '<?xml encoding="utf-8" ?>' . $value;
+        return '<?xml encoding="utf-8" ?>'.$value;
     }
 
     private function getDocumentBody(): DOMElement
@@ -108,7 +108,6 @@ class DOMParser
             }
         }
 
-
         // If similar nodes with different text follow each other,
         // we can merge them into a single node.
         return $this->mergeSimilarNodes($nodes);
@@ -156,7 +155,6 @@ class DOMParser
 
         return $result;
     }
-
 
     private function getNodeFor($item)
     {

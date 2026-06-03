@@ -19,8 +19,7 @@ final class RequestAttributeValueSame extends Constraint
     public function __construct(
         private string $name,
         private string $value,
-    ) {
-    }
+    ) {}
 
     public function toString(): string
     {
@@ -28,7 +27,7 @@ final class RequestAttributeValueSame extends Constraint
     }
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      */
     protected function matches($request): bool
     {
@@ -36,7 +35,7 @@ final class RequestAttributeValueSame extends Constraint
     }
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      */
     protected function failureDescription($request): string
     {

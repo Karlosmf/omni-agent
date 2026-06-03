@@ -6,14 +6,14 @@ use Closure;
 
 trait HasErrorNotifications
 {
-    protected bool | Closure $hasErrorNotifications = true;
+    protected bool|Closure $hasErrorNotifications = true;
 
     /**
      * @var array<array{ title: string | Closure, body: string | Closure | null }>
      */
     protected array $errorNotifications = [];
 
-    public function errorNotifications(bool | Closure $condition = true): static
+    public function errorNotifications(bool|Closure $condition = true): static
     {
         $this->hasErrorNotifications = $condition;
 
@@ -25,7 +25,7 @@ trait HasErrorNotifications
         return $this->evaluate($this->hasErrorNotifications);
     }
 
-    public function registerErrorNotification(string | Closure $title, string | Closure | null $body = null, ?int $statusCode = null): static
+    public function registerErrorNotification(string|Closure $title, string|Closure|null $body = null, ?int $statusCode = null): static
     {
         $this->errorNotifications[$statusCode] = [
             'title' => $title,

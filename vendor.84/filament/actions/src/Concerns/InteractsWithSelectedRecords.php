@@ -12,7 +12,7 @@ use LogicException;
 
 trait InteractsWithSelectedRecords
 {
-    protected bool | Closure $canAccessSelectedRecords = false;
+    protected bool|Closure $canAccessSelectedRecords = false;
 
     protected int $totalSelectedRecordsCount = 0;
 
@@ -32,7 +32,7 @@ trait InteractsWithSelectedRecords
      */
     protected array $bulkProcessingFailureMessages = [];
 
-    public function accessSelectedRecords(bool | Closure $condition = true): static
+    public function accessSelectedRecords(bool|Closure $condition = true): static
     {
         $this->canAccessSelectedRecords = $condition;
 
@@ -44,7 +44,7 @@ trait InteractsWithSelectedRecords
         return (bool) $this->evaluate($this->canAccessSelectedRecords);
     }
 
-    public function getSelectedRecords(): EloquentCollection | Collection | LazyCollection
+    public function getSelectedRecords(): EloquentCollection|Collection|LazyCollection
     {
         if (! $this->canAccessSelectedRecords()) {
             throw new LogicException("The action [{$this->getName()}] is attempting to access the selected records from the table, but it is not using [accessSelectedRecords()], so they are not available.");
@@ -69,7 +69,7 @@ trait InteractsWithSelectedRecords
         return $this->getLivewire()->getSelectedTableRecordsQuery($this->shouldFetchSelectedRecords(), $this->getSelectedRecordsChunkSize());
     }
 
-    public function getIndividuallyAuthorizedSelectedRecords(): EloquentCollection | Collection | LazyCollection
+    public function getIndividuallyAuthorizedSelectedRecords(): EloquentCollection|Collection|LazyCollection
     {
         if (! $this->shouldAuthorizeIndividualRecords()) {
             return $this->getSelectedRecords();
@@ -131,7 +131,7 @@ trait InteractsWithSelectedRecords
         }
     }
 
-    public function reportBulkProcessingFailure(?string $key = null, string | Closure | null $message = null): void
+    public function reportBulkProcessingFailure(?string $key = null, string|Closure|null $message = null): void
     {
         if (filled($key)) {
             $this->bulkProcessingFailureMessages[$key] = [
@@ -151,7 +151,7 @@ trait InteractsWithSelectedRecords
         $this->successfulSelectedRecordsCount = $count;
     }
 
-    public function reportCompleteBulkProcessingFailure(?string $key = null, string | Closure | null $message = null): void
+    public function reportCompleteBulkProcessingFailure(?string $key = null, string|Closure|null $message = null): void
     {
         if (filled($key)) {
             $this->bulkProcessingFailureMessages[$key] = [

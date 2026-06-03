@@ -22,16 +22,22 @@ final class SharedStringsManager
      * Definition of XML nodes names used to parse data.
      */
     public const XML_NODE_SST = 'sst';
+
     public const XML_NODE_SI = 'si';
+
     public const XML_NODE_R = 'r';
+
     public const XML_NODE_T = 't';
 
     /**
      * Definition of XML attributes used to parse data.
      */
     public const XML_ATTRIBUTE_COUNT = 'count';
+
     public const XML_ATTRIBUTE_UNIQUE_COUNT = 'uniqueCount';
+
     public const XML_ATTRIBUTE_XML_SPACE = 'xml:space';
+
     public const XML_ATTRIBUTE_VALUE_PRESERVE = 'preserve';
 
     /** @var string Path of the XLSX file being read */
@@ -83,10 +89,10 @@ final class SharedStringsManager
     public function extractSharedStrings(): void
     {
         $sharedStringsXMLFilePath = $this->workbookRelationshipsManager->getSharedStringsXMLFilePath();
-        $xmlReader = new XMLReader();
+        $xmlReader = new XMLReader;
         $sharedStringIndex = 0;
 
-        if (false === $xmlReader->openFileInZip($this->filePath, $sharedStringsXMLFilePath)) {
+        if ($xmlReader->openFileInZip($this->filePath, $sharedStringsXMLFilePath) === false) {
             throw new IOException('Could not open "'.$sharedStringsXMLFilePath.'".');
         }
 
@@ -96,9 +102,9 @@ final class SharedStringsManager
 
             $xmlReader->readUntilNodeFound(self::XML_NODE_SI);
 
-            while (self::XML_NODE_SI === $xmlReader->getCurrentNodeName()) {
+            while ($xmlReader->getCurrentNodeName() === self::XML_NODE_SI) {
                 $this->processSharedStringsItem($xmlReader, $sharedStringIndex);
-                ++$sharedStringIndex;
+                $sharedStringIndex++;
 
                 // jump to the next '<si>' tag
                 $xmlReader->next(self::XML_NODE_SI);
@@ -115,8 +121,7 @@ final class SharedStringsManager
     /**
      * Returns the shared string at the given index, using the previously chosen caching strategy.
      *
-     * @param int $sharedStringIndex Index of the shared string in the sharedStrings.xml file
-     *
+     * @param  int  $sharedStringIndex  Index of the shared string in the sharedStrings.xml file
      * @return string The shared string at the given index
      *
      * @throws SharedStringNotFoundException If no shared string found for the given index
@@ -139,8 +144,7 @@ final class SharedStringsManager
     /**
      * Returns the shared strings unique count, as specified in <sst> tag.
      *
-     * @param XMLReader $xmlReader XMLReader instance
-     *
+     * @param  XMLReader  $xmlReader  XMLReader instance
      * @return null|int Number of unique shared strings in the sharedStrings.xml file
      *
      * @throws IOException If sharedStrings.xml is invalid and can't be read
@@ -150,7 +154,7 @@ final class SharedStringsManager
         $xmlReader->next(self::XML_NODE_SST);
 
         // Iterate over the "sst" elements to get the actual "sst ELEMENT" (skips any DOCTYPE)
-        while (self::XML_NODE_SST === $xmlReader->getCurrentNodeName() && XMLReader::ELEMENT !== $xmlReader->nodeType) {
+        while ($xmlReader->getCurrentNodeName() === self::XML_NODE_SST && $xmlReader->nodeType !== XMLReader::ELEMENT) {
             $xmlReader->read();
         }
 
@@ -158,30 +162,29 @@ final class SharedStringsManager
 
         // some software do not add the "uniqueCount" attribute but only use the "count" one
         // @see https://github.com/box/spout/issues/254
-        if (null === $uniqueCount) {
+        if ($uniqueCount === null) {
             $uniqueCount = $xmlReader->getAttribute(self::XML_ATTRIBUTE_COUNT);
         }
 
-        return (null !== $uniqueCount) ? (int) $uniqueCount : null;
+        return ($uniqueCount !== null) ? (int) $uniqueCount : null;
     }
 
     /**
      * Returns the best shared strings caching strategy.
      *
-     * @param null|int $sharedStringsUniqueCount Number of unique shared strings (NULL if unknown)
+     * @param  null|int  $sharedStringsUniqueCount  Number of unique shared strings (NULL if unknown)
      */
     private function getBestSharedStringsCachingStrategy(?int $sharedStringsUniqueCount): CachingStrategyInterface
     {
         return $this->cachingStrategyFactory
-            ->createBestCachingStrategy($sharedStringsUniqueCount, $this->options->getTempFolder())
-        ;
+            ->createBestCachingStrategy($sharedStringsUniqueCount, $this->options->getTempFolder());
     }
 
     /**
      * Processes the shared strings item XML node which the given XML reader is positioned on.
      *
-     * @param XMLReader $xmlReader         XML Reader positioned on a "<si>" node
-     * @param int       $sharedStringIndex Index of the processed shared strings item
+     * @param  XMLReader  $xmlReader  XML Reader positioned on a "<si>" node
+     * @param  int  $sharedStringIndex  Index of the processed shared strings item
      */
     private function processSharedStringsItem(XMLReader $xmlReader, int $sharedStringIndex): void
     {
@@ -195,7 +198,7 @@ final class SharedStringsManager
         foreach ($textNodes as $textNode) {
             if ($this->shouldExtractTextNodeValue($textNode)) {
                 $textNodeValue = $textNode->nodeValue;
-                \assert(null !== $textNodeValue);
+                \assert($textNodeValue !== null);
                 $shouldPreserveWhitespace = $this->shouldPreserveWhitespace($textNode);
 
                 $sharedStringValue .= $shouldPreserveWhitespace
@@ -212,30 +215,28 @@ final class SharedStringsManager
      * Some text nodes are part of a node describing the pronunciation for instance.
      * We'll only consider the nodes whose parents are "<si>" or "<r>".
      *
-     * @param DOMElement $textNode Text node to check
-     *
+     * @param  DOMElement  $textNode  Text node to check
      * @return bool Whether the given text node's value must be extracted
      */
     private function shouldExtractTextNodeValue(DOMElement $textNode): bool
     {
         $parentNode = $textNode->parentNode;
-        \assert(null !== $parentNode);
+        \assert($parentNode !== null);
         $parentTagName = $parentNode->localName;
 
-        return self::XML_NODE_SI === $parentTagName || self::XML_NODE_R === $parentTagName;
+        return $parentTagName === self::XML_NODE_SI || $parentTagName === self::XML_NODE_R;
     }
 
     /**
      * If the text node has the attribute 'xml:space="preserve"', then preserve whitespace.
      *
-     * @param DOMElement $textNode The text node element (<t>) whose whitespace may be preserved
-     *
+     * @param  DOMElement  $textNode  The text node element (<t>) whose whitespace may be preserved
      * @return bool Whether whitespace should be preserved
      */
     private function shouldPreserveWhitespace(DOMElement $textNode): bool
     {
         $spaceValue = $textNode->getAttribute(self::XML_ATTRIBUTE_XML_SPACE);
 
-        return self::XML_ATTRIBUTE_VALUE_PRESERVE === $spaceValue;
+        return $spaceValue === self::XML_ATTRIBUTE_VALUE_PRESERVE;
     }
 }

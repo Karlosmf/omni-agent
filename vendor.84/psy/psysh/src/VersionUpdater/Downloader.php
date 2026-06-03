@@ -17,14 +17,10 @@ interface Downloader
 {
     /**
      * Set the directory where the download will be written to.
-     *
-     * @param string $tempDir
      */
     public function setTempDir(string $tempDir);
 
     /**
-     * @param string $url
-     *
      * @throws ErrorException on failure
      */
     public function download(string $url): bool;

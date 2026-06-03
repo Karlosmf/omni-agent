@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -11,8 +13,8 @@
 
 namespace Monolog\Handler;
 
-use Monolog\Formatter\WildfireFormatter;
 use Monolog\Formatter\FormatterInterface;
+use Monolog\Formatter\WildfireFormatter;
 use Monolog\LogRecord;
 
 /**
@@ -59,16 +61,15 @@ class FirePHPHandler extends AbstractProcessingHandler
     /**
      * Base header creation function used by init headers & record headers
      *
-     * @param array<int|string> $meta    Wildfire Plugin, Protocol & Structure Indexes
-     * @param string            $message Log message
-     *
+     * @param  array<int|string>  $meta  Wildfire Plugin, Protocol & Structure Indexes
+     * @param  string  $message  Log message
      * @return array<string, string> Complete header string ready for the client as key and message as value
      *
      * @phpstan-return non-empty-array<string, string>
      */
     protected function createHeader(array $meta, string $message): array
     {
-        $header = sprintf('%s-%s', static::HEADER_PREFIX, join('-', $meta));
+        $header = sprintf('%s-%s', static::HEADER_PREFIX, implode('-', $meta));
 
         return [$header => $message];
     }
@@ -93,11 +94,11 @@ class FirePHPHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function getDefaultFormatter(): FormatterInterface
     {
-        return new WildfireFormatter();
+        return new WildfireFormatter;
     }
 
     /**
@@ -123,7 +124,7 @@ class FirePHPHandler extends AbstractProcessingHandler
      */
     protected function sendHeader(string $header, string $content): void
     {
-        if (!headers_sent() && self::$sendHeaders) {
+        if (! headers_sent() && self::$sendHeaders) {
             header(sprintf('%s: %s', $header, $content));
         }
     }
@@ -136,16 +137,16 @@ class FirePHPHandler extends AbstractProcessingHandler
      */
     protected function write(LogRecord $record): void
     {
-        if (!self::$sendHeaders || !$this->isWebRequest()) {
+        if (! self::$sendHeaders || ! $this->isWebRequest()) {
             return;
         }
 
         // WildFire-specific headers must be sent prior to any messages
-        if (!self::$initialized) {
+        if (! self::$initialized) {
             self::$initialized = true;
 
             self::$sendHeaders = $this->headersAccepted();
-            if (!self::$sendHeaders) {
+            if (! self::$sendHeaders) {
                 return;
             }
 
@@ -165,7 +166,7 @@ class FirePHPHandler extends AbstractProcessingHandler
      */
     protected function headersAccepted(): bool
     {
-        if (isset($_SERVER['HTTP_USER_AGENT']) && 1 === preg_match('{\bFirePHP/\d+\.\d+\b}', $_SERVER['HTTP_USER_AGENT'])) {
+        if (isset($_SERVER['HTTP_USER_AGENT']) && preg_match('{\bFirePHP/\d+\.\d+\b}', $_SERVER['HTTP_USER_AGENT']) === 1) {
             return true;
         }
 

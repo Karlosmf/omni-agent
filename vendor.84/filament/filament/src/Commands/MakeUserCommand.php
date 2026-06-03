@@ -121,7 +121,7 @@ class MakeUserCommand extends Command
         ];
     }
 
-    protected function createUser(): Model & Authenticatable
+    protected function createUser(): Model&Authenticatable
     {
         /** @var Model & Authenticatable $user */
         $user = static::getUserModel()::query()->create($this->getUserData());
@@ -129,11 +129,11 @@ class MakeUserCommand extends Command
         return $user;
     }
 
-    protected function sendSuccessMessage(Model & Authenticatable $user): void
+    protected function sendSuccessMessage(Model&Authenticatable $user): void
     {
         $loginUrl = $this->panel->getLoginUrl();
 
-        $this->components->info('Success! ' . ($user->getAttribute('email') ?? $user->getAttribute('username') ?? 'You') . " may now log in at {$loginUrl}");
+        $this->components->info('Success! '.($user->getAttribute('email') ?? $user->getAttribute('username') ?? 'You')." may now log in at {$loginUrl}");
     }
 
     protected function getAuthGuard(): Guard

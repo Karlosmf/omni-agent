@@ -26,13 +26,12 @@ final class RunCommandMessageHandler
 {
     public function __construct(
         private readonly Application $application,
-    ) {
-    }
+    ) {}
 
     public function __invoke(RunCommandMessage $message): RunCommandContext
     {
         $input = new StringInput($message->input);
-        $output = new BufferedOutput();
+        $output = new BufferedOutput;
 
         $this->application->setCatchExceptions($message->catchExceptions);
 
@@ -44,7 +43,7 @@ final class RunCommandMessageHandler
             throw new RunCommandFailedException($e, new RunCommandContext($message, Command::FAILURE, $output->fetch()));
         }
 
-        if ($message->throwOnFailure && Command::SUCCESS !== $exitCode) {
+        if ($message->throwOnFailure && $exitCode !== Command::SUCCESS) {
             throw new RunCommandFailedException(\sprintf('Command "%s" exited with code "%s".', $message->input, $exitCode), new RunCommandContext($message, $exitCode, $output->fetch()));
         }
 

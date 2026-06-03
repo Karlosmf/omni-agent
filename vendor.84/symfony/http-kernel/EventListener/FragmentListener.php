@@ -34,13 +34,12 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class FragmentListener implements EventSubscriberInterface
 {
     /**
-     * @param string $fragmentPath The path that triggers this listener
+     * @param  string  $fragmentPath  The path that triggers this listener
      */
     public function __construct(
         private UriSigner $signer,
         private string $fragmentPath = '/_fragment',
-    ) {
-    }
+    ) {}
 
     /**
      * Fixes request attributes when the path is '/_fragment'.
@@ -76,8 +75,8 @@ class FragmentListener implements EventSubscriberInterface
     protected function validateRequest(Request $request): void
     {
         // is the Request safe?
-        if (!$request->isMethodSafe()) {
-            throw new AccessDeniedHttpException();
+        if (! $request->isMethodSafe()) {
+            throw new AccessDeniedHttpException;
         }
 
         // is the Request signed?
@@ -85,7 +84,7 @@ class FragmentListener implements EventSubscriberInterface
             return;
         }
 
-        throw new AccessDeniedHttpException();
+        throw new AccessDeniedHttpException;
     }
 
     public static function getSubscribedEvents(): array

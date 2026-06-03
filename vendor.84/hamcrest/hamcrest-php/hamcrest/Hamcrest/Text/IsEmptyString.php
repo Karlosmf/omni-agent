@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Text;
 
 /*
@@ -14,9 +15,10 @@ use Hamcrest\Description;
  */
 class IsEmptyString extends BaseMatcher
 {
-
     private static $_INSTANCE;
+
     private static $_NULL_OR_EMPTY_INSTANCE;
+
     private static $_NOT_INSTANCE;
 
     private $_empty;
@@ -45,7 +47,7 @@ class IsEmptyString extends BaseMatcher
      */
     public static function isEmptyString()
     {
-        if (!self::$_INSTANCE) {
+        if (! self::$_INSTANCE) {
             self::$_INSTANCE = new self(true);
         }
 
@@ -59,7 +61,7 @@ class IsEmptyString extends BaseMatcher
      */
     public static function isEmptyOrNullString()
     {
-        if (!self::$_NULL_OR_EMPTY_INSTANCE) {
+        if (! self::$_NULL_OR_EMPTY_INSTANCE) {
             self::$_NULL_OR_EMPTY_INSTANCE = AnyOf::anyOf(
                 IsNull::nullvalue(),
                 self::isEmptyString()
@@ -76,7 +78,7 @@ class IsEmptyString extends BaseMatcher
      */
     public static function isNonEmptyString()
     {
-        if (!self::$_NOT_INSTANCE) {
+        if (! self::$_NOT_INSTANCE) {
             self::$_NOT_INSTANCE = new self(false);
         }
 

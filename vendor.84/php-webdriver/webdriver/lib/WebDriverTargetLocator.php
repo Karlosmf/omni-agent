@@ -9,6 +9,7 @@ interface WebDriverTargetLocator
 {
     /** @var string */
     public const WINDOW_TYPE_WINDOW = 'window';
+
     /** @var string */
     public const WINDOW_TYPE_TAB = 'tab';
 
@@ -23,34 +24,35 @@ interface WebDriverTargetLocator
     /**
      * Switch to the iframe by its id or name.
      *
-     * @param WebDriverElement|null|int|string $frame The WebDriverElement, the id or the name of the frame.
-     * When null, switch to the current top-level browsing context When int, switch to the WindowProxy identified
-     * by the value. When an Element, switch to that Element.
+     * @param  WebDriverElement|null|int|string  $frame  The WebDriverElement, the id or the name of the frame.
+     *                                                   When null, switch to the current top-level browsing context When int, switch to the WindowProxy identified
+     *                                                   by the value. When an Element, switch to that Element.
+     * @return WebDriver The driver focused on the given frame.
      *
      * @throws \InvalidArgumentException
-     * @return WebDriver The driver focused on the given frame.
      */
     public function frame($frame);
 
     // TODO: Add in next major release (BC)
-    ///**
+    // /**
     // * Switch to the parent iframe.
     // *
     // * @return WebDriver This driver focused on the parent frame
     // */
-    //public function parent();
+    // public function parent();
 
     /**
      * Switch the focus to another window by its handle.
      *
-     * @param string $handle The handle of the window to be focused on.
+     * @param  string  $handle  The handle of the window to be focused on.
      * @return WebDriver The driver focused on the given window.
+     *
      * @see WebDriver::getWindowHandles
      */
     public function window($handle);
 
     // TODO: Add in next major release (BC)
-    //public function newWindow($windowType = self::WINDOW_TYPE_TAB);
+    // public function newWindow($windowType = self::WINDOW_TYPE_TAB);
 
     /**
      * Switch to the currently active modal dialog for this particular driver instance.

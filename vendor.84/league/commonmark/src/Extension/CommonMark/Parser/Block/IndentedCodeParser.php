@@ -30,8 +30,8 @@ final class IndentedCodeParser extends AbstractBlockContinueParser
 
     public function __construct()
     {
-        $this->block   = new IndentedCode();
-        $this->strings = new ArrayCollection();
+        $this->block = new IndentedCode;
+        $this->strings = new ArrayCollection;
     }
 
     public function getBlock(): IndentedCode
@@ -70,7 +70,7 @@ final class IndentedCodeParser extends AbstractBlockContinueParser
             \array_pop($lines);
         }
 
-        $this->block->setLiteral(\implode("\n", $lines) . "\n");
+        $this->block->setLiteral(\implode("\n", $lines)."\n");
         $this->block->setEndLine($this->block->getStartLine() + \count($lines) - 1);
     }
 }

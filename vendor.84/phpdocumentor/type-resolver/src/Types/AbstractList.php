@@ -37,12 +37,12 @@ abstract class AbstractList implements Type
     public function __construct(?Type $valueType = null, ?Type $keyType = null)
     {
         if ($valueType === null) {
-            $valueType = new Mixed_();
+            $valueType = new Mixed_;
         }
 
-        $this->valueType      = $valueType;
-        $this->defaultKeyType = new Compound([new String_(), new Integer()]);
-        $this->keyType        = $keyType;
+        $this->valueType = $valueType;
+        $this->defaultKeyType = new Compound([new String_, new Integer]);
+        $this->keyType = $keyType;
     }
 
     public function getOriginalKeyType(): ?Type
@@ -72,7 +72,7 @@ abstract class AbstractList implements Type
     public function __toString(): string
     {
         if ($this->keyType) {
-            return 'array<' . $this->keyType . ',' . $this->valueType . '>';
+            return 'array<'.$this->keyType.','.$this->valueType.'>';
         }
 
         if ($this->valueType instanceof Mixed_) {
@@ -80,9 +80,9 @@ abstract class AbstractList implements Type
         }
 
         if ($this->valueType instanceof Compound) {
-            return '(' . $this->valueType . ')[]';
+            return '('.$this->valueType.')[]';
         }
 
-        return $this->valueType . '[]';
+        return $this->valueType.'[]';
     }
 }

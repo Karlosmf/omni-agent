@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -25,7 +26,8 @@ class MockDefinition
     protected $config;
 
     /**
-     * @param  string                   $code
+     * @param  string  $code
+     *
      * @throws InvalidArgumentException
      */
     public function __construct(MockConfiguration $config, $code)

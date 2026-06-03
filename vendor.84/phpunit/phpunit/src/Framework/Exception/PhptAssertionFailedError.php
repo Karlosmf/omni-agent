@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework;
 
 /**
@@ -19,25 +22,27 @@ namespace PHPUnit\Framework;
 final class PhptAssertionFailedError extends AssertionFailedError
 {
     private readonly string $syntheticFile;
+
     private readonly int $syntheticLine;
 
     /**
      * @var list<array{file: string, line: int, function: string, type: string}>
      */
     private readonly array $syntheticTrace;
+
     private readonly string $diff;
 
     /**
-     * @param list<array{file: string, line: int, function: string, type: string}> $trace
+     * @param  list<array{file: string, line: int, function: string, type: string}>  $trace
      */
     public function __construct(string $message, int $code, string $file, int $line, array $trace, string $diff)
     {
         parent::__construct($message, $code);
 
-        $this->syntheticFile  = $file;
-        $this->syntheticLine  = $line;
+        $this->syntheticFile = $file;
+        $this->syntheticLine = $line;
         $this->syntheticTrace = $trace;
-        $this->diff           = $diff;
+        $this->diff = $diff;
     }
 
     public function syntheticFile(): string

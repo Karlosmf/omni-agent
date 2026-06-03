@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,14 +9,16 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner\Baseline;
+
+use XMLWriter;
 
 use function dirname;
 use function file_put_contents;
 use function is_dir;
 use function realpath;
 use function sprintf;
-use XMLWriter;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -24,7 +28,7 @@ use XMLWriter;
 final readonly class Writer
 {
     /**
-     * @param non-empty-string $baselineFile
+     * @param  non-empty-string  $baselineFile
      *
      * @throws CannotWriteBaselineException
      */
@@ -32,7 +36,7 @@ final readonly class Writer
     {
         $normalizedBaselineFile = realpath(dirname($baselineFile));
 
-        if ($normalizedBaselineFile === false || !is_dir($normalizedBaselineFile)) {
+        if ($normalizedBaselineFile === false || ! is_dir($normalizedBaselineFile)) {
             throw new CannotWriteBaselineException(sprintf('Cannot write baseline to "%s".', $baselineFile));
         }
 

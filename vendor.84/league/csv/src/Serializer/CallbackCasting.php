@@ -28,21 +28,28 @@ use function class_exists;
 
 /**
  * @internal Container for registering Closure as type and/or type alias casting
+ *
  * @template TValue
  */
 final class CallbackCasting implements TypeCasting
 {
     /** @var array<string, Closure(mixed, bool, mixed...): mixed> */
     private static array $types = [];
+
     /** @var array<string, array<string, Closure(mixed, bool, mixed...): mixed>> */
     private static array $aliases = [];
 
     private string $type;
+
     private readonly bool $isNullable;
+
     /** @var Closure(mixed, bool, mixed...): mixed */
     private Closure $callback;
+
     private array $options = [];
+
     private string $message;
+
     private readonly TypeCastingInfo $info;
 
     public function __construct(
@@ -70,8 +77,8 @@ final class CallbackCasting implements TypeCasting
      */
     public function setOptions(?string $type = null, mixed ...$options): void
     {
-        if (null === $this->alias) {
-            if (Type::Mixed->value === $this->type && null !== $type) {
+        if ($this->alias === null) {
+            if (Type::Mixed->value === $this->type && $type !== null) {
                 $this->type = $type;
             }
 
@@ -104,21 +111,21 @@ final class CallbackCasting implements TypeCasting
             return ($this->callback)($value, $this->isNullable, ...$this->options);
         } catch (Throwable $exception) {
             ! $exception instanceof TypeCastingFailed || throw $exception;
-            null !== $value || throw TypeCastingFailed::dueToNotNullableType($this->type, $exception, $this->info);
+            $value !== null || throw TypeCastingFailed::dueToNotNullableType($this->type, $exception, $this->info);
 
             throw TypeCastingFailed::dueToInvalidValue(match (true) {
-                '' === $value => 'empty string',
+                $value === '' => 'empty string',
                 default => $value,
             }, $this->type, $exception, $this->info);
         }
     }
 
     /**
-     * @param Closure(mixed, bool, mixed...): TValue $callback
+     * @param  Closure(mixed, bool, mixed...): TValue  $callback
      */
     public static function register(string $type, Closure $callback, ?string $alias = null): void
     {
-        if (null === $alias) {
+        if ($alias === null) {
             self::$types[$type] = match (true) {
                 class_exists($type),
                 interface_exists($type),
@@ -129,7 +136,7 @@ final class CallbackCasting implements TypeCasting
             return;
         }
 
-        1 === preg_match('/^@\w+$/', $alias) || throw new MappingFailed("The alias `$alias` is invalid. It must start with an `@` character and contain alphanumeric (letters, numbers, regardless of case) plus underscore (_).");
+        preg_match('/^@\w+$/', $alias) === 1 || throw new MappingFailed("The alias `$alias` is invalid. It must start with an `@` character and contain alphanumeric (letters, numbers, regardless of case) plus underscore (_).");
 
         foreach (self::$aliases as $aliases) {
             foreach ($aliases as $registeredAlias => $__) {
@@ -147,7 +154,7 @@ final class CallbackCasting implements TypeCasting
 
     public static function unregisterType(string $type): bool
     {
-        if (!array_key_exists($type, self::$types)) {
+        if (! array_key_exists($type, self::$types)) {
             return false;
         }
 
@@ -163,7 +170,7 @@ final class CallbackCasting implements TypeCasting
 
     public static function unregisterAlias(string $alias): bool
     {
-        if (1 !== preg_match('/^@\w+$/', $alias)) {
+        if (preg_match('/^@\w+$/', $alias) !== 1) {
             return false;
         }
 
@@ -193,12 +200,12 @@ final class CallbackCasting implements TypeCasting
 
     public static function supportsAlias(?string $alias): bool
     {
-        return null !== $alias && array_key_exists($alias, self::aliases());
+        return $alias !== null && array_key_exists($alias, self::aliases());
     }
 
     public static function supportsType(?string $type): bool
     {
-        if (null === $type) {
+        if ($type === null) {
             return false;
         }
 
@@ -237,13 +244,13 @@ final class CallbackCasting implements TypeCasting
     public static function supports(ReflectionParameter|ReflectionProperty $reflectionProperty, ?string $alias = null): bool
     {
         $propertyTypeList = self::getTypes($reflectionProperty->getType());
-        if ([] === $propertyTypeList && self::supportsAlias($alias)) {
+        if ($propertyTypeList === [] && self::supportsAlias($alias)) {
             return true;
         }
 
         foreach ($propertyTypeList as $propertyType) {
             $type = $propertyType->getName();
-            if (null === $alias) {
+            if ($alias === null) {
                 if (self::supportsType($type)) {
                     return true;
                 }
@@ -278,7 +285,7 @@ final class CallbackCasting implements TypeCasting
     }
 
     /**
-     * @param class-string $type
+     * @param  class-string  $type
      */
     private static function resolveTypeCallback(string $type): Closure
     {
@@ -320,13 +327,13 @@ final class CallbackCasting implements TypeCasting
     }
 
     /**
-     * @throws MappingFailed
-     *
      * @return array{0:string, 1:bool}
+     *
+     * @throws MappingFailed
      */
     private static function resolve(ReflectionParameter|ReflectionProperty $reflectionProperty): array
     {
-        if (null === $reflectionProperty->getType()) {
+        if ($reflectionProperty->getType() === null) {
             return [Type::Mixed->value, true];
         }
 
@@ -336,17 +343,17 @@ final class CallbackCasting implements TypeCasting
         $isNullable = false;
         $hasMixed = false;
         foreach ($types as $foundType) {
-            if (!$isNullable && $foundType->allowsNull()) {
+            if (! $isNullable && $foundType->allowsNull()) {
                 $isNullable = true;
             }
 
-            if (null === $type) {
+            if ($type === null) {
                 $instanceName = $foundType->getName();
                 if (self::supportsType($instanceName) || array_key_exists($instanceName, self::$aliases)) {
                     $type = $foundType;
                 }
 
-                if (true !== $hasMixed && Type::Mixed->value === $instanceName) {
+                if ($hasMixed !== true && Type::Mixed->value === $instanceName) {
                     $hasMixed = true;
                 }
             }
@@ -382,9 +389,10 @@ final class CallbackCasting implements TypeCasting
      *
      * @deprecated since version 9.13.0
      * @see CallbackCasting::unregisterType()
+     *
      * @codeCoverageIgnore
      */
-    #[Deprecated(message:'use League\Csv\Serializer\CallbackCasting::unregisterType() instead', since:'league/csv:9.13.0')]
+    #[Deprecated(message: 'use League\Csv\Serializer\CallbackCasting::unregisterType() instead', since: 'league/csv:9.13.0')]
     public static function unregister(string $type): bool
     {
         return self::unregisterType($type);

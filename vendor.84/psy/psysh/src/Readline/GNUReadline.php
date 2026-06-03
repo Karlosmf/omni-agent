@@ -22,7 +22,9 @@ class GNUReadline implements Readline
 {
     /** @var string|false */
     protected $historyFile;
+
     protected int $historySize;
+
     // @todo better type for this
     protected ?bool $eraseDups;
 
@@ -130,12 +132,12 @@ class GNUReadline implements Readline
             $res = true;
         }
 
-        if (!$res || !$this->eraseDups && !$this->historySize > 0) {
+        if (! $res || ! $this->eraseDups && ! $this->historySize > 0) {
             return $res;
         }
 
         $hist = $this->listHistory();
-        if (!$hist) {
+        if (! $hist) {
             return true;
         }
 

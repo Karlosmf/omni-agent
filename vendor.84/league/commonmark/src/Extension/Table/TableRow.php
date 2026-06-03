@@ -17,6 +17,4 @@ namespace League\CommonMark\Extension\Table;
 
 use League\CommonMark\Node\Block\AbstractBlock;
 
-final class TableRow extends AbstractBlock
-{
-}
+final class TableRow extends AbstractBlock {}

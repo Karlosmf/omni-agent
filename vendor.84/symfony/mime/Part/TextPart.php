@@ -32,27 +32,33 @@ class TextPart extends AbstractPart
 
     /** @var resource|string|File */
     private $body;
+
     private ?string $charset;
+
     private string $subtype;
+
     private ?string $disposition = null;
+
     private ?string $name = null;
+
     private string $encoding;
+
     private ?bool $seekable = null;
 
     /**
-     * @param resource|string|File $body Use a File instance to defer loading the file until rendering
+     * @param  resource|string|File  $body  Use a File instance to defer loading the file until rendering
      */
     public function __construct($body, ?string $charset = 'utf-8', string $subtype = 'plain', ?string $encoding = null)
     {
         parent::__construct();
 
-        if (!\is_string($body) && !\is_resource($body) && !$body instanceof File) {
+        if (! \is_string($body) && ! \is_resource($body) && ! $body instanceof File) {
             throw new \TypeError(\sprintf('The body of "%s" must be a string, a resource, or an instance of "%s" (got "%s").', self::class, File::class, get_debug_type($body)));
         }
 
         if ($body instanceof File) {
             $path = $body->getPath();
-            if ((is_file($path) && !is_readable($path)) || is_dir($path)) {
+            if ((is_file($path) && ! is_readable($path)) || is_dir($path)) {
                 throw new InvalidArgumentException(\sprintf('Path "%s" is not readable.', $path));
             }
         }
@@ -60,12 +66,12 @@ class TextPart extends AbstractPart
         $this->body = $body;
         $this->charset = $charset;
         $this->subtype = $subtype;
-        $this->seekable = \is_resource($body) ? stream_get_meta_data($body)['seekable'] && 0 === fseek($body, 0, \SEEK_CUR) : null;
+        $this->seekable = \is_resource($body) ? stream_get_meta_data($body)['seekable'] && fseek($body, 0, \SEEK_CUR) === 0 : null;
 
-        if (null === $encoding) {
+        if ($encoding === null) {
             $this->encoding = $this->chooseEncoding();
         } else {
-            if (!\in_array($encoding, self::DEFAULT_ENCODERS, true) && !\array_key_exists($encoding, self::$encoders)) {
+            if (! \in_array($encoding, self::DEFAULT_ENCODERS, true) && ! \array_key_exists($encoding, self::$encoders)) {
                 throw new InvalidArgumentException(\sprintf('The encoding must be one of "%s" ("%s" given).', implode('", "', array_unique(array_merge(self::DEFAULT_ENCODERS, array_keys(self::$encoders)))), $encoding));
             }
             $this->encoding = $encoding;
@@ -83,8 +89,7 @@ class TextPart extends AbstractPart
     }
 
     /**
-     * @param string $disposition one of attachment, inline, or form-data
-     *
+     * @param  string  $disposition  one of attachment, inline, or form-data
      * @return $this
      */
     public function setDisposition(string $disposition): static
@@ -132,7 +137,7 @@ class TextPart extends AbstractPart
             return $ret;
         }
 
-        if (null === $this->seekable) {
+        if ($this->seekable === null) {
             return $this->body;
         }
 
@@ -157,7 +162,7 @@ class TextPart extends AbstractPart
             }
 
             yield from $this->getEncoder()->encodeByteStream($handle);
-        } elseif (null !== $this->seekable) {
+        } elseif ($this->seekable !== null) {
             if ($this->seekable) {
                 rewind($this->body);
             }
@@ -175,12 +180,12 @@ class TextPart extends AbstractPart
         if ($this->charset) {
             $headers->setHeaderParameter('Content-Type', 'charset', $this->charset);
         }
-        if ($this->name && 'form-data' !== $this->disposition) {
+        if ($this->name && $this->disposition !== 'form-data') {
             $headers->setHeaderParameter('Content-Type', 'name', $this->name);
         }
         $headers->setHeaderBody('Text', 'Content-Transfer-Encoding', $this->encoding);
 
-        if (!$headers->has('Content-Disposition') && null !== $this->disposition) {
+        if (! $headers->has('Content-Disposition') && $this->disposition !== null) {
             $headers->setHeaderBody('Parameterized', 'Content-Disposition', $this->disposition);
             if ($this->name) {
                 $headers->setHeaderParameter('Content-Disposition', 'name', $this->name);
@@ -193,10 +198,10 @@ class TextPart extends AbstractPart
     public function asDebugString(): string
     {
         $str = parent::asDebugString();
-        if (null !== $this->charset) {
+        if ($this->charset !== null) {
             $str .= ' charset: '.$this->charset;
         }
-        if (null !== $this->disposition) {
+        if ($this->disposition !== null) {
             $str .= ' disposition: '.$this->disposition;
         }
 
@@ -205,16 +210,16 @@ class TextPart extends AbstractPart
 
     private function getEncoder(): ContentEncoderInterface
     {
-        if ('8bit' === $this->encoding) {
-            return self::$encoders[$this->encoding] ??= new EightBitContentEncoder();
+        if ($this->encoding === '8bit') {
+            return self::$encoders[$this->encoding] ??= new EightBitContentEncoder;
         }
 
-        if ('quoted-printable' === $this->encoding) {
-            return self::$encoders[$this->encoding] ??= new QpContentEncoder();
+        if ($this->encoding === 'quoted-printable') {
+            return self::$encoders[$this->encoding] ??= new QpContentEncoder;
         }
 
-        if ('base64' === $this->encoding) {
-            return self::$encoders[$this->encoding] ??= new Base64ContentEncoder();
+        if ($this->encoding === 'base64') {
+            return self::$encoders[$this->encoding] ??= new Base64ContentEncoder;
         }
 
         return self::$encoders[$this->encoding];
@@ -231,7 +236,7 @@ class TextPart extends AbstractPart
 
     private function chooseEncoding(): string
     {
-        if (null === $this->charset) {
+        if ($this->charset === null) {
             return 'base64';
         }
 
@@ -240,9 +245,9 @@ class TextPart extends AbstractPart
 
     public function __serialize(): array
     {
-        if (self::class === (new \ReflectionMethod($this, '__sleep'))->class || self::class !== (new \ReflectionMethod($this, '__serialize'))->class) {
+        if ((new \ReflectionMethod($this, '__sleep'))->class === self::class || (new \ReflectionMethod($this, '__serialize'))->class !== self::class) {
             // convert resources to strings for serialization
-            if (null !== $this->seekable) {
+            if ($this->seekable !== null) {
                 $this->body = $this->getBody();
                 $this->seekable = null;
             }
@@ -276,7 +281,7 @@ class TextPart extends AbstractPart
 
     public function __unserialize(array $data): void
     {
-        if ($wakeup = self::class !== (new \ReflectionMethod($this, '__wakeup'))->class && self::class === (new \ReflectionMethod($this, '__unserialize'))->class) {
+        if ($wakeup = (new \ReflectionMethod($this, '__wakeup'))->class !== self::class && (new \ReflectionMethod($this, '__unserialize'))->class === self::class) {
             trigger_deprecation('symfony/mime', '7.4', 'Implementing "%s::__wakeup()" is deprecated, use "__unserialize()" instead.', get_debug_type($this));
         }
 
@@ -296,7 +301,7 @@ class TextPart extends AbstractPart
 
             if ($wakeup) {
                 $this->__wakeup();
-            } elseif (!\is_string($this->body) && !$this->body instanceof File) {
+            } elseif (! \is_string($this->body) && ! $this->body instanceof File) {
                 throw new \BadMethodCallException('Cannot unserialize '.__CLASS__);
             }
 
@@ -314,7 +319,7 @@ class TextPart extends AbstractPart
             if ($wakeup) {
                 $this->_headers = $headers;
                 $this->__wakeup();
-            } elseif (!\is_string($this->body) && !$this->body instanceof File) {
+            } elseif (! \is_string($this->body) && ! $this->body instanceof File) {
                 throw new \BadMethodCallException('Cannot unserialize '.__CLASS__);
             }
 
@@ -325,7 +330,7 @@ class TextPart extends AbstractPart
 
         \Closure::bind(function ($data) use ($wakeup) {
             foreach ($data as $key => $value) {
-                $this->{("\0" === $key[0] ?? '') ? substr($key, 1 + strrpos($key, "\0")) : $key} = $value;
+                $this->{($key[0] === "\0" ?? '') ? substr($key, 1 + strrpos($key, "\0")) : $key} = $value;
             }
 
             if ($wakeup) {
@@ -342,7 +347,7 @@ class TextPart extends AbstractPart
         trigger_deprecation('symfony/mime', '7.4', 'Calling "%s::__sleep()" is deprecated, use "__serialize()" instead.', get_debug_type($this));
 
         // convert resources to strings for serialization
-        if (null !== $this->seekable) {
+        if ($this->seekable !== null) {
             $this->body = $this->getBody();
             $this->seekable = null;
         }

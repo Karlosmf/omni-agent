@@ -250,7 +250,9 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @deprecated Since version 7.3.0
+     *
      * @codeCoverageIgnore
+     *
      * @see QueryInterface::withoutPairByKey()
      *
      * Returns an instance without the specified keys.
@@ -258,7 +260,7 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the modified component
      */
-    #[Deprecated(message:'use League\Uri\Contracts\QueryInterface::withoutPairByKey() instead', since:'league/uri-interfaces:7.3.0')]
+    #[Deprecated(message: 'use League\Uri\Contracts\QueryInterface::withoutPairByKey() instead', since: 'league/uri-interfaces:7.3.0')]
     public function withoutPair(string ...$keys): self;
 
     /**

@@ -27,15 +27,20 @@ class UuidV7 extends Uuid implements TimeBasedUidInterface
     protected const TYPE = 7;
 
     private static string $time = '';
+
     private static int $subMs = 0;
+
     private static array $rand = [];
+
     private static string $seed;
+
     private static array $seedParts;
+
     private static int $seedIndex = 0;
 
     public function __construct(?string $uuid = null)
     {
-        if (null === $uuid) {
+        if ($uuid === null) {
             $this->uid = static::generate();
         } else {
             parent::__construct($uuid, true);
@@ -47,7 +52,7 @@ class UuidV7 extends Uuid implements TimeBasedUidInterface
         $time = substr($this->uid, 0, 8).substr($this->uid, 9, 4);
         $time = \PHP_INT_SIZE >= 8 ? (string) hexdec($time) : BinaryUtil::toBase(hex2bin($time), BinaryUtil::BASE10);
 
-        if (4 > \strlen($time)) {
+        if (\strlen($time) < 4) {
             $time = '000'.$time;
         }
         $time .= substr(1000 + (hexdec(substr($this->uid, 14, 4)) >> 2 & 0x3FF), -3);
@@ -68,7 +73,7 @@ class UuidV7 extends Uuid implements TimeBasedUidInterface
             $time = substr($time, 0, -3);
         }
 
-        if ($time > self::$time || (null !== $mtime && $time !== self::$time)) {
+        if ($time > self::$time || ($mtime !== null && $time !== self::$time)) {
             randomize:
             self::$rand = unpack(\PHP_INT_SIZE >= 8 ? 'L*' : 'S*', isset(self::$seed) ? random_bytes(8) : self::$seed = random_bytes(16));
             self::$time = $time;
@@ -84,7 +89,7 @@ class UuidV7 extends Uuid implements TimeBasedUidInterface
             // or 4 x 16-bit for x86 portability. We increment this random part by the next
             // 24-bit number in the self::$seedParts list and decrement self::$seedIndex.
 
-            if (!self::$seedIndex) {
+            if (! self::$seedIndex) {
                 $s = unpack(\PHP_INT_SIZE >= 8 ? 'L*' : 'l*', self::$seed = hash('sha512', self::$seed, true));
                 $s[] = ($s[1] >> 8 & 0xFF0000) | ($s[2] >> 16 & 0xFF00) | ($s[3] >> 24 & 0xFF);
                 $s[] = ($s[4] >> 8 & 0xFF0000) | ($s[5] >> 16 & 0xFF00) | ($s[6] >> 24 & 0xFF);
@@ -110,8 +115,8 @@ class UuidV7 extends Uuid implements TimeBasedUidInterface
             if ($carry && $subMs <= self::$subMs) {
                 usleep(1);
 
-                if (1024 <= ++$subMs) {
-                    if (\PHP_INT_SIZE >= 8 || 10 > \strlen($time = self::$time)) {
+                if (++$subMs >= 1024) {
+                    if (\PHP_INT_SIZE >= 8 || \strlen($time = self::$time) < 10) {
                         $time = (string) (1 + $time);
                     } elseif ('999999999' === $mtime = substr($time, -9)) {
                         $time = (1 + substr($time, 0, -9)).'000000000';

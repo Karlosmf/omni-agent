@@ -52,7 +52,9 @@ class_exists(KernelEvents::class);
 class HttpKernel implements HttpKernelInterface, TerminableInterface
 {
     protected RequestStack $requestStack;
+
     private ArgumentResolverInterface $argumentResolver;
+
     private bool $terminating = false;
 
     public function __construct(
@@ -62,8 +64,8 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
         ?ArgumentResolverInterface $argumentResolver = null,
         private bool $handleAllThrowables = false,
     ) {
-        $this->requestStack = $requestStack ?? new RequestStack();
-        $this->argumentResolver = $argumentResolver ?? new ArgumentResolver();
+        $this->requestStack = $requestStack ?? new RequestStack;
+        $this->argumentResolver = $argumentResolver ?? new ArgumentResolver;
     }
 
     public function handle(Request $request, int $type = HttpKernelInterface::MAIN_REQUEST, bool $catch = true): Response
@@ -75,14 +77,14 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
         try {
             return $response = $this->handleRaw($request, $type);
         } catch (\Throwable $e) {
-            if ($e instanceof \Error && !$this->handleAllThrowables) {
+            if ($e instanceof \Error && ! $this->handleAllThrowables) {
                 throw $e;
             }
 
             if ($e instanceof RequestExceptionInterface) {
                 $e = new BadRequestHttpException($e->getMessage(), $e);
             }
-            if (false === $catch) {
+            if ($catch === false) {
                 $this->finishRequest($request, $type);
 
                 throw $e;
@@ -122,7 +124,7 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
      */
     public function terminateWithException(\Throwable $exception, ?Request $request = null): void
     {
-        if (!$request ??= $this->requestStack->getMainRequest()) {
+        if (! $request ??= $this->requestStack->getMainRequest()) {
             throw $exception;
         }
 
@@ -149,7 +151,7 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
      *
      * Exceptions are not caught.
      *
-     * @throws \LogicException       If one of the listener does not behave as expected
+     * @throws \LogicException If one of the listener does not behave as expected
      * @throws NotFoundHttpException When controller cannot be found
      */
     private function handleRaw(Request $request, int $type = self::MAIN_REQUEST): Response
@@ -183,7 +185,7 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
         $response = $controller(...$arguments);
 
         // view
-        if (!$response instanceof Response) {
+        if (! $response instanceof Response) {
             $event = new ViewEvent($this, $request, $type, $response, $event);
             $this->dispatcher->dispatch($event, KernelEvents::VIEW);
 
@@ -193,7 +195,7 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
                 $msg = \sprintf('The controller must return a "Symfony\Component\HttpFoundation\Response" object but it returned %s.', $this->varToString($response));
 
                 // the user may have forgotten to return something
-                if (null === $response) {
+                if ($response === null) {
                     $msg .= ' Did you forget to add a return statement somewhere in your controller?';
                 }
 
@@ -243,7 +245,7 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
         // a listener might have replaced the exception
         $e = $event->getThrowable();
 
-        if (!$event->hasResponse()) {
+        if (! $event->hasResponse()) {
             $this->finishRequest($request, $type);
 
             throw $e;
@@ -252,7 +254,7 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
         $response = $event->getResponse();
 
         // the developer asked for a specific status code
-        if (!$event->isAllowingCustomResponseCode() && !$response->isClientError() && !$response->isServerError() && !$response->isRedirect()) {
+        if (! $event->isAllowingCustomResponseCode() && ! $response->isClientError() && ! $response->isServerError() && ! $response->isRedirect()) {
             // ensure that we actually have an error response
             if ($e instanceof HttpExceptionInterface) {
                 // keep the HTTP status code and headers
@@ -266,7 +268,7 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
         try {
             return $this->filterResponse($response, $request, $type);
         } catch (\Throwable $e) {
-            if ($e instanceof \Error && !$this->handleAllThrowables) {
+            if ($e instanceof \Error && ! $this->handleAllThrowables) {
                 throw $e;
             }
 
@@ -296,15 +298,15 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
             return \sprintf('a resource (%s)', get_resource_type($var));
         }
 
-        if (null === $var) {
+        if ($var === null) {
             return 'null';
         }
 
-        if (false === $var) {
+        if ($var === false) {
             return 'a boolean value (false)';
         }
 
-        if (true === $var) {
+        if ($var === true) {
             return 'a boolean value (true)';
         }
 

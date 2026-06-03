@@ -22,8 +22,7 @@ class TraceableControllerResolver implements ControllerResolverInterface
     public function __construct(
         private ControllerResolverInterface $resolver,
         private Stopwatch $stopwatch,
-    ) {
-    }
+    ) {}
 
     public function getController(Request $request): callable|false
     {

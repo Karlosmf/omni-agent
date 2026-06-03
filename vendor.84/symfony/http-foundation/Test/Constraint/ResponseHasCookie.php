@@ -21,13 +21,12 @@ final class ResponseHasCookie extends Constraint
         private string $name,
         private string $path = '/',
         private ?string $domain = null,
-    ) {
-    }
+    ) {}
 
     public function toString(): string
     {
         $str = \sprintf('has cookie "%s"', $this->name);
-        if ('/' !== $this->path) {
+        if ($this->path !== '/') {
             $str .= \sprintf(' with path "%s"', $this->path);
         }
         if ($this->domain) {
@@ -38,15 +37,15 @@ final class ResponseHasCookie extends Constraint
     }
 
     /**
-     * @param Response $response
+     * @param  Response  $response
      */
     protected function matches($response): bool
     {
-        return null !== $this->getCookie($response);
+        return $this->getCookie($response) !== null;
     }
 
     /**
-     * @param Response $response
+     * @param  Response  $response
      */
     protected function failureDescription($response): string
     {

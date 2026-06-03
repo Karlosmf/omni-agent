@@ -33,8 +33,8 @@ trait TypeTrait
     /**
      * Returns `true` if value is of the specified type.
      *
-     * @param string $type The type to check the value against.
-     * @param mixed $value The value to check.
+     * @param  string  $type  The type to check the value against.
+     * @param  mixed  $value  The value to check.
      */
     protected function checkType(string $type, mixed $value): bool
     {

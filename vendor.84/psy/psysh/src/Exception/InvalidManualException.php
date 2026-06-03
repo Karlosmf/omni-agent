@@ -19,10 +19,10 @@ class InvalidManualException extends RuntimeException
     private string $manualFile;
 
     /**
-     * @param string          $message    Error message
-     * @param string          $manualFile Path to the invalid manual file
-     * @param int             $code       (default: 0)
-     * @param \Throwable|null $previous   (default: null)
+     * @param  string  $message  Error message
+     * @param  string  $manualFile  Path to the invalid manual file
+     * @param  int  $code  (default: 0)
+     * @param  \Throwable|null  $previous  (default: null)
      */
     public function __construct(string $message, string $manualFile, int $code = 0, ?\Throwable $previous = null)
     {

@@ -24,19 +24,18 @@ namespace Symfony\Component\CssSelector\Node;
 class MatchingNode extends AbstractNode
 {
     /**
-     * @param array<NodeInterface> $arguments
+     * @param  array<NodeInterface>  $arguments
      */
     public function __construct(
         public readonly NodeInterface $selector,
         public readonly array $arguments = [],
-    ) {
-    }
+    ) {}
 
     public function getSpecificity(): Specificity
     {
         $argumentsSpecificity = array_reduce(
             $this->arguments,
-            fn ($c, $n) => 1 === $n->getSpecificity()->compareTo($c) ? $n->getSpecificity() : $c,
+            fn ($c, $n) => $n->getSpecificity()->compareTo($c) === 1 ? $n->getSpecificity() : $c,
             new Specificity(0, 0, 0),
         );
 

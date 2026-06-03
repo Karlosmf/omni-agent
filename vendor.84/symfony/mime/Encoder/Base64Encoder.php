@@ -25,13 +25,13 @@ class Base64Encoder implements EncoderInterface
      */
     public function encodeString(string $string, ?string $charset = 'utf-8', int $firstLineOffset = 0, int $maxLineLength = 0): string
     {
-        if (0 >= $maxLineLength || 76 < $maxLineLength) {
+        if ($maxLineLength <= 0 || $maxLineLength > 76) {
             $maxLineLength = 76;
         }
 
         $encodedString = base64_encode($string);
         $firstLine = '';
-        if (0 !== $firstLineOffset) {
+        if ($firstLineOffset !== 0) {
             $firstLine = substr($encodedString, 0, $maxLineLength - $firstLineOffset)."\r\n";
             $encodedString = substr($encodedString, $maxLineLength - $firstLineOffset);
         }

@@ -16,6 +16,4 @@ namespace Symfony\Component\Routing\Exception;
  *
  * @author Alexandre Salomé <alexandre.salome@gmail.com>
  */
-class RouteNotFoundException extends \InvalidArgumentException implements ExceptionInterface
-{
-}
+class RouteNotFoundException extends \InvalidArgumentException implements ExceptionInterface {}

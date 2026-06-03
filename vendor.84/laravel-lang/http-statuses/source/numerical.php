@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 return [
     'unknownError' => 'Unknown Error',
-    '0'            => 'Unknown Error',
+    '0' => 'Unknown Error',
 
     '100' => 'Continue',
     '101' => 'Switching Protocols',

@@ -19,6 +19,7 @@ use function preg_match;
 
 /**
  * @internal The class exposes the internal representation of a Var Specifier
+ *
  * @link https://www.rfc-editor.org/rfc/rfc6570#section-2.3
  */
 final class VarSpecifier
@@ -36,24 +37,23 @@ final class VarSpecifier
         public readonly string $name,
         public readonly string $modifier,
         public readonly int $position
-    ) {
-    }
+    ) {}
 
     public static function new(string $specification): self
     {
-        1 === preg_match(self::REGEXP_VARSPEC, $specification, $parsed) || throw new SyntaxError('The variable specification "'.$specification.'" is invalid.');
+        preg_match(self::REGEXP_VARSPEC, $specification, $parsed) === 1 || throw new SyntaxError('The variable specification "'.$specification.'" is invalid.');
         $properties = ['name' => $parsed['name'], 'modifier' => $parsed['modifier'] ?? '', 'position' => $parsed['position'] ?? ''];
 
-        if ('' !== $properties['position']) {
+        if ($properties['position'] !== '') {
             $properties['position'] = (int) $properties['position'];
             $properties['modifier'] = ':';
         }
 
-        if ('' === $properties['position']) {
+        if ($properties['position'] === '') {
             $properties['position'] = 0;
         }
 
-        if (self::MODIFIER_POSITION_MAX_POSITION <= $properties['position']) {
+        if ($properties['position'] >= self::MODIFIER_POSITION_MAX_POSITION) {
             throw new SyntaxError('The variable specification "'.$specification.'" is invalid the position modifier must be lower than 10000.');
         }
 
@@ -63,7 +63,7 @@ final class VarSpecifier
     public function toString(): string
     {
         return $this->name.$this->modifier.match (true) {
-            0 < $this->position => $this->position,
+            $this->position > 0 => $this->position,
             default => '',
         };
     }

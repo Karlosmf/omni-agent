@@ -21,9 +21,9 @@ class RuntimeException extends \RuntimeException implements Exception
     /**
      * Make this bad boy.
      *
-     * @param string          $message  (default: "")
-     * @param int             $code     (default: 0)
-     * @param \Throwable|null $previous (default: null)
+     * @param  string  $message  (default: "")
+     * @param  int  $code  (default: 0)
+     * @param  \Throwable|null  $previous  (default: null)
      */
     public function __construct(string $message = '', int $code = 0, ?\Throwable $previous = null)
     {

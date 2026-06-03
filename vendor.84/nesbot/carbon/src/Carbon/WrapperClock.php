@@ -25,8 +25,7 @@ final class WrapperClock implements ClockInterface
 {
     public function __construct(
         private PsrClockInterface|Factory|DateTimeInterface $currentClock,
-    ) {
-    }
+    ) {}
 
     public function unwrap(): PsrClockInterface|Factory|DateTimeInterface
     {
@@ -40,20 +39,20 @@ final class WrapperClock implements ClockInterface
         }
 
         if ($this->currentClock instanceof DateTime) {
-            $factory = new Factory();
+            $factory = new Factory;
             $factory->setTestNowAndTimezone($this->currentClock);
 
             return $factory;
         }
 
         if ($this->currentClock instanceof DateTimeImmutable) {
-            $factory = new FactoryImmutable();
+            $factory = new FactoryImmutable;
             $factory->setTestNowAndTimezone($this->currentClock);
 
             return $factory;
         }
 
-        $factory = new FactoryImmutable();
+        $factory = new FactoryImmutable;
         $factory->setTestNowAndTimezone(fn () => $this->currentClock->now());
 
         return $factory;
@@ -84,8 +83,7 @@ final class WrapperClock implements ClockInterface
     /**
      * @template T of CarbonInterface
      *
-     * @param class-string<T> $class
-     *
+     * @param  class-string<T>  $class
      * @return T
      */
     public function nowAs(string $class, DateTimeZone|string|int|null $timezone = null): CarbonInterface
@@ -147,7 +145,7 @@ final class WrapperClock implements ClockInterface
             ? $this->currentClock
             : $this->currentClock->now();
 
-        if (!($now instanceof DateTimeImmutable)) {
+        if (! ($now instanceof DateTimeImmutable)) {
             $now = clone $now;
         }
 
@@ -170,7 +168,7 @@ final class WrapperClock implements ClockInterface
             thousands_separator: '',
         );
 
-        if (!($date instanceof DateTimeImmutable)) {
+        if (! ($date instanceof DateTimeImmutable)) {
             $date = clone $date;
         }
 

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,10 +9,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Metadata\Version;
 
-use function version_compare;
 use PHPUnit\Util\VersionComparisonOperator;
+
+use function version_compare;
 
 /**
  * @immutable
@@ -20,11 +24,12 @@ use PHPUnit\Util\VersionComparisonOperator;
 final readonly class ComparisonRequirement extends Requirement
 {
     private string $version;
+
     private VersionComparisonOperator $operator;
 
     public function __construct(string $version, VersionComparisonOperator $operator)
     {
-        $this->version  = $version;
+        $this->version = $version;
         $this->operator = $operator;
     }
 
@@ -35,6 +40,6 @@ final readonly class ComparisonRequirement extends Requirement
 
     public function asString(): string
     {
-        return $this->operator->asString() . ' ' . $this->version;
+        return $this->operator->asString().' '.$this->version;
     }
 }

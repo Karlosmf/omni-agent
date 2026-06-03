@@ -43,8 +43,8 @@ abstract class DataCollector implements DataCollectorInterface
         if ($var instanceof Data) {
             return $var;
         }
-        if (!isset($this->cloner)) {
-            $this->cloner = new VarCloner();
+        if (! isset($this->cloner)) {
+            $this->cloner = new VarCloner;
             $this->cloner->setMaxItems(-1);
             $this->cloner->addCasters($this->getCasters());
         }
@@ -59,10 +59,10 @@ abstract class DataCollector implements DataCollectorInterface
     {
         return [
             '*' => function ($v, array $a, Stub $s, $isNested) {
-                if (!$v instanceof Stub) {
+                if (! $v instanceof Stub) {
                     $b = $a;
                     foreach ($a as $k => $v) {
-                        if (!\is_object($v) || $v instanceof \DateTimeInterface || $v instanceof Stub) {
+                        if (! \is_object($v) || $v instanceof \DateTimeInterface || $v instanceof Stub) {
                             continue;
                         }
 
@@ -86,7 +86,7 @@ abstract class DataCollector implements DataCollectorInterface
 
     public function __serialize(): array
     {
-        if (self::class === (new \ReflectionMethod($this, '__sleep'))->class || self::class !== (new \ReflectionMethod($this, '__serialize'))->class) {
+        if ((new \ReflectionMethod($this, '__sleep'))->class === self::class || (new \ReflectionMethod($this, '__serialize'))->class !== self::class) {
             return ['data' => $this->data];
         }
 
@@ -108,7 +108,7 @@ abstract class DataCollector implements DataCollectorInterface
 
     public function __unserialize(array $data): void
     {
-        if ($wakeup = self::class !== (new \ReflectionMethod($this, '__wakeup'))->class && self::class === (new \ReflectionMethod($this, '__unserialize'))->class) {
+        if ($wakeup = (new \ReflectionMethod($this, '__wakeup'))->class !== self::class && (new \ReflectionMethod($this, '__unserialize'))->class === self::class) {
             trigger_deprecation('symfony/http-kernel', '7.4', 'Implementing "%s::__wakeup()" is deprecated, use "__unserialize()" instead.', get_debug_type($this));
         }
 
@@ -126,7 +126,7 @@ abstract class DataCollector implements DataCollectorInterface
 
         \Closure::bind(function ($data) use ($wakeup) {
             foreach ($data as $key => $value) {
-                $this->{("\0" === $key[0] ?? '') ? substr($key, 1 + strrpos($key, "\0")) : $key} = $value;
+                $this->{($key[0] === "\0" ?? '') ? substr($key, 1 + strrpos($key, "\0")) : $key} = $value;
             }
 
             if ($wakeup) {

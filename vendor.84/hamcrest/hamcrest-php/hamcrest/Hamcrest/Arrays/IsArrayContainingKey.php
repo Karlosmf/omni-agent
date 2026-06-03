@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Arrays;
 
 /*
@@ -14,7 +15,6 @@ use Hamcrest\Util;
  */
 class IsArrayContainingKey extends TypeSafeMatcher
 {
-
     private $_keyMatcher;
 
     public function __construct(Matcher $keyMatcher)
@@ -37,10 +37,9 @@ class IsArrayContainingKey extends TypeSafeMatcher
 
     protected function describeMismatchSafely($array, Description $mismatchDescription)
     {
-        //Not using appendValueList() so that keys can be shown
+        // Not using appendValueList() so that keys can be shown
         $mismatchDescription->appendText('array was ')
-                                                ->appendText('[')
-                                                ;
+            ->appendText('[');
         $loop = false;
         foreach ($array as $key => $value) {
             if ($loop) {
@@ -55,17 +54,16 @@ class IsArrayContainingKey extends TypeSafeMatcher
     public function describeTo(Description $description)
     {
         $description
-                 ->appendText('array with key ')
-                 ->appendDescriptionOf($this->_keyMatcher)
-                 ;
+            ->appendText('array with key ')
+            ->appendDescriptionOf($this->_keyMatcher);
     }
 
     /**
      * Evaluates to true if any key in an array matches the given matcher.
      *
-     * @param mixed $key as a {@link Hamcrest\Matcher} or a value.
+     * @param  mixed  $key  as a {@link Hamcrest\Matcher} or a value.
+     * @return IsArrayContainingKey
      *
-     * @return \Hamcrest\Arrays\IsArrayContainingKey
      * @factory hasKey
      */
     public static function hasKeyInArray($key)

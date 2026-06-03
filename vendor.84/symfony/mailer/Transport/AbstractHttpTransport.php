@@ -25,6 +25,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 abstract class AbstractHttpTransport extends AbstractTransport
 {
     protected ?string $host = null;
+
     protected ?int $port = null;
 
     public function __construct(
@@ -32,8 +33,8 @@ abstract class AbstractHttpTransport extends AbstractTransport
         ?EventDispatcherInterface $dispatcher = null,
         ?LoggerInterface $logger = null,
     ) {
-        if (null === $client) {
-            if (!class_exists(HttpClient::class)) {
+        if ($client === null) {
+            if (! class_exists(HttpClient::class)) {
                 throw new \LogicException(\sprintf('You cannot use "%s" as the HttpClient component is not installed. Try running "composer require symfony/http-client".', __CLASS__));
             }
 

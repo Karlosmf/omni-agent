@@ -8,9 +8,9 @@ use Illuminate\Support\Arr;
 
 trait CanBeReadOnly
 {
-    protected bool | Closure $isReadOnly = false;
+    protected bool|Closure $isReadOnly = false;
 
-    public function readOnly(bool | Closure $condition = true): static
+    public function readOnly(bool|Closure $condition = true): static
     {
         $this->isReadOnly = $condition;
 
@@ -20,7 +20,7 @@ trait CanBeReadOnly
     /**
      * @param  string | array<string>  $operations
      */
-    public function readOnlyOn(string | array $operations): static
+    public function readOnlyOn(string|array $operations): static
     {
         $this->readOnly(static function (HasSchemas $livewire, string $operation) use ($operations): bool {
             foreach (Arr::wrap($operations) as $readOnlyOperation) {

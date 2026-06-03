@@ -18,14 +18,12 @@ class ReflectionMember
 {
     public function __construct(
         private readonly \ReflectionParameter|\ReflectionProperty $member,
-    ) {
-    }
+    ) {}
 
     /**
      * @template T of object
      *
-     * @param class-string<T> $class
-     *
+     * @param  class-string<T>  $class
      * @return T|null
      */
     public function getAttribute(string $class): ?object

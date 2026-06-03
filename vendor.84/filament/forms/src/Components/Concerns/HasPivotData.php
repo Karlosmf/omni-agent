@@ -9,12 +9,12 @@ trait HasPivotData
     /**
      * @var array<string, mixed> | Closure
      */
-    protected array | Closure $pivotData = [];
+    protected array|Closure $pivotData = [];
 
     /**
      * @param  array<string, mixed> | Closure  $data
      */
-    public function pivotData(array | Closure $data): static
+    public function pivotData(array|Closure $data): static
     {
         $this->pivotData = $data;
 

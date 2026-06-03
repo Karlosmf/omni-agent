@@ -1,10 +1,14 @@
 <?php
+
 /**
  * Whoops - php errors for cool kids
+ *
  * @author Filipe Dobreira <http://github.com/filp>
  */
 
 namespace Whoops\Inspector;
+
+use Whoops\Exception\FrameCollection;
 
 interface InspectorInterface
 {
@@ -42,19 +46,23 @@ interface InspectorInterface
 
     /**
      * Does the wrapped Exception has a previous Exception?
+     *
      * @return bool
      */
     public function hasPreviousException();
 
     /**
      * Returns an Inspector for a previous Exception, if any.
+     *
      * @todo   Clean this up a bit, cache stuff a bit better.
+     *
      * @return InspectorInterface
      */
     public function getPreviousExceptionInspector();
 
     /**
      * Returns an array of all previous exceptions for this inspector's exception
+     *
      * @return \Throwable[]
      */
     public function getPreviousExceptions();
@@ -62,10 +70,9 @@ interface InspectorInterface
     /**
      * Returns an iterator for the inspected exception's
      * frames.
-     * 
-     * @param array<callable> $frameFilters
-     * 
-     * @return \Whoops\Exception\FrameCollection
+     *
+     * @param  array<callable>  $frameFilters
+     * @return FrameCollection
      */
     public function getFrames(array $frameFilters = []);
 }

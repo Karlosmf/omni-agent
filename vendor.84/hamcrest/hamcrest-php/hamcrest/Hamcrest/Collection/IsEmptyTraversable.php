@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Collection;
 
 /*
@@ -12,8 +13,8 @@ use Hamcrest\Description;
  */
 class IsEmptyTraversable extends BaseMatcher
 {
-
     private static $_INSTANCE;
+
     private static $_NOT_INSTANCE;
 
     private $_empty;
@@ -25,12 +26,12 @@ class IsEmptyTraversable extends BaseMatcher
 
     public function matches($item)
     {
-        if (!$item instanceof \Traversable) {
+        if (! $item instanceof \Traversable) {
             return false;
         }
 
         foreach ($item as $value) {
-            return !$this->_empty;
+            return ! $this->_empty;
         }
 
         return $this->_empty;
@@ -48,7 +49,7 @@ class IsEmptyTraversable extends BaseMatcher
      */
     public static function emptyTraversable()
     {
-        if (!self::$_INSTANCE) {
+        if (! self::$_INSTANCE) {
             self::$_INSTANCE = new self;
         }
 
@@ -62,7 +63,7 @@ class IsEmptyTraversable extends BaseMatcher
      */
     public static function nonEmptyTraversable()
     {
-        if (!self::$_NOT_INSTANCE) {
+        if (! self::$_NOT_INSTANCE) {
             self::$_NOT_INSTANCE = new self(false);
         }
 

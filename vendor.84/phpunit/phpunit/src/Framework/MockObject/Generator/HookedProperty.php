@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\MockObject\Generator;
 
 use SebastianBergmann\Type\Type;
@@ -22,20 +25,24 @@ final readonly class HookedProperty
      * @var non-empty-string
      */
     private string $name;
+
     private Type $type;
+
     private bool $getHook;
+
     private bool $setHook;
+
     private ?Type $setterType;
 
     /**
-     * @param non-empty-string $name
+     * @param  non-empty-string  $name
      */
     public function __construct(string $name, Type $type, bool $getHook, bool $setHook, ?Type $setterType)
     {
-        $this->name       = $name;
-        $this->type       = $type;
-        $this->getHook    = $getHook;
-        $this->setHook    = $setHook;
+        $this->name = $name;
+        $this->type = $type;
+        $this->getHook = $getHook;
+        $this->setHook = $setHook;
         $this->setterType = $setterType;
     }
 

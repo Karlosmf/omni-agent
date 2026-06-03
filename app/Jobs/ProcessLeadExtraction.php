@@ -2,8 +2,11 @@
 
 namespace App\Jobs;
 
+use App\Models\Lead;
+use App\Services\AiConciergeService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Log;
 
 class ProcessLeadExtraction implements ShouldQueue
 {
@@ -13,7 +16,7 @@ class ProcessLeadExtraction implements ShouldQueue
      * Create a new job instance.
      */
     public function __construct(
-        public \App\Models\Lead $lead,
+        public Lead $lead,
         public string $messageContent,
         public array $history = []
     ) {}
@@ -21,7 +24,7 @@ class ProcessLeadExtraction implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(\App\Services\AiConciergeService $aiService): void
+    public function handle(AiConciergeService $aiService): void
     {
         try {
             // Prepare context for extraction
@@ -57,7 +60,7 @@ class ProcessLeadExtraction implements ShouldQueue
                 $this->lead->update($updateData);
             }
         } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::error('ProcessLeadExtraction Job Error: '.$e->getMessage());
+            Log::error('ProcessLeadExtraction Job Error: '.$e->getMessage());
         }
     }
 }

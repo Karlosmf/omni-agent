@@ -27,7 +27,7 @@ class FactoryGenerator
     public function __construct($path)
     {
         $this->path = $path;
-        $this->factoryFiles = array();
+        $this->factoryFiles = [];
     }
 
     public function addFactoryFile(FactoryFile $factoryFile)
@@ -59,7 +59,7 @@ class FactoryGenerator
 
     public function getClassesWithFactoryMethods()
     {
-        $classes = array();
+        $classes = [];
         $files = $this->getSortedFiles();
         foreach ($files as $file) {
             $class = $this->getFactoryClass($file);
@@ -74,7 +74,7 @@ class FactoryGenerator
     public function getSortedFiles()
     {
         $iter = $this->getFileIterator();
-        $files = array();
+        $files = [];
         foreach ($iter as $file) {
             $files[] = $file;
         }
@@ -87,7 +87,7 @@ class FactoryGenerator
     {
         $factoryClass = class_exists('File_Iterator_Factory') ? 'File_Iterator_Factory' : 'SebastianBergmann\FileIterator\Factory';
 
-        $factory = new $factoryClass();
+        $factory = new $factoryClass;
 
         return $factory->getFileIterator($this->path, '.php');
     }
@@ -116,7 +116,7 @@ class FactoryGenerator
             && preg_match('/\n\s*class\s+(\w+)\s+extends\b/', $content, $className)
             && preg_match('/@factory\b/', $content)
         ) {
-            return $namespace[1] . '\\' . $className[1];
+            return $namespace[1].'\\'.$className[1];
         }
 
         return null;

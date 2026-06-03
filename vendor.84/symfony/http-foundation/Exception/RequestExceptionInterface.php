@@ -16,6 +16,4 @@ namespace Symfony\Component\HttpFoundation\Exception;
  *
  * Exceptions implementing this interface should trigger an HTTP 400 response in the application code.
  */
-interface RequestExceptionInterface
-{
-}
+interface RequestExceptionInterface {}

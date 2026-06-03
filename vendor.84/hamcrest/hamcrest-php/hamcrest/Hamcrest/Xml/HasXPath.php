@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Xml;
 
 /*
@@ -16,7 +17,6 @@ use Hamcrest\Matcher;
  */
 class HasXPath extends DiagnosingMatcher
 {
-
     /**
      * XPath to apply to the DOM.
      *
@@ -41,15 +41,14 @@ class HasXPath extends DiagnosingMatcher
     /**
      * Matches if the XPath matches against the DOM node and the matcher.
      *
-     * @param string|\DOMNode $actual
-     * @param Description $mismatchDescription
+     * @param  string|\DOMNode  $actual
      * @return bool
      */
     protected function matchesWithDiagnosticDescription($actual, Description $mismatchDescription)
     {
         if (is_string($actual)) {
             $actual = $this->createDocument($actual);
-        } elseif (!$actual instanceof \DOMNode) {
+        } elseif (! $actual instanceof \DOMNode) {
             $mismatchDescription->appendText('was ')->appendValue($actual);
 
             return false;
@@ -66,19 +65,20 @@ class HasXPath extends DiagnosingMatcher
      * Creates and returns a <code>DOMDocument</code> from the given
      * XML or HTML string.
      *
-     * @param string $text
+     * @param  string  $text
      * @return \DOMDocument built from <code>$text</code>
+     *
      * @throws \InvalidArgumentException if the document is not valid
      */
     protected function createDocument($text)
     {
-        $document = new \DOMDocument();
+        $document = new \DOMDocument;
         if (preg_match('/^\s*<\?xml/', $text)) {
-            if (!@$document->loadXML($text)) {
+            if (! @$document->loadXML($text)) {
                 throw new \InvalidArgumentException('Must pass a valid XML document');
             }
         } else {
-            if (!@$document->loadHTML($text)) {
+            if (! @$document->loadHTML($text)) {
                 throw new \InvalidArgumentException('Must pass a valid HTML or XHTML document');
             }
         }
@@ -90,7 +90,7 @@ class HasXPath extends DiagnosingMatcher
      * Applies the configured XPath to the DOM node and returns either
      * the result if it's an expression or the node list if it's a query.
      *
-     * @param \DOMNode $node context from which to issue query
+     * @param  \DOMNode  $node  context from which to issue query
      * @return mixed result of expression or DOMNodeList from query
      */
     protected function evaluate(\DOMNode $node)
@@ -110,8 +110,7 @@ class HasXPath extends DiagnosingMatcher
      * Matches if the list of nodes is not empty and the content of at least
      * one node matches the configured matcher, if supplied.
      *
-     * @param \DOMNodeList $nodes selected by the XPath query
-     * @param Description $mismatchDescription
+     * @param  \DOMNodeList  $nodes  selected by the XPath query
      * @return bool
      */
     protected function matchesContent(\DOMNodeList $nodes, Description $mismatchDescription)
@@ -126,12 +125,12 @@ class HasXPath extends DiagnosingMatcher
                     return true;
                 }
             }
-            $content = array();
+            $content = [];
             foreach ($nodes as $node) {
                 $content[] = $node->textContent;
             }
             $mismatchDescription->appendText('XPath returned ')
-                                                    ->appendValue($content);
+                ->appendValue($content);
         }
 
         return false;
@@ -141,8 +140,7 @@ class HasXPath extends DiagnosingMatcher
      * Matches if the result of the XPath expression matches the configured
      * matcher or evaluates to <code>true</code> if there is none.
      *
-     * @param mixed $result result of the XPath expression
-     * @param Description $mismatchDescription
+     * @param  mixed  $result  result of the XPath expression
      * @return bool
      */
     protected function matchesExpression($result, Description $mismatchDescription)
@@ -152,7 +150,7 @@ class HasXPath extends DiagnosingMatcher
                 return true;
             }
             $mismatchDescription->appendText('XPath expression result was ')
-                                                    ->appendValue($result);
+                ->appendValue($result);
         } else {
             if ($this->_matcher->matches($result)) {
                 return true;
@@ -167,8 +165,8 @@ class HasXPath extends DiagnosingMatcher
     public function describeTo(Description $description)
     {
         $description->appendText('XML or HTML document with XPath "')
-                                ->appendText($this->_xpath)
-                                ->appendText('"');
+            ->appendText($this->_xpath)
+            ->appendText('"');
         if ($this->_matcher !== null) {
             $description->appendText(' ');
             $this->_matcher->describeTo($description);
@@ -187,7 +185,7 @@ class HasXPath extends DiagnosingMatcher
         if ($matcher === null || $matcher instanceof Matcher) {
             return new self($xpath, $matcher);
         } elseif (is_int($matcher) && strpos($xpath, 'count(') !== 0) {
-            $xpath = 'count(' . $xpath . ')';
+            $xpath = 'count('.$xpath.')';
         }
 
         return new self($xpath, IsEqual::equalTo($matcher));

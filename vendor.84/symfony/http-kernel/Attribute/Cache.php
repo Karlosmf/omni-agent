@@ -114,6 +114,5 @@ final class Cache
          * @see https://datatracker.ietf.org/doc/html/rfc7234#section-5.2.2.3
          */
         public ?bool $noStore = null,
-    ) {
-    }
+    ) {}
 }

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Carbon\PHPStan;
 
+use PHPStan\Reflection\ClassMemberReflection;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptor;
@@ -24,11 +25,17 @@ use function preg_match;
 class MacroMethodReflection implements MethodReflection
 {
     private ClassReflection $declaringClass;
+
     private string $methodName;
+
     private ParametersAcceptor $macroClosureType;
+
     private bool $static;
+
     private bool $final;
+
     private bool $deprecated;
+
     private ?string $docComment;
 
     public function __construct(
@@ -79,7 +86,7 @@ class MacroMethodReflection implements MethodReflection
         return $this->methodName;
     }
 
-    public function getPrototype(): \PHPStan\Reflection\ClassMemberReflection
+    public function getPrototype(): ClassMemberReflection
     {
         return $this;
     }

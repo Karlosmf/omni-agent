@@ -58,7 +58,7 @@ class ConfigDataCollector extends DataCollector implements LateDataCollectorInte
             'php_intl_locale' => class_exists(\Locale::class, false) && \Locale::getDefault() ? \Locale::getDefault() : 'n/a',
             'php_timezone' => date_default_timezone_get(),
             'xdebug_enabled' => \extension_loaded('xdebug'),
-            'xdebug_status' => \extension_loaded('xdebug') ? ($xdebugMode && 'off' !== $xdebugMode ? 'Enabled ('.$xdebugMode.')' : 'Not enabled') : 'Not installed',
+            'xdebug_status' => \extension_loaded('xdebug') ? ($xdebugMode && $xdebugMode !== 'off' ? 'Enabled ('.$xdebugMode.')' : 'Not enabled') : 'Not installed',
             'apcu_enabled' => \extension_loaded('apcu') && filter_var(\ini_get('apc.enabled'), \FILTER_VALIDATE_BOOL),
             'apcu_status' => \extension_loaded('apcu') ? (filter_var(\ini_get('apc.enabled'), \FILTER_VALIDATE_BOOLEAN) ? 'Enabled' : 'Not enabled') : 'Not installed',
             'zend_opcache_enabled' => \extension_loaded('Zend OPcache') && filter_var(\ini_get('opcache.enable'), \FILTER_VALIDATE_BOOL),
@@ -263,7 +263,7 @@ class ConfigDataCollector extends DataCollector implements LateDataCollectorInte
 
     private function determineSymfonyState(): string
     {
-        $now = new \DateTimeImmutable();
+        $now = new \DateTimeImmutable;
         $eom = \DateTimeImmutable::createFromFormat('d/m/Y', '01/'.Kernel::END_OF_MAINTENANCE)->modify('last day of this month');
         $eol = \DateTimeImmutable::createFromFormat('d/m/Y', '01/'.Kernel::END_OF_LIFE)->modify('last day of this month');
 
@@ -284,7 +284,7 @@ class ConfigDataCollector extends DataCollector implements LateDataCollectorInte
     {
         $stack = debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS);
         for ($frame = end($stack); $frame; $frame = prev($stack)) {
-            if (!$class = $frame['class'] ?? null) {
+            if (! $class = $frame['class'] ?? null) {
                 continue;
             }
             if (is_a($class, RunnerInterface::class, true)) {

@@ -96,5 +96,6 @@ class Person extends \Faker\Provider\Person
     ];
 
     protected static $titleMale = ['κος.', 'κ.'];
+
     protected static $titleFemale = ['δις.', 'δνις.', 'κα.'];
 }

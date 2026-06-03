@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -25,6 +26,7 @@ use Mockery\Generator\StringManipulation\Pass\RemoveBuiltinMethodsThatAreFinalPa
 use Mockery\Generator\StringManipulation\Pass\RemoveDestructorPass;
 use Mockery\Generator\StringManipulation\Pass\RemoveUnserializeForInternalSerializableClassesPass;
 use Mockery\Generator\StringManipulation\Pass\TraitPass;
+
 use function file_get_contents;
 
 class StringManipulationGenerator implements Generator
@@ -40,17 +42,16 @@ class StringManipulationGenerator implements Generator
     private $code;
 
     /**
-     * @param list<Pass> $passes
+     * @param  list<Pass>  $passes
      */
     public function __construct(array $passes)
     {
         $this->passes = $passes;
 
-        $this->code = file_get_contents(__DIR__ . '/../Mock.php');
+        $this->code = file_get_contents(__DIR__.'/../Mock.php');
     }
 
     /**
-     * @param  Pass $pass
      * @return void
      */
     public function addPass(Pass $pass)
@@ -83,20 +84,20 @@ class StringManipulationGenerator implements Generator
     public static function withDefaultPasses()
     {
         return new static([
-            new CallTypeHintPass(),
-            new MagicMethodTypeHintsPass(),
-            new ClassPass(),
-            new TraitPass(),
-            new ClassNamePass(),
-            new InstanceMockPass(),
-            new InterfacePass(),
-            new AvoidMethodClashPass(),
-            new MethodDefinitionPass(),
-            new RemoveUnserializeForInternalSerializableClassesPass(),
-            new RemoveBuiltinMethodsThatAreFinalPass(),
-            new RemoveDestructorPass(),
-            new ConstantsPass(),
-            new ClassAttributesPass(),
+            new CallTypeHintPass,
+            new MagicMethodTypeHintsPass,
+            new ClassPass,
+            new TraitPass,
+            new ClassNamePass,
+            new InstanceMockPass,
+            new InterfacePass,
+            new AvoidMethodClashPass,
+            new MethodDefinitionPass,
+            new RemoveUnserializeForInternalSerializableClassesPass,
+            new RemoveBuiltinMethodsThatAreFinalPass,
+            new RemoveDestructorPass,
+            new ConstantsPass,
+            new ClassAttributesPass,
         ]);
     }
 }

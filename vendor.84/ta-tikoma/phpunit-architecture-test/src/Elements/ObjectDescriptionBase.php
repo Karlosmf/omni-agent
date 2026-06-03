@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PHPUnit\Architecture\Elements;
 
-use Exception;
 use Error;
+use Exception;
 use PhpParser\Node;
 use PHPUnit\Architecture\Enums\ObjectType;
 use PHPUnit\Architecture\Services\ServiceContainer;
@@ -67,16 +67,15 @@ abstract class ObjectDescriptionBase
             return $node instanceof Node\Stmt\Class_
                 || $node instanceof Node\Stmt\Trait_
                 || $node instanceof Node\Stmt\Interface_
-                || $node instanceof Node\Stmt\Enum_
-                //
-            ;
+                || $node instanceof Node\Stmt\Enum_;
+            //
         });
 
         if ($object === null) {
             return null;
         }
 
-        if (!property_exists($object, 'namespacedName')) {
+        if (! property_exists($object, 'namespacedName')) {
             return null;
         }
 
@@ -84,7 +83,7 @@ abstract class ObjectDescriptionBase
             return null;
         }
 
-        $description = new static(); // @phpstan-ignore-line
+        $description = new static; // @phpstan-ignore-line
 
         if ($object instanceof Node\Stmt\Class_) {
             $description->type = ObjectType::_CLASS;
@@ -99,9 +98,9 @@ abstract class ObjectDescriptionBase
         /** @var class-string $className */
         $className = $object->namespacedName->toString();
 
-        $description->path            = $path;
-        $description->name            = $className;
-        $description->stmts           = $stmts;
+        $description->path = $path;
+        $description->name = $className;
+        $description->stmts = $stmts;
 
         foreach (self::$ignore as $ignore) {
             if (str_starts_with($className, $ignore)) {

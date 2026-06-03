@@ -53,7 +53,7 @@ final class Static_ implements Type
     public function __toString(): string
     {
         if ($this->genericTypes) {
-            return 'static<' . implode(', ', $this->genericTypes) . '>';
+            return 'static<'.implode(', ', $this->genericTypes).'>';
         }
 
         return 'static';

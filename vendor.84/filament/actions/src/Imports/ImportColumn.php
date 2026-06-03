@@ -20,26 +20,26 @@ class ImportColumn extends Component
 {
     protected string $name;
 
-    protected string | Closure | null $label = null;
+    protected string|Closure|null $label = null;
 
-    protected bool | Closure $isMappingRequired = false;
+    protected bool|Closure $isMappingRequired = false;
 
-    protected bool | Closure $isMappingRequiredForNewRecordsOnly = false;
+    protected bool|Closure $isMappingRequiredForNewRecordsOnly = false;
 
-    protected int | Closure | null $decimalPlaces = null;
+    protected int|Closure|null $decimalPlaces = null;
 
-    protected bool | Closure $isNumeric = false;
+    protected bool|Closure $isNumeric = false;
 
-    protected bool | Closure $isBoolean = false;
+    protected bool|Closure $isBoolean = false;
 
-    protected bool | Closure $isBlankStateIgnored = false;
+    protected bool|Closure $isBlankStateIgnored = false;
 
-    protected string | Closure | null $arraySeparator = null;
+    protected string|Closure|null $arraySeparator = null;
 
     /**
      * @var array<string> | Closure
      */
-    protected array | Closure $guesses = [];
+    protected array|Closure $guesses = [];
 
     protected ?Closure $fillRecordUsing = null;
 
@@ -50,41 +50,41 @@ class ImportColumn extends Component
     /**
      * @var array<mixed> | Closure
      */
-    protected array | Closure $dataValidationRules = [];
+    protected array|Closure $dataValidationRules = [];
 
     /**
      * @var array<mixed> | Closure
      */
-    protected array | Closure $nestedRecursiveDataValidationRules = [];
+    protected array|Closure $nestedRecursiveDataValidationRules = [];
 
     protected ?Importer $importer = null;
 
     /**
      * @var array<mixed> | Closure
      */
-    protected array | Closure $examples = [];
+    protected array|Closure $examples = [];
 
-    protected string | Closure | null $exampleHeader = null;
+    protected string|Closure|null $exampleHeader = null;
 
-    protected string | Closure | null $relationship = null;
+    protected string|Closure|null $relationship = null;
 
     /**
      * @var string | array<string> | Closure | null
      */
-    protected string | array | Closure | null $resolveRelationshipUsing = null;
+    protected string|array|Closure|null $resolveRelationshipUsing = null;
 
     /**
      * @var array<Model | Collection>
      */
     protected array $resolvedRelatedRecords = [];
 
-    protected string | Closure | null $validationAttribute = null;
+    protected string|Closure|null $validationAttribute = null;
 
     protected string $evaluationIdentifier = 'column';
 
-    protected string | Htmlable | Closure | null $helperText = null;
+    protected string|Htmlable|Closure|null $helperText = null;
 
-    protected bool | Closure $isSensitive = false;
+    protected bool|Closure $isSensitive = false;
 
     final public function __construct(string $name)
     {
@@ -128,7 +128,7 @@ class ImportColumn extends Component
         return $this;
     }
 
-    public function label(string | Closure | null $label): static
+    public function label(string|Closure|null $label): static
     {
         $this->label = $label;
 
@@ -156,28 +156,28 @@ class ImportColumn extends Component
         return $this;
     }
 
-    public function exampleHeader(string | Closure | null $header): static
+    public function exampleHeader(string|Closure|null $header): static
     {
         $this->exampleHeader = $header;
 
         return $this;
     }
 
-    public function requiredMapping(bool | Closure $condition = true): static
+    public function requiredMapping(bool|Closure $condition = true): static
     {
         $this->isMappingRequired = $condition;
 
         return $this;
     }
 
-    public function requiredMappingForNewRecordsOnly(bool | Closure $condition = true): static
+    public function requiredMappingForNewRecordsOnly(bool|Closure $condition = true): static
     {
         $this->isMappingRequiredForNewRecordsOnly = $condition;
 
         return $this;
     }
 
-    public function numeric(bool | Closure $condition = true, int | Closure | null $decimalPlaces = null): static
+    public function numeric(bool|Closure $condition = true, int|Closure|null $decimalPlaces = null): static
     {
         $this->isNumeric = $condition;
         $this->decimalPlaces = $decimalPlaces;
@@ -185,28 +185,28 @@ class ImportColumn extends Component
         return $this;
     }
 
-    public function helperText(string | Htmlable | Closure | null $text): static
+    public function helperText(string|Htmlable|Closure|null $text): static
     {
         $this->helperText = $text;
 
         return $this;
     }
 
-    public function integer(bool | Closure $condition = true): static
+    public function integer(bool|Closure $condition = true): static
     {
         $this->numeric($condition, decimalPlaces: 0);
 
         return $this;
     }
 
-    public function boolean(bool | Closure $condition = true): static
+    public function boolean(bool|Closure $condition = true): static
     {
         $this->isBoolean = $condition;
 
         return $this;
     }
 
-    public function ignoreBlankState(bool | Closure $condition = true): static
+    public function ignoreBlankState(bool|Closure $condition = true): static
     {
         $this->isBlankStateIgnored = $condition;
 
@@ -216,7 +216,7 @@ class ImportColumn extends Component
     /**
      * @param  array<mixed> | Closure  $rules
      */
-    public function rules(array | Closure $rules): static
+    public function rules(array|Closure $rules): static
     {
         $this->dataValidationRules = $rules;
 
@@ -226,21 +226,21 @@ class ImportColumn extends Component
     /**
      * @param  array<mixed> | Closure  $rules
      */
-    public function nestedRecursiveRules(array | Closure $rules): static
+    public function nestedRecursiveRules(array|Closure $rules): static
     {
         $this->nestedRecursiveDataValidationRules = $rules;
 
         return $this;
     }
 
-    public function array(string | Closure | null $separator = ','): static
+    public function array(string|Closure|null $separator = ','): static
     {
         $this->multiple($separator);
 
         return $this;
     }
 
-    public function multiple(string | Closure | null $separator = ','): static
+    public function multiple(string|Closure|null $separator = ','): static
     {
         $this->arraySeparator = $separator;
 
@@ -250,7 +250,7 @@ class ImportColumn extends Component
     /**
      * @param  array<string> | Closure  $guesses
      */
-    public function guess(array | Closure $guesses): static
+    public function guess(array|Closure $guesses): static
     {
         $this->guesses = $guesses;
 
@@ -600,7 +600,7 @@ class ImportColumn extends Component
     /**
      * @param  string | array<string> | Closure | null  $resolveUsing
      */
-    public function relationship(string | Closure | null $name = null, string | array | Closure | null $resolveUsing = null): static
+    public function relationship(string|Closure|null $name = null, string|array|Closure|null $resolveUsing = null): static
     {
         $this->relationship = $name ?? $this->getName();
         $this->resolveRelationshipUsing = $resolveUsing;
@@ -608,7 +608,7 @@ class ImportColumn extends Component
         return $this;
     }
 
-    public function getRelationship(): BelongsTo | BelongsToMany | null
+    public function getRelationship(): BelongsTo|BelongsToMany|null
     {
         $name = $this->getRelationshipName();
 
@@ -644,7 +644,7 @@ class ImportColumn extends Component
         return filled($this->getRelationshipName());
     }
 
-    public function validationAttribute(string | Closure | null $label): static
+    public function validationAttribute(string|Closure|null $label): static
     {
         $this->validationAttribute = $label;
 
@@ -694,7 +694,7 @@ class ImportColumn extends Component
         };
     }
 
-    protected function castNumericStateItem(mixed $state): int | float
+    protected function castNumericStateItem(mixed $state): int|float
     {
         $state = floatval(preg_replace('/[^0-9.-]/', '', $state));
 
@@ -730,7 +730,7 @@ class ImportColumn extends Component
         };
     }
 
-    public function sensitive(bool | Closure $condition = true): static
+    public function sensitive(bool|Closure $condition = true): static
     {
         $this->isSensitive = $condition;
 

@@ -28,8 +28,11 @@ use Symfony\Component\Mime\Message;
 class MessageListener implements EventSubscriberInterface
 {
     public const HEADER_SET_IF_EMPTY = 1;
+
     public const HEADER_ADD = 2;
+
     public const HEADER_REPLACE = 3;
+
     public const DEFAULT_RULES = [
         'from' => self::HEADER_SET_IF_EMPTY,
         'return-path' => self::HEADER_SET_IF_EMPTY,
@@ -63,7 +66,7 @@ class MessageListener implements EventSubscriberInterface
     public function onMessage(MessageEvent $event): void
     {
         $message = $event->getMessage();
-        if (!$message instanceof Message) {
+        if (! $message instanceof Message) {
             return;
         }
 
@@ -73,13 +76,13 @@ class MessageListener implements EventSubscriberInterface
 
     private function setHeaders(Message $message): void
     {
-        if (!$this->headers) {
+        if (! $this->headers) {
             return;
         }
 
         $headers = $message->getHeaders();
         foreach ($this->headers->all() as $name => $header) {
-            if (!$headers->has($name)) {
+            if (! $headers->has($name)) {
                 $headers->add($header);
 
                 continue;
@@ -96,14 +99,14 @@ class MessageListener implements EventSubscriberInterface
                     break;
 
                 case self::HEADER_ADD:
-                    if (!Headers::isUniqueHeader($name)) {
+                    if (! Headers::isUniqueHeader($name)) {
                         $headers->add($header);
 
                         break;
                     }
 
                     $h = $headers->get($name);
-                    if (!$h instanceof MailboxListHeader) {
+                    if (! $h instanceof MailboxListHeader) {
                         throw new RuntimeException(\sprintf('Unable to set header "%s".', $name));
                     }
 
@@ -117,7 +120,7 @@ class MessageListener implements EventSubscriberInterface
 
     private function renderMessage(Message $message): void
     {
-        if (!$this->renderer) {
+        if (! $this->renderer) {
             return;
         }
 

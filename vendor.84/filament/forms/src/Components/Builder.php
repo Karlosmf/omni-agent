@@ -36,33 +36,33 @@ class Builder extends Field implements CanConcealComponents, HasExtraItemActions
      */
     protected string $view = 'filament-forms::components.builder';
 
-    protected string | Closure | null $addBetweenActionLabel = null;
+    protected string|Closure|null $addBetweenActionLabel = null;
 
-    protected string | Closure | null $addActionLabel = null;
+    protected string|Closure|null $addActionLabel = null;
 
-    protected bool | Closure $isReorderable = true;
+    protected bool|Closure $isReorderable = true;
 
-    protected bool | Closure $isReorderableWithDragAndDrop = true;
+    protected bool|Closure $isReorderableWithDragAndDrop = true;
 
-    protected bool | Closure $isReorderableWithButtons = false;
+    protected bool|Closure $isReorderableWithButtons = false;
 
-    protected bool | Closure $isAddable = true;
+    protected bool|Closure $isAddable = true;
 
-    protected bool | Closure $isDeletable = true;
+    protected bool|Closure $isDeletable = true;
 
-    protected bool | Closure $hasBlockLabels = true;
+    protected bool|Closure $hasBlockLabels = true;
 
-    protected bool | Closure $hasBlockNumbers = true;
+    protected bool|Closure $hasBlockNumbers = true;
 
-    protected bool | Closure $hasBlockIcons = false;
+    protected bool|Closure $hasBlockIcons = false;
 
-    protected bool | Closure $hasBlockHeaders = true;
+    protected bool|Closure $hasBlockHeaders = true;
 
-    protected bool | Closure $hasBlockPreviews = false;
+    protected bool|Closure $hasBlockPreviews = false;
 
-    protected bool | Closure $hasInteractiveBlockPreviews = false;
+    protected bool|Closure $hasInteractiveBlockPreviews = false;
 
-    protected Alignment | string | Closure | null $addActionAlignment = null;
+    protected Alignment|string|Closure|null $addActionAlignment = null;
 
     protected ?Closure $modifyAddActionUsing = null;
 
@@ -88,18 +88,18 @@ class Builder extends Field implements CanConcealComponents, HasExtraItemActions
 
     protected ?Closure $modifyEditActionUsing = null;
 
-    protected string | Closure | null $labelBetweenItems = null;
+    protected string|Closure|null $labelBetweenItems = null;
 
-    protected bool | Closure $isBlockLabelTruncated = true;
+    protected bool|Closure $isBlockLabelTruncated = true;
 
     /**
      * @var array<string, ?int> | null
      */
     protected ?array $blockPickerColumns = [];
 
-    protected Width | string | Closure | null $blockPickerWidth = null;
+    protected Width|string|Closure|null $blockPickerWidth = null;
 
-    protected bool | Closure $shouldPartiallyRenderAfterActionsCalled = true;
+    protected bool|Closure $shouldPartiallyRenderAfterActionsCalled = true;
 
     protected function setUp(): void
     {
@@ -144,7 +144,7 @@ class Builder extends Field implements CanConcealComponents, HasExtraItemActions
     /**
      * @param  array<Block> | Closure  $blocks
      */
-    public function blocks(array | Closure $blocks): static
+    public function blocks(array|Closure $blocks): static
     {
         $this->components($blocks);
 
@@ -206,14 +206,14 @@ class Builder extends Field implements CanConcealComponents, HasExtraItemActions
         return $action;
     }
 
-    public function addActionAlignment(Alignment | string | Closure | null $addActionAlignment): static
+    public function addActionAlignment(Alignment|string|Closure|null $addActionAlignment): static
     {
         $this->addActionAlignment = $addActionAlignment;
 
         return $this;
     }
 
-    public function getAddActionAlignment(): Alignment | string | null
+    public function getAddActionAlignment(): Alignment|string|null
     {
         $alignment = $this->evaluate($this->addActionAlignment);
 
@@ -479,7 +479,7 @@ class Builder extends Field implements CanConcealComponents, HasExtraItemActions
         return $this;
     }
 
-    public function labelBetweenItems(string | Closure | null $label): static
+    public function labelBetweenItems(string|Closure|null $label): static
     {
         $this->labelBetweenItems = $label;
 
@@ -713,14 +713,14 @@ class Builder extends Field implements CanConcealComponents, HasExtraItemActions
         return 'edit';
     }
 
-    public function truncateBlockLabel(bool | Closure $condition = true): static
+    public function truncateBlockLabel(bool|Closure $condition = true): static
     {
         $this->isBlockLabelTruncated = $condition;
 
         return $this;
     }
 
-    public function addBetweenActionLabel(string | Closure | null $label): static
+    public function addBetweenActionLabel(string|Closure|null $label): static
     {
         $this->addBetweenActionLabel = $label;
 
@@ -730,14 +730,14 @@ class Builder extends Field implements CanConcealComponents, HasExtraItemActions
     /**
      * @deprecated Use `addBetweenActionLabel()` instead.
      */
-    public function createItemBetweenButtonLabel(string | Closure | null $label): static
+    public function createItemBetweenButtonLabel(string|Closure|null $label): static
     {
         $this->addBetweenActionLabel($label);
 
         return $this;
     }
 
-    public function addActionLabel(string | Closure | null $label): static
+    public function addActionLabel(string|Closure|null $label): static
     {
         $this->addActionLabel = $label;
 
@@ -747,28 +747,28 @@ class Builder extends Field implements CanConcealComponents, HasExtraItemActions
     /**
      * @deprecated Use `addActionLabel()` instead.
      */
-    public function createItemButtonLabel(string | Closure | null $label): static
+    public function createItemButtonLabel(string|Closure|null $label): static
     {
         $this->addActionLabel($label);
 
         return $this;
     }
 
-    public function addable(bool | Closure $condition = true): static
+    public function addable(bool|Closure $condition = true): static
     {
         $this->isAddable = $condition;
 
         return $this;
     }
 
-    public function deletable(bool | Closure $condition = true): static
+    public function deletable(bool|Closure $condition = true): static
     {
         $this->isDeletable = $condition;
 
         return $this;
     }
 
-    public function reorderable(bool | Closure $condition = true): static
+    public function reorderable(bool|Closure $condition = true): static
     {
         $this->isReorderable = $condition;
 
@@ -778,7 +778,7 @@ class Builder extends Field implements CanConcealComponents, HasExtraItemActions
     /**
      * @deprecated Use `addable()` instead.
      */
-    public function disableItemCreation(bool | Closure $condition = true): static
+    public function disableItemCreation(bool|Closure $condition = true): static
     {
         $this->addable(fn (Builder $component): bool => ! $this->evaluate($condition));
 
@@ -788,7 +788,7 @@ class Builder extends Field implements CanConcealComponents, HasExtraItemActions
     /**
      * @deprecated Use `deletable()` instead.
      */
-    public function disableItemDeletion(bool | Closure $condition = true): static
+    public function disableItemDeletion(bool|Closure $condition = true): static
     {
         $this->deletable(fn (Builder $component): bool => ! $this->evaluate($condition));
 
@@ -798,7 +798,7 @@ class Builder extends Field implements CanConcealComponents, HasExtraItemActions
     /**
      * @deprecated Use `reorderable()` instead.
      */
-    public function disableItemMovement(bool | Closure $condition = true): static
+    public function disableItemMovement(bool|Closure $condition = true): static
     {
         $this->reorderable(fn (Builder $component): bool => ! $this->evaluate($condition));
 
@@ -808,19 +808,19 @@ class Builder extends Field implements CanConcealComponents, HasExtraItemActions
     /**
      * @deprecated No longer part of the design system.
      */
-    public function inset(bool | Closure $condition = true): static
+    public function inset(bool|Closure $condition = true): static
     {
         return $this;
     }
 
-    public function reorderableWithDragAndDrop(bool | Closure $condition = true): static
+    public function reorderableWithDragAndDrop(bool|Closure $condition = true): static
     {
         $this->isReorderableWithDragAndDrop = $condition;
 
         return $this;
     }
 
-    public function reorderableWithButtons(bool | Closure $condition = true): static
+    public function reorderableWithButtons(bool|Closure $condition = true): static
     {
         $this->isReorderableWithButtons = $condition;
 
@@ -830,7 +830,7 @@ class Builder extends Field implements CanConcealComponents, HasExtraItemActions
     /**
      * @deprecated Use `blockLabels()` instead.
      */
-    public function showBlockLabels(bool | Closure $condition = true): static
+    public function showBlockLabels(bool|Closure $condition = true): static
     {
         $this->withBlockLabels($condition);
 
@@ -840,7 +840,7 @@ class Builder extends Field implements CanConcealComponents, HasExtraItemActions
     /**
      * @deprecated Use `blockLabels()` instead.
      */
-    public function withBlockLabels(bool | Closure $condition = true): static
+    public function withBlockLabels(bool|Closure $condition = true): static
     {
         $this->blockLabels($condition);
 
@@ -850,35 +850,35 @@ class Builder extends Field implements CanConcealComponents, HasExtraItemActions
     /**
      * @deprecated Use `blockNumbers()` instead.
      */
-    public function withBlockNumbers(bool | Closure $condition = true): static
+    public function withBlockNumbers(bool|Closure $condition = true): static
     {
         $this->blockNumbers($condition);
 
         return $this;
     }
 
-    public function blockLabels(bool | Closure $condition = true): static
+    public function blockLabels(bool|Closure $condition = true): static
     {
         $this->hasBlockLabels = $condition;
 
         return $this;
     }
 
-    public function blockNumbers(bool | Closure $condition = true): static
+    public function blockNumbers(bool|Closure $condition = true): static
     {
         $this->hasBlockNumbers = $condition;
 
         return $this;
     }
 
-    public function blockIcons(bool | Closure $condition = true): static
+    public function blockIcons(bool|Closure $condition = true): static
     {
         $this->hasBlockIcons = $condition;
 
         return $this;
     }
 
-    public function blockPreviews(bool | Closure $condition = true, bool | Closure $areInteractive = false): static
+    public function blockPreviews(bool|Closure $condition = true, bool|Closure $areInteractive = false): static
     {
         $this->hasBlockPreviews = $condition;
         $this->hasInteractiveBlockPreviews = $areInteractive;
@@ -1059,7 +1059,7 @@ class Builder extends Field implements CanConcealComponents, HasExtraItemActions
     /**
      * @param  array<string, ?int> | int | null  $columns
      */
-    public function blockPickerColumns(array | int | null $columns = 2): static
+    public function blockPickerColumns(array|int|null $columns = 2): static
     {
         if (! is_array($columns)) {
             $columns = [
@@ -1078,7 +1078,7 @@ class Builder extends Field implements CanConcealComponents, HasExtraItemActions
     /**
      * @return array<string, ?int> | int | null
      */
-    public function getBlockPickerColumns(?string $breakpoint = null): array | int | null
+    public function getBlockPickerColumns(?string $breakpoint = null): array|int|null
     {
         $columns = $this->blockPickerColumns ?? [
             'default' => 1,
@@ -1096,14 +1096,14 @@ class Builder extends Field implements CanConcealComponents, HasExtraItemActions
         return $columns;
     }
 
-    public function blockPickerWidth(Width | string | Closure | null $width): static
+    public function blockPickerWidth(Width|string|Closure|null $width): static
     {
         $this->blockPickerWidth = $width;
 
         return $this;
     }
 
-    public function getBlockPickerWidth(): Width | string | null
+    public function getBlockPickerWidth(): Width|string|null
     {
         $width = $this->evaluate($this->blockPickerWidth);
 
@@ -1162,7 +1162,7 @@ class Builder extends Field implements CanConcealComponents, HasExtraItemActions
         $rules["{$this->getStatePath()}.*.type"] = ['required'];
     }
 
-    public function partiallyRenderAfterActionsCalled(bool | Closure $condition = true): static
+    public function partiallyRenderAfterActionsCalled(bool|Closure $condition = true): static
     {
         $this->shouldPartiallyRenderAfterActionsCalled = $condition;
 
@@ -1174,7 +1174,7 @@ class Builder extends Field implements CanConcealComponents, HasExtraItemActions
         return (bool) $this->evaluate($this->shouldPartiallyRenderAfterActionsCalled);
     }
 
-    public function blockHeaders(bool | Closure $condition = true): static
+    public function blockHeaders(bool|Closure $condition = true): static
     {
         $this->hasBlockHeaders = $condition;
 

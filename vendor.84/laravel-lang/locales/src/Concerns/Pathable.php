@@ -40,7 +40,7 @@ trait Pathable
                 fn (Collection $items) => $items->contains('vendor'),
                 fn (Collection $items) => $items->merge(
                     collect($this->directories('vendor'))->map(
-                        fn (string $folder) => $this->directories('vendor/' . $folder)
+                        fn (string $folder) => $this->directories('vendor/'.$folder)
                     )
                 )
             )

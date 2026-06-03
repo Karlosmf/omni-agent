@@ -32,8 +32,11 @@ use Symfony\Component\Mime\MimeTypes;
 class UploadedFile extends File
 {
     private string $originalName;
+
     private string $mimeType;
+
     private int $error;
+
     private string $originalPath;
 
     /**
@@ -50,14 +53,14 @@ class UploadedFile extends File
      *
      * Calling any other method on an non-valid instance will cause an unpredictable result.
      *
-     * @param string      $path         The full temporary path to the file
-     * @param string      $originalName The original file name of the uploaded file
-     * @param string|null $mimeType     The type of the file as provided by PHP; null defaults to application/octet-stream
-     * @param int|null    $error        The error constant of the upload (one of PHP's UPLOAD_ERR_XXX constants); null defaults to UPLOAD_ERR_OK
-     * @param bool        $test         Whether the test mode is active
-     *                                  Local files are used in test mode hence the code should not enforce HTTP uploads
+     * @param  string  $path  The full temporary path to the file
+     * @param  string  $originalName  The original file name of the uploaded file
+     * @param  string|null  $mimeType  The type of the file as provided by PHP; null defaults to application/octet-stream
+     * @param  int|null  $error  The error constant of the upload (one of PHP's UPLOAD_ERR_XXX constants); null defaults to UPLOAD_ERR_OK
+     * @param  bool  $test  Whether the test mode is active
+     *                      Local files are used in test mode hence the code should not enforce HTTP uploads
      *
-     * @throws FileException         If file_uploads is disabled
+     * @throws FileException If file_uploads is disabled
      * @throws FileNotFoundException If the file does not exist
      */
     public function __construct(
@@ -72,7 +75,7 @@ class UploadedFile extends File
         $this->mimeType = $mimeType ?: 'application/octet-stream';
         $this->error = $error ?: \UPLOAD_ERR_OK;
 
-        parent::__construct($path, \UPLOAD_ERR_OK === $this->error);
+        parent::__construct($path, $this->error === \UPLOAD_ERR_OK);
     }
 
     /**
@@ -145,7 +148,7 @@ class UploadedFile extends File
      */
     public function guessClientExtension(): ?string
     {
-        if (!class_exists(MimeTypes::class)) {
+        if (! class_exists(MimeTypes::class)) {
             throw new \LogicException('You cannot guess the extension as the Mime component is not installed. Try running "composer require symfony/mime".');
         }
 
@@ -168,7 +171,7 @@ class UploadedFile extends File
      */
     public function isValid(): bool
     {
-        $isOk = \UPLOAD_ERR_OK === $this->error;
+        $isOk = $this->error === \UPLOAD_ERR_OK;
 
         return $this->test ? $isOk : $isOk && is_uploaded_file($this->getPathname());
     }
@@ -187,13 +190,15 @@ class UploadedFile extends File
 
             $target = $this->getTargetFile($directory, $name);
 
-            set_error_handler(function ($type, $msg) use (&$error) { $error = $msg; });
+            set_error_handler(function ($type, $msg) use (&$error) {
+                $error = $msg;
+            });
             try {
                 $moved = move_uploaded_file($this->getPathname(), $target);
             } finally {
                 restore_error_handler();
             }
-            if (!$moved) {
+            if (! $moved) {
                 throw new FileException(\sprintf('Could not move the file "%s" to "%s" (%s).', $this->getPathname(), $target, strip_tags($error)));
             }
 
@@ -237,7 +242,7 @@ class UploadedFile extends File
 
     private static function parseFilesize(string $size): int|float
     {
-        if ('' === $size) {
+        if ($size === '') {
             return 0;
         }
 
@@ -281,7 +286,7 @@ class UploadedFile extends File
         ];
 
         $errorCode = $this->error;
-        $maxFilesize = \UPLOAD_ERR_INI_SIZE === $errorCode ? self::getMaxFilesize() / 1024 : 0;
+        $maxFilesize = $errorCode === \UPLOAD_ERR_INI_SIZE ? self::getMaxFilesize() / 1024 : 0;
         $message = $errors[$errorCode] ?? 'The file "%s" was not uploaded due to an unknown error.';
 
         return \sprintf($message, $this->getClientOriginalName(), $maxFilesize);

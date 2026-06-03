@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Metadata;
 
 /**
@@ -19,7 +22,7 @@ final readonly class BeforeClass extends Metadata
     private int $priority;
 
     /**
-     * @param int<0, 1> $level
+     * @param  int<0, 1>  $level
      */
     protected function __construct(int $level, int $priority)
     {

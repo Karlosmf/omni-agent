@@ -32,11 +32,17 @@ final class CastToDate implements TypeCasting
 {
     /** @var class-string */
     private string $class;
+
     private readonly bool $isNullable;
+
     private DateTimeImmutable|DateTime|null $default = null;
+
     private readonly Type $type;
+
     private readonly TypeCastingInfo $info;
+
     private ?DateTimeZone $timezone = null;
+
     private ?string $format = null;
 
     /**
@@ -50,7 +56,7 @@ final class CastToDate implements TypeCasting
     }
 
     /**
-     * @param ?class-string $className
+     * @param  ?class-string  $className
      *
      * @throws MappingFailed
      */
@@ -61,16 +67,16 @@ final class CastToDate implements TypeCasting
         ?string $className = null,
     ): void {
         $this->class = match (true) {
-            !interface_exists($this->class) && !Type::Mixed->equals($this->type) => $this->class,
-            DateTimeInterface::class === $this->class && null === $className => DateTimeImmutable::class,
-            interface_exists($this->class) && null !== $className && class_exists($className) && (new ReflectionClass($className))->implementsInterface($this->class) => $className,
+            ! interface_exists($this->class) && ! Type::Mixed->equals($this->type) => $this->class,
+            $this->class === DateTimeInterface::class && $className === null => DateTimeImmutable::class,
+            interface_exists($this->class) && $className !== null && class_exists($className) && (new ReflectionClass($className))->implementsInterface($this->class) => $className,
             default => throw new MappingFailed('`'.$this->info->targetName.'` type is `'.($this->class ?? 'mixed').'` but the specified class via the `$className` argument is invalid or could not be found.'),
         };
 
         try {
             $this->format = $format;
             $this->timezone = is_string($timezone) ? new DateTimeZone($timezone) : $timezone;
-            $this->default = (null !== $default) ? $this->cast($default) : $default;
+            $this->default = ($default !== null) ? $this->cast($default) : $default;
         } catch (Throwable $exception) {
             throw new MappingFailed('The `timezone` and/or `format` options used for `'.self::class.'` are invalud.', 0, $exception);
         }
@@ -87,7 +93,7 @@ final class CastToDate implements TypeCasting
     public function toVariable(mixed $value): DateTimeImmutable|DateTime|null
     {
         return match (true) {
-            null !== $value && '' !== $value => $this->cast($value),
+            $value !== null && $value !== '' => $this->cast($value),
             $this->isNullable => $this->default,
             default => throw TypeCastingFailed::dueToNotNullableType($this->class, info: $this->info),
         };
@@ -109,10 +115,10 @@ final class CastToDate implements TypeCasting
         is_string($value) || throw TypeCastingFailed::dueToInvalidValue($value, $this->class, info: $this->info);
 
         try {
-            $date = null !== $this->format ?
+            $date = $this->format !== null ?
                 ($this->class)::createFromFormat($this->format, $value, $this->timezone) :
                 new ($this->class)($value, $this->timezone);
-            if (false === $date) {
+            if ($date === false) {
                 throw TypeCastingFailed::dueToInvalidValue($value, $this->class);
             }
         } catch (Throwable $exception) {
@@ -127,29 +133,29 @@ final class CastToDate implements TypeCasting
     }
 
     /**
-     * @throws MappingFailed
-     *
      * @return array{0:Type, 1:class-string<DateTimeInterface>, 2:bool}
+     *
+     * @throws MappingFailed
      */
     private function init(ReflectionProperty|ReflectionParameter $reflectionProperty): array
     {
-        if (null === $reflectionProperty->getType()) {
+        if ($reflectionProperty->getType() === null) {
             return [Type::Mixed, DateTimeInterface::class, true];
         }
 
         $type = null;
         $isNullable = false;
         foreach (Type::list($reflectionProperty) as $found) {
-            if (!$isNullable && $found[1]->allowsNull()) {
+            if (! $isNullable && $found[1]->allowsNull()) {
                 $isNullable = true;
             }
 
-            if (null === $type && $found[0]->isOneOf(Type::Mixed, Type::Date)) {
+            if ($type === null && $found[0]->isOneOf(Type::Mixed, Type::Date)) {
                 $type = $found;
             }
         }
 
-        null !== $type || throw throw MappingFailed::dueToTypeCastingUnsupportedType($reflectionProperty, $this, DateTimeInterface::class, 'mixed');
+        $type !== null || throw throw MappingFailed::dueToTypeCastingUnsupportedType($reflectionProperty, $this, DateTimeInterface::class, 'mixed');
 
         /** @var class-string<DateTimeInterface> $className */
         $className = $type[1]->getName();

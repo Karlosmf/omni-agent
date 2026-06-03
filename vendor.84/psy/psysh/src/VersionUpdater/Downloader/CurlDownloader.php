@@ -19,6 +19,7 @@ use Psy\VersionUpdater\Downloader;
 class CurlDownloader implements Downloader
 {
     private ?string $tempDir = null;
+
     private ?string $outputFile = null;
 
     /** {@inheritDoc} */
@@ -34,24 +35,24 @@ class CurlDownloader implements Downloader
         $this->outputFile = \tempnam($tempDir, 'psysh-archive-');
         $targetName = $this->outputFile.'.tar.gz';
 
-        if (!\rename($this->outputFile, $targetName)) {
+        if (! \rename($this->outputFile, $targetName)) {
             return false;
         }
 
         $this->outputFile = $targetName;
 
         $outputHandle = \fopen($this->outputFile, 'w');
-        if (!$outputHandle) {
+        if (! $outputHandle) {
             return false;
         }
         $curl = \curl_init();
         \curl_setopt_array($curl, [
-            \CURLOPT_FAILONERROR    => true,
-            \CURLOPT_HEADER         => 0,
+            \CURLOPT_FAILONERROR => true,
+            \CURLOPT_HEADER => 0,
             \CURLOPT_FOLLOWLOCATION => true,
-            \CURLOPT_TIMEOUT        => 10,
-            \CURLOPT_FILE           => $outputHandle,
-            \CURLOPT_HTTPHEADER     => [
+            \CURLOPT_TIMEOUT => 10,
+            \CURLOPT_FILE => $outputHandle,
+            \CURLOPT_HTTPHEADER => [
                 'User-Agent' => 'PsySH/'.Shell::VERSION,
             ],
         ]);
@@ -64,7 +65,7 @@ class CurlDownloader implements Downloader
 
         \fclose($outputHandle);
 
-        if (!$result) {
+        if (! $result) {
             throw new ErrorException('cURL Error: '.$error);
         }
 

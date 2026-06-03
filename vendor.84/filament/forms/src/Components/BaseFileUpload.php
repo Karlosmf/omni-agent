@@ -26,47 +26,47 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
     /**
      * @var array<string> | Arrayable | Closure | null
      */
-    protected array | Arrayable | Closure | null $acceptedFileTypes = null;
+    protected array|Arrayable|Closure|null $acceptedFileTypes = null;
 
-    protected bool | Closure $isDeletable = true;
+    protected bool|Closure $isDeletable = true;
 
-    protected bool | Closure $isDownloadable = false;
+    protected bool|Closure $isDownloadable = false;
 
-    protected bool | Closure $isOpenable = false;
+    protected bool|Closure $isOpenable = false;
 
-    protected bool | Closure $isPasteable = true;
+    protected bool|Closure $isPasteable = true;
 
-    protected bool | Closure $isPreviewable = true;
+    protected bool|Closure $isPreviewable = true;
 
-    protected bool | Closure $isReorderable = false;
+    protected bool|Closure $isReorderable = false;
 
-    protected string | Closure | null $directory = null;
+    protected string|Closure|null $directory = null;
 
-    protected string | Closure | null $diskName = null;
+    protected string|Closure|null $diskName = null;
 
-    protected bool | Closure $isMultiple = false;
+    protected bool|Closure $isMultiple = false;
 
-    protected int | Closure | null $maxSize = null;
+    protected int|Closure|null $maxSize = null;
 
-    protected int | Closure | null $minSize = null;
+    protected int|Closure|null $minSize = null;
 
-    protected int | Closure | null $maxParallelUploads = null;
+    protected int|Closure|null $maxParallelUploads = null;
 
-    protected int | Closure | null $maxFiles = null;
+    protected int|Closure|null $maxFiles = null;
 
-    protected int | Closure | null $minFiles = null;
+    protected int|Closure|null $minFiles = null;
 
-    protected bool | Closure $shouldPreserveFilenames = false;
+    protected bool|Closure $shouldPreserveFilenames = false;
 
-    protected bool | Closure $shouldMoveFiles = false;
+    protected bool|Closure $shouldMoveFiles = false;
 
-    protected bool | Closure $shouldStoreFiles = true;
+    protected bool|Closure $shouldStoreFiles = true;
 
-    protected bool | Closure $shouldFetchFileInformation = true;
+    protected bool|Closure $shouldFetchFileInformation = true;
 
-    protected string | Closure | null $fileNamesStatePath = null;
+    protected string|Closure|null $fileNamesStatePath = null;
 
-    protected string | Closure | null $visibility = null;
+    protected string|Closure|null $visibility = null;
 
     protected ?Closure $deleteUploadedFileUsing = null;
 
@@ -81,7 +81,7 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
     /**
      * @var string | array<string> | Closure | null
      */
-    protected string | array | Closure | null $imageAspectRatio = null;
+    protected string|array|Closure|null $imageAspectRatio = null;
 
     /**
      * @var array<string>
@@ -105,7 +105,7 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
     {
         parent::setUp();
 
-        $this->afterStateHydrated(static function (BaseFileUpload $component, string | array | null $rawState): void {
+        $this->afterStateHydrated(static function (BaseFileUpload $component, string|array|null $rawState): void {
             $shouldFetchFileInformation = $component->shouldFetchFileInformation();
 
             $component->rawState(
@@ -131,7 +131,7 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
             $component->saveUploadedFiles();
         }, shouldUpdateValidatedStateAfter: true);
 
-        $this->getUploadedFileUsing(static function (BaseFileUpload $component, string $file, string | array | null $storedFileNames): ?array {
+        $this->getUploadedFileUsing(static function (BaseFileUpload $component, string $file, string|array|null $storedFileNames): ?array {
             /** @var FilesystemAdapter $storage */
             $storage = $component->getDisk();
 
@@ -171,7 +171,7 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
         });
 
         $this->getUploadedFileNameForStorageUsing(static function (BaseFileUpload $component, TemporaryUploadedFile $file) {
-            return $component->shouldPreserveFilenames() ? $file->getClientOriginalName() : (Str::ulid() . '.' . $file->getClientOriginalExtension());
+            return $component->shouldPreserveFilenames() ? $file->getClientOriginalName() : (Str::ulid().'.'.$file->getClientOriginalExtension());
         });
 
         $this->saveUploadedFileUsing(static function (BaseFileUpload $component, TemporaryUploadedFile $file): ?string {
@@ -187,7 +187,7 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
                 $component->shouldMoveFiles() &&
                 ($component->getDiskName() === (fn (): string => $this->disk)->call($file))
             ) {
-                $newPath = trim($component->getDirectory() . '/' . $component->getUploadedFileNameForStorage($file), '/');
+                $newPath = trim($component->getDirectory().'/'.$component->getUploadedFileNameForStorage($file), '/');
 
                 $component->getDisk()->move((fn (): string => $this->path)->call($file), $newPath);
 
@@ -207,7 +207,7 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
     /**
      * @param  array<string> | Arrayable | Closure  $types
      */
-    public function acceptedFileTypes(array | Arrayable | Closure $types): static
+    public function acceptedFileTypes(array|Arrayable|Closure $types): static
     {
         $this->acceptedFileTypes = $types;
 
@@ -220,56 +220,56 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
         return $this;
     }
 
-    public function deletable(bool | Closure $condition = true): static
+    public function deletable(bool|Closure $condition = true): static
     {
         $this->isDeletable = $condition;
 
         return $this;
     }
 
-    public function directory(string | Closure | null $directory): static
+    public function directory(string|Closure|null $directory): static
     {
         $this->directory = $directory;
 
         return $this;
     }
 
-    public function disk(string | Closure | null $name): static
+    public function disk(string|Closure|null $name): static
     {
         $this->diskName = $name;
 
         return $this;
     }
 
-    public function downloadable(bool | Closure $condition = true): static
+    public function downloadable(bool|Closure $condition = true): static
     {
         $this->isDownloadable = $condition;
 
         return $this;
     }
 
-    public function openable(bool | Closure $condition = true): static
+    public function openable(bool|Closure $condition = true): static
     {
         $this->isOpenable = $condition;
 
         return $this;
     }
 
-    public function reorderable(bool | Closure $condition = true): static
+    public function reorderable(bool|Closure $condition = true): static
     {
         $this->isReorderable = $condition;
 
         return $this;
     }
 
-    public function pasteable(bool | Closure $condition = true): static
+    public function pasteable(bool|Closure $condition = true): static
     {
         $this->isPasteable = $condition;
 
         return $this;
     }
 
-    public function previewable(bool | Closure $condition = true): static
+    public function previewable(bool|Closure $condition = true): static
     {
         $this->isPreviewable = $condition;
 
@@ -279,7 +279,7 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
     /**
      * @deprecated Use `downloadable()` instead.
      */
-    public function enableDownload(bool | Closure $condition = true): static
+    public function enableDownload(bool|Closure $condition = true): static
     {
         $this->downloadable($condition);
 
@@ -289,7 +289,7 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
     /**
      * @deprecated Use `openable()` instead.
      */
-    public function enableOpen(bool | Closure $condition = true): static
+    public function enableOpen(bool|Closure $condition = true): static
     {
         $this->openable($condition);
 
@@ -299,7 +299,7 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
     /**
      * @deprecated Use `reorderable()` instead.
      */
-    public function enableReordering(bool | Closure $condition = true): static
+    public function enableReordering(bool|Closure $condition = true): static
     {
         $this->reorderable($condition);
 
@@ -309,28 +309,28 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
     /**
      * @deprecated Use `previewable()` instead.
      */
-    public function disablePreview(bool | Closure $condition = true): static
+    public function disablePreview(bool|Closure $condition = true): static
     {
         $this->previewable(fn (BaseFileUpload $component): bool => ! $component->evaluate($condition));
 
         return $this;
     }
 
-    public function storeFileNamesIn(string | Closure | null $statePath): static
+    public function storeFileNamesIn(string|Closure|null $statePath): static
     {
         $this->fileNamesStatePath = $statePath;
 
         return $this;
     }
 
-    public function preserveFilenames(bool | Closure $condition = true): static
+    public function preserveFilenames(bool|Closure $condition = true): static
     {
         $this->shouldPreserveFilenames = $condition;
 
         return $this;
     }
 
-    public function moveFiles(bool | Closure $condition = true): static
+    public function moveFiles(bool|Closure $condition = true): static
     {
         $this->shouldMoveFiles = $condition;
 
@@ -340,21 +340,21 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
     /**
      * @deprecated Use `moveFiles()` instead.
      */
-    public function moveFile(bool | Closure $condition = true): static
+    public function moveFile(bool|Closure $condition = true): static
     {
         $this->moveFiles($condition);
 
         return $this;
     }
 
-    public function fetchFileInformation(bool | Closure $condition = true): static
+    public function fetchFileInformation(bool|Closure $condition = true): static
     {
         $this->shouldFetchFileInformation = $condition;
 
         return $this;
     }
 
-    public function maxSize(int | Closure | null $size): static
+    public function maxSize(int|Closure|null $size): static
     {
         $this->maxSize = $size;
 
@@ -367,7 +367,7 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
         return $this;
     }
 
-    public function minSize(int | Closure | null $size): static
+    public function minSize(int|Closure|null $size): static
     {
         $this->minSize = $size;
 
@@ -380,35 +380,35 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
         return $this;
     }
 
-    public function maxParallelUploads(int | Closure | null $count): static
+    public function maxParallelUploads(int|Closure|null $count): static
     {
         $this->maxParallelUploads = $count;
 
         return $this;
     }
 
-    public function maxFiles(int | Closure | null $count): static
+    public function maxFiles(int|Closure|null $count): static
     {
         $this->maxFiles = $count;
 
         return $this;
     }
 
-    public function minFiles(int | Closure | null $count): static
+    public function minFiles(int|Closure|null $count): static
     {
         $this->minFiles = $count;
 
         return $this;
     }
 
-    public function multiple(bool | Closure $condition = true): static
+    public function multiple(bool|Closure $condition = true): static
     {
         $this->isMultiple = $condition;
 
         return $this;
     }
 
-    public function storeFiles(bool | Closure $condition = true): static
+    public function storeFiles(bool|Closure $condition = true): static
     {
         $this->shouldStoreFiles = $condition;
 
@@ -418,14 +418,14 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
     /**
      * @deprecated Use `storeFiles()` instead.
      */
-    public function storeFile(bool | Closure $condition = true): static
+    public function storeFile(bool|Closure $condition = true): static
     {
         $this->storeFiles($condition);
 
         return $this;
     }
 
-    public function visibility(string | Closure | null $visibility): static
+    public function visibility(string|Closure|null $visibility): static
     {
         $this->visibility = $visibility;
 
@@ -639,7 +639,7 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
         ];
 
         $rules[] = function (string $attribute, array $value, Closure $fail) use ($fileRules): void {
-            $files = array_filter($value, fn (TemporaryUploadedFile | string $file): bool => $file instanceof TemporaryUploadedFile);
+            $files = array_filter($value, fn (TemporaryUploadedFile|string $file): bool => $file instanceof TemporaryUploadedFile);
 
             $name = Str::afterLast($this->getName(), '.');
 
@@ -698,7 +698,7 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
 
     #[ExposedLivewireMethod]
     #[Renderless]
-    public function removeUploadedFile(string $fileKey): string | TemporaryUploadedFile | null
+    public function removeUploadedFile(string $fileKey): string|TemporaryUploadedFile|null
     {
         if ($this->isDisabled()) {
             return null;
@@ -824,7 +824,7 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
             return;
         }
 
-        $rawState = array_filter(array_map(function (TemporaryUploadedFile | string $file) {
+        $rawState = array_filter(array_map(function (TemporaryUploadedFile|string $file) {
             if (! $file instanceof TemporaryUploadedFile) {
                 return $file;
             }
@@ -889,7 +889,7 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
     /**
      * @return string | array<string, string> | null
      */
-    public function getStoredFileNames(): string | array | null
+    public function getStoredFileNames(): string|array|null
     {
         $rawState = null;
         $statePath = $this->fileNamesStatePath;
@@ -956,7 +956,7 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
     /**
      * @param  string | array<string> | Closure | null  $ratio
      */
-    public function imageAspectRatio(string | array | Closure | null $ratio): static
+    public function imageAspectRatio(string|array|Closure|null $ratio): static
     {
         $this->imageAspectRatio = $ratio;
 
@@ -996,7 +996,7 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
     /**
      * @return string | array<string> | null
      */
-    public function getImageAspectRatio(): string | array | null
+    public function getImageAspectRatio(): string|array|null
     {
         $ratio = $this->evaluate($this->imageAspectRatio);
 

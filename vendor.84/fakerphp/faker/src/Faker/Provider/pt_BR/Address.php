@@ -5,12 +5,17 @@ namespace Faker\Provider\pt_BR;
 class Address extends \Faker\Provider\Address
 {
     protected static $cityPrefix = ['São', 'Porto', 'Vila', 'Santa'];
+
     protected static $citySuffix = ['do Norte', 'do Leste', 'do Sul', 'd\'Oeste'];
+
     protected static $streetPrefix = [
         'Av.', 'Avenida', 'R.', 'Rua', 'Travessa', 'Largo',
     ];
+
     protected static $buildingNumber = ['%####', '%###', '%##', '%#', '%'];
+
     protected static $postcode = ['#####-###'];
+
     protected static $state = [
         'Acre', 'Alagoas', 'Amapá', 'Amazonas', 'Bahia', 'Ceará',
         'Distrito Federal', 'Espírito Santo', 'Goiás', 'Maranhão',
@@ -19,17 +24,21 @@ class Address extends \Faker\Provider\Address
         'Rio Grande do Norte', 'Rio Grande do Sul', 'Rondônia', 'Roraima',
         'Santa Catarina', 'São Paulo', 'Sergipe', 'Tocantins',
     ];
+
     protected static $stateAbbr = [
         'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS',
         'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC',
         'SP', 'SE', 'TO',
     ];
+
     protected static $region = [
         'Centro-Oeste', 'Nordeste', 'Norte', 'Sudeste', 'Sul',
     ];
+
     protected static $regionAbbr = [
         'CO', 'N', 'NE', 'SE', 'S',
     ];
+
     protected static $country = [
         'Afeganistão', 'África do Sul', 'Albânia', 'Alemanha', 'Andorra',
         'Angola', 'Antigua e Barbuda', 'Arabia Saudita', 'Argélia',
@@ -72,24 +81,29 @@ class Address extends \Faker\Provider\Address
         'Vaticano', 'Vanuatu', 'Venezuela', 'Vietnã', 'Yemen', 'Zâmbia',
         'Zimbábue',
     ];
+
     protected static $cityFormats = [
         '{{cityPrefix}} {{firstName}} {{citySuffix}}',
         '{{cityPrefix}} {{firstName}}',
         '{{firstName}} {{citySuffix}}',
         '{{lastName}} {{citySuffix}}',
     ];
+
     protected static $streetNameFormats = [
         '{{streetPrefix}} {{firstName}}',
         '{{streetPrefix}} {{lastName}}',
         '{{streetPrefix}} {{firstName}} {{lastName}}',
     ];
+
     protected static $streetAddressFormats = [
         '{{streetName}}, {{buildingNumber}}',
         '{{streetName}}, {{buildingNumber}}. {{secondaryAddress}}',
     ];
+
     protected static $addressFormats = [
         "{{postcode}}, {{streetAddress}}\n{{city}} - {{stateAbbr}}",
     ];
+
     protected static $secondaryAddressFormats = [
         'Bloco A', 'Bloco B', 'Bloco C', 'Bc. # Ap. ##', 'Bc. ## Ap. ##',
         '#º Andar', '##º Andar', '###º Andar', 'Apto #', 'Apto ##', 'Apto ###',

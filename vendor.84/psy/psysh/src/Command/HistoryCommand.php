@@ -29,6 +29,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class HistoryCommand extends Command implements ReadlineAware
 {
     private FilterOptions $filter;
+
     private Readline $readline;
 
     /**
@@ -36,15 +37,13 @@ class HistoryCommand extends Command implements ReadlineAware
      */
     public function __construct($name = null)
     {
-        $this->filter = new FilterOptions();
+        $this->filter = new FilterOptions;
 
         parent::__construct($name);
     }
 
     /**
      * Set the Shell's Readline service.
-     *
-     * @param Readline $readline
      */
     public function setReadline(Readline $readline)
     {
@@ -56,7 +55,7 @@ class HistoryCommand extends Command implements ReadlineAware
      */
     protected function configure(): void
     {
-        list($grep, $insensitive, $invert) = FilterOptions::getOptions();
+        [$grep, $insensitive, $invert] = FilterOptions::getOptions();
 
         $this
             ->setName('history')
@@ -140,7 +139,7 @@ HELP
             \file_put_contents($save, \implode(\PHP_EOL, $history).\PHP_EOL);
             $output->writeln('<info>History saved.</info>');
         } elseif ($input->getOption('replay')) {
-            if (!($input->getOption('show') || $input->getOption('head') || $input->getOption('tail'))) {
+            if (! ($input->getOption('show') || $input->getOption('head') || $input->getOption('tail'))) {
                 throw new \InvalidArgumentException('You must limit history via --head, --tail or --show before replaying');
             }
 
@@ -153,7 +152,7 @@ HELP
             $output->writeln('<info>History cleared.</info>');
         } else {
             $type = $input->getOption('no-numbers') ? 0 : ShellOutput::NUMBER_LINES;
-            if (!$highlighted) {
+            if (! $highlighted) {
                 $type = $type | OutputInterface::OUTPUT_RAW;
             }
 
@@ -166,7 +165,6 @@ HELP
     /**
      * Extract a range from a string.
      *
-     * @param string $range
      *
      * @return int[] [ start, end ]
      */
@@ -190,8 +188,7 @@ HELP
     /**
      * Retrieve a slice of the readline history by range.
      *
-     * @param string|null $show Range specification (e.g., "5..10")
-     *
+     * @param  string|null  $show  Range specification (e.g., "5..10")
      * @return array A slice of history
      */
     private function getHistorySlice(?string $show): array
@@ -204,7 +201,7 @@ HELP
             return $history;
         }
 
-        list($start, $end) = $this->extractRange($show);
+        [$start, $end] = $this->extractRange($show);
         $length = $end - $start;
 
         return \array_slice($history, $start, $length, true);
@@ -216,13 +213,13 @@ HELP
     private function applyHeadOrTail(array $history, ?string $head, ?string $tail): array
     {
         if ($head) {
-            if (!\preg_match('/^\d+$/', $head)) {
+            if (! \preg_match('/^\d+$/', $head)) {
                 throw new \InvalidArgumentException('Please specify an integer argument for --head');
             }
 
             return \array_slice($history, 0, (int) $head, true);
         } elseif ($tail) {
-            if (!\preg_match('/^\d+$/', $tail)) {
+            if (! \preg_match('/^\d+$/', $tail)) {
                 throw new \InvalidArgumentException('Please specify an integer argument for --tail');
             }
 
@@ -237,9 +234,6 @@ HELP
 
     /**
      * Validate that only one of the given $options is set.
-     *
-     * @param InputInterface $input
-     * @param array          $options
      */
     private function validateOnlyOne(InputInterface $input, array $options)
     {

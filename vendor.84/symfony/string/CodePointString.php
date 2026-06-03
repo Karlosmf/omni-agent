@@ -26,7 +26,7 @@ class CodePointString extends AbstractUnicodeString
 {
     public function __construct(string $string = '')
     {
-        if ('' !== $string && !preg_match('//u', $string)) {
+        if ($string !== '' && ! preg_match('//u', $string)) {
             throw new InvalidArgumentException('Invalid UTF-8 string.');
         }
 
@@ -36,9 +36,9 @@ class CodePointString extends AbstractUnicodeString
     public function append(string ...$suffix): static
     {
         $str = clone $this;
-        $str->string .= 1 >= \count($suffix) ? ($suffix[0] ?? '') : implode('', $suffix);
+        $str->string .= \count($suffix) <= 1 ? ($suffix[0] ?? '') : implode('', $suffix);
 
-        if (!preg_match('//u', $str->string)) {
+        if (! preg_match('//u', $str->string)) {
             throw new InvalidArgumentException('Invalid UTF-8 string.');
         }
 
@@ -47,16 +47,16 @@ class CodePointString extends AbstractUnicodeString
 
     public function chunk(int $length = 1): array
     {
-        if (1 > $length) {
+        if ($length < 1) {
             throw new InvalidArgumentException('The chunk length must be greater than zero.');
         }
 
-        if ('' === $this->string) {
+        if ($this->string === '') {
             return [];
         }
 
         $rx = '/(';
-        while (65535 < $length) {
+        while ($length > 65535) {
             $rx .= '.{65535}';
             $length -= 65535;
         }
@@ -77,18 +77,18 @@ class CodePointString extends AbstractUnicodeString
     {
         $str = $offset ? $this->slice($offset, 1) : $this;
 
-        return '' === $str->string ? [] : [mb_ord($str->string, 'UTF-8')];
+        return $str->string === '' ? [] : [mb_ord($str->string, 'UTF-8')];
     }
 
     public function endsWith(string|iterable|AbstractString $suffix): bool
     {
         if ($suffix instanceof AbstractString) {
             $suffix = $suffix->string;
-        } elseif (!\is_string($suffix)) {
+        } elseif (! \is_string($suffix)) {
             return parent::endsWith($suffix);
         }
 
-        if ('' === $suffix || !preg_match('//u', $suffix)) {
+        if ($suffix === '' || ! preg_match('//u', $suffix)) {
             return false;
         }
 
@@ -96,19 +96,19 @@ class CodePointString extends AbstractUnicodeString
             return preg_match('{'.preg_quote($suffix).'$}iuD', $this->string);
         }
 
-        return \strlen($this->string) >= \strlen($suffix) && 0 === substr_compare($this->string, $suffix, -\strlen($suffix));
+        return \strlen($this->string) >= \strlen($suffix) && substr_compare($this->string, $suffix, -\strlen($suffix)) === 0;
     }
 
     public function equalsTo(string|iterable|AbstractString $string): bool
     {
         if ($string instanceof AbstractString) {
             $string = $string->string;
-        } elseif (!\is_string($string)) {
+        } elseif (! \is_string($string)) {
             return parent::equalsTo($string);
         }
 
-        if ('' !== $string && $this->ignoreCase) {
-            return \strlen($string) === \strlen($this->string) && 0 === mb_stripos($this->string, $string, 0, 'UTF-8');
+        if ($string !== '' && $this->ignoreCase) {
+            return \strlen($string) === \strlen($this->string) && mb_stripos($this->string, $string, 0, 'UTF-8') === 0;
         }
 
         return $string === $this->string;
@@ -118,34 +118,34 @@ class CodePointString extends AbstractUnicodeString
     {
         if ($needle instanceof AbstractString) {
             $needle = $needle->string;
-        } elseif (!\is_string($needle)) {
+        } elseif (! \is_string($needle)) {
             return parent::indexOf($needle, $offset);
         }
 
-        if ('' === $needle) {
+        if ($needle === '') {
             return null;
         }
 
         $i = $this->ignoreCase ? mb_stripos($this->string, $needle, $offset, 'UTF-8') : mb_strpos($this->string, $needle, $offset, 'UTF-8');
 
-        return false === $i ? null : $i;
+        return $i === false ? null : $i;
     }
 
     public function indexOfLast(string|iterable|AbstractString $needle, int $offset = 0): ?int
     {
         if ($needle instanceof AbstractString) {
             $needle = $needle->string;
-        } elseif (!\is_string($needle)) {
+        } elseif (! \is_string($needle)) {
             return parent::indexOfLast($needle, $offset);
         }
 
-        if ('' === $needle) {
+        if ($needle === '') {
             return null;
         }
 
         $i = $this->ignoreCase ? mb_strripos($this->string, $needle, $offset, 'UTF-8') : mb_strrpos($this->string, $needle, $offset, 'UTF-8');
 
-        return false === $i ? null : $i;
+        return $i === false ? null : $i;
     }
 
     public function length(): int
@@ -156,9 +156,9 @@ class CodePointString extends AbstractUnicodeString
     public function prepend(string ...$prefix): static
     {
         $str = clone $this;
-        $str->string = (1 >= \count($prefix) ? ($prefix[0] ?? '') : implode('', $prefix)).$this->string;
+        $str->string = (\count($prefix) <= 1 ? ($prefix[0] ?? '') : implode('', $prefix)).$this->string;
 
-        if (!preg_match('//u', $str->string)) {
+        if (! preg_match('//u', $str->string)) {
             throw new InvalidArgumentException('Invalid UTF-8 string.');
         }
 
@@ -169,11 +169,11 @@ class CodePointString extends AbstractUnicodeString
     {
         $str = clone $this;
 
-        if ('' === $from || !preg_match('//u', $from)) {
+        if ($from === '' || ! preg_match('//u', $from)) {
             return $str;
         }
 
-        if ('' !== $to && !preg_match('//u', $to)) {
+        if ($to !== '' && ! preg_match('//u', $to)) {
             throw new InvalidArgumentException('Invalid UTF-8 string.');
         }
 
@@ -196,7 +196,7 @@ class CodePointString extends AbstractUnicodeString
 
     public function splice(string $replacement, int $start = 0, ?int $length = null): static
     {
-        if (!preg_match('//u', $replacement)) {
+        if (! preg_match('//u', $replacement)) {
             throw new InvalidArgumentException('Invalid UTF-8 string.');
         }
 
@@ -214,15 +214,15 @@ class CodePointString extends AbstractUnicodeString
             throw new InvalidArgumentException('Split limit must be a positive integer.');
         }
 
-        if ('' === $delimiter) {
+        if ($delimiter === '') {
             throw new InvalidArgumentException('Split delimiter is empty.');
         }
 
-        if (null !== $flags) {
+        if ($flags !== null) {
             return parent::split($delimiter.'u', $limit, $flags);
         }
 
-        if (!preg_match('//u', $delimiter)) {
+        if (! preg_match('//u', $delimiter)) {
             throw new InvalidArgumentException('Split delimiter is not a valid UTF-8 string.');
         }
 
@@ -243,18 +243,18 @@ class CodePointString extends AbstractUnicodeString
     {
         if ($prefix instanceof AbstractString) {
             $prefix = $prefix->string;
-        } elseif (!\is_string($prefix)) {
+        } elseif (! \is_string($prefix)) {
             return parent::startsWith($prefix);
         }
 
-        if ('' === $prefix || !preg_match('//u', $prefix)) {
+        if ($prefix === '' || ! preg_match('//u', $prefix)) {
             return false;
         }
 
         if ($this->ignoreCase) {
-            return 0 === mb_stripos($this->string, $prefix, 0, 'UTF-8');
+            return mb_stripos($this->string, $prefix, 0, 'UTF-8') === 0;
         }
 
-        return 0 === strncmp($this->string, $prefix, \strlen($prefix));
+        return strncmp($this->string, $prefix, \strlen($prefix)) === 0;
     }
 }

@@ -26,7 +26,7 @@ class MockUuidFactory extends UuidFactory
     private \Iterator $sequence;
 
     /**
-     * @param iterable<string|Uuid> $uuids
+     * @param  iterable<string|Uuid>  $uuids
      */
     public function __construct(
         iterable $uuids,
@@ -42,7 +42,7 @@ class MockUuidFactory extends UuidFactory
 
     public function create(): Uuid
     {
-        if (!$this->sequence->valid()) {
+        if (! $this->sequence->valid()) {
             throw new LogicException('No more UUIDs in sequence.');
         }
         $uuid = $this->sequence->current();
@@ -57,15 +57,15 @@ class MockUuidFactory extends UuidFactory
 
     public function randomBased(): RandomBasedUuidFactory
     {
-        return new class($this->create(...)) extends RandomBasedUuidFactory {
+        return new class($this->create(...)) extends RandomBasedUuidFactory
+        {
             public function __construct(
                 private \Closure $create,
-            ) {
-            }
+            ) {}
 
             public function create(): UuidV4
             {
-                if (!($uuid = ($this->create)()) instanceof UuidV4) {
+                if (! ($uuid = ($this->create)()) instanceof UuidV4) {
                     throw new InvalidArgumentException(\sprintf('Next UUID in sequence is not a UuidV4: "%s" given.', get_debug_type($uuid)));
                 }
 
@@ -80,26 +80,26 @@ class MockUuidFactory extends UuidFactory
             $node = Uuid::fromString($node);
         }
 
-        return new class($this->create(...), $node) extends TimeBasedUuidFactory {
+        return new class($this->create(...), $node) extends TimeBasedUuidFactory
+        {
             public function __construct(
                 private \Closure $create,
                 private ?Uuid $node = null,
-            ) {
-            }
+            ) {}
 
             public function create(?\DateTimeInterface $time = null): Uuid&TimeBasedUidInterface
             {
                 $uuid = ($this->create)();
 
-                if (!($uuid instanceof Uuid && $uuid instanceof TimeBasedUidInterface)) {
+                if (! ($uuid instanceof Uuid && $uuid instanceof TimeBasedUidInterface)) {
                     throw new InvalidArgumentException(\sprintf('Next UUID in sequence is not a Uuid and TimeBasedUidInterface: "%s" given.', get_debug_type($uuid)));
                 }
 
-                if (null !== $time && $uuid->getDateTime() !== $time) {
+                if ($time !== null && $uuid->getDateTime() !== $time) {
                     throw new InvalidArgumentException(\sprintf('Next UUID in sequence does not match the expected time: "%s" != "%s".', $uuid->getDateTime()->format('@U.uT'), $time->format('@U.uT')));
                 }
 
-                if (null !== $this->node && ($uuid instanceof UuidV1 || $uuid instanceof UuidV6) && $uuid->getNode() !== substr($this->node->toRfc4122(), -12)) {
+                if ($this->node !== null && ($uuid instanceof UuidV1 || $uuid instanceof UuidV6) && $uuid->getNode() !== substr($this->node->toRfc4122(), -12)) {
                     throw new InvalidArgumentException(\sprintf('Next UUID in sequence does not match the expected node: "%s" != "%s".', $uuid->getNode(), substr($this->node->toRfc4122(), -12)));
                 }
 
@@ -114,16 +114,16 @@ class MockUuidFactory extends UuidFactory
             throw new LogicException(\sprintf('A namespace should be defined when using "%s()".', __METHOD__));
         }
 
-        return new class($this->create(...), $namespace) extends NameBasedUuidFactory {
+        return new class($this->create(...), $namespace) extends NameBasedUuidFactory
+        {
             public function __construct(
                 private \Closure $create,
                 private Uuid|string $namespace,
-            ) {
-            }
+            ) {}
 
             public function create(string $name): UuidV5|UuidV3
             {
-                if (!($uuid = ($this->create)()) instanceof UuidV5 && !$uuid instanceof UuidV3) {
+                if (! ($uuid = ($this->create)()) instanceof UuidV5 && ! $uuid instanceof UuidV3) {
                     throw new InvalidArgumentException(\sprintf('Next UUID in sequence is not a UuidV5 or UuidV3: "%s".', get_debug_type($uuid)));
                 }
 

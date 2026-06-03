@@ -2,7 +2,10 @@
 
 namespace App\Filament\Admin\Widgets;
 
+use App\Enums\TransactionType;
+use App\Models\Transaction;
 use Filament\Widgets\ChartWidget;
+use Illuminate\Support\Facades\DB;
 
 class MonthlyBudgetChart extends ChartWidget
 {
@@ -25,12 +28,12 @@ class MonthlyBudgetChart extends ChartWidget
     {
         $year = now()->year;
 
-        $isSqlite = \Illuminate\Support\Facades\DB::connection()->getDriverName() === 'sqlite';
+        $isSqlite = DB::connection()->getDriverName() === 'sqlite';
         $monthExpression = $isSqlite
             ? "CAST(strftime('%m', created_at) AS INTEGER)"
             : 'MONTH(created_at)';
 
-        $data = \App\Models\Transaction::query()
+        $data = Transaction::query()
             ->selectRaw("{$monthExpression} as month, type, SUM(amount) as total")
             ->whereYear('created_at', $year)
             ->groupBy('month', 'type')
@@ -46,9 +49,9 @@ class MonthlyBudgetChart extends ChartWidget
         }
 
         foreach ($data as $row) {
-            if ($row->type === \App\Enums\TransactionType::Cobro) {
+            if ($row->type === TransactionType::Cobro) {
                 $incomes[$row->month] = $row->total;
-            } elseif ($row->type === \App\Enums\TransactionType::Pago) {
+            } elseif ($row->type === TransactionType::Pago) {
                 $expenses[$row->month] = $row->total;
             }
         }

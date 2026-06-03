@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -21,8 +22,8 @@ class Subset extends MatcherAbstract
     private $strict = true;
 
     /**
-     * @param array $expected Expected subset of data
-     * @param bool  $strict   Whether to run a strict or loose comparison
+     * @param  array  $expected  Expected subset of data
+     * @param  bool  $strict  Whether to run a strict or loose comparison
      */
     public function __construct(array $expected, $strict = true)
     {
@@ -37,12 +38,11 @@ class Subset extends MatcherAbstract
      */
     public function __toString()
     {
-        return '<Subset' . $this->formatArray($this->expected) . '>';
+        return '<Subset'.$this->formatArray($this->expected).'>';
     }
 
     /**
-     * @param array $expected Expected subset of data
-     *
+     * @param  array  $expected  Expected subset of data
      * @return Subset
      */
     public static function loose(array $expected)
@@ -55,8 +55,7 @@ class Subset extends MatcherAbstract
      *
      * @template TMixed
      *
-     * @param TMixed $actual
-     *
+     * @param  TMixed  $actual
      * @return bool
      */
     public function match(&$actual)
@@ -73,8 +72,7 @@ class Subset extends MatcherAbstract
     }
 
     /**
-     * @param array $expected Expected subset of data
-     *
+     * @param  array  $expected  Expected subset of data
      * @return Subset
      */
     public static function strict(array $expected)
@@ -91,9 +89,9 @@ class Subset extends MatcherAbstract
     {
         $elements = [];
         foreach ($array as $k => $v) {
-            $elements[] = $k . '=' . (is_array($v) ? $this->formatArray($v) : (string) $v);
+            $elements[] = $k.'='.(is_array($v) ? $this->formatArray($v) : (string) $v);
         }
 
-        return '[' . implode(', ', $elements) . ']';
+        return '['.implode(', ', $elements).']';
     }
 }

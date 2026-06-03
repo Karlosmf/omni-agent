@@ -18,15 +18,15 @@ trait CanFormatState
 
     protected ?Closure $formatStateUsing = null;
 
-    protected string | Closure | null $placeholder = null;
+    protected string|Closure|null $placeholder = null;
 
-    protected string | Htmlable | Closure | null $prefix = null;
+    protected string|Htmlable|Closure|null $prefix = null;
 
-    protected string | Htmlable | Closure | null $suffix = null;
+    protected string|Htmlable|Closure|null $suffix = null;
 
-    protected bool | Closure $isHtml = false;
+    protected bool|Closure $isHtml = false;
 
-    protected bool | Closure $isMarkdown = false;
+    protected bool|Closure $isMarkdown = false;
 
     public function formatStateUsing(?Closure $callback): static
     {
@@ -48,7 +48,7 @@ trait CanFormatState
         return $this;
     }
 
-    public function money(string | BackedEnum | Closure | null $currency = null, int $divideBy = 0, string | BackedEnum | Closure | null $locale = null, int | Closure | null $decimalPlaces = null): static
+    public function money(string|BackedEnum|Closure|null $currency = null, int $divideBy = 0, string|BackedEnum|Closure|null $locale = null, int|Closure|null $decimalPlaces = null): static
     {
         $this->formatStateUsing(static function ($state, Summarizer $summarizer) use ($currency, $divideBy, $locale, $decimalPlaces): ?string {
             if (blank($state)) {
@@ -81,7 +81,7 @@ trait CanFormatState
         return $this;
     }
 
-    public function numeric(int | Closure | null $decimalPlaces = null, string | Closure | null | ArgumentValue $decimalSeparator = ArgumentValue::Default, string | Closure | null | ArgumentValue $thousandsSeparator = ArgumentValue::Default, int | Closure | null $maxDecimalPlaces = null, string | Closure | null $locale = null): static
+    public function numeric(int|Closure|null $decimalPlaces = null, string|Closure|null|ArgumentValue $decimalSeparator = ArgumentValue::Default, string|Closure|null|ArgumentValue $thousandsSeparator = ArgumentValue::Default, int|Closure|null $maxDecimalPlaces = null, string|Closure|null $locale = null): static
     {
         $this->formatStateUsing(static function ($state, Summarizer $summarizer) use ($decimalPlaces, $decimalSeparator, $locale, $maxDecimalPlaces, $thousandsSeparator): ?string {
             if (blank($state)) {
@@ -116,35 +116,35 @@ trait CanFormatState
         return $this;
     }
 
-    public function placeholder(string | Closure | null $placeholder): static
+    public function placeholder(string|Closure|null $placeholder): static
     {
         $this->placeholder = $placeholder;
 
         return $this;
     }
 
-    public function markdown(bool | Closure $condition = true): static
+    public function markdown(bool|Closure $condition = true): static
     {
         $this->isMarkdown = $condition;
 
         return $this;
     }
 
-    public function prefix(string | Htmlable | Closure | null $prefix): static
+    public function prefix(string|Htmlable|Closure|null $prefix): static
     {
         $this->prefix = $prefix;
 
         return $this;
     }
 
-    public function suffix(string | Htmlable | Closure | null $suffix): static
+    public function suffix(string|Htmlable|Closure|null $suffix): static
     {
         $this->suffix = $suffix;
 
         return $this;
     }
 
-    public function html(bool | Closure $condition = true): static
+    public function html(bool|Closure $condition = true): static
     {
         $this->isHtml = $condition;
 
@@ -190,7 +190,7 @@ trait CanFormatState
                 $prefix = e($prefix);
             }
 
-            $state = $prefix . $state;
+            $state = $prefix.$state;
         }
 
         if (filled($suffix)) {
@@ -215,12 +215,12 @@ trait CanFormatState
         return $this->evaluate($this->isHtml) || $this->isMarkdown();
     }
 
-    public function getPrefix(): string | Htmlable | null
+    public function getPrefix(): string|Htmlable|null
     {
         return $this->evaluate($this->prefix);
     }
 
-    public function getSuffix(): string | Htmlable | null
+    public function getSuffix(): string|Htmlable|null
     {
         return $this->evaluate($this->suffix);
     }

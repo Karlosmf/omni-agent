@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,14 +9,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\Test;
 
 use const PHP_EOL;
-use function sprintf;
+
 use PHPUnit\Event\Code;
 use PHPUnit\Event\Event;
 use PHPUnit\Event\Telemetry;
 use PHPUnit\Framework\TestCase;
+
+use function sprintf;
 
 /**
  * @immutable
@@ -23,7 +28,7 @@ use PHPUnit\Framework\TestCase;
  */
 final readonly class BeforeFirstTestMethodFinished implements Event
 {
-    private Telemetry\Info$telemetryInfo;
+    private Telemetry\Info $telemetryInfo;
 
     /**
      * @var class-string<TestCase>
@@ -36,7 +41,7 @@ final readonly class BeforeFirstTestMethodFinished implements Event
     private array $calledMethods;
 
     /**
-     * @param class-string<TestCase> $testClassName
+     * @param  class-string<TestCase>  $testClassName
      */
     public function __construct(Telemetry\Info $telemetryInfo, string $testClassName, Code\ClassMethod ...$calledMethods)
     {
@@ -75,7 +80,7 @@ final readonly class BeforeFirstTestMethodFinished implements Event
 
         foreach ($this->calledMethods as $calledMethod) {
             $buffer .= sprintf(
-                PHP_EOL . '- %s::%s',
+                PHP_EOL.'- %s::%s',
                 $calledMethod->className(),
                 $calledMethod->methodName(),
             );

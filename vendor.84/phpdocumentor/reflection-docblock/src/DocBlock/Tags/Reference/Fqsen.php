@@ -13,10 +13,11 @@ declare(strict_types=1);
 
 namespace phpDocumentor\Reflection\DocBlock\Tags\Reference;
 
+use phpDocumentor\Reflection\DocBlock\Tags\See;
 use phpDocumentor\Reflection\Fqsen as RealFqsen;
 
 /**
- * Fqsen reference used by {@see \phpDocumentor\Reflection\DocBlock\Tags\See}
+ * Fqsen reference used by {@see See}
  */
 final class Fqsen implements Reference
 {

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ParaTest\WrapperRunner;
 
+use const DIRECTORY_SEPARATOR;
+
 use ParaTest\Coverage\CoverageMerger;
 use ParaTest\JUnit\LogMerger;
 use ParaTest\JUnit\Writer;
@@ -40,46 +42,60 @@ use function unlink;
 use function unserialize;
 use function usleep;
 
-use const DIRECTORY_SEPARATOR;
-
 /** @internal */
 final class WrapperRunner implements RunnerInterface
 {
     private const CYCLE_SLEEP = 10000;
+
     private readonly ResultPrinter $printer;
 
     /** @var list<non-empty-string> */
     private array $pending = [];
-    private int $exitcode  = -1;
+
+    private int $exitcode = -1;
+
     /** @var array<positive-int,WrapperWorker> */
     private array $workers = [];
+
     /** @var array<int,int> */
     private array $batches = [];
+
     /** @var array<non-empty-string,true> */
     private array $requiredTestResultFiles = [];
+
     /** @var array<non-empty-string,true> */
     private array $requiredCoverageFiles = [];
 
     /** @var list<SplFileInfo> */
     private array $statusFiles = [];
+
     /** @var list<SplFileInfo> */
     private array $progressFiles = [];
+
     /** @var list<SplFileInfo> */
     private array $unexpectedOutputFiles = [];
+
     /** @var list<SplFileInfo> */
     private array $resultCacheFiles = [];
+
     /** @var list<SplFileInfo> */
     private array $testResultFiles = [];
+
     /** @var list<SplFileInfo> */
     private array $coverageFiles = [];
+
     /** @var list<SplFileInfo> */
     private array $junitFiles = [];
+
     /** @var list<SplFileInfo> */
     private array $teamcityFiles = [];
+
     /** @var list<SplFileInfo> */
     private array $testdoxFiles = [];
+
     /** @var array<non-empty-string> */
     private readonly array $parameters;
+
     private CodeCoverageFilterRegistry $codeCoverageFilterRegistry;
 
     public function __construct(
@@ -89,16 +105,16 @@ final class WrapperRunner implements RunnerInterface
         $this->printer = new ResultPrinter($output, $options);
 
         $wrapper = realpath(
-            dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'phpunit-wrapper.php',
+            dirname(__DIR__, 2).DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'phpunit-wrapper.php',
         );
         assert($wrapper !== false);
-        $phpFinder = new PhpExecutableFinder();
-        $phpBin    = $phpFinder->find(false);
+        $phpFinder = new PhpExecutableFinder;
+        $phpBin = $phpFinder->find(false);
         assert($phpBin !== false);
         assert($phpBin !== '');
         $parameters = [$phpBin];
         /** @var array<non-empty-string> $arguments */
-        $arguments  = $phpFinder->findArguments();
+        $arguments = $phpFinder->findArguments();
         $parameters = array_merge($parameters, $arguments);
 
         if ($options->passthruPhp !== null) {
@@ -107,8 +123,8 @@ final class WrapperRunner implements RunnerInterface
 
         $parameters[] = $wrapper;
 
-        $this->parameters                 = $parameters;
-        $this->codeCoverageFilterRegistry = new CodeCoverageFilterRegistry();
+        $this->parameters = $parameters;
+        $this->codeCoverageFilterRegistry = new CodeCoverageFilterRegistry;
     }
 
     public function run(): int
@@ -121,7 +137,7 @@ final class WrapperRunner implements RunnerInterface
             $this->output,
             $this->codeCoverageFilterRegistry,
         );
-        $result      = TestResultFacade::result();
+        $result = TestResultFacade::result();
 
         $this->pending = $suiteLoader->tests;
         $this->printer->setTestCount($suiteLoader->testCount);
@@ -135,7 +151,7 @@ final class WrapperRunner implements RunnerInterface
 
     private function startWorkers(): void
     {
-        for ($token = 1; $token <= $this->options->processes; ++$token) {
+        for ($token = 1; $token <= $this->options->processes; $token++) {
             $this->startWorker($token);
         }
     }
@@ -236,10 +252,10 @@ final class WrapperRunner implements RunnerInterface
         $worker->start();
         $this->batches[$token] = 0;
 
-        $this->statusFiles[]           = $worker->statusFile;
-        $this->progressFiles[]         = $worker->progressFile;
+        $this->statusFiles[] = $worker->statusFile;
+        $this->progressFiles[] = $worker->progressFile;
         $this->unexpectedOutputFiles[] = $worker->unexpectedOutputFile;
-        $this->testResultFiles[]       = $worker->testResultFile;
+        $this->testResultFiles[] = $worker->testResultFile;
 
         if (isset($worker->resultCacheFile)) {
             $this->resultCacheFiles[] = $worker->resultCacheFile;
@@ -341,7 +357,7 @@ final class WrapperRunner implements RunnerInterface
             $resultCacheSum->persist();
         }
 
-        $testdoxResults = (new TestDoxResultsMerger())->getResultsFromTestdoxFiles($this->testdoxFiles);
+        $testdoxResults = (new TestDoxResultsMerger)->getResultsFromTestdoxFiles($this->testdoxFiles);
 
         $this->printer->printResults(
             $testResultSum,
@@ -352,7 +368,7 @@ final class WrapperRunner implements RunnerInterface
         $this->generateJunitLog();
         $this->generateTestDoxLogs($testdoxResults);
 
-        $exitcode = (new ShellExitCodeCalculator())->calculate(
+        $exitcode = (new ShellExitCodeCalculator)->calculate(
             $this->options->configuration,
             $testResultSum,
         );
@@ -390,7 +406,7 @@ final class WrapperRunner implements RunnerInterface
             throw MissingResultsException::create($missingCoverageFiles, 'coverage');
         }
 
-        $coverageManager = new CodeCoverage();
+        $coverageManager = new CodeCoverage;
         $coverageManager->init(
             $this->options->configuration,
             $this->codeCoverageFilterRegistry,
@@ -413,12 +429,12 @@ final class WrapperRunner implements RunnerInterface
             return;
         }
 
-        $testSuite = (new LogMerger())->merge($this->junitFiles);
+        $testSuite = (new LogMerger)->merge($this->junitFiles);
         if ($testSuite === null) {
             return;
         }
 
-        (new Writer())->write(
+        (new Writer)->write(
             $testSuite,
             $this->options->configuration->logfileJunit(),
         );
@@ -428,7 +444,7 @@ final class WrapperRunner implements RunnerInterface
     private function generateTestDoxLogs(array $testdoxResults): void
     {
         if ($this->options->configuration->hasLogfileTestdoxText()) {
-            $testdoxTextContent = (new TestDoxPlainTextRenderer())->render($testdoxResults);
+            $testdoxTextContent = (new TestDoxPlainTextRenderer)->render($testdoxResults);
             DefaultPrinter::from($this->options->configuration->logfileTestdoxText())->print($testdoxTextContent);
         }
 
@@ -436,7 +452,7 @@ final class WrapperRunner implements RunnerInterface
             return;
         }
 
-        $testdoxHtmlContent = (new TestDoxHtmlRenderer())->render($testdoxResults);
+        $testdoxHtmlContent = (new TestDoxHtmlRenderer)->render($testdoxResults);
         DefaultPrinter::from($this->options->configuration->logfileTestdoxHtml())->print($testdoxHtmlContent);
     }
 

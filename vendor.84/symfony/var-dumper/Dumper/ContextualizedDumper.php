@@ -20,13 +20,12 @@ use Symfony\Component\VarDumper\Dumper\ContextProvider\ContextProviderInterface;
 class ContextualizedDumper implements DataDumperInterface
 {
     /**
-     * @param ContextProviderInterface[] $contextProviders
+     * @param  ContextProviderInterface[]  $contextProviders
      */
     public function __construct(
         private DataDumperInterface $wrappedDumper,
         private array $contextProviders,
-    ) {
-    }
+    ) {}
 
     public function dump(Data $data): ?string
     {

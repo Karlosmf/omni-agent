@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,11 +9,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TestRunner\TestResult\Issues;
+
+use PHPUnit\Event\Code\Test;
 
 use function array_keys;
 use function count;
-use PHPUnit\Event\Code\Test;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -46,9 +50,9 @@ final class Issue
     private ?string $stackTrace;
 
     /**
-     * @param non-empty-string $file
-     * @param positive-int     $line
-     * @param non-empty-string $description
+     * @param  non-empty-string  $file
+     * @param  positive-int  $line
+     * @param  non-empty-string  $description
      */
     public static function from(string $file, int $line, string $description, Test $triggeringTest, ?string $stackTrace = null): self
     {
@@ -56,20 +60,20 @@ final class Issue
     }
 
     /**
-     * @param non-empty-string $file
-     * @param positive-int     $line
-     * @param non-empty-string $description
+     * @param  non-empty-string  $file
+     * @param  positive-int  $line
+     * @param  non-empty-string  $description
      */
     private function __construct(string $file, int $line, string $description, Test $triggeringTest, ?string $stackTrace)
     {
-        $this->file        = $file;
-        $this->line        = $line;
+        $this->file = $file;
+        $this->line = $line;
         $this->description = $description;
-        $this->stackTrace  = $stackTrace;
+        $this->stackTrace = $stackTrace;
 
         $this->triggeringTests = [
             $triggeringTest->id() => [
-                'test'  => $triggeringTest,
+                'test' => $triggeringTest,
                 'count' => 1,
             ],
         ];
@@ -84,7 +88,7 @@ final class Issue
         }
 
         $this->triggeringTests[$test->id()] = [
-            'test'  => $test,
+            'test' => $test,
             'count' => 1,
         ];
     }

@@ -42,17 +42,15 @@ final class Row
         });
     }
 
-    private function __construct(private readonly array|object $row)
-    {
-    }
+    private function __construct(private readonly array|object $row) {}
 
     /**
      * Tries to retrieve a single value from a record.
      *
      * @throws ReflectionException
      * @throws QueryException If the value can not be retrieved
-     * @see Row::select()
      *
+     * @see Row::select()
      */
     public function value(string|int $key): mixed
     {
@@ -66,10 +64,11 @@ final class Row
      * from the array_values array form. Negative offset are supported.
      * If the value is an object, the key MUST be a string.
      *
-     * @throws ReflectionException
-     * @throws QueryException If the value can not be retrieved
      *
      * @return non-empty-array<array-key, mixed>
+     *
+     * @throws ReflectionException
+     * @throws QueryException If the value can not be retrieved
      */
     public function select(string|int ...$key): array
     {
@@ -80,9 +79,9 @@ final class Row
     }
 
     /**
-     * @throws QueryException
-     *
      * @return non-empty-array<array-key, mixed>
+     *
+     * @throws QueryException
      */
     private function getArrayEntry(array $row, string|int ...$keys): array
     {
@@ -94,7 +93,7 @@ final class Row
             }
             $offset = $key;
             if (is_int($offset)) {
-                if (!array_is_list($row)) {
+                if (! array_is_list($row)) {
                     $row = $arrValues;
                 }
 
@@ -106,14 +105,14 @@ final class Row
             $res[$key] = array_key_exists($offset, $row) ? $row[$offset] : throw QueryException::dueToUnknownColumn($key, $row);
         }
 
-        return [] !== $res ? $res : throw QueryException::dueToMissingColumn();
+        return $res !== [] ? $res : throw QueryException::dueToMissingColumn();
     }
 
     /**
+     * @return non-empty-array<array-key, mixed>
+     *
      * @throws ReflectionException
      * @throws QueryException
-     *
-     * @return non-empty-array<array-key, mixed>
      */
     private static function getObjectPropertyValue(object $row, string|int ...$keys): array
     {
@@ -124,10 +123,11 @@ final class Row
                 continue;
             }
 
-            !is_int($key) || throw QueryException::dueToUnknownColumn($key, $row);
+            ! is_int($key) || throw QueryException::dueToUnknownColumn($key, $row);
 
             if ($object->hasProperty($key) && $object->getProperty($key)->isPublic()) {
                 $res[$key] = $object->getProperty($key)->getValue($row);
+
                 continue;
             }
 
@@ -139,32 +139,35 @@ final class Row
             foreach ($methodNameList as $methodName) {
                 if ($object->hasMethod($methodName)
                     && $object->getMethod($methodName)->isPublic()
-                    && 1 > $object->getMethod($methodName)->getNumberOfRequiredParameters()
+                    && $object->getMethod($methodName)->getNumberOfRequiredParameters() < 1
                 ) {
                     $res[$key] = $object->getMethod($methodName)->invoke($row);
+
                     continue 2;
                 }
             }
 
             if (method_exists($row, '__call')) {
                 $res[$key] = $object->getMethod('__call')->invoke($row, $methodNameList[1]);
+
                 continue;
             }
 
             if ($row instanceof ArrayAccess && $row->offsetExists($key)) {
-                $res[$key] =  $row->offsetGet($key);
+                $res[$key] = $row->offsetGet($key);
+
                 continue;
             }
 
             throw QueryException::dueToUnknownColumn($key, $row);
         }
 
-        return [] !== $res ? $res : throw QueryException::dueToMissingColumn();
+        return $res !== [] ? $res : throw QueryException::dueToMissingColumn();
     }
 
     private static function camelCase(string $value, string $prefix = ''): string
     {
-        if ('' !== $prefix) {
+        if ($prefix !== '') {
             $prefix .= '_';
         }
 

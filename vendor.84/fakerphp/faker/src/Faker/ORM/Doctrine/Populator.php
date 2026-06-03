@@ -46,7 +46,7 @@ class Populator
     /**
      * Populator constructor.
      *
-     * @param int $batchSize
+     * @param  int  $batchSize
      */
     public function __construct(Generator $generator, ?ObjectManager $manager = null, $batchSize = 1000)
     {
@@ -58,16 +58,16 @@ class Populator
     /**
      * Add an order for the generation of $number records for $entity.
      *
-     * @param mixed $entity A Doctrine classname, or a \Faker\ORM\Doctrine\EntityPopulator instance
-     * @param int   $number The number of entities to populate
+     * @param  mixed  $entity  A Doctrine classname, or a \Faker\ORM\Doctrine\EntityPopulator instance
+     * @param  int  $number  The number of entities to populate
      */
     public function addEntity($entity, $number, $customColumnFormatters = [], $customModifiers = [], $generateId = false)
     {
-        if (!$entity instanceof \Faker\ORM\Doctrine\EntityPopulator) {
-            if (null === $this->manager) {
+        if (! $entity instanceof EntityPopulator) {
+            if ($this->manager === null) {
                 throw new \InvalidArgumentException('No entity manager passed to Doctrine Populator.');
             }
-            $entity = new \Faker\ORM\Doctrine\EntityPopulator($this->manager->getClassMetadata($entity));
+            $entity = new EntityPopulator($this->manager->getClassMetadata($entity));
         }
         $entity->setColumnFormatters($entity->guessColumnFormatters($this->generator));
 
@@ -88,17 +88,16 @@ class Populator
      * Please note that large amounts of data will result in more memory usage since the the Populator will return
      * all newly created primary keys after executing.
      *
-     * @param ObjectManager|null $entityManager A Doctrine connection object
-     *
+     * @param  ObjectManager|null  $entityManager  A Doctrine connection object
      * @return array A list of the inserted PKs
      */
     public function execute($entityManager = null)
     {
-        if (null === $entityManager) {
+        if ($entityManager === null) {
             $entityManager = $this->manager;
         }
 
-        if (null === $entityManager) {
+        if ($entityManager === null) {
             throw new \InvalidArgumentException('No entity manager passed to Doctrine Populator.');
         }
 
@@ -107,7 +106,7 @@ class Populator
         foreach ($this->quantities as $class => $number) {
             $generateId = $this->generateId[$class];
 
-            for ($i = 0; $i < $number; ++$i) {
+            for ($i = 0; $i < $number; $i++) {
                 $insertedEntities[$class][] = $this->entities[$class]->execute(
                     $entityManager,
                     $insertedEntities,

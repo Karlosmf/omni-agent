@@ -15,7 +15,7 @@ trait HasExtraAttributes
     /**
      * @param  array<mixed> | Closure  $attributes
      */
-    public function extraAttributes(array | Closure $attributes, bool $merge = false): static
+    public function extraAttributes(array|Closure $attributes, bool $merge = false): static
     {
         if ($merge) {
             $this->extraAttributes[] = $attributes;

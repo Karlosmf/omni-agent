@@ -10,12 +10,12 @@ use Illuminate\Database\Eloquent\Model;
 class TestAction implements Arrayable
 {
     /** @var array<string, mixed> | Closure | null */
-    protected array | Closure | null $arguments = null;
+    protected array|Closure|null $arguments = null;
 
     /** @var array<string, mixed> */
     protected array $context = [];
 
-    protected string | bool | null $schemaComponent = null;
+    protected string|bool|null $schemaComponent = null;
 
     protected ?string $schema = null;
 
@@ -35,14 +35,14 @@ class TestAction implements Arrayable
     /**
      * @param  array<string, mixed> | Closure | null  $arguments
      */
-    public function arguments(array | Closure | null $arguments): static
+    public function arguments(array|Closure|null $arguments): static
     {
         $this->arguments = $arguments;
 
         return $this;
     }
 
-    public function schemaComponent(string | bool | null $component = true, ?string $schema = null): static
+    public function schemaComponent(string|bool|null $component = true, ?string $schema = null): static
     {
         $this->schemaComponent = $component;
         $this->schema = $schema;
@@ -84,7 +84,7 @@ class TestAction implements Arrayable
         $schema = $this->schema ?? $defaultSchema;
 
         $schemaComponentContext = match (true) {
-            is_string($this->schemaComponent) => (filled($schema) ? "{$schema}." : '') . $this->schemaComponent,
+            is_string($this->schemaComponent) => (filled($schema) ? "{$schema}." : '').$this->schemaComponent,
             $this->schemaComponent === true => $schema,
             default => null,
         };

@@ -14,8 +14,8 @@ namespace Carbon\MessageFormatter;
 use Symfony\Component\Translation\Formatter\ChoiceMessageFormatterInterface;
 use Symfony\Component\Translation\Formatter\MessageFormatterInterface;
 
-if (!class_exists(LazyMessageFormatter::class, false)) {
-    abstract class LazyMessageFormatter implements MessageFormatterInterface, ChoiceMessageFormatterInterface
+if (! class_exists(LazyMessageFormatter::class, false)) {
+    abstract class LazyMessageFormatter implements ChoiceMessageFormatterInterface, MessageFormatterInterface
     {
         abstract protected function transformLocale(?string $locale): ?string;
 

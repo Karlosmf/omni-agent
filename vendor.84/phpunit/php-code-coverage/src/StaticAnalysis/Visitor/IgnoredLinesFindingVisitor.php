@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,10 +9,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
-use function assert;
-use function str_contains;
 use PhpParser\Node;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\Stmt\Class_;
@@ -21,6 +22,9 @@ use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeVisitorAbstract;
 
+use function assert;
+use function str_contains;
+
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
@@ -30,24 +34,26 @@ final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
      * @var array<int>
      */
     private array $ignoredLines = [];
+
     private readonly bool $useAnnotationsForIgnoringCode;
+
     private readonly bool $ignoreDeprecated;
 
     public function __construct(bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecated)
     {
         $this->useAnnotationsForIgnoringCode = $useAnnotationsForIgnoringCode;
-        $this->ignoreDeprecated              = $ignoreDeprecated;
+        $this->ignoreDeprecated = $ignoreDeprecated;
     }
 
     public function enterNode(Node $node): null
     {
-        if (!$node instanceof Class_ &&
-            !$node instanceof Trait_ &&
-            !$node instanceof Interface_ &&
-            !$node instanceof Enum_ &&
-            !$node instanceof ClassMethod &&
-            !$node instanceof Function_ &&
-            !$node instanceof Attribute) {
+        if (! $node instanceof Class_ &&
+            ! $node instanceof Trait_ &&
+            ! $node instanceof Interface_ &&
+            ! $node instanceof Enum_ &&
+            ! $node instanceof ClassMethod &&
+            ! $node instanceof Function_ &&
+            ! $node instanceof Attribute) {
             return null;
         }
 
@@ -67,7 +73,7 @@ final class IgnoredLinesFindingVisitor extends NodeVisitorAbstract
             $this->ignoredLines[] = $node->name->getStartLine();
         }
 
-        if (!$this->useAnnotationsForIgnoringCode) {
+        if (! $this->useAnnotationsForIgnoringCode) {
             return null;
         }
 

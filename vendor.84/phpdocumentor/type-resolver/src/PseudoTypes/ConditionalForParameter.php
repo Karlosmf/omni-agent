@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of phpDocumentor.
  *
@@ -28,12 +29,16 @@ final class ConditionalForParameter extends Mixed_ implements PseudoType
 {
     /** @var bool */
     private $negated;
+
     /** @var string */
     private $parameterName;
+
     /** @var Type */
     private $targetType;
+
     /** @var Type */
     private $if;
+
     /** @var Type */
     private $else;
 
@@ -73,14 +78,14 @@ final class ConditionalForParameter extends Mixed_ implements PseudoType
 
     public function underlyingType(): Type
     {
-        return new Mixed_();
+        return new Mixed_;
     }
 
     public function __toString(): string
     {
         return sprintf(
             '(%s %s %s ? %s : %s)',
-            '$' . $this->parameterName,
+            '$'.$this->parameterName,
             $this->negated ? 'is not' : 'is',
             (string) $this->targetType,
             (string) $this->if,

@@ -23,7 +23,7 @@ class ConstStub extends Stub
     public function __construct(string $name, string|int|float|null $value = null)
     {
         $this->class = $name;
-        $this->value = 1 < \func_num_args() ? $value : $name;
+        $this->value = \func_num_args() > 1 ? $value : $name;
     }
 
     public function __toString(): string
@@ -32,7 +32,7 @@ class ConstStub extends Stub
     }
 
     /**
-     * @param array<int, string> $values
+     * @param  array<int, string>  $values
      */
     public static function fromBitfield(int $value, array $values): self
     {
@@ -43,7 +43,7 @@ class ConstStub extends Stub
             }
         }
 
-        if (!$names) {
+        if (! $names) {
             $names[] = $values[0] ?? 0;
         }
 

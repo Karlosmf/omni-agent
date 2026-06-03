@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,14 +9,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Logging\TestDox;
 
-use function array_merge;
-use function assert;
-use function is_subclass_of;
-use function ksort;
-use function uksort;
-use function usort;
 use PHPUnit\Event\Code\TestMethod;
 use PHPUnit\Event\Code\Throwable;
 use PHPUnit\Event\Facade;
@@ -41,6 +38,13 @@ use PHPUnit\Logging\TestDox\TestResult as TestDoxTestMethod;
 use PHPUnit\TestRunner\IssueFilter;
 use ReflectionMethod;
 
+use function array_merge;
+use function assert;
+use function is_subclass_of;
+use function ksort;
+use function uksort;
+use function usort;
+
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  *
@@ -53,10 +57,13 @@ final class TestResultCollector
     /**
      * @var array<string, list<TestDoxTestMethod>>
      */
-    private array $tests          = [];
-    private ?TestStatus $status   = null;
+    private array $tests = [];
+
+    private ?TestStatus $status = null;
+
     private ?Throwable $throwable = null;
-    private bool $prepared        = false;
+
+    private bool $prepared = false;
 
     public function __construct(Facade $facade, IssueFilter $issueFilter)
     {
@@ -78,7 +85,7 @@ final class TestResultCollector
             foreach ($tests as $test) {
                 $declaringClassName = (new ReflectionMethod($test->test()->className(), $test->test()->methodName()))->getDeclaringClass()->getName();
 
-                if (!isset($testsByDeclaringClass[$declaringClassName])) {
+                if (! isset($testsByDeclaringClass[$declaringClassName])) {
                     $testsByDeclaringClass[$declaringClassName] = [];
                 }
 
@@ -88,8 +95,7 @@ final class TestResultCollector
             foreach ($testsByDeclaringClass as $declaringClassName) {
                 usort(
                     $declaringClassName,
-                    static function (TestDoxTestMethod $a, TestDoxTestMethod $b): int
-                    {
+                    static function (TestDoxTestMethod $a, TestDoxTestMethod $b): int {
                         return $a->test()->line() <=> $b->test()->line();
                     },
                 );
@@ -98,11 +104,10 @@ final class TestResultCollector
             uksort(
                 $testsByDeclaringClass,
                 /**
-                 * @param class-string $a
-                 * @param class-string $b
+                 * @param  class-string  $a
+                 * @param  class-string  $b
                  */
-                static function (string $a, string $b): int
-                {
+                static function (string $a, string $b): int {
                     if (is_subclass_of($b, $a)) {
                         return -1;
                     }
@@ -131,25 +136,25 @@ final class TestResultCollector
 
     public function testPrepared(Prepared $event): void
     {
-        if (!$event->test()->isTestMethod()) {
+        if (! $event->test()->isTestMethod()) {
             return;
         }
 
-        $this->status    = TestStatus::unknown();
+        $this->status = TestStatus::unknown();
         $this->throwable = null;
-        $this->prepared  = true;
+        $this->prepared = true;
     }
 
     public function testErrored(Errored $event): void
     {
-        if (!$event->test()->isTestMethod()) {
+        if (! $event->test()->isTestMethod()) {
             return;
         }
 
-        $this->status    = TestStatus::error($event->throwable()->message());
+        $this->status = TestStatus::error($event->throwable()->message());
         $this->throwable = $event->throwable();
 
-        if (!$this->prepared) {
+        if (! $this->prepared) {
             $test = $event->test();
 
             assert($test instanceof TestMethod);
@@ -160,17 +165,17 @@ final class TestResultCollector
 
     public function testFailed(Failed $event): void
     {
-        if (!$event->test()->isTestMethod()) {
+        if (! $event->test()->isTestMethod()) {
             return;
         }
 
-        $this->status    = TestStatus::failure($event->throwable()->message());
+        $this->status = TestStatus::failure($event->throwable()->message());
         $this->throwable = $event->throwable();
     }
 
     public function testPassed(Passed $event): void
     {
-        if (!$event->test()->isTestMethod()) {
+        if (! $event->test()->isTestMethod()) {
             return;
         }
 
@@ -179,7 +184,7 @@ final class TestResultCollector
 
     public function testSkipped(Skipped $event): void
     {
-        if (!$event->test()->isTestMethod()) {
+        if (! $event->test()->isTestMethod()) {
             return;
         }
 
@@ -188,7 +193,7 @@ final class TestResultCollector
 
     public function testMarkedIncomplete(MarkedIncomplete $event): void
     {
-        if (!$event->test()->isTestMethod()) {
+        if (! $event->test()->isTestMethod()) {
             return;
         }
 
@@ -199,7 +204,7 @@ final class TestResultCollector
 
     public function testConsideredRisky(ConsideredRisky $event): void
     {
-        if (!$event->test()->isTestMethod()) {
+        if (! $event->test()->isTestMethod()) {
             return;
         }
 
@@ -208,7 +213,7 @@ final class TestResultCollector
 
     public function testTriggeredDeprecation(DeprecationTriggered $event): void
     {
-        if (!$this->issueFilter->shouldBeProcessed($event, true)) {
+        if (! $this->issueFilter->shouldBeProcessed($event, true)) {
             return;
         }
 
@@ -221,7 +226,7 @@ final class TestResultCollector
 
     public function testTriggeredNotice(NoticeTriggered $event): void
     {
-        if (!$this->issueFilter->shouldBeProcessed($event, true)) {
+        if (! $this->issueFilter->shouldBeProcessed($event, true)) {
             return;
         }
 
@@ -234,7 +239,7 @@ final class TestResultCollector
 
     public function testTriggeredWarning(WarningTriggered $event): void
     {
-        if (!$this->issueFilter->shouldBeProcessed($event, true)) {
+        if (! $this->issueFilter->shouldBeProcessed($event, true)) {
             return;
         }
 
@@ -247,7 +252,7 @@ final class TestResultCollector
 
     public function testTriggeredPhpDeprecation(PhpDeprecationTriggered $event): void
     {
-        if (!$this->issueFilter->shouldBeProcessed($event, true)) {
+        if (! $this->issueFilter->shouldBeProcessed($event, true)) {
             return;
         }
 
@@ -260,7 +265,7 @@ final class TestResultCollector
 
     public function testTriggeredPhpNotice(PhpNoticeTriggered $event): void
     {
-        if (!$this->issueFilter->shouldBeProcessed($event, true)) {
+        if (! $this->issueFilter->shouldBeProcessed($event, true)) {
             return;
         }
 
@@ -273,7 +278,7 @@ final class TestResultCollector
 
     public function testTriggeredPhpWarning(PhpWarningTriggered $event): void
     {
-        if (!$this->issueFilter->shouldBeProcessed($event, true)) {
+        if (! $this->issueFilter->shouldBeProcessed($event, true)) {
             return;
         }
 
@@ -286,7 +291,7 @@ final class TestResultCollector
 
     public function testTriggeredPhpunitDeprecation(PhpunitDeprecationTriggered $event): void
     {
-        if (!$event->test()->isTestMethod()) {
+        if (! $event->test()->isTestMethod()) {
             return;
         }
 
@@ -295,7 +300,7 @@ final class TestResultCollector
 
     public function testTriggeredPhpunitError(PhpunitErrorTriggered $event): void
     {
-        if (!$event->test()->isTestMethod()) {
+        if (! $event->test()->isTestMethod()) {
             return;
         }
 
@@ -304,7 +309,7 @@ final class TestResultCollector
 
     public function testTriggeredPhpunitWarning(PhpunitWarningTriggered $event): void
     {
-        if (!$event->test()->isTestMethod()) {
+        if (! $event->test()->isTestMethod()) {
             return;
         }
 
@@ -320,7 +325,7 @@ final class TestResultCollector
      */
     public function testFinished(Finished $event): void
     {
-        if (!$event->test()->isTestMethod()) {
+        if (! $event->test()->isTestMethod()) {
             return;
         }
 
@@ -330,9 +335,9 @@ final class TestResultCollector
 
         $this->process($test);
 
-        $this->status    = null;
+        $this->status = null;
         $this->throwable = null;
-        $this->prepared  = false;
+        $this->prepared = false;
     }
 
     private function registerSubscribers(Facade $facade): void
@@ -370,7 +375,7 @@ final class TestResultCollector
 
     private function process(TestMethod $test): void
     {
-        if (!isset($this->tests[$test->testDox()->prettifiedClassName()])) {
+        if (! isset($this->tests[$test->testDox()->prettifiedClassName()])) {
             $this->tests[$test->testDox()->prettifiedClassName()] = [];
         }
 

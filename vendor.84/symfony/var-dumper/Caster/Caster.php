@@ -23,20 +23,33 @@ use Symfony\Component\VarDumper\Cloner\Stub;
 class Caster
 {
     public const EXCLUDE_VERBOSE = 1;
+
     public const EXCLUDE_VIRTUAL = 2;
+
     public const EXCLUDE_DYNAMIC = 4;
+
     public const EXCLUDE_PUBLIC = 8;
+
     public const EXCLUDE_PROTECTED = 16;
+
     public const EXCLUDE_PRIVATE = 32;
+
     public const EXCLUDE_NULL = 64;
+
     public const EXCLUDE_EMPTY = 128;
+
     public const EXCLUDE_NOT_IMPORTANT = 256;
+
     public const EXCLUDE_STRICT = 512;
+
     public const EXCLUDE_UNINITIALIZED = 1024;
 
     public const PREFIX_VIRTUAL = "\0~\0";
+
     public const PREFIX_DYNAMIC = "\0+\0";
+
     public const PREFIX_PROTECTED = "\0*\0";
+
     // usage: sprintf(Caster::PATTERN_PRIVATE, $class, $property)
     public const PATTERN_PRIVATE = "\0%s\0%s";
 
@@ -45,7 +58,7 @@ class Caster
     /**
      * Casts objects to arrays and adds the dynamic property prefix.
      *
-     * @param bool $hasDebugInfo Whether the __debugInfo method exists on $obj or not
+     * @param  bool  $hasDebugInfo  Whether the __debugInfo method exists on $obj or not
      *
      * @internal since Symfony 7.3
      */
@@ -76,13 +89,13 @@ class Caster
             $prefixedKeys = [];
             foreach ($a as $k => $v) {
                 if ("\0" !== ($k[0] ?? '')) {
-                    if (!isset($classProperties[$k])) {
+                    if (! isset($classProperties[$k])) {
                         $prefixedKeys[$i] = self::PREFIX_DYNAMIC.$k;
                     }
-                } elseif ($debugClass !== $class && 1 === strpos($k, $class)) {
+                } elseif ($debugClass !== $class && strpos($k, $class) === 1) {
                     $prefixedKeys[$i] = "\0".$debugClass.strrchr($k, "\0");
                 }
-                ++$i;
+                $i++;
             }
             if ($prefixedKeys) {
                 $keys = array_keys($a);
@@ -95,7 +108,7 @@ class Caster
 
         if ($hasDebugInfo && \is_array($debugInfo)) {
             foreach ($debugInfo as $k => $v) {
-                if (!isset($k[0]) || "\0" !== $k[0]) {
+                if (! isset($k[0]) || $k[0] !== "\0") {
                     if (\array_key_exists(self::PREFIX_DYNAMIC.$k, $a)) {
                         continue;
                     }
@@ -116,10 +129,10 @@ class Caster
      * By default, a single match in the $filter bit field filters properties out, following an "or" logic.
      * When EXCLUDE_STRICT is set, an "and" logic is applied: all bits must match for a property to be removed.
      *
-     * @param array    $a                The array containing the properties to filter
-     * @param int      $filter           A bit field of Caster::EXCLUDE_* constants specifying which properties to filter out
-     * @param string[] $listedProperties List of properties to exclude when Caster::EXCLUDE_VERBOSE is set, and to preserve when Caster::EXCLUDE_NOT_IMPORTANT is set
-     * @param int|null &$count           Set to the number of removed properties
+     * @param  array  $a  The array containing the properties to filter
+     * @param  int  $filter  A bit field of Caster::EXCLUDE_* constants specifying which properties to filter out
+     * @param  string[]  $listedProperties  List of properties to exclude when Caster::EXCLUDE_VERBOSE is set, and to preserve when Caster::EXCLUDE_NOT_IMPORTANT is set
+     * @param  int|null  &$count  Set to the number of removed properties
      */
     public static function filter(array $a, int $filter, array $listedProperties = [], ?int &$count = 0): array
     {
@@ -128,28 +141,28 @@ class Caster
         foreach ($a as $k => $v) {
             $type = self::EXCLUDE_STRICT & $filter;
 
-            if (null === $v) {
+            if ($v === null) {
                 $type |= self::EXCLUDE_NULL & $filter;
                 $type |= self::EXCLUDE_EMPTY & $filter;
-            } elseif (false === $v || '' === $v || '0' === $v || 0 === $v || 0.0 === $v || [] === $v) {
+            } elseif ($v === false || $v === '' || $v === '0' || $v === 0 || $v === 0.0 || $v === []) {
                 $type |= self::EXCLUDE_EMPTY & $filter;
             } elseif ($v instanceof UninitializedStub) {
                 $type |= self::EXCLUDE_UNINITIALIZED & $filter;
             }
-            if ((self::EXCLUDE_NOT_IMPORTANT & $filter) && !\in_array($k, $listedProperties, true)) {
+            if ((self::EXCLUDE_NOT_IMPORTANT & $filter) && ! \in_array($k, $listedProperties, true)) {
                 $type |= self::EXCLUDE_NOT_IMPORTANT;
             }
             if ((self::EXCLUDE_VERBOSE & $filter) && \in_array($k, $listedProperties, true)) {
                 $type |= self::EXCLUDE_VERBOSE;
             }
 
-            if (!isset($k[1]) || "\0" !== $k[0]) {
+            if (! isset($k[1]) || $k[0] !== "\0") {
                 $type |= self::EXCLUDE_PUBLIC & $filter;
-            } elseif ('~' === $k[1]) {
+            } elseif ($k[1] === '~') {
                 $type |= self::EXCLUDE_VIRTUAL & $filter;
-            } elseif ('+' === $k[1]) {
+            } elseif ($k[1] === '+') {
                 $type |= self::EXCLUDE_DYNAMIC & $filter;
-            } elseif ('*' === $k[1]) {
+            } elseif ($k[1] === '*') {
                 $type |= self::EXCLUDE_PROTECTED & $filter;
             } else {
                 $type |= self::EXCLUDE_PRIVATE & $filter;
@@ -157,7 +170,7 @@ class Caster
 
             if ((self::EXCLUDE_STRICT & $filter) ? $type === $filter : $type) {
                 unset($a[$k]);
-                ++$count;
+                $count++;
             }
         }
 

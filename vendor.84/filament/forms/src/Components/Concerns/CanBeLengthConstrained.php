@@ -7,13 +7,13 @@ use Filament\Forms\Components\Contracts\CanHaveNumericState;
 
 trait CanBeLengthConstrained
 {
-    protected int | Closure | null $length = null;
+    protected int|Closure|null $length = null;
 
-    protected int | Closure | null $maxLength = null;
+    protected int|Closure|null $maxLength = null;
 
-    protected int | Closure | null $minLength = null;
+    protected int|Closure|null $minLength = null;
 
-    public function length(int | Closure | null $length): static
+    public function length(int|Closure|null $length): static
     {
         $this->length = $length;
         $this->maxLength = $length;
@@ -22,14 +22,14 @@ trait CanBeLengthConstrained
         return $this;
     }
 
-    public function maxLength(int | Closure | null $length): static
+    public function maxLength(int|Closure|null $length): static
     {
         $this->maxLength = $length;
 
         return $this;
     }
 
-    public function minLength(int | Closure | null $length): static
+    public function minLength(int|Closure|null $length): static
     {
         $this->minLength = $length;
 

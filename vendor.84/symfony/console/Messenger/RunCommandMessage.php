@@ -19,15 +19,14 @@ use Symfony\Component\Console\Exception\RunCommandFailedException;
 class RunCommandMessage implements \Stringable
 {
     /**
-     * @param bool $throwOnFailure  If the command has a non-zero exit code, throw {@see RunCommandFailedException}
-     * @param bool $catchExceptions @see Application::setCatchExceptions()
+     * @param  bool  $throwOnFailure  If the command has a non-zero exit code, throw {@see RunCommandFailedException}
+     * @param  bool  $catchExceptions  @see Application::setCatchExceptions()
      */
     public function __construct(
         public readonly string $input,
         public readonly bool $throwOnFailure = true,
         public readonly bool $catchExceptions = false,
-    ) {
-    }
+    ) {}
 
     public function __toString(): string
     {

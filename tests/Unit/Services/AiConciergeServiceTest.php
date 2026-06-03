@@ -1,16 +1,18 @@
 <?php
 
 use App\Enums\LeadTemperature;
+use App\Models\AgencySetting;
 use App\Models\Lead;
 use App\Services\AiConciergeService;
 use Gemini\Laravel\Facades\Gemini;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
+use Tests\TestCase;
 
-uses(Tests\TestCase::class, RefreshDatabase::class);
+uses(TestCase::class, RefreshDatabase::class);
 
 beforeEach(function () {
-    \App\Models\AgencySetting::factory()->create(['gemini_api_key' => 'fake_api_key']);
+    AgencySetting::factory()->create(['gemini_api_key' => 'fake_api_key']);
 });
 
 test('it processes message successfully and saves history', function () {
@@ -100,7 +102,7 @@ test('it returns FAQ when Gemini API key is missing', function () {
     $lead = Lead::factory()->create();
 
     // Set empty API key
-    $settings = \App\Models\AgencySetting::first();
+    $settings = AgencySetting::first();
     $settings->gemini_api_key = null;
     $settings->save();
 

@@ -4,13 +4,12 @@ namespace DeepCopy;
 
 use function function_exists;
 
-if (false === function_exists('DeepCopy\deep_copy')) {
+if (function_exists('DeepCopy\deep_copy') === false) {
     /**
      * Deep copies the given value.
      *
-     * @param mixed $value
-     * @param bool  $useCloneMethod
-     *
+     * @param  mixed  $value
+     * @param  bool  $useCloneMethod
      * @return mixed
      */
     function deep_copy($value, $useCloneMethod = false)

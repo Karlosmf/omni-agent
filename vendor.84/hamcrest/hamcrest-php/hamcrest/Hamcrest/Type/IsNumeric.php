@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Type;
 
 /*
@@ -11,7 +12,6 @@ use Hamcrest\Core\IsTypeOf;
  */
 class IsNumeric extends IsTypeOf
 {
-
     public function __construct()
     {
         parent::__construct('number');
@@ -30,8 +30,8 @@ class IsNumeric extends IsTypeOf
      * Return if the string passed is a valid hexadecimal number.
      * This check is necessary because PHP 7 doesn't recognize hexadecimal string as numeric anymore.
      *
-     * @param mixed $item
-     * @return boolean
+     * @param  mixed  $item
+     * @return bool
      */
     private function isHexadecimal($item)
     {

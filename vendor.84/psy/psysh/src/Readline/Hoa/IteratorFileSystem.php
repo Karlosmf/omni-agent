@@ -57,13 +57,12 @@ class IteratorFileSystem extends \FilesystemIterator
     {
         $this->_splFileInfoClass = $splFileInfoClass;
 
-        if (null === $flags) {
+        if ($flags === null) {
             parent::__construct($path);
         } else {
             parent::__construct($path, $flags);
         }
 
-        return;
     }
 
     /**
@@ -75,7 +74,7 @@ class IteratorFileSystem extends \FilesystemIterator
     {
         $out = parent::current();
 
-        if (null !== $this->_splFileInfoClass &&
+        if ($this->_splFileInfoClass !== null &&
             $out instanceof \SplFileInfo) {
             $out->setInfoClass($this->_splFileInfoClass);
             $out = $out->getFileInfo();

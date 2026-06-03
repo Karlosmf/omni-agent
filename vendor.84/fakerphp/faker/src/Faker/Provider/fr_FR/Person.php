@@ -88,7 +88,7 @@ class Person extends \Faker\Provider\Person
 
         $nir .=
             // Year of birth (aa)
-            $this->numerify('##') .
+            $this->numerify('##').
             // Mont of birth (mm)
             sprintf('%02d', $this->numberBetween(1, 12));
 
@@ -122,7 +122,7 @@ class Person extends \Faker\Provider\Person
 
         // Format is x xx xx xx xxx xxx xx
         if ($formatted) {
-            $nir = substr($nir, 0, 1) . ' ' . substr($nir, 1, 2) . ' ' . substr($nir, 3, 2) . ' ' . substr($nir, 5, 2) . ' ' . substr($nir, 7, 3) . ' ' . substr($nir, 10, 3) . ' ' . substr($nir, 13, 2);
+            $nir = substr($nir, 0, 1).' '.substr($nir, 1, 2).' '.substr($nir, 3, 2).' '.substr($nir, 5, 2).' '.substr($nir, 7, 3).' '.substr($nir, 10, 3).' '.substr($nir, 13, 2);
         }
 
         return $nir;

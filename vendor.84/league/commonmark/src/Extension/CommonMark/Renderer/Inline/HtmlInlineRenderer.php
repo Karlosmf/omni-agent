@@ -25,13 +25,13 @@ use League\CommonMark\Xml\XmlNodeRendererInterface;
 use League\Config\ConfigurationAwareInterface;
 use League\Config\ConfigurationInterface;
 
-final class HtmlInlineRenderer implements NodeRendererInterface, XmlNodeRendererInterface, ConfigurationAwareInterface
+final class HtmlInlineRenderer implements ConfigurationAwareInterface, NodeRendererInterface, XmlNodeRendererInterface
 {
     /** @psalm-readonly-allow-private-mutation */
     private ConfigurationInterface $config;
 
     /**
-     * @param HtmlInline $node
+     * @param  HtmlInline  $node
      *
      * {@inheritDoc}
      *

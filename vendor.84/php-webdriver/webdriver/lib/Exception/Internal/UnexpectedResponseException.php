@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Facebook\WebDriver\Exception\Internal;
 
@@ -28,8 +30,8 @@ class UnexpectedResponseException extends \RuntimeException implements PhpWebDri
     {
         return new self(
             sprintf(
-                "JSON decoding of remote response failed.\n" .
-                "Error code: %d\n" .
+                "JSON decoding of remote response failed.\n".
+                "Error code: %d\n".
                 "The response: '%s'\n",
                 $jsonLastError,
                 $rawResults
@@ -42,8 +44,8 @@ class UnexpectedResponseException extends \RuntimeException implements PhpWebDri
         return new self(
             sprintf(
                 'Existing Capabilities were not provided, and they also cannot be read from Selenium Grid'
-                . ' (error: "%s"). You are probably not using Selenium Grid, so to reuse the previous session,'
-                . ' Capabilities must be explicitly provided to createBySessionID() method.',
+                .' (error: "%s"). You are probably not using Selenium Grid, so to reuse the previous session,'
+                .' Capabilities must be explicitly provided to createBySessionID() method.',
                 $previousException->getMessage()
             )
         );

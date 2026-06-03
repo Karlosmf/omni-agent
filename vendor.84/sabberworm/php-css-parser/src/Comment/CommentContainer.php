@@ -19,7 +19,7 @@ trait CommentContainer
     protected $comments = [];
 
     /**
-     * @param list<Comment> $comments
+     * @param  list<Comment>  $comments
      */
     public function addComments(array $comments): void
     {
@@ -35,7 +35,7 @@ trait CommentContainer
     }
 
     /**
-     * @param list<Comment> $comments
+     * @param  list<Comment>  $comments
      */
     public function setComments(array $comments): void
     {

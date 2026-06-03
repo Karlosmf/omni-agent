@@ -8,26 +8,47 @@ use Faker\UniqueGenerator;
 class HtmlLorem extends Base
 {
     public const HTML_TAG = 'html';
+
     public const HEAD_TAG = 'head';
+
     public const BODY_TAG = 'body';
+
     public const DIV_TAG = 'div';
+
     public const P_TAG = 'p';
+
     public const A_TAG = 'a';
+
     public const SPAN_TAG = 'span';
+
     public const TABLE_TAG = 'table';
+
     public const THEAD_TAG = 'thead';
+
     public const TBODY_TAG = 'tbody';
+
     public const TR_TAG = 'tr';
+
     public const TD_TAG = 'td';
+
     public const TH_TAG = 'th';
+
     public const UL_TAG = 'ul';
+
     public const LI_TAG = 'li';
+
     public const H_TAG = 'h';
+
     public const B_TAG = 'b';
+
     public const I_TAG = 'i';
+
     public const TITLE_TAG = 'title';
+
     public const FORM_TAG = 'form';
+
     public const INPUT_TAG = 'input';
+
     public const LABEL_TAG = 'label';
 
     private $idGenerator;
@@ -40,18 +61,17 @@ class HtmlLorem extends Base
     }
 
     /**
-     * @param int $maxDepth
-     * @param int $maxWidth
-     *
+     * @param  int  $maxDepth
+     * @param  int  $maxWidth
      * @return string
      */
     public function randomHtml($maxDepth = 4, $maxWidth = 4)
     {
-        if (!class_exists(\DOMDocument::class, false)) {
+        if (! class_exists(\DOMDocument::class, false)) {
             throw new \RuntimeException('ext-dom is required to use randomHtml.');
         }
 
-        $document = new \DOMDocument();
+        $document = new \DOMDocument;
         $this->idGenerator = new UniqueGenerator($this->generator);
 
         $head = $document->createElement('head');
@@ -72,7 +92,7 @@ class HtmlLorem extends Base
 
     private function addRandomSubTree(\DOMElement $root, $maxDepth, $maxWidth)
     {
-        --$maxDepth;
+        $maxDepth--;
 
         if ($maxDepth <= 0) {
             return $root;
@@ -80,7 +100,7 @@ class HtmlLorem extends Base
 
         $siblings = self::numberBetween(1, $maxWidth);
 
-        for ($i = 0; $i < $siblings; ++$i) {
+        for ($i = 0; $i < $siblings; $i++) {
             if ($maxDepth == 1) {
                 $this->addRandomLeaf($root);
             } else {
@@ -195,7 +215,7 @@ class HtmlLorem extends Base
 
     private function addRandomH(\DOMElement $element, $maxLength = 10): void
     {
-        $h = static::H_TAG . (string) self::numberBetween(1, 3);
+        $h = static::H_TAG.(string) self::numberBetween(1, 3);
         $text = $element->ownerDocument->createTextNode($this->generator->sentence(self::numberBetween(1, $maxLength)));
         $node = $element->ownerDocument->createElement($h);
         $node->appendChild($text);
@@ -273,17 +293,17 @@ class HtmlLorem extends Base
         $tr = $element->ownerDocument->createElement(static::TR_TAG);
         $thead->appendChild($tr);
 
-        for ($i = 0; $i < $cols; ++$i) {
+        for ($i = 0; $i < $cols; $i++) {
             $th = $element->ownerDocument->createElement(static::TH_TAG);
             $th->textContent = $this->generator->sentence(self::numberBetween(1, $maxTitle));
             $tr->appendChild($th);
         }
 
-        for ($i = 0; $i < $rows; ++$i) {
+        for ($i = 0; $i < $rows; $i++) {
             $tr = $element->ownerDocument->createElement(static::TR_TAG);
             $tbody->appendChild($tr);
 
-            for ($j = 0; $j < $cols; ++$j) {
+            for ($j = 0; $j < $cols; $j++) {
                 $th = $element->ownerDocument->createElement(static::TD_TAG);
                 $th->textContent = $this->generator->sentence(self::numberBetween(1, $maxLength));
                 $tr->appendChild($th);
@@ -297,7 +317,7 @@ class HtmlLorem extends Base
         $num = self::numberBetween(1, $maxItems);
         $ul = $element->ownerDocument->createElement(static::UL_TAG);
 
-        for ($i = 0; $i < $num; ++$i) {
+        for ($i = 0; $i < $num; $i++) {
             $li = $element->ownerDocument->createElement(static::LI_TAG);
             $li->textContent = $this->generator->sentence(self::numberBetween(1, $maxLength));
             $ul->appendChild($li);

@@ -25,8 +25,11 @@ abstract class AbstractHeader implements HeaderInterface
     private static QpMimeHeaderEncoder $encoder;
 
     private string $name;
+
     private int $lineLength = 76;
+
     private ?string $lang = null;
+
     private string $charset = 'utf-8';
 
     public function __construct(string $name)
@@ -82,8 +85,8 @@ abstract class AbstractHeader implements HeaderInterface
     /**
      * Produces a compliant, formatted RFC 2822 'phrase' based on the string given.
      *
-     * @param string $string  as displayed
-     * @param bool   $shorten the first line to make remove for header name
+     * @param  string  $string  as displayed
+     * @param  bool  $shorten  the first line to make remove for header name
      */
     protected function createPhrase(HeaderInterface $header, string $string, string $charset, bool $shorten = false): string
     {
@@ -91,7 +94,7 @@ abstract class AbstractHeader implements HeaderInterface
         $phraseStr = $string;
 
         // If it's not valid
-        if (!preg_match('/^'.self::PHRASE_PATTERN.'$/D', $phraseStr)) {
+        if (! preg_match('/^'.self::PHRASE_PATTERN.'$/D', $phraseStr)) {
             // .. but it is just ascii text, try escaping some characters
             // and make it a quoted-string
             if (preg_match('/^[\x00-\x08\x0B\x0C\x0E-\x7F]*$/D', $phraseStr)) {
@@ -138,7 +141,7 @@ abstract class AbstractHeader implements HeaderInterface
                         $token = substr($token, 1);
                 }
 
-                if (-1 == $usedLength) {
+                if ($usedLength == -1) {
                     $usedLength = \strlen($header->getName().': ') + \strlen($value);
                 }
                 $value .= $this->getTokenAsEncodedWord($token, $usedLength);
@@ -169,21 +172,21 @@ abstract class AbstractHeader implements HeaderInterface
             if ($this->tokenNeedsEncoding($token)) {
                 $encodedToken .= $token;
             } else {
-                if ('' !== $encodedToken) {
+                if ($encodedToken !== '') {
                     $tokens[] = $encodedToken;
                     $encodedToken = '';
                 }
                 $tokens[] = $token;
             }
         }
-        if ('' !== $encodedToken) {
+        if ($encodedToken !== '') {
             $tokens[] = $encodedToken;
         }
 
         foreach ($tokens as $i => $token) {
             // whitespace(s) between 2 encoded tokens
             if (
-                0 < $i
+                $i > 0
                 && isset($tokens[$i + 1])
                 && preg_match('~^[\t ]+$~', $token)
                 && $this->tokenNeedsEncoding($tokens[$i - 1])
@@ -202,11 +205,11 @@ abstract class AbstractHeader implements HeaderInterface
      */
     protected function getTokenAsEncodedWord(string $token, int $firstLineOffset = 0): string
     {
-        self::$encoder ??= new QpMimeHeaderEncoder();
+        self::$encoder ??= new QpMimeHeaderEncoder;
 
         // Adjust $firstLineOffset to account for space needed for syntax
         $charsetDecl = $this->charset;
-        if (null !== $this->lang) {
+        if ($this->lang !== null) {
             $charsetDecl .= '*'.$this->lang;
         }
         $encodingWrapperLength = \strlen('=?'.$charsetDecl.'?'.self::$encoder->getName().'??=');
@@ -220,7 +223,7 @@ abstract class AbstractHeader implements HeaderInterface
             self::$encoder->encodeString($token, $this->charset, $firstLineOffset, 75 - $encodingWrapperLength)
         );
 
-        if ('iso-2022-jp' !== strtolower($this->charset)) {
+        if (strtolower($this->charset) !== 'iso-2022-jp') {
             // special encoding for iso-2022-jp using mb_encode_mimeheader
             foreach ($encodedTextLines as $lineNum => $line) {
                 $encodedTextLines[$lineNum] = '=?'.$charsetDecl.'?'.self::$encoder->getName().'?'.$line.'?=';
@@ -263,7 +266,7 @@ abstract class AbstractHeader implements HeaderInterface
      * Takes an array of tokens which appear in the header and turns them into
      * an RFC 2822 compliant string, adding FWSP where needed.
      *
-     * @param string[] $tokens
+     * @param  string[]  $tokens
      */
     private function tokensToString(array $tokens): string
     {
@@ -275,15 +278,15 @@ abstract class AbstractHeader implements HeaderInterface
         // Build all tokens back into compliant header
         foreach ($tokens as $i => $token) {
             // Line longer than specified maximum or token was just a new line
-            if (("\r\n" === $token)
+            if (($token === "\r\n")
                 || ($i > 0 && \strlen($currentLine.$token) > $this->lineLength)
-                && '' !== $currentLine) {
+                && $currentLine !== '') {
                 $headerLines[] = '';
                 $currentLine = &$headerLines[$lineCount++];
             }
 
             // Append token to the line
-            if ("\r\n" !== $token) {
+            if ($token !== "\r\n") {
                 $currentLine .= $token;
             }
         }

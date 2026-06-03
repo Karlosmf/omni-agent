@@ -27,29 +27,29 @@ trait CanGenerateButtonHtml
      */
     public function generateButtonHtml(
         ComponentAttributeBag $attributes,
-        string | Htmlable | null $badge = null,
-        string | array | null $badgeColor = 'primary',
-        Size | string | null $badgeSize = null,
-        string | array | null $color = null,
+        string|Htmlable|null $badge = null,
+        string|array|null $badgeColor = 'primary',
+        Size|string|null $badgeSize = null,
+        string|array|null $color = null,
         ?string $form = null,
         ?string $formId = null,
         bool $hasLoadingIndicator = true,
         ?bool $hasSpaMode = null,
         ?string $href = null,
-        string | BackedEnum | Htmlable | null $icon = null,
+        string|BackedEnum|Htmlable|null $icon = null,
         ?string $iconAlias = null,
         ?IconPosition $iconPosition = IconPosition::Before,
-        IconSize | string | null $iconSize = null,
+        IconSize|string|null $iconSize = null,
         bool $isDisabled = false,
         bool $isLabelSrOnly = false,
         bool $isOutlined = false,
         ?array $keyBindings = null,
-        string | Htmlable | null $label = null,
+        string|Htmlable|null $label = null,
         ?string $labeledFromBreakpoint = null,
-        Size | string | null $size = null,
+        Size|string|null $size = null,
         string $tag = 'button',
         ?string $target = null,
-        string | Htmlable | null $tooltip = null,
+        string|Htmlable|null $tooltip = null,
         ?string $type = 'button',
     ): string {
         $color ??= 'primary';
@@ -106,7 +106,7 @@ trait CanGenerateButtonHtml
                 'wire:loading.attr' => $tag === 'button' ? 'disabled' : null,
                 'wire:target' => ($hasLoadingIndicator && $loadingIndicatorTarget) ? $loadingIndicatorTarget : null,
                 'x-bind:disabled' => $hasFormProcessingLoadingIndicator ? 'isProcessing' : null,
-                'x-bind:aria-label' => ($isLabelSrOnly && $hasFormProcessingLoadingIndicator) ? ('isProcessing ? processingMessage : ' . Js::from(trim(strip_tags(e($label))))) : null,
+                'x-bind:aria-label' => ($isLabelSrOnly && $hasFormProcessingLoadingIndicator) ? ('isProcessing ? processingMessage : '.Js::from(trim(strip_tags(e($label))))) : null,
             ], escape: false)
             ->when(
                 $isDisabled && $hasTooltip,
@@ -126,12 +126,12 @@ trait CanGenerateButtonHtml
             ->color(app(ButtonComponent::class, ['isOutlined' => $isOutlined]), $color);
 
         $iconHtml = $icon ? generate_icon_html($icon, $iconAlias, (new ComponentAttributeBag([
-            'wire:loading.remove.delay.' . config('filament.livewire_loading_delay', 'default') => $hasLoadingIndicator,
+            'wire:loading.remove.delay.'.config('filament.livewire_loading_delay', 'default') => $hasLoadingIndicator,
             'wire:target' => $hasLoadingIndicator ? $loadingIndicatorTarget : false,
         ])), size: $iconSize)->toHtml() : '';
 
         $loadingIndicatorHtml = $hasLoadingIndicator ? generate_loading_indicator_html((new ComponentAttributeBag([
-            'wire:loading.delay.' . config('filament.livewire_loading_delay', 'default') => '',
+            'wire:loading.delay.'.config('filament.livewire_loading_delay', 'default') => '',
             'wire:target' => $loadingIndicatorTarget,
         ])), size: $iconSize)->toHtml() : '';
 
@@ -168,7 +168,7 @@ trait CanGenerateButtonHtml
             ) ?>
         <?php } ?>
 
-        <?= ($tag === 'form') ? ('<form ' . $formAttributes->toHtml() . '>' . csrf_field()) : '' ?>
+        <?= ($tag === 'form') ? ('<form '.$formAttributes->toHtml().'>'.csrf_field()) : '' ?>
 
         <<?= ($tag === 'form') ? 'button' : $tag ?>
             <?php if (($tag === 'a') && (! ($isDisabled && $hasTooltip))) { ?>

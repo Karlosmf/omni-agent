@@ -271,9 +271,7 @@ trait Boundaries
      * echo Carbon::parse('2018-07-25 12:45:16')->startOfWeek(Carbon::SUNDAY) . "\n";
      * ```
      *
-     * @param WeekDay|int|null $weekStartsAt optional start allow you to specify the day of week to use to start the week
-     *
-     * @return static
+     * @param  WeekDay|int|null  $weekStartsAt  optional start allow you to specify the day of week to use to start the week
      */
     public function startOfWeek(WeekDay|int|null $weekStartsAt = null): static
     {
@@ -295,9 +293,7 @@ trait Boundaries
      * echo Carbon::parse('2018-07-25 12:45:16')->endOfWeek(Carbon::SATURDAY) . "\n";
      * ```
      *
-     * @param WeekDay|int|null $weekEndsAt optional end allow you to specify the day of week to use to end the week
-     *
-     * @return static
+     * @param  WeekDay|int|null  $weekEndsAt  optional end allow you to specify the day of week to use to end the week
      */
     public function endOfWeek(WeekDay|int|null $weekEndsAt = null): static
     {
@@ -439,7 +435,7 @@ trait Boundaries
     {
         $ucfUnit = ucfirst($unit instanceof Unit ? $unit->value : static::singularUnit($unit));
         $method = "startOf$ucfUnit";
-        if (!method_exists($this, $method)) {
+        if (! method_exists($this, $method)) {
             throw new UnknownUnitException($unit);
         }
 
@@ -460,7 +456,7 @@ trait Boundaries
     {
         $ucfUnit = ucfirst($unit instanceof Unit ? $unit->value : static::singularUnit($unit));
         $method = "endOf$ucfUnit";
-        if (!method_exists($this, $method)) {
+        if (! method_exists($this, $method)) {
             throw new UnknownUnitException($unit);
         }
 

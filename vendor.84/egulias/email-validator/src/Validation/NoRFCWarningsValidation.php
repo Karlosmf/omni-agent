@@ -16,9 +16,9 @@ class NoRFCWarningsValidation extends RFCValidation
     /**
      * {@inheritdoc}
      */
-    public function isValid(string $email, EmailLexer $emailLexer) : bool
+    public function isValid(string $email, EmailLexer $emailLexer): bool
     {
-        if (!parent::isValid($email, $emailLexer)) {
+        if (! parent::isValid($email, $emailLexer)) {
             return false;
         }
 
@@ -26,7 +26,7 @@ class NoRFCWarningsValidation extends RFCValidation
             return true;
         }
 
-        $this->error = new InvalidEmail(new RFCWarnings(), '');
+        $this->error = new InvalidEmail(new RFCWarnings, '');
 
         return false;
     }
@@ -34,7 +34,7 @@ class NoRFCWarningsValidation extends RFCValidation
     /**
      * {@inheritdoc}
      */
-    public function getError() : ?InvalidEmail
+    public function getError(): ?InvalidEmail
     {
         return $this->error ?: parent::getError();
     }

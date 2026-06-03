@@ -21,7 +21,8 @@ trait Options
 
     /**
      * Generate a string format of the enum options using the provided callback and glue.
-     * @param Closure(string $name, mixed $value): string $callback
+     *
+     * @param  Closure(string $name, mixed $value): string  $callback
      */
     public static function stringOptions(?Closure $callback = null, string $glue = '\n'): string
     {
@@ -51,7 +52,7 @@ trait Options
                 $words = array_filter(preg_split('/(?=[A-Z])/', $name));
             }
 
-            return "<option value=\"{$value}\">" . ucfirst(strtolower(implode(' ', $words))) . '</option>';
+            return "<option value=\"{$value}\">".ucfirst(strtolower(implode(' ', $words))).'</option>';
         };
 
         $options = array_map($callback, array_keys($options), array_values($options));

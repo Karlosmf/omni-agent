@@ -44,7 +44,7 @@ enum Bom: string
             default => $sequence,
         };
 
-        if (!is_string($str) || '' === rtrim($str)) {
+        if (! is_string($str) || rtrim($str) === '') {
             return null;
         }
 
@@ -60,7 +60,7 @@ enum Bom: string
     private static function getContents(Stream|SplFileObject $sequence, int $length, int $offset): ?string
     {
         $position = $sequence->ftell();
-        if (false === $position) {
+        if ($position === false) {
             return null;
         }
 
@@ -68,7 +68,7 @@ enum Bom: string
             $sequence->fseek($offset);
             $str = $sequence->fread($length);
             $sequence->fseek($position);
-            if (false === $str) {
+            if ($str === false) {
                 return null;
             }
 

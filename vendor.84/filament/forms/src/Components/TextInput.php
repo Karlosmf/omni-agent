@@ -34,21 +34,21 @@ class TextInput extends Field implements CanHaveNumericState, Contracts\CanBeLen
      */
     protected string $view = 'filament-forms::components.text-input';
 
-    protected string | RawJs | Closure | null $mask = null;
+    protected string|RawJs|Closure|null $mask = null;
 
-    protected bool | Closure $isEmail = false;
+    protected bool|Closure $isEmail = false;
 
-    protected bool | Closure $isNumeric = false;
+    protected bool|Closure $isNumeric = false;
 
-    protected bool | Closure $isPassword = false;
+    protected bool|Closure $isPassword = false;
 
-    protected bool | Closure $isRevealable = false;
+    protected bool|Closure $isRevealable = false;
 
-    protected bool | Closure $isCopyable = false;
+    protected bool|Closure $isCopyable = false;
 
-    protected bool | Closure $isTel = false;
+    protected bool|Closure $isTel = false;
 
-    protected bool | Closure $isUrl = false;
+    protected bool|Closure $isUrl = false;
 
     /**
      * @var scalar | Closure | null
@@ -60,11 +60,11 @@ class TextInput extends Field implements CanHaveNumericState, Contracts\CanBeLen
      */
     protected $minValue = null;
 
-    protected string | Closure | null $telRegex = null;
+    protected string|Closure|null $telRegex = null;
 
-    protected string | Closure | null $type = null;
+    protected string|Closure|null $type = null;
 
-    public function currentPassword(bool | Closure $condition = true, ?string $guard = null): static
+    public function currentPassword(bool|Closure $condition = true, ?string $guard = null): static
     {
         if (filled($guard)) {
             $this->rule("current_password:{$guard}", $condition);
@@ -75,7 +75,7 @@ class TextInput extends Field implements CanHaveNumericState, Contracts\CanBeLen
         return $this;
     }
 
-    public function email(bool | Closure $condition = true): static
+    public function email(bool|Closure $condition = true): static
     {
         $this->isEmail = $condition;
 
@@ -84,7 +84,7 @@ class TextInput extends Field implements CanHaveNumericState, Contracts\CanBeLen
         return $this;
     }
 
-    public function integer(bool | Closure $condition = true): static
+    public function integer(bool|Closure $condition = true): static
     {
         $this->numeric($condition);
         $this->inputMode(static fn (): ?string => $condition ? 'numeric' : null);
@@ -94,7 +94,7 @@ class TextInput extends Field implements CanHaveNumericState, Contracts\CanBeLen
         return $this;
     }
 
-    public function mask(string | RawJs | Closure | null $mask): static
+    public function mask(string|RawJs|Closure|null $mask): static
     {
         $this->mask = $mask;
 
@@ -133,7 +133,7 @@ class TextInput extends Field implements CanHaveNumericState, Contracts\CanBeLen
         return $this;
     }
 
-    public function numeric(bool | Closure $condition = true): static
+    public function numeric(bool|Closure $condition = true): static
     {
         $this->isNumeric = $condition;
 
@@ -144,14 +144,14 @@ class TextInput extends Field implements CanHaveNumericState, Contracts\CanBeLen
         return $this;
     }
 
-    public function password(bool | Closure $condition = true): static
+    public function password(bool|Closure $condition = true): static
     {
         $this->isPassword = $condition;
 
         return $this;
     }
 
-    public function revealable(bool | Closure $condition = true): static
+    public function revealable(bool|Closure $condition = true): static
     {
         $this->isRevealable = $condition;
         $this->suffixActions([
@@ -172,9 +172,9 @@ class TextInput extends Field implements CanHaveNumericState, Contracts\CanBeLen
     }
 
     public function copyable(
-        bool | Closure $condition = true,
-        string | Closure | null $copyMessage = null,
-        int | Closure | null $copyMessageDuration = null
+        bool|Closure $condition = true,
+        string|Closure|null $copyMessage = null,
+        int|Closure|null $copyMessageDuration = null
     ): static {
         $this->isCopyable = $condition;
 
@@ -193,7 +193,7 @@ class TextInput extends Field implements CanHaveNumericState, Contracts\CanBeLen
         return (bool) $this->evaluate($this->isCopyable);
     }
 
-    public function tel(bool | Closure $condition = true): static
+    public function tel(bool|Closure $condition = true): static
     {
         $this->isTel = $condition;
 
@@ -202,21 +202,21 @@ class TextInput extends Field implements CanHaveNumericState, Contracts\CanBeLen
         return $this;
     }
 
-    public function telRegex(string | Closure | null $regex): static
+    public function telRegex(string|Closure|null $regex): static
     {
         $this->telRegex = $regex;
 
         return $this;
     }
 
-    public function type(string | Closure | null $type): static
+    public function type(string|Closure|null $type): static
     {
         $this->type = $type;
 
         return $this;
     }
 
-    public function url(bool | Closure $condition = true): static
+    public function url(bool|Closure $condition = true): static
     {
         $this->isUrl = $condition;
 
@@ -225,7 +225,7 @@ class TextInput extends Field implements CanHaveNumericState, Contracts\CanBeLen
         return $this;
     }
 
-    public function getMask(): string | RawJs | null
+    public function getMask(): string|RawJs|null
     {
         return $this->evaluate($this->mask);
     }

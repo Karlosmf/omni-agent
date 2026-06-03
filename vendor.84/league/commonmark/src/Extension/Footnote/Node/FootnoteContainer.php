@@ -16,6 +16,4 @@ namespace League\CommonMark\Extension\Footnote\Node;
 
 use League\CommonMark\Node\Block\AbstractBlock;
 
-final class FootnoteContainer extends AbstractBlock
-{
-}
+final class FootnoteContainer extends AbstractBlock {}

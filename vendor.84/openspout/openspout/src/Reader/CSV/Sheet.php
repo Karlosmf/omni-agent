@@ -15,7 +15,7 @@ final readonly class Sheet implements SheetInterface
     private RowIterator $rowIterator;
 
     /**
-     * @param RowIterator $rowIterator Corresponding row iterator
+     * @param  RowIterator  $rowIterator  Corresponding row iterator
      */
     public function __construct(RowIterator $rowIterator)
     {

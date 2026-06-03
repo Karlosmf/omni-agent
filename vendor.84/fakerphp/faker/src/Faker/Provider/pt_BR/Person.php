@@ -127,8 +127,7 @@ class Person extends \Faker\Provider\Person
      *
      * @see http://en.wikipedia.org/wiki/Cadastro_de_Pessoas_F%C3%ADsicas
      *
-     * @param bool $formatted If the number should have dots/dashes or not.
-     *
+     * @param  bool  $formatted  If the number should have dots/dashes or not.
      * @return string
      */
     public function cpf($formatted = true)
@@ -145,8 +144,7 @@ class Person extends \Faker\Provider\Person
      *
      * @see http://pt.wikipedia.org/wiki/C%C3%A9dula_de_identidade
      *
-     * @param bool $formatted If the number should have dots/dashes or not.
-     *
+     * @param  bool  $formatted  If the number should have dots/dashes or not.
      * @return string
      */
     public function rg($formatted = true)

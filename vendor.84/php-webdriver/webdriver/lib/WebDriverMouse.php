@@ -30,8 +30,8 @@ interface WebDriverMouse
     public function mouseDown(WebDriverCoordinates $where);
 
     /**
-     * @param int $x_offset
-     * @param int $y_offset
+     * @param  int  $x_offset
+     * @param  int  $y_offset
      * @return WebDriverMouse
      */
     public function mouseMove(

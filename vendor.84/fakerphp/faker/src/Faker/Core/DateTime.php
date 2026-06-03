@@ -26,8 +26,7 @@ final class DateTime implements DateTimeExtension, GeneratorAwareExtension
     /**
      * Get the POSIX-timestamp of a DateTime, int or string.
      *
-     * @param \DateTime|float|int|string $until
-     *
+     * @param  \DateTime|float|int|string  $until
      * @return false|int
      */
     private function getTimestamp($until = 'now')
@@ -46,11 +45,11 @@ final class DateTime implements DateTimeExtension, GeneratorAwareExtension
     /**
      * Get a DateTime created based on a POSIX-timestamp.
      *
-     * @param int $timestamp the UNIX / POSIX-compatible timestamp
+     * @param  int  $timestamp  the UNIX / POSIX-compatible timestamp
      */
     private function getTimestampDateTime(int $timestamp): \DateTime
     {
-        return new \DateTime('@' . $timestamp);
+        return new \DateTime('@'.$timestamp);
     }
 
     private function resolveTimezone(?string $timezone): string
@@ -59,7 +58,7 @@ final class DateTime implements DateTimeExtension, GeneratorAwareExtension
             return $timezone;
         }
 
-        return null === $this->defaultTimezone ? date_default_timezone_get() : $this->defaultTimezone;
+        return $this->defaultTimezone === null ? date_default_timezone_get() : $this->defaultTimezone;
     }
 
     /**

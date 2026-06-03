@@ -26,10 +26,13 @@ abstract class AbstractStream
 {
     /** @var resource|null */
     protected $stream;
+
     /** @var resource|null */
     protected $in;
+
     /** @var resource|null */
     protected $out;
+
     protected $err;
 
     private string $debug = '';
@@ -37,7 +40,7 @@ abstract class AbstractStream
     public function write(string $bytes, bool $debug = true): void
     {
         if ($debug) {
-            $timestamp = (new \DateTimeImmutable())->format('Y-m-d\TH:i:s.up');
+            $timestamp = (new \DateTimeImmutable)->format('Y-m-d\TH:i:s.up');
             foreach (explode("\n", trim($bytes)) as $line) {
                 $this->debug .= \sprintf("[%s] > %s\n", $timestamp, $line);
             }
@@ -47,7 +50,7 @@ abstract class AbstractStream
         $totalBytesWritten = 0;
         while ($totalBytesWritten < $bytesToWrite) {
             $bytesWritten = @fwrite($this->in, substr($bytes, $totalBytesWritten));
-            if (false === $bytesWritten || 0 === $bytesWritten) {
+            if ($bytesWritten === false || $bytesWritten === 0) {
                 throw new TransportException('Unable to write bytes on the wire.');
             }
 
@@ -80,19 +83,19 @@ abstract class AbstractStream
         }
 
         $line = @fgets($this->out);
-        if ('' === $line || false === $line) {
+        if ($line === '' || $line === false) {
             if (stream_get_meta_data($this->out)['timed_out']) {
                 throw new TransportException(\sprintf('Connection to "%s" timed out.', $this->getReadConnectionDescription()));
             }
             if (feof($this->out)) { // don't use "eof" metadata, it's not accurate on Windows
                 throw new TransportException(\sprintf('Connection to "%s" has been closed unexpectedly.', $this->getReadConnectionDescription()));
             }
-            if (false === $line) {
+            if ($line === false) {
                 throw new TransportException(\sprintf('Unable to read from connection to "%s": ', $this->getReadConnectionDescription().error_get_last()['message'] ?? ''));
             }
         }
 
-        $this->debug .= \sprintf('[%s] < %s', (new \DateTimeImmutable())->format('Y-m-d\TH:i:s.up'), $line);
+        $this->debug .= \sprintf('[%s] < %s', (new \DateTimeImmutable)->format('Y-m-d\TH:i:s.up'), $line);
 
         return $line;
     }
@@ -107,7 +110,7 @@ abstract class AbstractStream
 
     public static function replace(string $from, string $to, iterable $chunks): \Generator
     {
-        if ('' === $from) {
+        if ($from === '') {
             yield from $chunks;
 
             return;
@@ -136,7 +139,7 @@ abstract class AbstractStream
             }
         }
 
-        if ('' !== $carry) {
+        if ($carry !== '') {
             yield $carry;
         }
     }

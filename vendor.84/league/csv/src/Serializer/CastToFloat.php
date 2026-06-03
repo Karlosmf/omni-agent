@@ -24,7 +24,9 @@ use function filter_var;
 final class CastToFloat implements TypeCasting
 {
     private readonly bool $isNullable;
+
     private ?float $default = null;
+
     private readonly TypeCastingInfo $info;
 
     public function __construct(ReflectionProperty|ReflectionParameter $reflectionProperty)
@@ -50,7 +52,7 @@ final class CastToFloat implements TypeCasting
      */
     public function toVariable(mixed $value): ?float
     {
-        if (null === $value) {
+        if ($value === null) {
             return match ($this->isNullable) {
                 true => $this->default,
                 false => throw TypeCastingFailed::dueToNotNullableType('float', info: $this->info),
@@ -69,23 +71,23 @@ final class CastToFloat implements TypeCasting
 
     private function init(ReflectionProperty|ReflectionParameter $reflectionProperty): bool
     {
-        if (null === $reflectionProperty->getType()) {
+        if ($reflectionProperty->getType() === null) {
             return true;
         }
 
         $type = null;
         $isNullable = false;
         foreach (Type::list($reflectionProperty) as $found) {
-            if (!$isNullable && $found[1]->allowsNull()) {
+            if (! $isNullable && $found[1]->allowsNull()) {
                 $isNullable = true;
             }
 
-            if (null === $type && $found[0]->isOneOf(Type::Mixed, Type::Float)) {
+            if ($type === null && $found[0]->isOneOf(Type::Mixed, Type::Float)) {
                 $type = $found;
             }
         }
 
-        null !== $type || throw throw MappingFailed::dueToTypeCastingUnsupportedType($reflectionProperty, $this, 'float', 'null', 'mixed');
+        $type !== null || throw throw MappingFailed::dueToTypeCastingUnsupportedType($reflectionProperty, $this, 'float', 'null', 'mixed');
 
         return $isNullable;
     }

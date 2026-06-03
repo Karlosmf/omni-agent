@@ -100,18 +100,18 @@ class CheckTranslationsCommand extends Command implements PromptsForMissingInput
                 $files = $filesystem->allFiles($localeDir);
                 $baseFiles = $filesystem->allFiles(implode(DIRECTORY_SEPARATOR, [$localeRootDirectory, 'en']));
 
-                $localeFiles = collect($files)->map(fn ($file) => (string) str($file->getPathname())->after(DIRECTORY_SEPARATOR . $locale . DIRECTORY_SEPARATOR));
-                $englishFiles = collect($baseFiles)->map(fn ($file) => (string) str($file->getPathname())->after(DIRECTORY_SEPARATOR . 'en' . DIRECTORY_SEPARATOR));
+                $localeFiles = collect($files)->map(fn ($file) => (string) str($file->getPathname())->after(DIRECTORY_SEPARATOR.$locale.DIRECTORY_SEPARATOR));
+                $englishFiles = collect($baseFiles)->map(fn ($file) => (string) str($file->getPathname())->after(DIRECTORY_SEPARATOR.'en'.DIRECTORY_SEPARATOR));
                 $missingFiles = $englishFiles->diff($localeFiles);
                 $removedFiles = $localeFiles->diff($englishFiles);
                 $path = implode(DIRECTORY_SEPARATOR, [$localeRootDirectory, $locale]);
 
                 if ($missingFiles->count() > 0 && $removedFiles->count() > 0) {
-                    warning("[!] Package filament/{$package} has {$missingFiles->count()} missing translation " . Str::plural('file', $missingFiles->count()) . " and {$removedFiles->count()} removed translation " . Str::plural('file', $missingFiles->count()) . ' for ' . locale_get_display_name($locale, 'en') . ".\n");
+                    warning("[!] Package filament/{$package} has {$missingFiles->count()} missing translation ".Str::plural('file', $missingFiles->count())." and {$removedFiles->count()} removed translation ".Str::plural('file', $missingFiles->count()).' for '.locale_get_display_name($locale, 'en').".\n");
                 } elseif ($missingFiles->count() > 0) {
-                    warning("[!] Package filament/{$package} has {$missingFiles->count()} missing translation " . Str::plural('file', $missingFiles->count()) . ' for ' . locale_get_display_name($locale, 'en') . ".\n");
+                    warning("[!] Package filament/{$package} has {$missingFiles->count()} missing translation ".Str::plural('file', $missingFiles->count()).' for '.locale_get_display_name($locale, 'en').".\n");
                 } elseif ($removedFiles->count() > 0) {
-                    warning("[!] Package filament/{$package} has {$removedFiles->count()} removed translation " . Str::plural('file', $removedFiles->count()) . ' for ' . locale_get_display_name($locale, 'en') . ".\n");
+                    warning("[!] Package filament/{$package} has {$removedFiles->count()} removed translation ".Str::plural('file', $removedFiles->count()).' for '.locale_get_display_name($locale, 'en').".\n");
                 }
 
                 if ($missingFiles->count() > 0 || $removedFiles->count() > 0) {
@@ -154,11 +154,11 @@ class CheckTranslationsCommand extends Command implements PromptsForMissingInput
                         if ((! $missingKeysCount) && (! $removedKeysCount)) {
                             info("[✓] Package filament/{$package} has no missing or removed translation keys for {$locale}!\n");
                         } elseif ($missingKeysCount && $removedKeysCount) {
-                            warning("[!] Package filament/{$package} has {$missingKeysCount} missing translation " . Str::plural('key', $missingKeysCount) . " and {$removedKeysCount} removed translation " . Str::plural('key', $removedKeysCount) . " for {$locale}.\n");
+                            warning("[!] Package filament/{$package} has {$missingKeysCount} missing translation ".Str::plural('key', $missingKeysCount)." and {$removedKeysCount} removed translation ".Str::plural('key', $removedKeysCount)." for {$locale}.\n");
                         } elseif ($missingKeysCount) {
-                            warning("[!] Package filament/{$package} has {$missingKeysCount} missing translation " . Str::plural('key', $missingKeysCount) . " for {$locale}.\n");
+                            warning("[!] Package filament/{$package} has {$missingKeysCount} missing translation ".Str::plural('key', $missingKeysCount)." for {$locale}.\n");
                         } else {
-                            warning("[!] Package filament/{$package} has {$removedKeysCount} removed translation " . Str::plural('key', $removedKeysCount) . " for {$locale}.\n");
+                            warning("[!] Package filament/{$package} has {$removedKeysCount} removed translation ".Str::plural('key', $removedKeysCount)." for {$locale}.\n");
                         }
                     })
                     ->filter(static fn ($keys): bool => count($keys['missing']) || count($keys['removed']))

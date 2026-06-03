@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Driver;
 
 use const XDEBUG_CC_BRANCH_CHECK;
@@ -14,6 +17,10 @@ use const XDEBUG_CC_DEAD_CODE;
 use const XDEBUG_CC_UNUSED;
 use const XDEBUG_FILTER_CODE_COVERAGE;
 use const XDEBUG_PATH_INCLUDE;
+
+use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
+use SebastianBergmann\CodeCoverage\Filter;
+
 use function extension_loaded;
 use function in_array;
 use function phpversion;
@@ -23,8 +30,6 @@ use function xdebug_info;
 use function xdebug_set_filter;
 use function xdebug_start_code_coverage;
 use function xdebug_stop_code_coverage;
-use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
-use SebastianBergmann\CodeCoverage\Filter;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -68,7 +73,7 @@ final class XdebugDriver extends Driver
     {
         $this->ensureXdebugIsAvailable();
 
-        if (!$filter->isEmpty()) {
+        if (! $filter->isEmpty()) {
             xdebug_set_filter(
                 XDEBUG_FILTER_CODE_COVERAGE,
                 XDEBUG_PATH_INCLUDE,
@@ -110,7 +115,7 @@ final class XdebugDriver extends Driver
 
     public function nameAndVersion(): string
     {
-        return 'Xdebug ' . phpversion('xdebug');
+        return 'Xdebug '.phpversion('xdebug');
     }
 
     public function isXdebug(): true
@@ -125,15 +130,15 @@ final class XdebugDriver extends Driver
      */
     private function ensureXdebugIsAvailable(): void
     {
-        if (!extension_loaded('xdebug')) {
+        if (! extension_loaded('xdebug')) {
             throw new XdebugNotAvailableException;
         }
 
-        if (!version_compare(phpversion('xdebug'), '3.1', '>=')) {
+        if (! version_compare(phpversion('xdebug'), '3.1', '>=')) {
             throw new XdebugVersionNotSupportedException(phpversion('xdebug'));
         }
 
-        if (!in_array('coverage', xdebug_info('mode'), true)) {
+        if (! in_array('coverage', xdebug_info('mode'), true)) {
             throw new XdebugNotEnabledException;
         }
     }

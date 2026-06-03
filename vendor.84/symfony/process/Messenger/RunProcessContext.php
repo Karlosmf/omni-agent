@@ -19,7 +19,9 @@ use Symfony\Component\Process\Process;
 final class RunProcessContext
 {
     public readonly ?int $exitCode;
+
     public readonly ?string $output;
+
     public readonly ?string $errorOutput;
 
     public function __construct(
@@ -27,7 +29,7 @@ final class RunProcessContext
         Process $process,
     ) {
         $this->exitCode = $process->getExitCode();
-        $this->output = !$process->isStarted() || $process->isOutputDisabled() ? null : $process->getOutput();
-        $this->errorOutput = !$process->isStarted() || $process->isOutputDisabled() ? null : $process->getErrorOutput();
+        $this->output = ! $process->isStarted() || $process->isOutputDisabled() ? null : $process->getOutput();
+        $this->errorOutput = ! $process->isStarted() || $process->isOutputDisabled() ? null : $process->getErrorOutput();
     }
 }

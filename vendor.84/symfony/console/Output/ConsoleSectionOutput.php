@@ -22,21 +22,25 @@ use Symfony\Component\Console\Terminal;
 class ConsoleSectionOutput extends StreamOutput
 {
     private array $content = [];
+
     private int $lines = 0;
+
     private array $sections;
+
     private Terminal $terminal;
+
     private int $maxHeight = 0;
 
     /**
-     * @param resource               $stream
-     * @param ConsoleSectionOutput[] $sections
+     * @param  resource  $stream
+     * @param  ConsoleSectionOutput[]  $sections
      */
     public function __construct($stream, array &$sections, int $verbosity, bool $decorated, OutputFormatterInterface $formatter)
     {
         parent::__construct($stream, $verbosity, $decorated, $formatter);
         array_unshift($sections, $this);
         $this->sections = &$sections;
-        $this->terminal = new Terminal();
+        $this->terminal = new Terminal;
     }
 
     /**
@@ -59,11 +63,11 @@ class ConsoleSectionOutput extends StreamOutput
     /**
      * Clears previous output for this section.
      *
-     * @param int $lines Number of lines to clear. If null, then the entire output of this section is cleared
+     * @param  int  $lines  Number of lines to clear. If null, then the entire output of this section is cleared
      */
     public function clear(?int $lines = null): void
     {
-        if (!$this->content || !$this->isDecorated()) {
+        if (! $this->content || ! $this->isDecorated()) {
             return;
         }
 
@@ -95,7 +99,7 @@ class ConsoleSectionOutput extends StreamOutput
 
     public function getVisibleContent(): string
     {
-        if (0 === $this->maxHeight) {
+        if ($this->maxHeight === 0) {
             return $this->getContent();
         }
 
@@ -120,15 +124,15 @@ class ConsoleSectionOutput extends StreamOutput
             }
 
             // skip line if there is no text (or newline for that matter)
-            if ('' === $lineContent) {
+            if ($lineContent === '') {
                 continue;
             }
 
             // For the first line, check if the previous line (last entry of `$this->content`)
             // needs to be continued (i.e. does not end with a line break).
-            if (0 === $i
+            if ($i === 0
                 && (false !== $lastLine = end($this->content))
-                && !str_ends_with($lastLine, \PHP_EOL)
+                && ! str_ends_with($lastLine, \PHP_EOL)
             ) {
                 // deduct the line count of the previous line
                 $this->lines -= (int) ceil($this->getDisplayLength($lastLine) / $width) ?: 1;
@@ -155,18 +159,18 @@ class ConsoleSectionOutput extends StreamOutput
     public function addNewLineOfInputSubmit(): void
     {
         $this->content[] = \PHP_EOL;
-        ++$this->lines;
+        $this->lines++;
     }
 
     protected function doWrite(string $message, bool $newline): void
     {
         // Simulate newline behavior for consistent output formatting, avoiding extra logic
-        if (!$newline && str_ends_with($message, \PHP_EOL)) {
+        if (! $newline && str_ends_with($message, \PHP_EOL)) {
             $message = substr($message, 0, -\strlen(\PHP_EOL));
             $newline = true;
         }
 
-        if (!$this->isDecorated()) {
+        if (! $this->isDecorated()) {
             parent::doWrite($message, $newline);
 
             return;
@@ -174,7 +178,7 @@ class ConsoleSectionOutput extends StreamOutput
 
         // Check if the previous line (last entry of `$this->content`) needs to be continued
         // (i.e. does not end with a line break). In which case, it needs to be erased first.
-        $linesToClear = $deleteLastLine = ($lastLine = end($this->content) ?: '') && !str_ends_with($lastLine, \PHP_EOL) ? 1 : 0;
+        $linesToClear = $deleteLastLine = ($lastLine = end($this->content) ?: '') && ! str_ends_with($lastLine, \PHP_EOL) ? 1 : 0;
 
         $linesAdded = $this->addContent($message, $newline);
 
@@ -213,7 +217,7 @@ class ConsoleSectionOutput extends StreamOutput
 
             $numberOfLinesToClear += $section->maxHeight ? min($section->lines, $section->maxHeight) : $section->lines;
             if ('' !== $sectionContent = $section->getVisibleContent()) {
-                if (!str_ends_with($sectionContent, \PHP_EOL)) {
+                if (! str_ends_with($sectionContent, \PHP_EOL)) {
                     $sectionContent .= \PHP_EOL;
                 }
                 $erasedContent[] = $sectionContent;

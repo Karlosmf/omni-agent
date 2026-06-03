@@ -26,11 +26,17 @@ class Profile
     private array $collectors = [];
 
     private ?string $ip = null;
+
     private ?string $method = null;
+
     private ?string $url = null;
+
     private ?int $time = null;
+
     private ?int $statusCode = null;
+
     private ?self $parent = null;
+
     private ?string $virtualType = null;
 
     /**
@@ -40,8 +46,7 @@ class Profile
 
     public function __construct(
         private string $token,
-    ) {
-    }
+    ) {}
 
     public function setToken(string $token): void
     {
@@ -168,7 +173,7 @@ class Profile
     /**
      * Sets children profiler.
      *
-     * @param Profile[] $children
+     * @param  Profile[]  $children
      */
     public function setChildren(array $children): void
     {
@@ -205,7 +210,7 @@ class Profile
      */
     public function getCollector(string $name): DataCollectorInterface
     {
-        if (!isset($this->collectors[$name])) {
+        if (! isset($this->collectors[$name])) {
             throw new \InvalidArgumentException(\sprintf('Collector "%s" does not exist.', $name));
         }
 
@@ -225,7 +230,7 @@ class Profile
     /**
      * Sets the Collectors associated with this profile.
      *
-     * @param DataCollectorInterface[] $collectors
+     * @param  DataCollectorInterface[]  $collectors
      */
     public function setCollectors(array $collectors): void
     {

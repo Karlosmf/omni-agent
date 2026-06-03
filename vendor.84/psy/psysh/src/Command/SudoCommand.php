@@ -26,8 +26,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SudoCommand extends Command implements ReadlineAware
 {
     private Readline $readline;
+
     private CodeArgumentParser $parser;
+
     private NodeTraverser $traverser;
+
     private Printer $printer;
 
     /**
@@ -35,21 +38,19 @@ class SudoCommand extends Command implements ReadlineAware
      */
     public function __construct($name = null)
     {
-        $this->parser = new CodeArgumentParser();
+        $this->parser = new CodeArgumentParser;
 
         // @todo Pass visitor directly to once we drop support for PHP-Parser 4.x
-        $this->traverser = new NodeTraverser();
-        $this->traverser->addVisitor(new SudoVisitor());
+        $this->traverser = new NodeTraverser;
+        $this->traverser->addVisitor(new SudoVisitor);
 
-        $this->printer = new Printer();
+        $this->printer = new Printer;
 
         parent::__construct($name);
     }
 
     /**
      * Set the Shell's Readline service.
-     *
-     * @param Readline $readline
      */
     public function setReadline(Readline $readline)
     {
@@ -116,7 +117,7 @@ HELP
         $sudoCode = $this->printer->prettyPrint($nodes);
 
         $shell = $this->getShell();
-        $shell->addCode($sudoCode, !$shell->hasCode());
+        $shell->addCode($sudoCode, ! $shell->hasCode());
 
         return 0;
     }

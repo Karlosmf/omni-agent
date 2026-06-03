@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,20 +9,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
 use const DIRECTORY_SEPARATOR;
-use function count;
-use function dirname;
-use function file_get_contents;
-use function is_array;
-use function is_dir;
-use function is_file;
-use function is_writable;
-use function phpversion;
-use function sprintf;
-use function strlen;
-use function substr;
+
 use DateTimeImmutable;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
@@ -37,21 +30,37 @@ use SebastianBergmann\CodeCoverage\XmlException;
 use SebastianBergmann\Environment\Runtime;
 use XMLWriter;
 
+use function count;
+use function dirname;
+use function file_get_contents;
+use function is_array;
+use function is_dir;
+use function is_file;
+use function is_writable;
+use function phpversion;
+use function sprintf;
+use function strlen;
+use function substr;
+
 /**
  * @phpstan-import-type TestType from CodeCoverage
  */
 final class Facade
 {
     public const string XML_NAMESPACE = 'https://schema.phpunit.de/coverage/1.0';
+
     private string $target;
+
     private Project $project;
+
     private readonly string $phpUnitVersion;
+
     private readonly bool $includeSource;
 
     public function __construct(string $version, bool $includeSource = true)
     {
         $this->phpUnitVersion = $version;
-        $this->includeSource  = $includeSource;
+        $this->includeSource = $includeSource;
     }
 
     /**
@@ -88,14 +97,14 @@ final class Facade
     private function setBuildInformation(CodeCoverage $coverage): void
     {
         if ($coverage->driverIsPcov()) {
-            $driverExtensionName    = 'pcov';
+            $driverExtensionName = 'pcov';
             $driverExtensionVersion = phpversion('pcov');
         } elseif ($coverage->driverIsXdebug()) {
-            $driverExtensionName    = 'xdebug';
+            $driverExtensionName = 'xdebug';
             $driverExtensionVersion = phpversion('xdebug');
         } else {
             // @codeCoverageIgnoreStart
-            $driverExtensionName    = 'unknown';
+            $driverExtensionName = 'unknown';
             $driverExtensionVersion = 'unknown';
             // @codeCoverageIgnoreEnd
         }
@@ -118,11 +127,11 @@ final class Facade
     {
         if (is_file($directory)) {
             // @codeCoverageIgnoreStart
-            if (!is_dir($directory)) {
+            if (! is_dir($directory)) {
                 throw new PathExistsButIsNotDirectoryException($directory);
             }
 
-            if (!is_writable($directory)) {
+            if (! is_writable($directory)) {
                 throw new WriteOperationFailedException($directory);
             }
             // @codeCoverageIgnoreEnd
@@ -166,7 +175,7 @@ final class Facade
     {
         $context->getWriter()->startElement('file');
         $context->getWriter()->writeAttribute('name', $file->name());
-        $context->getWriter()->writeAttribute('href', $file->id() . '.xml');
+        $context->getWriter()->writeAttribute('href', $file->id().'.xml');
         $context->getWriter()->writeAttribute('hash', $file->sha1());
 
         $fileObject = $context->addFile();
@@ -199,7 +208,7 @@ final class Facade
         $fileReport->getWriter()->startElement('coverage');
 
         foreach ($file->lineCoverageData() as $line => $tests) {
-            if (!is_array($tests) || count($tests) === 0) {
+            if (! is_array($tests) || count($tests) === 0) {
                 continue;
             }
 
@@ -282,7 +291,7 @@ final class Facade
     }
 
     /**
-     * @param array<string, TestType> $tests
+     * @param  array<string, TestType>  $tests
      */
     private function processTests(array $tests): void
     {

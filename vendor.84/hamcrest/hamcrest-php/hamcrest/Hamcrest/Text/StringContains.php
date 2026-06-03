@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Text;
 
 /*
@@ -10,7 +11,6 @@ namespace Hamcrest\Text;
  */
 class StringContains extends SubstringMatcher
 {
-
     public function __construct($substring)
     {
         parent::__construct($substring);
@@ -35,7 +35,7 @@ class StringContains extends SubstringMatcher
 
     protected function evalSubstringOf($item)
     {
-        return (false !== strpos((string) $item, $this->_substring));
+        return strpos((string) $item, $this->_substring) !== false;
     }
 
     protected function relationship()

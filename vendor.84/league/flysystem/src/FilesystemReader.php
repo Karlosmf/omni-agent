@@ -17,6 +17,7 @@ use DateTimeInterface;
 interface FilesystemReader
 {
     public const LIST_SHALLOW = false;
+
     public const LIST_DEEP = true;
 
     /**

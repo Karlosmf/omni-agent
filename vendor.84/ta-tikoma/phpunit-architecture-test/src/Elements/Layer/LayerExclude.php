@@ -16,7 +16,7 @@ trait LayerExclude
 
     public function excludeByPathStart(string $path): Layer
     {
-        $path = realpath(Filesystem::getBaseDir() . $path);
+        $path = realpath(Filesystem::getBaseDir().$path);
         if ($path === false) {
             throw new Exception("Path '{$path}' not found");
         }

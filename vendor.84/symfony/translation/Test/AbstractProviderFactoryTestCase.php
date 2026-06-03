@@ -40,7 +40,7 @@ abstract class AbstractProviderFactoryTestCase extends TestCase
      * @dataProvider supportsProvider
      */
     #[DataProvider('supportsProvider')]
-    public function testSupports(bool $expected, string $dsn)
+    public function test_supports(bool $expected, string $dsn)
     {
         $factory = $this->createFactory();
 
@@ -51,7 +51,7 @@ abstract class AbstractProviderFactoryTestCase extends TestCase
      * @dataProvider createProvider
      */
     #[DataProvider('createProvider')]
-    public function testCreate(string $expected, string $dsn)
+    public function test_create(string $expected, string $dsn)
     {
         $factory = $this->createFactory();
         $provider = $factory->create(new Dsn($dsn));
@@ -63,14 +63,14 @@ abstract class AbstractProviderFactoryTestCase extends TestCase
      * @dataProvider unsupportedSchemeProvider
      */
     #[DataProvider('unsupportedSchemeProvider')]
-    public function testUnsupportedSchemeException(string $dsn, ?string $message = null)
+    public function test_unsupported_scheme_exception(string $dsn, ?string $message = null)
     {
         $factory = $this->createFactory();
 
         $dsn = new Dsn($dsn);
 
         $this->expectException(UnsupportedSchemeException::class);
-        if (null !== $message) {
+        if ($message !== null) {
             $this->expectExceptionMessage($message);
         }
 

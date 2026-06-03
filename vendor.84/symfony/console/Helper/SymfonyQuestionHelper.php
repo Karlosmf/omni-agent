@@ -35,7 +35,7 @@ class SymfonyQuestionHelper extends QuestionHelper
         }
 
         switch (true) {
-            case null === $default:
+            case $default === null:
                 $text = \sprintf(' <info>%s</info>:', $text);
 
                 break;
@@ -94,7 +94,7 @@ class SymfonyQuestionHelper extends QuestionHelper
 
     private function getEofShortcut(OutputInterface $output): string
     {
-        if ('\\' === \DIRECTORY_SEPARATOR && !$output->isDecorated()) {
+        if ('\\' === \DIRECTORY_SEPARATOR && ! $output->isDecorated()) {
             return '<comment>Ctrl+Z</comment> then <comment>Enter</comment>';
         }
 

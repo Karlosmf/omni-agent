@@ -93,7 +93,7 @@ class PhoneNumber extends \Faker\Provider\PhoneNumber
     {
         $firstDigit = self::numberBetween(2, 9);
 
-        return $firstDigit . self::regexify(self::$areaCodeRegexes[$firstDigit]);
+        return $firstDigit.self::regexify(self::$areaCodeRegexes[$firstDigit]);
     }
 
     /**

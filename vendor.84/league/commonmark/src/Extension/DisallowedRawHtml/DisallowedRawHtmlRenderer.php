@@ -19,7 +19,7 @@ use League\CommonMark\Renderer\NodeRendererInterface;
 use League\Config\ConfigurationAwareInterface;
 use League\Config\ConfigurationInterface;
 
-final class DisallowedRawHtmlRenderer implements NodeRendererInterface, ConfigurationAwareInterface
+final class DisallowedRawHtmlRenderer implements ConfigurationAwareInterface, NodeRendererInterface
 {
     /** @psalm-readonly */
     private NodeRendererInterface $innerRenderer;

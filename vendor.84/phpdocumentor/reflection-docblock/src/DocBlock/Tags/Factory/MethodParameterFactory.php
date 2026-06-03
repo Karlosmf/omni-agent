@@ -28,13 +28,13 @@ final class MethodParameterFactory
     /**
      * Formats the given default value to a string-able mixin
      *
-     * @param mixed $defaultValue
+     * @param  mixed  $defaultValue
      */
     public function format($defaultValue): string
     {
-        $method = 'format' . ucfirst(gettype($defaultValue));
+        $method = 'format'.ucfirst(gettype($defaultValue));
         if (method_exists($this, $method)) {
-            return ' = ' . $this->{$method}($defaultValue);
+            return ' = '.$this->{$method}($defaultValue);
         }
 
         return '';
@@ -46,7 +46,7 @@ final class MethodParameterFactory
     }
 
     /**
-     * @param mixed $defaultValue
+     * @param  mixed  $defaultValue
      */
     private function formatNull($defaultValue): string
     {
@@ -69,15 +69,15 @@ final class MethodParameterFactory
     }
 
     /**
-     * @param array<(array<mixed>|int|float|bool|string|object|null)> $defaultValue
+     * @param  array<(array<mixed>|int|float|bool|string|object|null)>  $defaultValue
      */
     private function formatArray(array $defaultValue): string
     {
         $formatedValue = '[';
 
         foreach ($defaultValue as $key => $value) {
-            $method = 'format' . ucfirst(gettype($value));
-            if (!method_exists($this, $method)) {
+            $method = 'format'.ucfirst(gettype($value));
+            if (! method_exists($this, $method)) {
                 continue;
             }
 
@@ -90,11 +90,11 @@ final class MethodParameterFactory
             $formatedValue .= ',';
         }
 
-        return $formatedValue . ']';
+        return $formatedValue.']';
     }
 
     private function formatObject(object $defaultValue): string
     {
-        return 'new ' . get_class($defaultValue) . '()';
+        return 'new '.get_class($defaultValue).'()';
     }
 }

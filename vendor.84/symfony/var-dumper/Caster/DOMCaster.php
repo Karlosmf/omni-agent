@@ -11,6 +11,20 @@
 
 namespace Symfony\Component\VarDumper\Caster;
 
+use Dom\Attr;
+use Dom\CharacterData;
+use Dom\DocumentType;
+use Dom\Element;
+use Dom\Entity;
+use Dom\Exception;
+use Dom\HTMLDocument;
+use Dom\Implementation;
+use Dom\Node;
+use Dom\Notation;
+use Dom\ProcessingInstruction;
+use Dom\Text;
+use Dom\XMLDocument;
+use Dom\XPath;
 use Symfony\Component\VarDumper\Cloner\Stub;
 
 /**
@@ -65,7 +79,7 @@ class DOMCaster
         \XML_NAMESPACE_DECL_NODE => 'XML_NAMESPACE_DECL_NODE',
     ];
 
-    public static function castException(\DOMException|\Dom\Exception $e, array $a, Stub $stub, bool $isNested): array
+    public static function castException(\DOMException|Exception $e, array $a, Stub $stub, bool $isNested): array
     {
         $k = Caster::PREFIX_PROTECTED.'code';
         if (isset($a[$k], self::ERROR_CODES[$a[$k]])) {
@@ -80,7 +94,7 @@ class DOMCaster
         return $a;
     }
 
-    public static function castImplementation(\DOMImplementation|\Dom\Implementation $dom, array $a, Stub $stub, bool $isNested): array
+    public static function castImplementation(\DOMImplementation|Implementation $dom, array $a, Stub $stub, bool $isNested): array
     {
         $a += [
             Caster::PREFIX_VIRTUAL.'Core' => '1.0',
@@ -90,7 +104,7 @@ class DOMCaster
         return $a;
     }
 
-    public static function castNode(\DOMNode|\Dom\Node $dom, array $a, Stub $stub, bool $isNested): array
+    public static function castNode(\DOMNode|Node $dom, array $a, Stub $stub, bool $isNested): array
     {
         return self::castDom($dom, $a, $stub, $isNested);
     }
@@ -102,7 +116,7 @@ class DOMCaster
 
     public static function castDocument(\DOMDocument $dom, array $a, Stub $stub, bool $isNested, int $filter = 0): array
     {
-        if (!($filter & Caster::EXCLUDE_VERBOSE)) {
+        if (! ($filter & Caster::EXCLUDE_VERBOSE)) {
             $formatOutput = $dom->formatOutput;
             $dom->formatOutput = true;
             $a += [Caster::PREFIX_VIRTUAL.'xml' => $dom->saveXML()];
@@ -112,9 +126,9 @@ class DOMCaster
         return $a;
     }
 
-    public static function castXMLDocument(\Dom\XMLDocument $dom, array $a, Stub $stub, bool $isNested, int $filter = 0): array
+    public static function castXMLDocument(XMLDocument $dom, array $a, Stub $stub, bool $isNested, int $filter = 0): array
     {
-        if (!($filter & Caster::EXCLUDE_VERBOSE)) {
+        if (! ($filter & Caster::EXCLUDE_VERBOSE)) {
             $formatOutput = $dom->formatOutput;
             $dom->formatOutput = true;
             $a += [Caster::PREFIX_VIRTUAL.'xml' => $dom->saveXML()];
@@ -124,56 +138,56 @@ class DOMCaster
         return $a;
     }
 
-    public static function castHTMLDocument(\Dom\HTMLDocument $dom, array $a, Stub $stub, bool $isNested, int $filter = 0): array
+    public static function castHTMLDocument(HTMLDocument $dom, array $a, Stub $stub, bool $isNested, int $filter = 0): array
     {
-        if (!($filter & Caster::EXCLUDE_VERBOSE)) {
+        if (! ($filter & Caster::EXCLUDE_VERBOSE)) {
             $a += [Caster::PREFIX_VIRTUAL.'html' => $dom->saveHTML()];
         }
 
         return $a;
     }
 
-    public static function castCharacterData(\DOMCharacterData|\Dom\CharacterData $dom, array $a, Stub $stub, bool $isNested): array
+    public static function castCharacterData(\DOMCharacterData|CharacterData $dom, array $a, Stub $stub, bool $isNested): array
     {
         return $a;
     }
 
-    public static function castAttr(\DOMAttr|\Dom\Attr $dom, array $a, Stub $stub, bool $isNested): array
+    public static function castAttr(\DOMAttr|Attr $dom, array $a, Stub $stub, bool $isNested): array
     {
         return $a;
     }
 
-    public static function castElement(\DOMElement|\Dom\Element $dom, array $a, Stub $stub, bool $isNested): array
+    public static function castElement(\DOMElement|Element $dom, array $a, Stub $stub, bool $isNested): array
     {
         return $a;
     }
 
-    public static function castText(\DOMText|\Dom\Text $dom, array $a, Stub $stub, bool $isNested): array
+    public static function castText(\DOMText|Text $dom, array $a, Stub $stub, bool $isNested): array
     {
         return $a;
     }
 
-    public static function castDocumentType(\DOMDocumentType|\Dom\DocumentType $dom, array $a, Stub $stub, bool $isNested): array
+    public static function castDocumentType(\DOMDocumentType|DocumentType $dom, array $a, Stub $stub, bool $isNested): array
     {
         return $a;
     }
 
-    public static function castNotation(\DOMNotation|\Dom\Notation $dom, array $a, Stub $stub, bool $isNested): array
+    public static function castNotation(\DOMNotation|Notation $dom, array $a, Stub $stub, bool $isNested): array
     {
         return $a;
     }
 
-    public static function castEntity(\DOMEntity|\Dom\Entity $dom, array $a, Stub $stub, bool $isNested): array
+    public static function castEntity(\DOMEntity|Entity $dom, array $a, Stub $stub, bool $isNested): array
     {
         return $a;
     }
 
-    public static function castProcessingInstruction(\DOMProcessingInstruction|\Dom\ProcessingInstruction $dom, array $a, Stub $stub, bool $isNested): array
+    public static function castProcessingInstruction(\DOMProcessingInstruction|ProcessingInstruction $dom, array $a, Stub $stub, bool $isNested): array
     {
         return $a;
     }
 
-    public static function castXPath(\DOMXPath|\Dom\XPath $dom, array $a, Stub $stub, bool $isNested): array
+    public static function castXPath(\DOMXPath|XPath $dom, array $a, Stub $stub, bool $isNested): array
     {
         return self::castDom($dom, $a, $stub, $isNested);
     }
@@ -181,7 +195,7 @@ class DOMCaster
     public static function castDom($dom, array $a, Stub $stub, bool $isNested, int $filter = 0): array
     {
         foreach ($a as $k => $v) {
-            if ('encoding' === $k && $dom instanceof \DOMEntity
+            if ($k === 'encoding' && $dom instanceof \DOMEntity
                 || \in_array($k, ['actualEncoding', 'config', 'standalone', 'version'], true)
             ) {
                 continue; // deprecated properties
@@ -190,10 +204,10 @@ class DOMCaster
             $v = $dom->$k;
 
             $a[$k] = match (true) {
-                $v instanceof \DOMNode || $v instanceof \Dom\Node => new CutStub($v),
-                'nodeType' === $k => new ConstStub(self::NODE_TYPES[$v], $v),
-                'baseURI' === $k && $v,
-                'documentURI' === $k && $v => new LinkStub($v),
+                $v instanceof \DOMNode || $v instanceof Node => new CutStub($v),
+                $k === 'nodeType' => new ConstStub(self::NODE_TYPES[$v], $v),
+                $k === 'baseURI' && $v,
+                $k === 'documentURI' && $v => new LinkStub($v),
                 default => $v,
             };
         }

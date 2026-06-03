@@ -39,7 +39,7 @@ final class DescriptionStartParser implements BlockStartParserInterface
 
         if ($terms !== null && $terms !== '') {
             // New description; tight; term(s) sitting in pending block that we will replace
-            return BlockStart::of(...[new DescriptionListContinueParser()], ...self::splitTerms($terms), ...[new DescriptionContinueParser(true, $cursor->getPosition())])
+            return BlockStart::of(...[new DescriptionListContinueParser], ...self::splitTerms($terms), ...[new DescriptionContinueParser(true, $cursor->getPosition())])
                 ->at($cursor)
                 ->replaceActiveBlockParser();
         }

@@ -4,6 +4,8 @@ namespace Faker\ORM\Doctrine;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
+use Faker\Generator;
+use Faker\Guesser\Name;
 
 require_once 'backward-compatibility.php';
 
@@ -16,10 +18,12 @@ class EntityPopulator
      * @var ClassMetadata
      */
     protected $class;
+
     /**
      * @var array
      */
     protected $columnFormatters = [];
+
     /**
      * @var array
      */
@@ -77,14 +81,14 @@ class EntityPopulator
     /**
      * @return array
      */
-    public function guessColumnFormatters(\Faker\Generator $generator)
+    public function guessColumnFormatters(Generator $generator)
     {
         $formatters = [];
-        $nameGuesser = new \Faker\Guesser\Name($generator);
+        $nameGuesser = new Name($generator);
         $columnTypeGuesser = new ColumnTypeGuesser($generator);
 
         foreach ($this->class->getFieldNames() as $fieldName) {
-            if ($this->class->isIdentifier($fieldName) || !$this->class->hasField($fieldName)) {
+            if ($this->class->isIdentifier($fieldName) || ! $this->class->hasField($fieldName)) {
                 continue;
             }
 
@@ -146,11 +150,11 @@ class EntityPopulator
                     if ($unique) {
                         $related = null;
 
-                        if (isset($inserted[$relatedClass][$index]) || !$optional) {
+                        if (isset($inserted[$relatedClass][$index]) || ! $optional) {
                             $related = $inserted[$relatedClass][$index];
                         }
 
-                        ++$index;
+                        $index++;
 
                         return $related;
                     }
@@ -168,8 +172,7 @@ class EntityPopulator
     /**
      * Insert one new record using the Entity class.
      *
-     * @param bool $generateId
-     *
+     * @param  bool  $generateId
      * @return EntityPopulator
      */
     public function execute(ObjectManager $manager, $insertedEntities, $generateId = false)
@@ -196,7 +199,7 @@ class EntityPopulator
     private function fillColumns($obj, $insertedEntities): void
     {
         foreach ($this->columnFormatters as $field => $format) {
-            if (null !== $format) {
+            if ($format !== null) {
                 // Add some extended debugging information to any errors thrown by the formatter
                 try {
                     $value = is_callable($format) ? $format($insertedEntities, $obj) : $format;
@@ -234,9 +237,9 @@ class EntityPopulator
     {
         $repository = $manager->getRepository(get_class($obj));
         $result = $repository->createQueryBuilder('e')
-                ->select(sprintf('e.%s', $column))
-                ->getQuery()
-                ->execute();
+            ->select(sprintf('e.%s', $column))
+            ->getQuery()
+            ->execute();
         $ids = array_map('current', $result->toArray());
 
         do {

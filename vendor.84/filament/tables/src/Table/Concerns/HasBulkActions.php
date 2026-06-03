@@ -13,28 +13,28 @@ trait HasBulkActions
 {
     protected ?Closure $checkIfRecordIsSelectableUsing = null;
 
-    protected bool | Closure | null $selectsCurrentPageOnly = false;
+    protected bool|Closure|null $selectsCurrentPageOnly = false;
 
-    protected bool | Closure | null $selectsGroupsOnly = false;
+    protected bool|Closure|null $selectsGroupsOnly = false;
 
-    protected RecordCheckboxPosition | Closure | null $recordCheckboxPosition = null;
+    protected RecordCheckboxPosition|Closure|null $recordCheckboxPosition = null;
 
-    protected bool | Closure | null $isSelectable = null;
+    protected bool|Closure|null $isSelectable = null;
 
-    protected bool | Closure $canTrackDeselectedRecords = true;
+    protected bool|Closure $canTrackDeselectedRecords = true;
 
-    protected string | Closure | null $currentSelectionLivewireProperty = null;
+    protected string|Closure|null $currentSelectionLivewireProperty = null;
 
-    protected int | Closure | null $maxSelectableRecords = null;
+    protected int|Closure|null $maxSelectableRecords = null;
 
-    protected bool | Closure $isSelectionDisabled = false;
+    protected bool|Closure $isSelectionDisabled = false;
 
     /**
      * @deprecated Use `toolbarActions()` instead.
      *
      * @param  array<Action | ActionGroup> | ActionGroup  $actions
      */
-    public function bulkActions(array | ActionGroup $actions): static
+    public function bulkActions(array|ActionGroup $actions): static
     {
         $this->toolbarActions($actions);
 
@@ -46,7 +46,7 @@ trait HasBulkActions
      *
      * @param  array<Action | ActionGroup> | ActionGroup  $actions
      */
-    public function pushBulkActions(array | ActionGroup $actions): static
+    public function pushBulkActions(array|ActionGroup $actions): static
     {
         $this->pushToolbarActions($actions);
 
@@ -70,14 +70,14 @@ trait HasBulkActions
         return $this;
     }
 
-    public function selectCurrentPageOnly(bool | Closure $condition = true): static
+    public function selectCurrentPageOnly(bool|Closure $condition = true): static
     {
         $this->selectsCurrentPageOnly = $condition;
 
         return $this;
     }
 
-    public function selectGroupsOnly(bool | Closure $condition = true): static
+    public function selectGroupsOnly(bool|Closure $condition = true): static
     {
         $this->selectsGroupsOnly = $condition;
 
@@ -87,7 +87,7 @@ trait HasBulkActions
     /**
      * @param  Model | array<string, mixed>  $record
      */
-    public function isRecordSelectable(Model | array $record): bool
+    public function isRecordSelectable(Model|array $record): bool
     {
         return (bool) ($this->evaluate(
             $this->checkIfRecordIsSelectableUsing,
@@ -106,7 +106,7 @@ trait HasBulkActions
         return $this->getLivewire()->getAllSelectableTableRecordsCount();
     }
 
-    public function selectable(bool | Closure | null $condition = true): static
+    public function selectable(bool|Closure|null $condition = true): static
     {
         $this->isSelectable = $condition;
 
@@ -143,7 +143,7 @@ trait HasBulkActions
         return $this->checkIfRecordIsSelectableUsing !== null;
     }
 
-    public function recordCheckboxPosition(RecordCheckboxPosition | Closure | null $position = null): static
+    public function recordCheckboxPosition(RecordCheckboxPosition|Closure|null $position = null): static
     {
         $this->recordCheckboxPosition = $position;
 
@@ -155,7 +155,7 @@ trait HasBulkActions
         return $this->evaluate($this->recordCheckboxPosition) ?? RecordCheckboxPosition::BeforeCells;
     }
 
-    public function trackDeselectedRecords(bool | Closure $condition = true): static
+    public function trackDeselectedRecords(bool|Closure $condition = true): static
     {
         $this->canTrackDeselectedRecords = $condition;
 
@@ -171,7 +171,7 @@ trait HasBulkActions
         return (bool) $this->evaluate($this->canTrackDeselectedRecords);
     }
 
-    public function currentSelectionLivewireProperty(string | Closure | null $property): static
+    public function currentSelectionLivewireProperty(string|Closure|null $property): static
     {
         $this->currentSelectionLivewireProperty = $property;
 
@@ -183,7 +183,7 @@ trait HasBulkActions
         return $this->evaluate($this->currentSelectionLivewireProperty);
     }
 
-    public function maxSelectableRecords(int | Closure | null $count): static
+    public function maxSelectableRecords(int|Closure|null $count): static
     {
         $this->maxSelectableRecords = $count;
 
@@ -195,7 +195,7 @@ trait HasBulkActions
         return $this->evaluate($this->maxSelectableRecords);
     }
 
-    public function disabledSelection(bool | Closure $condition = true): static
+    public function disabledSelection(bool|Closure $condition = true): static
     {
         $this->isSelectionDisabled = $condition;
 

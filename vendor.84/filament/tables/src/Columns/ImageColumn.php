@@ -24,47 +24,47 @@ class ImageColumn extends Column implements HasEmbeddedView
 {
     use CanWrap;
 
-    protected string | Closure | null $diskName = null;
+    protected string|Closure|null $diskName = null;
 
-    protected int | string | Closure | null $imageHeight = null;
+    protected int|string|Closure|null $imageHeight = null;
 
-    protected bool | Closure $isCircular = false;
+    protected bool|Closure $isCircular = false;
 
-    protected bool | Closure $isSquare = false;
+    protected bool|Closure $isSquare = false;
 
-    protected string | Closure | null $visibility = null;
+    protected string|Closure|null $visibility = null;
 
-    protected int | string | Closure | null $imageWidth = null;
+    protected int|string|Closure|null $imageWidth = null;
 
     /**
      * @var array<array<mixed> | Closure>
      */
     protected array $extraImgAttributes = [];
 
-    protected string | Closure | null $defaultImageUrl = null;
+    protected string|Closure|null $defaultImageUrl = null;
 
-    protected bool | Closure $isStacked = false;
+    protected bool|Closure $isStacked = false;
 
-    protected int | Closure | null $overlap = null;
+    protected int|Closure|null $overlap = null;
 
-    protected int | Closure | null $ring = null;
+    protected int|Closure|null $ring = null;
 
-    protected int | Closure | null $limit = null;
+    protected int|Closure|null $limit = null;
 
-    protected bool | Closure $hasLimitedRemainingText = false;
+    protected bool|Closure $hasLimitedRemainingText = false;
 
-    protected TextSize | string | Closure | null $limitedRemainingTextSize = null;
+    protected TextSize|string|Closure|null $limitedRemainingTextSize = null;
 
-    protected bool | Closure $shouldCheckFileExistence = true;
+    protected bool|Closure $shouldCheckFileExistence = true;
 
-    public function disk(string | Closure | null $disk): static
+    public function disk(string|Closure|null $disk): static
     {
         $this->diskName = $disk;
 
         return $this;
     }
 
-    public function imageHeight(int | string | Closure | null $height): static
+    public function imageHeight(int|string|Closure|null $height): static
     {
         $this->imageHeight = $height;
 
@@ -74,14 +74,14 @@ class ImageColumn extends Column implements HasEmbeddedView
     /**
      * @deprecated Use `imageHeight()` instead.
      */
-    public function height(int | string | Closure | null $height): static
+    public function height(int|string|Closure|null $height): static
     {
         $this->imageHeight($height);
 
         return $this;
     }
 
-    public function circular(bool | Closure $condition = true): static
+    public function circular(bool|Closure $condition = true): static
     {
         $this->isCircular = $condition;
 
@@ -91,19 +91,19 @@ class ImageColumn extends Column implements HasEmbeddedView
     /**
      * @deprecated Use `circular()` instead.
      */
-    public function rounded(bool | Closure $condition = true): static
+    public function rounded(bool|Closure $condition = true): static
     {
         return $this->circular($condition);
     }
 
-    public function square(bool | Closure $condition = true): static
+    public function square(bool|Closure $condition = true): static
     {
         $this->isSquare = $condition;
 
         return $this;
     }
 
-    public function imageSize(int | string | Closure $size): static
+    public function imageSize(int|string|Closure $size): static
     {
         $this->imageWidth($size);
         $this->imageHeight($size);
@@ -114,21 +114,21 @@ class ImageColumn extends Column implements HasEmbeddedView
     /**
      * @deprecated Use `imageSize()` instead.
      */
-    public function size(int | string | Closure $size): static
+    public function size(int|string|Closure $size): static
     {
         $this->imageSize($size);
 
         return $this;
     }
 
-    public function visibility(string | Closure | null $visibility): static
+    public function visibility(string|Closure|null $visibility): static
     {
         $this->visibility = $visibility;
 
         return $this;
     }
 
-    public function imageWidth(int | string | Closure | null $width): static
+    public function imageWidth(int|string|Closure|null $width): static
     {
         $this->imageWidth = $width;
 
@@ -183,7 +183,7 @@ class ImageColumn extends Column implements HasEmbeddedView
         return $this->getImageHeight();
     }
 
-    public function defaultImageUrl(string | Closure | null $url): static
+    public function defaultImageUrl(string|Closure|null $url): static
     {
         $this->defaultImageUrl = $url;
 
@@ -280,7 +280,7 @@ class ImageColumn extends Column implements HasEmbeddedView
     /**
      * @param  array<mixed> | Closure  $attributes
      */
-    public function extraImgAttributes(array | Closure $attributes, bool $merge = false): static
+    public function extraImgAttributes(array|Closure $attributes, bool $merge = false): static
     {
         if ($merge) {
             $this->extraImgAttributes[] = $attributes;
@@ -310,7 +310,7 @@ class ImageColumn extends Column implements HasEmbeddedView
         return new ComponentAttributeBag($this->getExtraImgAttributes());
     }
 
-    public function stacked(bool | Closure $condition = true): static
+    public function stacked(bool|Closure $condition = true): static
     {
         $this->isStacked = $condition;
 
@@ -322,7 +322,7 @@ class ImageColumn extends Column implements HasEmbeddedView
         return (bool) $this->evaluate($this->isStacked);
     }
 
-    public function overlap(int | Closure | null $overlap): static
+    public function overlap(int|Closure|null $overlap): static
     {
         $this->overlap = $overlap;
 
@@ -334,7 +334,7 @@ class ImageColumn extends Column implements HasEmbeddedView
         return $this->evaluate($this->overlap);
     }
 
-    public function ring(int | Closure | null $ring): static
+    public function ring(int|Closure|null $ring): static
     {
         $this->ring = $ring;
 
@@ -346,7 +346,7 @@ class ImageColumn extends Column implements HasEmbeddedView
         return $this->evaluate($this->ring);
     }
 
-    public function limit(int | Closure | null $limit = 3): static
+    public function limit(int|Closure|null $limit = 3): static
     {
         $this->limit = $limit;
 
@@ -358,7 +358,7 @@ class ImageColumn extends Column implements HasEmbeddedView
         return $this->evaluate($this->limit);
     }
 
-    public function limitedRemainingText(bool | Closure $condition = true, TextSize | string | Closure | null $size = null): static
+    public function limitedRemainingText(bool|Closure $condition = true, TextSize|string|Closure|null $size = null): static
     {
         $this->hasLimitedRemainingText = $condition;
         $this->limitedRemainingTextSize($size);
@@ -371,14 +371,14 @@ class ImageColumn extends Column implements HasEmbeddedView
         return (bool) $this->evaluate($this->hasLimitedRemainingText);
     }
 
-    public function limitedRemainingTextSize(TextSize | string | Closure | null $size): static
+    public function limitedRemainingTextSize(TextSize|string|Closure|null $size): static
     {
         $this->limitedRemainingTextSize = $size;
 
         return $this;
     }
 
-    public function getLimitedRemainingTextSize(): TextSize | string | null
+    public function getLimitedRemainingTextSize(): TextSize|string|null
     {
         $size = $this->evaluate($this->limitedRemainingTextSize);
 
@@ -393,7 +393,7 @@ class ImageColumn extends Column implements HasEmbeddedView
         return $size;
     }
 
-    public function checkFileExistence(bool | Closure $condition = true): static
+    public function checkFileExistence(bool|Closure $condition = true): static
     {
         $this->shouldCheckFileExistence = $condition;
 
@@ -433,9 +433,9 @@ class ImageColumn extends Column implements HasEmbeddedView
                 ->merge([
                     'x-tooltip' => filled($tooltip = $this->getEmptyTooltip())
                         ? '{
-                            content: ' . Js::from($tooltip) . ',
+                            content: '.Js::from($tooltip).',
                             theme: $store.theme,
-                            allowHTML: ' . Js::from($tooltip instanceof Htmlable) . ',
+                            allowHTML: '.Js::from($tooltip instanceof Htmlable).',
                         }'
                         : null,
                 ], escape: false);
@@ -488,14 +488,14 @@ class ImageColumn extends Column implements HasEmbeddedView
         $shouldOpenUrlInNewTab = $this->shouldOpenUrlInNewTab();
 
         $formatState = function (mixed $stateItem) use ($defaultImageUrl, $width, $height, $shouldOpenUrlInNewTab): string {
-            $item = '<img ' . $this->getExtraImgAttributeBag()
+            $item = '<img '.$this->getExtraImgAttributeBag()
                 ->merge([
                     'src' => filled($stateItem) ? ($this->getImageUrl($stateItem) ?? $defaultImageUrl) : $defaultImageUrl,
                     'x-tooltip' => filled($tooltip = $this->getTooltip($stateItem))
                         ? '{
-                                content: ' . Js::from($tooltip) . ',
+                                content: '.Js::from($tooltip).',
                                 theme: $store.theme,
-                                allowHTML: ' . Js::from($tooltip instanceof Htmlable) . ',
+                                allowHTML: '.Js::from($tooltip instanceof Htmlable).',
                             }'
                         : null,
                 ], escape: false)
@@ -504,10 +504,10 @@ class ImageColumn extends Column implements HasEmbeddedView
                     "width: {$width}" => $width,
                 ])
                 ->toHtml()
-                . ' />';
+                .' />';
 
             if (filled($url = $this->getUrl($stateItem))) {
-                $item = '<a ' . generate_href_html($url, $shouldOpenUrlInNewTab)->toHtml() . '>' . $item . '</a>';
+                $item = '<a '.generate_href_html($url, $shouldOpenUrlInNewTab)->toHtml().'>'.$item.'</a>';
             }
 
             return $item;

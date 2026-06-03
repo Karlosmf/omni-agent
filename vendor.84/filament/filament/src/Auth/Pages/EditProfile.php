@@ -91,7 +91,7 @@ class EditProfile extends Page
         $this->fillForm();
     }
 
-    public function getUser(): Authenticatable & Model
+    public function getUser(): Authenticatable&Model
     {
         $user = Filament::auth()->user();
 
@@ -132,7 +132,7 @@ class EditProfile extends Page
     {
         $panel ??= Filament::getCurrentOrDefaultPanel();
 
-        return $panel->generateRouteName('auth.' . static::getRelativeRouteName($panel));
+        return $panel->generateRouteName('auth.'.static::getRelativeRouteName($panel));
     }
 
     /**
@@ -187,7 +187,7 @@ class EditProfile extends Page
 
         if (request()->hasSession() && array_key_exists('password', $data)) {
             request()->session()->put([
-                'password_hash_' . Filament::getAuthGuard() => $data['password'],
+                'password_hash_'.Filament::getAuthGuard() => $data['password'],
             ]);
         }
 
@@ -252,7 +252,7 @@ class EditProfile extends Page
     /**
      * @return string | array<string, string>
      */
-    protected function getEmailChangeVerificationRecipientWithNewEmail(Model $record, VerifyEmailChange $notification, string $newEmail): string | array
+    protected function getEmailChangeVerificationRecipientWithNewEmail(Model $record, VerifyEmailChange $notification, string $newEmail): string|array
     {
         if (! method_exists($record, 'routeNotificationForMail')) {
             return $newEmail;
@@ -416,12 +416,12 @@ class EditProfile extends Page
         return false;
     }
 
-    public function getFormActionsAlignment(): string | Alignment
+    public function getFormActionsAlignment(): string|Alignment
     {
         return Alignment::Start;
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return static::getLabel();
     }
@@ -447,8 +447,8 @@ class EditProfile extends Page
             ->label(__('filament-panels::auth/pages/edit-profile.actions.cancel.label'))
             ->alpineClickHandler(
                 FilamentView::hasSpaMode($url)
-                    ? 'document.referrer ? window.history.back() : Livewire.navigate(' . Js::from($url) . ')'
-                    : 'document.referrer ? window.history.back() : (window.location.href = ' . Js::from($url) . ')',
+                    ? 'document.referrer ? window.history.back() : Livewire.navigate('.Js::from($url).')'
+                    : 'document.referrer ? window.history.back() : (window.location.href = '.Js::from($url).')',
             )
             ->color('gray');
     }

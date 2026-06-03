@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage;
 
 use function array_keys;
@@ -28,7 +31,7 @@ final class Filter
     private array $isFileCache = [];
 
     /**
-     * @param list<string> $filenames
+     * @param  list<string>  $filenames
      */
     public function includeFiles(array $filenames): void
     {
@@ -41,7 +44,7 @@ final class Filter
     {
         $filename = realpath($filename);
 
-        if (!$filename) {
+        if (! $filename) {
             return;
         }
 
@@ -75,7 +78,7 @@ final class Filter
 
     public function isExcluded(string $filename): bool
     {
-        return !isset($this->files[$filename]) || !$this->isFile($filename);
+        return ! isset($this->files[$filename]) || ! $this->isFile($filename);
     }
 
     /**

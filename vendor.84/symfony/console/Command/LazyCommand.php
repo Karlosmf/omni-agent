@@ -115,7 +115,7 @@ final class LazyCommand extends Command
     }
 
     /**
-     * @param array|\Closure(CompletionInput,CompletionSuggestions):list<string|Suggestion> $suggestedValues The values used for input completion
+     * @param  array|\Closure(CompletionInput,CompletionSuggestions):list<string|Suggestion>  $suggestedValues  The values used for input completion
      */
     public function addArgument(string $name, ?int $mode = null, string $description = '', mixed $default = null, array|\Closure $suggestedValues = []): static
     {
@@ -125,7 +125,7 @@ final class LazyCommand extends Command
     }
 
     /**
-     * @param array|\Closure(CompletionInput,CompletionSuggestions):list<string|Suggestion> $suggestedValues The values used for input completion
+     * @param  array|\Closure(CompletionInput,CompletionSuggestions):list<string|Suggestion>  $suggestedValues  The values used for input completion
      */
     public function addOption(string $name, string|array|null $shortcut = null, ?int $mode = null, string $description = '', mixed $default = null, array|\Closure $suggestedValues = []): static
     {
@@ -182,14 +182,14 @@ final class LazyCommand extends Command
 
     public function getCommand(): parent
     {
-        if (!$this->command instanceof \Closure) {
+        if (! $this->command instanceof \Closure) {
             return $this->command;
         }
 
         $command = $this->command = ($this->command)();
         $command->setApplication($this->getApplication());
 
-        if (null !== $this->getHelperSet()) {
+        if ($this->getHelperSet() !== null) {
             $command->setHelperSet($this->getHelperSet());
         }
 

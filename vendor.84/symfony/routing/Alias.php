@@ -19,8 +19,7 @@ class Alias
 
     public function __construct(
         private string $id,
-    ) {
-    }
+    ) {}
 
     public function withId(string $id): static
     {
@@ -44,22 +43,21 @@ class Alias
     /**
      * Whether this alias is deprecated, that means it should not be referenced anymore.
      *
-     * @param string $package The name of the composer package that is triggering the deprecation
-     * @param string $version The version of the package that introduced the deprecation
-     * @param string $message The deprecation message to use
-     *
+     * @param  string  $package  The name of the composer package that is triggering the deprecation
+     * @param  string  $version  The version of the package that introduced the deprecation
+     * @param  string  $message  The deprecation message to use
      * @return $this
      *
      * @throws InvalidArgumentException when the message template is invalid
      */
     public function setDeprecated(string $package, string $version, string $message): static
     {
-        if ('' !== $message) {
+        if ($message !== '') {
             if (preg_match('#[\r\n]|\*/#', $message)) {
                 throw new InvalidArgumentException('Invalid characters found in deprecation template.');
             }
 
-            if (!str_contains($message, '%alias_id%')) {
+            if (! str_contains($message, '%alias_id%')) {
                 throw new InvalidArgumentException('The deprecation template must contain the "%alias_id%" placeholder.');
             }
         }
@@ -79,7 +77,7 @@ class Alias
     }
 
     /**
-     * @param string $name Route name relying on this alias
+     * @param  string  $name  Route name relying on this alias
      */
     public function getDeprecation(string $name): array
     {

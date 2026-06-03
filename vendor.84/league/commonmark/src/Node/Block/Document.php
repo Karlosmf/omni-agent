@@ -31,7 +31,7 @@ class Document extends AbstractBlock
 
         $this->setStartLine(1);
 
-        $this->referenceMap = $referenceMap ?? new ReferenceMap();
+        $this->referenceMap = $referenceMap ?? new ReferenceMap;
     }
 
     public function getReferenceMap(): ReferenceMapInterface

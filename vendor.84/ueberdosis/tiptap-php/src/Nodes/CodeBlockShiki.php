@@ -32,7 +32,7 @@ class CodeBlockShiki extends CodeBlock
         // Auto-detect the language
         elseif ($this->options['guessLanguage']) {
             try {
-                $highlighter = new Highlighter();
+                $highlighter = new Highlighter;
                 $result = $highlighter->highlightAuto($code);
                 $language = $result->language;
             } catch (Exception $exception) {
@@ -55,9 +55,9 @@ class CodeBlockShiki extends CodeBlock
 
             $renderedAttributes = HTML::renderAttributes($mergedAttributes);
 
-            $content = "<pre><code" . $renderedAttributes . ">";
+            $content = '<pre><code'.$renderedAttributes.'>';
             $content .= htmlentities($code);
-            $content .= "</code></pre>";
+            $content .= '</code></pre>';
         }
 
         return [

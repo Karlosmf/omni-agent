@@ -2,20 +2,30 @@
 
 namespace Livewire\Features\SupportTesting;
 
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use Laravel\Dusk\Browser;
+use Laravel\Dusk\Console\DuskCommand;
+use Orchestra\Testbench\Dusk\Options;
 use PHPUnit\Framework\TestCase;
-use function Livewire\{ invade, on };
-use Illuminate\Support\Arr;
+use Psy\Shell;
+
+use function Livewire\invade;
+use function Livewire\on;
 
 class DuskTestable
 {
     public static $currentTestCase;
+
     public static $shortCircuitCreateCall = false;
+
     public static $isTestProcess = false;
+
     public static $browser;
 
-    static function provide() {
+    public static function provide()
+    {
         Route::get('livewire-dusk/{component}', ShowDuskComponent::class)->middleware('web');
 
         on('browser.testCase.setUp', function ($testCase) {
@@ -27,7 +37,9 @@ class DuskTestable
             invade($testCase)->beforeServingApplication(function ($app, $config) use ($tweakApplication) {
                 $config->set('app.debug', true);
 
-                if (is_callable($tweakApplication)) $tweakApplication();
+                if (is_callable($tweakApplication)) {
+                    $tweakApplication();
+                }
 
                 static::loadTestComponents();
             });
@@ -41,23 +53,27 @@ class DuskTestable
             static::$currentTestCase = null;
         });
 
-        if (isset($_SERVER['CI']) && class_exists(\Orchestra\Testbench\Dusk\Options::class)) {
-            \Orchestra\Testbench\Dusk\Options::withoutUI();
+        if (isset($_SERVER['CI']) && class_exists(Options::class)) {
+            Options::withoutUI();
         }
 
-        \Laravel\Dusk\Browser::mixin(new DuskBrowserMacros);
+        Browser::mixin(new DuskBrowserMacros);
     }
 
     /**
      * @return Browser
      */
-    static function create($components, $params = [], $queryParams = [])
+    public static function create($components, $params = [], $queryParams = [])
     {
         if (static::$shortCircuitCreateCall) {
-            throw new class ($components) extends \Exception {
+            throw new class($components) extends \Exception
+            {
                 public $components;
+
                 public $isDuskShortcircuit = true;
-                function __construct($components) {
+
+                public function __construct($components)
+                {
                     $this->components = $components;
                 }
             };
@@ -74,13 +90,17 @@ class DuskTestable
         return static::createBrowser($id, $components, $params, $queryParams)->visit('/livewire-dusk/'.$id.'?'.Arr::query($queryParams));
     }
 
-    static function createBrowser($id, $components, $params = [], $queryParams = [])
+    public static function createBrowser($id, $components, $params = [], $queryParams = [])
     {
         if (static::$shortCircuitCreateCall) {
-            throw new class ($components) extends \Exception {
+            throw new class($components) extends \Exception
+            {
                 public $components;
+
                 public $isDuskShortcircuit = true;
-                function __construct($components) {
+
+                public function __construct($components)
+                {
                     $this->components = $components;
                 }
             };
@@ -95,12 +115,12 @@ class DuskTestable
         return static::$browser = $testCase->newBrowser($testCase->createWebDriver());
     }
 
-    static function actingAs(\Illuminate\Contracts\Auth\Authenticatable $user, $driver = null)
+    public static function actingAs(Authenticatable $user, $driver = null)
     {
         //
     }
 
-    static function findTestClassAndMethodThatCalledThis()
+    public static function findTestClassAndMethodThatCalledThis()
     {
         $traces = debug_backtrace(options: DEBUG_BACKTRACE_IGNORE_ARGS, limit: 10);
 
@@ -113,17 +133,21 @@ class DuskTestable
         throw new \Exception;
     }
 
-    static function loadTestComponents()
+    public static function loadTestComponents()
     {
-        if (static::$isTestProcess) return;
+        if (static::$isTestProcess) {
+            return;
+        }
 
-        $tmp = __DIR__ . '/_runtime_components.json';
+        $tmp = __DIR__.'/_runtime_components.json';
 
         if (file_exists($tmp)) {
             // We can't just "require" this file because of race conditions...
             [$id, $testClass, $method] = json_decode(file_get_contents($tmp), associative: true);
 
-            if (! method_exists($testClass, $method)) return;
+            if (! method_exists($testClass, $method)) {
+                return;
+            }
 
             static::$shortCircuitCreateCall = true;
 
@@ -133,10 +157,12 @@ class DuskTestable
                 if (\Orchestra\Testbench\phpunit_version_compare('10.0', '>=')) {
                     (new $testClass($method))->$method();
                 } else {
-                    (new $testClass())->$method();
+                    (new $testClass)->$method();
                 }
             } catch (\Exception $e) {
-                if (! $e->isDuskShortcircuit) throw $e;
+                if (! $e->isDuskShortcircuit) {
+                    throw $e;
+                }
                 $components = $e->components;
             }
 
@@ -149,7 +175,9 @@ class DuskTestable
             static::$shortCircuitCreateCall = false;
 
             foreach ($components as $name => $class) {
-                if (is_object($class)) $class = $class::class;
+                if (is_object($class)) {
+                    $class = $class::class;
+                }
 
                 if (is_numeric($name)) {
                     app('livewire')->component($class);
@@ -160,25 +188,25 @@ class DuskTestable
         }
     }
 
-    static function registerComponentsForNextTest($components)
+    public static function registerComponentsForNextTest($components)
     {
-        $tmp = __DIR__ . '/_runtime_components.json';
+        $tmp = __DIR__.'/_runtime_components.json';
 
         file_put_contents($tmp, json_encode($components, JSON_PRETTY_PRINT));
     }
 
-    static function wipeRuntimeComponentRegistration()
+    public static function wipeRuntimeComponentRegistration()
     {
-        $tmp = __DIR__ . '/_runtime_components.json';
+        $tmp = __DIR__.'/_runtime_components.json';
 
         file_exists($tmp) && unlink($tmp);
     }
 
-    function breakIntoATinkerShell($browsers, $e)
+    public function breakIntoATinkerShell($browsers, $e)
     {
-        $sh = new \Psy\Shell();
+        $sh = new Shell;
 
-        $sh->add(new \Laravel\Dusk\Console\DuskCommand($this, $e));
+        $sh->add(new DuskCommand($this, $e));
 
         $sh->setScopeVariables([
             'browsers' => $browsers,

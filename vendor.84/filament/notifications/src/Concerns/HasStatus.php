@@ -6,9 +6,9 @@ use Closure;
 
 trait HasStatus
 {
-    protected string | Closure | null $status = null;
+    protected string|Closure|null $status = null;
 
-    public function status(string | Closure | null $status): static
+    public function status(string|Closure|null $status): static
     {
         $this->status = $status;
 

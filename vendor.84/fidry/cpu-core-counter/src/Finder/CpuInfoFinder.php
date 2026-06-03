@@ -13,11 +13,12 @@ declare(strict_types=1);
 
 namespace Fidry\CpuCoreCounter\Finder;
 
+use const PHP_EOL;
+
 use function file_get_contents;
 use function is_file;
 use function sprintf;
 use function substr_count;
-use const PHP_EOL;
 
 /**
  * Find the number of CPU cores looking up at the cpuinfo file which is available
@@ -32,7 +33,7 @@ final class CpuInfoFinder implements CpuCoreFinder
 
     public function diagnose(): string
     {
-        if (!is_file(self::CPU_INFO_PATH)) {
+        if (! is_file(self::CPU_INFO_PATH)) {
             return sprintf(
                 'The file "%s" could not be found.',
                 self::CPU_INFO_PATH
@@ -41,7 +42,7 @@ final class CpuInfoFinder implements CpuCoreFinder
 
         $cpuInfo = file_get_contents(self::CPU_INFO_PATH);
 
-        if (false === $cpuInfo) {
+        if ($cpuInfo === false) {
             return sprintf(
                 'Could not get the content of the file "%s".',
                 self::CPU_INFO_PATH
@@ -65,7 +66,7 @@ final class CpuInfoFinder implements CpuCoreFinder
     {
         $cpuInfo = self::getCpuInfo();
 
-        return null === $cpuInfo ? null : self::countCpuCores($cpuInfo);
+        return $cpuInfo === null ? null : self::countCpuCores($cpuInfo);
     }
 
     public function toString(): string
@@ -75,13 +76,13 @@ final class CpuInfoFinder implements CpuCoreFinder
 
     private static function getCpuInfo(): ?string
     {
-        if (!@is_file(self::CPU_INFO_PATH)) {
+        if (! @is_file(self::CPU_INFO_PATH)) {
             return null;
         }
 
         $cpuInfo = @file_get_contents(self::CPU_INFO_PATH);
 
-        return false === $cpuInfo
+        return $cpuInfo === false
             ? null
             : $cpuInfo;
     }

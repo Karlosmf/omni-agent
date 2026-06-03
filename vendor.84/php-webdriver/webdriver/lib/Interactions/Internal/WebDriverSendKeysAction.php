@@ -15,7 +15,7 @@ class WebDriverSendKeysAction extends WebDriverKeysRelatedAction implements WebD
     private $keys = '';
 
     /**
-     * @param string $keys
+     * @param  string  $keys
      */
     public function __construct(
         WebDriverKeyboard $keyboard,

@@ -7,6 +7,7 @@ use Closure;
 trait SupportsStartWithEndWith
 {
     public ?Closure $startWith = null;
+
     public ?Closure $endWith = null;
 
     public function startWith(callable $callable): self

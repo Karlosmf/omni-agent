@@ -25,13 +25,13 @@ final class CellHelper
      * Z is the 26th and AA is the 27th.
      * The mapping is zero based, so that A1 maps to 0, B2 maps to 1, Z13 to 25 and AA4 to 26.
      *
-     * @param string $cellIndex The Excel cell index ('A1', 'BC13', ...)
+     * @param  string  $cellIndex  The Excel cell index ('A1', 'BC13', ...)
      *
      * @throws InvalidArgumentException When the given cell index is invalid
      */
     public static function getColumnIndexFromCellIndex(string $cellIndex): int
     {
-        if (!self::isValidCellIndex($cellIndex)) {
+        if (! self::isValidCellIndex($cellIndex)) {
             throw new InvalidArgumentException('Cannot get column index from an invalid cell index.');
         }
 
@@ -76,10 +76,10 @@ final class CellHelper
      * To be valid, the cell index should start with capital letters and be followed by numbers.
      * There can only be 3 letters, as there can only be 16,384 rows, which is equivalent to 'XFE'.
      *
-     * @param string $cellIndex The Excel cell index ('A1', 'BC13', ...)
+     * @param  string  $cellIndex  The Excel cell index ('A1', 'BC13', ...)
      */
     private static function isValidCellIndex(string $cellIndex): bool
     {
-        return 1 === preg_match('/^[A-Z]{1,3}\d+$/', $cellIndex);
+        return preg_match('/^[A-Z]{1,3}\d+$/', $cellIndex) === 1;
     }
 }

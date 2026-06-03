@@ -13,5 +13,6 @@ class Internet extends \Faker\Provider\Internet
         'bluewin.ch',
         'swissonline.ch',
     ];
+
     protected static $tld = ['com', 'com', 'com', 'net', 'org', 'li', 'ch', 'ch'];
 }

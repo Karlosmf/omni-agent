@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,9 +9,16 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner\Baseline;
 
 use const DIRECTORY_SEPARATOR;
+
+use DOMElement;
+use DOMXPath;
+use PHPUnit\Util\Xml\Loader as XmlLoader;
+use PHPUnit\Util\Xml\XmlException;
+
 use function assert;
 use function dirname;
 use function is_file;
@@ -17,10 +26,6 @@ use function realpath;
 use function sprintf;
 use function str_replace;
 use function trim;
-use DOMElement;
-use DOMXPath;
-use PHPUnit\Util\Xml\Loader as XmlLoader;
-use PHPUnit\Util\Xml\XmlException;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -30,13 +35,13 @@ use PHPUnit\Util\Xml\XmlException;
 final readonly class Reader
 {
     /**
-     * @param non-empty-string $baselineFile
+     * @param  non-empty-string  $baselineFile
      *
      * @throws CannotLoadBaselineException
      */
     public function read(string $baselineFile): Baseline
     {
-        if (!is_file($baselineFile)) {
+        if (! is_file($baselineFile)) {
             throw new CannotLoadBaselineException(
                 sprintf(
                     'Cannot read baseline %s, file does not exist',
@@ -69,14 +74,14 @@ final readonly class Reader
             );
         }
 
-        $baseline          = new Baseline;
+        $baseline = new Baseline;
         $baselineDirectory = dirname(realpath($baselineFile));
-        $xpath             = new DOMXPath($document);
+        $xpath = new DOMXPath($document);
 
         foreach ($xpath->query('file') as $fileElement) {
             assert($fileElement instanceof DOMElement);
 
-            $file = $baselineDirectory . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $fileElement->getAttribute('path'));
+            $file = $baselineDirectory.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $fileElement->getAttribute('path'));
 
             foreach ($xpath->query('line', $fileElement) as $lineElement) {
                 assert($lineElement instanceof DOMElement);

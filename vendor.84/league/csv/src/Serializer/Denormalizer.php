@@ -35,17 +35,21 @@ final class Denormalizer
     private static bool $convertEmptyStringToNull = true;
 
     private readonly ReflectionClass $class;
+
     /** @var array<ReflectionProperty> */
     private readonly array $properties;
+
     /** @var array<PropertySetter> */
     private readonly array $propertySetters;
+
     /** @var array<ReflectionMethod> */
     private readonly array $afterMappingCalls;
+
     private readonly ?MapRecord $mapRecord;
 
     /**
-     * @param class-string $className
-     * @param array<string> $propertyNames
+     * @param  class-string  $className
+     * @param  array<string>  $propertyNames
      *
      * @throws MappingFailed
      */
@@ -60,13 +64,12 @@ final class Denormalizer
 
     /**
      * @deprecated since version 9.17.0
-     *
      * @see MapRecord::$convertEmptyStringToNull
      * @see MapCell::$convertEmptyStringToNull
      *
      * Enables converting empty string to the null value.
      */
-    #[Deprecated(message:'use League\Csv\Serializer\MapRecord::$convertEmptyStringToNull or League\Csv\Serializer\MapCell::$convertEmptyStringToNullinstead', since:'league/csv:9.17.0')]
+    #[Deprecated(message: 'use League\Csv\Serializer\MapRecord::$convertEmptyStringToNull or League\Csv\Serializer\MapCell::$convertEmptyStringToNullinstead', since: 'league/csv:9.17.0')]
     public static function allowEmptyStringAsNull(): void
     {
         self::$convertEmptyStringToNull = true;
@@ -74,13 +77,12 @@ final class Denormalizer
 
     /**
      * @deprecated since version 9.17.0
-     *
      * @see MapRecord::$convertEmptyStringToNull
      * @see MapCell::$convertEmptyStringToNull
      *
      * Disables converting empty string to the null value.
      */
-    #[Deprecated(message:'use League\Csv\Serializer\MapRecord::$convertEmptyStringToNull or League\Csv\Serializer\MapCell::$convertEmptyStringToNullinstead', since:'league/csv:9.17.0')]
+    #[Deprecated(message: 'use League\Csv\Serializer\MapRecord::$convertEmptyStringToNull or League\Csv\Serializer\MapCell::$convertEmptyStringToNullinstead', since: 'league/csv:9.17.0')]
     public static function disallowEmptyStringAsNull(): void
     {
         self::$convertEmptyStringToNull = false;
@@ -98,8 +100,6 @@ final class Denormalizer
 
     /**
      * Unregister a global type conversion callback to convert a field into a specific type.
-     *
-     *
      */
     public static function unregisterType(string $type): bool
     {
@@ -160,8 +160,8 @@ final class Denormalizer
     }
 
     /**
-     * @param class-string $className
-     * @param array<array-key, mixed> $record
+     * @param  class-string  $className
+     * @param  array<array-key, mixed>  $record
      *
      * @throws DenormalizationFailed
      * @throws MappingFailed
@@ -174,8 +174,8 @@ final class Denormalizer
     }
 
     /**
-     * @param class-string $className
-     * @param array<string> $propertyNames
+     * @param  class-string  $className
+     * @param  array<string>  $propertyNames
      *
      * @throws MappingFailed
      * @throws TypeCastingFailed
@@ -216,7 +216,7 @@ final class Denormalizer
     }
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      *
      * @throws MappingFailed
      */
@@ -233,11 +233,10 @@ final class Denormalizer
     }
 
     /**
-     * @param array<string> $propertyNames
+     * @param  array<string>  $propertyNames
+     * @return array<PropertySetter>
      *
      * @throws MappingFailed
-     *
-     * @return array<PropertySetter>
      */
     private function setPropertySetters(array $propertyNames): array
     {
@@ -251,7 +250,7 @@ final class Denormalizer
                 1 => $this->findPropertySetter($attributes[0]->newInstance(), $accessor, $propertyNames),
                 default => throw new MappingFailed('Using more than one `'.MapCell::class.'` attribute on a class property or method is not supported.'),
             };
-            if (null !== $propertySetter) {
+            if ($propertySetter !== null) {
                 $propertySetters[] = $propertySetter;
             }
         }
@@ -261,6 +260,7 @@ final class Denormalizer
             default => $propertySetters,
         };
     }
+
     /**
      * @return array<ReflectionMethod>
      */
@@ -272,14 +272,14 @@ final class Denormalizer
     }
 
     /**
-     * @param array<string> $propertyNames
-     * @param array<?string> $methodNames
+     * @param  array<string>  $propertyNames
+     * @param  array<?string>  $methodNames
      *
      * @throws MappingFailed
      */
     private function autoDiscoverPropertySetter(ReflectionMethod|ReflectionProperty $accessor, array $propertyNames, array $methodNames): ?PropertySetter
     {
-        if ($accessor->isStatic() || !$accessor->isPublic()) {
+        if ($accessor->isStatic() || ! $accessor->isPublic()) {
             return null;
         }
 
@@ -288,11 +288,11 @@ final class Denormalizer
                 return null;
             }
 
-            if ([] === $accessor->getParameters()) {
+            if ($accessor->getParameters() === []) {
                 return null;
             }
 
-            if (1 < $accessor->getNumberOfRequiredParameters()) {
+            if ($accessor->getNumberOfRequiredParameters() > 1) {
                 return null;
             }
         }
@@ -305,8 +305,8 @@ final class Denormalizer
         };
 
         return match (true) {
-            false === $offset,
-            null === $reflectionProperty->getType() => null,
+            $offset === false,
+            $reflectionProperty->getType() === null => null,
             default => new PropertySetter(
                 $accessor,
                 $offset,
@@ -318,7 +318,7 @@ final class Denormalizer
     }
 
     /**
-     * @param array<string> $propertyNames
+     * @param  array<string>  $propertyNames
      *
      * @throws MappingFailed
      */
@@ -335,14 +335,14 @@ final class Denormalizer
             $accessor instanceof ReflectionProperty => $accessor->getName(),
         };
 
-        if (!is_int($offset)) {
-            if ([] === $propertyNames) {
+        if (! is_int($offset)) {
+            if ($propertyNames === []) {
                 throw new MappingFailed('offset as string are only supported if the property names list is not empty.');
             }
 
             /** @var int<0, max>|false $index */
             $index = array_search($offset, $propertyNames, true);
-            if (false === $index) {
+            if ($index === false) {
                 throw new MappingFailed('The `'.$offset.'` property could not be found in the property names list; Please verify your property names list.');
             }
 
@@ -363,9 +363,9 @@ final class Denormalizer
             ?? false;
 
         return match (true) {
-            0 > $offset => throw new MappingFailed('offset integer position can only be positive or equals to 0; received `'.$offset.'`'),
-            [] !== $propertyNames && $offset > count($propertyNames) - 1 => throw new MappingFailed('offset integer position can not exceed property names count.'),
-            null === $typeCaster => new PropertySetter($accessor, $offset, $this->resolveTypeCasting($reflectionProperty, $mapCell->options), $convertEmptyStringToNull, $trimFieldValueBeforeCasting),
+            $offset < 0 => throw new MappingFailed('offset integer position can only be positive or equals to 0; received `'.$offset.'`'),
+            $propertyNames !== [] && $offset > count($propertyNames) - 1 => throw new MappingFailed('offset integer position can not exceed property names count.'),
+            $typeCaster === null => new PropertySetter($accessor, $offset, $this->resolveTypeCasting($reflectionProperty, $mapCell->options), $convertEmptyStringToNull, $trimFieldValueBeforeCasting),
             default => new PropertySetter($accessor, $offset, $this->getTypeCasting($typeCaster, $reflectionProperty, $mapCell->options), $convertEmptyStringToNull, $trimFieldValueBeforeCasting),
         };
     }
@@ -378,8 +378,8 @@ final class Denormalizer
         $arguments = $reflectionMethod->getParameters();
 
         return match (true) {
-            [] === $arguments => throw new MappingFailed('The method `'.$reflectionMethod->getDeclaringClass()->getName().'::'.$reflectionMethod->getName().'` does not use parameters.'),
-            1 < $reflectionMethod->getNumberOfRequiredParameters() => throw new MappingFailed('The method `'.$reflectionMethod->getDeclaringClass()->getName().'::'.$reflectionMethod->getName().'` has too many required parameters.'),
+            $arguments === [] => throw new MappingFailed('The method `'.$reflectionMethod->getDeclaringClass()->getName().'::'.$reflectionMethod->getName().'` does not use parameters.'),
+            $reflectionMethod->getNumberOfRequiredParameters() > 1 => throw new MappingFailed('The method `'.$reflectionMethod->getDeclaringClass()->getName().'::'.$reflectionMethod->getName().'` has too many required parameters.'),
             default => $arguments[0]
         };
     }
@@ -436,12 +436,12 @@ final class Denormalizer
     {
         /** @var ?class-string<TypeCasting> $typeCaster */
         $typeCaster = $mapCell->cast;
-        if (null === $typeCaster) {
+        if ($typeCaster === null) {
             return null;
         }
 
         if (class_exists($typeCaster)) {
-            if (!(new ReflectionClass($typeCaster))->implementsInterface(TypeCasting::class)) {
+            if (! (new ReflectionClass($typeCaster))->implementsInterface(TypeCasting::class)) {
                 throw MappingFailed::dueToInvalidTypeCastingClass($typeCaster);
             }
 
@@ -452,7 +452,7 @@ final class Denormalizer
             $accessor = $accessor->getParameters()[0];
         }
 
-        if (!CallbackCasting::supports($accessor, $typeCaster)) {
+        if (! CallbackCasting::supports($accessor, $typeCaster)) {
             throw MappingFailed::dueToInvalidTypeCastingClass($typeCaster);
         }
 

@@ -25,6 +25,7 @@ final readonly class LogMerger
             $otherSuite = TestSuite::fromFile($junitFile);
             if ($mainSuite === null) {
                 $mainSuite = $otherSuite;
+
                 continue;
             }
 

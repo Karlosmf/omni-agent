@@ -44,22 +44,22 @@ use Symfony\Component\Process\Exception\RuntimeException;
 class PhpSubprocess extends Process
 {
     /**
-     * @param array       $command The command to run and its arguments listed as separate entries. They will automatically
-     *                             get prefixed with the PHP binary
-     * @param string|null $cwd     The working directory or null to use the working dir of the current PHP process
-     * @param array|null  $env     The environment variables or null to use the same environment as the current PHP process
-     * @param int         $timeout The timeout in seconds
-     * @param array|null  $php     Path to the PHP binary to use with any additional arguments
+     * @param  array  $command  The command to run and its arguments listed as separate entries. They will automatically
+     *                          get prefixed with the PHP binary
+     * @param  string|null  $cwd  The working directory or null to use the working dir of the current PHP process
+     * @param  array|null  $env  The environment variables or null to use the same environment as the current PHP process
+     * @param  int  $timeout  The timeout in seconds
+     * @param  array|null  $php  Path to the PHP binary to use with any additional arguments
      */
     public function __construct(array $command, ?string $cwd = null, ?array $env = null, int $timeout = 60, ?array $php = null)
     {
-        if (null === $php) {
-            $executableFinder = new PhpExecutableFinder();
+        if ($php === null) {
+            $executableFinder = new PhpExecutableFinder;
             $php = $executableFinder->find(false);
-            $php = false === $php ? null : array_merge([$php], $executableFinder->findArguments());
+            $php = $php === false ? null : array_merge([$php], $executableFinder->findArguments());
         }
 
-        if (null === $php) {
+        if ($php === null) {
             throw new RuntimeException('Unable to find PHP binary.');
         }
 
@@ -79,11 +79,11 @@ class PhpSubprocess extends Process
     }
 
     /**
-     * @param (callable('out'|'err', string):void)|null $callback
+     * @param  (callable('out'|'err', string):void)|null  $callback
      */
     public function start(?callable $callback = null, array $env = []): void
     {
-        if (null === $this->getCommandLine()) {
+        if ($this->getCommandLine() === null) {
             throw new RuntimeException('Unable to find the PHP executable.');
         }
 
@@ -97,7 +97,7 @@ class PhpSubprocess extends Process
         }
 
         // $iniFiles has at least one item and it may be empty
-        if ('' === $iniFiles[0]) {
+        if ($iniFiles[0] === '') {
             array_shift($iniFiles);
         }
 
@@ -120,7 +120,7 @@ class PhpSubprocess extends Process
         $config = parse_ini_string($content);
         $loaded = ini_get_all(null, false);
 
-        if (false === $config || false === $loaded) {
+        if ($config === false || $loaded === false) {
             throw new RuntimeException('Unable to parse ini data.');
         }
 
@@ -129,7 +129,7 @@ class PhpSubprocess extends Process
         // Work-around for https://bugs.php.net/bug.php?id=75932
         $content .= "opcache.enable_cli=0\n";
 
-        if (false === @file_put_contents($tmpfile, $content)) {
+        if (@file_put_contents($tmpfile, $content) === false) {
             throw new RuntimeException('Unable to write temporary ini file.');
         }
 
@@ -141,11 +141,11 @@ class PhpSubprocess extends Process
         $content = '';
 
         foreach ($loadedConfig as $name => $value) {
-            if (!\is_string($value)) {
+            if (! \is_string($value)) {
                 continue;
             }
 
-            if (!isset($iniConfig[$name]) || $iniConfig[$name] !== $value) {
+            if (! isset($iniConfig[$name]) || $iniConfig[$name] !== $value) {
                 // Double-quote escape each value
                 $content .= $name.'="'.addcslashes($value, '\\"')."\"\n";
             }

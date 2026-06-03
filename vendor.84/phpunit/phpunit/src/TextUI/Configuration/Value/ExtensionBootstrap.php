@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\Configuration;
 
 /**
@@ -27,12 +30,12 @@ final readonly class ExtensionBootstrap
     private array $parameters;
 
     /**
-     * @param non-empty-string     $className
-     * @param array<string,string> $parameters
+     * @param  non-empty-string  $className
+     * @param  array<string,string>  $parameters
      */
     public function __construct(string $className, array $parameters)
     {
-        $this->className  = $className;
+        $this->className = $className;
         $this->parameters = $parameters;
     }
 

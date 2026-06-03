@@ -4,17 +4,17 @@ namespace Spatie\Invade;
 
 /**
  * @template T of object
+ *
  * @mixin T
  */
 class Invader
 {
     /**
-     * @param T $obj
+     * @param  T  $obj
      */
     public function __construct(
         public object $obj
-    ) {
-    }
+    ) {}
 
     public function __get(string $name): mixed
     {

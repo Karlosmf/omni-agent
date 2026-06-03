@@ -18,13 +18,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * @author Abdellatif Ait boudad <a.aitboudad@gmail.com>
  */
-class LoggingTranslator implements TranslatorInterface, TranslatorBagInterface, LocaleAwareInterface
+class LoggingTranslator implements LocaleAwareInterface, TranslatorBagInterface, TranslatorInterface
 {
     public function __construct(
         private TranslatorInterface&TranslatorBagInterface&LocaleAwareInterface $translator,
         private LoggerInterface $logger,
-    ) {
-    }
+    ) {}
 
     public function trans(?string $id, array $parameters = [], ?string $domain = null, ?string $locale = null): string
     {

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -19,7 +21,9 @@ class UdpSocket
     protected const DATAGRAM_MAX_LENGTH = 65023;
 
     protected string $ip;
+
     protected int $port;
+
     protected ?Socket $socket = null;
 
     public function __construct(string $ip, int $port = 514)
@@ -28,7 +32,7 @@ class UdpSocket
         $this->port = $port;
     }
 
-    public function write(string $line, string $header = ""): void
+    public function write(string $line, string $header = ''): void
     {
         $this->send($this->assembleMessage($line, $header));
     }
@@ -43,7 +47,7 @@ class UdpSocket
 
     protected function getSocket(): Socket
     {
-        if (null !== $this->socket) {
+        if ($this->socket !== null) {
             return $this->socket;
         }
 
@@ -72,6 +76,6 @@ class UdpSocket
     {
         $chunkSize = static::DATAGRAM_MAX_LENGTH - \strlen($header);
 
-        return $header . Utils::substr($line, 0, $chunkSize);
+        return $header.Utils::substr($line, 0, $chunkSize);
     }
 }

@@ -30,7 +30,7 @@ final class IdnAddressEncoder implements AddressEncoderInterface
     public function encodeString(string $address): string
     {
         $i = strrpos($address, '@');
-        if (false !== $i) {
+        if ($i !== false) {
             $local = substr($address, 0, $i);
             $domain = substr($address, $i + 1);
 

@@ -15,6 +15,4 @@ namespace League\CommonMark\Renderer;
 
 use League\CommonMark\Exception\LogicException;
 
-class NoMatchingRendererException extends LogicException
-{
-}
+class NoMatchingRendererException extends LogicException {}

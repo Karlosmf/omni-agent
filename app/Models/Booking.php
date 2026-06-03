@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\BookingStatus;
+use Carbon\Carbon;
+use Database\Factories\BookingFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Booking extends Model
 {
-    /** @use HasFactory<\Database\Factories\BookingFactory> */
+    /** @use HasFactory<BookingFactory> */
     use HasFactory;
 
     protected static function boot()
@@ -90,7 +92,7 @@ class Booking extends Model
 
     public function isExpired(): bool
     {
-        return $this->valid_until && \Carbon\Carbon::parse($this->valid_until)->isPast();
+        return $this->valid_until && Carbon::parse($this->valid_until)->isPast();
     }
 
     public function calculateProfit(): float

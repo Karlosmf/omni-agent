@@ -19,6 +19,7 @@ use Symfony\Component\Mime\Header\Headers;
 abstract class AbstractMultipartPart extends AbstractPart
 {
     private ?string $boundary = null;
+
     private array $parts = [];
 
     public function __construct(AbstractPart ...$parts)

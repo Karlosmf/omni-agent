@@ -37,10 +37,10 @@ final class TextDirective implements FragmentDirective
     $/x';
 
     /**
-     * @param non-empty-string $start
-     * @param ?non-empty-string $end
-     * @param ?non-empty-string $prefix
-     * @param ?non-empty-string $suffix
+     * @param  non-empty-string  $start
+     * @param  ?non-empty-string  $end
+     * @param  ?non-empty-string  $prefix
+     * @param  ?non-empty-string  $suffix
      */
     public function __construct(
         public readonly string $start,
@@ -48,7 +48,7 @@ final class TextDirective implements FragmentDirective
         public readonly ?string $prefix = null,
         public readonly ?string $suffix = null,
     ) {
-        ('' !== $this->start && '' !== $this->end && '' !== $this->prefix && '' !== $this->suffix)
+        ($this->start !== '' && $this->end !== '' && $this->prefix !== '' && $this->suffix !== '')
         || throw new SyntaxError('The start part can not be the empty string.');
     }
 
@@ -62,7 +62,7 @@ final class TextDirective implements FragmentDirective
         }
 
         [$name, $value] = explode('=', (string) $value, 2) + [1 => ''];
-        self::NAME === $name || throw new SyntaxError('The submitted text is not a text directive.');
+        $name === self::NAME || throw new SyntaxError('The submitted text is not a text directive.');
 
         return self::fromValue($value);
     }
@@ -76,9 +76,9 @@ final class TextDirective implements FragmentDirective
             $text = (string) $text->value;
         }
 
-        '' !== $text || throw new SyntaxError('The text directive value can not be the empty string.');
-        1 === preg_match(self::REGEXP_PATTERN, (string) $text, $matches) || throw new SyntaxError('The text directive is malformed.');
-        if ('' === $matches['prefix']) {
+        $text !== '' || throw new SyntaxError('The text directive value can not be the empty string.');
+        preg_match(self::REGEXP_PATTERN, (string) $text, $matches) === 1 || throw new SyntaxError('The text directive is malformed.');
+        if ($matches['prefix'] === '') {
             $matches['prefix'] = null;
         }
 
@@ -89,7 +89,7 @@ final class TextDirective implements FragmentDirective
         /** @var ?non-empty-string $suffix */
         $suffix = self::decode($matches['suffix'] ?? null);
         $matches['end'] ??= null;
-        if ('' === $matches['end']) {
+        if ($matches['end'] === '') {
             $matches['end'] = null;
         }
         /** @var ?non-empty-string $end */
@@ -100,12 +100,12 @@ final class TextDirective implements FragmentDirective
 
     private static function encode(?string $value): ?string
     {
-        return null !== $value ? strtr((string) Encoder::encodeQueryOrFragment($value), ['-' => '%2D', ',' => '%2C', '&' => '%26']) : null;
+        return $value !== null ? strtr((string) Encoder::encodeQueryOrFragment($value), ['-' => '%2D', ',' => '%2C', '&' => '%26']) : null;
     }
 
     private static function decode(?string $value): ?string
     {
-        if (null === $value) {
+        if ($value === null) {
             return null;
         }
 
@@ -120,15 +120,15 @@ final class TextDirective implements FragmentDirective
     public function value(): string
     {
         $str = $this->start;
-        if (null !== $this->prefix) {
+        if ($this->prefix !== null) {
             $str = $this->prefix.'-,'.$str;
         }
 
-        if (null !== $this->end) {
+        if ($this->end !== null) {
             $str .= ','.$this->end;
         }
 
-        if (null !== $this->suffix) {
+        if ($this->suffix !== null) {
             $str .= ',-'.$this->suffix;
         }
 
@@ -140,17 +140,17 @@ final class TextDirective implements FragmentDirective
         $encodedValue = (string) self::encode($this->start);
 
         $prefix = self::encode($this->prefix);
-        if (null !== $prefix) {
+        if ($prefix !== null) {
             $encodedValue = $prefix.'-,'.$encodedValue;
         }
 
         $end = self::encode($this->end);
-        if (null !== $end) {
+        if ($end !== null) {
             $encodedValue .= ','.$end;
         }
 
         $suffix = self::encode($this->suffix);
-        if (null !== $suffix) {
+        if ($suffix !== null) {
             $encodedValue .= ',-'.$suffix;
         }
 
@@ -169,11 +169,11 @@ final class TextDirective implements FragmentDirective
 
     public function equals(mixed $directive): bool
     {
-        if (!$directive instanceof Stringable && !$directive instanceof BackedEnum && !is_string($directive)) {
+        if (! $directive instanceof Stringable && ! $directive instanceof BackedEnum && ! is_string($directive)) {
             return false;
         }
 
-        if (!$directive instanceof FragmentDirective) {
+        if (! $directive instanceof FragmentDirective) {
             try {
                 $directive = self::fromString($directive);
             } catch (Throwable) {
@@ -192,7 +192,7 @@ final class TextDirective implements FragmentDirective
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the new start portion.
      *
-     * @param BackedEnum|Stringable|non-empty-string $text
+     * @param  BackedEnum|Stringable|non-empty-string  $text
      */
     public function startsWith(BackedEnum|Stringable|string $text): self
     {
@@ -205,7 +205,7 @@ final class TextDirective implements FragmentDirective
             return $this;
         }
 
-        '' !== $text || throw new SyntaxError('The start part can not be the empty string.');
+        $text !== '' || throw new SyntaxError('The start part can not be the empty string.');
 
         return new self($text, $this->end, $this->prefix, $this->suffix);
     }
@@ -218,7 +218,7 @@ final class TextDirective implements FragmentDirective
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the new end portion.
      *
-     * @param BackedEnum|Stringable|non-empty-string|null $text
+     * @param  BackedEnum|Stringable|non-empty-string|null  $text
      */
     public function endsWith(BackedEnum|Stringable|string|null $text): self
     {
@@ -231,7 +231,7 @@ final class TextDirective implements FragmentDirective
             return $this;
         }
 
-        '' !== $text || throw new SyntaxError('The end part can not be the empty string.');
+        $text !== '' || throw new SyntaxError('The end part can not be the empty string.');
 
         return new self($this->start, $text, $this->prefix, $this->suffix);
     }
@@ -244,7 +244,7 @@ final class TextDirective implements FragmentDirective
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the new suffix portion.
      *
-     * @param BackedEnum|Stringable|non-empty-string|null $text
+     * @param  BackedEnum|Stringable|non-empty-string|null  $text
      */
     public function followedBy(BackedEnum|Stringable|string|null $text): self
     {
@@ -257,7 +257,7 @@ final class TextDirective implements FragmentDirective
             return $this;
         }
 
-        '' !== $text || throw new SyntaxError('The suffix part can not be the empty string.');
+        $text !== '' || throw new SyntaxError('The suffix part can not be the empty string.');
 
         return new self($this->start, $this->end, $this->prefix, $text);
     }
@@ -279,7 +279,7 @@ final class TextDirective implements FragmentDirective
             return $this;
         }
 
-        '' !== $text || throw new SyntaxError('The prefix part can not be the empty string.');
+        $text !== '' || throw new SyntaxError('The prefix part can not be the empty string.');
 
         return new self($this->start, $this->end, $text, $this->suffix);
     }

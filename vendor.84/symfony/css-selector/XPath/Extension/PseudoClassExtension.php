@@ -72,7 +72,7 @@ class PseudoClassExtension extends AbstractExtension
      */
     public function translateFirstOfType(XPathExpr $xpath): XPathExpr
     {
-        if ('*' === $xpath->getElement()) {
+        if ($xpath->getElement() === '*') {
             throw new ExpressionErrorException('"*:first-of-type" is not implemented.');
         }
 
@@ -86,7 +86,7 @@ class PseudoClassExtension extends AbstractExtension
      */
     public function translateLastOfType(XPathExpr $xpath): XPathExpr
     {
-        if ('*' === $xpath->getElement()) {
+        if ($xpath->getElement() === '*') {
             throw new ExpressionErrorException('"*:last-of-type" is not implemented.');
         }
 

@@ -2,14 +2,17 @@
 
 namespace Livewire\Mechanisms\HandleComponents;
 
-use function Livewire\{store, trigger, wrap };
-use ReflectionUnionType;
-use Livewire\Mechanisms\Mechanism;
-use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;
-use Livewire\Exceptions\PublicPropertyNotFoundException;
-use Livewire\Exceptions\MethodNotFoundException;
-use Livewire\Drawer\Utils;
 use Illuminate\Support\Facades\View;
+use Livewire\Drawer\Utils;
+use Livewire\Exceptions\MethodNotFoundException;
+use Livewire\Exceptions\PublicPropertyNotFoundException;
+use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;
+use Livewire\Mechanisms\Mechanism;
+use ReflectionUnionType;
+
+use function Livewire\store;
+use function Livewire\trigger;
+use function Livewire\wrap;
 
 class HandleComponents extends Mechanism
 {
@@ -21,10 +24,11 @@ class HandleComponents extends Mechanism
         Synthesizers\StdClassSynth::class,
         Synthesizers\ArraySynth::class,
         Synthesizers\IntSynth::class,
-        Synthesizers\FloatSynth::class
+        Synthesizers\FloatSynth::class,
     ];
 
     public static $renderStack = [];
+
     public static $componentStack = [];
 
     public function registerPropertySynthesizer($synth)
@@ -38,7 +42,9 @@ class HandleComponents extends Mechanism
     {
         $parent = app('livewire')->current();
 
-        if ($html = $this->shortCircuitMount($name, $params, $key, $parent)) return $html;
+        if ($html = $this->shortCircuitMount($name, $params, $key, $parent)) {
+            return $html;
+        }
 
         $component = app('livewire')->new($name);
 
@@ -46,19 +52,31 @@ class HandleComponents extends Mechanism
 
         $context = new ComponentContext($component, mounting: true);
 
-        if (config('app.debug')) $start = microtime(true);
+        if (config('app.debug')) {
+            $start = microtime(true);
+        }
         $finish = trigger('mount', $component, $params, $key, $parent);
-        if (config('app.debug')) trigger('profile', 'mount', $component->getId(), [$start, microtime(true)]);
+        if (config('app.debug')) {
+            trigger('profile', 'mount', $component->getId(), [$start, microtime(true)]);
+        }
 
-        if (config('app.debug')) $start = microtime(true);
+        if (config('app.debug')) {
+            $start = microtime(true);
+        }
         $html = $this->render($component, '<div></div>');
-        if (config('app.debug')) trigger('profile', 'render', $component->getId(), [$start, microtime(true)]);
+        if (config('app.debug')) {
+            trigger('profile', 'render', $component->getId(), [$start, microtime(true)]);
+        }
 
-        if (config('app.debug')) $start = microtime(true);
+        if (config('app.debug')) {
+            $start = microtime(true);
+        }
         trigger('dehydrate', $component, $context);
 
         $snapshot = $this->snapshot($component, $context);
-        if (config('app.debug')) trigger('profile', 'dehydrate', $component->getId(), [$start, microtime(true)]);
+        if (config('app.debug')) {
+            trigger('profile', 'dehydrate', $component->getId(), [$start, microtime(true)]);
+        }
 
         trigger('destroy', $component, $context);
 
@@ -88,35 +106,47 @@ class HandleComponents extends Mechanism
         $data = $snapshot['data'];
         $memo = $snapshot['memo'];
 
-        if (config('app.debug')) $start = microtime(true);
-        [ $component, $context ] = $this->fromSnapshot($snapshot);
+        if (config('app.debug')) {
+            $start = microtime(true);
+        }
+        [$component, $context] = $this->fromSnapshot($snapshot);
 
         $this->pushOntoComponentStack($component);
 
         trigger('hydrate', $component, $memo, $context);
 
         $this->updateProperties($component, $updates, $data, $context);
-        if (config('app.debug')) trigger('profile', 'hydrate', $component->getId(), [$start, microtime(true)]);
+        if (config('app.debug')) {
+            trigger('profile', 'hydrate', $component->getId(), [$start, microtime(true)]);
+        }
 
         $this->callMethods($component, $calls, $context);
 
-        if (config('app.debug')) $start = microtime(true);
+        if (config('app.debug')) {
+            $start = microtime(true);
+        }
         if ($html = $this->render($component)) {
             $context->addEffect('html', $html);
-            if (config('app.debug')) trigger('profile', 'render', $component->getId(), [$start, microtime(true)]);
+            if (config('app.debug')) {
+                trigger('profile', 'render', $component->getId(), [$start, microtime(true)]);
+            }
         }
 
-        if (config('app.debug')) $start = microtime(true);
+        if (config('app.debug')) {
+            $start = microtime(true);
+        }
         trigger('dehydrate', $component, $context);
 
         $snapshot = $this->snapshot($component, $context);
-        if (config('app.debug')) trigger('profile', 'dehydrate', $component->getId(), [$start, microtime(true)]);
+        if (config('app.debug')) {
+            trigger('profile', 'dehydrate', $component->getId(), [$start, microtime(true)]);
+        }
 
         trigger('destroy', $component, $context);
 
         $this->popOffComponentStack();
 
-        return [ $snapshot, $context->effects ];
+        return [$snapshot, $context->effects];
     }
 
     public function fromSnapshot($snapshot)
@@ -127,7 +157,7 @@ class HandleComponents extends Mechanism
 
         $data = $snapshot['data'];
         $name = $snapshot['memo']['name'];
-        $id   = $snapshot['memo']['id'];
+        $id = $snapshot['memo']['id'];
 
         $component = app('livewire')->new($name, id: $id);
 
@@ -135,7 +165,7 @@ class HandleComponents extends Mechanism
 
         $this->hydrateProperties($component, $data, $context);
 
-        return [ $component, $context ];
+        return [$component, $context];
     }
 
     public function snapshot($component, $context = null)
@@ -171,28 +201,34 @@ class HandleComponents extends Mechanism
 
     protected function dehydrate($target, $context, $path)
     {
-        if (Utils::isAPrimitive($target)) return $target;
+        if (Utils::isAPrimitive($target)) {
+            return $target;
+        }
 
         $synth = $this->propertySynth($target, $context, $path);
 
-        [ $data, $meta ] = $synth->dehydrate($target, function ($name, $child) use ($context, $path) {
+        [$data, $meta] = $synth->dehydrate($target, function ($name, $child) use ($context, $path) {
             return $this->dehydrate($child, $context, "{$path}.{$name}");
         });
 
         $meta['s'] = $synth::getKey();
 
-        return [ $data, $meta ];
+        return [$data, $meta];
     }
 
     protected function hydrateProperties($component, $data, $context)
     {
         foreach ($data as $key => $value) {
-            if (! property_exists($component, $key)) continue;
+            if (! property_exists($component, $key)) {
+                continue;
+            }
 
             $child = $this->hydrate($value, $context, $key);
 
             // Typed properties shouldn't be set back to "null". It will throw an error...
-            if ((new \ReflectionProperty($component, $key))->getType() && is_null($child)) continue;
+            if ((new \ReflectionProperty($component, $key))->getType() && is_null($child)) {
+                continue;
+            }
 
             $component->$key = $child;
         }
@@ -200,7 +236,9 @@ class HandleComponents extends Mechanism
 
     protected function hydrate($valueOrTuple, $context, $path)
     {
-        if (! Utils::isSyntheticTuple($value = $tuple = $valueOrTuple)) return $value;
+        if (! Utils::isSyntheticTuple($value = $tuple = $valueOrTuple)) {
+            return $value;
+        }
 
         [$value, $meta] = $tuple;
 
@@ -218,7 +256,9 @@ class HandleComponents extends Mechanism
 
     protected function hydratePropertyUpdate($valueOrTuple, $context, $path)
     {
-        if (! Utils::isSyntheticTuple($value = $tuple = $valueOrTuple)) return $value;
+        if (! Utils::isSyntheticTuple($value = $tuple = $valueOrTuple)) {
+            return $value;
+        }
 
         [$value, $meta] = $tuple;
 
@@ -239,14 +279,16 @@ class HandleComponents extends Mechanism
         if ($html = store($component)->get('skipRender', false)) {
             $html = value(is_string($html) ? $html : $default);
 
-            if (! $html) return;
+            if (! $html) {
+                return;
+            }
 
             return Utils::insertAttributesIntoHtmlRoot($html, [
                 'wire:id' => $component->getId(),
             ]);
         }
 
-        [ $view, $properties ] = $this->getView($component);
+        [$view, $properties] = $this->getView($component);
 
         return $this->trackInRenderStack($component, function () use ($component, $view, $properties) {
             $finish = trigger('render', $component, $view, $properties);
@@ -261,7 +303,8 @@ class HandleComponents extends Mechanism
                 $viewContext->extractFromEnvironment($view->getFactory());
             });
 
-            $revertA(); $revertB();
+            $revertA();
+            $revertB();
 
             $html = Utils::insertAttributesIntoHtmlRoot($html, [
                 'wire:id' => $component->getId(),
@@ -287,13 +330,13 @@ class HandleComponents extends Mechanism
 
         $viewOrString = method_exists($component, 'render')
             ? wrap($component)->render()
-            : View::file($viewPath . '/' . $fileName . '.blade.php');
+            : View::file($viewPath.'/'.$fileName.'.blade.php');
 
         $properties = Utils::getPublicPropertiesDefinedOnSubclass($component);
 
         $view = Utils::generateBladeView($viewOrString, $properties);
 
-        return [ $view, $properties ];
+        return [$view, $properties];
     }
 
     protected function trackInRenderStack($component, $callback)
@@ -375,7 +418,9 @@ class HandleComponents extends Mechanism
             foreach ($types as $type) {
                 $synth = $this->getSynthesizerByType($type->getName(), $context, $path);
 
-                if ($synth) return $synth->hydrateFromType($type->getName(), $value);
+                if ($synth) {
+                    return $synth->hydrateFromType($type->getName(), $value);
+                }
             }
         }
 
@@ -421,7 +466,9 @@ class HandleComponents extends Mechanism
             // Here's we've determined we're trying to set a deeply nested
             // value on an object/array that doesn't exist, so we need
             // to build up that non-existant nesting structure first.
-            if ($propertyTarget === null) $propertyTarget = [];
+            if ($propertyTarget === null) {
+                $propertyTarget = [];
+            }
 
             $toSet = $this->recursivelySetValue($baseProperty, $propertyTarget, $leafValue, $segments, $index + 1, $context);
         }
@@ -439,7 +486,7 @@ class HandleComponents extends Mechanism
     protected function setComponentPropertyAwareOfTypes($component, $property, $value)
     {
         try {
-           $component->$property = $value;
+            $component->$property = $value;
         } catch (\TypeError $e) {
             // If an "int" is being set to empty string, unset the property (making it null).
             // This is common in the case of `wire:model`ing an int to a text field...
@@ -460,7 +507,6 @@ class HandleComponents extends Mechanism
             $method = $call['method'];
             $params = $call['params'];
 
-
             $earlyReturnCalled = false;
             $earlyReturn = null;
             $returnEarly = function ($return = null) use (&$earlyReturnCalled, &$earlyReturn) {
@@ -479,7 +525,7 @@ class HandleComponents extends Mechanism
             $methods = Utils::getPublicMethodsDefinedBySubClass($root);
 
             // Also remove "render" from the list...
-            $methods =  array_values(array_diff($methods, ['render']));
+            $methods = array_values(array_diff($methods, ['render']));
 
             // @todo: put this in a better place:
             $methods[] = '__dispatch';
@@ -488,9 +534,13 @@ class HandleComponents extends Mechanism
                 throw new MethodNotFoundException($method);
             }
 
-            if (config('app.debug')) $start = microtime(true);
+            if (config('app.debug')) {
+                $start = microtime(true);
+            }
             $return = wrap($root)->{$method}(...$params);
-            if (config('app.debug')) trigger('profile', 'call'.$idx, $root->getId(), [$start, microtime(true)]);
+            if (config('app.debug')) {
+                trigger('profile', 'call'.$idx, $root->getId(), [$start, microtime(true)]);
+            }
 
             $returns[] = $finish($return);
         }
@@ -558,7 +608,8 @@ class HandleComponents extends Mechanism
         array_pop($this::$componentStack);
     }
 
-    protected function isRemoval($value) {
+    protected function isRemoval($value)
+    {
         return $value === '__rm__';
     }
 }

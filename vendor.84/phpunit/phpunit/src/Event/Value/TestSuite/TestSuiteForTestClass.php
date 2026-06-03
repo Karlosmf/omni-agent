@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\TestSuite;
 
 use PHPUnit\Event\Code\TestCollection;
@@ -22,19 +25,21 @@ final readonly class TestSuiteForTestClass extends TestSuite
      * @var class-string
      */
     private string $className;
+
     private string $file;
+
     private int $line;
 
     /**
-     * @param class-string $name
+     * @param  class-string  $name
      */
     public function __construct(string $name, int $size, TestCollection $tests, string $file, int $line)
     {
         parent::__construct($name, $size, $tests);
 
         $this->className = $name;
-        $this->file      = $file;
-        $this->line      = $line;
+        $this->file = $file;
+        $this->line = $line;
     }
 
     /**

@@ -60,7 +60,7 @@ class Installer
      */
     public function isValidSource(string $sourceArchive): bool
     {
-        if (!\class_exists('\PharData')) {
+        if (! \class_exists('\PharData')) {
             return false;
         }
         $pharArchive = new \PharData($sourceArchive);
@@ -77,7 +77,7 @@ class Installer
         $outputDirectory = \tempnam($this->tempDirectory, 'psysh-');
 
         // remove the temp file, and replace it with a sub-directory
-        if (!\unlink($outputDirectory) || !\mkdir($outputDirectory, 0700)) {
+        if (! \unlink($outputDirectory) || ! \mkdir($outputDirectory, 0700)) {
             return false;
         }
 
@@ -98,7 +98,7 @@ class Installer
     {
         $backupFilename = $this->getBackupFilename($version);
 
-        if (\file_exists($backupFilename) && !\is_writable($backupFilename)) {
+        if (\file_exists($backupFilename) && ! \is_writable($backupFilename)) {
             return false;
         }
 
@@ -114,7 +114,7 @@ class Installer
     {
         $backupFilename = $this->getBackupFilename($version);
 
-        if (!\file_exists($backupFilename)) {
+        if (! \file_exists($backupFilename)) {
             throw new ErrorException("Cannot restore from backup. File not found! [{$backupFilename}]");
         }
 

@@ -31,9 +31,9 @@ class CurrencyData implements Arrayable
     public function toArray(): array
     {
         return [
-            'code'      => $this->code,
-            'numeric'   => $this->numeric,
-            'native'    => $this->native,
+            'code' => $this->code,
+            'numeric' => $this->numeric,
+            'native' => $this->native,
             'localized' => $this->localized,
         ];
     }

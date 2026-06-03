@@ -17,9 +17,9 @@ trait HasHeaderActions
      */
     protected array $headerActions = [];
 
-    protected HeaderActionsPosition | Closure | null $headerActionsPosition = null;
+    protected HeaderActionsPosition|Closure|null $headerActionsPosition = null;
 
-    public function headerActionsPosition(HeaderActionsPosition | Closure | null $position = null): static
+    public function headerActionsPosition(HeaderActionsPosition|Closure|null $position = null): static
     {
         $this->headerActionsPosition = $position;
 
@@ -29,7 +29,7 @@ trait HasHeaderActions
     /**
      * @param  array<Action | BulkAction | ActionGroup> | ActionGroup  $actions
      */
-    public function headerActions(array | ActionGroup $actions, HeaderActionsPosition | Closure | null $position = null): static
+    public function headerActions(array|ActionGroup $actions, HeaderActionsPosition|Closure|null $position = null): static
     {
         // We must remove the existing cached header actions before setting the new ones, as
         // the visibility of the checkboxes is determined by which bulk actions are visible.
@@ -62,7 +62,7 @@ trait HasHeaderActions
     /**
      * @param  array<Action | BulkAction | ActionGroup> | ActionGroup  $actions
      */
-    public function pushHeaderActions(array | ActionGroup $actions): static
+    public function pushHeaderActions(array|ActionGroup $actions): static
     {
         foreach (Arr::wrap($actions) as $action) {
             $action->table($this);
@@ -74,7 +74,7 @@ trait HasHeaderActions
             } elseif ($action instanceof Action) {
                 $this->cacheAction($action);
             } else {
-                throw new InvalidArgumentException('Table header actions must be an instance of [' . Action::class . '], [' . BulkAction::class . '] or [' . ActionGroup::class . '].');
+                throw new InvalidArgumentException('Table header actions must be an instance of ['.Action::class.'], ['.BulkAction::class.'] or ['.ActionGroup::class.'].');
             }
 
             $this->headerActions[] = $action;

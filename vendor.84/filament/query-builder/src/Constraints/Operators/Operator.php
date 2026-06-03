@@ -25,9 +25,9 @@ class Operator extends Component
 
     protected ?string $name = null;
 
-    protected string | Closure | null $label = null;
+    protected string|Closure|null $label = null;
 
-    protected string | Closure | null $summary = null;
+    protected string|Closure|null $summary = null;
 
     protected ?Closure $modifyQueryUsing = null;
 
@@ -53,14 +53,14 @@ class Operator extends Component
         return $this;
     }
 
-    public function label(string | Closure | null $label): static
+    public function label(string|Closure|null $label): static
     {
         $this->label = $label;
 
         return $this;
     }
 
-    public function summary(string | Closure | null $summary): static
+    public function summary(string|Closure|null $summary): static
     {
         $this->summary = $summary;
 

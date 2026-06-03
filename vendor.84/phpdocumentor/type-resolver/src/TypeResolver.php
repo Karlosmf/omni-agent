@@ -129,6 +129,7 @@ final class TypeResolver
 
     /**
      * @var array<string, string> List of recognized keywords and unto which Value Object they map
+     *
      * @psalm-var array<string, class-string<Type>>
      */
     private $keywords = [
@@ -178,16 +179,21 @@ final class TypeResolver
 
     /**
      * @psalm-readonly
+     *
      * @var FqsenResolver
      */
     private $fqsenResolver;
+
     /**
      * @psalm-readonly
+     *
      * @var TypeParser
      */
     private $typeParser;
+
     /**
      * @psalm-readonly
+     *
      * @var Lexer
      */
     private $lexer;
@@ -197,14 +203,14 @@ final class TypeResolver
      */
     public function __construct(?FqsenResolver $fqsenResolver = null)
     {
-        $this->fqsenResolver = $fqsenResolver ?: new FqsenResolver();
+        $this->fqsenResolver = $fqsenResolver ?: new FqsenResolver;
 
         if (class_exists(ParserConfig::class)) {
             $this->typeParser = new TypeParser(new ParserConfig([]), new ConstExprParser(new ParserConfig([])));
             $this->lexer = new Lexer(new ParserConfig([]));
         } else {
-            $this->typeParser = new TypeParser(new ConstExprParser());
-            $this->lexer = new Lexer();
+            $this->typeParser = new TypeParser(new ConstExprParser);
+            $this->lexer = new Lexer;
         }
     }
 
@@ -222,13 +228,13 @@ final class TypeResolver
      * @uses Context::getNamespaceAliases() to check whether the first part of the relative type name should not be
      * replaced with another namespace.
      *
-     * @param string $type The relative or absolute type.
+     * @param  string  $type  The relative or absolute type.
      */
     public function resolve(string $type, ?Context $context = null): Type
     {
         $type = trim($type);
-        if (!$type) {
-            throw new InvalidArgumentException('Attempted to resolve "' . $type . '" but it appears to be empty');
+        if (! $type) {
+            throw new InvalidArgumentException('Attempted to resolve "'.$type.'" but it appears to be empty');
         }
 
         if ($context === null) {
@@ -247,7 +253,7 @@ final class TypeResolver
     public function createType(?TypeNode $type, Context $context): Type
     {
         if ($type === null) {
-            return new Mixed_();
+            return new Mixed_;
         }
 
         switch (get_class($type)) {
@@ -355,7 +361,7 @@ final class TypeResolver
                 );
 
             case ThisTypeNode::class:
-                return new This();
+                return new This;
 
             case ConditionalTypeNode::class:
                 return new Conditional(
@@ -382,7 +388,7 @@ final class TypeResolver
                 );
 
             default:
-                return new Mixed_();
+                return new Mixed_;
         }
     }
 
@@ -394,9 +400,9 @@ final class TypeResolver
 
             case 'class-string':
                 $subType = $this->createType($type->genericTypes[0], $context);
-                if (!$subType instanceof Object_ || $subType->getFqsen() === null) {
+                if (! $subType instanceof Object_ || $subType->getFqsen() === null) {
                     throw new RuntimeException(
-                        $subType . ' is not a class string'
+                        $subType.' is not a class string'
                     );
                 }
 
@@ -406,9 +412,9 @@ final class TypeResolver
 
             case 'interface-string':
                 $subType = $this->createType($type->genericTypes[0], $context);
-                if (!$subType instanceof Object_ || $subType->getFqsen() === null) {
+                if (! $subType instanceof Object_ || $subType->getFqsen() === null) {
                     throw new RuntimeException(
-                        $subType . ' is not a class string'
+                        $subType.' is not a class string'
                     );
                 }
 
@@ -509,8 +515,7 @@ final class TypeResolver
     /**
      * resolve the given type into a type object
      *
-     * @param string $type the type string, representing a single type
-     *
+     * @param  string  $type  the type string, representing a single type
      * @return Type|Array_|Object_
      *
      * @psalm-mutation-free
@@ -527,11 +532,11 @@ final class TypeResolver
             case $this->isPartialStructuralElementName($type):
                 return $this->resolveTypedObject($type, $context);
 
-            // @codeCoverageIgnoreStart
+                // @codeCoverageIgnoreStart
             default:
                 // I haven't got the foggiest how the logic would come here but added this as a defense.
                 throw new RuntimeException(
-                    'Unable to resolve type "' . $type . '", there is no known method to resolve it'
+                    'Unable to resolve type "'.$type.'", there is no known method to resolve it'
                 );
         }
 
@@ -545,24 +550,24 @@ final class TypeResolver
      */
     public function addKeyword(string $keyword, string $typeClassName): void
     {
-        if (!class_exists($typeClassName)) {
+        if (! class_exists($typeClassName)) {
             throw new InvalidArgumentException(
-                'The Value Object that needs to be created with a keyword "' . $keyword . '" must be an existing class'
-                . ' but we could not find the class ' . $typeClassName
+                'The Value Object that needs to be created with a keyword "'.$keyword.'" must be an existing class'
+                .' but we could not find the class '.$typeClassName
             );
         }
 
         $interfaces = class_implements($typeClassName);
         if ($interfaces === false) {
             throw new InvalidArgumentException(
-                'The Value Object that needs to be created with a keyword "' . $keyword . '" must be an existing class'
-                . ' but we could not find the class ' . $typeClassName
+                'The Value Object that needs to be created with a keyword "'.$keyword.'" must be an existing class'
+                .' but we could not find the class '.$typeClassName
             );
         }
 
-        if (!in_array(Type::class, $interfaces, true)) {
+        if (! in_array(Type::class, $interfaces, true)) {
             throw new InvalidArgumentException(
-                'The class "' . $typeClassName . '" must implement the interface "phpDocumentor\Reflection\Type"'
+                'The class "'.$typeClassName.'" must implement the interface "phpDocumentor\Reflection\Type"'
             );
         }
 
@@ -572,7 +577,7 @@ final class TypeResolver
     /**
      * Detects whether the given type represents a PHPDoc keyword.
      *
-     * @param string $type A relative or absolute type as defined in the phpDocumentor documentation.
+     * @param  string  $type  A relative or absolute type as defined in the phpDocumentor documentation.
      *
      * @psalm-mutation-free
      */
@@ -584,13 +589,13 @@ final class TypeResolver
     /**
      * Detects whether the given type represents a relative structural element name.
      *
-     * @param string $type A relative or absolute type as defined in the phpDocumentor documentation.
+     * @param  string  $type  A relative or absolute type as defined in the phpDocumentor documentation.
      *
      * @psalm-mutation-free
      */
     private function isPartialStructuralElementName(string $type): bool
     {
-        return (isset($type[0]) && $type[0] !== self::OPERATOR_NAMESPACE) && !$this->isKeyword($type);
+        return (isset($type[0]) && $type[0] !== self::OPERATOR_NAMESPACE) && ! $this->isKeyword($type);
     }
 
     /**
@@ -612,7 +617,7 @@ final class TypeResolver
     {
         $className = $this->keywords[strtolower($type)];
 
-        return new $className();
+        return new $className;
     }
 
     /**
@@ -705,8 +710,7 @@ final class TypeResolver
     }
 
     /**
-     * @param TypeNode[] $nodes
-     *
+     * @param  TypeNode[]  $nodes
      * @return Type[]
      */
     private function createTypesByTypeNodes(array $nodes, Context $context): array

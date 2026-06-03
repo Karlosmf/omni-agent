@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\Configuration;
 
 use PHPUnit\TextUI\CliArguments\Builder as CliConfigurationBuilder;
@@ -24,16 +27,16 @@ use PHPUnit\TextUI\XmlConfiguration\Loader;
 final readonly class Builder
 {
     /**
-     * @param list<string> $argv
+     * @param  list<string>  $argv
      *
      * @throws ConfigurationCannotBeBuiltException
      */
     public function build(array $argv): Configuration
     {
         try {
-            $cliConfiguration  = (new CliConfigurationBuilder)->fromParameters($argv);
+            $cliConfiguration = (new CliConfigurationBuilder)->fromParameters($argv);
             $configurationFile = (new XmlConfigurationFileFinder)->find($cliConfiguration);
-            $xmlConfiguration  = DefaultConfiguration::create();
+            $xmlConfiguration = DefaultConfiguration::create();
 
             if ($configurationFile !== false) {
                 $xmlConfiguration = (new Loader)->load($configurationFile);

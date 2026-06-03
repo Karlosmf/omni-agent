@@ -15,6 +15,7 @@ namespace phpDocumentor\Reflection\DocBlock;
 
 use phpDocumentor\Reflection\DocBlock\Tags\Formatter;
 use phpDocumentor\Reflection\DocBlock\Tags\Formatter\PassthroughFormatter;
+use phpDocumentor\Reflection\Types\Context;
 
 use function vsprintf;
 
@@ -33,7 +34,7 @@ use function vsprintf;
  * The description factory will interpret the given body and create a body template and list of tags from them, and pass
  * that onto the constructor if this class.
  *
- * > The $context variable is a class of type {@see \phpDocumentor\Reflection\Types\Context} and contains the namespace
+ * > The $context variable is a class of type {@see Context} and contains the namespace
  * > and the namespace aliases that apply to this DocBlock. These are used by the Factory to resolve and expand partial
  * > type names and FQSENs.
  *
@@ -48,7 +49,7 @@ use function vsprintf;
  * is mainly responsible for rendering.
  *
  * @see DescriptionFactory to create a new Description.
- * @see Tags\Formatter for the formatting of the body and tags.
+ * @see Formatter for the formatting of the body and tags.
  */
 class Description
 {
@@ -60,12 +61,12 @@ class Description
     /**
      * Initializes a Description with its body (template) and a listing of the tags used in the body template.
      *
-     * @param Tag[] $tags
+     * @param  Tag[]  $tags
      */
     public function __construct(string $bodyTemplate, array $tags = [])
     {
         $this->bodyTemplate = $bodyTemplate;
-        $this->tags         = $tags;
+        $this->tags = $tags;
     }
 
     /**
@@ -97,12 +98,12 @@ class Description
         }
 
         if ($formatter === null) {
-            $formatter = new PassthroughFormatter();
+            $formatter = new PassthroughFormatter;
         }
 
         $tags = [];
         foreach ($this->tags as $tag) {
-            $tags[] = '{' . $formatter->format($tag) . '}';
+            $tags[] = '{'.$formatter->format($tag).'}';
         }
 
         return vsprintf($this->bodyTemplate, $tags);

@@ -3,6 +3,8 @@
 namespace App\Filament\Admin\Resources\TravelPackages\Schemas;
 
 use App\Enums\Currency;
+use App\Models\ServiceType;
+use App\Models\Supplier;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -131,7 +133,7 @@ class TravelPackageForm
                                     ->schema([
                                         Select::make('service_type_id')
                                             ->label('Tipo de Servicio')
-                                            ->options(\App\Models\ServiceType::pluck('name', 'id'))
+                                            ->options(ServiceType::pluck('name', 'id'))
                                             ->required(),
                                         TextInput::make('description')
                                             ->label('Descripción / Detalle')
@@ -143,7 +145,7 @@ class TravelPackageForm
                                     ->schema([
                                         Select::make('supplier_id')
                                             ->label('Proveedor Sugerido')
-                                            ->options(\App\Models\Supplier::pluck('name', 'id'))
+                                            ->options(Supplier::pluck('name', 'id'))
                                             ->searchable()
                                             ->preload(),
 
@@ -169,7 +171,7 @@ class TravelPackageForm
                             ->columns(1)
                             ->itemLabel(function (array $state): ?string {
                                 $typeId = $state['service_type_id'] ?? null;
-                                $serviceType = \App\Models\ServiceType::find($typeId);
+                                $serviceType = ServiceType::find($typeId);
                                 $type = $serviceType ? $serviceType->name : 'N/A';
 
                                 return $type.': '.($state['description'] ?? '');

@@ -15,6 +15,4 @@ namespace League\Csv\Serializer;
 
 use Throwable;
 
-interface SerializationFailed extends Throwable
-{
-}
+interface SerializationFailed extends Throwable {}

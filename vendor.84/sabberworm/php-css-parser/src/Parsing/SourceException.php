@@ -12,7 +12,7 @@ class SourceException extends \Exception implements Positionable
     use Position;
 
     /**
-     * @param int<1, max>|null $lineNumber
+     * @param  int<1, max>|null  $lineNumber
      */
     public function __construct(string $message, ?int $lineNumber = null)
     {

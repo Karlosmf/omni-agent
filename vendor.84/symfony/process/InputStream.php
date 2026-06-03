@@ -23,7 +23,9 @@ use Symfony\Component\Process\Exception\RuntimeException;
 class InputStream implements \IteratorAggregate
 {
     private ?\Closure $onEmpty = null;
+
     private array $input = [];
+
     private bool $open = true;
 
     /**
@@ -31,18 +33,18 @@ class InputStream implements \IteratorAggregate
      */
     public function onEmpty(?callable $onEmpty = null): void
     {
-        $this->onEmpty = null !== $onEmpty ? $onEmpty(...) : null;
+        $this->onEmpty = $onEmpty !== null ? $onEmpty(...) : null;
     }
 
     /**
      * Appends an input to the write buffer.
      *
-     * @param resource|string|int|float|bool|\Traversable|null $input The input to append as scalar,
-     *                                                                stream resource or \Traversable
+     * @param  resource|string|int|float|bool|\Traversable|null  $input  The input to append as scalar,
+     *                                                                   stream resource or \Traversable
      */
     public function write(mixed $input): void
     {
-        if (null === $input) {
+        if ($input === null) {
             return;
         }
         if ($this->isClosed()) {
@@ -64,7 +66,7 @@ class InputStream implements \IteratorAggregate
      */
     public function isClosed(): bool
     {
-        return !$this->open;
+        return ! $this->open;
     }
 
     public function getIterator(): \Traversable
@@ -72,8 +74,9 @@ class InputStream implements \IteratorAggregate
         $this->open = true;
 
         while ($this->open || $this->input) {
-            if (!$this->input) {
+            if (! $this->input) {
                 yield '';
+
                 continue;
             }
             $current = array_shift($this->input);
@@ -83,7 +86,7 @@ class InputStream implements \IteratorAggregate
             } else {
                 yield $current;
             }
-            if (!$this->input && $this->open && null !== $onEmpty = $this->onEmpty) {
+            if (! $this->input && $this->open && null !== $onEmpty = $this->onEmpty) {
                 $this->write($onEmpty($this));
             }
         }

@@ -225,7 +225,7 @@ class Company extends \Faker\Provider\Company
 
     public static function companySuffix()
     {
-        return parent::companySuffix() . '有限公司';
+        return parent::companySuffix().'有限公司';
     }
 
     public function catchPhrase()

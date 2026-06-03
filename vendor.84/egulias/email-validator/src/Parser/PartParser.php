@@ -41,16 +41,17 @@ abstract class PartParser
         $foldingWS = new FoldingWhiteSpace($this->lexer);
         $resultFWS = $foldingWS->parse();
         $this->warnings = [...$this->warnings, ...$foldingWS->getWarnings()];
+
         return $resultFWS;
     }
 
     protected function checkConsecutiveDots(): Result
     {
         if ($this->lexer->current->isA(EmailLexer::S_DOT) && $this->lexer->isNextToken(EmailLexer::S_DOT)) {
-            return new InvalidEmail(new ConsecutiveDot(), $this->lexer->current->value);
+            return new InvalidEmail(new ConsecutiveDot, $this->lexer->current->value);
         }
 
-        return new ValidEmail();
+        return new ValidEmail;
     }
 
     protected function escaped(): bool
@@ -58,6 +59,6 @@ abstract class PartParser
         $previous = $this->lexer->getPrevious();
 
         return $previous->isA(EmailLexer::S_BACKSLASH)
-            && !$this->lexer->current->isA(EmailLexer::GENERIC);
+            && ! $this->lexer->current->isA(EmailLexer::GENERIC);
     }
 }

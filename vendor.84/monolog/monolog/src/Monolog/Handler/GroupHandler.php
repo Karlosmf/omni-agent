@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -12,8 +14,8 @@
 namespace Monolog\Handler;
 
 use Monolog\Formatter\FormatterInterface;
-use Monolog\ResettableInterface;
 use Monolog\LogRecord;
+use Monolog\ResettableInterface;
 
 /**
  * Forwards records to multiple handlers
@@ -26,18 +28,19 @@ class GroupHandler extends Handler implements ProcessableHandlerInterface, Reset
 
     /** @var HandlerInterface[] */
     protected array $handlers;
+
     protected bool $bubble;
 
     /**
-     * @param HandlerInterface[] $handlers Array of Handlers.
-     * @param bool               $bubble   Whether the messages that are handled can bubble up the stack or not
+     * @param  HandlerInterface[]  $handlers  Array of Handlers.
+     * @param  bool  $bubble  Whether the messages that are handled can bubble up the stack or not
      *
      * @throws \InvalidArgumentException if an unsupported handler is set
      */
     public function __construct(array $handlers, bool $bubble = true)
     {
         foreach ($handlers as $handler) {
-            if (!$handler instanceof HandlerInterface) {
+            if (! $handler instanceof HandlerInterface) {
                 throw new \InvalidArgumentException('The first argument of the GroupHandler must be an array of HandlerInterface instances.');
             }
         }
@@ -47,7 +50,7 @@ class GroupHandler extends Handler implements ProcessableHandlerInterface, Reset
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function isHandling(LogRecord $record): bool
     {
@@ -61,7 +64,7 @@ class GroupHandler extends Handler implements ProcessableHandlerInterface, Reset
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function handle(LogRecord $record): bool
     {
@@ -73,11 +76,11 @@ class GroupHandler extends Handler implements ProcessableHandlerInterface, Reset
             $handler->handle(clone $record);
         }
 
-        return false === $this->bubble;
+        return $this->bubble === false;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function handleBatch(array $records): void
     {
@@ -115,7 +118,7 @@ class GroupHandler extends Handler implements ProcessableHandlerInterface, Reset
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setFormatter(FormatterInterface $formatter): HandlerInterface
     {

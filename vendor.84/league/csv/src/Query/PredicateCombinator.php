@@ -29,7 +29,7 @@ interface PredicateCombinator extends Predicate
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified changes.
      *
-     * @param Condition ...$predicates
+     * @param  Condition  ...$predicates
      */
     public function and(Predicate|Closure ...$predicates): self;
 
@@ -41,7 +41,7 @@ interface PredicateCombinator extends Predicate
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified changes.
      *
-     * @param Condition ...$predicates
+     * @param  Condition  ...$predicates
      */
     public function or(Predicate|Closure ...$predicates): self;
 
@@ -53,7 +53,7 @@ interface PredicateCombinator extends Predicate
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified changes.
      *
-     * @param Condition ...$predicates
+     * @param  Condition  ...$predicates
      */
     public function not(Predicate|Closure ...$predicates): self;
 
@@ -65,7 +65,7 @@ interface PredicateCombinator extends Predicate
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified changes.
      *
-     * @param Condition ...$predicates
+     * @param  Condition  ...$predicates
      */
     public function xor(Predicate|Closure ...$predicates): self;
 }

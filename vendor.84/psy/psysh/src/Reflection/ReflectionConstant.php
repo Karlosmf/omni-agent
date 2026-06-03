@@ -19,6 +19,7 @@ namespace Psy\Reflection;
 class ReflectionConstant implements \Reflector
 {
     public $name;
+
     /** @var mixed */
     private $value;
 
@@ -36,18 +37,16 @@ class ReflectionConstant implements \Reflector
 
     /**
      * Construct a ReflectionConstant object.
-     *
-     * @param string $name
      */
     public function __construct(string $name)
     {
         $this->name = $name;
 
-        if (!\defined($name) && !self::isMagicConstant($name)) {
+        if (! \defined($name) && ! self::isMagicConstant($name)) {
             throw new \InvalidArgumentException('Unknown constant: '.$name);
         }
 
-        if (!self::isMagicConstant($name)) {
+        if (! self::isMagicConstant($name)) {
             $this->value = @\constant($name);
         }
     }
@@ -55,9 +54,7 @@ class ReflectionConstant implements \Reflector
     /**
      * Exports a reflection.
      *
-     * @param string $name
-     * @param bool   $return pass true to return the export, as opposed to emitting it
-     *
+     * @param  bool  $return  pass true to return the export, as opposed to emitting it
      * @return string|null
      */
     public static function export(string $name, bool $return = false)
@@ -106,7 +103,7 @@ class ReflectionConstant implements \Reflector
      */
     public function getNamespaceName(): string
     {
-        if (!$this->inNamespace()) {
+        if (! $this->inNamespace()) {
             return '';
         }
 
@@ -147,7 +144,7 @@ class ReflectionConstant implements \Reflector
      */
     public function getFileName()
     {
-        return;
+
         // return $this->class->getFileName();
     }
 

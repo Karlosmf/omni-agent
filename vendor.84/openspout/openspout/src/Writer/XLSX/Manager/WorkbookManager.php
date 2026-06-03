@@ -15,9 +15,9 @@ use OpenSpout\Writer\XLSX\Options;
  * @internal
  *
  * @property WorksheetManager $worksheetManager
- * @property StyleManager     $styleManager
+ * @property StyleManager $styleManager
  * @property FileSystemHelper $fileSystemHelper
- * @property Options          $options
+ * @property Options $options
  */
 final class WorkbookManager extends AbstractWorkbookManager
 {
@@ -65,7 +65,7 @@ final class WorkbookManager extends AbstractWorkbookManager
     /**
      * Writes all the necessary files to disk and zip them together to create the final file.
      *
-     * @param resource $finalFilePointer Pointer to the spreadsheet that will be created
+     * @param  resource  $finalFilePointer  Pointer to the spreadsheet that will be created
      */
     protected function writeAllFilesToDiskAndZipThem($finalFilePointer): void
     {
@@ -79,7 +79,6 @@ final class WorkbookManager extends AbstractWorkbookManager
             ->createWorkbookRelsFile($worksheets)
             ->createWorksheetRelsFiles($worksheets)
             ->createStylesFile($this->styleManager)
-            ->zipRootFolderAndCopyToStream($finalFilePointer)
-        ;
+            ->zipRootFolderAndCopyToStream($finalFilePointer);
     }
 }

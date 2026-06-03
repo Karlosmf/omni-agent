@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace phpDocumentor\Reflection\DocBlock\Tags;
 
+use const E_USER_DEPRECATED;
+
 use InvalidArgumentException;
 use phpDocumentor\Reflection\DocBlock\Description;
 use phpDocumentor\Reflection\DocBlock\DescriptionFactory;
@@ -36,8 +38,6 @@ use function trigger_error;
 use function trim;
 use function var_export;
 
-use const E_USER_DEPRECATED;
-
 /**
  * Reflection class for an {@}method in a Docblock.
  */
@@ -57,8 +57,9 @@ final class Method extends BaseTag implements Factory\StaticMethod
     private array $parameters;
 
     /**
-     * @param array<int, array<string, Type|string>> $arguments
-     * @param MethodParameter[] $parameters
+     * @param  array<int, array<string, Type|string>>  $arguments
+     * @param  MethodParameter[]  $parameters
+     *
      * @phpstan-param array<int, array{name: string, type: Type}|string> $arguments
      */
     public function __construct(
@@ -73,15 +74,15 @@ final class Method extends BaseTag implements Factory\StaticMethod
         Assert::stringNotEmpty($methodName);
 
         if ($returnType === null) {
-            $returnType = new Void_();
+            $returnType = new Void_;
         }
 
         $arguments = $this->filterArguments($arguments);
 
-        $this->methodName       = $methodName;
-        $this->returnType       = $returnType;
-        $this->isStatic         = $static;
-        $this->description      = $description;
+        $this->methodName = $methodName;
+        $this->returnType = $returnType;
+        $this->isStatic = $static;
+        $this->description = $description;
         $this->returnsReference = $returnsReference;
         $this->parameters = $parameters ?? $this->fromLegacyArguments($arguments);
     }
@@ -117,7 +118,7 @@ final class Method extends BaseTag implements Factory\StaticMethod
         //    until a ) and whitespace : as method name with signature
         // 7. any remaining text : as description
         if (
-            !preg_match(
+            ! preg_match(
                 '/^
                 # Static keyword
                 # Declares a static method ONLY if type is also present
@@ -170,7 +171,7 @@ final class Method extends BaseTag implements Factory\StaticMethod
 
         $returnsReference = $returnsReference === '&';
 
-        $returnType  = $typeResolver->resolve($returnType, $context);
+        $returnType = $typeResolver->resolve($returnType, $context);
         $description = $descriptionFactory->create($description, $context);
 
         /** @phpstan-var array<int, array{name: string, type: Type}> $arguments */
@@ -181,12 +182,12 @@ final class Method extends BaseTag implements Factory\StaticMethod
                 $argument = explode(' ', self::stripRestArg(trim($argument)), 2);
                 if (strpos($argument[0], '$') === 0) {
                     $argumentName = substr($argument[0], 1);
-                    $argumentType = new Mixed_();
+                    $argumentType = new Mixed_;
                 } else {
                     $argumentType = $typeResolver->resolve($argument[0], $context);
                     $argumentName = '';
                     if (isset($argument[1])) {
-                        $argument[1]  = self::stripRestArg($argument[1]);
+                        $argument[1] = self::stripRestArg($argument[1]);
                         $argumentName = substr($argument[1], 1);
                     }
                 }
@@ -195,7 +196,7 @@ final class Method extends BaseTag implements Factory\StaticMethod
             }
         }
 
-        return new static(
+        return new self(
             $methodName,
             $arguments,
             $returnType,
@@ -217,6 +218,7 @@ final class Method extends BaseTag implements Factory\StaticMethod
      * @deprecated Method deprecated, use {@see self::getParameters()}
      *
      * @return array<int, array<string, Type|string>>
+     *
      * @phpstan-return array<int, array{name: string, type: Type}>
      */
     public function getArguments(): array
@@ -264,7 +266,7 @@ final class Method extends BaseTag implements Factory\StaticMethod
             $arguments[] = (string) $parameter;
         }
 
-        $argumentStr = '(' . implode(', ', $arguments) . ')';
+        $argumentStr = '('.implode(', ', $arguments).')';
 
         if ($this->description) {
             $description = $this->description->render();
@@ -281,17 +283,19 @@ final class Method extends BaseTag implements Factory\StaticMethod
         $reference = $this->returnsReference ? '&' : '';
 
         return $static
-            . ($returnType !== '' ? ($static !== '' ? ' ' : '') . $returnType : '')
-            . ($methodName !== '' ? ($static !== '' || $returnType !== '' ? ' ' : '') . $reference . $methodName : '')
-            . $argumentStr
-            . ($description !== '' ? ' ' . $description : '');
+            .($returnType !== '' ? ($static !== '' ? ' ' : '').$returnType : '')
+            .($methodName !== '' ? ($static !== '' || $returnType !== '' ? ' ' : '').$reference.$methodName : '')
+            .$argumentStr
+            .($description !== '' ? ' '.$description : '');
     }
 
     /**
-     * @param mixed[][]|string[] $arguments
+     * @param  mixed[][]|string[]  $arguments
+     *
      * @phpstan-param array<int, array{name: string, type: Type}|string> $arguments
      *
      * @return mixed[][]
+     *
      * @phpstan-return array<int, array{name: string, type: Type}>
      */
     private function filterArguments(array $arguments = []): array
@@ -302,15 +306,15 @@ final class Method extends BaseTag implements Factory\StaticMethod
                 $argument = ['name' => $argument];
             }
 
-            if (!isset($argument['type'])) {
-                $argument['type'] = new Mixed_();
+            if (! isset($argument['type'])) {
+                $argument['type'] = new Mixed_;
             }
 
             $keys = array_keys($argument);
             sort($keys);
             if ($keys !== ['name', 'type']) {
                 throw new InvalidArgumentException(
-                    'Arguments can only have the "name" and "type" fields, found: ' . var_export($keys, true)
+                    'Arguments can only have the "name" and "type" fields, found: '.var_export($keys, true)
                 );
             }
 
@@ -330,7 +334,8 @@ final class Method extends BaseTag implements Factory\StaticMethod
     }
 
     /**
-     * @param array{name: string, type: Type} $arguments
+     * @param  array{name: string, type: Type}  $arguments
+     *
      * @phpstan-param array<int, array{name: string, type: Type}> $arguments
      *
      * @return MethodParameter[]

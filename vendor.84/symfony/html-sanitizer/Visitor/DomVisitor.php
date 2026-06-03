@@ -11,6 +11,9 @@
 
 namespace Symfony\Component\HtmlSanitizer\Visitor;
 
+use Dom\Attr;
+use Dom\ProcessingInstruction;
+use Dom\Text;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerAction;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 use Symfony\Component\HtmlSanitizer\TextSanitizer\StringSanitizer;
@@ -52,11 +55,11 @@ final class DomVisitor
     private array $attributeSanitizers = [];
 
     /**
-     * @param array<string, HtmlSanitizerAction|array<string, bool>> $elementsConfig Registry of allowed/blocked elements:
-     *                                                                               * If an element is present as a key and contains an array, the element should be allowed
-     *                                                                               and the array is the list of allowed attributes.
-     *                                                                               * If an element is present as a key and contains an HtmlSanitizerAction, that action applies.
-     *                                                                               * If an element is not present as a key, the default action applies.
+     * @param  array<string, HtmlSanitizerAction|array<string, bool>>  $elementsConfig  Registry of allowed/blocked elements:
+     *                                                                                  * If an element is present as a key and contains an array, the element should be allowed
+     *                                                                                  and the array is the list of allowed attributes.
+     *                                                                                  * If an element is present as a key and contains an HtmlSanitizerAction, that action applies.
+     *                                                                                  * If an element is not present as a key, the default action applies.
      */
     public function __construct(
         private HtmlSanitizerConfig $config,
@@ -77,7 +80,7 @@ final class DomVisitor
 
     public function visit(\Dom\Node|\DOMNode $domNode): ?NodeInterface
     {
-        $cursor = new Cursor(new DocumentNode());
+        $cursor = new Cursor(new DocumentNode);
         $this->visitChildren($domNode, $cursor);
 
         return $cursor->node;
@@ -96,7 +99,7 @@ final class DomVisitor
 
     private function enterNode(string $domNodeName, \Dom\Node|\DOMNode $domNode, Cursor $cursor): bool
     {
-        if (!\array_key_exists($domNodeName, $this->elementsConfig)) {
+        if (! \array_key_exists($domNodeName, $this->elementsConfig)) {
             $action = $this->defaultAction;
             $allowedAttributes = [];
         } else {
@@ -109,12 +112,12 @@ final class DomVisitor
             }
         }
 
-        if (HtmlSanitizerAction::Drop === $action) {
+        if ($action === HtmlSanitizerAction::Drop) {
             return false;
         }
 
         // Element should be blocked, retaining its children
-        if (HtmlSanitizerAction::Block === $action) {
+        if ($action === HtmlSanitizerAction::Block) {
             $node = new BlockedNode($cursor->node);
 
             $cursor->node->addChild($node);
@@ -142,10 +145,10 @@ final class DomVisitor
     {
         /** @var \Dom\Node|\DOMNode $child */
         foreach ($domNode->childNodes ?? [] as $child) {
-            if ('#text' === $child->nodeName) {
+            if ($child->nodeName === '#text') {
                 // Add text directly for performance
                 $cursor->node->addChild(new TextNode($cursor->node, $child instanceof \Dom\Node ? ($child->textContent ?? '') : $child->nodeValue));
-            } elseif (!$child instanceof \Dom\Text && !$child instanceof \Dom\ProcessingInstruction && !$child instanceof \DOMText && !$child instanceof \DOMProcessingInstruction) {
+            } elseif (! $child instanceof Text && ! $child instanceof ProcessingInstruction && ! $child instanceof \DOMText && ! $child instanceof \DOMProcessingInstruction) {
                 // Otherwise continue the visit recursively
                 // Ignore comments for security reasons (interpreted differently by browsers)
                 // Ignore processing instructions (treated as comments)
@@ -159,8 +162,8 @@ final class DomVisitor
      */
     private function setAttributes(string $domNodeName, \Dom\Node|\DOMNode $domNode, Node $node, array $allowedAttributes = []): void
     {
-        /** @var iterable<\Dom\Attr|\DOMAttr> $domAttributes */
-        if (!$domAttributes = $domNode->attributes?->getIterator()) {
+        /** @var iterable<Attr|\DOMAttr> $domAttributes */
+        if (! $domAttributes = $domNode->attributes?->getIterator()) {
             return;
         }
 

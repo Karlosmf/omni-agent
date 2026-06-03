@@ -41,7 +41,7 @@ final class MethodDescription
 
     public static function make(ObjectMethodsDescription $objectMethodsDescription, Node\Stmt\ClassMethod $classMethod): self
     {
-        $description = new static();
+        $description = new self;
 
         $docComment = (string) $classMethod->getDocComment();
 

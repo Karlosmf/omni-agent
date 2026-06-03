@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\Code\IssueTrigger;
 
 /**
@@ -41,9 +44,7 @@ abstract class IssueTrigger
         return new UnknownTrigger;
     }
 
-    final private function __construct()
-    {
-    }
+    final private function __construct() {}
 
     /**
      * Your test code triggers an issue.

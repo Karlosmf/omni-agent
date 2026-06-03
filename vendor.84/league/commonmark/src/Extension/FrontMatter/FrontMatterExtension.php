@@ -30,7 +30,7 @@ final class FrontMatterExtension implements ExtensionInterface
 
     public function __construct(?FrontMatterDataParserInterface $dataParser = null)
     {
-        $this->frontMatterParser = new FrontMatterParser($dataParser ?? LibYamlFrontMatterParser::capable() ?? new SymfonyYamlFrontMatterParser());
+        $this->frontMatterParser = new FrontMatterParser($dataParser ?? LibYamlFrontMatterParser::capable() ?? new SymfonyYamlFrontMatterParser);
     }
 
     public function getFrontMatterParser(): FrontMatterParserInterface
@@ -41,6 +41,6 @@ final class FrontMatterExtension implements ExtensionInterface
     public function register(EnvironmentBuilderInterface $environment): void
     {
         $environment->addEventListener(DocumentPreParsedEvent::class, new FrontMatterPreParser($this->frontMatterParser));
-        $environment->addEventListener(DocumentRenderedEvent::class, new FrontMatterPostRenderListener(), -500);
+        $environment->addEventListener(DocumentRenderedEvent::class, new FrontMatterPostRenderListener, -500);
     }
 }

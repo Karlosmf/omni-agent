@@ -87,6 +87,7 @@ class Address extends \Faker\Provider\Address
         'Yemen',
         'Zambia', 'Zimbabwe',
     ];
+
     protected static $localityName = [
         'Aundh', 'Andheri',
         'Borivali', 'Bandra',
@@ -100,25 +101,32 @@ class Address extends \Faker\Provider\Address
         'Virar', 'Vikhroli',
         'Yerwada', 'Yeshwanthpura',
     ];
+
     protected static $areaSuffix = [
         ' Nagar', 'Pur', 'Garh', 'Gunj', ' Chowk',
     ];
+
     protected static $postcode = [
         '1#####', '2#####', '3#####', '4#####', '5#####',
     ];
+
     protected static $localityFormats = [
         '{{firstName}}{{areaSuffix}}',
         '{{localityName}}',
     ];
+
     protected static $addressFormats = [
         '{{streetAddress}} {{city}} - {{postcode}}',
     ];
+
     protected static $societySuffix = [
         'Society', 'Apartments', 'Heights', 'Villas',
     ];
+
     protected static $societyNameFormat = [
         '{{firstName}} {{societySuffix}}',
     ];
+
     protected static $streetAddressFormats = [
 
         '{{buildingNumber}}, {{locality}},',

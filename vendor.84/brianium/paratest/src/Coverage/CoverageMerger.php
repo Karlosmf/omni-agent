@@ -14,8 +14,7 @@ final readonly class CoverageMerger
 {
     public function __construct(
         private CodeCoverage $coverage
-    ) {
-    }
+    ) {}
 
     public function addCoverageFromFile(SplFileInfo $coverageFile): void
     {

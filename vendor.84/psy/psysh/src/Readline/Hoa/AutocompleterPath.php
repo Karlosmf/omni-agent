@@ -65,15 +65,15 @@ class AutocompleterPath implements Autocompleter
         ?string $root = null,
         ?\Closure $iteratorFactory = null
     ) {
-        if (null === $root) {
+        if ($root === null) {
             $root = static::PWD;
         }
 
-        if (null !== $root) {
+        if ($root !== null) {
             $this->setRoot($root);
         }
 
-        if (null !== $iteratorFactory) {
+        if ($iteratorFactory !== null) {
             $this->setIteratorFactory($iteratorFactory);
         }
     }
@@ -92,7 +92,7 @@ class AutocompleterPath implements Autocompleter
 
         $path = $root.\DIRECTORY_SEPARATOR.$prefix;
 
-        if (!\is_dir($path)) {
+        if (! \is_dir($path)) {
             $path = \dirname($path).\DIRECTORY_SEPARATOR;
             $prefix = \basename($prefix);
         } else {
@@ -110,7 +110,7 @@ class AutocompleterPath implements Autocompleter
             foreach ($iterator as $fileinfo) {
                 $filename = $fileinfo->getFilename();
 
-                if (null === $prefix ||
+                if ($prefix === null ||
                     (\mb_substr($filename, 0, $length) === $prefix)) {
                     if ($fileinfo->isDir()) {
                         $out[] = $filename.'/';
@@ -125,11 +125,11 @@ class AutocompleterPath implements Autocompleter
 
         $count = \count($out);
 
-        if (1 === $count) {
+        if ($count === 1) {
             return $out[0];
         }
 
-        if (0 === $count) {
+        if ($count === 0) {
             return null;
         }
 

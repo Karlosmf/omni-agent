@@ -30,7 +30,8 @@ abstract class WebDriverSingleKeyAction extends WebDriverKeysRelatedAction imple
     protected $key;
 
     /**
-     * @param string $key
+     * @param  string  $key
+     *
      * @todo Remove default $key value in next major version (BC)
      */
     public function __construct(
@@ -41,7 +42,7 @@ abstract class WebDriverSingleKeyAction extends WebDriverKeysRelatedAction imple
     ) {
         parent::__construct($keyboard, $mouse, $location_provider);
 
-        if (!in_array($key, self::MODIFIER_KEYS, true)) {
+        if (! in_array($key, self::MODIFIER_KEYS, true)) {
             throw LogicException::forError(
                 sprintf(
                     'keyDown / keyUp actions can only be used for modifier keys, but "%s" was given',

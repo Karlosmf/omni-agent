@@ -11,8 +11,7 @@ interface LanguageInflectorFactory
     /**
      * Applies custom rules for singularisation
      *
-     * @param bool $reset If true, will unset default inflections for all new rules
-     *
+     * @param  bool  $reset  If true, will unset default inflections for all new rules
      * @return $this
      */
     public function withSingularRules(?Ruleset $singularRules, bool $reset = false): self;
@@ -20,8 +19,7 @@ interface LanguageInflectorFactory
     /**
      * Applies custom rules for pluralisation
      *
-     * @param bool $reset If true, will unset default inflections for all new rules
-     *
+     * @param  bool  $reset  If true, will unset default inflections for all new rules
      * @return $this
      */
     public function withPluralRules(?Ruleset $pluralRules, bool $reset = false): self;

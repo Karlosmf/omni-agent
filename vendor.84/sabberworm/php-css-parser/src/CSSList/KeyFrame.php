@@ -20,7 +20,7 @@ class KeyFrame extends CSSList implements AtRule
     private $animationName = 'none';
 
     /**
-     * @param non-empty-string $vendorKeyFrame
+     * @param  non-empty-string  $vendorKeyFrame
      */
     public function setVendorKeyFrame(string $vendorKeyFrame): void
     {
@@ -36,7 +36,7 @@ class KeyFrame extends CSSList implements AtRule
     }
 
     /**
-     * @param non-empty-string $animationName
+     * @param  non-empty-string  $animationName
      */
     public function setAnimationName(string $animationName): void
     {
@@ -61,6 +61,7 @@ class KeyFrame extends CSSList implements AtRule
         $result .= "@{$this->vendorKeyFrame} {$this->animationName}{$formatter->spaceBeforeOpeningBrace()}{";
         $result .= $this->renderListContents($outputFormat);
         $result .= '}';
+
         return $result;
     }
 

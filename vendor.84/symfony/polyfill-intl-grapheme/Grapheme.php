@@ -45,13 +45,15 @@ final class Grapheme
 
     public static function grapheme_extract($s, $size, $type = \GRAPHEME_EXTR_COUNT, $start = 0, &$next = 0)
     {
-        if (0 > $start) {
+        if ($start < 0) {
             $start = \strlen($s) + $start;
         }
 
-        if (!\is_scalar($s)) {
+        if (! \is_scalar($s)) {
             $hasError = false;
-            set_error_handler(function () use (&$hasError) { $hasError = true; });
+            set_error_handler(function () use (&$hasError) {
+                $hasError = true;
+            });
             $next = substr($s, $start);
             restore_error_handler();
             if ($hasError) {
@@ -67,7 +69,7 @@ final class Grapheme
         $type = (int) $type;
         $start = (int) $start;
 
-        if (\GRAPHEME_EXTR_COUNT !== $type && \GRAPHEME_EXTR_MAXBYTES !== $type && \GRAPHEME_EXTR_MAXCHARS !== $type) {
+        if ($type !== \GRAPHEME_EXTR_COUNT && $type !== \GRAPHEME_EXTR_MAXBYTES && $type !== \GRAPHEME_EXTR_MAXCHARS) {
             if (80000 > \PHP_VERSION_ID) {
                 return false;
             }
@@ -75,10 +77,10 @@ final class Grapheme
             throw new \ValueError('grapheme_extract(): Argument #3 ($type) must be one of GRAPHEME_EXTR_COUNT, GRAPHEME_EXTR_MAXBYTES, or GRAPHEME_EXTR_MAXCHARS');
         }
 
-        if (!isset($s[0]) || 0 > $size || 0 > $start) {
+        if (! isset($s[0]) || $size < 0 || $start < 0) {
             return false;
         }
-        if (0 === $size) {
+        if ($size === 0) {
             return '';
         }
 
@@ -86,7 +88,7 @@ final class Grapheme
 
         $s = preg_split('/('.SYMFONY_GRAPHEME_CLUSTER_RX.')/u', "\r\n".$s, $size + 1, \PREG_SPLIT_NO_EMPTY | \PREG_SPLIT_DELIM_CAPTURE);
 
-        if (!isset($s[1])) {
+        if (! isset($s[1])) {
             return false;
         }
 
@@ -94,9 +96,9 @@ final class Grapheme
         $ret = '';
 
         do {
-            if (\GRAPHEME_EXTR_COUNT === $type) {
-                --$size;
-            } elseif (\GRAPHEME_EXTR_MAXBYTES === $type) {
+            if ($type === \GRAPHEME_EXTR_COUNT) {
+                $size--;
+            } elseif ($type === \GRAPHEME_EXTR_MAXBYTES) {
                 $size -= \strlen($s[$i]);
             } else {
                 $size -= iconv_strlen($s[$i], 'UTF-8//IGNORE');
@@ -116,12 +118,12 @@ final class Grapheme
     {
         preg_replace('/'.SYMFONY_GRAPHEME_CLUSTER_RX.'/u', '', $s, -1, $len);
 
-        return 0 === $len && '' !== $s ? null : $len;
+        return $len === 0 && $s !== '' ? null : $len;
     }
 
     public static function grapheme_substr($s, $start, $len = null)
     {
-        if (null === $len) {
+        if ($len === null) {
             $len = 2147483647;
         }
 
@@ -130,10 +132,10 @@ final class Grapheme
         $slen = \count($s[0]);
         $start = (int) $start;
 
-        if (0 > $start) {
+        if ($start < 0) {
             $start += $slen;
         }
-        if (0 > $start) {
+        if ($start < 0) {
             if (\PHP_VERSION_ID < 80000) {
                 return false;
             }
@@ -146,13 +148,13 @@ final class Grapheme
 
         $rem = $slen - $start;
 
-        if (0 > $len) {
+        if ($len < 0) {
             $len += $rem;
         }
-        if (0 === $len) {
+        if ($len === 0) {
             return '';
         }
-        if (0 > $len) {
+        if ($len < 0) {
             return \PHP_VERSION_ID >= 80000 ? '' : false;
         }
         if ($len > $rem) {
@@ -194,7 +196,7 @@ final class Grapheme
 
     public static function grapheme_str_split($s, $len = 1)
     {
-        if (0 > $len || 1073741823 < $len) {
+        if ($len < 0 || $len > 1073741823) {
             if (80000 > \PHP_VERSION_ID) {
                 return false;
             }
@@ -202,15 +204,15 @@ final class Grapheme
             throw new \ValueError('grapheme_str_split(): Argument #2 ($length) must be greater than 0 and less than or equal to 1073741823.');
         }
 
-        if ('' === $s) {
+        if ($s === '') {
             return [];
         }
 
-        if (!preg_match_all('/('.SYMFONY_GRAPHEME_CLUSTER_RX.')/u', $s, $matches)) {
+        if (! preg_match_all('/('.SYMFONY_GRAPHEME_CLUSTER_RX.')/u', $s, $matches)) {
             return false;
         }
 
-        if (1 === $len) {
+        if ($len === 1) {
             return $matches[0];
         }
 
@@ -226,20 +228,20 @@ final class Grapheme
     private static function grapheme_position($s, $needle, $offset, $mode)
     {
         $needle = (string) $needle;
-        if (80000 > \PHP_VERSION_ID && !preg_match('/./us', $needle)) {
+        if (80000 > \PHP_VERSION_ID && ! preg_match('/./us', $needle)) {
             return false;
         }
         $s = (string) $s;
-        if (!preg_match('/./us', $s)) {
+        if (! preg_match('/./us', $s)) {
             return false;
         }
         if ($offset > 0) {
             $s = self::grapheme_substr($s, $offset);
         } elseif ($offset < 0) {
-            if (2 > $mode) {
+            if ($mode < 2) {
                 $offset += self::grapheme_strlen($s);
                 $s = self::grapheme_substr($s, $offset);
-                if (0 > $offset) {
+                if ($offset < 0) {
                     $offset = 0;
                 }
             } elseif (0 > $offset += self::grapheme_strlen($needle)) {
@@ -263,7 +265,7 @@ final class Grapheme
             $s = mb_convert_case($s, $mode, 'UTF-8');
             $needle = mb_convert_case($needle, $mode, 'UTF-8');
 
-            if (!\defined('MB_CASE_FOLD_SIMPLE')) {
+            if (! \defined('MB_CASE_FOLD_SIMPLE')) {
                 $s = str_replace(self::CASE_FOLD[0], self::CASE_FOLD[1], $s);
                 $needle = str_replace(self::CASE_FOLD[0], self::CASE_FOLD[1], $needle);
             }
@@ -274,6 +276,6 @@ final class Grapheme
             $needlePos = strpos($s, $needle);
         }
 
-        return false !== $needlePos ? self::grapheme_strlen(substr($s, 0, $needlePos)) + $offset : false;
+        return $needlePos !== false ? self::grapheme_strlen(substr($s, 0, $needlePos)) + $offset : false;
     }
 }

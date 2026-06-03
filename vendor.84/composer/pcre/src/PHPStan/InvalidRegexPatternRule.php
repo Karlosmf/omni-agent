@@ -1,18 +1,19 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace Composer\Pcre\PHPStan;
 
+use Composer\Pcre\PcreException;
 use Composer\Pcre\Preg;
 use Composer\Pcre\Regex;
-use Composer\Pcre\PcreException;
-use Nette\Utils\RegexpException;
-use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+
 use function in_array;
 use function sprintf;
 
@@ -50,20 +51,20 @@ class InvalidRegexPatternRule implements Rule
      */
     private function extractPatterns(StaticCall $node, Scope $scope): array
     {
-        if (!$node->class instanceof FullyQualified) {
+        if (! $node->class instanceof FullyQualified) {
             return [];
         }
         $isRegex = $node->class->toString() === Regex::class;
         $isPreg = $node->class->toString() === Preg::class;
-        if (!$isRegex && !$isPreg) {
+        if (! $isRegex && ! $isPreg) {
             return [];
         }
-        if (!$node->name instanceof Node\Identifier || !Preg::isMatch('{^(match|isMatch|grep|replace|split)}', $node->name->name)) {
+        if (! $node->name instanceof Node\Identifier || ! Preg::isMatch('{^(match|isMatch|grep|replace|split)}', $node->name->name)) {
             return [];
         }
 
         $functionName = $node->name->name;
-        if (!isset($node->getArgs()[0])) {
+        if (! isset($node->getArgs()[0])) {
             return [];
         }
 
@@ -113,7 +114,7 @@ class InvalidRegexPatternRule implements Rule
         try {
             $msg = null;
             $prev = set_error_handler(function (int $severity, string $message, string $file) use (&$msg): bool {
-                $msg = preg_replace("#^preg_match(_all)?\\(.*?\\): #", '', $message);
+                $msg = preg_replace('#^preg_match(_all)?\\(.*?\\): #', '', $message);
 
                 return true;
             });
@@ -138,5 +139,4 @@ class InvalidRegexPatternRule implements Rule
 
         return null;
     }
-
 }

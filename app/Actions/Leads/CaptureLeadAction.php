@@ -14,26 +14,23 @@ class CaptureLeadAction
 {
     /**
      * Handle the creation of a Lead and its associated Customer (User).
-     *
-     * @param  array  $data
-     * @return Lead
      */
     public function execute(array $data): Lead
     {
         $customer = $this->findOrCreateCustomer($data);
 
         return Lead::create([
-            'customer_id'           => $customer->id,
-            'travel_package_id'     => $data['travel_package_id'] ?? null,
-            'customer_name'         => $customer->name,
-            'customer_phone'        => $customer->phone ?? 'Sin teléfono',
-            'customer_email'        => $customer->email,
-            'customer_budget'       => $data['customer_budget'] ?? null,
-            'source'                => $data['source'] ?? 'unknown',
-            'raw_message'           => $data['raw_message'] ?? '',
-            'status'                => LeadStatus::New,
-            'temperature'           => LeadTemperature::Cool,
-            'ai_data'               => $data['ai_data'] ?? [],
+            'customer_id' => $customer->id,
+            'travel_package_id' => $data['travel_package_id'] ?? null,
+            'customer_name' => $customer->name,
+            'customer_phone' => $customer->phone ?? 'Sin teléfono',
+            'customer_email' => $customer->email,
+            'customer_budget' => $data['customer_budget'] ?? null,
+            'source' => $data['source'] ?? 'unknown',
+            'raw_message' => $data['raw_message'] ?? '',
+            'status' => LeadStatus::New,
+            'temperature' => LeadTemperature::Cool,
+            'ai_data' => $data['ai_data'] ?? [],
             'needs_human_attention' => false,
         ]);
     }
@@ -43,9 +40,9 @@ class CaptureLeadAction
      */
     private function findOrCreateCustomer(array $data): User
     {
-        $email = !empty($data['customer_email']) ? trim($data['customer_email']) : null;
-        $phone = !empty($data['customer_phone']) ? trim($data['customer_phone']) : null;
-        $name  = !empty($data['customer_name']) ? trim($data['customer_name']) : 'Web Guest';
+        $email = ! empty($data['customer_email']) ? trim($data['customer_email']) : null;
+        $phone = ! empty($data['customer_phone']) ? trim($data['customer_phone']) : null;
+        $name = ! empty($data['customer_name']) ? trim($data['customer_name']) : 'Web Guest';
 
         $query = User::query()->where('role', UserRole::Customer);
 
@@ -61,12 +58,12 @@ class CaptureLeadAction
 
         $customer = $query->first();
 
-        if (!$customer) {
+        if (! $customer) {
             $customer = User::create([
-                'name'     => $name,
-                'email'    => $email,
-                'phone'    => $phone,
-                'role'     => UserRole::Customer,
+                'name' => $name,
+                'email' => $email,
+                'phone' => $phone,
+                'role' => UserRole::Customer,
                 'password' => Hash::make(Str::random(16)), // Random secure password
             ]);
         } else {
@@ -78,7 +75,7 @@ class CaptureLeadAction
             if ($phone && empty($customer->phone)) {
                 $update['phone'] = $phone;
             }
-            if (!empty($update)) {
+            if (! empty($update)) {
                 $customer->update($update);
             }
         }

@@ -186,5 +186,17 @@ Si eres administrador, puedes personalizar todo el sistema para que tenga la ide
     *   **Activo / Inactivo:** Puedes apagar un slider sin necesidad de borrarlo. ¡Ideal para promos temporales!
 
 ---
-*Manual actualizado para Sistema Omni-Agent v4.2 (Marca Blanca, Sliders y Promos Integradas)*
 
+## 9. Roles y Accesos al Sistema 🔐
+
+Para mantener el orden y la seguridad, el sistema cuenta con distintos **Roles** de usuario que limitan a qué pantallas pueden entrar. Al crear o editar un usuario desde el menú **"Sistema" → "Usuarios"**, puedes asignarle uno de los siguientes roles:
+
+*   👑 **Administrador:** Tiene acceso total. Puede ver todas las ventas, cambiar la configuración, crear usuarios y ver todas las finanzas de la agencia.
+*   💰 **Finanzas:** Especialistas en dinero. Pueden acceder a tesorería, registrar cobros, pagos a operadores, márgenes y liquidaciones, pero no modifican la configuración global.
+*   💼 **Ventas:** Asesores o vendedores. Se enfocan en sus propios Leads, Files y Presupuestos. No pueden ver las finanzas completas de la agencia ni configuraciones del sistema.
+*   👔 **Staff:** Personal de la agencia con accesos medios (generalmente cargan catálogo o manejan la recepción inicial de clientes).
+*   👤 **Usuario General:** Empleado básico con acceso limitado.
+*   🛍️ **Cliente:** Es el usuario de la persona que viaja. (En una futura actualización tendrán su propio panel para ver sus pagos y descargar sus vouchers, actualmente no ingresan al panel de empleados).
+
+---
+*Manual actualizado para Sistema Omni-Agent v1.0 (Marca Blanca, Sliders y Roles Consolidados)*

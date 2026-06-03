@@ -8,23 +8,23 @@ use Illuminate\Contracts\View\View;
 
 trait HasContent
 {
-    protected View | Htmlable | Closure | null $content = null;
+    protected View|Htmlable|Closure|null $content = null;
 
-    protected View | Htmlable | Closure | null $contentFooter = null;
+    protected View|Htmlable|Closure|null $contentFooter = null;
 
     /**
      * @var array<string, int | null> | Closure | null
      */
-    protected array | Closure | null $contentGrid = null;
+    protected array|Closure|null $contentGrid = null;
 
-    public function content(View | Htmlable | Closure | null $content): static
+    public function content(View|Htmlable|Closure|null $content): static
     {
         $this->content = $content;
 
         return $this;
     }
 
-    public function contentFooter(View | Htmlable | Closure | null $footer): static
+    public function contentFooter(View|Htmlable|Closure|null $footer): static
     {
         $this->contentFooter = $footer;
 
@@ -34,14 +34,14 @@ trait HasContent
     /**
      * @param  array<string, int | null> | Closure | null  $grid
      */
-    public function contentGrid(array | Closure | null $grid): static
+    public function contentGrid(array|Closure|null $grid): static
     {
         $this->contentGrid = $grid;
 
         return $this;
     }
 
-    public function getContent(): View | Htmlable | null
+    public function getContent(): View|Htmlable|null
     {
         return $this->evaluate($this->content);
     }
@@ -54,7 +54,7 @@ trait HasContent
         return $this->evaluate($this->contentGrid);
     }
 
-    public function getContentFooter(): View | Htmlable | null
+    public function getContentFooter(): View|Htmlable|null
     {
         return $this->evaluate($this->contentFooter);
     }

@@ -30,20 +30,20 @@ class XliffFileLoader implements LoaderInterface
 {
     public function load(mixed $resource, string $locale, string $domain = 'messages'): MessageCatalogue
     {
-        if (!class_exists(XmlUtils::class)) {
+        if (! class_exists(XmlUtils::class)) {
             throw new RuntimeException('Loading translations from the Xliff format requires the Symfony Config component.');
         }
 
-        if (!$this->isXmlString($resource)) {
-            if (!stream_is_local($resource)) {
+        if (! $this->isXmlString($resource)) {
+            if (! stream_is_local($resource)) {
                 throw new InvalidResourceException(\sprintf('This is not a local file "%s".', $resource));
             }
 
-            if (!file_exists($resource)) {
+            if (! file_exists($resource)) {
                 throw new NotFoundResourceException(\sprintf('File "%s" not found.', $resource));
             }
 
-            if (!is_file($resource)) {
+            if (! is_file($resource)) {
                 throw new InvalidResourceException(\sprintf('This is neither a file nor an XLIFF string "%s".', $resource));
             }
         }
@@ -76,11 +76,11 @@ class XliffFileLoader implements LoaderInterface
     {
         $xliffVersion = XliffUtils::getVersionNumber($dom);
 
-        if ('1.2' === $xliffVersion) {
+        if ($xliffVersion === '1.2') {
             $this->extractXliff1($dom, $catalogue, $domain);
         }
 
-        if ('2.0' === $xliffVersion) {
+        if ($xliffVersion === '2.0') {
             $this->extractXliff2($dom, $catalogue, $domain);
         }
     }
@@ -108,14 +108,14 @@ class XliffFileLoader implements LoaderInterface
             foreach ($file->xpath('.//xliff:trans-unit') as $translation) {
                 $attributes = $translation->attributes();
 
-                if (!(isset($attributes['resname']) || isset($translation->source))) {
+                if (! (isset($attributes['resname']) || isset($translation->source))) {
                     continue;
                 }
 
                 $source = (string) (isset($attributes['resname']) && $attributes['resname'] ? $attributes['resname'] : $translation->source);
 
                 if (isset($translation->target)
-                    && 'needs-translation' === (string) $translation->target->attributes()['state']
+                    && (string) $translation->target->attributes()['state'] === 'needs-translation'
                     && \in_array((string) $translation->target, [$source, (string) $translation->source], true)
                 ) {
                     continue;
@@ -208,7 +208,7 @@ class XliffFileLoader implements LoaderInterface
      */
     private function utf8ToCharset(string $content, ?string $encoding = null): string
     {
-        if ('UTF-8' !== $encoding && $encoding) {
+        if ($encoding !== 'UTF-8' && $encoding) {
             return mb_convert_encoding($content, $encoding, 'UTF-8');
         }
 
@@ -219,7 +219,7 @@ class XliffFileLoader implements LoaderInterface
     {
         $notes = [];
 
-        if (null === $noteElement) {
+        if ($noteElement === null) {
             return $notes;
         }
 

@@ -24,11 +24,9 @@ use Ramsey\Uuid\Type\Hexadecimal;
 class FallbackNodeProvider implements NodeProviderInterface
 {
     /**
-     * @param iterable<NodeProviderInterface> $providers Array of node providers
+     * @param  iterable<NodeProviderInterface>  $providers  Array of node providers
      */
-    public function __construct(private iterable $providers)
-    {
-    }
+    public function __construct(private iterable $providers) {}
 
     public function getNode(): Hexadecimal
     {

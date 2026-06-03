@@ -23,7 +23,7 @@ class OutputFormatter
     }
 
     /**
-     * @param non-empty-string $name
+     * @param  non-empty-string  $name
      *
      * @throws \InvalidArgumentException
      */
@@ -119,7 +119,7 @@ class OutputFormatter
     }
 
     /**
-     * @param non-empty-string $separator
+     * @param  non-empty-string  $separator
      */
     public function spaceBeforeListArgumentSeparator(string $separator): string
     {
@@ -129,7 +129,7 @@ class OutputFormatter
     }
 
     /**
-     * @param non-empty-string $separator
+     * @param  non-empty-string  $separator
      */
     public function spaceAfterListArgumentSeparator(string $separator): string
     {
@@ -164,7 +164,7 @@ class OutputFormatter
     /**
      * Clone of the `implode` function, but calls `render` with the current output format.
      *
-     * @param array<array-key, Renderable|string> $values
+     * @param  array<array-key, Renderable|string>  $values
      */
     public function implode(string $separator, array $values, bool $increaseLevel = false): string
     {
@@ -186,6 +186,7 @@ class OutputFormatter
                 $result .= $value;
             }
         }
+
         return $result;
     }
 
@@ -201,14 +202,14 @@ class OutputFormatter
         }
         $lastPart = \array_pop($parts);
         $nextToLastPart = \array_pop($parts);
-        \array_push($parts, $nextToLastPart . $lastPart);
+        \array_push($parts, $nextToLastPart.$lastPart);
 
         return \implode(';', $parts);
     }
 
     public function comments(Commentable $commentable): string
     {
-        if (!$this->outputFormat->shouldRenderComments()) {
+        if (! $this->outputFormat->shouldRenderComments()) {
             return '';
         }
 
@@ -220,12 +221,13 @@ class OutputFormatter
             $result .= $comment->render($this->outputFormat);
             $result .= $i === $lastCommentIndex ? $this->spaceAfterBlocks() : $this->spaceBetweenBlocks();
         }
+
         return $result;
     }
 
     private function prepareSpace(string $spaceString): string
     {
-        return \str_replace("\n", "\n" . $this->indent(), $spaceString);
+        return \str_replace("\n", "\n".$this->indent(), $spaceString);
     }
 
     private function indent(): string

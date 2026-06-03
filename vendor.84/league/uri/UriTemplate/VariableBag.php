@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\Uri\UriTemplate;
 
+use const ARRAY_FILTER_USE_BOTH;
+
 use ArrayAccess;
 use BackedEnum;
 use Closure;
@@ -24,8 +26,6 @@ use Traversable;
 use function array_filter;
 use function is_bool;
 use function is_scalar;
-
-use const ARRAY_FILTER_USE_BOTH;
 
 /**
  * @internal The class exposes the internal representation of variable bags
@@ -43,7 +43,7 @@ final class VariableBag implements ArrayAccess, Countable, IteratorAggregate
     private array $variables = [];
 
     /**
-     * @param iterable<array-key, InputValue> $variables
+     * @param  iterable<array-key, InputValue>  $variables
      */
     public function __construct(iterable $variables = [])
     {
@@ -87,7 +87,7 @@ final class VariableBag implements ArrayAccess, Countable, IteratorAggregate
      */
     public function isEmpty(): bool
     {
-        return [] === $this->variables;
+        return $this->variables === [];
     }
 
     /**
@@ -95,7 +95,7 @@ final class VariableBag implements ArrayAccess, Countable, IteratorAggregate
      */
     public function isNotEmpty(): bool
     {
-        return [] !== $this->variables;
+        return $this->variables !== [];
     }
 
     public function equals(mixed $value): bool
@@ -115,7 +115,7 @@ final class VariableBag implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * @param Stringable|InputValue $value
+     * @param  Stringable|InputValue  $value
      */
     public function assign(string $name, BackedEnum|Stringable|string|bool|int|float|array|null $value): void
     {
@@ -123,7 +123,7 @@ final class VariableBag implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * @param Stringable|InputValue $value
+     * @param  Stringable|InputValue  $value
      *
      * @throws TemplateCanNotBeExpanded if the value contains nested list
      */
@@ -137,9 +137,9 @@ final class VariableBag implements ArrayAccess, Countable, IteratorAggregate
         }
 
         return match (true) {
-            is_bool($value) => true === $value ? '1' : '0',
-            (null === $value || is_scalar($value) || $value instanceof Stringable) => (string) $value,
-            !$isNestedListAllowed => throw TemplateCanNotBeExpanded::dueToNestedListOfValue($name),
+            is_bool($value) => $value === true ? '1' : '0',
+            ($value === null || is_scalar($value) || $value instanceof Stringable) => (string) $value,
+            ! $isNestedListAllowed => throw TemplateCanNotBeExpanded::dueToNestedListOfValue($name),
             default => array_map(fn ($var): array|string => self::normalizeValue($var, $name, false), $value),
         };
     }

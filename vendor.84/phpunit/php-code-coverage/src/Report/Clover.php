@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,14 +9,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Report;
 
-use function count;
-use function is_string;
-use function ksort;
-use function max;
-use function range;
-use function time;
 use DOMDocument;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Node\File;
@@ -22,11 +19,18 @@ use SebastianBergmann\CodeCoverage\Util\Filesystem;
 use SebastianBergmann\CodeCoverage\Util\Xml;
 use SebastianBergmann\CodeCoverage\WriteOperationFailedException;
 
+use function count;
+use function is_string;
+use function ksort;
+use function max;
+use function range;
+use function time;
+
 final class Clover
 {
     /**
-     * @param null|non-empty-string $target
-     * @param null|non-empty-string $name
+     * @param  null|non-empty-string  $target
+     * @param  null|non-empty-string  $name
      *
      * @throws WriteOperationFailedException
      */
@@ -50,10 +54,10 @@ final class Clover
         $xmlCoverage->appendChild($xmlProject);
 
         $packages = [];
-        $report   = $coverage->getReport();
+        $report = $coverage->getReport();
 
         foreach ($report as $item) {
-            if (!$item instanceof File) {
+            if (! $item instanceof File) {
                 continue;
             }
 
@@ -62,16 +66,16 @@ final class Clover
             $xmlFile = $xmlDocument->createElement('file');
             $xmlFile->setAttribute('name', $item->pathAsString());
 
-            $classes      = $item->classesAndTraits();
+            $classes = $item->classesAndTraits();
             $coverageData = $item->lineCoverageData();
-            $lines        = [];
-            $namespace    = 'global';
+            $lines = [];
+            $namespace = 'global';
 
             foreach ($classes as $className => $class) {
-                $classStatements        = 0;
+                $classStatements = 0;
                 $coveredClassStatements = 0;
-                $coveredMethods         = 0;
-                $classMethods           = 0;
+                $coveredMethods = 0;
+                $classMethods = 0;
 
                 // Assumption: one namespace per file
                 if ($class->namespace !== '') {
@@ -85,7 +89,7 @@ final class Clover
                     }
 
                     $classMethods++;
-                    $classStatements        += $method->executableLines;
+                    $classStatements += $method->executableLines;
                     $coveredClassStatements += $method->executedLines;
 
                     /** @phpstan-ignore equal.notAllowed */
@@ -102,12 +106,12 @@ final class Clover
                     }
 
                     $lines[$method->startLine] = [
-                        'ccn'        => $method->ccn,
-                        'count'      => $methodCount,
-                        'crap'       => $method->crap,
-                        'type'       => 'method',
+                        'ccn' => $method->ccn,
+                        'count' => $methodCount,
+                        'crap' => $method->crap,
+                        'type' => 'method',
                         'visibility' => $method->visibility,
-                        'name'       => $methodName,
+                        'name' => $methodName,
                     ];
                 }
 
@@ -186,7 +190,7 @@ final class Clover
             if ($namespace === 'global') {
                 $xmlProject->appendChild($xmlFile);
             } else {
-                if (!isset($packages[$namespace])) {
+                if (! isset($packages[$namespace])) {
                     $packages[$namespace] = $xmlDocument->createElement(
                         'package',
                     );

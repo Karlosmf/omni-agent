@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PharIo\Manifest.
  *
@@ -8,21 +10,25 @@
  * file that was distributed with this source code.
  *
  */
+
 namespace PharIo\Manifest;
 
 use PharIo\Version\Exception as VersionException;
 use PharIo\Version\Version;
 use PharIo\Version\VersionConstraintParser;
 use Throwable;
+
 use function sprintf;
 
-class ManifestDocumentMapper {
-    public function map(ManifestDocument $document): Manifest {
+class ManifestDocumentMapper
+{
+    public function map(ManifestDocument $document): Manifest
+    {
         try {
-            $contains          = $document->getContainsElement();
-            $type              = $this->mapType($contains);
-            $copyright         = $this->mapCopyright($document->getCopyrightElement());
-            $requirements      = $this->mapRequirements($document->getRequiresElement());
+            $contains = $document->getContainsElement();
+            $type = $this->mapType($contains);
+            $copyright = $this->mapCopyright($document->getCopyrightElement());
+            $requirements = $this->mapRequirements($document->getRequiresElement());
             $bundledComponents = $this->mapBundledComponents($document);
 
             return new Manifest(
@@ -34,11 +40,12 @@ class ManifestDocumentMapper {
                 $bundledComponents
             );
         } catch (Throwable $e) {
-            throw new ManifestDocumentMapperException($e->getMessage(), (int)$e->getCode(), $e);
+            throw new ManifestDocumentMapperException($e->getMessage(), (int) $e->getCode(), $e);
         }
     }
 
-    private function mapType(ContainsElement $contains): Type {
+    private function mapType(ContainsElement $contains): Type
+    {
         switch ($contains->getType()) {
             case 'application':
                 return Type::application();
@@ -53,8 +60,9 @@ class ManifestDocumentMapper {
         );
     }
 
-    private function mapCopyright(CopyrightElement $copyright): CopyrightInformation {
-        $authors = new AuthorCollection();
+    private function mapCopyright(CopyrightElement $copyright): CopyrightInformation
+    {
+        $authors = new AuthorCollection;
 
         foreach ($copyright->getAuthorElements() as $authorElement) {
             $authors->add(
@@ -66,7 +74,7 @@ class ManifestDocumentMapper {
         }
 
         $licenseElement = $copyright->getLicenseElement();
-        $license        = new License(
+        $license = new License(
             $licenseElement->getType(),
             new Url($licenseElement->getUrl())
         );
@@ -77,17 +85,18 @@ class ManifestDocumentMapper {
         );
     }
 
-    private function mapRequirements(RequiresElement $requires): RequirementCollection {
-        $collection = new RequirementCollection();
+    private function mapRequirements(RequiresElement $requires): RequirementCollection
+    {
+        $collection = new RequirementCollection;
         $phpElement = $requires->getPHPElement();
-        $parser     = new VersionConstraintParser;
+        $parser = new VersionConstraintParser;
 
         try {
             $versionConstraint = $parser->parse($phpElement->getVersion());
         } catch (VersionException $e) {
             throw new ManifestDocumentMapperException(
                 sprintf('Unsupported version constraint - %s', $e->getMessage()),
-                (int)$e->getCode(),
+                (int) $e->getCode(),
                 $e
             );
         }
@@ -98,7 +107,7 @@ class ManifestDocumentMapper {
             )
         );
 
-        if (!$phpElement->hasExtElements()) {
+        if (! $phpElement->hasExtElements()) {
             return $collection;
         }
 
@@ -111,10 +120,11 @@ class ManifestDocumentMapper {
         return $collection;
     }
 
-    private function mapBundledComponents(ManifestDocument $document): BundledComponentCollection {
-        $collection = new BundledComponentCollection();
+    private function mapBundledComponents(ManifestDocument $document): BundledComponentCollection
+    {
+        $collection = new BundledComponentCollection;
 
-        if (!$document->hasBundlesElement()) {
+        if (! $document->hasBundlesElement()) {
             return $collection;
         }
 
@@ -132,7 +142,8 @@ class ManifestDocumentMapper {
         return $collection;
     }
 
-    private function mapExtension(ExtensionElement $extension): Extension {
+    private function mapExtension(ExtensionElement $extension): Extension
+    {
         try {
             $versionConstraint = (new VersionConstraintParser)->parse($extension->getCompatible());
 
@@ -143,7 +154,7 @@ class ManifestDocumentMapper {
         } catch (VersionException $e) {
             throw new ManifestDocumentMapperException(
                 sprintf('Unsupported version constraint - %s', $e->getMessage()),
-                (int)$e->getCode(),
+                (int) $e->getCode(),
                 $e
             );
         }

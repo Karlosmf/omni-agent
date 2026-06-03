@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,35 +9,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner\Phpt;
 
 use const DEBUG_BACKTRACE_IGNORE_ARGS;
 use const DIRECTORY_SEPARATOR;
-use function array_merge;
-use function basename;
-use function debug_backtrace;
-use function dirname;
-use function explode;
-use function extension_loaded;
-use function file_exists;
-use function file_get_contents;
-use function is_array;
-use function is_file;
-use function ltrim;
-use function ob_get_clean;
-use function ob_start;
-use function preg_match;
-use function preg_replace;
-use function preg_split;
-use function realpath;
-use function sprintf;
-use function str_contains;
-use function str_starts_with;
-use function strncasecmp;
-use function substr;
-use function trim;
-use function unlink;
-use function unserialize;
+
 use PHPUnit\Event\Code\Phpt;
 use PHPUnit\Event\Code\ThrowableBuilder;
 use PHPUnit\Event\Facade as EventFacade;
@@ -65,6 +44,32 @@ use staabm\SideEffectsDetector\SideEffect;
 use staabm\SideEffectsDetector\SideEffectsDetector;
 use Throwable;
 
+use function array_merge;
+use function basename;
+use function debug_backtrace;
+use function dirname;
+use function explode;
+use function extension_loaded;
+use function file_exists;
+use function file_get_contents;
+use function is_array;
+use function is_file;
+use function ltrim;
+use function ob_get_clean;
+use function ob_start;
+use function preg_match;
+use function preg_replace;
+use function preg_split;
+use function realpath;
+use function sprintf;
+use function str_contains;
+use function str_starts_with;
+use function strncasecmp;
+use function substr;
+use function trim;
+use function unlink;
+use function unserialize;
+
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  *
@@ -80,7 +85,7 @@ final readonly class TestCase implements Reorderable, SelfDescribing, Test
     private string $filename;
 
     /**
-     * @param non-empty-string $filename
+     * @param  non-empty-string  $filename
      */
     public function __construct(string $filename)
     {
@@ -107,7 +112,7 @@ final readonly class TestCase implements Reorderable, SelfDescribing, Test
     public function run(): void
     {
         $emitter = EventFacade::emitter();
-        $parser  = new Parser;
+        $parser = new Parser;
 
         $emitter->testPreparationStarted(
             $this->valueObjectForEvents(),
@@ -123,12 +128,12 @@ final readonly class TestCase implements Reorderable, SelfDescribing, Test
             return;
         }
 
-        $code                 = (new Renderer)->render($this->filename, $sections['FILE']);
-        $xfail                = false;
+        $code = (new Renderer)->render($this->filename, $sections['FILE']);
+        $xfail = false;
         $environmentVariables = [];
-        $phpSettings          = $parser->parseIniSection($this->settings(CodeCoverage::instance()->isActive()));
-        $input                = null;
-        $arguments            = [];
+        $phpSettings = $parser->parseIniSection($this->settings(CodeCoverage::instance()->isActive()));
+        $input = null;
+        $arguments = [];
 
         $emitter->testPrepared($this->valueObjectForEvents());
 
@@ -217,8 +222,8 @@ final readonly class TestCase implements Reorderable, SelfDescribing, Test
                     $diff = $e->getMessage();
                 }
 
-                $hint    = $this->locationHintFromDiff($diff, $sections);
-                $trace   = array_merge($hint, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
+                $hint = $this->locationHintFromDiff($diff, $sections);
+                $trace = array_merge($hint, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
                 $failure = new PhptAssertionFailedError(
                     $e->getMessage(),
                     0,
@@ -297,7 +302,7 @@ final readonly class TestCase implements Reorderable, SelfDescribing, Test
     }
 
     /**
-     * @param array<non-empty-string, non-empty-string> $sections
+     * @param  array<non-empty-string, non-empty-string>  $sections
      *
      * @throws Exception
      * @throws ExpectationFailedException
@@ -305,8 +310,8 @@ final readonly class TestCase implements Reorderable, SelfDescribing, Test
     private function assertPhptExpectation(array $sections, string $output): void
     {
         $assertions = [
-            'EXPECT'      => 'assertEquals',
-            'EXPECTF'     => 'assertStringMatchesFormat',
+            'EXPECT' => 'assertEquals',
+            'EXPECTF' => 'assertStringMatchesFormat',
             'EXPECTREGEX' => 'assertMatchesRegularExpression',
         ];
 
@@ -315,7 +320,7 @@ final readonly class TestCase implements Reorderable, SelfDescribing, Test
         foreach ($assertions as $sectionName => $sectionAssertion) {
             if (isset($sections[$sectionName])) {
                 $sectionContent = preg_replace('/\r\n/', "\n", trim($sections[$sectionName]));
-                $expected       = $sectionName === 'EXPECTREGEX' ? "/{$sectionContent}/" : $sectionContent;
+                $expected = $sectionName === 'EXPECTREGEX' ? "/{$sectionContent}/" : $sectionContent;
 
                 /** @phpstan-ignore staticMethod.dynamicName */
                 Assert::$sectionAssertion($expected, $actual);
@@ -328,12 +333,12 @@ final readonly class TestCase implements Reorderable, SelfDescribing, Test
     }
 
     /**
-     * @param array<non-empty-string, non-empty-string>                         $sections
-     * @param array<non-empty-string, array<non-empty-string>|non-empty-string> $settings
+     * @param  array<non-empty-string, non-empty-string>  $sections
+     * @param  array<non-empty-string, array<non-empty-string>|non-empty-string>  $settings
      */
     private function shouldTestBeSkipped(array $sections, array $settings): bool
     {
-        if (!isset($sections['SKIPIF'])) {
+        if (! isset($sections['SKIPIF'])) {
             return false;
         }
 
@@ -377,7 +382,7 @@ final readonly class TestCase implements Reorderable, SelfDescribing, Test
     }
 
     /**
-     * @param array<non-empty-string, non-empty-string> $sections
+     * @param  array<non-empty-string, non-empty-string>  $sections
      */
     private function shouldRunInSubprocess(array $sections, string $cleanCode): bool
     {
@@ -386,7 +391,7 @@ final readonly class TestCase implements Reorderable, SelfDescribing, Test
             return true;
         }
 
-        $detector    = new SideEffectsDetector;
+        $detector = new SideEffectsDetector;
         $sideEffects = $detector->getSideEffects($cleanCode);
 
         if ($sideEffects === []) {
@@ -417,7 +422,7 @@ final readonly class TestCase implements Reorderable, SelfDescribing, Test
         $code = preg_replace('/declare\S?\([^)]+\)\S?;/', '', $code);
 
         // wrap in immediately invoked function to isolate local-side-effects of $code from our own process
-        $code = '(function() {' . $code . '})();';
+        $code = '(function() {'.$code.'})();';
         ob_start();
         @eval($code);
 
@@ -425,11 +430,11 @@ final readonly class TestCase implements Reorderable, SelfDescribing, Test
     }
 
     /**
-     * @param array<non-empty-string, non-empty-string> $sections
+     * @param  array<non-empty-string, non-empty-string>  $sections
      */
     private function runClean(array $sections, bool $collectCoverage): void
     {
-        if (!isset($sections['CLEAN'])) {
+        if (! isset($sections['CLEAN'])) {
             return;
         }
 
@@ -462,7 +467,7 @@ final readonly class TestCase implements Reorderable, SelfDescribing, Test
          * @phpstan-ignore staticMethod.internalClass
          */
         $coverage = RawCodeCoverageData::fromXdebugWithoutPathCoverage([]);
-        $files    = $this->coverageFiles();
+        $files = $this->coverageFiles();
 
         $buffer = false;
 
@@ -500,18 +505,17 @@ final readonly class TestCase implements Reorderable, SelfDescribing, Test
      */
     private function coverageFiles(): array
     {
-        $baseDir  = dirname(realpath($this->filename)) . DIRECTORY_SEPARATOR;
+        $baseDir = dirname(realpath($this->filename)).DIRECTORY_SEPARATOR;
         $basename = basename($this->filename, 'phpt');
 
         return [
-            'coverage' => $baseDir . $basename . 'coverage',
-            'job'      => $baseDir . $basename . 'php',
+            'coverage' => $baseDir.$basename.'coverage',
+            'job' => $baseDir.$basename.'php',
         ];
     }
 
     /**
-     * @param array<non-empty-string, array<non-empty-string>|non-empty-string> $ini
-     *
+     * @param  array<non-empty-string, array<non-empty-string>|non-empty-string>  $ini
      * @return list<non-empty-string>
      */
     private function stringifyIni(array $ini): array
@@ -521,28 +525,27 @@ final readonly class TestCase implements Reorderable, SelfDescribing, Test
         foreach ($ini as $key => $value) {
             if (is_array($value)) {
                 foreach ($value as $val) {
-                    $settings[] = $key . '=' . $val;
+                    $settings[] = $key.'='.$val;
                 }
 
                 continue;
             }
 
-            $settings[] = $key . '=' . $value;
+            $settings[] = $key.'='.$value;
         }
 
         return $settings;
     }
 
     /**
-     * @param array<non-empty-string, non-empty-string> $sections
-     *
+     * @param  array<non-empty-string, non-empty-string>  $sections
      * @return non-empty-list<array{file: non-empty-string, line: int}>
      */
     private function locationHintFromDiff(string $message, array $sections): array
     {
-        $needle       = '';
+        $needle = '';
         $previousLine = '';
-        $block        = 'message';
+        $block = 'message';
 
         foreach (preg_split('/\r\n|\r|\n/', $message) as $line) {
             $line = trim($line);
@@ -587,8 +590,7 @@ final readonly class TestCase implements Reorderable, SelfDescribing, Test
     }
 
     /**
-     * @param array<non-empty-string, non-empty-string> $sections
-     *
+     * @param  array<non-empty-string, non-empty-string>  $sections
      * @return non-empty-list<array{file: non-empty-string, line: int}>
      */
     private function locationHint(string $needle, array $sections): array
@@ -610,27 +612,27 @@ final readonly class TestCase implements Reorderable, SelfDescribing, Test
         ];
 
         foreach ($search as $section) {
-            if (!isset($sections[$section])) {
+            if (! isset($sections[$section])) {
                 continue;
             }
 
-            if (isset($sections[$section . '_EXTERNAL'])) {
-                $externalFile = trim($sections[$section . '_EXTERNAL']);
+            if (isset($sections[$section.'_EXTERNAL'])) {
+                $externalFile = trim($sections[$section.'_EXTERNAL']);
 
                 return [
                     [
-                        'file' => realpath(dirname($this->filename) . DIRECTORY_SEPARATOR . $externalFile),
+                        'file' => realpath(dirname($this->filename).DIRECTORY_SEPARATOR.$externalFile),
                         'line' => 1,
                     ],
                     [
                         'file' => realpath($this->filename),
-                        'line' => ($sections[$section . '_EXTERNAL_offset'] ?? 0) + 1,
+                        'line' => ($sections[$section.'_EXTERNAL_offset'] ?? 0) + 1,
                     ],
                 ];
             }
 
-            $sectionOffset = $sections[$section . '_offset'] ?? 0;
-            $offset        = $sectionOffset + 1;
+            $sectionOffset = $sections[$section.'_offset'] ?? 0;
+            $offset = $sectionOffset + 1;
 
             foreach (preg_split('/\r\n|\r|\n/', $sections[$section]) as $line) {
                 if (str_contains($line, $needle)) {

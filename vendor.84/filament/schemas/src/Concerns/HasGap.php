@@ -7,11 +7,11 @@ use Filament\Schemas\Schema;
 
 trait HasGap
 {
-    protected bool | Closure | null $hasGap = null;
+    protected bool|Closure|null $hasGap = null;
 
-    protected bool | Closure | null $isDense = null;
+    protected bool|Closure|null $isDense = null;
 
-    public function gap(bool | Closure | null $condition = true): static
+    public function gap(bool|Closure|null $condition = true): static
     {
         $this->hasGap = $condition;
 
@@ -31,7 +31,7 @@ trait HasGap
         return $this->getContainer()->hasGap();
     }
 
-    public function dense(bool | Closure | null $condition = true): static
+    public function dense(bool|Closure|null $condition = true): static
     {
         $this->isDense = $condition;
 

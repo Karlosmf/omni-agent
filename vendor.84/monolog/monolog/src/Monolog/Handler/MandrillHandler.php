@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -23,13 +25,14 @@ use Swift_Message;
 class MandrillHandler extends MailHandler
 {
     protected Swift_Message $message;
+
     protected string $apiKey;
 
     /**
-     * @phpstan-param (Swift_Message|callable(): Swift_Message) $message
+     * @param  string  $apiKey  A valid Mandrill API key
+     * @param  callable|Swift_Message  $message  An example message for real messages, only the body will be replaced
      *
-     * @param string                 $apiKey  A valid Mandrill API key
-     * @param callable|Swift_Message $message An example message for real messages, only the body will be replaced
+     * @phpstan-param (Swift_Message|callable(): Swift_Message) $message
      *
      * @throws \InvalidArgumentException if not a Swift Message is set
      */
@@ -37,10 +40,10 @@ class MandrillHandler extends MailHandler
     {
         parent::__construct($level, $bubble);
 
-        if (!$message instanceof Swift_Message) {
+        if (! $message instanceof Swift_Message) {
             $message = $message();
         }
-        if (!$message instanceof Swift_Message) {
+        if (! $message instanceof Swift_Message) {
             throw new \InvalidArgumentException('You must provide either a Swift_Message instance or a callable returning it');
         }
         $this->message = $message;
@@ -48,7 +51,7 @@ class MandrillHandler extends MailHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function send(string $content, array $records): void
     {
@@ -61,7 +64,7 @@ class MandrillHandler extends MailHandler
         $message->setBody($content, $mime);
         /** @phpstan-ignore-next-line */
         if (version_compare(Swift::VERSION, '6.0.0', '>=')) {
-            $message->setDate(new \DateTimeImmutable());
+            $message->setDate(new \DateTimeImmutable);
         } else {
             /** @phpstan-ignore-next-line */
             $message->setDate(time());

@@ -33,14 +33,16 @@ use Symfony\Component\HttpKernel\Profiler\Profiler;
 class ProfilerListener implements EventSubscriberInterface
 {
     private ?\Throwable $exception = null;
+
     /** @var \SplObjectStorage<Request, Profile> */
     private \SplObjectStorage $profiles;
+
     /** @var \SplObjectStorage<Request, Request|null> */
     private \SplObjectStorage $parents;
 
     /**
-     * @param bool $onlyException    True if the profiler only collects data when an exception occurs, false otherwise
-     * @param bool $onlyMainRequests True if the profiler only collects data when the request is the main request, false otherwise
+     * @param  bool  $onlyException  True if the profiler only collects data when an exception occurs, false otherwise
+     * @param  bool  $onlyMainRequests  True if the profiler only collects data when the request is the main request, false otherwise
      */
     public function __construct(
         private Profiler $profiler,
@@ -50,8 +52,8 @@ class ProfilerListener implements EventSubscriberInterface
         private bool $onlyMainRequests = false,
         private ?string $collectParameter = null,
     ) {
-        $this->profiles = new \SplObjectStorage();
-        $this->parents = new \SplObjectStorage();
+        $this->profiles = new \SplObjectStorage;
+        $this->parents = new \SplObjectStorage;
     }
 
     /**
@@ -59,7 +61,7 @@ class ProfilerListener implements EventSubscriberInterface
      */
     public function onKernelException(ExceptionEvent $event): void
     {
-        if ($this->onlyMainRequests && !$event->isMainRequest()) {
+        if ($this->onlyMainRequests && ! $event->isMainRequest()) {
             return;
         }
 
@@ -71,27 +73,27 @@ class ProfilerListener implements EventSubscriberInterface
      */
     public function onKernelResponse(ResponseEvent $event): void
     {
-        if ($this->onlyMainRequests && !$event->isMainRequest()) {
+        if ($this->onlyMainRequests && ! $event->isMainRequest()) {
             return;
         }
 
-        if ($this->onlyException && null === $this->exception) {
+        if ($this->onlyException && $this->exception === null) {
             return;
         }
 
         $request = $event->getRequest();
-        if (null !== $this->collectParameter && null !== $collectParameterValue = $request->attributes->get($this->collectParameter) ?? $request->query->get($this->collectParameter) ?? $request->request->get($this->collectParameter)) {
+        if ($this->collectParameter !== null && null !== $collectParameterValue = $request->attributes->get($this->collectParameter) ?? $request->query->get($this->collectParameter) ?? $request->request->get($this->collectParameter)) {
             filter_var($collectParameterValue, \FILTER_VALIDATE_BOOL) ? $this->profiler->enable() : $this->profiler->disable();
         }
 
         $exception = $this->exception;
         $this->exception = null;
 
-        if (null !== $this->matcher && !$this->matcher->matches($request)) {
+        if ($this->matcher !== null && ! $this->matcher->matches($request)) {
             return;
         }
 
-        $session = !$request->attributes->getBoolean('_stateless') && $request->hasPreviousSession() ? $request->getSession() : null;
+        $session = ! $request->attributes->getBoolean('_stateless') && $request->hasPreviousSession() ? $request->getSession() : null;
 
         if ($session instanceof Session) {
             $usageIndexValue = $usageIndexReference = &$session->getUsageIndex();
@@ -99,7 +101,7 @@ class ProfilerListener implements EventSubscriberInterface
         }
 
         try {
-            if (!$profile = $this->profiler->collect($request, $event->getResponse(), $exception)) {
+            if (! $profile = $this->profiler->collect($request, $event->getResponse(), $exception)) {
                 return;
             }
         } finally {
@@ -134,8 +136,8 @@ class ProfilerListener implements EventSubscriberInterface
 
     public function reset(): void
     {
-        $this->profiles = new \SplObjectStorage();
-        $this->parents = new \SplObjectStorage();
+        $this->profiles = new \SplObjectStorage;
+        $this->parents = new \SplObjectStorage;
         $this->exception = null;
     }
 

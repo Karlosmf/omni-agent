@@ -31,25 +31,25 @@ final class TranslatableMessageVisitor extends AbstractVisitor implements NodeVi
 
     public function leaveNode(Node $node): ?Node
     {
-        if (!$node instanceof Node\Expr\New_) {
+        if (! $node instanceof Node\Expr\New_) {
             return null;
         }
 
-        if (!($className = $node->class) instanceof Node\Name) {
+        if (! ($className = $node->class) instanceof Node\Name) {
             return null;
         }
 
-        if (!\in_array('TranslatableMessage', $className->getParts(), true)) {
+        if (! \in_array('TranslatableMessage', $className->getParts(), true)) {
             return null;
         }
 
         $firstNamedArgumentIndex = $this->nodeFirstNamedArgumentIndex($node);
 
-        if (!$messages = $this->getStringArguments($node, 0 < $firstNamedArgumentIndex ? 0 : 'message')) {
+        if (! $messages = $this->getStringArguments($node, $firstNamedArgumentIndex > 0 ? 0 : 'message')) {
             return null;
         }
 
-        $domain = $this->getStringArguments($node, 2 < $firstNamedArgumentIndex ? 2 : 'domain')[0] ?? null;
+        $domain = $this->getStringArguments($node, $firstNamedArgumentIndex > 2 ? 2 : 'domain')[0] ?? null;
 
         foreach ($messages as $message) {
             $this->addMessageToCatalogue($message, $domain, $node->getStartLine());

@@ -9,7 +9,7 @@ use Illuminate\Support\Arr;
 
 trait CanFixIndistinctState
 {
-    public function fixIndistinctState(bool | Closure $condition = true): static
+    public function fixIndistinctState(bool|Closure $condition = true): static
     {
         $this->distinct($condition);
         $this->live(condition: $condition);

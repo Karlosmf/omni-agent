@@ -7,9 +7,9 @@ use Filament\Support\Components\Contracts\HasEmbeddedView;
 
 class EmbeddedSchema extends Component implements HasEmbeddedView
 {
-    protected string | Closure $name;
+    protected string|Closure $name;
 
-    final public function __construct(string | Closure $name)
+    final public function __construct(string|Closure $name)
     {
         $this->name($name);
     }
@@ -22,7 +22,7 @@ class EmbeddedSchema extends Component implements HasEmbeddedView
         return $static;
     }
 
-    public function name(string | Closure $name): static
+    public function name(string|Closure $name): static
     {
         $this->name = $name;
 

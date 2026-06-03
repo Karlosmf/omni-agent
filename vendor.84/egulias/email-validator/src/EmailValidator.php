@@ -24,12 +24,10 @@ class EmailValidator
 
     public function __construct()
     {
-        $this->lexer = new EmailLexer();
+        $this->lexer = new EmailLexer;
     }
 
     /**
-     * @param string          $email
-     * @param EmailValidation $emailValidation
      * @return bool
      */
     public function isValid(string $email, EmailValidation $emailValidation)
@@ -42,11 +40,11 @@ class EmailValidator
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function hasWarnings()
     {
-        return !empty($this->warnings);
+        return ! empty($this->warnings);
     }
 
     /**

@@ -52,25 +52,25 @@ class ImportAction extends Action
 
     protected ?string $job = null;
 
-    protected int | Closure $chunkSize = 100;
+    protected int|Closure $chunkSize = 100;
 
-    protected int | Closure | null $maxRows = null;
+    protected int|Closure|null $maxRows = null;
 
-    protected int | Closure | null $headerOffset = null;
+    protected int|Closure|null $headerOffset = null;
 
-    protected string | Closure | null $csvDelimiter = null;
+    protected string|Closure|null $csvDelimiter = null;
 
     /**
      * @var array<string, mixed> | Closure
      */
-    protected array | Closure $options = [];
+    protected array|Closure $options = [];
 
     /**
      * @var array<string | array<mixed> | Closure>
      */
     protected array $fileValidationRules = [];
 
-    protected string | Closure | null $authGuard = null;
+    protected string|Closure|null $authGuard = null;
 
     protected function setUp(): void
     {
@@ -415,7 +415,7 @@ class ImportAction extends Action
             $s3Adapter = Storage::disk($fileDisk)->getAdapter();
 
             invade($s3Adapter)->client->registerStreamWrapper(); /** @phpstan-ignore-line */
-            $fileS3Path = (string) str('s3://' . config("filesystems.disks.{$fileDisk}.bucket") . '/' . $file->getRealPath())->replace('\\', '/');
+            $fileS3Path = (string) str('s3://'.config("filesystems.disks.{$fileDisk}.bucket").'/'.$file->getRealPath())->replace('\\', '/');
 
             $resource = fopen($fileS3Path, mode: 'r', context: stream_context_create([
                 's3' => [
@@ -509,28 +509,28 @@ class ImportAction extends Action
         return $this;
     }
 
-    public function chunkSize(int | Closure $size): static
+    public function chunkSize(int|Closure $size): static
     {
         $this->chunkSize = $size;
 
         return $this;
     }
 
-    public function maxRows(int | Closure | null $rows): static
+    public function maxRows(int|Closure|null $rows): static
     {
         $this->maxRows = $rows;
 
         return $this;
     }
 
-    public function headerOffset(int | Closure | null $offset): static
+    public function headerOffset(int|Closure|null $offset): static
     {
         $this->headerOffset = $offset;
 
         return $this;
     }
 
-    public function csvDelimiter(string | Closure | null $delimiter): static
+    public function csvDelimiter(string|Closure|null $delimiter): static
     {
         $this->csvDelimiter = $delimiter;
 
@@ -587,7 +587,7 @@ class ImportAction extends Action
     /**
      * @param  array<string, mixed> | Closure  $options
      */
-    public function options(array | Closure $options): static
+    public function options(array|Closure $options): static
     {
         $this->options = $options;
 
@@ -605,7 +605,7 @@ class ImportAction extends Action
     /**
      * @param  string | array<mixed> | Closure  $rules
      */
-    public function fileRules(string | array | Closure $rules): static
+    public function fileRules(string|array|Closure $rules): static
     {
         $this->fileValidationRules = [
             ...$this->fileValidationRules,
@@ -677,7 +677,7 @@ class ImportAction extends Action
         return $fileRules;
     }
 
-    public function authGuard(string | Closure | null $authGuard): static
+    public function authGuard(string|Closure|null $authGuard): static
     {
         $this->authGuard = $authGuard;
 
@@ -709,7 +709,7 @@ class ImportAction extends Action
      * @param  Model | array<string, mixed> | null  $record
      * @return Model | array<string, mixed> | null
      */
-    protected function ensureCorrectRecordType(Model | array | null $record): Model | array | null
+    protected function ensureCorrectRecordType(Model|array|null $record): Model|array|null
     {
         return $record;
     }

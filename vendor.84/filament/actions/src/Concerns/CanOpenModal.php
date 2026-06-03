@@ -26,11 +26,11 @@ trait CanOpenModal
     /**
      * @var array<Action | ActionGroup> | Closure
      */
-    protected array | Closure $extraModalFooterActions = [];
+    protected array|Closure $extraModalFooterActions = [];
 
-    protected bool | Closure | null $isModalFooterSticky = null;
+    protected bool|Closure|null $isModalFooterSticky = null;
 
-    protected bool | Closure | null $isModalHeaderSticky = null;
+    protected bool|Closure|null $isModalHeaderSticky = null;
 
     /**
      * @var array<string, Action>
@@ -42,9 +42,9 @@ trait CanOpenModal
      */
     protected array $modalActions = [];
 
-    protected bool | Closure $isModalSlideOver = false;
+    protected bool|Closure $isModalSlideOver = false;
 
-    protected Alignment | string | Closure | null $modalAlignment = null;
+    protected Alignment|string|Closure|null $modalAlignment = null;
 
     /**
      * @var array<string, Action | ActionGroup>
@@ -54,55 +54,55 @@ trait CanOpenModal
     /**
      * @var array<Action> | Closure | null
      */
-    protected array | Closure | null $modalFooterActions = null;
+    protected array|Closure|null $modalFooterActions = null;
 
-    protected Alignment | string | Closure | null $modalFooterActionsAlignment = null;
+    protected Alignment|string|Closure|null $modalFooterActionsAlignment = null;
 
-    protected Action | bool | Closure | null $modalCancelAction = null;
+    protected Action|bool|Closure|null $modalCancelAction = null;
 
-    protected string | Closure | null $modalCancelActionLabel = null;
+    protected string|Closure|null $modalCancelActionLabel = null;
 
-    protected Action | bool | Closure | null $modalSubmitAction = null;
+    protected Action|bool|Closure|null $modalSubmitAction = null;
 
-    protected string | Closure | null $modalSubmitActionLabel = null;
+    protected string|Closure|null $modalSubmitActionLabel = null;
 
-    protected View | Htmlable | Closure | null $modalContent = null;
+    protected View|Htmlable|Closure|null $modalContent = null;
 
-    protected View | Htmlable | Closure | null $modalContentFooter = null;
+    protected View|Htmlable|Closure|null $modalContentFooter = null;
 
-    protected string | Htmlable | Closure | null $modalHeading = null;
+    protected string|Htmlable|Closure|null $modalHeading = null;
 
-    protected string | Htmlable | Closure | null $modalDescription = null;
+    protected string|Htmlable|Closure|null $modalDescription = null;
 
-    protected Width | string | Closure | null $modalWidth = null;
+    protected Width|string|Closure|null $modalWidth = null;
 
-    protected bool | Closure | null $hasModal = null;
+    protected bool|Closure|null $hasModal = null;
 
-    protected bool | Closure | null $isModalHidden = null;
+    protected bool|Closure|null $isModalHidden = null;
 
-    protected bool | Closure | null $hasModalCloseButton = null;
+    protected bool|Closure|null $hasModalCloseButton = null;
 
-    protected bool | Closure | null $isModalClosedByClickingAway = null;
+    protected bool|Closure|null $isModalClosedByClickingAway = null;
 
-    protected bool | Closure | null $isModalClosedByEscaping = null;
+    protected bool|Closure|null $isModalClosedByEscaping = null;
 
-    protected bool | Closure | null $isModalAutofocused = null;
+    protected bool|Closure|null $isModalAutofocused = null;
 
-    protected string | BackedEnum | Htmlable | Closure | null $modalIcon = null;
+    protected string|BackedEnum|Htmlable|Closure|null $modalIcon = null;
 
     /**
      * @var string | array<string> | Closure | null
      */
-    protected string | array | Closure | null $modalIconColor = null;
+    protected string|array|Closure|null $modalIconColor = null;
 
-    public function closeModalByClickingAway(bool | Closure | null $condition = true): static
+    public function closeModalByClickingAway(bool|Closure|null $condition = true): static
     {
         $this->isModalClosedByClickingAway = $condition;
 
         return $this;
     }
 
-    public function closeModalByEscaping(bool | Closure | null $condition = true): static
+    public function closeModalByEscaping(bool|Closure|null $condition = true): static
     {
         $this->isModalClosedByEscaping = $condition;
 
@@ -112,7 +112,7 @@ trait CanOpenModal
     /**
      * @deprecated Use `modalAlignment(Alignment::Center)` instead.
      */
-    public function centerModal(bool | Closure | null $condition = true): static
+    public function centerModal(bool|Closure|null $condition = true): static
     {
         if ($this->evaluate($condition)) {
             $this->modalAlignment(Alignment::Center);
@@ -121,28 +121,28 @@ trait CanOpenModal
         return $this;
     }
 
-    public function modalAlignment(Alignment | string | Closure | null $alignment = null): static
+    public function modalAlignment(Alignment|string|Closure|null $alignment = null): static
     {
         $this->modalAlignment = $alignment;
 
         return $this;
     }
 
-    public function modalCloseButton(bool | Closure | null $condition = true): static
+    public function modalCloseButton(bool|Closure|null $condition = true): static
     {
         $this->hasModalCloseButton = $condition;
 
         return $this;
     }
 
-    public function modalAutofocus(bool | Closure | null $condition = true): static
+    public function modalAutofocus(bool|Closure|null $condition = true): static
     {
         $this->isModalAutofocused = $condition;
 
         return $this;
     }
 
-    public function modalIcon(string | BackedEnum | Htmlable | Closure | null $icon = null): static
+    public function modalIcon(string|BackedEnum|Htmlable|Closure|null $icon = null): static
     {
         $this->modalIcon = $icon;
 
@@ -152,14 +152,14 @@ trait CanOpenModal
     /**
      * @param  string | array<string> | Closure | null  $color
      */
-    public function modalIconColor(string | array | Closure | null $color = null): static
+    public function modalIconColor(string|array|Closure|null $color = null): static
     {
         $this->modalIconColor = $color;
 
         return $this;
     }
 
-    public function slideOver(bool | Closure $condition = true): static
+    public function slideOver(bool|Closure $condition = true): static
     {
         $this->isModalSlideOver = $condition;
 
@@ -171,7 +171,7 @@ trait CanOpenModal
      *
      *@deprecated Use `modalFooterActions()` instead.
      */
-    public function modalActions(array | Closure | null $actions = null): static
+    public function modalActions(array|Closure|null $actions = null): static
     {
         $this->modalFooterActions($actions);
 
@@ -181,14 +181,14 @@ trait CanOpenModal
     /**
      * @param  array<Action> | Closure | null  $actions
      */
-    public function modalFooterActions(array | Closure | null $actions = null): static
+    public function modalFooterActions(array|Closure|null $actions = null): static
     {
         $this->modalFooterActions = $actions;
 
         return $this;
     }
 
-    public function modalFooterActionsAlignment(Alignment | string | Closure | null $alignment = null): static
+    public function modalFooterActionsAlignment(Alignment|string|Closure|null $alignment = null): static
     {
         $this->modalFooterActionsAlignment = $alignment;
 
@@ -200,7 +200,7 @@ trait CanOpenModal
      *
      *@deprecated Use `extraModalFooterActions()` instead.
      */
-    public function extraModalActions(array | Closure $actions): static
+    public function extraModalActions(array|Closure $actions): static
     {
         $this->extraModalFooterActions($actions);
 
@@ -210,7 +210,7 @@ trait CanOpenModal
     /**
      * @param  array<Action | ActionGroup> | Closure  $actions
      */
-    public function extraModalFooterActions(array | Closure $actions): static
+    public function extraModalFooterActions(array|Closure $actions): static
     {
         $this->extraModalFooterActions = $actions;
 
@@ -230,28 +230,28 @@ trait CanOpenModal
         return $this;
     }
 
-    public function modalSubmitAction(Action | bool | Closure | null $action = null): static
+    public function modalSubmitAction(Action|bool|Closure|null $action = null): static
     {
         $this->modalSubmitAction = $action;
 
         return $this;
     }
 
-    public function modalCancelAction(Action | bool | Closure | null $action = null): static
+    public function modalCancelAction(Action|bool|Closure|null $action = null): static
     {
         $this->modalCancelAction = $action;
 
         return $this;
     }
 
-    public function modalSubmitActionLabel(string | Closure | null $label = null): static
+    public function modalSubmitActionLabel(string|Closure|null $label = null): static
     {
         $this->modalSubmitActionLabel = $label;
 
         return $this;
     }
 
-    public function modalCancelActionLabel(string | Closure | null $label = null): static
+    public function modalCancelActionLabel(string|Closure|null $label = null): static
     {
         $this->modalCancelActionLabel = $label;
 
@@ -261,14 +261,14 @@ trait CanOpenModal
     /**
      * @deprecated Use `modalSubmitActionLabel()` instead.
      */
-    public function modalButton(string | Closure | null $label = null): static
+    public function modalButton(string|Closure|null $label = null): static
     {
         $this->modalSubmitActionLabel($label);
 
         return $this;
     }
 
-    public function modalContent(View | Htmlable | Closure | null $content = null): static
+    public function modalContent(View|Htmlable|Closure|null $content = null): static
     {
         $this->modalContent = $content;
 
@@ -278,26 +278,26 @@ trait CanOpenModal
     /**
      * @deprecated Use `modalContentFooter()` instead.
      */
-    public function modalFooter(View | Htmlable | Closure | null $footer = null): static
+    public function modalFooter(View|Htmlable|Closure|null $footer = null): static
     {
         return $this->modalContentFooter($footer);
     }
 
-    public function modalContentFooter(View | Htmlable | Closure | null $footer = null): static
+    public function modalContentFooter(View|Htmlable|Closure|null $footer = null): static
     {
         $this->modalContentFooter = $footer;
 
         return $this;
     }
 
-    public function modalHeading(string | Htmlable | Closure | null $heading = null): static
+    public function modalHeading(string|Htmlable|Closure|null $heading = null): static
     {
         $this->modalHeading = $heading;
 
         return $this;
     }
 
-    public function modalDescription(string | Htmlable | Closure | null $description = null): static
+    public function modalDescription(string|Htmlable|Closure|null $description = null): static
     {
         $this->modalDescription = $description;
 
@@ -307,14 +307,14 @@ trait CanOpenModal
     /**
      * @deprecated Use `modalDescription()` instead.
      */
-    public function modalSubheading(string | Htmlable | Closure | null $subheading = null): static
+    public function modalSubheading(string|Htmlable|Closure|null $subheading = null): static
     {
         $this->modalDescription($subheading);
 
         return $this;
     }
 
-    public function modalWidth(Width | string | Closure | null $width = null): static
+    public function modalWidth(Width|string|Closure|null $width = null): static
     {
         $this->modalWidth = $width;
 
@@ -326,14 +326,14 @@ trait CanOpenModal
         return null;
     }
 
-    public function modal(bool | Closure | null $condition = true): static
+    public function modal(bool|Closure|null $condition = true): static
     {
         $this->hasModal = $condition;
 
         return $this;
     }
 
-    public function modalHidden(bool | Closure | null $condition = true): static
+    public function modalHidden(bool|Closure|null $condition = true): static
     {
         $this->isModalHidden = $condition;
 
@@ -385,7 +385,7 @@ trait CanOpenModal
         return $this->cachedModalFooterActions = $actions;
     }
 
-    public function getModalFooterActionsAlignment(): string | Alignment | null
+    public function getModalFooterActionsAlignment(): string|Alignment|null
     {
         if ($alignment = $this->evaluate($this->modalFooterActionsAlignment)) {
             return $alignment;
@@ -479,7 +479,7 @@ trait CanOpenModal
     {
         return array_filter(
             $this->getModalFooterActions(),
-            fn (Action | ActionGroup $action): bool => $action->isVisible(),
+            fn (Action|ActionGroup $action): bool => $action->isVisible(),
         );
     }
 
@@ -547,7 +547,7 @@ trait CanOpenModal
         return $this->cachedExtraModalFooterActions = $actions;
     }
 
-    public function getModalAlignment(): Alignment | string
+    public function getModalAlignment(): Alignment|string
     {
         if ($alignment = $this->evaluate($this->modalAlignment)) {
             return $alignment;
@@ -578,12 +578,12 @@ trait CanOpenModal
         return $this->evaluate($this->modalCancelActionLabel) ?? __('filament-actions::modal.actions.cancel.label');
     }
 
-    public function getModalContent(): View | Htmlable | null
+    public function getModalContent(): View|Htmlable|null
     {
         return $this->evaluate($this->modalContent);
     }
 
-    public function getModalContentFooter(): View | Htmlable | null
+    public function getModalContentFooter(): View|Htmlable|null
     {
         return $this->evaluate($this->modalContentFooter);
     }
@@ -598,12 +598,12 @@ trait CanOpenModal
         return $this->modalContentFooter !== null;
     }
 
-    public function getCustomModalHeading(): string | Htmlable | null
+    public function getCustomModalHeading(): string|Htmlable|null
     {
         return $this->evaluate($this->modalHeading);
     }
 
-    public function getModalHeading(): string | Htmlable
+    public function getModalHeading(): string|Htmlable
     {
         return $this->getCustomModalHeading() ?? $this->getLabel();
     }
@@ -613,7 +613,7 @@ trait CanOpenModal
         return filled($this->getCustomModalHeading());
     }
 
-    public function getModalDescription(): string | Htmlable | null
+    public function getModalDescription(): string|Htmlable|null
     {
         if (filled($description = $this->evaluate($this->modalDescription))) {
             return $description;
@@ -631,7 +631,7 @@ trait CanOpenModal
         return filled($this->getModalDescription());
     }
 
-    public function getModalWidth(): Width | string
+    public function getModalWidth(): Width|string
     {
         if ($width = $this->evaluate($this->modalWidth)) {
             return $width;
@@ -728,7 +728,7 @@ trait CanOpenModal
             ->button();
     }
 
-    public function getModalIcon(): string | BackedEnum | Htmlable | null
+    public function getModalIcon(): string|BackedEnum|Htmlable|null
     {
         if ($icon = $this->evaluate($this->modalIcon)) {
             return $icon;
@@ -744,19 +744,19 @@ trait CanOpenModal
     /**
      * @return string | array<string> | null
      */
-    public function getModalIconColor(): string | array | null
+    public function getModalIconColor(): string|array|null
     {
         return $this->evaluate($this->modalIconColor) ?? $this->getColor() ?? 'primary';
     }
 
-    public function stickyModalFooter(bool | Closure $condition = true): static
+    public function stickyModalFooter(bool|Closure $condition = true): static
     {
         $this->isModalFooterSticky = $condition;
 
         return $this;
     }
 
-    public function stickyModalHeader(bool | Closure $condition = true): static
+    public function stickyModalHeader(bool|Closure $condition = true): static
     {
         $this->isModalHeaderSticky = $condition;
 

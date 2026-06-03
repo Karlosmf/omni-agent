@@ -8,17 +8,18 @@ namespace Faker\Extension;
 interface PersonExtension extends Extension
 {
     public const GENDER_FEMALE = 'female';
+
     public const GENDER_MALE = 'male';
 
     /**
-     * @param string|null $gender 'male', 'female' or null for any
+     * @param  string|null  $gender  'male', 'female' or null for any
      *
      * @example 'John Doe'
      */
     public function name(?string $gender = null): string;
 
     /**
-     * @param string|null $gender 'male', 'female' or null for any
+     * @param  string|null  $gender  'male', 'female' or null for any
      *
      * @example 'John'
      */
@@ -36,7 +37,7 @@ interface PersonExtension extends Extension
     /**
      * @example 'Mrs.'
      *
-     * @param string|null $gender 'male', 'female' or null for any
+     * @param  string|null  $gender  'male', 'female' or null for any
      */
     public function title(?string $gender = null): string;
 

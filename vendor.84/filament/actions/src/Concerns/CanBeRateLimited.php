@@ -6,9 +6,9 @@ use Closure;
 
 trait CanBeRateLimited
 {
-    protected int | Closure | null $rateLimit = null;
+    protected int|Closure|null $rateLimit = null;
 
-    public function rateLimit(int | Closure | null $maxAttempts): static
+    public function rateLimit(int|Closure|null $maxAttempts): static
     {
         $this->rateLimit = $maxAttempts;
 

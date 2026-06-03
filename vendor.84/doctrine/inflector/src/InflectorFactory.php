@@ -27,28 +27,28 @@ final class InflectorFactory
     {
         switch ($language) {
             case Language::ENGLISH:
-                return new English\InflectorFactory();
+                return new English\InflectorFactory;
 
             case Language::ESPERANTO:
-                return new Esperanto\InflectorFactory();
+                return new Esperanto\InflectorFactory;
 
             case Language::FRENCH:
-                return new French\InflectorFactory();
+                return new French\InflectorFactory;
 
             case Language::ITALIAN:
-                return new Italian\InflectorFactory();
+                return new Italian\InflectorFactory;
 
             case Language::NORWEGIAN_BOKMAL:
-                return new NorwegianBokmal\InflectorFactory();
+                return new NorwegianBokmal\InflectorFactory;
 
             case Language::PORTUGUESE:
-                return new Portuguese\InflectorFactory();
+                return new Portuguese\InflectorFactory;
 
             case Language::SPANISH:
-                return new Spanish\InflectorFactory();
+                return new Spanish\InflectorFactory;
 
             case Language::TURKISH:
-                return new Turkish\InflectorFactory();
+                return new Turkish\InflectorFactory;
 
             default:
                 throw new InvalidArgumentException(sprintf(

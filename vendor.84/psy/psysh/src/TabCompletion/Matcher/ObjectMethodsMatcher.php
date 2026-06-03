@@ -36,7 +36,7 @@ class ObjectMethodsMatcher extends AbstractContextAwareMatcher
             \array_pop($tokens);
         }
         $objectToken = \array_pop($tokens);
-        if (!\is_array($objectToken)) {
+        if (! \is_array($objectToken)) {
             return [];
         }
         $objectName = \str_replace('$', '', $objectToken[1]);
@@ -47,7 +47,7 @@ class ObjectMethodsMatcher extends AbstractContextAwareMatcher
             return [];
         }
 
-        if (!\is_object($object)) {
+        if (! \is_object($object)) {
             return [];
         }
 
@@ -56,7 +56,7 @@ class ObjectMethodsMatcher extends AbstractContextAwareMatcher
             function ($var) use ($input) {
                 return AbstractMatcher::startsWith($input, $var) &&
                     // also check that we do not suggest invoking a super method(__construct, __wakeup, …)
-                    !AbstractMatcher::startsWith('__', $var);
+                    ! AbstractMatcher::startsWith('__', $var);
             }
         );
     }

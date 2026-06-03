@@ -29,7 +29,7 @@ class Charset implements AtRule, Positionable
     private $charset;
 
     /**
-     * @param int<1, max>|null $lineNumber
+     * @param  int<1, max>|null  $lineNumber
      */
     public function __construct(CSSString $charset, ?int $lineNumber = null)
     {
@@ -38,7 +38,7 @@ class Charset implements AtRule, Positionable
     }
 
     /**
-     * @param string|CSSString $charset
+     * @param  string|CSSString  $charset
      */
     public function setCharset($charset): void
     {

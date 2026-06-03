@@ -50,7 +50,7 @@ final class Deprecated extends BaseTag implements Factory\StaticMethod
     {
         Assert::nullOrNotEmpty($version);
 
-        $this->version     = $version;
+        $this->version = $version;
         $this->description = $description;
     }
 
@@ -63,12 +63,12 @@ final class Deprecated extends BaseTag implements Factory\StaticMethod
         ?TypeContext $context = null
     ): self {
         if ($body === null || $body === '') {
-            return new static();
+            return new self;
         }
 
         $matches = [];
-        if (!preg_match('/^(' . self::REGEX_VECTOR . ')\s*(.+)?$/sux', $body, $matches)) {
-            return new static(
+        if (! preg_match('/^('.self::REGEX_VECTOR.')\s*(.+)?$/sux', $body, $matches)) {
+            return new self(
                 null,
                 $descriptionFactory !== null ? $descriptionFactory->create($body, $context) : null
             );
@@ -76,7 +76,7 @@ final class Deprecated extends BaseTag implements Factory\StaticMethod
 
         Assert::notNull($descriptionFactory);
 
-        return new static(
+        return new self(
             $matches[1],
             $descriptionFactory->create($matches[2] ?? '', $context)
         );
@@ -103,6 +103,6 @@ final class Deprecated extends BaseTag implements Factory\StaticMethod
 
         $version = (string) $this->version;
 
-        return $version . ($description !== '' ? ($version !== '' ? ' ' : '') . $description : '');
+        return $version.($description !== '' ? ($version !== '' ? ' ' : '').$description : '');
     }
 }

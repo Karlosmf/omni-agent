@@ -14,14 +14,14 @@ trait HasSchema
     /**
      * @var array<Component | Action | ActionGroup> | Closure | null
      */
-    protected array | Closure | null $schema = null;
+    protected array|Closure|null $schema = null;
 
     protected ?Closure $modifyFormFieldUsing = null;
 
     /**
      * @param  array<Component | Action | ActionGroup> | Closure | null  $schema
      */
-    public function schema(array | Closure | null $schema): static
+    public function schema(array|Closure|null $schema): static
     {
         $this->schema = $schema;
 
@@ -33,7 +33,7 @@ trait HasSchema
      *
      * @param  array<Component | Action | ActionGroup> | Closure | null  $schema
      */
-    public function form(array | Closure | null $schema): static
+    public function form(array|Closure|null $schema): static
     {
         $this->schema($schema);
 

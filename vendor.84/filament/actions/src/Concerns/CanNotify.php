@@ -9,44 +9,44 @@ use Illuminate\Auth\Access\Response;
 
 trait CanNotify
 {
-    protected Notification | Closure | null $failureNotification = null;
+    protected Notification|Closure|null $failureNotification = null;
 
     protected bool $isFailureNotificationDisabled = false;
 
-    protected Notification | Closure | null $successNotification = null;
+    protected Notification|Closure|null $successNotification = null;
 
     protected bool $isSuccessNotificationDisabled = false;
 
-    protected Notification | Closure | null $unauthorizedNotification = null;
+    protected Notification|Closure|null $unauthorizedNotification = null;
 
     protected bool $isUnauthorizedNotificationDisabled = false;
 
-    protected Notification | Closure | null $rateLimitedNotification = null;
+    protected Notification|Closure|null $rateLimitedNotification = null;
 
     protected bool $isRateLimitedNotificationDisabled = false;
 
-    protected string | Closure | null $failureNotificationTitle = null;
+    protected string|Closure|null $failureNotificationTitle = null;
 
-    protected string | Closure | null $successNotificationTitle = null;
+    protected string|Closure|null $successNotificationTitle = null;
 
-    protected string | Closure | null $unauthorizedNotificationTitle = null;
+    protected string|Closure|null $unauthorizedNotificationTitle = null;
 
-    protected string | Closure | null $rateLimitedNotificationTitle = null;
+    protected string|Closure|null $rateLimitedNotificationTitle = null;
 
-    protected string | Closure | null $failureNotificationBody = null;
+    protected string|Closure|null $failureNotificationBody = null;
 
-    protected string | Closure | null $missingBulkAuthorizationFailureNotificationMessage = null;
+    protected string|Closure|null $missingBulkAuthorizationFailureNotificationMessage = null;
 
-    protected string | Closure | null $missingBulkProcessingFailureNotificationMessage = null;
+    protected string|Closure|null $missingBulkProcessingFailureNotificationMessage = null;
 
-    public function missingBulkAuthorizationFailureNotificationMessage(string | Closure | null $message): static
+    public function missingBulkAuthorizationFailureNotificationMessage(string|Closure|null $message): static
     {
         $this->missingBulkAuthorizationFailureNotificationMessage = $message;
 
         return $this;
     }
 
-    public function missingBulkProcessingFailureNotificationMessage(string | Closure | null $message): static
+    public function missingBulkProcessingFailureNotificationMessage(string|Closure|null $message): static
     {
         $this->missingBulkProcessingFailureNotificationMessage = $message;
 
@@ -99,7 +99,7 @@ trait CanNotify
         return $this;
     }
 
-    public function failureNotification(Notification | Closure | null $notification): static
+    public function failureNotification(Notification|Closure|null $notification): static
     {
         $this->failureNotification = $notification;
         $this->isFailureNotificationDisabled = $notification === null;
@@ -110,19 +110,19 @@ trait CanNotify
     /**
      * @deprecated Use `failureNotificationTitle()` instead.
      */
-    public function failureNotificationMessage(string | Closure | null $message): static
+    public function failureNotificationMessage(string|Closure|null $message): static
     {
         return $this->failureNotificationTitle($message);
     }
 
-    public function failureNotificationTitle(string | Closure | null $title): static
+    public function failureNotificationTitle(string|Closure|null $title): static
     {
         $this->failureNotificationTitle = $title;
 
         return $this;
     }
 
-    public function failureNotificationBody(string | Closure | null $body): static
+    public function failureNotificationBody(string|Closure|null $body): static
     {
         $this->failureNotificationBody = $body;
 
@@ -148,7 +148,7 @@ trait CanNotify
         return $this;
     }
 
-    public function successNotification(Notification | Closure | null $notification): static
+    public function successNotification(Notification|Closure|null $notification): static
     {
         $this->successNotification = $notification;
         $this->isSuccessNotificationDisabled = $notification === null;
@@ -159,12 +159,12 @@ trait CanNotify
     /**
      * @deprecated Use `successNotificationTitle()` instead.
      */
-    public function successNotificationMessage(string | Closure | null $message): static
+    public function successNotificationMessage(string|Closure|null $message): static
     {
         return $this->successNotificationTitle($message);
     }
 
-    public function successNotificationTitle(string | Closure | null $title): static
+    public function successNotificationTitle(string|Closure|null $title): static
     {
         $this->successNotificationTitle = $title;
 
@@ -192,7 +192,7 @@ trait CanNotify
         return $this;
     }
 
-    public function unauthorizedNotification(Notification | Closure | null $notification): static
+    public function unauthorizedNotification(Notification|Closure|null $notification): static
     {
         $this->unauthorizedNotification = $notification;
         $this->isUnauthorizedNotificationDisabled = $notification === null;
@@ -200,7 +200,7 @@ trait CanNotify
         return $this;
     }
 
-    public function unauthorizedNotificationTitle(string | Closure | null $title): static
+    public function unauthorizedNotificationTitle(string|Closure|null $title): static
     {
         $this->unauthorizedNotificationTitle = $title;
 
@@ -234,7 +234,7 @@ trait CanNotify
         return $this;
     }
 
-    public function rateLimitedNotification(Notification | Closure | null $notification): static
+    public function rateLimitedNotification(Notification|Closure|null $notification): static
     {
         $this->rateLimitedNotification = $notification;
         $this->isRateLimitedNotificationDisabled = $notification === null;
@@ -242,7 +242,7 @@ trait CanNotify
         return $this;
     }
 
-    public function rateLimitedNotificationTitle(string | Closure | null $title): static
+    public function rateLimitedNotificationTitle(string|Closure|null $title): static
     {
         $this->rateLimitedNotificationTitle = $title;
 

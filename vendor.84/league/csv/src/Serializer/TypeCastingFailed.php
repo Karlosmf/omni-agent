@@ -31,17 +31,17 @@ final class TypeCastingFailed extends RuntimeException implements SerializationF
 
     private static function format(string $message, ?TypeCastingInfo $info = null): string
     {
-        if (null === $info) {
+        if ($info === null) {
             return $message;
         }
 
         $className = $info->targetClassName;
-        if (null !== $className) {
+        if ($className !== null) {
             $className .= '::';
         }
 
         $target = $info->targetName;
-        $target = (TypeCastingTargetType::MethodFirstArgument === $info->targetType)
+        $target = ($info->targetType === TypeCastingTargetType::MethodFirstArgument)
             ? 'the first argument `'.$target.'` of the method `'.$className.$info->targetMethodName.'()`'
             : 'the property `'.$className.$target.'`';
 
@@ -60,7 +60,7 @@ final class TypeCastingFailed extends RuntimeException implements SerializationF
 
     public static function dueToInvalidValue(mixed $value, string $type, ?Throwable $previous = null, ?TypeCastingInfo $info = null): self
     {
-        if (!is_scalar($value)) {
+        if (! is_scalar($value)) {
             $value = gettype($value);
         }
 

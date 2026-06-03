@@ -13,9 +13,9 @@ trait CanPartiallyRender
      */
     protected array $componentsToPartiallyRenderAfterStateUpdated = [];
 
-    protected bool | Closure $isRenderlessAfterStateUpdated = false;
+    protected bool|Closure $isRenderlessAfterStateUpdated = false;
 
-    protected bool | Closure $isPartiallyRenderedAfterStateUpdated = false;
+    protected bool|Closure $isPartiallyRenderedAfterStateUpdated = false;
 
     /**
      * @param  array<string>  $components
@@ -27,14 +27,14 @@ trait CanPartiallyRender
         return $this;
     }
 
-    public function skipRenderAfterStateUpdated(bool | Closure $condition = true): static
+    public function skipRenderAfterStateUpdated(bool|Closure $condition = true): static
     {
         $this->isRenderlessAfterStateUpdated = $condition;
 
         return $this;
     }
 
-    public function partiallyRenderAfterStateUpdated(bool | Closure $condition = true): static
+    public function partiallyRenderAfterStateUpdated(bool|Closure $condition = true): static
     {
         $this->isPartiallyRenderedAfterStateUpdated = $condition;
 

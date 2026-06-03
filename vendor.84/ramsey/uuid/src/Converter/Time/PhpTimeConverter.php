@@ -14,6 +14,9 @@ declare(strict_types=1);
 
 namespace Ramsey\Uuid\Converter\Time;
 
+use const STR_PAD_LEFT;
+use const STR_PAD_RIGHT;
+
 use Ramsey\Uuid\Converter\TimeConverterInterface;
 use Ramsey\Uuid\Math\BrickMathCalculator;
 use Ramsey\Uuid\Math\CalculatorInterface;
@@ -30,9 +33,6 @@ use function str_pad;
 use function strlen;
 use function substr;
 
-use const STR_PAD_LEFT;
-use const STR_PAD_RIGHT;
-
 /**
  * PhpTimeConverter uses built-in PHP functions and standard math operations available to the PHP programming language
  * to provide facilities for converting parts of time into representations that may be used in UUIDs
@@ -44,7 +44,7 @@ class PhpTimeConverter implements TimeConverterInterface
     /**
      * The number of 100-nanosecond intervals from the Gregorian calendar epoch to the Unix epoch.
      */
-    private const GREGORIAN_TO_UNIX_INTERVALS = 0x01b21dd213814000;
+    private const GREGORIAN_TO_UNIX_INTERVALS = 0x01B21DD213814000;
 
     /**
      * The number of 100-nanosecond intervals in one second.
@@ -57,7 +57,9 @@ class PhpTimeConverter implements TimeConverterInterface
     private const MICROSECOND_INTERVALS = 10;
 
     private int $phpPrecision;
+
     private CalculatorInterface $calculator;
+
     private TimeConverterInterface $fallbackConverter;
 
     public function __construct(
@@ -65,7 +67,7 @@ class PhpTimeConverter implements TimeConverterInterface
         ?TimeConverterInterface $fallbackConverter = null,
     ) {
         if ($calculator === null) {
-            $calculator = new BrickMathCalculator();
+            $calculator = new BrickMathCalculator;
         }
 
         if ($fallbackConverter === null) {
@@ -91,7 +93,7 @@ class PhpTimeConverter implements TimeConverterInterface
         // Check to see whether we've overflowed the max/min integer size.
         // If so, we will default to a different time converter.
         // @phpstan-ignore function.alreadyNarrowedType (the integer value might have overflowed)
-        if (!is_int($uuidTime)) {
+        if (! is_int($uuidTime)) {
             return $this->fallbackConverter->calculateTime(
                 $seconds->toString(),
                 $microseconds->toString(),
@@ -122,13 +124,12 @@ class PhpTimeConverter implements TimeConverterInterface
     }
 
     /**
-     * @param float | int $time The time to split into seconds and microseconds
-     *
+     * @param  float | int  $time  The time to split into seconds and microseconds
      * @return string[]
      *
      * @pure
      */
-    private function splitTime(float | int $time): array
+    private function splitTime(float|int $time): array
     {
         $split = explode('.', (string) $time, 2);
 

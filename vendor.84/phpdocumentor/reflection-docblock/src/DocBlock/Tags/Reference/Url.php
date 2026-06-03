@@ -13,10 +13,11 @@ declare(strict_types=1);
 
 namespace phpDocumentor\Reflection\DocBlock\Tags\Reference;
 
+use phpDocumentor\Reflection\DocBlock\Tags\See;
 use Webmozart\Assert\Assert;
 
 /**
- * Url reference used by {@see \phpDocumentor\Reflection\DocBlock\Tags\See}
+ * Url reference used by {@see See}
  */
 final class Url implements Reference
 {

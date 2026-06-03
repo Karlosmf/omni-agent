@@ -32,13 +32,21 @@ class ProgressIndicator
     ];
 
     private int $startTime;
+
     private ?string $format = null;
+
     private ?string $message = null;
+
     private array $indicatorValues;
+
     private int $indicatorCurrent;
+
     private string $finishedIndicatorValue;
+
     private float $indicatorUpdateTime;
+
     private bool $started = false;
+
     private bool $finished = false;
 
     /**
@@ -47,8 +55,8 @@ class ProgressIndicator
     private static array $formatters;
 
     /**
-     * @param int        $indicatorChangeInterval Change interval in milliseconds
-     * @param array|null $indicatorValues         Animated indicator characters
+     * @param  int  $indicatorChangeInterval  Change interval in milliseconds
+     * @param  array|null  $indicatorValues  Animated indicator characters
      */
     public function __construct(
         private OutputInterface $output,
@@ -62,7 +70,7 @@ class ProgressIndicator
         $indicatorValues = array_values($indicatorValues);
         $finishedIndicatorValue ??= '✔';
 
-        if (2 > \count($indicatorValues)) {
+        if (\count($indicatorValues) < 2) {
             throw new InvalidArgumentException('Must have at least 2 indicator value characters.');
         }
 
@@ -106,11 +114,11 @@ class ProgressIndicator
      */
     public function advance(): void
     {
-        if (!$this->started) {
+        if (! $this->started) {
             throw new LogicException('Progress indicator has not yet been started.');
         }
 
-        if (!$this->output->isDecorated()) {
+        if (! $this->output->isDecorated()) {
             return;
         }
 
@@ -121,7 +129,7 @@ class ProgressIndicator
         }
 
         $this->indicatorUpdateTime = $currentTime + $this->indicatorChangeInterval;
-        ++$this->indicatorCurrent;
+        $this->indicatorCurrent++;
 
         $this->display();
     }
@@ -129,20 +137,20 @@ class ProgressIndicator
     /**
      * Finish the indicator with message.
      *
-     * @param ?string $finishedIndicator
+     * @param  ?string  $finishedIndicator
      */
     public function finish(string $message/* , ?string $finishedIndicator = null */): void
     {
-        $finishedIndicator = 1 < \func_num_args() ? func_get_arg(1) : null;
-        if (null !== $finishedIndicator && !\is_string($finishedIndicator)) {
+        $finishedIndicator = \func_num_args() > 1 ? func_get_arg(1) : null;
+        if ($finishedIndicator !== null && ! \is_string($finishedIndicator)) {
             throw new \TypeError(\sprintf('Argument 2 passed to "%s()" must be of the type string or null, "%s" given.', __METHOD__, get_debug_type($finishedIndicator)));
         }
 
-        if (!$this->started) {
+        if (! $this->started) {
             throw new LogicException('Progress indicator has not yet been started.');
         }
 
-        if (null !== $finishedIndicator) {
+        if ($finishedIndicator !== null) {
             $this->finishedIndicatorValue = $finishedIndicator;
         }
 
@@ -185,7 +193,7 @@ class ProgressIndicator
 
     private function display(): void
     {
-        if (OutputInterface::VERBOSITY_QUIET === $this->output->getVerbosity()) {
+        if ($this->output->getVerbosity() === OutputInterface::VERBOSITY_QUIET) {
             return;
         }
 

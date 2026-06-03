@@ -21,13 +21,15 @@ namespace League\CommonMark\Util;
  * @internal
  *
  * @phpstan-template T
+ *
  * @phpstan-implements \IteratorAggregate<int, T>
  * @phpstan-implements \ArrayAccess<int, T>
  */
-final class ArrayCollection implements \IteratorAggregate, \Countable, \ArrayAccess
+final class ArrayCollection implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     /**
      * @var array<int, mixed>
+     *
      * @phpstan-var array<int, T>
      */
     private array $elements;
@@ -35,7 +37,7 @@ final class ArrayCollection implements \IteratorAggregate, \Countable, \ArrayAcc
     /**
      * Constructor
      *
-     * @param array<int|string, mixed> $elements
+     * @param  array<int|string, mixed>  $elements
      *
      * @phpstan-param array<int, T> $elements
      */

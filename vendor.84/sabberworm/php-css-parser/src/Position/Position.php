@@ -40,9 +40,8 @@ trait Position
     }
 
     /**
-     * @param int<1, max>|null $lineNumber
-     * @param int<0, max>|null $columnNumber
-     *
+     * @param  int<1, max>|null  $lineNumber
+     * @param  int<0, max>|null  $columnNumber
      * @return $this fluent interface
      */
     public function setPosition(?int $lineNumber, ?int $columnNumber = null): Positionable

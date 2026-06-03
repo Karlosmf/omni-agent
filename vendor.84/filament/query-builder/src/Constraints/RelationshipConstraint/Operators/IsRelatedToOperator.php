@@ -18,23 +18,23 @@ use Znck\Eloquent\Relations\BelongsToThrough;
 
 class IsRelatedToOperator extends Operator
 {
-    protected string | Closure | null $titleAttribute = null;
+    protected string|Closure|null $titleAttribute = null;
 
     protected ?Closure $modifyRelationshipQueryUsing = null;
 
-    protected bool | Closure $isPreloaded = false;
+    protected bool|Closure $isPreloaded = false;
 
-    protected bool | Closure $isMultiple = false;
+    protected bool|Closure $isMultiple = false;
 
-    protected bool | Closure $isNative = true;
+    protected bool|Closure $isNative = true;
 
-    protected bool | Closure $isStatic = false;
+    protected bool|Closure $isStatic = false;
 
-    protected bool | Closure $isSearchable = false;
+    protected bool|Closure $isSearchable = false;
 
-    protected int | Closure $optionsLimit = 50;
+    protected int|Closure $optionsLimit = 50;
 
-    protected bool | Closure | null $isSearchForcedCaseInsensitive = null;
+    protected bool|Closure|null $isSearchForcedCaseInsensitive = null;
 
     protected ?Closure $getOptionLabelUsing = null;
 
@@ -145,7 +145,7 @@ class IsRelatedToOperator extends Operator
         return [$field];
     }
 
-    public function titleAttribute(string | Closure | null $attribute): static
+    public function titleAttribute(string|Closure|null $attribute): static
     {
         $this->titleAttribute = $attribute;
 
@@ -207,7 +207,7 @@ class IsRelatedToOperator extends Operator
         return $constraint;
     }
 
-    public function forceSearchCaseInsensitive(bool | Closure | null $condition = true): static
+    public function forceSearchCaseInsensitive(bool|Closure|null $condition = true): static
     {
         $this->isSearchForcedCaseInsensitive = $condition;
 
@@ -224,7 +224,7 @@ class IsRelatedToOperator extends Operator
         return $this->modifyRelationshipQueryUsing;
     }
 
-    public function getRelationship(): Relation | Builder
+    public function getRelationship(): Relation|Builder
     {
         $constraint = $this->getConstraint();
 
@@ -276,7 +276,7 @@ class IsRelatedToOperator extends Operator
         return $this->evaluate($this->titleAttribute);
     }
 
-    public function multiple(bool | Closure $condition = true): static
+    public function multiple(bool|Closure $condition = true): static
     {
         $this->isMultiple = $condition;
 
@@ -288,7 +288,7 @@ class IsRelatedToOperator extends Operator
         return (bool) $this->evaluate($this->isMultiple);
     }
 
-    public function searchable(bool | Closure $condition = true): static
+    public function searchable(bool|Closure $condition = true): static
     {
         $this->isSearchable = $condition;
 
@@ -300,7 +300,7 @@ class IsRelatedToOperator extends Operator
         return (bool) $this->evaluate($this->isSearchable);
     }
 
-    public function optionsLimit(int | Closure $limit): static
+    public function optionsLimit(int|Closure $limit): static
     {
         $this->optionsLimit = $limit;
 
@@ -312,7 +312,7 @@ class IsRelatedToOperator extends Operator
         return $this->evaluate($this->optionsLimit);
     }
 
-    public function native(bool | Closure $condition = true): static
+    public function native(bool|Closure $condition = true): static
     {
         $this->isNative = $condition;
 
@@ -331,7 +331,7 @@ class IsRelatedToOperator extends Operator
         return $this;
     }
 
-    public function preload(bool | Closure $condition = true): static
+    public function preload(bool|Closure $condition = true): static
     {
         $this->isPreloaded = $condition;
 

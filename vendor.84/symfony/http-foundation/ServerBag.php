@@ -29,7 +29,7 @@ class ServerBag extends ParameterBag
         foreach ($this->parameters as $key => $value) {
             if (str_starts_with($key, 'HTTP_')) {
                 $headers[substr($key, 5)] = $value;
-            } elseif (\in_array($key, ['CONTENT_TYPE', 'CONTENT_LENGTH', 'CONTENT_MD5'], true) && '' !== $value) {
+            } elseif (\in_array($key, ['CONTENT_TYPE', 'CONTENT_LENGTH', 'CONTENT_MD5'], true) && $value !== '') {
                 $headers[$key] = $value;
             }
         }
@@ -59,18 +59,18 @@ class ServerBag extends ParameterBag
                 $authorizationHeader = $this->parameters['REDIRECT_HTTP_AUTHORIZATION'];
             }
 
-            if (null !== $authorizationHeader) {
-                if (0 === stripos($authorizationHeader, 'basic ')) {
+            if ($authorizationHeader !== null) {
+                if (stripos($authorizationHeader, 'basic ') === 0) {
                     // Decode AUTHORIZATION header into PHP_AUTH_USER and PHP_AUTH_PW when authorization header is basic
                     $exploded = explode(':', base64_decode(substr($authorizationHeader, 6)), 2);
-                    if (2 == \count($exploded)) {
+                    if (\count($exploded) == 2) {
                         [$headers['PHP_AUTH_USER'], $headers['PHP_AUTH_PW']] = $exploded;
                     }
-                } elseif (empty($this->parameters['PHP_AUTH_DIGEST']) && (0 === stripos($authorizationHeader, 'digest '))) {
+                } elseif (empty($this->parameters['PHP_AUTH_DIGEST']) && (stripos($authorizationHeader, 'digest ') === 0)) {
                     // In some circumstances PHP_AUTH_DIGEST needs to be set
                     $headers['PHP_AUTH_DIGEST'] = $authorizationHeader;
                     $this->parameters['PHP_AUTH_DIGEST'] = $authorizationHeader;
-                } elseif (0 === stripos($authorizationHeader, 'bearer ')) {
+                } elseif (stripos($authorizationHeader, 'bearer ') === 0) {
                     /*
                      * XXX: Since there is no PHP_AUTH_BEARER in PHP predefined variables,
                      *      I'll just set $headers['AUTHORIZATION'] here.

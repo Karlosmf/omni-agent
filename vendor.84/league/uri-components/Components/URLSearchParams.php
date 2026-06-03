@@ -58,7 +58,7 @@ use function str_starts_with;
  *
  * @implements IteratorAggregate<array{0:string, 1:string}>
  */
-final class URLSearchParams implements Countable, IteratorAggregate, UriComponentInterface, Transformable
+final class URLSearchParams implements Countable, IteratorAggregate, Transformable, UriComponentInterface
 {
     private QueryInterface $pairs;
 
@@ -77,7 +77,7 @@ final class URLSearchParams implements Countable, IteratorAggregate, UriComponen
             $init instanceof BackedEnum => self::parsePairs($init),
             $init instanceof UriComponentInterface => self::parsePairs($init->value()),
             is_iterable($init) => self::formatIterable($init),
-            $init instanceof Stringable, !is_object($init) => self::parsePairs(self::formatQuery($init)),
+            $init instanceof Stringable, ! is_object($init) => self::parsePairs(self::formatQuery($init)),
             default => self::yieldPairs($init),
         });
 
@@ -97,7 +97,7 @@ final class URLSearchParams implements Countable, IteratorAggregate, UriComponen
      */
     private static function formatIterable(iterable $iterable): iterable
     {
-        if (!is_array($iterable)) {
+        if (! is_array($iterable)) {
             $iterable = iterator_to_array($iterable);
         }
 
@@ -113,8 +113,7 @@ final class URLSearchParams implements Countable, IteratorAggregate, UriComponen
      * If an iterable is given, foreach will loop over the iterable structure
      * If an object is give, foreach will loop over the object public properties if they are defined
      *
-     * @param object|iterable<array-key, mixed> $associative
-     *
+     * @param  object|iterable<array-key, mixed>  $associative
      * @return Iterator<int, array{0:string, 1:string}>
      */
     private static function yieldPairs(object|array $associative): Iterator
@@ -130,10 +129,10 @@ final class URLSearchParams implements Countable, IteratorAggregate, UriComponen
     private static function filterPairs(iterable $pairs): iterable
     {
         $filter = static fn ($pair): ?array => match (true) {
-            !is_array($pair),
+            ! is_array($pair),
             [0, 1] !== array_keys($pair) => throw new SyntaxError('A pair must be a sequential array starting at `0` and containing two elements.'),
-            null !== $pair[1] => [self::usvString($pair[0]), self::usvString($pair[1])],
-            '' !== $pair[0] => [self::usvString($pair[0]), ''],
+            $pair[1] !== null => [self::usvString($pair[0]), self::usvString($pair[1])],
+            $pair[0] !== '' => [self::usvString($pair[0]), ''],
             default => null,
         };
 
@@ -195,7 +194,7 @@ final class URLSearchParams implements Countable, IteratorAggregate, UriComponen
      * Returns a new instance from a literal sequence of name-value string pairs,
      * or any object with an iterator that produces a sequence of string pairs.
      *
-     * @param iterable<int, array{0:string, 1:string|null}> $pairs
+     * @param  iterable<int, array{0:string, 1:string|null}>  $pairs
      */
     public static function fromPairs(iterable $pairs): self
     {
@@ -207,7 +206,7 @@ final class URLSearchParams implements Countable, IteratorAggregate, UriComponen
      *
      * A record can be, an iterable or any object with scalar or null public properties. Nesting is not supported.
      *
-     * @param object|iterable<array-key, Stringable|string|float|int|bool|null> $associative
+     * @param  object|iterable<array-key, Stringable|string|float|int|bool|null>  $associative
      */
     public static function fromAssociative(object|array $associative): self
     {
@@ -245,7 +244,7 @@ final class URLSearchParams implements Countable, IteratorAggregate, UriComponen
         foreach ($yieldParameters($data) as $name => $value) {
             if (is_object($data)) {
                 $id = spl_object_hash($data);
-                if (!array_key_exists($id, $recursive)) {
+                if (! array_key_exists($id, $recursive)) {
                     $recursive[$id] = 1;
                 }
             }
@@ -259,7 +258,7 @@ final class URLSearchParams implements Countable, IteratorAggregate, UriComponen
                 $recursive[$id] = 1;
             }
 
-            if ('' !== $prefix) {
+            if ($prefix !== '') {
                 $name = $prefix.'['.$name.']';
             }
 
@@ -397,7 +396,7 @@ final class URLSearchParams implements Countable, IteratorAggregate, UriComponen
 
     public function last(?string $name): ?string
     {
-        if (!$this->has($name)) {
+        if (! $this->has($name)) {
             return null;
         }
 
@@ -432,7 +431,7 @@ final class URLSearchParams implements Countable, IteratorAggregate, UriComponen
      */
     public function isEmpty(): bool
     {
-        return 0 === $this->size();
+        return $this->size() === 0;
     }
 
     /**
@@ -481,7 +480,7 @@ final class URLSearchParams implements Countable, IteratorAggregate, UriComponen
     /**
      * Allows iteration through all values contained in this object via a callback function.
      *
-     * @param Closure(string $value, string $key): void $callback
+     * @param  Closure(string $value, string $key): void  $callback
      */
     public function each(Closure $callback): void
     {
@@ -569,13 +568,13 @@ final class URLSearchParams implements Countable, IteratorAggregate, UriComponen
 
     public function when(callable|bool $condition, callable $onSuccess, ?callable $onFail = null): static
     {
-        if (!is_bool($condition)) {
+        if (! is_bool($condition)) {
             $condition = $condition($this);
         }
 
         return match (true) {
             $condition => $onSuccess($this) ?? $this,
-            null !== $onFail => $onFail($this) ?? $this,
+            $onFail !== null => $onFail($this) ?? $this,
             default => $this,
         };
     }
@@ -584,7 +583,7 @@ final class URLSearchParams implements Countable, IteratorAggregate, UriComponen
      * Executes the given callback with the current instance
      * and returns the current instance.
      *
-     * @param callable(self): self $callback
+     * @param  callable(self): self  $callback
      */
     public function transform(callable $callback): static
     {
@@ -599,7 +598,7 @@ final class URLSearchParams implements Countable, IteratorAggregate, UriComponen
      *
      * @codeCoverageIgnore
      */
-    #[Deprecated(message:'use League\Uri\Components\URLSearchParams::countDistinctKeys() instead', since:'league/uri-components:7.8.0')]
+    #[Deprecated(message: 'use League\Uri\Components\URLSearchParams::countDistinctKeys() instead', since: 'league/uri-components:7.8.0')]
     public function uniqueKeyCount(): int
     {
         return $this->countDistinctKeys();
@@ -613,7 +612,7 @@ final class URLSearchParams implements Countable, IteratorAggregate, UriComponen
      *
      * @codeCoverageIgnore
      */
-    #[Deprecated(message:'use League\Uri\Components\URLSearchParams::fromVariable() instead', since:'league/uri-components:7.4.0')]
+    #[Deprecated(message: 'use League\Uri\Components\URLSearchParams::fromVariable() instead', since: 'league/uri-components:7.4.0')]
     public static function fromParameters(object|array $parameters): self
     {
         return new self(Query::fromParameters($parameters));

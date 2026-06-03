@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -32,8 +34,8 @@ class ElasticsearchFormatter extends NormalizerFormatter
     protected string $type;
 
     /**
-     * @param string $index Elasticsearch index name
-     * @param string $type  Elasticsearch record type
+     * @param  string  $index  Elasticsearch index name
+     * @param  string  $type  Elasticsearch record type
      */
     public function __construct(string $index, string $type)
     {
@@ -45,7 +47,7 @@ class ElasticsearchFormatter extends NormalizerFormatter
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function format(LogRecord $record)
     {
@@ -73,7 +75,7 @@ class ElasticsearchFormatter extends NormalizerFormatter
     /**
      * Convert a log message into an Elasticsearch record
      *
-     * @param  mixed[] $record Log message
+     * @param  mixed[]  $record  Log message
      * @return mixed[]
      */
     protected function getDocument(array $record): array

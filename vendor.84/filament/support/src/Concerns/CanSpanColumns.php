@@ -19,7 +19,7 @@ trait CanSpanColumns
     /**
      * @param  array<string, int | string | Closure | null> | int | string | Closure | null  $span
      */
-    public function columnSpan(array | int | string | Closure | null $span): static
+    public function columnSpan(array|int|string|Closure|null $span): static
     {
         if ($span instanceof Closure) {
             $this->columnSpan[] = $span;
@@ -52,7 +52,7 @@ trait CanSpanColumns
     /**
      * @param  array<string, int | string | Closure | null> | int | string | Closure | null  $start
      */
-    public function columnStart(array | int | string | Closure | null $start): static
+    public function columnStart(array|int|string|Closure|null $start): static
     {
         if ($start instanceof Closure) {
             $this->columnStart[] = $start;
@@ -77,7 +77,7 @@ trait CanSpanColumns
     /**
      * @return array<string, int | string | null> | int | string | null
      */
-    public function getColumnSpan(int | string | null $breakpoint = null): array | int | string | null
+    public function getColumnSpan(int|string|null $breakpoint = null): array|int|string|null
     {
         $span = $this->columnSpan ?? [
             'default' => 1,
@@ -129,7 +129,7 @@ trait CanSpanColumns
     /**
      * @return array<string, int | string | null> | int | string | null
      */
-    public function getColumnStart(int | string | null $breakpoint = null): array | int | string | null
+    public function getColumnStart(int|string|null $breakpoint = null): array|int|string|null
     {
         $start = $this->columnStart ?? [
             'default' => null,

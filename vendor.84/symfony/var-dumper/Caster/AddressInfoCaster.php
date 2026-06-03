@@ -57,12 +57,12 @@ final class AddressInfoCaster
     {
         static $resolvedMaps;
 
-        if (!$resolvedMaps) {
+        if (! $resolvedMaps) {
             foreach (self::MAPS as $k => $map) {
                 foreach ($map as $v => $name) {
                     if (\defined($name)) {
                         $resolvedMaps[$k][\constant($name)] = $name;
-                    } elseif (!isset($resolvedMaps[$k][$v])) {
+                    } elseif (! isset($resolvedMaps[$k][$v])) {
                         $resolvedMaps[$k][$v] = $name;
                     }
                 }
@@ -71,7 +71,7 @@ final class AddressInfoCaster
 
         foreach (socket_addrinfo_explain($h) as $k => $v) {
             $a[Caster::PREFIX_VIRTUAL.$k] = match (true) {
-                'ai_flags' === $k => ConstStub::fromBitfield($v, $resolvedMaps[$k]),
+                $k === 'ai_flags' => ConstStub::fromBitfield($v, $resolvedMaps[$k]),
                 isset($resolvedMaps[$k][$v]) => new ConstStub($resolvedMaps[$k][$v], $v),
                 default => $v,
             };

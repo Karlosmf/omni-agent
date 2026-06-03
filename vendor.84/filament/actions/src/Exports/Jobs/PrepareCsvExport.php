@@ -57,7 +57,7 @@ class PrepareCsvExport implements ShouldQueue
         $csv->setDelimiter($this->exporter::getCsvDelimiter());
         $csv->insertOne(array_values($this->columnMap));
 
-        $filePath = $this->export->getFileDirectory() . DIRECTORY_SEPARATOR . 'headers.csv';
+        $filePath = $this->export->getFileDirectory().DIRECTORY_SEPARATOR.'headers.csv';
         $this->export->getFileDisk()->put($filePath, $csv->toString(), Filesystem::VISIBILITY_PRIVATE);
 
         $query = EloquentSerializeFacade::unserialize($this->query);
@@ -79,14 +79,14 @@ class PrepareCsvExport implements ShouldQueue
                 })
                 ->unique(function (array $order) use ($databaseGrammar): string {
                     if (($order['type'] ?? null) === 'Raw') {
-                        return 'raw:' . ($order['sql'] ?? '');
+                        return 'raw:'.($order['sql'] ?? '');
                     }
 
                     if ($databaseGrammar->isExpression($order['column'] ?? null)) {
-                        return 'expression:' . $order['column']->getValue($databaseGrammar);
+                        return 'expression:'.$order['column']->getValue($databaseGrammar);
                     }
 
-                    return 'column:' . ($order['column'] ?? '');
+                    return 'column:'.($order['column'] ?? '');
                 });
 
             /** @var array<string, mixed> $originalBindings */

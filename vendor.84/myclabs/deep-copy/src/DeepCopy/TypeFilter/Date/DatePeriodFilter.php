@@ -13,7 +13,7 @@ class DatePeriodFilter implements TypeFilter
     /**
      * {@inheritdoc}
      *
-     * @param DatePeriod $element
+     * @param  DatePeriod  $element
      *
      * @see http://news.php.net/php.bugs/205076
      */
@@ -23,7 +23,7 @@ class DatePeriodFilter implements TypeFilter
         if (PHP_VERSION_ID >= 80200 && $element->include_end_date) {
             $options |= DatePeriod::INCLUDE_END_DATE;
         }
-        if (!$element->include_start_date) {
+        if (! $element->include_start_date) {
             $options |= DatePeriod::EXCLUDE_START_DATE;
         }
 

@@ -2,16 +2,19 @@
 
 namespace Livewire\Mechanisms;
 
-use Livewire\Exceptions\ComponentNotFoundException;
+use Illuminate\Support\Str;
 use Livewire\Component;
+use Livewire\Exceptions\ComponentNotFoundException;
 
 class ComponentRegistry extends Mechanism
 {
     protected $missingComponentResolvers = [];
+
     protected $nonAliasedClasses = [];
+
     protected $aliases = [];
 
-    function component($name, $class = null)
+    public function component($name, $class = null)
     {
         if (is_null($class)) {
             $this->nonAliasedClasses[] = $name;
@@ -20,7 +23,7 @@ class ComponentRegistry extends Mechanism
         }
     }
 
-    function new($nameOrClass, $id = null)
+    public function new($nameOrClass, $id = null)
     {
         [$class, $name] = $this->getNameAndClass($nameOrClass);
 
@@ -43,7 +46,7 @@ class ComponentRegistry extends Mechanism
         return $component;
     }
 
-    function isDiscoverable($classOrName)
+    public function isDiscoverable($classOrName)
     {
         if (is_object($classOrName)) {
             $classOrName = get_class($classOrName);
@@ -62,21 +65,21 @@ class ComponentRegistry extends Mechanism
         return false;
     }
 
-    function getName($nameOrClassOrComponent)
+    public function getName($nameOrClassOrComponent)
     {
         [$class, $name] = $this->getNameAndClass($nameOrClassOrComponent);
 
         return $name;
     }
 
-    function getClass($nameOrClassOrComponent)
+    public function getClass($nameOrClassOrComponent)
     {
         [$class, $name] = $this->getNameAndClass($nameOrClassOrComponent);
 
         return $class;
     }
 
-    function resolveMissingComponent($resolver)
+    public function resolveMissingComponent($resolver)
     {
         $this->missingComponentResolvers[] = $resolver;
     }
@@ -89,16 +92,16 @@ class ComponentRegistry extends Mechanism
         // If a component class was passed in, use that...
         if (is_subclass_of($nameOrClass, Component::class)) {
             $class = $nameOrClass;
-        // Otherwise, assume it was a simple name...
+            // Otherwise, assume it was a simple name...
         } else {
             $class = $this->nameToClass($nameOrClass);
 
             // If class can't be found, see if there is an index component in a subfolder...
-            if(! class_exists($class)) {
-                $class = $class . '\\Index';
+            if (! class_exists($class)) {
+                $class = $class.'\\Index';
             }
 
-            if(! class_exists($class)) {
+            if (! class_exists($class)) {
                 foreach ($this->missingComponentResolvers as $resolve) {
                     if ($resolved = $resolve($nameOrClass)) {
                         $this->component($nameOrClass, $resolved);
@@ -128,7 +131,9 @@ class ComponentRegistry extends Mechanism
     {
         // Check the aliases...
         if (isset($this->aliases[$name])) {
-            if (is_object($this->aliases[$name])) return $this->aliases[$name]::class;
+            if (is_object($this->aliases[$name])) {
+                return $this->aliases[$name]::class;
+            }
 
             return $this->aliases[$name];
         }
@@ -149,7 +154,9 @@ class ComponentRegistry extends Mechanism
         // Check the aliases...
         $resolvedAliases = array_map(fn ($i) => is_object($i) ? get_class($i) : $i, $this->aliases);
 
-        if ($name = array_search($class, $resolvedAliases)) return $name;
+        if ($name = array_search($class, $resolvedAliases)) {
+            return $name;
+        }
 
         // Check existance in non-aliased classes and hash...
         foreach ($this->nonAliasedClasses as $oneOff) {
@@ -174,7 +181,7 @@ class ComponentRegistry extends Mechanism
             return $class;
         }
 
-        return '\\' . $rootNamespace . '\\' . $class;
+        return '\\'.$rootNamespace.'\\'.$class;
     }
 
     protected function generateNameFromClass($class)
@@ -192,11 +199,11 @@ class ComponentRegistry extends Mechanism
         );
 
         $namespace = collect(explode('.', $namespace))
-            ->map(fn ($i) => \Illuminate\Support\Str::kebab($i))
+            ->map(fn ($i) => Str::kebab($i))
             ->implode('.');
 
         $fullName = str(collect(explode('.', $class))
-            ->map(fn ($i) => \Illuminate\Support\Str::kebab($i))
+            ->map(fn ($i) => Str::kebab($i))
             ->implode('.'));
 
         if ($fullName->startsWith('.')) {

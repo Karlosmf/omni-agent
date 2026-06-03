@@ -14,10 +14,11 @@ final class ShardedPrefixPublicUrlGenerator implements PublicUrlGenerator
 {
     /** @var PathPrefixer[] */
     private array $prefixes;
+
     private int $count;
 
     /**
-     * @param string[] $prefixes
+     * @param  string[]  $prefixes
      */
     public function __construct(array $prefixes)
     {

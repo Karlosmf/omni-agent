@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,11 +9,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\Configuration;
+
+use SebastianBergmann\CodeCoverage\Filter;
 
 use function array_keys;
 use function assert;
-use SebastianBergmann\CodeCoverage\Filter;
 
 /**
  * CLI options and XML configuration are static within a single PHPUnit process.
@@ -24,8 +28,10 @@ use SebastianBergmann\CodeCoverage\Filter;
 final class CodeCoverageFilterRegistry
 {
     private static ?self $instance = null;
-    private ?Filter $filter        = null;
-    private bool $configured       = false;
+
+    private ?Filter $filter = null;
+
+    private bool $configured = false;
 
     public static function instance(): self
     {
@@ -51,11 +57,11 @@ final class CodeCoverageFilterRegistry
      */
     public function init(Configuration $configuration, bool $force = false): void
     {
-        if (!$configuration->hasCoverageReport() && !$force) {
+        if (! $configuration->hasCoverageReport() && ! $force) {
             return;
         }
 
-        if ($this->configured && !$force) {
+        if ($this->configured && ! $force) {
             return;
         }
 

@@ -6,9 +6,9 @@ use Closure;
 
 trait CanDisableGrammarly
 {
-    protected bool | Closure $isGrammarlyDisabled = false;
+    protected bool|Closure $isGrammarlyDisabled = false;
 
-    public function disableGrammarly(bool | Closure $condition = true): static
+    public function disableGrammarly(bool|Closure $condition = true): static
     {
         $this->isGrammarlyDisabled = $condition;
 

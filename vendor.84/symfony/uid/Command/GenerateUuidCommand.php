@@ -28,7 +28,7 @@ use Symfony\Component\Uid\Uuid;
 class GenerateUuidCommand extends Command
 {
     public function __construct(
-        private UuidFactory $factory = new UuidFactory(),
+        private UuidFactory $factory = new UuidFactory,
     ) {
         parent::__construct();
     }
@@ -78,8 +78,7 @@ class GenerateUuidCommand extends Command
 
                     <info>php %command.full_name% --format=base58</info>
                 EOF
-            )
-        ;
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -92,27 +91,27 @@ class GenerateUuidCommand extends Command
         $namespace = $input->getOption('namespace');
         $random = $input->getOption('random-based');
 
-        if (false !== ($time ?? $name ?? $random) && 1 < ((null !== $time) + (null !== $name) + $random)) {
+        if (false !== ($time ?? $name ?? $random) && 1 < (($time !== null) + ($name !== null) + $random)) {
             $io->error('Only one of "--time-based", "--name-based" or "--random-based" can be provided at a time.');
 
             return 1;
         }
 
-        if (null === $time && null !== $node) {
+        if ($time === null && $node !== null) {
             $io->error('Option "--node" can only be used with "--time-based".');
 
             return 1;
         }
 
-        if (null === $name && null !== $namespace) {
+        if ($name === null && $namespace !== null) {
             $io->error('Option "--namespace" can only be used with "--name-based".');
 
             return 1;
         }
 
         switch (true) {
-            case null !== $time:
-                if (null !== $node) {
+            case $time !== null:
+                if ($node !== null) {
                     try {
                         $node = Uuid::fromString($node);
                     } catch (\InvalidArgumentException $e) {
@@ -133,8 +132,8 @@ class GenerateUuidCommand extends Command
                 $create = fn (): Uuid => $this->factory->timeBased($node)->create(new \DateTimeImmutable($time));
                 break;
 
-            case null !== $name:
-                if ($namespace && !\in_array($namespace, ['dns', 'url', 'oid', 'x500'], true)) {
+            case $name !== null:
+                if ($namespace && ! \in_array($namespace, ['dns', 'url', 'oid', 'x500'], true)) {
                     try {
                         $namespace = Uuid::fromString($namespace);
                     } catch (\InvalidArgumentException $e) {
@@ -176,7 +175,7 @@ class GenerateUuidCommand extends Command
 
         $count = (int) $input->getOption('count');
         try {
-            for ($i = 0; $i < $count; ++$i) {
+            for ($i = 0; $i < $count; $i++) {
                 $output->writeln($create()->$format());
             }
         } catch (\Exception $e) {

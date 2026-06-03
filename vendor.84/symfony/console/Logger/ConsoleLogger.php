@@ -27,6 +27,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ConsoleLogger extends AbstractLogger
 {
     public const INFO = 'info';
+
     public const ERROR = 'error';
 
     private array $verbosityLevelMap = [
@@ -39,6 +40,7 @@ class ConsoleLogger extends AbstractLogger
         LogLevel::INFO => OutputInterface::VERBOSITY_VERY_VERBOSE,
         LogLevel::DEBUG => OutputInterface::VERBOSITY_DEBUG,
     ];
+
     private array $formatLevelMap = [
         LogLevel::EMERGENCY => self::ERROR,
         LogLevel::ALERT => self::ERROR,
@@ -49,6 +51,7 @@ class ConsoleLogger extends AbstractLogger
         LogLevel::INFO => self::INFO,
         LogLevel::DEBUG => self::INFO,
     ];
+
     private bool $errored = false;
 
     public function __construct(
@@ -62,14 +65,14 @@ class ConsoleLogger extends AbstractLogger
 
     public function log($level, $message, array $context = []): void
     {
-        if (!isset($this->verbosityLevelMap[$level])) {
+        if (! isset($this->verbosityLevelMap[$level])) {
             throw new InvalidArgumentException(\sprintf('The log level "%s" does not exist.', $level));
         }
 
         $output = $this->output;
 
         // Write to the error output if necessary and available
-        if (self::ERROR === $this->formatLevelMap[$level]) {
+        if ($this->formatLevelMap[$level] === self::ERROR) {
             if ($this->output instanceof ConsoleOutputInterface) {
                 $output = $output->getErrorOutput();
             }
@@ -98,13 +101,13 @@ class ConsoleLogger extends AbstractLogger
      */
     private function interpolate(string $message, array $context): string
     {
-        if (!str_contains($message, '{')) {
+        if (! str_contains($message, '{')) {
             return $message;
         }
 
         $replacements = [];
         foreach ($context as $key => $val) {
-            if (null === $val || \is_scalar($val) || $val instanceof \Stringable) {
+            if ($val === null || \is_scalar($val) || $val instanceof \Stringable) {
                 $replacements["{{$key}}"] = $val;
             } elseif ($val instanceof \DateTimeInterface) {
                 $replacements["{{$key}}"] = $val->format(\DateTimeInterface::RFC3339);

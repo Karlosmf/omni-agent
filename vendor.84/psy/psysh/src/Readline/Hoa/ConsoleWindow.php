@@ -62,7 +62,6 @@ class ConsoleWindow implements EventSource
             $this
         );
 
-        return;
     }
 
     /**
@@ -70,8 +69,8 @@ class ConsoleWindow implements EventSource
      */
     public static function getInstance(): self
     {
-        if (null === static::$_instance) {
-            static::$_instance = new self();
+        if (static::$_instance === null) {
+            static::$_instance = new self;
         }
 
         return static::$_instance;
@@ -88,7 +87,6 @@ class ConsoleWindow implements EventSource
 
         Console::getOutput()->writeAll("\033[8;".$y.';'.$x.'t');
 
-        return;
     }
 
     /**
@@ -122,8 +120,8 @@ class ConsoleWindow implements EventSource
         $command = $term.'tput cols && '.$term.'tput lines';
         $tput = ConsoleProcessus::execute($command, false);
 
-        if (!empty($tput)) {
-            list($x, $y) = \explode("\n", $tput);
+        if (! empty($tput)) {
+            [$x, $y] = \explode("\n", $tput);
 
             return [
                 'x' => (int) $x,
@@ -156,7 +154,7 @@ class ConsoleWindow implements EventSource
                     break 2;
 
                 default:
-                    if (false === \ctype_digit($char)) {
+                    if (\ctype_digit($char) === false) {
                         break 2;
                     }
 
@@ -164,7 +162,7 @@ class ConsoleWindow implements EventSource
             }
         }
 
-        if (null === $x || null === $y) {
+        if ($x === null || $y === null) {
             return [
                 'x' => 0,
                 'y' => 0,
@@ -189,7 +187,6 @@ class ConsoleWindow implements EventSource
         // DECSLPP.
         Console::getOutput()->writeAll("\033[3;".$x.';'.$y.'t');
 
-        return;
     }
 
     /**
@@ -249,9 +246,9 @@ class ConsoleWindow implements EventSource
             return;
         }
 
-        if (1 > $repeat) {
+        if ($repeat < 1) {
             return;
-        } elseif (1 === $repeat) {
+        } elseif ($repeat === 1) {
             $handle = \explode(' ', $directions);
         } else {
             $handle = \explode(' ', $directions, 1);
@@ -280,7 +277,7 @@ class ConsoleWindow implements EventSource
 
         $output = Console::getOutput();
 
-        if (0 < $count['up']) {
+        if ($count['up'] > 0) {
             $output->writeAll(
                 \str_replace(
                     '%p1%d',
@@ -290,7 +287,7 @@ class ConsoleWindow implements EventSource
             );
         }
 
-        if (0 < $count['down']) {
+        if ($count['down'] > 0) {
             $output->writeAll(
                 \str_replace(
                     '%p1%d',
@@ -300,7 +297,6 @@ class ConsoleWindow implements EventSource
             );
         }
 
-        return;
     }
 
     /**
@@ -315,7 +311,6 @@ class ConsoleWindow implements EventSource
         // DECSLPP.
         Console::getOutput()->writeAll("\033[2t");
 
-        return;
     }
 
     /**
@@ -329,7 +324,6 @@ class ConsoleWindow implements EventSource
 
         Console::getOutput()->writeAll("\033[1t");
 
-        return;
     }
 
     /**
@@ -343,7 +337,6 @@ class ConsoleWindow implements EventSource
 
         Console::getOutput()->writeAll("\033[5t");
 
-        return;
     }
 
     /**
@@ -357,7 +350,6 @@ class ConsoleWindow implements EventSource
 
         Console::getOutput()->writeAll("\033[6t");
 
-        return;
     }
 
     /**
@@ -372,7 +364,6 @@ class ConsoleWindow implements EventSource
         // DECSLPP.
         Console::getOutput()->writeAll("\033]0;".$title."\033\\");
 
-        return;
     }
 
     /**
@@ -393,7 +384,7 @@ class ConsoleWindow implements EventSource
         $except = [];
         $out = null;
 
-        if (0 === \stream_select($read, $write, $except, 0, 50000)) {
+        if (\stream_select($read, $write, $except, 0, 50000) === 0) {
             return $out;
         }
 
@@ -403,10 +394,10 @@ class ConsoleWindow implements EventSource
         while (true) {
             $char = $input->readCharacter();
 
-            if ("\033" === $char) {
+            if ($char === "\033") {
                 $chaar = $input->readCharacter();
 
-                if ('\\' === $chaar) {
+                if ($chaar === '\\') {
                     break;
                 }
 
@@ -437,7 +428,7 @@ class ConsoleWindow implements EventSource
         $except = [];
         $out = null;
 
-        if (0 === \stream_select($read, $write, $except, 0, 50000)) {
+        if (\stream_select($read, $write, $except, 0, 50000) === 0) {
             return $out;
         }
 
@@ -447,10 +438,10 @@ class ConsoleWindow implements EventSource
         while (true) {
             $char = $input->readCharacter();
 
-            if ("\033" === $char) {
+            if ($char === "\033") {
                 $chaar = $input->readCharacter();
 
-                if ('\\' === $chaar) {
+                if ($chaar === '\\') {
                     break;
                 }
 
@@ -475,7 +466,6 @@ class ConsoleWindow implements EventSource
         // DECSLPP.
         Console::getOutput()->writeAll("\033[7t");
 
-        return;
     }
 
     /**
@@ -494,7 +484,6 @@ class ConsoleWindow implements EventSource
         $output->writeAll($out);
         $output->considerMultiplexer($considerMultiplexer);
 
-        return;
     }
 }
 
@@ -513,7 +502,7 @@ if (\function_exists('pcntl_signal')) {
         function () {
             static $_window = null;
 
-            if (null === $_window) {
+            if ($_window === null) {
                 $_window = ConsoleWindow::getInstance();
             }
 

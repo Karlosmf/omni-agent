@@ -16,6 +16,4 @@ namespace Symfony\Component\HttpFoundation\File\Exception;
  *
  * @author Florent Mata <florentmata@gmail.com>
  */
-class NoFileException extends FileException
-{
-}
+class NoFileException extends FileException {}

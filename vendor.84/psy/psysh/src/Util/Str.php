@@ -55,7 +55,7 @@ EOS;
      * The other formats are supported by PHP's stripcslashes,
      * except for the \s sequence (ASCII space).
      *
-     * @param string $input The string to decode
+     * @param  string  $input  The string to decode
      */
     public static function unvis(string $input): string
     {
@@ -68,16 +68,16 @@ EOS;
     /**
      * Callback for Str::unvis.
      *
-     * @param array $match The matches passed by preg_replace_callback
+     * @param  array  $match  The matches passed by preg_replace_callback
      */
     protected static function unvisReplace(array $match): string
     {
         // \040, \s
-        if (!empty($match[1])) {
+        if (! empty($match[1])) {
             return "\x20";
         }
         // \240
-        if (!empty($match[2])) {
+        if (! empty($match[2])) {
             return "\xa0";
         }
         // \M-(.)
@@ -115,8 +115,7 @@ EOS;
      * Validates that the name follows PHP identifier rules, with optional
      * namespace separators.
      *
-     * @param string $name The name to check
-     *
+     * @param  string  $name  The name to check
      * @return bool True if the name is syntactically valid
      */
     public static function isValidClassName(string $name): bool

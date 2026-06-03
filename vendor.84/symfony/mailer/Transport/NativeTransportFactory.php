@@ -25,7 +25,7 @@ final class NativeTransportFactory extends AbstractTransportFactory
 {
     public function create(Dsn $dsn): TransportInterface
     {
-        if (!\in_array($dsn->getScheme(), $this->getSupportedSchemes(), true)) {
+        if (! \in_array($dsn->getScheme(), $this->getSupportedSchemes(), true)) {
             throw new UnsupportedSchemeException($dsn, 'native', $this->getSupportedSchemes());
         }
 
@@ -42,14 +42,14 @@ final class NativeTransportFactory extends AbstractTransportFactory
         $host = ini_get('SMTP');
         $port = (int) ini_get('smtp_port');
 
-        if (!$host || !$port) {
+        if (! $host || ! $port) {
             throw new TransportException('smtp or smtp_port is not configured in php.ini.');
         }
 
-        $socketStream = new SocketStream();
+        $socketStream = new SocketStream;
         $socketStream->setHost($host);
         $socketStream->setPort($port);
-        if (465 !== $port) {
+        if ($port !== 465) {
             $socketStream->disableTls();
         }
 

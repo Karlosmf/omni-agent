@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,13 +9,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\XmlConfiguration;
 
-use function assert;
-use function sprintf;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
+
+use function assert;
+use function sprintf;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -29,7 +33,7 @@ abstract readonly class LogToReportMigration implements Migration
     {
         $coverage = $document->getElementsByTagName('coverage')->item(0);
 
-        if (!$coverage instanceof DOMElement) {
+        if (! $coverage instanceof DOMElement) {
             throw new MigrationException('Unexpected state - No coverage element');
         }
 
@@ -52,12 +56,12 @@ abstract readonly class LogToReportMigration implements Migration
     }
 
     /**
-     * @param list<non-empty-string> $attributes
+     * @param  list<non-empty-string>  $attributes
      */
     protected function migrateAttributes(DOMElement $src, DOMElement $dest, array $attributes): void
     {
         foreach ($attributes as $attr) {
-            if (!$src->hasAttribute($attr)) {
+            if (! $src->hasAttribute($attr)) {
                 continue;
             }
 
@@ -85,7 +89,7 @@ abstract readonly class LogToReportMigration implements Migration
 
         $logNode = $logNode->item(0);
 
-        if (!$logNode instanceof DOMElement) {
+        if (! $logNode instanceof DOMElement) {
             return null;
         }
 

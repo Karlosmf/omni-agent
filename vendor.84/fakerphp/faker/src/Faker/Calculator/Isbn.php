@@ -17,7 +17,7 @@ class Isbn
      *
      * @see http://en.wikipedia.org/wiki/International_Standard_Book_Number#ISBN-10_check_digits
      *
-     * @param string $input ISBN without check-digit
+     * @param  string  $input  ISBN without check-digit
      *
      * @throws \LengthException When wrong input length passed
      */
@@ -47,11 +47,11 @@ class Isbn
     /**
      * Checks whether the provided number is a valid ISBN-10 number
      *
-     * @param string $isbn ISBN to check
+     * @param  string  $isbn  ISBN to check
      */
     public static function isValid(string $isbn): bool
     {
-        if (!preg_match(self::PATTERN, $isbn)) {
+        if (! preg_match(self::PATTERN, $isbn)) {
             return false;
         }
 

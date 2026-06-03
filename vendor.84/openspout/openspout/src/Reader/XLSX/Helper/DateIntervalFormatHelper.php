@@ -38,13 +38,13 @@ final class DateIntervalFormatHelper
         $seconds = (int) round($time); // must cast to int for type strict compare below
 
         // Bubble up rounding gain if we ended up with 60 seconds - disadvantage of using fraction of days for small durations:
-        if (60 === $seconds) {
+        if ($seconds === 60) {
             $seconds = 0;
-            ++$minutes;
+            $minutes++;
         }
-        if (60 === $minutes) {
+        if ($minutes === 60) {
             $minutes = 0;
-            ++$hours;
+            $hours++;
         }
 
         $interval = new DateInterval("P0DT{$hours}H{$minutes}M{$seconds}S");
@@ -58,7 +58,7 @@ final class DateIntervalFormatHelper
     public static function isDurationFormat(string $excelFormat): bool
     {
         // Only consider formats with leading brackets as valid duration formats (e.g. "[hh]:mm", "[mm]:ss", etc.):
-        return 1 === preg_match('/^(\[hh?](:mm(:ss)?)?|\[mm?](:ss)?|\[ss?])$/', $excelFormat);
+        return preg_match('/^(\[hh?](:mm(:ss)?)?|\[mm?](:ss)?|\[ss?])$/', $excelFormat) === 1;
     }
 
     public static function toPHPDateIntervalFormat(string $excelDateFormat, string &$startUnit): string
@@ -67,7 +67,7 @@ final class DateIntervalFormatHelper
         $phpFormatParts = [];
         $formatParts = explode(':', str_replace(['[', ']'], '', $excelDateFormat));
         foreach ($formatParts as $formatPart) {
-            if (false === $startUnitStarted) {
+            if ($startUnitStarted === false) {
                 $startUnit = $formatPart;
                 $startUnitStarted = true;
             }
@@ -86,10 +86,10 @@ final class DateIntervalFormatHelper
         // We have to move the hours to minutes or hours+minutes to seconds if the format in Excel did the same:
         $startUnit = $startUnit[0]; // only take the first char
         $dateIntervalClone = clone $dateInterval;
-        if ('m' === $startUnit) {
+        if ($startUnit === 'm') {
             $dateIntervalClone->i = $dateIntervalClone->i + $dateIntervalClone->h * 60;
             $dateIntervalClone->h = 0;
-        } elseif ('s' === $startUnit) {
+        } elseif ($startUnit === 's') {
             $dateIntervalClone->s = $dateIntervalClone->s + $dateIntervalClone->i * 60 + $dateIntervalClone->h * 3600;
             $dateIntervalClone->i = 0;
             $dateIntervalClone->h = 0;

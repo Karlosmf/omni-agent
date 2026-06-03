@@ -29,22 +29,20 @@ use function array_reduce;
 final class Criteria implements PredicateCombinator
 {
     /**
-     * @param Condition $predicate
+     * @param  Condition  $predicate
      */
-    private function __construct(private readonly Predicate|Closure $predicate)
-    {
-    }
+    private function __construct(private readonly Predicate|Closure $predicate) {}
 
     /**
      * Creates a new instance with predicates join using the logical AND operator.
      *
-     * @param ConditionExtended ...$predicates
+     * @param  ConditionExtended  ...$predicates
      */
     public static function all(Predicate|Closure|callable ...$predicates): self
     {
         return new self(function (mixed $value, int|string $key) use ($predicates): bool {
             foreach ($predicates as $predicate) {
-                if (!$predicate($value, $key)) {
+                if (! $predicate($value, $key)) {
                     return false;
                 }
             }
@@ -56,7 +54,7 @@ final class Criteria implements PredicateCombinator
     /**
      * Creates a new instance with predicates join using the logical NOT operator.
      *
-     * @param ConditionExtended ...$predicates
+     * @param  ConditionExtended  ...$predicates
      */
     public static function none(Predicate|Closure|callable ...$predicates): self
     {
@@ -74,7 +72,7 @@ final class Criteria implements PredicateCombinator
     /**
      * Creates a new instance with predicates join using the logical OR operator.
      *
-     * @param ConditionExtended ...$predicates
+     * @param  ConditionExtended  ...$predicates
      */
     public static function any(Predicate|Closure|callable ...$predicates): self
     {
@@ -92,7 +90,7 @@ final class Criteria implements PredicateCombinator
     /**
      * Creates a new instance with predicates join using the logical XOR operator.
      *
-     * @param ConditionExtended ...$predicates
+     * @param  ConditionExtended  ...$predicates
      */
     public static function xany(Predicate|Closure|callable ...$predicates): self
     {
@@ -114,7 +112,7 @@ final class Criteria implements PredicateCombinator
     }
 
     /**
-     * @param ConditionExtended ...$predicates
+     * @param  ConditionExtended  ...$predicates
      */
     public function and(Predicate|Closure|callable ...$predicates): self
     {
@@ -127,7 +125,7 @@ final class Criteria implements PredicateCombinator
     }
 
     /**
-     * @param ConditionExtended ...$predicates
+     * @param  ConditionExtended  ...$predicates
      */
     public function not(Predicate|Closure|callable ...$predicates): self
     {
@@ -135,7 +133,7 @@ final class Criteria implements PredicateCombinator
     }
 
     /**
-     * @param ConditionExtended ...$predicates
+     * @param  ConditionExtended  ...$predicates
      */
     public function or(Predicate|Closure|callable ...$predicates): self
     {
@@ -143,7 +141,7 @@ final class Criteria implements PredicateCombinator
     }
 
     /**
-     * @param ConditionExtended ...$predicates
+     * @param  ConditionExtended  ...$predicates
      */
     public function orNot(Predicate|Closure|callable ...$predicates): self
     {
@@ -151,7 +149,7 @@ final class Criteria implements PredicateCombinator
     }
 
     /**
-     * @param ConditionExtended ...$predicates
+     * @param  ConditionExtended  ...$predicates
      */
     public function xor(Predicate|Closure|callable ...$predicates): self
     {
@@ -159,7 +157,7 @@ final class Criteria implements PredicateCombinator
     }
 
     /**
-     * @param ConditionExtended ...$predicates
+     * @param  ConditionExtended  ...$predicates
      */
     public function xorNot(Predicate|Closure|callable ...$predicates): self
     {

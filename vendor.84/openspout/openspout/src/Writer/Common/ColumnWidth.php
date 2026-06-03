@@ -10,8 +10,8 @@ namespace OpenSpout\Writer\Common;
 final readonly class ColumnWidth
 {
     /**
-     * @param positive-int $start
-     * @param positive-int $end
+     * @param  positive-int  $start
+     * @param  positive-int  $end
      */
     public function __construct(
         public int $start,

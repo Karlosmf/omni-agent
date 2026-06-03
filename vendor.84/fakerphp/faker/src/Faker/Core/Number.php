@@ -29,7 +29,7 @@ final class Number implements Extension\NumberExtension
         $result = $this->numberBetween(0, 8);
 
         if ($result >= $except) {
-            ++$result;
+            $result++;
         }
 
         return $result;
@@ -42,11 +42,11 @@ final class Number implements Extension\NumberExtension
 
     public function randomFloat(?int $nbMaxDecimals = null, float $min = 0, ?float $max = null): float
     {
-        if (null === $nbMaxDecimals) {
+        if ($nbMaxDecimals === null) {
             $nbMaxDecimals = $this->randomDigit();
         }
 
-        if (null === $max) {
+        if ($max === null) {
             $max = $this->randomNumber();
 
             if ($min > $max) {
@@ -65,7 +65,7 @@ final class Number implements Extension\NumberExtension
 
     public function randomNumber(?int $nbDigits = null, bool $strict = false): int
     {
-        if (null === $nbDigits) {
+        if ($nbDigits === null) {
             $nbDigits = $this->randomDigitNotZero();
         }
         $max = 10 ** $nbDigits - 1;

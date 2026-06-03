@@ -24,11 +24,10 @@ final class Interaction
     public function __construct(
         private readonly object $owner,
         private readonly InteractiveAttributeInterface $attribute,
-    ) {
-    }
+    ) {}
 
     /**
-     * @param \Closure(\ReflectionFunction $function, InputInterface $input, OutputInterface $output): array $parameterResolver
+     * @param  \Closure(\ReflectionFunction $function, InputInterface $input, OutputInterface $output): array  $parameterResolver
      */
     public function interact(InputInterface $input, OutputInterface $output, \Closure $parameterResolver): void
     {

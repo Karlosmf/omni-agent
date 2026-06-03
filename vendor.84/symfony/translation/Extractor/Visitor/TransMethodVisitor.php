@@ -31,24 +31,24 @@ final class TransMethodVisitor extends AbstractVisitor implements NodeVisitor
 
     public function leaveNode(Node $node): ?Node
     {
-        if (!$node instanceof Node\Expr\MethodCall && !$node instanceof Node\Expr\FuncCall) {
+        if (! $node instanceof Node\Expr\MethodCall && ! $node instanceof Node\Expr\FuncCall) {
             return null;
         }
 
-        if (!\is_string($node->name) && !$node->name instanceof Node\Identifier && !$node->name instanceof Node\Name) {
+        if (! \is_string($node->name) && ! $node->name instanceof Node\Identifier && ! $node->name instanceof Node\Name) {
             return null;
         }
 
         $name = $node->name instanceof Node\Name ? $node->name->getLast() : (string) $node->name;
 
-        if ('trans' === $name || 't' === $name) {
+        if ($name === 'trans' || $name === 't') {
             $firstNamedArgumentIndex = $this->nodeFirstNamedArgumentIndex($node);
 
-            if (!$messages = $this->getStringArguments($node, 0 < $firstNamedArgumentIndex ? 0 : 'id')) {
+            if (! $messages = $this->getStringArguments($node, $firstNamedArgumentIndex > 0 ? 0 : 'id')) {
                 return null;
             }
 
-            $domain = $this->getStringArguments($node, 2 < $firstNamedArgumentIndex ? 2 : 'domain')[0] ?? null;
+            $domain = $this->getStringArguments($node, $firstNamedArgumentIndex > 2 ? 2 : 'domain')[0] ?? null;
 
             foreach ($messages as $message) {
                 $this->addMessageToCatalogue($message, $domain, $node->getStartLine());

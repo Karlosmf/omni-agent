@@ -18,8 +18,7 @@ final class CellHelper
      * Z is the 26th and AA is the 27th.
      * The mapping is zero based, so that 0 maps to A, B maps to 1, Z to 25 and AA to 26.
      *
-     * @param int $columnIndexZeroBased The Excel column index (0, 42, ...)
-     *
+     * @param  int  $columnIndexZeroBased  The Excel column index (0, 42, ...)
      * @return string The associated cell index ('A', 'BC', ...)
      */
     public static function getColumnLettersFromColumnIndex(int $columnIndexZeroBased): string
@@ -27,7 +26,7 @@ final class CellHelper
         $originalColumnIndex = $columnIndexZeroBased;
 
         // Using isset here because it is way faster than array_key_exists...
-        if (!isset(self::$columnIndexToColumnLettersCache[$originalColumnIndex])) {
+        if (! isset(self::$columnIndexToColumnLettersCache[$originalColumnIndex])) {
             $columnLetters = '';
             $capitalAAsciiValue = \ord('A');
 

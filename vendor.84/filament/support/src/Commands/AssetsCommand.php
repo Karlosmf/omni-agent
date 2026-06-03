@@ -38,7 +38,7 @@ class AssetsCommand extends Command
                     continue;
                 }
 
-                $this->copyAsset($file->getPathname(), $assetPublicPath . DIRECTORY_SEPARATOR . $file->getFilename());
+                $this->copyAsset($file->getPathname(), $assetPublicPath.DIRECTORY_SEPARATOR.$file->getFilename());
             }
         }
 

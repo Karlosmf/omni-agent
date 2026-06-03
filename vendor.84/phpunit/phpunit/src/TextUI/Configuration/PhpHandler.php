@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,9 +9,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\Configuration;
 
 use const PATH_SEPARATOR;
+
 use function constant;
 use function define;
 use function defined;
@@ -43,7 +47,7 @@ final readonly class PhpHandler
 
     private function handleIncludePaths(DirectoryCollection $includePaths): void
     {
-        if (!$includePaths->isEmpty()) {
+        if (! $includePaths->isEmpty()) {
             $includePathsAsStrings = [];
 
             foreach ($includePaths as $includePath) {
@@ -52,8 +56,8 @@ final readonly class PhpHandler
 
             ini_set(
                 'include_path',
-                implode(PATH_SEPARATOR, $includePathsAsStrings) .
-                PATH_SEPARATOR .
+                implode(PATH_SEPARATOR, $includePathsAsStrings).
+                PATH_SEPARATOR.
                 ini_get('include_path'),
             );
         }
@@ -75,7 +79,7 @@ final readonly class PhpHandler
     private function handleConstants(ConstantCollection $constants): void
     {
         foreach ($constants as $constant) {
-            if (!defined($constant->name())) {
+            if (! defined($constant->name())) {
                 define($constant->name(), $constant->value());
             }
         }
@@ -105,7 +109,7 @@ final readonly class PhpHandler
     private function handleEnvVariables(VariableCollection $variables): void
     {
         foreach ($variables as $variable) {
-            $name  = $variable->name();
+            $name = $variable->name();
             $value = $variable->value();
             $force = $variable->force();
 
@@ -115,7 +119,7 @@ final readonly class PhpHandler
 
             $value = getenv($name);
 
-            if ($force || !isset($_ENV[$name])) {
+            if ($force || ! isset($_ENV[$name])) {
                 $_ENV[$name] = $value;
             }
         }

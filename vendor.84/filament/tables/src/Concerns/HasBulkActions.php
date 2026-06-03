@@ -30,7 +30,7 @@ trait HasBulkActions
 
     public bool $isTrackingDeselectedTableRecords = false;
 
-    protected EloquentCollection | Collection | LazyCollection $cachedSelectedTableRecords;
+    protected EloquentCollection|Collection|LazyCollection $cachedSelectedTableRecords;
 
     /**
      * @deprecated Use the `callMountedAction()` method instead.
@@ -117,7 +117,7 @@ trait HasBulkActions
             $query->get();
 
         return $records->reduce(
-            function (array $carry, Model | array $record, string $key): array {
+            function (array $carry, Model|array $record, string $key): array {
                 if (! $this->getTable()->isRecordSelectable($record)) {
                     return $carry;
                 }
@@ -183,7 +183,7 @@ trait HasBulkActions
                 $this->getFilteredTableQuery()->get();
 
             return $records
-                ->filter(fn (Model | array $record): bool => $this->getTable()->isRecordSelectable($record))
+                ->filter(fn (Model|array $record): bool => $this->getTable()->isRecordSelectable($record))
                 ->count();
         }
 
@@ -198,7 +198,7 @@ trait HasBulkActions
         return $this->getFilteredTableQuery()?->count() ?? $this->cachedTableRecords->count();
     }
 
-    public function getSelectedTableRecords(bool $shouldFetchSelectedRecords = true, ?int $chunkSize = null): EloquentCollection | Collection | LazyCollection
+    public function getSelectedTableRecords(bool $shouldFetchSelectedRecords = true, ?int $chunkSize = null): EloquentCollection|Collection|LazyCollection
     {
         if (isset($this->cachedSelectedTableRecords)) {
             return $this->cachedSelectedTableRecords;

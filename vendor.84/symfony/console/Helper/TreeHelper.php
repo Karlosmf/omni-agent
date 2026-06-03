@@ -97,7 +97,7 @@ final class TreeHelper implements \RecursiveIterator
 
         $this->output->writeln($this->node->getValue());
 
-        $visited = new \SplObjectStorage();
+        $visited = new \SplObjectStorage;
         foreach ($treeIterator as $node) {
             $currentNode = $node instanceof TreeNode ? $node : $treeIterator->getInnerIterator()->current();
             if (isset($visited[$currentNode])) {

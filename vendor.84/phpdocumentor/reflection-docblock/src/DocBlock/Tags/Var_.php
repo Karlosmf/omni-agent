@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace phpDocumentor\Reflection\DocBlock\Tags;
 
+use const PREG_SPLIT_DELIM_CAPTURE;
+
 use Doctrine\Deprecations\Deprecation;
 use phpDocumentor\Reflection\DocBlock\Description;
 use phpDocumentor\Reflection\DocBlock\DescriptionFactory;
@@ -28,8 +30,6 @@ use function implode;
 use function strpos;
 use function substr;
 
-use const PREG_SPLIT_DELIM_CAPTURE;
-
 /**
  * Reflection class for a {@}var tag in a Docblock.
  */
@@ -41,10 +41,10 @@ final class Var_ extends TagWithType implements Factory\StaticMethod
     {
         Assert::string($variableName);
 
-        $this->name         = 'var';
+        $this->name = 'var';
         $this->variableName = $variableName;
-        $this->type         = $type;
-        $this->description  = $description;
+        $this->type = $type;
+        $this->description = $description;
     }
 
     /**
@@ -70,7 +70,7 @@ final class Var_ extends TagWithType implements Factory\StaticMethod
         [$firstPart, $body] = self::extractTypeFromBody($body);
 
         $parts = Utils::pregSplit('/(\s+)/Su', $body, 2, PREG_SPLIT_DELIM_CAPTURE);
-        $type         = null;
+        $type = null;
         $variableName = '';
 
         // if the first item that is encountered is not a variable; it is a type
@@ -95,7 +95,7 @@ final class Var_ extends TagWithType implements Factory\StaticMethod
 
         $description = $descriptionFactory->create(implode('', $parts), $context);
 
-        return new static($variableName, $type, $description);
+        return new self($variableName, $type, $description);
     }
 
     /**
@@ -118,7 +118,7 @@ final class Var_ extends TagWithType implements Factory\StaticMethod
         }
 
         if ($this->variableName !== null && $this->variableName !== '') {
-            $variableName = '$' . $this->variableName;
+            $variableName = '$'.$this->variableName;
         } else {
             $variableName = '';
         }
@@ -126,7 +126,7 @@ final class Var_ extends TagWithType implements Factory\StaticMethod
         $type = (string) $this->type;
 
         return $type
-            . ($variableName !== '' ? ($type !== '' ? ' ' : '') . $variableName : '')
-            . ($description !== '' ? ($type !== '' || $variableName !== '' ? ' ' : '') . $description : '');
+            .($variableName !== '' ? ($type !== '' ? ' ' : '').$variableName : '')
+            .($description !== '' ? ($type !== '' || $variableName !== '' ? ' ' : '').$description : '');
     }
 }

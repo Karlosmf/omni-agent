@@ -41,7 +41,7 @@ class UseStatementPass extends NamespaceAwarePass
     {
         // Check for use statement conflicts BEFORE parent adds it to aliases
         // Skip re-injected use statements (marked with 'psyshReinjected' attribute)
-        if ($node instanceof Use_ && !$node->getAttribute('psyshReinjected')) {
+        if ($node instanceof Use_ && ! $node->getAttribute('psyshReinjected')) {
             $this->validateUseStatement($node);
         }
 
@@ -60,7 +60,7 @@ class UseStatementPass extends NamespaceAwarePass
     {
         parent::beforeTraverse($nodes);
 
-        if (!$this->cleaner) {
+        if (! $this->cleaner) {
             return null;
         }
 
@@ -71,7 +71,7 @@ class UseStatementPass extends NamespaceAwarePass
                 // This matches PHP behavior: explicit namespace declaration clears use statements.
                 if ($node->getAttribute('psyshReinjected')) {
                     $aliases = $this->cleaner->getAliasesForNamespace($node->name);
-                    if (!empty($aliases)) {
+                    if (! empty($aliases)) {
                         $useStatements = $this->createUseStatements($aliases);
                         $node->stmts = \array_merge($useStatements, $node->stmts ?? []);
                     }
@@ -85,7 +85,7 @@ class UseStatementPass extends NamespaceAwarePass
         // No namespace declaration in input, or re-applied by NamespacePass; re-inject use
         // statements for the empty namespace.
         $aliases = $this->cleaner->getAliasesForNamespace(null);
-        if (!empty($aliases)) {
+        if (! empty($aliases)) {
             $useStatements = $this->createUseStatements($aliases);
             $nodes = \array_merge($useStatements, $nodes);
         }
@@ -101,12 +101,12 @@ class UseStatementPass extends NamespaceAwarePass
      */
     public function afterTraverse(array $nodes)
     {
-        if (!$this->cleaner) {
+        if (! $this->cleaner) {
             return null;
         }
 
         // Persist aliases if they're at the global level (not inside any namespace)
-        if (!empty($this->aliases)) {
+        if (! empty($this->aliases)) {
             $this->cleaner->setAliasesForNamespace(null, $this->aliases);
         }
 
@@ -116,9 +116,10 @@ class UseStatementPass extends NamespaceAwarePass
     /**
      * Validate that a use statement doesn't conflict with existing aliases.
      *
-     * @throws FatalErrorException if the alias is already in use
      *
-     * @param Use_ $stmt The use statement node
+     * @param  Use_  $stmt  The use statement node
+     *
+     * @throws FatalErrorException if the alias is already in use
      */
     private function validateUseStatement(Use_ $stmt): void
     {
@@ -134,8 +135,7 @@ class UseStatementPass extends NamespaceAwarePass
     /**
      * Create use statement nodes from stored aliases.
      *
-     * @param array $aliases Map of lowercase alias names to Name nodes
-     *
+     * @param  array  $aliases  Map of lowercase alias names to Name nodes
      * @return Use_[] Array of use statement nodes
      */
     private function createUseStatements(array $aliases): array

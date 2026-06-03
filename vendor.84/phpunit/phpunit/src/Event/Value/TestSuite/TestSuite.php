@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\TestSuite;
 
 use PHPUnit\Event\Code\TestCollection;
@@ -22,15 +25,17 @@ abstract readonly class TestSuite
      * @var non-empty-string
      */
     private string $name;
+
     private int $count;
+
     private TestCollection $tests;
 
     /**
-     * @param non-empty-string $name
+     * @param  non-empty-string  $name
      */
     public function __construct(string $name, int $size, TestCollection $tests)
     {
-        $this->name  = $name;
+        $this->name = $name;
         $this->count = $size;
         $this->tests = $tests;
     }

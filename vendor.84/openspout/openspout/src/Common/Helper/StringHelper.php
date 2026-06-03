@@ -43,9 +43,8 @@ final readonly class StringHelper
      * @see strpos
      * @see mb_strpos
      *
-     * @param string $char   Needle
-     * @param string $string Haystack
-     *
+     * @param  string  $char  Needle
+     * @param  string  $string  Haystack
      * @return int Char/substring's first occurrence position within the string if found (starts at 0) or -1 if not found
      */
     public function getCharFirstOccurrencePosition(string $char, string $string): int
@@ -54,7 +53,7 @@ final readonly class StringHelper
             ? mb_strpos($string, $char)
             : strpos($string, $char); // @codeCoverageIgnore
 
-        return (false !== $position) ? $position : -1;
+        return ($position !== false) ? $position : -1;
     }
 
     /**
@@ -64,9 +63,8 @@ final readonly class StringHelper
      * @see strrpos
      * @see mb_strrpos
      *
-     * @param string $char   Needle
-     * @param string $string Haystack
-     *
+     * @param  string  $char  Needle
+     * @param  string  $string  Haystack
      * @return int Char/substring's last occurrence position within the string if found (starts at 0) or -1 if not found
      */
     public function getCharLastOccurrencePosition(string $char, string $string): int
@@ -75,6 +73,6 @@ final readonly class StringHelper
             ? mb_strrpos($string, $char)
             : strrpos($string, $char); // @codeCoverageIgnore
 
-        return (false !== $position) ? $position : -1;
+        return ($position !== false) ? $position : -1;
     }
 }

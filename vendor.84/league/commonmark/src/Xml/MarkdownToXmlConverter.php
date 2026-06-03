@@ -31,7 +31,7 @@ final class MarkdownToXmlConverter implements ConverterInterface
 
     public function __construct(EnvironmentInterface $environment)
     {
-        $this->parser   = new MarkdownParser($environment);
+        $this->parser = new MarkdownParser($environment);
         $this->renderer = new XmlRenderer($environment);
     }
 

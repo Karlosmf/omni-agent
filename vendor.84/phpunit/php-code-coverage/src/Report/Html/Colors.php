@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
 /**
@@ -15,9 +18,13 @@ namespace SebastianBergmann\CodeCoverage\Report\Html;
 final readonly class Colors
 {
     private string $successLow;
+
     private string $successMedium;
+
     private string $successHigh;
+
     private string $warning;
+
     private string $danger;
 
     public static function default(): self
@@ -32,11 +39,11 @@ final readonly class Colors
 
     private function __construct(string $successLow, string $successMedium, string $successHigh, string $warning, string $danger)
     {
-        $this->successLow    = $successLow;
+        $this->successLow = $successLow;
         $this->successMedium = $successMedium;
-        $this->successHigh   = $successHigh;
-        $this->warning       = $warning;
-        $this->danger        = $danger;
+        $this->successHigh = $successHigh;
+        $this->warning = $warning;
+        $this->danger = $danger;
     }
 
     public function successLow(): string

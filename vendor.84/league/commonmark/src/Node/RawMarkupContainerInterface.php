@@ -16,6 +16,4 @@ namespace League\CommonMark\Node;
 /**
  * Interface for a node which contains raw, unprocessed markup (like HTML)
  */
-interface RawMarkupContainerInterface extends StringContainerInterface
-{
-}
+interface RawMarkupContainerInterface extends StringContainerInterface {}

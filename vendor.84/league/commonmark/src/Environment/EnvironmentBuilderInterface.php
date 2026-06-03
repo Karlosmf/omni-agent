@@ -37,9 +37,8 @@ interface EnvironmentBuilderInterface extends ConfigurationProviderInterface
     /**
      * Registers the given block start parser with the Environment
      *
-     * @param BlockStartParserInterface $parser   Block parser instance
-     * @param int                       $priority Priority (a higher number will be executed earlier)
-     *
+     * @param  BlockStartParserInterface  $parser  Block parser instance
+     * @param  int  $priority  Priority (a higher number will be executed earlier)
      * @return $this
      *
      * @throws AlreadyInitializedException if the Environment has already been initialized
@@ -49,9 +48,8 @@ interface EnvironmentBuilderInterface extends ConfigurationProviderInterface
     /**
      * Registers the given inline parser with the Environment
      *
-     * @param InlineParserInterface $parser   Inline parser instance
-     * @param int                   $priority Priority (a higher number will be executed earlier)
-     *
+     * @param  InlineParserInterface  $parser  Inline parser instance
+     * @param  int  $priority  Priority (a higher number will be executed earlier)
      * @return $this
      *
      * @throws AlreadyInitializedException if the Environment has already been initialized
@@ -61,7 +59,7 @@ interface EnvironmentBuilderInterface extends ConfigurationProviderInterface
     /**
      * Registers the given delimiter processor with the Environment
      *
-     * @param DelimiterProcessorInterface $processor Delimiter processors instance
+     * @param  DelimiterProcessorInterface  $processor  Delimiter processors instance
      *
      * @throws AlreadyInitializedException if the Environment has already been initialized
      */
@@ -70,9 +68,9 @@ interface EnvironmentBuilderInterface extends ConfigurationProviderInterface
     /**
      * Registers the given node renderer with the Environment
      *
-     * @param string                $nodeClass The fully-qualified node element class name the renderer below should handle
-     * @param NodeRendererInterface $renderer  The renderer responsible for rendering the type of element given above
-     * @param int                   $priority  Priority (a higher number will be executed earlier)
+     * @param  string  $nodeClass  The fully-qualified node element class name the renderer below should handle
+     * @param  NodeRendererInterface  $renderer  The renderer responsible for rendering the type of element given above
+     * @param  int  $priority  Priority (a higher number will be executed earlier)
      *
      * @psalm-param class-string<Node> $nodeClass
      *
@@ -85,10 +83,9 @@ interface EnvironmentBuilderInterface extends ConfigurationProviderInterface
     /**
      * Registers the given event listener
      *
-     * @param class-string $eventClass Fully-qualified class name of the event this listener should respond to
-     * @param callable     $listener   Listener to be executed
-     * @param int          $priority   Priority (a higher number will be executed earlier)
-     *
+     * @param  class-string  $eventClass  Fully-qualified class name of the event this listener should respond to
+     * @param  callable  $listener  Listener to be executed
+     * @param  int  $priority  Priority (a higher number will be executed earlier)
      * @return $this
      *
      * @throws AlreadyInitializedException if the Environment has already been initialized

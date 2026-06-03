@@ -76,7 +76,9 @@ class Person extends \Faker\Provider\Person
     ];
 
     protected static $titleMale = ['السيد', 'الأستاذ', 'الدكتور', 'المهندس'];
+
     protected static $titleFemale = ['السيدة', 'الآنسة', 'الدكتورة', 'المهندسة'];
+
     private static $prefix = ['أ.', 'د.', 'أ.د', 'م.'];
 
     /**
@@ -93,7 +95,7 @@ class Person extends \Faker\Provider\Person
     public static function idNumber()
     {
         $partialValue = static::numerify(
-            static::randomElement([1, 2]) . str_repeat('#', 8),
+            static::randomElement([1, 2]).str_repeat('#', 8),
         );
 
         return Luhn::generateLuhnNumber($partialValue);
@@ -104,7 +106,7 @@ class Person extends \Faker\Provider\Person
      */
     public static function nationalIdNumber()
     {
-        $partialValue = static::numerify(1 . str_repeat('#', 8));
+        $partialValue = static::numerify(1 .str_repeat('#', 8));
 
         return Luhn::generateLuhnNumber($partialValue);
     }
@@ -114,7 +116,7 @@ class Person extends \Faker\Provider\Person
      */
     public static function foreignerIdNumber()
     {
-        $partialValue = static::numerify(2 . str_repeat('#', 8));
+        $partialValue = static::numerify(2 .str_repeat('#', 8));
 
         return Luhn::generateLuhnNumber($partialValue);
     }

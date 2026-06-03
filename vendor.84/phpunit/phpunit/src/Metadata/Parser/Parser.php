@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Metadata\Parser;
 
 use PHPUnit\Metadata\MetadataCollection;
@@ -19,19 +22,19 @@ use PHPUnit\Metadata\MetadataCollection;
 interface Parser
 {
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      */
     public function forClass(string $className): MetadataCollection;
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      */
     public function forMethod(string $className, string $methodName): MetadataCollection;
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      */
     public function forClassAndMethod(string $className, string $methodName): MetadataCollection;
 }

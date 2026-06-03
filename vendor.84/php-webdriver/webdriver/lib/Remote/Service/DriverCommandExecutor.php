@@ -26,9 +26,10 @@ class DriverCommandExecutor extends HttpCommandExecutor
     }
 
     /**
+     * @return WebDriverResponse
+     *
      * @throws \Exception
      * @throws WebDriverException
-     * @return WebDriverResponse
      */
     public function execute(WebDriverCommand $command)
     {
@@ -44,7 +45,7 @@ class DriverCommandExecutor extends HttpCommandExecutor
 
             return $value;
         } catch (\Exception $e) {
-            if (!$this->service->isRunning()) {
+            if (! $this->service->isRunning()) {
                 throw new DriverServerDiedException($e);
             }
             throw $e;

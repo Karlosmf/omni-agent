@@ -18,29 +18,42 @@ class Constraint implements ConstraintInterface
 {
     /* operator integer values */
     const OP_EQ = 0;
+
     const OP_LT = 1;
+
     const OP_LE = 2;
+
     const OP_GT = 3;
+
     const OP_GE = 4;
+
     const OP_NE = 5;
 
     /* operator string values */
     const STR_OP_EQ = '==';
+
     const STR_OP_EQ_ALT = '=';
+
     const STR_OP_LT = '<';
+
     const STR_OP_LE = '<=';
+
     const STR_OP_GT = '>';
+
     const STR_OP_GE = '>=';
+
     const STR_OP_NE = '!=';
+
     const STR_OP_NE_ALT = '<>';
 
     /**
      * Operator to integer translation table.
      *
      * @var array
+     *
      * @phpstan-var array<self::STR_OP_*, self::OP_*>
      */
-    private static $transOpStr = array(
+    private static $transOpStr = [
         '=' => self::OP_EQ,
         '==' => self::OP_EQ,
         '<' => self::OP_LT,
@@ -49,25 +62,27 @@ class Constraint implements ConstraintInterface
         '>=' => self::OP_GE,
         '<>' => self::OP_NE,
         '!=' => self::OP_NE,
-    );
+    ];
 
     /**
      * Integer to operator translation table.
      *
      * @var array
+     *
      * @phpstan-var array<self::OP_*, self::STR_OP_*>
      */
-    private static $transOpInt = array(
+    private static $transOpInt = [
         self::OP_EQ => '==',
         self::OP_LT => '<',
         self::OP_LE => '<=',
         self::OP_GT => '>',
         self::OP_GE => '>=',
         self::OP_NE => '!=',
-    );
+    ];
 
     /**
      * @var int
+     *
      * @phpstan-var self::OP_*
      */
     protected $operator;
@@ -87,16 +102,16 @@ class Constraint implements ConstraintInterface
     /**
      * Sets operator and version to compare with.
      *
-     * @param string $operator
-     * @param string $version
-     *
-     * @throws \InvalidArgumentException if invalid operator is given.
+     * @param  string  $operator
+     * @param  string  $version
      *
      * @phpstan-param self::STR_OP_* $operator
+     *
+     * @throws \InvalidArgumentException if invalid operator is given.
      */
     public function __construct($operator, $version)
     {
-        if (!isset(self::$transOpStr[$operator])) {
+        if (! isset(self::$transOpStr[$operator])) {
             throw new \InvalidArgumentException(sprintf(
                 'Invalid operator "%s" given, expected one of: %s',
                 $operator,
@@ -127,8 +142,6 @@ class Constraint implements ConstraintInterface
     }
 
     /**
-     * @param ConstraintInterface $provider
-     *
      * @return bool
      */
     public function matches(ConstraintInterface $provider)
@@ -174,10 +187,12 @@ class Constraint implements ConstraintInterface
     }
 
     /**
-     * @param  string $operator
-     * @return int
+     * @param  string  $operator
      *
      * @phpstan-param  self::STR_OP_* $operator
+     *
+     * @return int
+     *
      * @phpstan-return self::OP_*
      */
     public static function getOperatorConstant($operator)
@@ -186,20 +201,20 @@ class Constraint implements ConstraintInterface
     }
 
     /**
-     * @param string $a
-     * @param string $b
-     * @param string $operator
-     * @param bool   $compareBranches
+     * @param  string  $a
+     * @param  string  $b
+     * @param  string  $operator
+     * @param  bool  $compareBranches
      *
-     * @throws \InvalidArgumentException if invalid operator is given.
+     * @phpstan-param self::STR_OP_* $operator
      *
      * @return bool
      *
-     * @phpstan-param self::STR_OP_* $operator
+     * @throws \InvalidArgumentException if invalid operator is given.
      */
     public function versionCompare($a, $b, $operator, $compareBranches = false)
     {
-        if (!isset(self::$transOpStr[$operator])) {
+        if (! isset(self::$transOpStr[$operator])) {
             throw new \InvalidArgumentException(sprintf(
                 'Invalid operator "%s" given, expected one of: %s',
                 $operator,
@@ -219,7 +234,7 @@ class Constraint implements ConstraintInterface
         }
 
         // when branches are not comparable, we make sure dev branches never match anything
-        if (!$compareBranches && ($aIsBranch || $bIsBranch)) {
+        if (! $compareBranches && ($aIsBranch || $bIsBranch)) {
             return false;
         }
 
@@ -232,73 +247,76 @@ class Constraint implements ConstraintInterface
     public function compile($otherOperator)
     {
         if (strpos($this->version, 'dev-') === 0) {
-            if (self::OP_EQ === $this->operator) {
-                if (self::OP_EQ === $otherOperator) {
+            if ($this->operator === self::OP_EQ) {
+                if ($otherOperator === self::OP_EQ) {
                     return sprintf('$b && $v === %s', \var_export($this->version, true));
                 }
-                if (self::OP_NE === $otherOperator) {
+                if ($otherOperator === self::OP_NE) {
                     return sprintf('!$b || $v !== %s', \var_export($this->version, true));
                 }
+
                 return 'false';
             }
 
-            if (self::OP_NE === $this->operator) {
-                if (self::OP_EQ === $otherOperator) {
+            if ($this->operator === self::OP_NE) {
+                if ($otherOperator === self::OP_EQ) {
                     return sprintf('!$b || $v !== %s', \var_export($this->version, true));
                 }
-                if (self::OP_NE === $otherOperator) {
+                if ($otherOperator === self::OP_NE) {
                     return 'true';
                 }
+
                 return '!$b';
             }
 
             return 'false';
         }
 
-        if (self::OP_EQ === $this->operator) {
-            if (self::OP_EQ === $otherOperator) {
+        if ($this->operator === self::OP_EQ) {
+            if ($otherOperator === self::OP_EQ) {
                 return sprintf('\version_compare($v, %s, \'==\')', \var_export($this->version, true));
             }
-            if (self::OP_NE === $otherOperator) {
+            if ($otherOperator === self::OP_NE) {
                 return sprintf('$b || \version_compare($v, %s, \'!=\')', \var_export($this->version, true));
             }
 
             return sprintf('!$b && \version_compare(%s, $v, \'%s\')', \var_export($this->version, true), self::$transOpInt[$otherOperator]);
         }
 
-        if (self::OP_NE === $this->operator) {
-            if (self::OP_EQ === $otherOperator) {
+        if ($this->operator === self::OP_NE) {
+            if ($otherOperator === self::OP_EQ) {
                 return sprintf('$b || (!$b && \version_compare($v, %s, \'!=\'))', \var_export($this->version, true));
             }
 
-            if (self::OP_NE === $otherOperator) {
+            if ($otherOperator === self::OP_NE) {
                 return 'true';
             }
+
             return '!$b';
         }
 
-        if (self::OP_LT === $this->operator || self::OP_LE === $this->operator) {
-            if (self::OP_LT === $otherOperator || self::OP_LE === $otherOperator) {
+        if ($this->operator === self::OP_LT || $this->operator === self::OP_LE) {
+            if ($otherOperator === self::OP_LT || $otherOperator === self::OP_LE) {
                 return '!$b';
             }
         } else { // $this->operator must be self::OP_GT || self::OP_GE here
-            if (self::OP_GT === $otherOperator || self::OP_GE === $otherOperator) {
+            if ($otherOperator === self::OP_GT || $otherOperator === self::OP_GE) {
                 return '!$b';
             }
         }
 
-        if (self::OP_NE === $otherOperator) {
+        if ($otherOperator === self::OP_NE) {
             return 'true';
         }
 
         $codeComparison = sprintf('\version_compare($v, %s, \'%s\')', \var_export($this->version, true), self::$transOpInt[$this->operator]);
         if ($this->operator === self::OP_LE) {
             if ($otherOperator === self::OP_GT) {
-                return sprintf('!$b && \version_compare($v, %s, \'!=\') && ', \var_export($this->version, true)) . $codeComparison;
+                return sprintf('!$b && \version_compare($v, %s, \'!=\') && ', \var_export($this->version, true)).$codeComparison;
             }
         } elseif ($this->operator === self::OP_GE) {
             if ($otherOperator === self::OP_LT) {
-                return sprintf('!$b && \version_compare($v, %s, \'!=\') && ', \var_export($this->version, true)) . $codeComparison;
+                return sprintf('!$b && \version_compare($v, %s, \'!=\') && ', \var_export($this->version, true)).$codeComparison;
             }
         }
 
@@ -306,9 +324,7 @@ class Constraint implements ConstraintInterface
     }
 
     /**
-     * @param Constraint $provider
-     * @param bool       $compareBranches
-     *
+     * @param  bool  $compareBranches
      * @return bool
      */
     public function matchSpecific(Constraint $provider, $compareBranches = false)
@@ -316,32 +332,33 @@ class Constraint implements ConstraintInterface
         $noEqualOp = str_replace('=', '', self::$transOpInt[$this->operator]);
         $providerNoEqualOp = str_replace('=', '', self::$transOpInt[$provider->operator]);
 
-        $isEqualOp = self::OP_EQ === $this->operator;
-        $isNonEqualOp = self::OP_NE === $this->operator;
-        $isProviderEqualOp = self::OP_EQ === $provider->operator;
-        $isProviderNonEqualOp = self::OP_NE === $provider->operator;
+        $isEqualOp = $this->operator === self::OP_EQ;
+        $isNonEqualOp = $this->operator === self::OP_NE;
+        $isProviderEqualOp = $provider->operator === self::OP_EQ;
+        $isProviderNonEqualOp = $provider->operator === self::OP_NE;
 
         // '!=' operator is match when other operator is not '==' operator or version is not match
         // these kinds of comparisons always have a solution
         if ($isNonEqualOp || $isProviderNonEqualOp) {
-            if ($isNonEqualOp && !$isProviderNonEqualOp && !$isProviderEqualOp && strpos($provider->version, 'dev-') === 0) {
+            if ($isNonEqualOp && ! $isProviderNonEqualOp && ! $isProviderEqualOp && strpos($provider->version, 'dev-') === 0) {
                 return false;
             }
 
-            if ($isProviderNonEqualOp && !$isNonEqualOp && !$isEqualOp && strpos($this->version, 'dev-') === 0) {
+            if ($isProviderNonEqualOp && ! $isNonEqualOp && ! $isEqualOp && strpos($this->version, 'dev-') === 0) {
                 return false;
             }
 
-            if (!$isEqualOp && !$isProviderEqualOp) {
+            if (! $isEqualOp && ! $isProviderEqualOp) {
                 return true;
             }
+
             return $this->versionCompare($provider->version, $this->version, '!=', $compareBranches);
         }
 
         // an example for the condition is <= 2.0 & < 1.0
         // these kinds of comparisons always have a solution
         if ($this->operator !== self::OP_EQ && $noEqualOp === $providerNoEqualOp) {
-            return !(strpos($this->version, 'dev-') === 0 || strpos($provider->version, 'dev-') === 0);
+            return ! (strpos($this->version, 'dev-') === 0 || strpos($provider->version, 'dev-') === 0);
         }
 
         $version1 = $isEqualOp ? $this->version : $provider->version;
@@ -352,7 +369,7 @@ class Constraint implements ConstraintInterface
             // special case, e.g. require >= 1.0 and provide < 1.0
             // 1.0 >= 1.0 but 1.0 is outside of the provided interval
 
-            return !(self::$transOpInt[$provider->operator] === $providerNoEqualOp
+            return ! (self::$transOpInt[$provider->operator] === $providerNoEqualOp
                 && self::$transOpInt[$this->operator] !== $noEqualOp
                 && \version_compare($provider->version, $this->version, '=='));
         }
@@ -365,7 +382,7 @@ class Constraint implements ConstraintInterface
      */
     public function __toString()
     {
-        return self::$transOpInt[$this->operator] . ' ' . $this->version;
+        return self::$transOpInt[$this->operator].' '.$this->version;
     }
 
     /**
@@ -393,7 +410,7 @@ class Constraint implements ConstraintInterface
      */
     private function extractBounds()
     {
-        if (null !== $this->lowerBound) {
+        if ($this->lowerBound !== null) {
             return;
         }
 

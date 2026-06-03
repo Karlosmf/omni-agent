@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PharIo\Manifest.
  *
@@ -8,40 +10,49 @@
  * file that was distributed with this source code.
  *
  */
+
 namespace PharIo\Manifest;
 
 use Iterator;
+
 use function count;
 
 /** @template-implements Iterator<int,Author> */
-class AuthorCollectionIterator implements Iterator {
+class AuthorCollectionIterator implements Iterator
+{
     /** @var Author[] */
     private $authors;
 
     /** @var int */
     private $position = 0;
 
-    public function __construct(AuthorCollection $authors) {
+    public function __construct(AuthorCollection $authors)
+    {
         $this->authors = $authors->getAuthors();
     }
 
-    public function rewind(): void {
+    public function rewind(): void
+    {
         $this->position = 0;
     }
 
-    public function valid(): bool {
+    public function valid(): bool
+    {
         return $this->position < count($this->authors);
     }
 
-    public function key(): int {
+    public function key(): int
+    {
         return $this->position;
     }
 
-    public function current(): Author {
+    public function current(): Author
+    {
         return $this->authors[$this->position];
     }
 
-    public function next(): void {
+    public function next(): void
+    {
         $this->position++;
     }
 }

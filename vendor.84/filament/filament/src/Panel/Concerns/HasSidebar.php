@@ -12,29 +12,29 @@ trait HasSidebar
 
     protected string $collapsedSidebarWidth = '4.5rem';
 
-    protected bool | Closure $isSidebarCollapsibleOnDesktop = false;
+    protected bool|Closure $isSidebarCollapsibleOnDesktop = false;
 
-    protected bool | Closure $isSidebarFullyCollapsibleOnDesktop = false;
+    protected bool|Closure $isSidebarFullyCollapsibleOnDesktop = false;
 
-    protected bool | Closure $hasCollapsibleNavigationGroups = true;
+    protected bool|Closure $hasCollapsibleNavigationGroups = true;
 
-    protected string | Closure | null $sidebarLivewireComponent = null;
+    protected string|Closure|null $sidebarLivewireComponent = null;
 
-    public function sidebarCollapsibleOnDesktop(bool | Closure $condition = true): static
+    public function sidebarCollapsibleOnDesktop(bool|Closure $condition = true): static
     {
         $this->isSidebarCollapsibleOnDesktop = $condition;
 
         return $this;
     }
 
-    public function sidebarFullyCollapsibleOnDesktop(bool | Closure $condition = true): static
+    public function sidebarFullyCollapsibleOnDesktop(bool|Closure $condition = true): static
     {
         $this->isSidebarFullyCollapsibleOnDesktop = $condition;
 
         return $this;
     }
 
-    public function collapsibleNavigationGroups(bool | Closure $condition = true): static
+    public function collapsibleNavigationGroups(bool|Closure $condition = true): static
     {
         $this->hasCollapsibleNavigationGroups = $condition;
 
@@ -44,7 +44,7 @@ trait HasSidebar
     /**
      * @param  class-string<Component> | Closure | null  $component
      */
-    public function sidebarLivewireComponent(string | Closure | null $component): static
+    public function sidebarLivewireComponent(string|Closure|null $component): static
     {
         $this->sidebarLivewireComponent = $component;
 

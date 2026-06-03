@@ -36,8 +36,11 @@ use Symfony\Component\Translation\Util\XliffUtils;
 class XliffLintCommand extends Command
 {
     private string $format;
+
     private bool $displayCorrectFiles;
+
     private ?\Closure $directoryIteratorProvider;
+
     private ?\Closure $isReadableProvider;
 
     public function __construct(
@@ -48,8 +51,8 @@ class XliffLintCommand extends Command
     ) {
         parent::__construct($name);
 
-        $this->directoryIteratorProvider = null === $directoryIteratorProvider ? null : $directoryIteratorProvider(...);
-        $this->isReadableProvider = null === $isReadableProvider ? null : $isReadableProvider(...);
+        $this->directoryIteratorProvider = $directoryIteratorProvider === null ? null : $directoryIteratorProvider(...);
+        $this->isReadableProvider = $isReadableProvider === null ? null : $isReadableProvider(...);
     }
 
     protected function configure(): void
@@ -57,7 +60,7 @@ class XliffLintCommand extends Command
         $this
             ->addArgument('filename', InputArgument::IS_ARRAY, 'A file, a directory or "-" for reading from STDIN')
             ->addOption('format', null, InputOption::VALUE_REQUIRED, \sprintf('The output format ("%s")', implode('", "', $this->getAvailableFormatOptions())))
-            ->setHelp(<<<EOF
+            ->setHelp(<<<'EOF'
                 The <info>%command.name%</info> command lints an XLIFF file and outputs to STDOUT
                 the first encountered syntax error.
 
@@ -78,8 +81,7 @@ class XliffLintCommand extends Command
                   <info>php %command.full_name% dirname --format=json</info>
 
                 EOF
-            )
-        ;
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -93,13 +95,13 @@ class XliffLintCommand extends Command
             return $this->display($io, [$this->validate(file_get_contents('php://stdin'))]);
         }
 
-        if (!$filenames) {
+        if (! $filenames) {
             throw new RuntimeException('Please provide a filename or pipe file content to STDIN.');
         }
 
         $filesInfo = [];
         foreach ($filenames as $filename) {
-            if (!$this->isReadable($filename)) {
+            if (! $this->isReadable($filename)) {
                 throw new RuntimeException(\sprintf('File or directory "%s" is not readable.', $filename));
             }
 
@@ -116,13 +118,13 @@ class XliffLintCommand extends Command
         $errors = [];
 
         // Avoid: Warning DOMDocument::loadXML(): Empty string supplied as input
-        if ('' === trim($content)) {
+        if (trim($content) === '') {
             return ['file' => $file, 'valid' => true];
         }
 
         $internal = libxml_use_internal_errors(true);
 
-        $document = new \DOMDocument();
+        $document = new \DOMDocument;
         $document->loadXML($content);
 
         if (null !== $targetLanguage = $this->getTargetLanguageFromFile($document)) {
@@ -133,7 +135,7 @@ class XliffLintCommand extends Command
             // http://docs.oasis-open.org/xliff/v1.2/os/xliff-core.html#target-language
             $expectedFilenamePattern = $this->requireStrictFileNames ? \sprintf('/^.*\.(?i:%s)\.(?:xlf|xliff)/', $normalizedLocalePattern) : \sprintf('/^(?:.*\.(?i:%s)|(?i:%s)\..*)\.(?:xlf|xliff)/', $normalizedLocalePattern, $normalizedLocalePattern);
 
-            if (0 === preg_match($expectedFilenamePattern, basename($file))) {
+            if (preg_match($expectedFilenamePattern, basename($file)) === 0) {
                 $errors[] = [
                     'line' => -1,
                     'column' => -1,
@@ -153,7 +155,7 @@ class XliffLintCommand extends Command
         libxml_clear_errors();
         libxml_use_internal_errors($internal);
 
-        return ['file' => $file, 'valid' => 0 === \count($errors), 'messages' => $errors];
+        return ['file' => $file, 'valid' => \count($errors) === 0, 'messages' => $errors];
     }
 
     private function display(SymfonyStyle $io, array $files): int
@@ -175,21 +177,21 @@ class XliffLintCommand extends Command
         foreach ($filesInfo as $info) {
             if ($info['valid'] && $this->displayCorrectFiles) {
                 $io->comment('<info>OK</info>'.($info['file'] ? \sprintf(' in %s', $info['file']) : ''));
-            } elseif (!$info['valid']) {
-                ++$erroredFiles;
+            } elseif (! $info['valid']) {
+                $erroredFiles++;
                 $io->text('<error> ERROR </error>'.($info['file'] ? \sprintf(' in %s', $info['file']) : ''));
                 $io->listing(array_map(function ($error) use ($info, $githubReporter) {
                     // general document errors have a '-1' line number
-                    $line = -1 === $error['line'] ? null : $error['line'];
+                    $line = $error['line'] === -1 ? null : $error['line'];
 
-                    $githubReporter?->error($error['message'], $info['file'], $line, null !== $line ? $error['column'] : null);
+                    $githubReporter?->error($error['message'], $info['file'], $line, $line !== null ? $error['column'] : null);
 
-                    return null === $line ? $error['message'] : \sprintf('Line %d, Column %d: %s', $line, $error['column'], $error['message']);
+                    return $line === null ? $error['message'] : \sprintf('Line %d, Column %d: %s', $line, $error['column'], $error['message']);
                 }, $info['messages']));
             }
         }
 
-        if (0 === $erroredFiles) {
+        if ($erroredFiles === 0) {
             $io->success(\sprintf('All %d XLIFF files contain valid syntax.', $countFiles));
         } else {
             $io->warning(\sprintf('%d XLIFF files have valid syntax and %d contain errors.', $countFiles - $erroredFiles, $erroredFiles));
@@ -204,8 +206,8 @@ class XliffLintCommand extends Command
 
         array_walk($filesInfo, function (&$v) use (&$errors) {
             $v['file'] = (string) $v['file'];
-            if (!$v['valid']) {
-                ++$errors;
+            if (! $v['valid']) {
+                $errors++;
             }
         });
 
@@ -226,7 +228,7 @@ class XliffLintCommand extends Command
         }
 
         foreach ($this->getDirectoryIterator($fileOrDirectory) as $file) {
-            if (!\in_array($file->getExtension(), ['xlf', 'xliff'], true)) {
+            if (! \in_array($file->getExtension(), ['xlf', 'xliff'], true)) {
                 continue;
             }
 
@@ -244,7 +246,7 @@ class XliffLintCommand extends Command
             \RecursiveIteratorIterator::LEAVES_ONLY
         );
 
-        if (null !== $this->directoryIteratorProvider) {
+        if ($this->directoryIteratorProvider !== null) {
             return ($this->directoryIteratorProvider)($directory, $default);
         }
 
@@ -255,7 +257,7 @@ class XliffLintCommand extends Command
     {
         $default = fn ($fileOrDirectory) => is_readable($fileOrDirectory);
 
-        if (null !== $this->isReadableProvider) {
+        if ($this->isReadableProvider !== null) {
             return ($this->isReadableProvider)($fileOrDirectory, $default);
         }
 
@@ -265,7 +267,7 @@ class XliffLintCommand extends Command
     private function getTargetLanguageFromFile(\DOMDocument $xliffContents): ?string
     {
         foreach ($xliffContents->getElementsByTagName('file')[0]->attributes ?? [] as $attribute) {
-            if ('target-language' === $attribute->nodeName) {
+            if ($attribute->nodeName === 'target-language') {
                 return $attribute->nodeValue;
             }
         }

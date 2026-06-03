@@ -42,7 +42,7 @@ class CalcFunction extends CSSFunction
         $list = new RuleValueList(',', $parserState->currentLine());
         $nestingLevel = 0;
         $lastComponentType = null;
-        while (!$parserState->comes(')') || $nestingLevel > 0) {
+        while (! $parserState->comes(')') || $nestingLevel > 0) {
             if ($parserState->isEnd() && $nestingLevel === 0) {
                 break;
             }
@@ -52,11 +52,13 @@ class CalcFunction extends CSSFunction
                 $nestingLevel++;
                 $calcRuleValueList->addListComponent($parserState->consume(1));
                 $parserState->consumeWhiteSpace();
+
                 continue;
             } elseif ($parserState->comes(')')) {
                 $nestingLevel--;
                 $calcRuleValueList->addListComponent($parserState->consume(1));
                 $parserState->consumeWhiteSpace();
+
                 continue;
             }
             if ($lastComponentType !== CalcFunction::T_OPERAND) {
@@ -68,12 +70,12 @@ class CalcFunction extends CSSFunction
                     if (($parserState->comes('-') || $parserState->comes('+'))) {
                         if (
                             $parserState->peek(1, -1) !== ' '
-                            || !($parserState->comes('- ')
+                            || ! ($parserState->comes('- ')
                                 || $parserState->comes('+ '))
                         ) {
                             throw new UnexpectedTokenException(
                                 " {$parserState->peek()} ",
-                                $parserState->peek(1, -1) . $parserState->peek(2),
+                                $parserState->peek(1, -1).$parserState->peek(2),
                                 'literal',
                                 $parserState->currentLine()
                             );
@@ -97,9 +99,10 @@ class CalcFunction extends CSSFunction
             $parserState->consumeWhiteSpace();
         }
         $list->addListComponent($calcRuleValueList);
-        if (!$parserState->isEnd()) {
+        if (! $parserState->isEnd()) {
             $parserState->consume(')');
         }
+
         return new CalcFunction($function, $list, ',', $parserState->currentLine());
     }
 }

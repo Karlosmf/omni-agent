@@ -16,7 +16,7 @@ class V5 extends Plugin
     {
         return [
             'jetstream/5.x/jetstream.json' => '{locale}.json',
-            'jetstream/extended.json'      => '{locale}.json',
+            'jetstream/extended.json' => '{locale}.json',
         ];
     }
 }

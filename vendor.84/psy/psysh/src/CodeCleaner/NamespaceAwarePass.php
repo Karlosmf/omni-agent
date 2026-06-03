@@ -27,8 +27,11 @@ use Psy\CodeCleaner;
 abstract class NamespaceAwarePass extends CodeCleanerPass
 {
     protected array $namespace = [];
+
     protected array $currentScope = [];
+
     protected array $aliases = [];
+
     protected ?CodeCleaner $cleaner = null;
 
     /**
@@ -58,8 +61,6 @@ abstract class NamespaceAwarePass extends CodeCleanerPass
     /**
      * @todo should this be final? Extending classes should be sure to either use
      * leaveNode or call parent::enterNode() when overloading
-     *
-     * @param Node $node
      *
      * @return int|Node|null Replacement node (or special return value)
      */
@@ -126,7 +127,7 @@ abstract class NamespaceAwarePass extends CodeCleanerPass
      *
      * Resolves use statement aliases before applying namespace.
      *
-     * @param mixed $name
+     * @param  mixed  $name
      */
     protected function getFullyQualifiedName($name): string
     {
@@ -150,7 +151,7 @@ abstract class NamespaceAwarePass extends CodeCleanerPass
 
         if ($name instanceof Name) {
             $name = $this->getParts($name);
-        } elseif (!\is_array($name)) {
+        } elseif (! \is_array($name)) {
             $name = [$name];
         }
 

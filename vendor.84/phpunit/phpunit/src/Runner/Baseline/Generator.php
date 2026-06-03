@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner\Baseline;
 
 use PHPUnit\Event\Facade;
@@ -28,6 +31,7 @@ use PHPUnit\TextUI\Configuration\SourceFilter;
 final readonly class Generator
 {
     private Baseline $baseline;
+
     private Source $source;
 
     public function __construct(Facade $facade, Source $source)
@@ -42,7 +46,7 @@ final readonly class Generator
         );
 
         $this->baseline = new Baseline;
-        $this->source   = $source;
+        $this->source = $source;
     }
 
     public function baseline(): Baseline
@@ -56,11 +60,11 @@ final readonly class Generator
      */
     public function testTriggeredIssue(DeprecationTriggered|NoticeTriggered|PhpDeprecationTriggered|PhpNoticeTriggered|PhpWarningTriggered|WarningTriggered $event): void
     {
-        if ($event->wasSuppressed() && !$this->isSuppressionIgnored($event)) {
+        if ($event->wasSuppressed() && ! $this->isSuppressionIgnored($event)) {
             return;
         }
 
-        if ($this->restrict($event) && !SourceFilter::instance()->includes($event->file())) {
+        if ($this->restrict($event) && ! SourceFilter::instance()->includes($event->file())) {
             return;
         }
 

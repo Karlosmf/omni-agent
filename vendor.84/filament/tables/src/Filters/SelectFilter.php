@@ -20,24 +20,24 @@ class SelectFilter extends BaseFilter
     use Concerns\HasPlaceholder;
     use Concerns\HasRelationship;
 
-    protected string | Closure | null $attribute = null;
+    protected string|Closure|null $attribute = null;
 
-    protected bool | Closure $isMultiple = false;
+    protected bool|Closure $isMultiple = false;
 
-    protected bool | Closure $isNative = true;
+    protected bool|Closure $isNative = true;
 
-    protected bool | Closure $isStatic = false;
+    protected bool|Closure $isStatic = false;
 
     /**
      * @var bool | array<string> | Closure
      */
-    protected bool | array | Closure $searchable = false;
+    protected bool|array|Closure $searchable = false;
 
-    protected bool | Closure $canSelectPlaceholder = true;
+    protected bool|Closure $canSelectPlaceholder = true;
 
-    protected int | Closure $optionsLimit = 50;
+    protected int|Closure $optionsLimit = 50;
 
-    protected bool | Closure | null $isSearchForcedCaseInsensitive = null;
+    protected bool|Closure|null $isSearchForcedCaseInsensitive = null;
 
     protected ?Closure $getOptionLabelFromRecordUsing = null;
 
@@ -88,7 +88,7 @@ class SelectFilter extends BaseFilter
                     ];
                 } else {
                     $labels = collect($filter->getOptions())
-                        ->mapWithKeys(fn (string | array $label, string $value): array => is_array($label) ? $label : [$value => $label])
+                        ->mapWithKeys(fn (string|array $label, string $value): array => is_array($label) ? $label : [$value => $label])
                         ->only($state['values'])
                         ->all();
                 }
@@ -130,7 +130,7 @@ class SelectFilter extends BaseFilter
                 }
             } else {
                 $label = collect($filter->getOptions())
-                    ->mapWithKeys(fn (string | array $label, string $value): array => is_array($label) ? $label : [$value => $label])
+                    ->mapWithKeys(fn (string|array $label, string $value): array => is_array($label) ? $label : [$value => $label])
                     ->get($state['value']);
             }
 
@@ -244,7 +244,7 @@ class SelectFilter extends BaseFilter
         return $query;
     }
 
-    public function attribute(string | Closure | null $name): static
+    public function attribute(string|Closure|null $name): static
     {
         $this->attribute = $name;
 
@@ -254,21 +254,21 @@ class SelectFilter extends BaseFilter
     /**
      * @deprecated Use `attribute()` instead.
      */
-    public function column(string | Closure | null $name): static
+    public function column(string|Closure|null $name): static
     {
         $this->attribute($name);
 
         return $this;
     }
 
-    public function static(bool | Closure $condition = true): static
+    public function static(bool|Closure $condition = true): static
     {
         $this->isStatic = $condition;
 
         return $this;
     }
 
-    public function multiple(bool | Closure $condition = true): static
+    public function multiple(bool|Closure $condition = true): static
     {
         $this->isMultiple = $condition;
 
@@ -278,14 +278,14 @@ class SelectFilter extends BaseFilter
     /**
      * @param  bool | array<string> | Closure  $condition
      */
-    public function searchable(bool | array | Closure $condition = true): static
+    public function searchable(bool|array|Closure $condition = true): static
     {
         $this->searchable = $condition;
 
         return $this;
     }
 
-    public function selectablePlaceholder(bool | Closure $condition = true): static
+    public function selectablePlaceholder(bool|Closure $condition = true): static
     {
         $this->canSelectPlaceholder = $condition;
 
@@ -305,7 +305,7 @@ class SelectFilter extends BaseFilter
         return $this->getAttribute();
     }
 
-    public function forceSearchCaseInsensitive(bool | Closure | null $condition = true): static
+    public function forceSearchCaseInsensitive(bool|Closure|null $condition = true): static
     {
         $this->isSearchForcedCaseInsensitive = $condition;
 
@@ -582,7 +582,7 @@ class SelectFilter extends BaseFilter
     /**
      * @return bool | array<string> | Closure
      */
-    public function getSearchable(): bool | array | Closure
+    public function getSearchable(): bool|array|Closure
     {
         return $this->evaluate($this->searchable);
     }
@@ -592,7 +592,7 @@ class SelectFilter extends BaseFilter
         return (bool) $this->evaluate($this->canSelectPlaceholder);
     }
 
-    public function optionsLimit(int | Closure $limit): static
+    public function optionsLimit(int|Closure $limit): static
     {
         $this->optionsLimit = $limit;
 
@@ -604,7 +604,7 @@ class SelectFilter extends BaseFilter
         return $this->evaluate($this->optionsLimit);
     }
 
-    public function native(bool | Closure $condition = true): static
+    public function native(bool|Closure $condition = true): static
     {
         $this->isNative = $condition;
 
@@ -627,7 +627,7 @@ class SelectFilter extends BaseFilter
      * @param  string | array<string>  $values
      * @return array<string>
      */
-    protected function getRelationshipQueryValues(string | array $values): array
+    protected function getRelationshipQueryValues(string|array $values): array
     {
         return array_values(array_filter(
             Arr::wrap($values),

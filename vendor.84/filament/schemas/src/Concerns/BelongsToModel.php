@@ -10,12 +10,12 @@ trait BelongsToModel
     /**
      * @var Model | array<string, mixed> | class-string<Model> | Closure | null
      */
-    public Model | array | string | Closure | null $model = null;
+    public Model|array|string|Closure|null $model = null;
 
     /**
      * @param  Model | array<string, mixed> | class-string<Model> | Closure | null  $model
      */
-    public function model(Model | array | string | Closure | null $model = null): static
+    public function model(Model|array|string|Closure|null $model = null): static
     {
         $this->model = $model;
 
@@ -25,7 +25,7 @@ trait BelongsToModel
     /**
      * @param  Model | array<string, mixed> | Closure | null  $record
      */
-    public function record(Model | array | Closure | null $record): static
+    public function record(Model|array|Closure|null $record): static
     {
         $this->model($record);
 
@@ -87,7 +87,7 @@ trait BelongsToModel
     /**
      * @return Model | array<string, mixed> | null
      */
-    public function getRecord(bool $withParentComponentRecord = true): Model | array | null
+    public function getRecord(bool $withParentComponentRecord = true): Model|array|null
     {
         $this->model = $this->evaluate($this->model);
 

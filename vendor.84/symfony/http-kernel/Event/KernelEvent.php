@@ -23,15 +23,14 @@ use Symfony\Contracts\EventDispatcher\Event;
 class KernelEvent extends Event
 {
     /**
-     * @param int $requestType The request type the kernel is currently processing; one of
-     *                         HttpKernelInterface::MAIN_REQUEST or HttpKernelInterface::SUB_REQUEST
+     * @param  int  $requestType  The request type the kernel is currently processing; one of
+     *                            HttpKernelInterface::MAIN_REQUEST or HttpKernelInterface::SUB_REQUEST
      */
     public function __construct(
         private HttpKernelInterface $kernel,
         private Request $request,
         private ?int $requestType,
-    ) {
-    }
+    ) {}
 
     /**
      * Returns the kernel in which this event was thrown.
@@ -65,6 +64,6 @@ class KernelEvent extends Event
      */
     public function isMainRequest(): bool
     {
-        return HttpKernelInterface::MAIN_REQUEST === $this->requestType;
+        return $this->requestType === HttpKernelInterface::MAIN_REQUEST;
     }
 }

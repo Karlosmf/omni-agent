@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Text;
 
 /*
@@ -10,7 +11,6 @@ use Hamcrest\TypeSafeMatcher;
 
 abstract class SubstringMatcher extends TypeSafeMatcher
 {
-
     protected $_substring;
 
     public function __construct($substring)
@@ -33,10 +33,9 @@ abstract class SubstringMatcher extends TypeSafeMatcher
     public function describeTo(Description $description)
     {
         $description->appendText('a string ')
-                                ->appendText($this->relationship())
-                                ->appendText(' ')
-                                ->appendValue($this->_substring)
-                                ;
+            ->appendText($this->relationship())
+            ->appendText(' ')
+            ->appendValue($this->_substring);
     }
 
     abstract protected function evalSubstringOf($string);

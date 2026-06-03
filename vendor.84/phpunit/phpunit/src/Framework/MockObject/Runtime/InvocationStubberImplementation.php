@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,18 +9,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\MockObject;
 
-use function array_flip;
-use function array_key_exists;
-use function array_map;
-use function array_merge;
-use function array_pop;
-use function assert;
-use function count;
-use function is_string;
-use function range;
-use function strtolower;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\InvalidArgumentException;
 use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
@@ -33,6 +26,17 @@ use PHPUnit\Framework\MockObject\Stub\ReturnValueMap;
 use PHPUnit\Framework\MockObject\Stub\Stub;
 use Throwable;
 
+use function array_flip;
+use function array_key_exists;
+use function array_map;
+use function array_merge;
+use function array_pop;
+use function assert;
+use function count;
+use function is_string;
+use function range;
+use function strtolower;
+
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  *
@@ -41,6 +45,7 @@ use Throwable;
 final class InvocationStubberImplementation implements InvocationStubber
 {
     private readonly InvocationHandler $invocationHandler;
+
     private readonly Matcher $matcher;
 
     /**
@@ -55,19 +60,18 @@ final class InvocationStubberImplementation implements InvocationStubber
 
     public function __construct(InvocationHandler $handler, Matcher $matcher, ConfigurableMethod ...$configurableMethods)
     {
-        $this->invocationHandler   = $handler;
-        $this->matcher             = $matcher;
+        $this->invocationHandler = $handler;
+        $this->matcher = $matcher;
         $this->configurableMethods = $configurableMethods;
     }
 
     /**
-     * @param Constraint|non-empty-string|PropertyHook $constraint
+     * @param  Constraint|non-empty-string|PropertyHook  $constraint
+     * @return $this
      *
      * @throws InvalidArgumentException
      * @throws MethodCannotBeConfiguredException
      * @throws MethodNameAlreadyConfiguredException
-     *
-     * @return $this
      */
     public function method(Constraint|PropertyHook|string $constraint): InvocationStubber
     {
@@ -87,7 +91,7 @@ final class InvocationStubberImplementation implements InvocationStubber
                 ),
             );
 
-            if (!array_key_exists(strtolower($constraint), $this->configurableMethodNames)) {
+            if (! array_key_exists(strtolower($constraint), $this->configurableMethodNames)) {
                 throw new MethodCannotBeConfiguredException($constraint);
             }
         }
@@ -98,11 +102,10 @@ final class InvocationStubberImplementation implements InvocationStubber
     }
 
     /**
-     * @param non-empty-string $id
+     * @param  non-empty-string  $id
+     * @return $this
      *
      * @throws MatcherAlreadyRegisteredException
-     *
-     * @return $this
      */
     public function id(string $id): InvocationStubber
     {
@@ -112,8 +115,7 @@ final class InvocationStubberImplementation implements InvocationStubber
     }
 
     /**
-     * @param non-empty-string $id
-     *
+     * @param  non-empty-string  $id
      * @return $this
      */
     public function after(string $id): InvocationStubber
@@ -124,11 +126,11 @@ final class InvocationStubberImplementation implements InvocationStubber
     }
 
     /**
+     * @return $this
+     *
      * @throws \PHPUnit\Framework\Exception
      * @throws MethodNameNotConfiguredException
      * @throws MethodParametersAlreadyConfiguredException
-     *
-     * @return $this
      */
     public function with(mixed ...$arguments): InvocationStubber
     {
@@ -140,10 +142,10 @@ final class InvocationStubberImplementation implements InvocationStubber
     }
 
     /**
+     * @return $this
+     *
      * @throws MethodNameNotConfiguredException
      * @throws MethodParametersAlreadyConfiguredException
-     *
-     * @return $this
      */
     public function withAnyParameters(): InvocationStubber
     {
@@ -200,21 +202,21 @@ final class InvocationStubberImplementation implements InvocationStubber
         assert($method instanceof ConfigurableMethod);
 
         $numberOfParameters = $method->numberOfParameters();
-        $defaultValues      = $method->defaultParameterValues();
-        $hasDefaultValues   = $defaultValues !== [];
+        $defaultValues = $method->defaultParameterValues();
+        $hasDefaultValues = $defaultValues !== [];
 
         $_valueMap = [];
 
         foreach ($valueMap as $mapping) {
             $numberOfConfiguredParameters = count($mapping) - 1;
 
-            if ($numberOfConfiguredParameters === $numberOfParameters || !$hasDefaultValues) {
+            if ($numberOfConfiguredParameters === $numberOfParameters || ! $hasDefaultValues) {
                 $_valueMap[] = $mapping;
 
                 continue;
             }
 
-            $_mapping    = [];
+            $_mapping = [];
             $returnValue = array_pop($mapping);
 
             foreach (range(0, $numberOfParameters - 1) as $i) {
@@ -229,7 +231,7 @@ final class InvocationStubberImplementation implements InvocationStubber
                 }
             }
 
-            $_mapping[]  = $returnValue;
+            $_mapping[] = $returnValue;
             $_valueMap[] = $_mapping;
         }
 
@@ -279,7 +281,7 @@ final class InvocationStubberImplementation implements InvocationStubber
      */
     private function ensureParametersCanBeConfigured(): void
     {
-        if (!$this->matcher->hasMethodNameRule()) {
+        if (! $this->matcher->hasMethodNameRule()) {
             throw new MethodNameNotConfiguredException;
         }
 
@@ -306,7 +308,7 @@ final class InvocationStubberImplementation implements InvocationStubber
     }
 
     /**
-     * @param array<mixed> $values
+     * @param  array<mixed>  $values
      *
      * @throws IncompatibleReturnValueException
      */
@@ -319,7 +321,7 @@ final class InvocationStubberImplementation implements InvocationStubber
         }
 
         foreach ($values as $value) {
-            if (!$configuredMethod->mayReturn($value)) {
+            if (! $configuredMethod->mayReturn($value)) {
                 throw new IncompatibleReturnValueException(
                     $configuredMethod,
                     $value,

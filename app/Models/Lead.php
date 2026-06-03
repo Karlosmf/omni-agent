@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\LeadStatus;
+use App\Enums\LeadTemperature;
+use Database\Factories\LeadFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Lead extends Model
 {
-    /** @use HasFactory<\Database\Factories\LeadFactory> */
+    /** @use HasFactory<LeadFactory> */
     use HasFactory;
 
     protected $fillable = [
@@ -32,7 +34,7 @@ class Lead extends Model
 
     protected $casts = [
         'status' => LeadStatus::class,
-        'temperature' => \App\Enums\LeadTemperature::class,
+        'temperature' => LeadTemperature::class,
         'ai_data' => 'array',
         'needs_human_attention' => 'boolean',
     ];

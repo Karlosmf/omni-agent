@@ -11,18 +11,19 @@ use function array_merge;
 class Config
 {
     public const OPTION_COPY_IDENTICAL_PATH = 'copy_destination_same_as_source';
+
     public const OPTION_MOVE_IDENTICAL_PATH = 'move_destination_same_as_source';
+
     public const OPTION_VISIBILITY = 'visibility';
+
     public const OPTION_DIRECTORY_VISIBILITY = 'directory_visibility';
+
     public const OPTION_RETAIN_VISIBILITY = 'retain_visibility';
 
-    public function __construct(private array $options = [])
-    {
-    }
+    public function __construct(private array $options = []) {}
 
     /**
-     * @param mixed $default
-     *
+     * @param  mixed  $default
      * @return mixed
      */
     public function get(string $property, $default = null)

@@ -32,7 +32,7 @@ final class BlockContinue
     private function __construct(?CursorState $cursorState = null, bool $finalize = false)
     {
         $this->cursorState = $cursorState;
-        $this->finalize    = $finalize;
+        $this->finalize = $finalize;
     }
 
     public function getCursorState(): ?CursorState

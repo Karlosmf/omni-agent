@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace League\Csv;
 
+use const STREAM_FILTER_READ;
+use const STREAM_FILTER_WRITE;
+
 use LogicException;
 use RuntimeException;
 use TypeError;
@@ -23,19 +26,16 @@ use function in_array;
 use function is_resource;
 use function stream_get_filters;
 
-use const STREAM_FILTER_READ;
-use const STREAM_FILTER_WRITE;
-
 final class StreamFilter
 {
     /**
      * Remove a filter from a stream.
      *
-     * @param resource $stream_filter
+     * @param  resource  $stream_filter
      */
     public static function remove($stream_filter): bool
     {
-        if (!is_resource($stream_filter)) {
+        if (! is_resource($stream_filter)) {
             throw new TypeError('Argument passed must be a stream resource, '.gettype($stream_filter).' given.');
         }
 
@@ -47,12 +47,11 @@ final class StreamFilter
     }
 
     /**
-     * @param resource|AbstractCsv $stream
+     * @param  resource|AbstractCsv  $stream
+     * @return resource|AbstractCsv
      *
      * @throws TypeError
      * @throws RuntimeException
-     *
-     * @return resource|AbstractCsv
      */
     public static function appendOnReadTo(mixed $stream, string $filtername, mixed $params = null): mixed
     {
@@ -60,12 +59,11 @@ final class StreamFilter
     }
 
     /**
-     * @param resource|AbstractCsv $stream
+     * @param  resource|AbstractCsv  $stream
+     * @return resource|AbstractCsv
      *
      * @throws TypeError
      * @throws RuntimeException
-     *
-     * @return resource|AbstractCsv
      */
     public static function appendOnWriteTo(mixed $stream, string $filtername, mixed $params = null): mixed
     {
@@ -73,12 +71,11 @@ final class StreamFilter
     }
 
     /**
-     * @param resource|AbstractCsv $stream
+     * @param  resource|AbstractCsv  $stream
+     * @return resource|AbstractCsv
      *
      * @throws TypeError
      * @throws RuntimeException
-     *
-     * @return resource|AbstractCsv
      */
     public static function prependOnReadTo(mixed $stream, string $filtername, mixed $params = null): mixed
     {
@@ -86,12 +83,11 @@ final class StreamFilter
     }
 
     /**
-     * @param resource|AbstractCsv $stream
+     * @param  resource|AbstractCsv  $stream
+     * @return resource|AbstractCsv
      *
      * @throws TypeError
      * @throws RuntimeException
-     *
-     * @return resource|AbstractCsv
      */
     public static function prependOnWriteTo(mixed $stream, string $filtername, mixed $params = null): mixed
     {
@@ -99,12 +95,11 @@ final class StreamFilter
     }
 
     /**
-     * @param resource|AbstractCsv $stream
+     * @param  resource|AbstractCsv  $stream
+     * @return resource|AbstractCsv
      *
      * @throws TypeError
      * @throws RuntimeException
-     *
-     * @return resource|AbstractCsv
      */
     private static function prependFilter(int $mode, mixed $stream, string $filtername, mixed $params): mixed
     {
@@ -120,7 +115,7 @@ final class StreamFilter
 
         /** @var resource|false $filter */
         $filter = Warning::cloak(stream_filter_prepend(...), $stream, $filtername, $mode, $params);
-        if (!is_resource($filter)) {
+        if (! is_resource($filter)) {
             throw new RuntimeException('Could not append the registered stream filter: '.$filtername);
         }
 
@@ -128,12 +123,11 @@ final class StreamFilter
     }
 
     /**
-     * @param resource|AbstractCsv $stream
+     * @param  resource|AbstractCsv  $stream
+     * @return resource|AbstractCsv
      *
      * @throws TypeError
      * @throws RuntimeException
-     *
-     * @return resource|AbstractCsv
      */
     private static function appendFilter(int $mode, mixed $stream, string $filtername, mixed $params): mixed
     {
@@ -149,7 +143,7 @@ final class StreamFilter
 
         /** @var resource|false $filter */
         $filter = Warning::cloak(stream_filter_append(...), $stream, $filtername, $mode, $params);
-        if (!is_resource($filter)) {
+        if (! is_resource($filter)) {
             throw new RuntimeException('Could not append the registered stream filter: '.$filtername);
         }
 
@@ -158,7 +152,7 @@ final class StreamFilter
 
     private static function filterFiltername(string $filtername): void
     {
-        if (!in_array($filtername, stream_get_filters(), true)) {
+        if (! in_array($filtername, stream_get_filters(), true)) {
             throw new LogicException('The stream filter "'.$filtername.'" is not registered.');
         }
     }
@@ -174,7 +168,7 @@ final class StreamFilter
             return;
         }
 
-        if (!is_resource($stream)) {
+        if (! is_resource($stream)) {
             throw new TypeError('Argument passed must be a stream resource, '.gettype($stream).' given.');
         }
 

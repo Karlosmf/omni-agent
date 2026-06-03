@@ -35,6 +35,6 @@ trait CanGenerateResourceForms
                 PHP, [$recordTitleAttribute]);
         }
 
-        return implode(PHP_EOL . '        ', $components);
+        return implode(PHP_EOL.'        ', $components);
     }
 }

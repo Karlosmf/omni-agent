@@ -23,15 +23,20 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     public const META_INF_FOLDER_NAME = 'META-INF';
 
     public const MANIFEST_XML_FILE_NAME = 'manifest.xml';
+
     public const CONTENT_XML_FILE_NAME = 'content.xml';
+
     public const META_XML_FILE_NAME = 'meta.xml';
+
     public const MIMETYPE_FILE_NAME = 'mimetype';
+
     public const STYLES_XML_FILE_NAME = 'styles.xml';
 
     private string $baseFolderRealPath;
 
     /** @var string document creator */
     private string $creator;
+
     private CommonFileSystemHelper $baseFileSystemHelper;
 
     /** @var string Path to the root folder inside the temp folder where the files to create the ODS will be stored */
@@ -47,9 +52,9 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     private readonly ZipHelper $zipHelper;
 
     /**
-     * @param string    $baseFolderPath The path of the base folder where all the I/O can occur
-     * @param ZipHelper $zipHelper      Helper to perform tasks with Zip archive
-     * @param string    $creator        document creator
+     * @param  string  $baseFolderPath  The path of the base folder where all the I/O can occur
+     * @param  ZipHelper  $zipHelper  Helper to perform tasks with Zip archive
+     * @param  string  $creator  document creator
      */
     public function __construct(string $baseFolderPath, ZipHelper $zipHelper, string $creator)
     {
@@ -101,14 +106,13 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             ->createMetaInfoFolderAndFile()
             ->createSheetsContentTempFolder()
             ->createMetaFile()
-            ->createMimetypeFile()
-        ;
+            ->createMimetypeFile();
     }
 
     /**
      * Creates the "content.xml" file under the root folder.
      *
-     * @param Worksheet[] $worksheets
+     * @param  Worksheet[]  $worksheets
      */
     public function createContentFile(WorksheetManager $worksheetManager, StyleManager $styleManager, array $worksheets): self
     {
@@ -128,11 +132,11 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
         // Append sheets content to "content.xml"
         $contentXmlFilePath = $this->rootFolder.\DIRECTORY_SEPARATOR.self::CONTENT_XML_FILE_NAME;
         $contentXmlHandle = fopen($contentXmlFilePath, 'w');
-        \assert(false !== $contentXmlHandle);
+        \assert($contentXmlHandle !== false);
 
         $topContentTempPathname = $this->rootFolder.\DIRECTORY_SEPARATOR.$topContentTempFile;
         $topContentTempHandle = fopen($topContentTempPathname, 'r');
-        \assert(false !== $topContentTempHandle);
+        \assert($topContentTempHandle !== false);
         stream_copy_to_stream($topContentTempHandle, $contentXmlHandle);
         fclose($topContentTempHandle);
         unlink($topContentTempPathname);
@@ -152,7 +156,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
         foreach ($worksheets as $worksheet) {
             $databaseRanges .= $worksheetManager->getTableDatabaseRangeElementAsString($worksheet);
         }
-        if ('' !== $databaseRanges) {
+        if ($databaseRanges !== '') {
             fwrite($contentXmlHandle, '<table:database-ranges>');
             fwrite($contentXmlHandle, $databaseRanges);
             fwrite($contentXmlHandle, '</table:database-ranges>');
@@ -179,7 +183,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     /**
      * Creates the "styles.xml" file under the root folder.
      *
-     * @param int $numWorksheets Number of created worksheets
+     * @param  int  $numWorksheets  Number of created worksheets
      */
     public function createStylesFile(StyleManager $styleManager, int $numWorksheets): self
     {
@@ -192,7 +196,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     /**
      * Zips the root folder and streams the contents of the zip into the given stream.
      *
-     * @param resource $streamPointer Pointer to the stream to copy the zip
+     * @param  resource  $streamPointer  Pointer to the stream to copy the zip
      */
     public function zipRootFolderAndCopyToStream($streamPointer): void
     {
@@ -280,7 +284,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
      */
     private function createMetaFile(): self
     {
-        $createdDate = (new DateTimeImmutable())->format(DateTimeImmutable::W3C);
+        $createdDate = (new DateTimeImmutable)->format(DateTimeImmutable::W3C);
 
         $metaXmlFileContents = <<<EOD
             <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -315,13 +319,13 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
      * Depending on which mode the target resource was created with, it will truncate then copy
      * or append the content to the target file.
      *
-     * @param string   $sourceFilePath Path of the file whose content will be copied
-     * @param resource $targetResource Target resource that will receive the content
+     * @param  string  $sourceFilePath  Path of the file whose content will be copied
+     * @param  resource  $targetResource  Target resource that will receive the content
      */
     private function copyFileContentsToTarget(string $sourceFilePath, $targetResource): void
     {
         $sourceHandle = fopen($sourceFilePath, 'r');
-        \assert(false !== $sourceHandle);
+        \assert($sourceHandle !== false);
         stream_copy_to_stream($sourceHandle, $targetResource);
         fclose($sourceHandle);
     }

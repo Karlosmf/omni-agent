@@ -14,7 +14,7 @@ trait CanOrderColumns
     /**
      * @param  array<string, int | Closure | null> | int | Closure | null  $order
      */
-    public function columnOrder(array | int | Closure | null $order): static
+    public function columnOrder(array|int|Closure|null $order): static
     {
         if ($order instanceof Closure) {
             $this->columnOrder[] = $order;
@@ -39,7 +39,7 @@ trait CanOrderColumns
     /**
      * @return array<string, ?int> | int | null
      */
-    public function getColumnOrder(int | string | null $breakpoint = null): array | int | null
+    public function getColumnOrder(int|string|null $breakpoint = null): array|int|null
     {
         $order = $this->columnOrder ?? [
             'default' => null,

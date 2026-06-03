@@ -48,49 +48,49 @@ trait CanExportRecords
 
     protected ?string $job = null;
 
-    protected int | Closure $chunkSize = 100;
+    protected int|Closure $chunkSize = 100;
 
-    protected int | Closure $columnMappingColumns = 1;
+    protected int|Closure $columnMappingColumns = 1;
 
-    protected int | Closure | null $maxRows = null;
+    protected int|Closure|null $maxRows = null;
 
-    protected string | Closure | null $csvDelimiter = null;
+    protected string|Closure|null $csvDelimiter = null;
 
     /**
      * @var array<string, mixed> | Closure
      */
-    protected array | Closure $options = [];
+    protected array|Closure $options = [];
 
-    protected string | Closure | null $fileDisk = null;
+    protected string|Closure|null $fileDisk = null;
 
-    protected string | Closure | null $fileName = null;
+    protected string|Closure|null $fileName = null;
 
     /**
      * @var array<ExportFormatInterface> | Closure | null
      */
-    protected array | Closure | null $formats = null;
+    protected array|Closure|null $formats = null;
 
     protected ?Closure $modifyQueryUsing = null;
 
-    protected bool | Closure $hasColumnMapping = true;
+    protected bool|Closure $hasColumnMapping = true;
 
-    protected bool | Closure $isEnablingVisibleTableColumnsByDefault = false;
+    protected bool|Closure $isEnablingVisibleTableColumnsByDefault = false;
 
-    protected string | Closure | null $authGuard = null;
+    protected string|Closure|null $authGuard = null;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->label(fn (ExportAction | ExportBulkAction $action): string => __('filament-actions::export.label', ['label' => $action->getPluralModelLabel()]));
+        $this->label(fn (ExportAction|ExportBulkAction $action): string => __('filament-actions::export.label', ['label' => $action->getPluralModelLabel()]));
 
-        $this->modalHeading(fn (ExportAction | ExportBulkAction $action): string => __('filament-actions::export.modal.heading', ['label' => $action->getTitleCasePluralModelLabel()]));
+        $this->modalHeading(fn (ExportAction|ExportBulkAction $action): string => __('filament-actions::export.modal.heading', ['label' => $action->getTitleCasePluralModelLabel()]));
 
         $this->modalSubmitActionLabel(__('filament-actions::export.modal.actions.export.label'));
 
         $this->groupedIcon(FilamentIcon::resolve(ActionsIconAlias::EXPORT_ACTION_GROUPED) ?? Heroicon::ArrowDownTray);
 
-        $this->schema(fn (ExportAction | ExportBulkAction $action): array => [
+        $this->schema(fn (ExportAction|ExportBulkAction $action): array => [
             ...($action->hasColumnMapping() ? [Fieldset::make(__('filament-actions::export.modal.form.columns.label'))
                 ->columns(match ($columns = $action->getColumnMappingColumns()) {
                     1 => 1,
@@ -184,7 +184,7 @@ trait CanExportRecords
             ...$action->getExporter()::getOptionsFormComponents(),
         ]);
 
-        $this->action(function (ExportAction | ExportBulkAction $action, array $data, Component $livewire): void {
+        $this->action(function (ExportAction|ExportBulkAction $action, array $data, Component $livewire): void {
             $exporter = $action->getExporter();
 
             if ($livewire instanceof HasTable) {
@@ -375,7 +375,7 @@ trait CanExportRecords
 
         $this->defaultColor('gray');
 
-        $this->modalWidth(static fn (ExportAction | ExportBulkAction $action): Width => match ($action->getColumnMappingColumns()) {
+        $this->modalWidth(static fn (ExportAction|ExportBulkAction $action): Width => match ($action->getColumnMappingColumns()) {
             1 => Width::Medium,
             2 => Width::ThreeExtraLarge,
             3 => Width::FiveExtraLarge,
@@ -394,7 +394,7 @@ trait CanExportRecords
         return 'export';
     }
 
-    public function columnMappingColumns(int | Closure $columns): static
+    public function columnMappingColumns(int|Closure $columns): static
     {
         $this->columnMappingColumns = $columns;
 
@@ -438,21 +438,21 @@ trait CanExportRecords
         return $this;
     }
 
-    public function chunkSize(int | Closure $size): static
+    public function chunkSize(int|Closure $size): static
     {
         $this->chunkSize = $size;
 
         return $this;
     }
 
-    public function maxRows(int | Closure | null $rows): static
+    public function maxRows(int|Closure|null $rows): static
     {
         $this->maxRows = $rows;
 
         return $this;
     }
 
-    public function csvDelimiter(string | Closure | null $delimiter): static
+    public function csvDelimiter(string|Closure|null $delimiter): static
     {
         $this->csvDelimiter = $delimiter;
 
@@ -488,7 +488,7 @@ trait CanExportRecords
     /**
      * @param  array<string, mixed> | Closure  $options
      */
-    public function options(array | Closure $options): static
+    public function options(array|Closure $options): static
     {
         $this->options = $options;
 
@@ -503,7 +503,7 @@ trait CanExportRecords
         return $this->evaluate($this->options);
     }
 
-    public function fileDisk(string | Closure | null $disk): static
+    public function fileDisk(string|Closure|null $disk): static
     {
         $this->fileDisk = $disk;
 
@@ -515,7 +515,7 @@ trait CanExportRecords
         return $this->evaluate($this->fileDisk);
     }
 
-    public function fileName(string | Closure | null $name): static
+    public function fileName(string|Closure|null $name): static
     {
         $this->fileName = $name;
 
@@ -532,7 +532,7 @@ trait CanExportRecords
     /**
      * @param  array<ExportFormatInterface> | Closure | null  $formats
      */
-    public function formats(array | Closure | null $formats): static
+    public function formats(array|Closure|null $formats): static
     {
         $this->formats = $formats;
 
@@ -554,7 +554,7 @@ trait CanExportRecords
         return $this;
     }
 
-    public function columnMapping(bool | Closure $condition = true): static
+    public function columnMapping(bool|Closure $condition = true): static
     {
         $this->hasColumnMapping = $condition;
 
@@ -566,7 +566,7 @@ trait CanExportRecords
         return (bool) $this->evaluate($this->hasColumnMapping);
     }
 
-    public function enableVisibleTableColumnsByDefault(bool | Closure $condition = true): static
+    public function enableVisibleTableColumnsByDefault(bool|Closure $condition = true): static
     {
         $this->isEnablingVisibleTableColumnsByDefault = $condition;
 
@@ -578,7 +578,7 @@ trait CanExportRecords
         return (bool) $this->evaluate($this->isEnablingVisibleTableColumnsByDefault);
     }
 
-    public function authGuard(string | Closure | null $authGuard): static
+    public function authGuard(string|Closure|null $authGuard): static
     {
         $this->authGuard = $authGuard;
 
@@ -610,7 +610,7 @@ trait CanExportRecords
      * @param  Model | array<string, mixed> | null  $record
      * @return Model | array<string, mixed> | null
      */
-    protected function ensureCorrectRecordType(Model | array | null $record): Model | array | null
+    protected function ensureCorrectRecordType(Model|array|null $record): Model|array|null
     {
         return $record;
     }

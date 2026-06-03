@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace ParagonIE\ConstantTime;
 
 use Override;
@@ -7,6 +9,7 @@ use RangeException;
 use SensitiveParameter;
 use SodiumException;
 use TypeError;
+
 use function extension_loaded;
 use function pack;
 use function sodium_bin2hex;
@@ -39,7 +42,6 @@ use function unpack;
 
 /**
  * Class Hex
- * @package ParagonIE\ConstantTime
  */
 abstract class Hex implements EncoderInterface
 {
@@ -47,8 +49,8 @@ abstract class Hex implements EncoderInterface
      * Convert a binary string into a hexadecimal string without cache-timing
      * leaks
      *
-     * @param string $binString (raw binary)
-     * @return string
+     * @param  string  $binString  (raw binary)
+     *
      * @throws TypeError
      */
     #[Override]
@@ -65,10 +67,10 @@ abstract class Hex implements EncoderInterface
         }
         $hex = '';
         $len = strlen($binString);
-        for ($i = 0; $i < $len; ++$i) {
+        for ($i = 0; $i < $len; $i++) {
             /** @var array<int, int> $chunk */
             $chunk = unpack('C', $binString[$i]);
-            $c = $chunk[1] & 0xf;
+            $c = $chunk[1] & 0xF;
             $b = $chunk[1] >> 4;
 
             $hex .= pack(
@@ -77,6 +79,7 @@ abstract class Hex implements EncoderInterface
                 (87 + $c + ((($c - 10) >> 8) & ~38))
             );
         }
+
         return $hex;
     }
 
@@ -84,8 +87,8 @@ abstract class Hex implements EncoderInterface
      * Convert a binary string into a hexadecimal string without cache-timing
      * leaks, returning uppercase letters (as per RFC 4648)
      *
-     * @param string $binString (raw binary)
-     * @return string
+     * @param  string  $binString  (raw binary)
+     *
      * @throws TypeError
      */
     public static function encodeUpper(
@@ -95,10 +98,10 @@ abstract class Hex implements EncoderInterface
         $hex = '';
         $len = strlen($binString);
 
-        for ($i = 0; $i < $len; ++$i) {
+        for ($i = 0; $i < $len; $i++) {
             /** @var array<int, int> $chunk */
             $chunk = unpack('C', $binString[$i]);
-            $c = $chunk[1] & 0xf;
+            $c = $chunk[1] & 0xF;
             $b = $chunk[1] >> 4;
 
             $hex .= pack(
@@ -107,6 +110,7 @@ abstract class Hex implements EncoderInterface
                 (55 + $c + ((($c - 10) >> 8) & ~6))
             );
         }
+
         return $hex;
     }
 
@@ -114,9 +118,8 @@ abstract class Hex implements EncoderInterface
      * Convert a hexadecimal string into a binary string without cache-timing
      * leaks
      *
-     * @param string $encodedString
-     * @param bool $strictPadding
      * @return string (raw binary)
+     *
      * @throws RangeException
      */
     #[Override]
@@ -143,15 +146,15 @@ abstract class Hex implements EncoderInterface
                     'Expected an even number of hexadecimal characters'
                 );
             } else {
-                $encodedString = '0' . $encodedString;
-                ++$hex_len;
+                $encodedString = '0'.$encodedString;
+                $hex_len++;
             }
         }
 
         /** @var array<int, int> $chunk */
         $chunk = unpack('C*', $encodedString);
         while ($hex_pos < $hex_len) {
-            ++$hex_pos;
+            $hex_pos++;
             $c = $chunk[$hex_pos];
             $c_num = $c ^ 48;
             $c_num0 = ($c_num - 10) >> 8;
@@ -171,6 +174,7 @@ abstract class Hex implements EncoderInterface
             }
             $state ^= 1;
         }
+
         return $bin;
     }
 }

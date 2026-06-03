@@ -1,10 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace PhpParser;
 
-require __DIR__ . '/compatibility_tokens.php';
+require __DIR__.'/compatibility_tokens.php';
 
-class Lexer {
+class Lexer
+{
     /**
      * Tokenize the provided source code.
      *
@@ -16,14 +19,15 @@ class Lexer {
      * The token array does not discard any tokens (i.e. whitespace and comments are included).
      * The token position attributes are against this token array.
      *
-     * @param string $code The source code to tokenize.
-     * @param ErrorHandler|null $errorHandler Error handler to use for lexing errors. Defaults to
-     *                                        ErrorHandler\Throwing.
+     * @param  string  $code  The source code to tokenize.
+     * @param  ErrorHandler|null  $errorHandler  Error handler to use for lexing errors. Defaults to
+     *                                           ErrorHandler\Throwing.
      * @return Token[] Tokens
      */
-    public function tokenize(string $code, ?ErrorHandler $errorHandler = null): array {
-        if (null === $errorHandler) {
-            $errorHandler = new ErrorHandler\Throwing();
+    public function tokenize(string $code, ?ErrorHandler $errorHandler = null): array
+    {
+        if ($errorHandler === null) {
+            $errorHandler = new ErrorHandler\Throwing;
         }
 
         $scream = ini_set('xdebug.scream', '0');
@@ -31,14 +35,15 @@ class Lexer {
         $tokens = @Token::tokenize($code);
         $this->postprocessTokens($tokens, $errorHandler);
 
-        if (false !== $scream) {
+        if ($scream !== false) {
             ini_set('xdebug.scream', $scream);
         }
 
         return $tokens;
     }
 
-    private function handleInvalidCharacter(Token $token, ErrorHandler $errorHandler): void {
+    private function handleInvalidCharacter(Token $token, ErrorHandler $errorHandler): void
+    {
         $chr = $token->text;
         if ($chr === "\0") {
             // PHP cuts error message after null byte, so need special case
@@ -57,16 +62,18 @@ class Lexer {
         ]));
     }
 
-    private function isUnterminatedComment(Token $token): bool {
+    private function isUnterminatedComment(Token $token): bool
+    {
         return $token->is([\T_COMMENT, \T_DOC_COMMENT])
             && substr($token->text, 0, 2) === '/*'
             && substr($token->text, -2) !== '*/';
     }
 
     /**
-     * @param list<Token> $tokens
+     * @param  list<Token>  $tokens
      */
-    protected function postprocessTokens(array &$tokens, ErrorHandler $errorHandler): void {
+    protected function postprocessTokens(array &$tokens, ErrorHandler $errorHandler): void
+    {
         // This function reports errors (bad characters and unterminated comments) in the token
         // array, and performs certain canonicalizations:
         //  * Use PHP 8.1 T_AMPERSAND_NOT_FOLLOWED_BY_VAR_OR_VARARG and
@@ -77,6 +84,7 @@ class Lexer {
         if ($numTokens === 0) {
             // Empty input edge case: Just add the sentinel token.
             $tokens[] = new Token(0, "\0", 1, 0);
+
             return;
         }
 

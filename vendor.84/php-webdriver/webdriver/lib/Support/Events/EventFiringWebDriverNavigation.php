@@ -12,6 +12,7 @@ class EventFiringWebDriverNavigation implements WebDriverNavigationInterface
      * @var WebDriverNavigationInterface
      */
     protected $navigator;
+
     /**
      * @var WebDriverDispatcher
      */
@@ -116,12 +117,12 @@ class EventFiringWebDriverNavigation implements WebDriverNavigationInterface
     }
 
     /**
-     * @param mixed $method
-     * @param mixed ...$arguments
+     * @param  mixed  $method
+     * @param  mixed  ...$arguments
      */
     protected function dispatch($method, ...$arguments)
     {
-        if (!$this->dispatcher) {
+        if (! $this->dispatcher) {
             return;
         }
 

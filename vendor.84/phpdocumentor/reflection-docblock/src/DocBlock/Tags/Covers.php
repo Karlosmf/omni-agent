@@ -38,7 +38,7 @@ final class Covers extends BaseTag implements Factory\StaticMethod
      */
     public function __construct(Fqsen $refers, ?Description $description = null)
     {
-        $this->refers      = $refers;
+        $this->refers = $refers;
         $this->description = $description;
     }
 
@@ -54,7 +54,7 @@ final class Covers extends BaseTag implements Factory\StaticMethod
 
         $parts = Utils::pregSplit('/\s+/Su', $body, 2);
 
-        return new static(
+        return new self(
             self::resolveFqsen($parts[0], $resolver, $context),
             $descriptionFactory->create($parts[1] ?? '', $context)
         );
@@ -66,11 +66,11 @@ final class Covers extends BaseTag implements Factory\StaticMethod
         $fqsenParts = explode('::', $parts);
         $resolved = $fqsenResolver->resolve($fqsenParts[0], $context);
 
-        if (!array_key_exists(1, $fqsenParts)) {
+        if (! array_key_exists(1, $fqsenParts)) {
             return $resolved;
         }
 
-        return new Fqsen($resolved . '::' . $fqsenParts[1]);
+        return new Fqsen($resolved.'::'.$fqsenParts[1]);
     }
 
     /**
@@ -94,6 +94,6 @@ final class Covers extends BaseTag implements Factory\StaticMethod
 
         $refers = (string) $this->refers;
 
-        return $refers . ($description !== '' ? ($refers !== '' ? ' ' : '') . $description : '');
+        return $refers.($description !== '' ? ($refers !== '' ? ' ' : '').$description : '');
     }
 }

@@ -23,14 +23,19 @@ final class ReferenceParser
 {
     // Looking for the start of a definition, i.e. `[`
     private const START_DEFINITION = 0;
+
     // Looking for and parsing the label, i.e. `[foo]` within `[foo]`
     private const LABEL = 1;
+
     // Parsing the destination, i.e. `/url` in `[foo]: /url`
     private const DESTINATION = 2;
+
     // Looking for the start of a title, i.e. the first `"` in `[foo]: /url "title"`
     private const START_TITLE = 3;
+
     // Parsing the content of the title, i.e. `title` in `[foo]: /url "title"`
     private const TITLE = 4;
+
     // End state, no matter what kind of lines we add, they won't be references
     private const PARAGRAPH = 5;
 
@@ -213,7 +218,7 @@ final class ReferenceParser
             // Destination was at end of line, so this is a valid reference for sure (and maybe a title).
             // If not at end of line, wait for title to be valid first.
             $this->referenceValid = true;
-            $this->paragraph      = '';
+            $this->paragraph = '';
         } elseif ($advanced === 0) {
             // spec: The title must be separated from the link destination by whitespace
             return false;
@@ -315,10 +320,10 @@ final class ReferenceParser
         /** @psalm-suppress PossiblyNullArgument -- these can't possibly be null if we're in this state */
         $this->references[] = new Reference($this->label, $this->destination, $this->title);
 
-        $this->label          = null;
+        $this->label = null;
         $this->referenceValid = false;
-        $this->destination    = null;
-        $this->title          = '';
+        $this->destination = null;
+        $this->title = '';
         $this->titleDelimiter = null;
     }
 }

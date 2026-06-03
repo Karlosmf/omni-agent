@@ -30,14 +30,14 @@ final class QueryParameterValueResolver implements ValueResolverInterface
 {
     public function resolve(Request $request, ArgumentMetadata $argument): array
     {
-        if (!$attribute = $argument->getAttributesOfType(MapQueryParameter::class)[0] ?? null) {
+        if (! $attribute = $argument->getAttributesOfType(MapQueryParameter::class)[0] ?? null) {
             return [];
         }
 
         $name = $attribute->name ?? $argument->getName();
         $validationFailedCode = $attribute->validationFailedStatusCode;
 
-        if (!$request->query->has($name)) {
+        if (! $request->query->has($name)) {
             if ($argument->isNullable() || $argument->hasDefaultValue()) {
                 return [];
             }
@@ -48,14 +48,14 @@ final class QueryParameterValueResolver implements ValueResolverInterface
         $value = $request->query->all()[$name];
         $type = $argument->getType();
 
-        if (null === $attribute->filter && 'array' === $type) {
-            if (!$argument->isVariadic()) {
+        if ($attribute->filter === null && $type === 'array') {
+            if (! $argument->isVariadic()) {
                 return [(array) $value];
             }
 
             $filtered = array_values(array_filter((array) $value, \is_array(...)));
 
-            if ($filtered !== $value && !($attribute->flags & \FILTER_NULL_ON_FAILURE)) {
+            if ($filtered !== $value && ! ($attribute->flags & \FILTER_NULL_ON_FAILURE)) {
                 throw HttpException::fromStatusCode($validationFailedCode, \sprintf('Invalid query parameter "%s".', $name));
             }
 
@@ -67,7 +67,7 @@ final class QueryParameterValueResolver implements ValueResolverInterface
             'options' => $attribute->options,
         ];
 
-        if ('array' === $type || $argument->isVariadic()) {
+        if ($type === 'array' || $argument->isVariadic()) {
             $value = (array) $value;
             $options['flags'] |= \FILTER_REQUIRE_ARRAY;
         } else {
@@ -97,9 +97,9 @@ final class QueryParameterValueResolver implements ValueResolverInterface
 
         $value = filter_var($value, $attribute->filter ?? $filter, $options);
 
-        if (null !== $enumType && null !== $value) {
+        if ($enumType !== null && $value !== null) {
             $enumFrom = static function ($value) use ($type) {
-                if (!\is_string($value) && !\is_int($value)) {
+                if (! \is_string($value) && ! \is_int($value)) {
                     return null;
                 }
 
@@ -113,25 +113,25 @@ final class QueryParameterValueResolver implements ValueResolverInterface
             $value = \is_array($value) ? array_map($enumFrom, $value) : $enumFrom($value);
         }
 
-        if (null !== $uidType) {
+        if ($uidType !== null) {
             $value = \is_array($value) ? array_map([$uidType, 'fromString'], $value) : $uidType::fromString($value);
         }
 
-        if (null === $value && !($attribute->flags & \FILTER_NULL_ON_FAILURE)) {
+        if ($value === null && ! ($attribute->flags & \FILTER_NULL_ON_FAILURE)) {
             throw HttpException::fromStatusCode($validationFailedCode, \sprintf('Invalid query parameter "%s".', $name));
         }
 
-        if (!\is_array($value)) {
+        if (! \is_array($value)) {
             return [$value];
         }
 
-        $filtered = array_filter($value, static fn ($v) => null !== $v);
+        $filtered = array_filter($value, static fn ($v) => $v !== null);
 
         if ($argument->isVariadic()) {
             $filtered = array_values($filtered);
         }
 
-        if ($filtered !== $value && !($attribute->flags & \FILTER_NULL_ON_FAILURE)) {
+        if ($filtered !== $value && ! ($attribute->flags & \FILTER_NULL_ON_FAILURE)) {
             throw HttpException::fromStatusCode($validationFailedCode, \sprintf('Invalid query parameter "%s".', $name));
         }
 

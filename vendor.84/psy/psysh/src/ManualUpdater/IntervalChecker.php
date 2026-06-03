@@ -19,8 +19,11 @@ namespace Psy\ManualUpdater;
 class IntervalChecker implements Checker
 {
     private Checker $checker;
+
     private string $cacheFile;
+
     private string $interval;
+
     private ?array $cached = null;
 
     public function __construct(Checker $checker, string $cacheFile, string $interval)
@@ -85,12 +88,12 @@ class IntervalChecker implements Checker
 
     private function isCacheValid(): bool
     {
-        if (!isset($this->cached['last_check'])) {
+        if (! isset($this->cached['last_check'])) {
             return false;
         }
 
         try {
-            $now = new \DateTime();
+            $now = new \DateTime;
             $lastCheck = new \DateTime($this->cached['last_check']);
 
             return $lastCheck >= $now->sub($this->getDateInterval());

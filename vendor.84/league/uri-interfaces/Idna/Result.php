@@ -23,11 +23,10 @@ final class Result
         private readonly bool $isTransitionalDifferent,
         /** @var array<Error> */
         private readonly array $errors
-    ) {
-    }
+    ) {}
 
     /**
-     * @param array{result:string, isTransitionalDifferent:bool, errors:int} $infos
+     * @param  array{result:string, isTransitionalDifferent:bool, errors:int}  $infos
      */
     public static function fromIntl(array $infos): self
     {
@@ -54,7 +53,7 @@ final class Result
 
     public function hasErrors(): bool
     {
-        return [] !== $this->errors;
+        return $this->errors !== [];
     }
 
     public function hasError(Error $error): bool

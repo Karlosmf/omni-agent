@@ -6,9 +6,9 @@ use Closure;
 
 trait HasUnsavedChangesAlerts
 {
-    protected bool | Closure $hasUnsavedChangesAlerts = false;
+    protected bool|Closure $hasUnsavedChangesAlerts = false;
 
-    public function unsavedChangesAlerts(bool | Closure $condition = true): static
+    public function unsavedChangesAlerts(bool|Closure $condition = true): static
     {
         $this->hasUnsavedChangesAlerts = $condition;
 

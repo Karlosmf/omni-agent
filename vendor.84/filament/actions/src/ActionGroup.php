@@ -100,7 +100,7 @@ class ActionGroup extends ViewComponent implements Arrayable, HasEmbeddedView
     /**
      * @var view-string | Closure | null
      */
-    protected string | Closure | null $defaultTriggerView = null;
+    protected string|Closure|null $defaultTriggerView = null;
 
     /**
      * @var array<array<mixed> | Closure>
@@ -166,7 +166,7 @@ class ActionGroup extends ViewComponent implements Arrayable, HasEmbeddedView
         return $this->getTriggerView() === static::BADGE_VIEW;
     }
 
-    public function badge(string | int | float | Closure | null $badge = null): static
+    public function badge(string|int|float|Closure|null $badge = null): static
     {
         if (func_num_args() === 0) {
             /** @phpstan-ignore-next-line */
@@ -223,7 +223,7 @@ class ActionGroup extends ViewComponent implements Arrayable, HasEmbeddedView
         return $this->getTriggerView() === static::LINK_VIEW;
     }
 
-    public function getLabel(): string | Htmlable | null
+    public function getLabel(): string|Htmlable|null
     {
         $label = $this->evaluate($this->label) ?? __('filament-actions::group.trigger.label');
 
@@ -238,7 +238,7 @@ class ActionGroup extends ViewComponent implements Arrayable, HasEmbeddedView
     public function getActions(): array
     {
         return array_map(
-            fn (Action | ActionGroup $action) => match (true) {
+            fn (Action|ActionGroup $action) => match (true) {
                 $action instanceof Action => $action->defaultView($this->isButtonGroup() ? $action::BUTTON_VIEW : $action::GROUPED_VIEW),
                 $action instanceof ActionGroup => $action->defaultTriggerView($this->isButtonGroup() ? $action::BUTTON_VIEW : $action::GROUPED_VIEW),
             },
@@ -265,7 +265,7 @@ class ActionGroup extends ViewComponent implements Arrayable, HasEmbeddedView
         return false;
     }
 
-    public function getIcon(): string | BackedEnum | Htmlable
+    public function getIcon(): string|BackedEnum|Htmlable
     {
         return $this->getBaseIcon() ?? FilamentIcon::resolve(ActionsIconAlias::ACTION_GROUP) ?? Heroicon::EllipsisVertical;
     }
@@ -330,7 +330,7 @@ class ActionGroup extends ViewComponent implements Arrayable, HasEmbeddedView
     {
         $static = static::make(
             array_map(
-                fn (array $action): Action | ActionGroup => match (array_key_exists('actions', $action)) {
+                fn (array $action): Action|ActionGroup => match (array_key_exists('actions', $action)) {
                     true => ActionGroup::fromArray($action),
                     false => Action::fromArray($action),
                 },
@@ -469,8 +469,8 @@ class ActionGroup extends ViewComponent implements Arrayable, HasEmbeddedView
 
         if (! $this->hasDropdown()) {
             return collect($this->getActions())
-                ->filter(fn (Action | ActionGroup $action): bool => $action->isVisible())
-                ->map(fn (Action | ActionGroup $action): string => $action->toHtml())
+                ->filter(fn (Action|ActionGroup $action): bool => $action->isVisible())
+                ->map(fn (Action|ActionGroup $action): string => $action->toHtml())
                 ->implode('');
         }
 
@@ -565,7 +565,7 @@ class ActionGroup extends ViewComponent implements Arrayable, HasEmbeddedView
     /**
      * @param  view-string | Closure | null  $view
      */
-    public function defaultTriggerView(string | Closure | null $view): static
+    public function defaultTriggerView(string|Closure|null $view): static
     {
         $this->defaultTriggerView = $view;
 
@@ -585,7 +585,7 @@ class ActionGroup extends ViewComponent implements Arrayable, HasEmbeddedView
             return $defaultView;
         }
 
-        throw new LogicException('Class [' . static::class . '] extends [' . ActionGroup::class . '] but does not have a [$triggerView] property defined.');
+        throw new LogicException('Class ['.static::class.'] extends ['.ActionGroup::class.'] but does not have a [$triggerView] property defined.');
     }
 
     /**
@@ -727,7 +727,7 @@ class ActionGroup extends ViewComponent implements Arrayable, HasEmbeddedView
     protected function cloneActions(): void
     {
         $this->actions = array_map(
-            fn (Action | ActionGroup $action): Action | ActionGroup => $action->getClone()->group($this),
+            fn (Action|ActionGroup $action): Action|ActionGroup => $action->getClone()->group($this),
             $this->actions,
         );
 
@@ -740,7 +740,7 @@ class ActionGroup extends ViewComponent implements Arrayable, HasEmbeddedView
     /**
      * @param  array<mixed> | Closure  $attributes
      */
-    public function extraDropdownAttributes(array | Closure $attributes, bool $merge = false): static
+    public function extraDropdownAttributes(array|Closure $attributes, bool $merge = false): static
     {
         if ($merge) {
             $this->extraDropdownAttributes[] = $attributes;

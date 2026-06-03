@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,10 +9,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Report\Html;
 
-use function is_file;
 use SebastianBergmann\CodeCoverage\InvalidArgumentException;
+
+use function is_file;
 
 /**
  * @immutable
@@ -21,7 +25,7 @@ final readonly class CustomCssFile
 
     public static function default(): self
     {
-        return new self(__DIR__ . '/Renderer/Template/css/custom.css');
+        return new self(__DIR__.'/Renderer/Template/css/custom.css');
     }
 
     /**
@@ -29,7 +33,7 @@ final readonly class CustomCssFile
      */
     public static function from(string $path): self
     {
-        if (!is_file($path)) {
+        if (! is_file($path)) {
             throw new InvalidArgumentException(
                 '$path does not exist',
             );

@@ -48,7 +48,7 @@ abstract class AbstractWebDriverCheckboxOrRadio implements WebDriverSelectInterf
             if ($element->isSelected()) {
                 $selectedElement[] = $element;
 
-                if (!$this->isMultiple()) {
+                if (! $this->isMultiple()) {
                     return $selectedElement;
                 }
             }
@@ -93,8 +93,9 @@ abstract class AbstractWebDriverCheckboxOrRadio implements WebDriverSelectInterf
     /**
      * Selects or deselects a checkbox or a radio button by its value.
      *
-     * @param string $value
-     * @param bool $select
+     * @param  string  $value
+     * @param  bool  $select
+     *
      * @throws NoSuchElementException
      */
     protected function byValue($value, $select = true)
@@ -102,14 +103,14 @@ abstract class AbstractWebDriverCheckboxOrRadio implements WebDriverSelectInterf
         $matched = false;
         foreach ($this->getRelatedElements($value) as $element) {
             $select ? $this->selectOption($element) : $this->deselectOption($element);
-            if (!$this->isMultiple()) {
+            if (! $this->isMultiple()) {
                 return;
             }
 
             $matched = true;
         }
 
-        if (!$matched) {
+        if (! $matched) {
             throw new NoSuchElementException(
                 sprintf('Cannot locate %s with value: %s', $this->type, $value)
             );
@@ -119,14 +120,15 @@ abstract class AbstractWebDriverCheckboxOrRadio implements WebDriverSelectInterf
     /**
      * Selects or deselects a checkbox or a radio button by its index.
      *
-     * @param int $index
-     * @param bool $select
+     * @param  int  $index
+     * @param  bool  $select
+     *
      * @throws NoSuchElementException
      */
     protected function byIndex($index, $select = true)
     {
         $elements = $this->getRelatedElements();
-        if (!isset($elements[$index])) {
+        if (! isset($elements[$index])) {
             throw new NoSuchElementException(sprintf('Cannot locate %s with index: %d', $this->type, $index));
         }
 
@@ -136,9 +138,9 @@ abstract class AbstractWebDriverCheckboxOrRadio implements WebDriverSelectInterf
     /**
      * Selects or deselects a checkbox or a radio button by its visible text.
      *
-     * @param string $text
-     * @param bool $partial
-     * @param bool $select
+     * @param  string  $text
+     * @param  bool  $partial
+     * @param  bool  $select
      */
     protected function byVisibleText($text, $partial = false, $select = true)
     {
@@ -178,7 +180,7 @@ abstract class AbstractWebDriverCheckboxOrRadio implements WebDriverSelectInterf
             }
 
             $select ? $this->selectOption($element) : $this->deselectOption($element);
-            if (!$this->isMultiple()) {
+            if (! $this->isMultiple()) {
                 return;
             }
         }
@@ -187,7 +189,7 @@ abstract class AbstractWebDriverCheckboxOrRadio implements WebDriverSelectInterf
     /**
      * Gets checkboxes or radio buttons with the same name.
      *
-     * @param string|null $value
+     * @param  string|null  $value
      * @return WebDriverElement[]
      */
     protected function getRelatedElements($value = null)
@@ -209,8 +211,8 @@ abstract class AbstractWebDriverCheckboxOrRadio implements WebDriverSelectInterf
         return $this->element->findElements(
             WebDriverBy::xpath(sprintf(
                 '//form[@id = %1$s]//input[@name = %2$s%3$s'
-                . ' and ((boolean(@form) = true() and @form = %1$s) or boolean(@form) = false())]'
-                . ' | //input[@form = %1$s and @name = %2$s%3$s]',
+                .' and ((boolean(@form) = true() and @form = %1$s) or boolean(@form) = false())]'
+                .' | //input[@form = %1$s and @name = %2$s%3$s]',
                 XPathEscaper::escapeQuotes($formId),
                 XPathEscaper::escapeQuotes($this->name),
                 $valueSelector
@@ -223,7 +225,7 @@ abstract class AbstractWebDriverCheckboxOrRadio implements WebDriverSelectInterf
      */
     protected function selectOption(WebDriverElement $element)
     {
-        if (!$element->isSelected()) {
+        if (! $element->isSelected()) {
             $element->click();
         }
     }

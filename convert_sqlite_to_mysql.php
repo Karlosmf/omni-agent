@@ -1,14 +1,14 @@
 <?php
+
 /**
  * Conversor Final de SQLite a MySQL
  * Implementa REPLACE INTO para evitar errores de duplicados.
  */
-
 $inputFile = 'raw_dump.sql';
 $outputFile = 'database_mysql_converted.sql';
 
-if (!file_exists($inputFile)) {
-    die("Error: Genera el dump: sqlite3 database/database.sqlite .dump > raw_dump.sql\n");
+if (! file_exists($inputFile)) {
+    exit("Error: Genera el dump: sqlite3 database/database.sqlite .dump > raw_dump.sql\n");
 }
 
 $input = file_get_contents($inputFile);
@@ -20,7 +20,7 @@ $output .= "SET NAMES utf8mb4;\n\n";
 
 $lines = explode("\n", $input);
 $processedLines = [];
-$buffer = "";
+$buffer = '';
 $inCreate = false;
 
 foreach ($lines as $line) {
@@ -28,20 +28,24 @@ foreach ($lines as $line) {
         $inCreate = true;
         $buffer = $line;
     } elseif ($inCreate) {
-        $buffer .= " " . $line;
+        $buffer .= ' '.$line;
         if (str_ends_with(trim($line), ');') || str_ends_with(trim($line), ')')) {
             $processedLines[] = $buffer;
-            $buffer = "";
+            $buffer = '';
             $inCreate = false;
         }
     } else {
-        if (!empty(trim($line))) $processedLines[] = $line;
+        if (! empty(trim($line))) {
+            $processedLines[] = $line;
+        }
     }
 }
 
 foreach ($processedLines as $line) {
     $line = trim($line);
-    if (preg_match('/^(PRAGMA|BEGIN TRANSACTION|COMMIT|CREATE INDEX|UNIQUE INDEX|DELETE FROM sqlite_sequence)/i', $line) || str_contains($line, 'sqlite_sequence')) continue;
+    if (preg_match('/^(PRAGMA|BEGIN TRANSACTION|COMMIT|CREATE INDEX|UNIQUE INDEX|DELETE FROM sqlite_sequence)/i', $line) || str_contains($line, 'sqlite_sequence')) {
+        continue;
+    }
 
     if (stripos($line, 'CREATE TABLE') === 0) {
         if (preg_match('/CREATE TABLE\s+"?([a-zA-Z0-9_]+)"?\s*\((.*)\)/is', $line, $m)) {
@@ -58,7 +62,7 @@ foreach ($processedLines as $line) {
             $content = preg_replace('/check\s*\([^)]+\)/i', '', $content);
             $content = preg_replace('/NOT NULL\s+NOT NULL/i', 'NOT NULL', $content);
             $content = preg_replace('/,\s*,/', ',', $content);
-            $content = trim($content, " ,");
+            $content = trim($content, ' ,');
 
             $output .= "DROP TABLE IF EXISTS `$table`;\n";
             $output .= "CREATE TABLE `$table` ($content) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;\n\n";
@@ -67,7 +71,7 @@ foreach ($processedLines as $line) {
         // CAMBIO CLAVE: Usamos REPLACE INTO en lugar de INSERT INTO
         $line = preg_replace('/INSERT INTO/i', 'REPLACE INTO', $line);
         $line = str_replace('"', '`', $line);
-        $output .= $line . "\n";
+        $output .= $line."\n";
     }
 }
 

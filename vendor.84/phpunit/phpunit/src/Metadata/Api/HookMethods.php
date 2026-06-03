@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,12 +9,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Metadata\Api;
 
-use function assert;
-use function class_exists;
-use function in_array;
-use function strtolower;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Metadata\After;
 use PHPUnit\Metadata\AfterClass;
@@ -27,6 +26,11 @@ use PHPUnit\Util\Reflection;
 use ReflectionClass;
 use ReflectionMethod;
 
+use function assert;
+use function class_exists;
+use function in_array;
+use function strtolower;
+
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  *
@@ -40,13 +44,12 @@ final class HookMethods
     private static array $hookMethods = [];
 
     /**
-     * @param class-string<TestCase> $className
-     *
+     * @param  class-string<TestCase>  $className
      * @return array{beforeClass: HookMethodCollection, before: HookMethodCollection, preCondition: HookMethodCollection, postCondition: HookMethodCollection, after: HookMethodCollection, afterClass: HookMethodCollection}
      */
     public function hookMethods(string $className): array
     {
-        if (!class_exists($className)) {
+        if (! class_exists($className)) {
             return self::emptyHookMethodsArray();
         }
 
@@ -58,7 +61,7 @@ final class HookMethods
 
         foreach (Reflection::methodsDeclaredDirectlyInTestClass(new ReflectionClass($className)) as $method) {
             $methodName = $method->getName();
-            $metadata   = Registry::parser()->forMethod($className, $methodName);
+            $metadata = Registry::parser()->forMethod($className, $methodName);
 
             if ($method->isStatic()) {
                 if ($metadata->isBeforeClass()->isNotEmpty()) {
@@ -151,12 +154,12 @@ final class HookMethods
     private function emptyHookMethodsArray(): array
     {
         return [
-            'beforeClass'   => HookMethodCollection::defaultBeforeClass(),
-            'before'        => HookMethodCollection::defaultBefore(),
-            'preCondition'  => HookMethodCollection::defaultPreCondition(),
+            'beforeClass' => HookMethodCollection::defaultBeforeClass(),
+            'before' => HookMethodCollection::defaultBefore(),
+            'preCondition' => HookMethodCollection::defaultPreCondition(),
             'postCondition' => HookMethodCollection::defaultPostCondition(),
-            'after'         => HookMethodCollection::defaultAfter(),
-            'afterClass'    => HookMethodCollection::defaultAfterClass(),
+            'after' => HookMethodCollection::defaultAfter(),
+            'afterClass' => HookMethodCollection::defaultAfterClass(),
         ];
     }
 }

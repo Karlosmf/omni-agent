@@ -30,7 +30,7 @@ final class SkipOnOSFamilyFinder implements CpuCoreFinder
     private $decoratedFinder;
 
     /**
-     * @param string|list<string> $skippedOSFamilyOrFamilies
+     * @param  string|list<string>  $skippedOSFamilyOrFamilies
      */
     public function __construct(
         $skippedOSFamilyOrFamilies,

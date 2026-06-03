@@ -24,12 +24,12 @@ use Symfony\Component\Mime\Message;
 final class DelayedEnvelope extends Envelope
 {
     private bool $senderSet = false;
+
     private bool $recipientsSet = false;
 
     public function __construct(
         private Message $message,
-    ) {
-    }
+    ) {}
 
     public function setSender(Address $sender): void
     {
@@ -40,7 +40,7 @@ final class DelayedEnvelope extends Envelope
 
     public function getSender(): Address
     {
-        if (!$this->senderSet) {
+        if (! $this->senderSet) {
             parent::setSender(self::getSenderFromHeaders($this->message->getHeaders()));
         }
 

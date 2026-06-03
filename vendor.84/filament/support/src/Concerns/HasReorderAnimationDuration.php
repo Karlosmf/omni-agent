@@ -6,9 +6,9 @@ use Closure;
 
 trait HasReorderAnimationDuration
 {
-    protected int | Closure $reorderAnimationDuration = 300;
+    protected int|Closure $reorderAnimationDuration = 300;
 
-    public function reorderAnimationDuration(int | Closure $animation): static
+    public function reorderAnimationDuration(int|Closure $animation): static
     {
         $this->reorderAnimationDuration = $animation;
 

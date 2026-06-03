@@ -29,7 +29,7 @@ final class OscaroteroEmbedAdapter implements EmbedAdapterInterface
                 throw new MissingDependencyException('The embed/embed package is not installed. Please install it with Composer to use this adapter.');
             }
 
-            $embed = new EmbedLib();
+            $embed = new EmbedLib;
         }
 
         $this->embedLib = $embed;

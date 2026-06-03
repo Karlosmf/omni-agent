@@ -17,6 +17,7 @@ class Interval
 {
     /** @var Constraint */
     private $start;
+
     /** @var Constraint */
     private $end;
 
@@ -49,7 +50,7 @@ class Interval
     {
         static $zero;
 
-        if (null === $zero) {
+        if ($zero === null) {
             $zero = new Constraint('>=', '0.0.0.0-dev');
         }
 
@@ -63,7 +64,7 @@ class Interval
     {
         static $positiveInfinity;
 
-        if (null === $positiveInfinity) {
+        if ($positiveInfinity === null) {
             $positiveInfinity = new Constraint('<', PHP_INT_MAX.'.0.0.0');
         }
 
@@ -84,7 +85,7 @@ class Interval
     public static function anyDev()
     {
         // any == exclude nothing
-        return array('names' => array(), 'exclude' => true);
+        return ['names' => [], 'exclude' => true];
     }
 
     /**
@@ -93,6 +94,6 @@ class Interval
     public static function noDev()
     {
         // nothing == no names included
-        return array('names' => array(), 'exclude' => false);
+        return ['names' => [], 'exclude' => false];
     }
 }

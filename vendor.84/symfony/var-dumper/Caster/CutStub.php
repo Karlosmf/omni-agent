@@ -56,7 +56,7 @@ class CutStub extends Stub
             case 'string':
                 $this->type = self::TYPE_STRING;
                 $this->class = preg_match('//u', $value) ? self::STRING_UTF8 : self::STRING_BINARY;
-                $this->cut = self::STRING_BINARY === $this->class ? \strlen($value) : mb_strlen($value, 'UTF-8');
+                $this->cut = $this->class === self::STRING_BINARY ? \strlen($value) : mb_strlen($value, 'UTF-8');
                 $this->value = '';
                 break;
         }

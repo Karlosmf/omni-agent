@@ -7,7 +7,7 @@ interface TypeFilter
     /**
      * Applies the filter to the object.
      *
-     * @param mixed $element
+     * @param  mixed  $element
      */
     public function apply($element);
 }

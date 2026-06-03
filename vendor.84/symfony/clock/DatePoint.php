@@ -25,9 +25,9 @@ final class DatePoint extends \DateTimeImmutable
     {
         $now = $reference ?? Clock::get()->now();
 
-        if ('now' !== $datetime) {
-            if (!$now instanceof static) {
-                $now = static::createFromInterface($now);
+        if ($datetime !== 'now') {
+            if (! $now instanceof self) {
+                $now = self::createFromInterface($now);
             }
 
             $builtInDate = new parent($datetime, $timezone ?? $now->getTimezone());
@@ -35,10 +35,10 @@ final class DatePoint extends \DateTimeImmutable
 
             $now = $now->setTimezone($timezone)->modify($datetime);
 
-            if ('00:00:00.000000' === $builtInDate->format('H:i:s.u')) {
+            if ($builtInDate->format('H:i:s.u') === '00:00:00.000000') {
                 $now = $now->setTime(0, 0);
             }
-        } elseif (null !== $timezone) {
+        } elseif ($timezone !== null) {
             $now = $now->setTimezone($timezone);
         }
 
@@ -50,7 +50,7 @@ final class DatePoint extends \DateTimeImmutable
      */
     public static function createFromFormat(string $format, string $datetime, ?\DateTimeZone $timezone = null): static
     {
-        return parent::createFromFormat($format, $datetime, $timezone) ?: throw new \DateMalformedStringException(static::getLastErrors()['errors'][0] ?? 'Invalid date string or format.');
+        return parent::createFromFormat($format, $datetime, $timezone) ?: throw new \DateMalformedStringException(self::getLastErrors()['errors'][0] ?? 'Invalid date string or format.');
     }
 
     public static function createFromInterface(\DateTimeInterface $object): static

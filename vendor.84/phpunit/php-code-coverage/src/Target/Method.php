@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Test\Target;
 
 /**
@@ -27,12 +30,12 @@ final class Method extends Target
     private string $methodName;
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      */
     protected function __construct(string $className, string $methodName)
     {
-        $this->className  = $className;
+        $this->className = $className;
         $this->methodName = $methodName;
     }
 
@@ -70,7 +73,7 @@ final class Method extends Target
      */
     public function target(): string
     {
-        return $this->className . '::' . $this->methodName;
+        return $this->className.'::'.$this->methodName;
     }
 
     /**
@@ -78,6 +81,6 @@ final class Method extends Target
      */
     public function description(): string
     {
-        return 'Method ' . $this->target();
+        return 'Method '.$this->target();
     }
 }

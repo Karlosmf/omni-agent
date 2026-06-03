@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -18,9 +19,8 @@ class ExpectsHigherOrderMessage extends HigherOrderMessage
     }
 
     /**
-     * @param string $method
-     * @param array  $args
-     *
+     * @param  string  $method
+     * @param  array  $args
      * @return Expectation|ExpectationInterface|HigherOrderMessage
      */
     public function __call($method, $args)

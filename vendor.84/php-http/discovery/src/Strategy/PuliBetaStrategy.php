@@ -36,18 +36,18 @@ class PuliBetaStrategy implements DiscoveryStrategy
      */
     private static function getPuliFactory()
     {
-        if (null === self::$puliFactory) {
-            if (!defined('PULI_FACTORY_CLASS')) {
+        if (self::$puliFactory === null) {
+            if (! defined('PULI_FACTORY_CLASS')) {
                 throw new PuliUnavailableException('Puli Factory is not available');
             }
 
             $puliFactoryClass = PULI_FACTORY_CLASS;
 
-            if (!ClassDiscovery::safeClassExists($puliFactoryClass)) {
+            if (! ClassDiscovery::safeClassExists($puliFactoryClass)) {
                 throw new PuliUnavailableException('Puli Factory class does not exist');
             }
 
-            self::$puliFactory = new $puliFactoryClass();
+            self::$puliFactory = new $puliFactoryClass;
         }
 
         return self::$puliFactory;
@@ -62,7 +62,7 @@ class PuliBetaStrategy implements DiscoveryStrategy
      */
     private static function getPuliDiscovery()
     {
-        if (!isset(self::$puliDiscovery)) {
+        if (! isset(self::$puliDiscovery)) {
             $factory = self::getPuliFactory();
             $repository = $factory->createRepository();
 

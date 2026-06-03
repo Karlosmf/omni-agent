@@ -134,9 +134,8 @@ class Person extends \Faker\Provider\Person
     /**
      * Return middle name for the specified gender.
      *
-     * @param string|null $gender A gender the middle name should be generated
-     *                            for. If the argument is skipped a random gender will be used.
-     *
+     * @param  string|null  $gender  A gender the middle name should be generated
+     *                               for. If the argument is skipped a random gender will be used.
      * @return string Middle name
      */
     public function middleName($gender = null)
@@ -158,9 +157,8 @@ class Person extends \Faker\Provider\Person
     /**
      * Return last name for the specified gender.
      *
-     * @param string|null $gender A gender of the last name should be generated
-     *                            for. If the argument is skipped a random gender will be used.
-     *
+     * @param  string|null  $gender  A gender of the last name should be generated
+     *                               for. If the argument is skipped a random gender will be used.
      * @return string Last name
      */
     public function lastName($gender = null)
@@ -173,7 +171,7 @@ class Person extends \Faker\Provider\Person
             return $this->lastNameMale();
         }
 
-        return static::randomElement(static::$lastName) . static::randomElement(static::$lastNameSuffix);
+        return static::randomElement(static::$lastName).static::randomElement(static::$lastNameSuffix);
     }
 
     public function lastNameMale(): string
@@ -183,6 +181,6 @@ class Person extends \Faker\Provider\Person
 
     public function lastNameFemale(): string
     {
-        return static::randomElement(static::$lastName) . 'а';
+        return static::randomElement(static::$lastName).'а';
     }
 }

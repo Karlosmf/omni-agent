@@ -28,13 +28,10 @@ final class None extends Option
     /** @var None|null */
     private static $instance;
 
-    /**
-     * @return None
-     */
     public static function create(): self
     {
-        if (null === self::$instance) {
-            self::$instance = new self();
+        if (self::$instance === null) {
+            self::$instance = new self;
         }
 
         return self::$instance;
@@ -117,7 +114,7 @@ final class None extends Option
 
     public function getIterator(): EmptyIterator
     {
-        return new EmptyIterator();
+        return new EmptyIterator;
     }
 
     public function foldLeft($initialValue, $callable)
@@ -130,7 +127,5 @@ final class None extends Option
         return $initialValue;
     }
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 }

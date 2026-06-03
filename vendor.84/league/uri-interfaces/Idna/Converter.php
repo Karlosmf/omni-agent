@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\Uri\Idna;
 
+use const INTL_IDNA_VARIANT_UTS46;
+
 use BackedEnum;
 use League\Uri\Exceptions\ConversionFailed;
 use League\Uri\Exceptions\SyntaxError;
@@ -24,15 +26,15 @@ use function idn_to_utf8;
 use function rawurldecode;
 use function strtolower;
 
-use const INTL_IDNA_VARIANT_UTS46;
-
 /**
  * @see https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/uidna_8h.html
  */
 final class Converter
 {
     private const REGEXP_IDNA_PATTERN = '/[^\x20-\x7f]/';
+
     private const MAX_DOMAIN_LENGTH = 253;
+
     private const MAX_LABEL_LENGTH = 63;
 
     /**
@@ -84,18 +86,18 @@ final class Converter
 
         $domain = rawurldecode((string) $domain);
 
-        if (1 === preg_match(self::REGEXP_IDNA_PATTERN, $domain)) {
+        if (preg_match(self::REGEXP_IDNA_PATTERN, $domain) === 1) {
             FeatureDetection::supportsIdn();
 
             $flags = match (true) {
-                null === $options => Option::forIDNA2008Ascii(),
+                $options === null => Option::forIDNA2008Ascii(),
                 $options instanceof Option => $options,
                 default => Option::new($options),
             };
 
             idn_to_ascii($domain, $flags->toBytes(), INTL_IDNA_VARIANT_UTS46, $idnaInfo);
 
-            if ([] === $idnaInfo) {
+            if ($idnaInfo === []) {
                 return Result::fromIntl([
                     'result' => strtolower($domain),
                     'isTransitionalDifferent' => false,
@@ -107,7 +109,7 @@ final class Converter
         }
 
         $error = Error::NONE->value;
-        if (1 !== preg_match(self::REGEXP_REGISTERED_NAME, $domain)) {
+        if (preg_match(self::REGEXP_REGISTERED_NAME, $domain) !== 1) {
             $error |= Error::DISALLOWED->value;
         }
 
@@ -149,21 +151,21 @@ final class Converter
         }
 
         $domain = rawurldecode((string) $domain);
-        if (false === stripos($domain, 'xn--')) {
+        if (stripos($domain, 'xn--') === false) {
             return Result::fromIntl(['result' => strtolower($domain), 'isTransitionalDifferent' => false, 'errors' => Error::NONE->value]);
         }
 
         FeatureDetection::supportsIdn();
 
         $flags = match (true) {
-            null === $options => Option::forIDNA2008Unicode(),
+            $options === null => Option::forIDNA2008Unicode(),
             $options instanceof Option => $options,
             default => Option::new($options),
         };
 
         idn_to_utf8($domain, $flags->toBytes(), INTL_IDNA_VARIANT_UTS46, $idnaInfo);
 
-        if ([] === $idnaInfo) {
+        if ($idnaInfo === []) {
             return Result::fromIntl(['result' => strtolower($domain), 'isTransitionalDifferent' => false, 'errors' => Error::NONE->value]);
         }
 
@@ -209,8 +211,8 @@ final class Converter
         // Increase the max size by 1, making it 254, to account for the root label's "."
         // delimiter. This also means we don't need to check the last label's length for being too
         // long.
-        if ($length > 1 && '' === $labels[$length - 1]) {
-            ++$maxDomainSize;
+        if ($length > 1 && $labels[$length - 1] === '') {
+            $maxDomainSize++;
             array_pop($labels);
         }
 

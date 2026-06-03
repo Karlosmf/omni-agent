@@ -22,8 +22,11 @@ use ReflectionProperty;
 final class CastToString implements TypeCasting
 {
     private readonly bool $isNullable;
+
     private readonly Type $type;
+
     private ?string $default = null;
+
     private readonly TypeCastingInfo $variableName;
 
     public function __construct(ReflectionProperty|ReflectionParameter $reflectionProperty)
@@ -56,9 +59,9 @@ final class CastToString implements TypeCasting
         };
 
         return match (true) {
-            Type::Null->equals($this->type) && null !== $returnedValue => throw TypeCastingFailed::dueToInvalidValue(match (true) {
-                null === $value => 'null',
-                '' === $value => 'empty string',
+            Type::Null->equals($this->type) && $returnedValue !== null => throw TypeCastingFailed::dueToInvalidValue(match (true) {
+                $value === null => 'null',
+                $value === '' => 'empty string',
                 default => $value,
             }, $this->type->value, info: $this->variableName),
             default => $returnedValue,
@@ -70,23 +73,23 @@ final class CastToString implements TypeCasting
      */
     private function init(ReflectionProperty|ReflectionParameter $reflectionProperty): array
     {
-        if (null === $reflectionProperty->getType()) {
+        if ($reflectionProperty->getType() === null) {
             return [Type::Mixed, true];
         }
 
         $type = null;
         $isNullable = false;
         foreach (Type::list($reflectionProperty) as $found) {
-            if (!$isNullable && $found[1]->allowsNull()) {
+            if (! $isNullable && $found[1]->allowsNull()) {
                 $isNullable = true;
             }
 
-            if (null === $type && $found[0]->isOneOf(Type::String, Type::Mixed, Type::Null)) {
+            if ($type === null && $found[0]->isOneOf(Type::String, Type::Mixed, Type::Null)) {
                 $type = $found;
             }
         }
 
-        null !== $type || throw throw MappingFailed::dueToTypeCastingUnsupportedType($reflectionProperty, $this, 'string', 'mixed', 'null');
+        $type !== null || throw throw MappingFailed::dueToTypeCastingUnsupportedType($reflectionProperty, $this, 'string', 'mixed', 'null');
 
         return [$type[0], $isNullable];
     }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Type;
 
 /*
@@ -11,7 +12,6 @@ use Hamcrest\Core\IsTypeOf;
  */
 class IsScalar extends IsTypeOf
 {
-
     public function __construct()
     {
         parent::__construct('scalar');

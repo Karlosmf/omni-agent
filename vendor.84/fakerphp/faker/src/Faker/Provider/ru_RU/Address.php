@@ -7,12 +7,14 @@ class Address extends \Faker\Provider\Address
     protected static $cityPrefix = ['город'];
 
     protected static $regionSuffix = ['область'];
+
     protected static $streetPrefix = [
         'пер.', 'ул.', 'пр.', 'шоссе', 'пл.', 'бульвар',
         'въезд', 'спуск', 'проезд', 'наб.',
     ];
 
     protected static $buildingNumber = ['%#'];
+
     protected static $postcode = ['######'];
 
     /**

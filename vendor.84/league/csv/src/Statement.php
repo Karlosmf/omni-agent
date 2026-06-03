@@ -37,19 +37,26 @@ use function is_string;
 class Statement
 {
     final protected const COLUMN_ALL = 0;
+
     final protected const COLUMN_INCLUDE = 1;
+
     final protected const COLUMN_EXCLUDE = 2;
 
     /** @var array<ConditionExtended> Callables to filter the iterator. */
     protected array $where = [];
+
     /** @var array<OrderingExtended> Callables to sort the iterator. */
     protected array $order_by = [];
+
     /** iterator Offset. */
     protected int $offset = 0;
+
     /** iterator maximum length. */
     protected int $limit = -1;
+
     /** @var array<string|int> */
     protected array $select = [];
+
     /** @var self::COLUMN_* */
     protected int $select_mode = self::COLUMN_ALL;
 
@@ -58,13 +65,13 @@ class Statement
      */
     public function select(string|int ...$columns): self
     {
-        if ($columns === $this->select && self::COLUMN_INCLUDE === $this->select_mode) {
+        if ($columns === $this->select && $this->select_mode === self::COLUMN_INCLUDE) {
             return $this;
         }
 
         $clone = clone $this;
         $clone->select = $columns;
-        $clone->select_mode = [] === $columns ? self::COLUMN_ALL : self::COLUMN_INCLUDE;
+        $clone->select_mode = $columns === [] ? self::COLUMN_ALL : self::COLUMN_INCLUDE;
 
         return $clone;
     }
@@ -74,13 +81,13 @@ class Statement
      */
     public function selectAllExcept(string|int ...$columns): self
     {
-        if ($columns === $this->select && self::COLUMN_EXCLUDE === $this->select_mode) {
+        if ($columns === $this->select && $this->select_mode === self::COLUMN_EXCLUDE) {
             return $this;
         }
 
         $clone = clone $this;
         $clone->select = $columns;
-        $clone->select_mode = [] === $columns ? self::COLUMN_ALL : self::COLUMN_EXCLUDE;
+        $clone->select_mode = $columns === [] ? self::COLUMN_ALL : self::COLUMN_EXCLUDE;
 
         return $clone;
     }
@@ -88,7 +95,7 @@ class Statement
     /**
      * Sets the Iterator filter method.
      *
-     * @param callable(array, array-key): bool $where
+     * @param  callable(array, array-key): bool  $where
      *
      * @throws ReflectionException
      * @throws InvalidArgument
@@ -109,10 +116,11 @@ class Statement
      * To avoid BC break in 9.16+ version the predicate should have
      * at least 1 required argument.
      *
-     * @throws InvalidArgument
-     * @throws ReflectionException
      *
      * @return ConditionExtended
+     *
+     * @throws InvalidArgument
+     * @throws ReflectionException
      */
     final protected static function wrapSingleArgumentCallable(callable $where): callable
     {
@@ -190,11 +198,11 @@ class Statement
     }
 
     /**
-     * @param 'and'|'not'|'or'|'xor' $joiner
+     * @param  'and'|'not'|'or'|'xor'  $joiner
      */
     final protected function appendWhere(string $joiner, Query\Predicate $predicate): self
     {
-        if ([] === $this->where) {
+        if ($this->where === []) {
             return $this->where(match ($joiner) {
                 'and' => $predicate,
                 'not' => Query\Constraint\Criteria::none($predicate),
@@ -219,7 +227,7 @@ class Statement
     /**
      * Sets an Iterator sorting callable function.
      *
-     * @param OrderingExtended $order_by
+     * @param  OrderingExtended  $order_by
      */
     public function orderBy(callable|Query\Sort|Closure $order_by): self
     {
@@ -256,7 +264,7 @@ class Statement
      */
     public function offset(int $offset): self
     {
-        if (0 > $offset) {
+        if ($offset < 0) {
             throw InvalidArgument::dueToInvalidRecordOffset($offset, __METHOD__);
         }
 
@@ -291,19 +299,19 @@ class Statement
     /**
      * Apply the callback if the given "condition" is (or resolves to) true.
      *
-     * @param (callable($this): bool)|bool $condition
-     * @param callable($this): (self|null) $onSuccess
-     * @param ?callable($this): (self|null) $onFail
+     * @param  (callable($this): bool)|bool  $condition
+     * @param  callable($this): (self|null)  $onSuccess
+     * @param  ?callable($this): (self|null)  $onFail
      */
     public function when(callable|bool $condition, callable $onSuccess, ?callable $onFail = null): self
     {
-        if (!is_bool($condition)) {
+        if (! is_bool($condition)) {
             $condition = $condition($this);
         }
 
         return match (true) {
             $condition => $onSuccess($this),
-            null !== $onFail => $onFail($this),
+            $onFail !== null => $onFail($this),
             default => $this,
         } ?? $this;
     }
@@ -311,7 +319,7 @@ class Statement
     /**
      * Executes the prepared Statement on the {@link TabularData} object.
      *
-     * @param array<string> $header an optional header to use instead of the tabular data header
+     * @param  array<string>  $header  an optional header to use instead of the tabular data header
      *
      * @throws InvalidArgument
      * @throws SyntaxError
@@ -322,20 +330,20 @@ class Statement
             $tabular_data = $tabular_data->getTabularData();
         }
 
-        if ([] === $header) {
+        if ($header === []) {
             $header = $tabular_data->getHeader();
         }
 
         $iterator = $tabular_data->getRecords($header);
-        if ([] !== $this->where) {
+        if ($this->where !== []) {
             $iterator = Query\Constraint\Criteria::all(...$this->where)->filter($iterator);
         }
 
-        if ([] !== $this->order_by) {
+        if ($this->order_by !== []) {
             $iterator = Query\Ordering\MultiSort::all(...$this->order_by)->sort($iterator);
         }
 
-        if (0 !== $this->offset || -1 !== $this->limit) {
+        if ($this->offset !== 0 || $this->limit !== -1) {
             $iterator = (new Query\Limit($this->offset, $this->limit))->slice($iterator);
         }
 
@@ -352,19 +360,19 @@ class Statement
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @throws InvalidArgument
-     *
      * @throws SyntaxError
+     *
      * @see Statement::process()
      * @deprecated Since version 9.16.0
      */
-    #[Deprecated(message:'this method no longer affects on the outcome of the class, use League\Csv\Statement::process() instead', since:'league/csv:9.16.0')]
+    #[Deprecated(message: 'this method no longer affects on the outcome of the class, use League\Csv\Statement::process() instead', since: 'league/csv:9.16.0')]
     protected function applySelect(Iterator $records, array $recordsHeader, array $select): TabularDataReader
     {
-        $hasHeader = [] !== $recordsHeader;
+        $hasHeader = $recordsHeader !== [];
         $selectColumn = function (array $header, string|int $field) use ($recordsHeader, $hasHeader): array {
             if (is_string($field)) {
                 $index = array_search($field, $recordsHeader, true);
-                if (false === $index) {
+                if ($index === false) {
                     throw InvalidArgument::dueToInvalidColumnIndex($field, 'offset', __METHOD__);
                 }
 
@@ -373,7 +381,7 @@ class Statement
                 return $header;
             }
 
-            if ($hasHeader && !array_key_exists($field, $recordsHeader)) {
+            if ($hasHeader && ! array_key_exists($field, $recordsHeader)) {
                 throw InvalidArgument::dueToInvalidColumnIndex($field, 'offset', __METHOD__);
             }
 
@@ -404,9 +412,10 @@ class Statement
      *
      * @see Statement::applyFilter()
      * @deprecated Since version 9.15.0
+     *
      * @codeCoverageIgnore
      */
-    #[Deprecated(message:'this method no longer affects on the outcome of the class, use League\Csv\Statement::applyFilter() instead', since:'league/csv:9.15.0')]
+    #[Deprecated(message: 'this method no longer affects on the outcome of the class, use League\Csv\Statement::applyFilter() instead', since: 'league/csv:9.15.0')]
     protected function filter(Iterator $iterator, callable $callable): CallbackFilterIterator
     {
         return new CallbackFilterIterator($iterator, $callable);
@@ -419,14 +428,15 @@ class Statement
      *
      * @see Statement::process()
      * @deprecated Since version 9.16.0
+     *
      * @codeCoverageIgnore
      */
-    #[Deprecated(message:'this method no longer affects on the outcome of the class, use League\Csv\Statement::process() instead', since:'league/csv:9.16.0')]
+    #[Deprecated(message: 'this method no longer affects on the outcome of the class, use League\Csv\Statement::process() instead', since: 'league/csv:9.16.0')]
     protected function applyFilter(Iterator $iterator): Iterator
     {
         $filter = function (array $record, string|int $key): bool {
             foreach ($this->where as $where) {
-                if (true !== $where($record, $key)) {
+                if ($where($record, $key) !== true) {
                     return false;
                 }
             }
@@ -444,12 +454,13 @@ class Statement
      *
      * @see Statement::process()
      * @deprecated Since version 9.16.0
+     *
      * @codeCoverageIgnore
      */
-    #[Deprecated(message:'this method no longer affects on the outcome of the class, use League\Csv\Statement::process() instead', since:'league/csv:9.16.0')]
+    #[Deprecated(message: 'this method no longer affects on the outcome of the class, use League\Csv\Statement::process() instead', since: 'league/csv:9.16.0')]
     protected function buildOrderBy(Iterator $iterator): Iterator
     {
-        if ([] === $this->order_by) {
+        if ($this->order_by === []) {
             return $iterator;
         }
 
@@ -463,7 +474,8 @@ class Statement
             return $cmp ?? 0;
         };
 
-        $class = new class () extends ArrayIterator {
+        $class = new class extends ArrayIterator
+        {
             public function seek(int $offset): void
             {
                 try {
@@ -481,13 +493,12 @@ class Statement
         return $it;
     }
 
-
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @param ?callable(array, array-key): bool $where , Deprecated argument use Statement::where instead
-     * @param int $offset, Deprecated argument use Statement::offset instead
-     * @param int $limit, Deprecated argument use Statement::limit instead
+     * @param  ?callable(array, array-key): bool  $where  , Deprecated argument use Statement::where instead
+     * @param  int  $offset,  Deprecated argument use Statement::offset instead
+     * @param  int  $limit,  Deprecated argument use Statement::limit instead
      *
      * @throws Exception
      * @throws InvalidArgument
@@ -495,21 +506,22 @@ class Statement
      *
      * @see Statement::__construct()
      * @deprecated Since version 9.22.0
+     *
      * @codeCoverageIgnore
      */
-    #[Deprecated(message:'use League\Csv\Statement::__construct() instead', since:'league/csv:9.22.0')]
+    #[Deprecated(message: 'use League\Csv\Statement::__construct() instead', since: 'league/csv:9.22.0')]
     public static function create(?callable $where = null, int $offset = 0, int $limit = -1): self
     {
-        $stmt = new self();
-        if (null !== $where) {
+        $stmt = new self;
+        if ($where !== null) {
             $stmt = $stmt->where($where);
         }
 
-        if (0 !== $offset) {
+        if ($offset !== 0) {
             $stmt = $stmt->offset($offset);
         }
 
-        if (-1 !== $limit) {
+        if ($limit !== -1) {
             $stmt = $stmt->limit($limit);
         }
 

@@ -40,7 +40,7 @@ class BreakException extends \Exception implements Exception
      *
      * Since `throw` can not be inserted into arbitrary expressions, it wraps with function call.
      *
-     * @param int|string|null $status Exit status code or message
+     * @param  int|string|null  $status  Exit status code or message
      *
      * @throws BreakException
      */

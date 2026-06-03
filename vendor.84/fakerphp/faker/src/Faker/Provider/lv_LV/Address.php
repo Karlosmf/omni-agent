@@ -7,11 +7,13 @@ class Address extends \Faker\Provider\Address
     protected static $cityPrefix = ['pilsēta'];
 
     protected static $regionSuffix = ['reģions'];
+
     protected static $streetPrefix = [
         'iela', 'bulvāris', 'skvērs', 'gāte',
     ];
 
     protected static $buildingNumber = ['%#'];
+
     protected static $postcode = ['LV-####'];
 
     /**

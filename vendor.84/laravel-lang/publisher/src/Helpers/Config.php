@@ -57,7 +57,7 @@ class Config
     {
         BaseConfig::hidden()->packages->set($base_path, [
             'class' => $plugin_class,
-            'name'  => $package_name,
+            'name' => $package_name,
         ]);
     }
 
@@ -93,6 +93,6 @@ class Config
 
     protected function path(string $base, string|Stringable|null $suffix = null): string
     {
-        return rtrim($base, '\\/') . '/' . ltrim((string) $suffix, '\\/');
+        return rtrim($base, '\\/').'/'.ltrim((string) $suffix, '\\/');
     }
 }

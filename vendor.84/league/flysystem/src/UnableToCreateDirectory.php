@@ -10,12 +10,13 @@ use Throwable;
 final class UnableToCreateDirectory extends RuntimeException implements FilesystemOperationFailed
 {
     private string $location;
+
     private string $reason = '';
 
     public static function atLocation(string $dirname, string $errorMessage = '', ?Throwable $previous = null): UnableToCreateDirectory
     {
         $message = "Unable to create a directory at {$dirname}. {$errorMessage}";
-        $e = new static(rtrim($message), 0, $previous);
+        $e = new self(rtrim($message), 0, $previous);
         $e->location = $dirname;
         $e->reason = $errorMessage;
 
@@ -26,7 +27,7 @@ final class UnableToCreateDirectory extends RuntimeException implements Filesyst
     {
         $reason = $previous instanceof UnableToCreateDirectory ? $previous->reason() : '';
         $message = "Unable to create a directory at $dirname. $reason";
-        $e = new static(rtrim($message), 0, $previous);
+        $e = new self(rtrim($message), 0, $previous);
         $e->location = $dirname;
         $e->reason = $reason ?: $message;
 

@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -14,6 +15,7 @@ use Mockery\Generator\Method;
 use Mockery\Generator\MockConfiguration;
 use Mockery\Generator\Parameter;
 use Mockery\Generator\TargetClassInterface;
+
 use function array_filter;
 use function array_merge;
 use function end;
@@ -51,8 +53,7 @@ class MagicMethodTypeHintsPass implements Pass
     /**
      * Apply implementation.
      *
-     * @param string $code
-     *
+     * @param  string  $code
      * @return string
      */
     public function apply($code, MockConfiguration $config)
@@ -97,8 +98,7 @@ class MagicMethodTypeHintsPass implements Pass
      * Applies type hints of magic methods from
      * class to the passed code.
      *
-     * @param int $code
-     *
+     * @param  int  $code
      * @return string
      */
     private function applyMagicTypeHints($code, Method $method)
@@ -119,8 +119,7 @@ class MagicMethodTypeHintsPass implements Pass
      * Returns a regex string used to match the
      * declaration of some method.
      *
-     * @param string $methodName
-     *
+     * @param  string  $methodName
      * @return string
      */
     private function getDeclarationRegex($methodName)
@@ -131,7 +130,6 @@ class MagicMethodTypeHintsPass implements Pass
     /**
      * Gets the declaration code, as a string, for the passed method.
      *
-     * @param array $namedParameters
      *
      * @return string
      */
@@ -139,12 +137,12 @@ class MagicMethodTypeHintsPass implements Pass
     {
         $declaration = 'public';
         $declaration .= $method->isStatic() ? ' static' : '';
-        $declaration .= ' function ' . $method->getName() . '(';
+        $declaration .= ' function '.$method->getName().'(';
 
         foreach ($method->getParameters() as $index => $parameter) {
             $declaration .= $this->renderTypeHint($parameter);
             $name = $namedParameters[$index] ?? $parameter->getName();
-            $declaration .= '$' . $name;
+            $declaration .= '$'.$name;
             $declaration .= ',';
         }
 
@@ -163,8 +161,7 @@ class MagicMethodTypeHintsPass implements Pass
      * Returns the method original parameters, as they're
      * described in the $code string.
      *
-     * @param int $code
-     *
+     * @param  int  $code
      * @return array
      */
     private function getOriginalParameters($code, Method $method)
@@ -186,8 +183,7 @@ class MagicMethodTypeHintsPass implements Pass
     /**
      * Checks if the method is declared within code.
      *
-     * @param int $code
-     *
+     * @param  int  $code
      * @return bool
      */
     private function isMethodWithinCode($code, Method $method)

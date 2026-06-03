@@ -152,7 +152,7 @@ return [
     'calendar' => [
         'sameDay' => '[დღეს], LT[-ზე]',
         'nextDay' => '[ხვალ], LT[-ზე]',
-        'nextWeek' => static function (CarbonInterface $current, \Carbon\CarbonInterface $other) {
+        'nextWeek' => static function (CarbonInterface $current, CarbonInterface $other) {
             return ($current->isSameWeek($other) ? '' : '[შემდეგ] ').'dddd, LT[-ზე]';
         },
         'lastDay' => '[გუშინ], LT[-ზე]',

@@ -13,6 +13,7 @@ use Faker\Provider\DateTime;
 final class Version implements Extension\VersionExtension
 {
     private Extension\NumberExtension $numberExtension;
+
     /**
      * @var string[]
      */
@@ -21,7 +22,7 @@ final class Version implements Extension\VersionExtension
     public function __construct(?Extension\NumberExtension $numberExtension = null)
     {
 
-        $this->numberExtension = $numberExtension ?: new  Number();
+        $this->numberExtension = $numberExtension ?: new Number;
     }
 
     /**
@@ -34,8 +35,8 @@ final class Version implements Extension\VersionExtension
             $this->numberExtension->numberBetween(0, 9),
             $this->numberExtension->numberBetween(0, 99),
             $this->numberExtension->numberBetween(0, 99),
-            $preRelease && $this->numberExtension->numberBetween(0, 1) === 1 ? '-' . $this->semverPreReleaseIdentifier() : '',
-            $build && $this->numberExtension->numberBetween(0, 1) === 1 ? '+' . $this->semverBuildIdentifier() : '',
+            $preRelease && $this->numberExtension->numberBetween(0, 1) === 1 ? '-'.$this->semverPreReleaseIdentifier() : '',
+            $build && $this->numberExtension->numberBetween(0, 1) === 1 ? '+'.$this->semverBuildIdentifier() : '',
         );
     }
 
@@ -50,7 +51,7 @@ final class Version implements Extension\VersionExtension
             return $ident;
         }
 
-        return $ident . '.' . $this->numberExtension->numberBetween(1, 99);
+        return $ident.'.'.$this->numberExtension->numberBetween(1, 99);
     }
 
     /**

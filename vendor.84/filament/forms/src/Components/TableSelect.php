@@ -29,20 +29,20 @@ class TableSelect extends Field
      */
     protected string $view = 'filament-forms::components.table-select';
 
-    protected string | Closure | null $tableConfiguration = null;
+    protected string|Closure|null $tableConfiguration = null;
 
-    protected bool | Closure $shouldIgnoreRelatedRecords = false;
+    protected bool|Closure $shouldIgnoreRelatedRecords = false;
 
-    protected string | Closure | null $relationship = null;
+    protected string|Closure|null $relationship = null;
 
-    protected bool | Closure $isMultiple = false;
+    protected bool|Closure $isMultiple = false;
 
     /**
      * @var array<mixed> | Closure
      */
-    protected array | Closure $tableArguments = [];
+    protected array|Closure $tableArguments = [];
 
-    public function tableConfiguration(string | Closure $tableConfiguration): static
+    public function tableConfiguration(string|Closure $tableConfiguration): static
     {
         $this->tableConfiguration = $tableConfiguration;
 
@@ -52,14 +52,14 @@ class TableSelect extends Field
     /**
      * @param  array<mixed> | Closure  $arguments
      */
-    public function tableArguments(array | Closure $arguments): static
+    public function tableArguments(array|Closure $arguments): static
     {
         $this->tableArguments = $arguments;
 
         return $this;
     }
 
-    public function ignoreRelatedRecords(bool | Closure $condition = true): static
+    public function ignoreRelatedRecords(bool|Closure $condition = true): static
     {
         $this->shouldIgnoreRelatedRecords = $condition;
 
@@ -84,7 +84,7 @@ class TableSelect extends Field
         return $this->evaluate($this->tableArguments) ?? [];
     }
 
-    public function relationship(string | Closure | null $name): static
+    public function relationship(string|Closure|null $name): static
     {
         $this->relationshipName($name);
 
@@ -309,14 +309,14 @@ class TableSelect extends Field
         return $this;
     }
 
-    public function relationshipName(string | Closure | null $name): static
+    public function relationshipName(string|Closure|null $name): static
     {
         $this->relationship = $name;
 
         return $this;
     }
 
-    public function getRelationship(): BelongsTo | BelongsToMany | HasOneOrMany | HasOneOrManyThrough | BelongsToThrough | null
+    public function getRelationship(): BelongsTo|BelongsToMany|HasOneOrMany|HasOneOrManyThrough|BelongsToThrough|null
     {
         if (! $this->hasRelationship()) {
             return null;
@@ -362,7 +362,7 @@ class TableSelect extends Field
         return filled($this->getRelationshipName());
     }
 
-    public function getLabel(): string | Htmlable | null
+    public function getLabel(): string|Htmlable|null
     {
         if ($this->label === null && $this->hasRelationship()) {
             $label = (string) str($this->getRelationshipName())
@@ -377,7 +377,7 @@ class TableSelect extends Field
         return parent::getLabel();
     }
 
-    public function multiple(bool | Closure $condition = true): static
+    public function multiple(bool|Closure $condition = true): static
     {
         $this->isMultiple = $condition;
 

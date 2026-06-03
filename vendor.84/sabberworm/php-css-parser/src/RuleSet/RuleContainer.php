@@ -20,7 +20,7 @@ interface RuleContainer
     public function removeAllRules(): void;
 
     /**
-     * @param array<Rule> $rules
+     * @param  array<Rule>  $rules
      */
     public function setRules(array $rules): void;
 

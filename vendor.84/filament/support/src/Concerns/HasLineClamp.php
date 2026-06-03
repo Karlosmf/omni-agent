@@ -6,9 +6,9 @@ use Closure;
 
 trait HasLineClamp
 {
-    protected int | Closure | null $lineClamp = null;
+    protected int|Closure|null $lineClamp = null;
 
-    public function lineClamp(int | Closure | null $lineClamp): static
+    public function lineClamp(int|Closure|null $lineClamp): static
     {
         $this->lineClamp = $lineClamp;
 

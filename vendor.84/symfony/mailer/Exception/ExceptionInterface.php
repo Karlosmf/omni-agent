@@ -16,6 +16,4 @@ namespace Symfony\Component\Mailer\Exception;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-interface ExceptionInterface extends \Throwable
-{
-}
+interface ExceptionInterface extends \Throwable {}

@@ -34,7 +34,7 @@ final class Offset implements Query\Predicate
         public readonly Comparison|Closure $operator,
         public readonly mixed $value,
     ) {
-        if (!$this->operator instanceof Closure) {
+        if (! $this->operator instanceof Closure) {
             $this->operator->accept($this->value);
         }
     }

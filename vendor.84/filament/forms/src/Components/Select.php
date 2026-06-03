@@ -71,13 +71,13 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
     /**
      * @var array<Component | Action | ActionGroup> | Closure | null
      */
-    protected array | Closure | null $createOptionActionForm = null;
+    protected array|Closure|null $createOptionActionForm = null;
 
     protected ?Closure $createOptionUsing = null;
 
-    protected string | Closure | null $createOptionModalHeading = null;
+    protected string|Closure|null $createOptionModalHeading = null;
 
-    protected string | Closure | null $editOptionModalHeading = null;
+    protected string|Closure|null $editOptionModalHeading = null;
 
     protected ?Closure $modifyCreateOptionActionUsing = null;
 
@@ -86,7 +86,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
     /**
      * @var array<Component | Action | ActionGroup> | Closure | null
      */
-    protected array | Closure | null $editOptionActionForm = null;
+    protected array|Closure|null $editOptionActionForm = null;
 
     protected ?Closure $fillEditOptionActionFormUsing = null;
 
@@ -96,7 +96,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
 
     protected ?Model $cachedSelectedRecord = null;
 
-    protected bool | Closure $isMultiple = false;
+    protected bool|Closure $isMultiple = false;
 
     protected ?Closure $getOptionLabelUsing = null;
 
@@ -113,25 +113,25 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
      */
     protected ?array $searchColumns = null;
 
-    protected string | Closure | null $maxItemsMessage = null;
+    protected string|Closure|null $maxItemsMessage = null;
 
-    protected string | Closure | null $relationshipTitleAttribute = null;
+    protected string|Closure|null $relationshipTitleAttribute = null;
 
-    protected string | Closure | null $position = null;
+    protected string|Closure|null $position = null;
 
     protected ?Closure $getOptionLabelFromRecordUsing = null;
 
-    protected string | Closure | null $relationship = null;
+    protected string|Closure|null $relationship = null;
 
-    protected int | Closure $optionsLimit = 50;
+    protected int|Closure $optionsLimit = 50;
 
-    protected bool | Closure | null $isSearchForcedCaseInsensitive = null;
+    protected bool|Closure|null $isSearchForcedCaseInsensitive = null;
 
-    protected bool | Closure $canOptionLabelsWrap = true;
+    protected bool|Closure $canOptionLabelsWrap = true;
 
-    protected bool | Closure $isReorderable = false;
+    protected bool|Closure $isReorderable = false;
 
-    protected bool | Closure | null $hasDynamicOptions = null;
+    protected bool|Closure|null $hasDynamicOptions = null;
 
     protected function setUp(): void
     {
@@ -185,7 +185,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
     /**
      * @param  array<Component | Action | ActionGroup> | Closure | null  $schema
      */
-    public function manageOptionForm(array | Closure | null $schema): static
+    public function manageOptionForm(array|Closure|null $schema): static
     {
         $this->createOptionForm($schema);
         $this->editOptionForm($schema);
@@ -196,7 +196,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
     /**
      * @param  array<Component | Action | ActionGroup> | Closure | null  $schema
      */
-    public function createOptionForm(array | Closure | null $schema): static
+    public function createOptionForm(array|Closure|null $schema): static
     {
         $this->createOptionActionForm = $schema;
 
@@ -232,7 +232,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
 
         $action = Action::make($this->getCreateOptionActionName())
             ->label(__('filament-forms::components.select.actions.create_option.label'))
-            ->schema(static function (Select $component, Schema $schema): array | Schema | null {
+            ->schema(static function (Select $component, Schema $schema): array|Schema|null {
                 return $component->getCreateOptionActionForm($schema->model(
                     $component->hasRelationship() ? $component->getRelationship()->getModel()::class : $component->getActionSchemaModel(),
                 ));
@@ -295,14 +295,14 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
         return $action;
     }
 
-    public function createOptionModalHeading(string | Closure | null $heading): static
+    public function createOptionModalHeading(string|Closure|null $heading): static
     {
         $this->createOptionModalHeading = $heading;
 
         return $this;
     }
 
-    public function editOptionModalHeading(string | Closure | null $heading): static
+    public function editOptionModalHeading(string|Closure|null $heading): static
     {
         $this->editOptionModalHeading = $heading;
 
@@ -319,7 +319,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
     /**
      * @return array<Component | Action | ActionGroup> | Schema | null
      */
-    public function getCreateOptionActionForm(Schema $schema): array | Schema | null
+    public function getCreateOptionActionForm(Schema $schema): array|Schema|null
     {
         return $this->evaluate($this->createOptionActionForm, ['form' => $schema, 'schema' => $schema]);
     }
@@ -332,7 +332,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
     /**
      * @return array<Component | Action | ActionGroup> | Schema | null
      */
-    public function getEditOptionActionForm(Schema $schema): array | Schema | null
+    public function getEditOptionActionForm(Schema $schema): array|Schema|null
     {
         return $this->evaluate($this->editOptionActionForm, ['form' => $schema, 'schema' => $schema]);
     }
@@ -345,7 +345,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
     /**
      * @param  array<Component | Action | ActionGroup> | Closure | null  $schema
      */
-    public function editOptionForm(array | Closure | null $schema): static
+    public function editOptionForm(array|Closure|null $schema): static
     {
         $this->editOptionActionForm = $schema;
         $this->live();
@@ -386,7 +386,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
 
         $action = Action::make($this->getEditOptionActionName())
             ->label(__('filament-forms::components.select.actions.edit_option.label'))
-            ->schema(static function (Select $component, Schema $schema): array | Schema | null {
+            ->schema(static function (Select $component, Schema $schema): array|Schema|null {
                 return $component->getEditOptionActionForm(
                     $schema->model($component->getSelectedRecord()),
                 );
@@ -490,7 +490,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
     /**
      * @param  bool | array<string> | Closure  $condition
      */
-    public function searchable(bool | array | Closure $condition = true): static
+    public function searchable(bool|array|Closure $condition = true): static
     {
         if (is_array($condition)) {
             $this->isSearchable = true;
@@ -503,14 +503,14 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
         return $this;
     }
 
-    public function multiple(bool | Closure $condition = true): static
+    public function multiple(bool|Closure $condition = true): static
     {
         $this->isMultiple = $condition;
 
         return $this;
     }
 
-    public function reorderable(bool | Closure $condition = true): static
+    public function reorderable(bool|Closure $condition = true): static
     {
         $this->isReorderable = $condition;
 
@@ -522,21 +522,21 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
         return (bool) $this->evaluate($this->isReorderable);
     }
 
-    public function position(string | Closure | null $position): static
+    public function position(string|Closure|null $position): static
     {
         $this->position = $position;
 
         return $this;
     }
 
-    public function maxItemsMessage(string | Closure | null $message): static
+    public function maxItemsMessage(string|Closure|null $message): static
     {
         $this->maxItemsMessage = $message;
 
         return $this;
     }
 
-    public function optionsLimit(int | Closure $limit): static
+    public function optionsLimit(int|Closure $limit): static
     {
         $this->optionsLimit = $limit;
 
@@ -767,7 +767,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
         return $this->evaluate($this->isSearchable) ?? $this->isMultiple();
     }
 
-    public function relationship(string | Closure | null $name = null, string | Closure | null $titleAttribute = null, ?Closure $modifyQueryUsing = null, bool $ignoreRecord = false): static
+    public function relationship(string|Closure|null $name = null, string|Closure|null $titleAttribute = null, ?Closure $modifyQueryUsing = null, bool $ignoreRecord = false): static
     {
         $this->relationship = $name ?? $this->getName();
         $this->relationshipTitleAttribute = $titleAttribute;
@@ -1445,7 +1445,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
         return $this->evaluate($this->relationshipTitleAttribute);
     }
 
-    public function getLabel(): string | Htmlable | null
+    public function getLabel(): string|Htmlable|null
     {
         if ($this->label === null && $this->hasRelationship()) {
             $label = (string) str($this->getRelationshipName())
@@ -1460,7 +1460,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
         return parent::getLabel();
     }
 
-    public function getRelationship(): BelongsTo | BelongsToMany | HasOneOrMany | HasOneOrManyThrough | BelongsToThrough | null
+    public function getRelationship(): BelongsTo|BelongsToMany|HasOneOrMany|HasOneOrManyThrough|BelongsToThrough|null
     {
         if (! $this->hasRelationship()) {
             return null;
@@ -1519,7 +1519,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
         return filled($this->getRelationshipName());
     }
 
-    public function dynamicOptions(bool | Closure | null $condition = true): static
+    public function dynamicOptions(bool|Closure|null $condition = true): static
     {
         $this->hasDynamicOptions = $condition;
 
@@ -1572,7 +1572,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
     /**
      * @return Model | array<string, mixed> | class-string<Model> | null
      */
-    public function getActionSchemaModel(): Model | array | string | null
+    public function getActionSchemaModel(): Model|array|string|null
     {
         if ($this->hasRelationship()) {
             return $this->getRelationship()->getModel()::class;
@@ -1595,7 +1595,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
         ]);
     }
 
-    public function forceSearchCaseInsensitive(bool | Closure | null $condition = true): static
+    public function forceSearchCaseInsensitive(bool|Closure|null $condition = true): static
     {
         $this->isSearchForcedCaseInsensitive = $condition;
 
@@ -1607,7 +1607,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
         return $this->evaluate($this->isSearchForcedCaseInsensitive);
     }
 
-    public function wrapOptionLabels(bool | Closure $condition = true): static
+    public function wrapOptionLabels(bool|Closure $condition = true): static
     {
         $this->canOptionLabelsWrap = $condition;
 

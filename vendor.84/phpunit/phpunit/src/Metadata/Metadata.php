@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Metadata;
 
 use PHPUnit\Metadata\Version\Requirement;
@@ -19,7 +22,8 @@ use PHPUnit\Runner\Extension\Extension;
  */
 abstract readonly class Metadata
 {
-    private const int CLASS_LEVEL  = 0;
+    private const int CLASS_LEVEL = 0;
+
     private const int METHOD_LEVEL = 1;
 
     /**
@@ -78,7 +82,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param non-empty-string $namespace
+     * @param  non-empty-string  $namespace
      */
     public static function coversNamespace(string $namespace): CoversNamespace
     {
@@ -86,7 +90,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      */
     public static function coversClass(string $className): CoversClass
     {
@@ -94,7 +98,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      */
     public static function coversClassesThatExtendClass(string $className): CoversClassesThatExtendClass
     {
@@ -102,7 +106,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param class-string $interfaceName
+     * @param  class-string  $interfaceName
      */
     public static function coversClassesThatImplementInterface(string $interfaceName): CoversClassesThatImplementInterface
     {
@@ -110,7 +114,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param trait-string $traitName
+     * @param  trait-string  $traitName
      */
     public static function coversTrait(string $traitName): CoversTrait
     {
@@ -118,8 +122,8 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      */
     public static function coversMethod(string $className, string $methodName): CoversMethod
     {
@@ -127,7 +131,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param non-empty-string $functionName
+     * @param  non-empty-string  $functionName
      */
     public static function coversFunction(string $functionName): CoversFunction
     {
@@ -145,8 +149,8 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      */
     public static function dataProvider(string $className, string $methodName, bool $validateArgumentCount): DataProvider
     {
@@ -154,7 +158,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      */
     public static function dependsOnClass(string $className, bool $deepClone, bool $shallowClone): DependsOnClass
     {
@@ -162,8 +166,8 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      */
     public static function dependsOnMethod(string $className, string $methodName, bool $deepClone, bool $shallowClone): DependsOnMethod
     {
@@ -186,7 +190,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param non-empty-string $globalVariableName
+     * @param  non-empty-string  $globalVariableName
      */
     public static function excludeGlobalVariableFromBackupOnClass(string $globalVariableName): ExcludeGlobalVariableFromBackup
     {
@@ -194,7 +198,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param non-empty-string $globalVariableName
+     * @param  non-empty-string  $globalVariableName
      */
     public static function excludeGlobalVariableFromBackupOnMethod(string $globalVariableName): ExcludeGlobalVariableFromBackup
     {
@@ -202,8 +206,8 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $propertyName
+     * @param  class-string  $className
+     * @param  non-empty-string  $propertyName
      */
     public static function excludeStaticPropertyFromBackupOnClass(string $className, string $propertyName): ExcludeStaticPropertyFromBackup
     {
@@ -211,8 +215,8 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $propertyName
+     * @param  class-string  $className
+     * @param  non-empty-string  $propertyName
      */
     public static function excludeStaticPropertyFromBackupOnMethod(string $className, string $propertyName): ExcludeStaticPropertyFromBackup
     {
@@ -220,7 +224,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param non-empty-string $groupName
+     * @param  non-empty-string  $groupName
      */
     public static function groupOnClass(string $groupName): Group
     {
@@ -228,7 +232,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param non-empty-string $groupName
+     * @param  non-empty-string  $groupName
      */
     public static function groupOnMethod(string $groupName): Group
     {
@@ -236,7 +240,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param null|non-empty-string $messagePattern
+     * @param  null|non-empty-string  $messagePattern
      */
     public static function ignoreDeprecationsOnClass(?string $messagePattern = null): IgnoreDeprecations
     {
@@ -244,7 +248,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param null|non-empty-string $messagePattern
+     * @param  null|non-empty-string  $messagePattern
      */
     public static function ignoreDeprecationsOnMethod(?string $messagePattern = null): IgnoreDeprecations
     {
@@ -288,7 +292,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param non-empty-string $functionName
+     * @param  non-empty-string  $functionName
      */
     public static function requiresFunctionOnClass(string $functionName): RequiresFunction
     {
@@ -296,7 +300,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param non-empty-string $functionName
+     * @param  non-empty-string  $functionName
      */
     public static function requiresFunctionOnMethod(string $functionName): RequiresFunction
     {
@@ -304,8 +308,8 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      */
     public static function requiresMethodOnClass(string $className, string $methodName): RequiresMethod
     {
@@ -313,8 +317,8 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      */
     public static function requiresMethodOnMethod(string $className, string $methodName): RequiresMethod
     {
@@ -322,7 +326,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param non-empty-string $operatingSystem
+     * @param  non-empty-string  $operatingSystem
      */
     public static function requiresOperatingSystemOnClass(string $operatingSystem): RequiresOperatingSystem
     {
@@ -330,7 +334,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param non-empty-string $operatingSystem
+     * @param  non-empty-string  $operatingSystem
      */
     public static function requiresOperatingSystemOnMethod(string $operatingSystem): RequiresOperatingSystem
     {
@@ -338,7 +342,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param non-empty-string $operatingSystemFamily
+     * @param  non-empty-string  $operatingSystemFamily
      */
     public static function requiresOperatingSystemFamilyOnClass(string $operatingSystemFamily): RequiresOperatingSystemFamily
     {
@@ -346,7 +350,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param non-empty-string $operatingSystemFamily
+     * @param  non-empty-string  $operatingSystemFamily
      */
     public static function requiresOperatingSystemFamilyOnMethod(string $operatingSystemFamily): RequiresOperatingSystemFamily
     {
@@ -364,7 +368,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param non-empty-string $extension
+     * @param  non-empty-string  $extension
      */
     public static function requiresPhpExtensionOnClass(string $extension, ?Requirement $versionRequirement): RequiresPhpExtension
     {
@@ -372,7 +376,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param non-empty-string $extension
+     * @param  non-empty-string  $extension
      */
     public static function requiresPhpExtensionOnMethod(string $extension, ?Requirement $versionRequirement): RequiresPhpExtension
     {
@@ -390,7 +394,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param class-string<Extension> $extensionClass
+     * @param  class-string<Extension>  $extensionClass
      */
     public static function requiresPhpunitExtensionOnClass(string $extensionClass): RequiresPhpunitExtension
     {
@@ -398,36 +402,36 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param class-string<Extension> $extensionClass
+     * @param  class-string<Extension>  $extensionClass
      */
     public static function requiresPhpunitExtensionOnMethod(string $extensionClass): RequiresPhpunitExtension
     {
         return new RequiresPhpunitExtension(self::METHOD_LEVEL, $extensionClass);
     }
 
-    public static function requiresEnvironmentVariableOnClass(string $environmentVariableName, null|string $value): RequiresEnvironmentVariable
+    public static function requiresEnvironmentVariableOnClass(string $environmentVariableName, ?string $value): RequiresEnvironmentVariable
     {
         return new RequiresEnvironmentVariable(self::CLASS_LEVEL, $environmentVariableName, $value);
     }
 
-    public static function requiresEnvironmentVariableOnMethod(string $environmentVariableName, null|string $value): RequiresEnvironmentVariable
+    public static function requiresEnvironmentVariableOnMethod(string $environmentVariableName, ?string $value): RequiresEnvironmentVariable
     {
         return new RequiresEnvironmentVariable(self::METHOD_LEVEL, $environmentVariableName, $value);
     }
 
-    public static function withEnvironmentVariableOnClass(string $environmentVariableName, null|string $value): WithEnvironmentVariable
+    public static function withEnvironmentVariableOnClass(string $environmentVariableName, ?string $value): WithEnvironmentVariable
     {
         return new WithEnvironmentVariable(self::CLASS_LEVEL, $environmentVariableName, $value);
     }
 
-    public static function withEnvironmentVariableOnMethod(string $environmentVariableName, null|string $value): WithEnvironmentVariable
+    public static function withEnvironmentVariableOnMethod(string $environmentVariableName, ?string $value): WithEnvironmentVariable
     {
         return new WithEnvironmentVariable(self::METHOD_LEVEL, $environmentVariableName, $value);
     }
 
     /**
-     * @param non-empty-string $setting
-     * @param non-empty-string $value
+     * @param  non-empty-string  $setting
+     * @param  non-empty-string  $value
      */
     public static function requiresSettingOnClass(string $setting, string $value): RequiresSetting
     {
@@ -435,8 +439,8 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param non-empty-string $setting
-     * @param non-empty-string $value
+     * @param  non-empty-string  $setting
+     * @param  non-empty-string  $value
      */
     public static function requiresSettingOnMethod(string $setting, string $value): RequiresSetting
     {
@@ -464,7 +468,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param non-empty-string $text
+     * @param  non-empty-string  $text
      */
     public static function testDoxOnClass(string $text): TestDox
     {
@@ -472,7 +476,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param non-empty-string $text
+     * @param  non-empty-string  $text
      */
     public static function testDoxOnMethod(string $text): TestDox
     {
@@ -480,8 +484,8 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      */
     public static function testDoxFormatter(string $className, string $methodName): TestDoxFormatter
     {
@@ -489,7 +493,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param ?non-empty-string $name
+     * @param  ?non-empty-string  $name
      */
     public static function testWith(mixed $data, ?string $name = null): TestWith
     {
@@ -497,7 +501,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param non-empty-string $namespace
+     * @param  non-empty-string  $namespace
      */
     public static function usesNamespace(string $namespace): UsesNamespace
     {
@@ -505,7 +509,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      */
     public static function usesClass(string $className): UsesClass
     {
@@ -513,7 +517,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      */
     public static function usesClassesThatExtendClass(string $className): UsesClassesThatExtendClass
     {
@@ -521,7 +525,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param class-string $interfaceName
+     * @param  class-string  $interfaceName
      */
     public static function usesClassesThatImplementInterface(string $interfaceName): UsesClassesThatImplementInterface
     {
@@ -529,7 +533,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param trait-string $traitName
+     * @param  trait-string  $traitName
      */
     public static function usesTrait(string $traitName): UsesTrait
     {
@@ -537,7 +541,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param non-empty-string $functionName
+     * @param  non-empty-string  $functionName
      */
     public static function usesFunction(string $functionName): UsesFunction
     {
@@ -545,8 +549,8 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      */
     public static function usesMethod(string $className, string $methodName): UsesMethod
     {
@@ -559,7 +563,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param null|non-empty-string $messagePattern
+     * @param  null|non-empty-string  $messagePattern
      */
     public static function ignorePhpunitWarnings(?string $messagePattern): IgnorePhpunitWarnings
     {
@@ -567,7 +571,7 @@ abstract readonly class Metadata
     }
 
     /**
-     * @param int<0, 1> $level
+     * @param  int<0, 1>  $level
      */
     protected function __construct(int $level)
     {

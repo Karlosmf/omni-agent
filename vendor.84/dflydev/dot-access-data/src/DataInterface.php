@@ -19,7 +19,9 @@ use Dflydev\DotAccessData\Exception\InvalidPathException;
 interface DataInterface
 {
     public const PRESERVE = 0;
+
     public const REPLACE = 1;
+
     public const MERGE = 2;
 
     /**
@@ -28,8 +30,7 @@ interface DataInterface
      * If the key does not yet exist it will be created.
      * If the key references a non-array it's existing contents will be added into a new array before appending the new value.
      *
-     * @param string $key
-     * @param mixed  $value
+     * @param  mixed  $value
      *
      * @throws InvalidPathException if the given key is empty
      */
@@ -40,8 +41,7 @@ interface DataInterface
      *
      * If the key does not yet exist it will be created.
      *
-     * @param string $key
-     * @param mixed  $value
+     * @param  mixed  $value
      *
      * @throws InvalidPathException if the given key is empty
      * @throws DataException if the given key does not target an array
@@ -53,7 +53,6 @@ interface DataInterface
      *
      * No exception will be thrown if the key does not exist
      *
-     * @param string $key
      *
      * @throws InvalidPathException if the given key is empty
      */
@@ -65,9 +64,7 @@ interface DataInterface
      * If the key does not exist, an optional default value can be returned instead.
      * If no default is provided then an exception will be thrown instead.
      *
-     * @param string $key
-     * @param mixed $default
-     *
+     * @param  mixed  $default
      * @return mixed
      *
      * @throws InvalidPathException if the given key is empty
@@ -80,9 +77,7 @@ interface DataInterface
     /**
      * Check if the key exists
      *
-     * @param string $key
      *
-     * @return bool
      *
      * @throws InvalidPathException if the given key is empty
      *
@@ -93,9 +88,7 @@ interface DataInterface
     /**
      * Get a data instance for a key
      *
-     * @param string $key
      *
-     * @return DataInterface
      *
      * @throws InvalidPathException if the given key is empty
      * @throws DataException if the given key does not reference an array
@@ -107,16 +100,15 @@ interface DataInterface
     /**
      * Import data into existing data
      *
-     * @param array<string, mixed>                     $data
-     * @param self::PRESERVE|self::REPLACE|self::MERGE $mode
+     * @param  array<string, mixed>  $data
+     * @param  self::PRESERVE|self::REPLACE|self::MERGE  $mode
      */
     public function import(array $data, int $mode = self::REPLACE): void;
 
     /**
      * Import data from an external data into existing data
      *
-     * @param DataInterface                            $data
-     * @param self::PRESERVE|self::REPLACE|self::MERGE $mode
+     * @param  self::PRESERVE|self::REPLACE|self::MERGE  $mode
      */
     public function importData(DataInterface $data, int $mode = self::REPLACE): void;
 

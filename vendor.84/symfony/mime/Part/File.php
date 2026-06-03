@@ -23,8 +23,7 @@ class File
     public function __construct(
         private string $path,
         private ?string $filename = null,
-    ) {
-    }
+    ) {}
 
     public function getPath(): string
     {
@@ -34,7 +33,7 @@ class File
     public function getContentType(): string
     {
         $ext = strtolower(pathinfo($this->path, \PATHINFO_EXTENSION));
-        self::$mimeTypes ??= new MimeTypes();
+        self::$mimeTypes ??= new MimeTypes;
 
         return self::$mimeTypes->getMimeTypes($ext)[0] ?? 'application/octet-stream';
     }

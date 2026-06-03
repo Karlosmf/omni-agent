@@ -1,70 +1,75 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace PHPStan\PhpDocParser\Ast\Type;
 
 use PHPStan\PhpDocParser\Ast\NodeAttributes;
+
 use function implode;
 use function sprintf;
 
 class GenericTypeNode implements TypeNode
 {
+    public const VARIANCE_INVARIANT = 'invariant';
 
-	public const VARIANCE_INVARIANT = 'invariant';
-	public const VARIANCE_COVARIANT = 'covariant';
-	public const VARIANCE_CONTRAVARIANT = 'contravariant';
-	public const VARIANCE_BIVARIANT = 'bivariant';
+    public const VARIANCE_COVARIANT = 'covariant';
 
-	use NodeAttributes;
+    public const VARIANCE_CONTRAVARIANT = 'contravariant';
 
-	public IdentifierTypeNode $type;
+    public const VARIANCE_BIVARIANT = 'bivariant';
 
-	/** @var TypeNode[] */
-	public array $genericTypes;
+    use NodeAttributes;
 
-	/** @var (self::VARIANCE_*)[] */
-	public array $variances;
+    public IdentifierTypeNode $type;
 
-	/**
-	 * @param TypeNode[] $genericTypes
-	 * @param (self::VARIANCE_*)[] $variances
-	 */
-	public function __construct(IdentifierTypeNode $type, array $genericTypes, array $variances = [])
-	{
-		$this->type = $type;
-		$this->genericTypes = $genericTypes;
-		$this->variances = $variances;
-	}
+    /** @var TypeNode[] */
+    public array $genericTypes;
 
-	public function __toString(): string
-	{
-		$genericTypes = [];
+    /** @var (self::VARIANCE_*)[] */
+    public array $variances;
 
-		foreach ($this->genericTypes as $index => $type) {
-			$variance = $this->variances[$index] ?? self::VARIANCE_INVARIANT;
-			if ($variance === self::VARIANCE_INVARIANT) {
-				$genericTypes[] = (string) $type;
-			} elseif ($variance === self::VARIANCE_BIVARIANT) {
-				$genericTypes[] = '*';
-			} else {
-				$genericTypes[] = sprintf('%s %s', $variance, $type);
-			}
-		}
+    /**
+     * @param  TypeNode[]  $genericTypes
+     * @param  (self::VARIANCE_*)[]  $variances
+     */
+    public function __construct(IdentifierTypeNode $type, array $genericTypes, array $variances = [])
+    {
+        $this->type = $type;
+        $this->genericTypes = $genericTypes;
+        $this->variances = $variances;
+    }
 
-		return $this->type . '<' . implode(', ', $genericTypes) . '>';
-	}
+    public function __toString(): string
+    {
+        $genericTypes = [];
 
-	/**
-	 * @param array<string, mixed> $properties
-	 */
-	public static function __set_state(array $properties): self
-	{
-		$instance = new self($properties['type'], $properties['genericTypes'], $properties['variances'] ?? []);
-		if (isset($properties['attributes'])) {
-			foreach ($properties['attributes'] as $key => $value) {
-				$instance->setAttribute($key, $value);
-			}
-		}
-		return $instance;
-	}
+        foreach ($this->genericTypes as $index => $type) {
+            $variance = $this->variances[$index] ?? self::VARIANCE_INVARIANT;
+            if ($variance === self::VARIANCE_INVARIANT) {
+                $genericTypes[] = (string) $type;
+            } elseif ($variance === self::VARIANCE_BIVARIANT) {
+                $genericTypes[] = '*';
+            } else {
+                $genericTypes[] = sprintf('%s %s', $variance, $type);
+            }
+        }
 
+        return $this->type.'<'.implode(', ', $genericTypes).'>';
+    }
+
+    /**
+     * @param  array<string, mixed>  $properties
+     */
+    public static function __set_state(array $properties): self
+    {
+        $instance = new self($properties['type'], $properties['genericTypes'], $properties['variances'] ?? []);
+        if (isset($properties['attributes'])) {
+            foreach ($properties['attributes'] as $key => $value) {
+                $instance->setAttribute($key, $value);
+            }
+        }
+
+        return $instance;
+    }
 }

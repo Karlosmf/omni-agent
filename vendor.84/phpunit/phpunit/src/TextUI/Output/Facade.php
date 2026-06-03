@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,10 +9,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\Output;
 
 use const PHP_EOL;
-use function assert;
+
 use PHPUnit\Event\Facade as EventFacade;
 use PHPUnit\Logging\TeamCity\TeamCityLogger;
 use PHPUnit\Logging\TestDox\TestResultCollection;
@@ -26,6 +29,8 @@ use PHPUnit\TextUI\Output\TestDox\ResultPrinter as TestDoxResultPrinter;
 use SebastianBergmann\Timer\Duration;
 use SebastianBergmann\Timer\ResourceUsageFormatter;
 
+use function assert;
+
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  *
@@ -33,11 +38,15 @@ use SebastianBergmann\Timer\ResourceUsageFormatter;
  */
 final class Facade
 {
-    private static ?Printer $printer                           = null;
+    private static ?Printer $printer = null;
+
     private static ?DefaultResultPrinter $defaultResultPrinter = null;
+
     private static ?TestDoxResultPrinter $testDoxResultPrinter = null;
-    private static ?SummaryPrinter $summaryPrinter             = null;
-    private static bool $defaultProgressPrinter                = false;
+
+    private static ?SummaryPrinter $summaryPrinter = null;
+
+    private static bool $defaultProgressPrinter = false;
 
     public static function init(Configuration $configuration, bool $extensionReplacesProgressOutput, bool $extensionReplacesResultOutput): Printer
     {
@@ -51,11 +60,11 @@ final class Facade
 
         self::createUnexpectedOutputPrinter();
 
-        if (!$extensionReplacesProgressOutput) {
+        if (! $extensionReplacesProgressOutput) {
             self::createProgressPrinter($configuration);
         }
 
-        if (!$extensionReplacesResultOutput) {
+        if (! $extensionReplacesResultOutput) {
             self::createResultPrinter($configuration);
             self::createSummaryPrinter($configuration);
         }
@@ -71,7 +80,7 @@ final class Facade
     }
 
     /**
-     * @param ?array<string, TestResultCollection> $testDoxResult
+     * @param  ?array<string, TestResultCollection>  $testDoxResult
      */
     public static function printResult(TestResult $result, ?array $testDoxResult, Duration $duration, bool $stackTraceForDeprecations): void
     {
@@ -79,10 +88,10 @@ final class Facade
 
         if ($result->numberOfTestsRun() > 0) {
             if (self::$defaultProgressPrinter) {
-                self::$printer->print(PHP_EOL . PHP_EOL);
+                self::$printer->print(PHP_EOL.PHP_EOL);
             }
 
-            self::$printer->print((new ResourceUsageFormatter)->resourceUsage($duration) . PHP_EOL . PHP_EOL);
+            self::$printer->print((new ResourceUsageFormatter)->resourceUsage($duration).PHP_EOL.PHP_EOL);
         }
 
         if (self::$testDoxResultPrinter !== null && $testDoxResult !== null) {
@@ -106,7 +115,7 @@ final class Facade
     public static function printerFor(string $target): Printer
     {
         if ($target === 'php://stdout') {
-            if (!self::$printer instanceof NullPrinter) {
+            if (! self::$printer instanceof NullPrinter) {
                 return self::$printer;
             }
 
@@ -132,11 +141,11 @@ final class Facade
             $printerNeeded = true;
         }
 
-        if (!$configuration->noOutput() && !$configuration->noProgress()) {
+        if (! $configuration->noOutput() && ! $configuration->noProgress()) {
             $printerNeeded = true;
         }
 
-        if (!$configuration->noOutput() && !$configuration->noResults()) {
+        if (! $configuration->noOutput() && ! $configuration->noResults()) {
             $printerNeeded = true;
         }
 
@@ -159,7 +168,7 @@ final class Facade
     {
         assert(self::$printer !== null);
 
-        if (!self::useDefaultProgressPrinter($configuration)) {
+        if (! self::useDefaultProgressPrinter($configuration)) {
             return;
         }
 
@@ -256,7 +265,7 @@ final class Facade
         assert(self::$printer !== null);
 
         if (($configuration->noOutput() || $configuration->noResults()) &&
-            !($configuration->outputIsTeamCity() || $configuration->outputIsTestDox())) {
+            ! ($configuration->outputIsTeamCity() || $configuration->outputIsTestDox())) {
             return;
         }
 

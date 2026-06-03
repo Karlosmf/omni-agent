@@ -20,7 +20,7 @@ class BooleanStateCast implements StateCast
         return boolval($state);
     }
 
-    public function set(mixed $state): bool | int | null
+    public function set(mixed $state): bool|int|null
     {
         if ($this->isNullable && blank($state)) {
             return null;

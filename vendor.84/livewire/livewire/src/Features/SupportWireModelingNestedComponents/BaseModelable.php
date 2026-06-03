@@ -2,15 +2,18 @@
 
 namespace Livewire\Features\SupportWireModelingNestedComponents;
 
-use function Livewire\store;
 use Livewire\Features\SupportAttributes\Attribute as LivewireAttribute;
+
+use function Livewire\store;
 
 #[\Attribute]
 class BaseModelable extends LivewireAttribute
 {
     public function mount($params, $parent)
     {
-        if (! $parent) return;
+        if (! $parent) {
+            return;
+        }
 
         $outer = null;
 
@@ -22,7 +25,9 @@ class BaseModelable extends LivewireAttribute
             }
         }
 
-        if ($outer === null) return;
+        if ($outer === null) {
+            return;
+        }
 
         $inner = $this->getName();
 
@@ -42,7 +47,7 @@ class BaseModelable extends LivewireAttribute
     // the parent changed the bound value. This hook detects if the parent
     // has provided a value during this request and ensures that it is the
     // final value for the child's request...
-    function update($fullPath, $newValue)
+    public function update($fullPath, $newValue)
     {
         if (store($this->component)->get('hasBeenSeeded', false)) {
             $oldValue = $this->getValue();

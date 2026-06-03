@@ -13,23 +13,23 @@ use InvalidArgumentException;
 
 trait HasGlobalSearch
 {
-    protected GlobalSearchPosition | Closure | null $globalSearchPosition = null;
+    protected GlobalSearchPosition|Closure|null $globalSearchPosition = null;
 
-    protected string | Closure | null $globalSearchDebounce = null;
+    protected string|Closure|null $globalSearchDebounce = null;
 
     /**
      * @var array<string>
      */
     protected array $globalSearchKeyBindings = [];
 
-    protected string | bool $globalSearchProvider = true;
+    protected string|bool $globalSearchProvider = true;
 
-    protected string | Closure | null $globalSearchFieldSuffix = null;
+    protected string|Closure|null $globalSearchFieldSuffix = null;
 
-    public function globalSearch(string | bool $provider = true, GlobalSearchPosition | Closure | null $position = null): static
+    public function globalSearch(string|bool $provider = true, GlobalSearchPosition|Closure|null $position = null): static
     {
         if (is_string($provider) && (! in_array(GlobalSearchProvider::class, class_implements($provider)))) {
-            throw new InvalidArgumentException("Global search provider {$provider} does not implement the [" . GlobalSearchProvider::class . '] interface.');
+            throw new InvalidArgumentException("Global search provider {$provider} does not implement the [".GlobalSearchProvider::class.'] interface.');
         }
 
         $this->globalSearchProvider = $provider;
@@ -38,7 +38,7 @@ trait HasGlobalSearch
         return $this;
     }
 
-    public function globalSearchDebounce(string | Closure | null $debounce): static
+    public function globalSearchDebounce(string|Closure|null $debounce): static
     {
         $this->globalSearchDebounce = $debounce;
 
@@ -55,7 +55,7 @@ trait HasGlobalSearch
         return $this;
     }
 
-    public function globalSearchFieldSuffix(string | Closure | null $suffix): static
+    public function globalSearchFieldSuffix(string|Closure|null $suffix): static
     {
         $this->globalSearchFieldSuffix = $suffix;
 

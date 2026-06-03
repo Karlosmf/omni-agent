@@ -36,7 +36,7 @@ class ObjectAttributesMatcher extends AbstractContextAwareMatcher
             \array_pop($tokens);
         }
         $objectToken = \array_pop($tokens);
-        if (!\is_array($objectToken)) {
+        if (! \is_array($objectToken)) {
             return [];
         }
         $objectName = \str_replace('$', '', $objectToken[1]);
@@ -47,7 +47,7 @@ class ObjectAttributesMatcher extends AbstractContextAwareMatcher
             return [];
         }
 
-        if (!\is_object($object)) {
+        if (! \is_object($object)) {
             return [];
         }
 

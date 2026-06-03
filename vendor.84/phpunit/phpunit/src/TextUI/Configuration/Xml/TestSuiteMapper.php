@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,15 +9,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\XmlConfiguration;
 
 use const PHP_VERSION;
-use function in_array;
-use function is_dir;
-use function is_file;
-use function sprintf;
-use function str_contains;
-use function version_compare;
+
 use PHPUnit\Event\Facade as EventFacade;
 use PHPUnit\Framework\Exception as FrameworkException;
 use PHPUnit\Framework\TestSuite as TestSuiteObject;
@@ -25,6 +23,13 @@ use PHPUnit\TextUI\TestDirectoryNotFoundException;
 use PHPUnit\TextUI\TestFileNotFoundException;
 use SebastianBergmann\FileIterator\Facade;
 
+use function in_array;
+use function is_dir;
+use function is_file;
+use function sprintf;
+use function str_contains;
+use function version_compare;
+
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  *
@@ -33,9 +38,9 @@ use SebastianBergmann\FileIterator\Facade;
 final readonly class TestSuiteMapper
 {
     /**
-     * @param non-empty-string       $xmlConfigurationFile
-     * @param list<non-empty-string> $includeTestSuites
-     * @param list<non-empty-string> $excludeTestSuites
+     * @param  non-empty-string  $xmlConfigurationFile
+     * @param  list<non-empty-string>  $includeTestSuites
+     * @param  list<non-empty-string>  $excludeTestSuites
      *
      * @throws RuntimeException
      * @throws TestDirectoryNotFoundException
@@ -44,11 +49,11 @@ final readonly class TestSuiteMapper
     public function map(string $xmlConfigurationFile, TestSuiteCollection $configuredTestSuites, array $includeTestSuites, array $excludeTestSuites): TestSuiteObject
     {
         try {
-            $result    = TestSuiteObject::empty($xmlConfigurationFile);
+            $result = TestSuiteObject::empty($xmlConfigurationFile);
             $processed = [];
 
             foreach ($configuredTestSuites as $configuredTestSuite) {
-                if ($includeTestSuites !== [] && !in_array($configuredTestSuite->name(), $includeTestSuites, true)) {
+                if ($includeTestSuites !== [] && ! in_array($configuredTestSuite->name(), $includeTestSuites, true)) {
                     continue;
                 }
 
@@ -57,21 +62,21 @@ final readonly class TestSuiteMapper
                 }
 
                 $testSuiteName = $configuredTestSuite->name();
-                $exclude       = [];
+                $exclude = [];
 
                 foreach ($configuredTestSuite->exclude()->asArray() as $file) {
                     $exclude[] = $file->path();
                 }
 
                 $testSuite = TestSuiteObject::empty($configuredTestSuite->name());
-                $empty     = true;
+                $empty = true;
 
                 foreach ($configuredTestSuite->directories() as $directory) {
-                    if (!str_contains($directory->path(), '*') && !is_dir($directory->path())) {
+                    if (! str_contains($directory->path(), '*') && ! is_dir($directory->path())) {
                         throw new TestDirectoryNotFoundException($directory->path());
                     }
 
-                    if (!version_compare(PHP_VERSION, $directory->phpVersion(), $directory->phpVersionOperator()->asString())) {
+                    if (! version_compare(PHP_VERSION, $directory->phpVersion(), $directory->phpVersionOperator()->asString())) {
                         continue;
                     }
 
@@ -99,18 +104,18 @@ final readonly class TestSuiteMapper
                         }
 
                         $processed[$file] = $testSuiteName;
-                        $empty            = false;
+                        $empty = false;
 
                         $testSuite->addTestFile($file, $groups);
                     }
                 }
 
                 foreach ($configuredTestSuite->files() as $file) {
-                    if (!is_file($file->path())) {
+                    if (! is_file($file->path())) {
                         throw new TestFileNotFoundException($file->path());
                     }
 
-                    if (!version_compare(PHP_VERSION, $file->phpVersion(), $file->phpVersionOperator()->asString())) {
+                    if (! version_compare(PHP_VERSION, $file->phpVersion(), $file->phpVersionOperator()->asString())) {
                         continue;
                     }
 
@@ -128,12 +133,12 @@ final readonly class TestSuiteMapper
                     }
 
                     $processed[$file->path()] = $testSuiteName;
-                    $empty                    = false;
+                    $empty = false;
 
                     $testSuite->addTestFile($file->path(), $file->groups());
                 }
 
-                if (!$empty) {
+                if (! $empty) {
                     $result->addTest($testSuite);
                 }
             }

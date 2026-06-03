@@ -38,8 +38,8 @@ class ParentGenerator extends Generator
     protected function attach(): string
     {
         return Str::of($this->template())
-            ->replaceMatches('/(namespace\s+.+;\r?\n?)/', '$1' . PHP_EOL . 'use ' . HasTranslations::class . ';')
-            ->replaceMatches('/(class\s+.+\r?\n?\s*\{\r?\n?)/', '$1    use HasTranslations;' . PHP_EOL)
+            ->replaceMatches('/(namespace\s+.+;\r?\n?)/', '$1'.PHP_EOL.'use '.HasTranslations::class.';')
+            ->replaceMatches('/(class\s+.+\r?\n?\s*\{\r?\n?)/', '$1    use HasTranslations;'.PHP_EOL)
             ->toString();
     }
 

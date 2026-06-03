@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,12 +9,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\Code;
+
+use PHPUnit\Event\TestData\TestDataCollection;
+use PHPUnit\Metadata\MetadataCollection;
 
 use function is_int;
 use function sprintf;
-use PHPUnit\Event\TestData\TestDataCollection;
-use PHPUnit\Metadata\MetadataCollection;
 
 /**
  * @immutable
@@ -35,26 +39,29 @@ final readonly class TestMethod extends Test
      * @var non-negative-int
      */
     private int $line;
+
     private TestDox $testDox;
+
     private MetadataCollection $metadata;
+
     private TestDataCollection $testData;
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
-     * @param non-empty-string $file
-     * @param non-negative-int $line
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
+     * @param  non-empty-string  $file
+     * @param  non-negative-int  $line
      */
     public function __construct(string $className, string $methodName, string $file, int $line, TestDox $testDox, MetadataCollection $metadata, TestDataCollection $testData)
     {
         parent::__construct($file);
 
-        $this->className  = $className;
+        $this->className = $className;
         $this->methodName = $methodName;
-        $this->line       = $line;
-        $this->testDox    = $testDox;
-        $this->metadata   = $metadata;
-        $this->testData   = $testData;
+        $this->line = $line;
+        $this->testDox = $testDox;
+        $this->metadata = $metadata;
+        $this->testData = $testData;
     }
 
     /**
@@ -81,7 +88,7 @@ final readonly class TestMethod extends Test
         return $this->line;
     }
 
-    public function testDox(): TestDox
+    public function test_dox(): TestDox
     {
         return $this->testDox;
     }
@@ -91,7 +98,7 @@ final readonly class TestMethod extends Test
         return $this->metadata;
     }
 
-    public function testData(): TestDataCollection
+    public function test_data(): TestDataCollection
     {
         return $this->testData;
     }
@@ -106,10 +113,10 @@ final readonly class TestMethod extends Test
      */
     public function id(): string
     {
-        $buffer = $this->className . '::' . $this->methodName;
+        $buffer = $this->className.'::'.$this->methodName;
 
         if ($this->testData()->hasDataFromDataProvider()) {
-            $buffer .= '#' . $this->testData->dataFromDataProvider()->dataSetName();
+            $buffer .= '#'.$this->testData->dataFromDataProvider()->dataSetName();
         }
 
         return $buffer;
@@ -120,7 +127,7 @@ final readonly class TestMethod extends Test
      */
     public function nameWithClass(): string
     {
-        return $this->className . '::' . $this->name();
+        return $this->className.'::'.$this->name();
     }
 
     /**
@@ -128,7 +135,7 @@ final readonly class TestMethod extends Test
      */
     public function name(): string
     {
-        if (!$this->testData->hasDataFromDataProvider()) {
+        if (! $this->testData->hasDataFromDataProvider()) {
             return $this->methodName;
         }
 
@@ -146,6 +153,6 @@ final readonly class TestMethod extends Test
             );
         }
 
-        return $this->methodName . $dataSetName;
+        return $this->methodName.$dataSetName;
     }
 }

@@ -12,7 +12,7 @@ class Set
         protected Component $component,
     ) {}
 
-    public function __invoke(string | Component $path, mixed $state, bool $isAbsolute = false, bool $shouldCallUpdatedHooks = false): mixed
+    public function __invoke(string|Component $path, mixed $state, bool $isAbsolute = false, bool $shouldCallUpdatedHooks = false): mixed
     {
         $livewire = $this->component->getLivewire();
 

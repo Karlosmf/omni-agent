@@ -14,6 +14,7 @@ class WebDriverSelect implements WebDriverSelectInterface
 {
     /** @var WebDriverElement */
     private $element;
+
     /** @var bool */
     private $isMulti;
 
@@ -53,7 +54,7 @@ class WebDriverSelect implements WebDriverSelectInterface
             if ($option->isSelected()) {
                 $selected_options[] = $option;
 
-                if (!$this->isMultiple()) {
+                if (! $this->isMultiple()) {
                     return $selected_options;
                 }
             }
@@ -89,18 +90,18 @@ class WebDriverSelect implements WebDriverSelectInterface
     public function selectByValue($value)
     {
         $matched = false;
-        $xpath = './/option[@value = ' . XPathEscaper::escapeQuotes($value) . ']';
+        $xpath = './/option[@value = '.XPathEscaper::escapeQuotes($value).']';
         $options = $this->element->findElements(WebDriverBy::xpath($xpath));
 
         foreach ($options as $option) {
             $this->selectOption($option);
-            if (!$this->isMultiple()) {
+            if (! $this->isMultiple()) {
                 return;
             }
             $matched = true;
         }
 
-        if (!$matched) {
+        if (! $matched) {
             throw new NoSuchElementException(
                 sprintf('Cannot locate option with value: %s', $value)
             );
@@ -110,12 +111,12 @@ class WebDriverSelect implements WebDriverSelectInterface
     public function selectByVisibleText($text)
     {
         $matched = false;
-        $xpath = './/option[normalize-space(.) = ' . XPathEscaper::escapeQuotes($text) . ']';
+        $xpath = './/option[normalize-space(.) = '.XPathEscaper::escapeQuotes($text).']';
         $options = $this->element->findElements(WebDriverBy::xpath($xpath));
 
         foreach ($options as $option) {
             $this->selectOption($option);
-            if (!$this->isMultiple()) {
+            if (! $this->isMultiple()) {
                 return;
             }
             $matched = true;
@@ -123,11 +124,11 @@ class WebDriverSelect implements WebDriverSelectInterface
 
         // Since the mechanism of getting the text in xpath is not the same as
         // webdriver, use the expensive getText() to check if nothing is matched.
-        if (!$matched) {
+        if (! $matched) {
             foreach ($this->getOptions() as $option) {
                 if ($option->getText() === $text) {
                     $this->selectOption($option);
-                    if (!$this->isMultiple()) {
+                    if (! $this->isMultiple()) {
                         return;
                     }
                     $matched = true;
@@ -135,7 +136,7 @@ class WebDriverSelect implements WebDriverSelectInterface
             }
         }
 
-        if (!$matched) {
+        if (! $matched) {
             throw new NoSuchElementException(
                 sprintf('Cannot locate option with text: %s', $text)
             );
@@ -145,18 +146,18 @@ class WebDriverSelect implements WebDriverSelectInterface
     public function selectByVisiblePartialText($text)
     {
         $matched = false;
-        $xpath = './/option[contains(normalize-space(.), ' . XPathEscaper::escapeQuotes($text) . ')]';
+        $xpath = './/option[contains(normalize-space(.), '.XPathEscaper::escapeQuotes($text).')]';
         $options = $this->element->findElements(WebDriverBy::xpath($xpath));
 
         foreach ($options as $option) {
             $this->selectOption($option);
-            if (!$this->isMultiple()) {
+            if (! $this->isMultiple()) {
                 return;
             }
             $matched = true;
         }
 
-        if (!$matched) {
+        if (! $matched) {
             throw new NoSuchElementException(
                 sprintf('Cannot locate option with text: %s', $text)
             );
@@ -165,7 +166,7 @@ class WebDriverSelect implements WebDriverSelectInterface
 
     public function deselectAll()
     {
-        if (!$this->isMultiple()) {
+        if (! $this->isMultiple()) {
             throw new UnsupportedOperationException('You may only deselect all options of a multi-select');
         }
 
@@ -176,7 +177,7 @@ class WebDriverSelect implements WebDriverSelectInterface
 
     public function deselectByIndex($index)
     {
-        if (!$this->isMultiple()) {
+        if (! $this->isMultiple()) {
             throw new UnsupportedOperationException('You may only deselect options of a multi-select');
         }
 
@@ -191,11 +192,11 @@ class WebDriverSelect implements WebDriverSelectInterface
 
     public function deselectByValue($value)
     {
-        if (!$this->isMultiple()) {
+        if (! $this->isMultiple()) {
             throw new UnsupportedOperationException('You may only deselect options of a multi-select');
         }
 
-        $xpath = './/option[@value = ' . XPathEscaper::escapeQuotes($value) . ']';
+        $xpath = './/option[@value = '.XPathEscaper::escapeQuotes($value).']';
         $options = $this->element->findElements(WebDriverBy::xpath($xpath));
         foreach ($options as $option) {
             $this->deselectOption($option);
@@ -204,11 +205,11 @@ class WebDriverSelect implements WebDriverSelectInterface
 
     public function deselectByVisibleText($text)
     {
-        if (!$this->isMultiple()) {
+        if (! $this->isMultiple()) {
             throw new UnsupportedOperationException('You may only deselect options of a multi-select');
         }
 
-        $xpath = './/option[normalize-space(.) = ' . XPathEscaper::escapeQuotes($text) . ']';
+        $xpath = './/option[normalize-space(.) = '.XPathEscaper::escapeQuotes($text).']';
         $options = $this->element->findElements(WebDriverBy::xpath($xpath));
         foreach ($options as $option) {
             $this->deselectOption($option);
@@ -217,11 +218,11 @@ class WebDriverSelect implements WebDriverSelectInterface
 
     public function deselectByVisiblePartialText($text)
     {
-        if (!$this->isMultiple()) {
+        if (! $this->isMultiple()) {
             throw new UnsupportedOperationException('You may only deselect options of a multi-select');
         }
 
-        $xpath = './/option[contains(normalize-space(.), ' . XPathEscaper::escapeQuotes($text) . ')]';
+        $xpath = './/option[contains(normalize-space(.), '.XPathEscaper::escapeQuotes($text).')]';
         $options = $this->element->findElements(WebDriverBy::xpath($xpath));
         foreach ($options as $option) {
             $this->deselectOption($option);
@@ -233,7 +234,7 @@ class WebDriverSelect implements WebDriverSelectInterface
      */
     protected function selectOption(WebDriverElement $option)
     {
-        if (!$option->isSelected()) {
+        if (! $option->isSelected()) {
             $option->click();
         }
     }

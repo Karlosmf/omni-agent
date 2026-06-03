@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Metadata;
 
 /**
@@ -22,8 +25,8 @@ final readonly class UsesTrait extends Metadata
     private string $traitName;
 
     /**
-     * @param 0|1          $level
-     * @param trait-string $traitName
+     * @param  0|1  $level
+     * @param  trait-string  $traitName
      */
     protected function __construct(int $level, string $traitName)
     {

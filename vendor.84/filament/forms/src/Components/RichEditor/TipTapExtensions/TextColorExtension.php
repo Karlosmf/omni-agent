@@ -84,7 +84,7 @@ class TextColorExtension extends Mark
 
         if (filled($cssVars)) {
             $existingStyle = isset($HTMLAttributes['style']) ? (string) $HTMLAttributes['style'] : '';
-            $HTMLAttributes['style'] = $existingStyle !== '' ? ($cssVars . '; ' . $existingStyle) : $cssVars;
+            $HTMLAttributes['style'] = $existingStyle !== '' ? ($cssVars.'; '.$existingStyle) : $cssVars;
         }
 
         return [

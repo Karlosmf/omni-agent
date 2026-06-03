@@ -11,7 +11,7 @@ class DenyResponse extends Response
 
     protected ?Closure $getMessageUsing = null;
 
-    public static function make(string $key, string | Closure $message): Response
+    public static function make(string $key, string|Closure $message): Response
     {
         $static = static::deny(is_string($message) ? $message : null);
 

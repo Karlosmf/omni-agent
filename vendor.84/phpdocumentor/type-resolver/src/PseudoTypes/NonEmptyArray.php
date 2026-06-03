@@ -36,13 +36,13 @@ final class NonEmptyArray extends Array_ implements PseudoType
     public function __toString(): string
     {
         if ($this->keyType) {
-            return 'non-empty-array<' . $this->keyType . ',' . $this->valueType . '>';
+            return 'non-empty-array<'.$this->keyType.','.$this->valueType.'>';
         }
 
         if ($this->valueType instanceof Mixed_) {
             return 'non-empty-array';
         }
 
-        return 'non-empty-array<' . $this->valueType . '>';
+        return 'non-empty-array<'.$this->valueType.'>';
     }
 }

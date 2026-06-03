@@ -6,9 +6,9 @@ use Closure;
 
 trait CanBeSecondary
 {
-    protected bool | Closure $isSecondary = false;
+    protected bool|Closure $isSecondary = false;
 
-    public function secondary(bool | Closure $condition = true): static
+    public function secondary(bool|Closure $condition = true): static
     {
         $this->isSecondary = $condition;
 

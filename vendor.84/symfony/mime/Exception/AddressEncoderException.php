@@ -14,6 +14,4 @@ namespace Symfony\Component\Mime\Exception;
 /**
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class AddressEncoderException extends RfcComplianceException
-{
-}
+class AddressEncoderException extends RfcComplianceException {}

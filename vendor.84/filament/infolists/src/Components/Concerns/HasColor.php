@@ -11,12 +11,12 @@ trait HasColor
     /**
      * @var string | array<string> | bool | Closure | null
      */
-    protected string | array | bool | Closure | null $color = null;
+    protected string|array|bool|Closure|null $color = null;
 
     /**
      * @param  string | array<string> | bool | Closure | null  $color
      */
-    public function color(string | array | bool | Closure | null $color): static
+    public function color(string|array|bool|Closure|null $color): static
     {
         $this->color = $color;
 
@@ -26,7 +26,7 @@ trait HasColor
     /**
      * @param  array<mixed> | Closure  $colors
      */
-    public function colors(array | Closure $colors): static
+    public function colors(array|Closure $colors): static
     {
         $this->color(function (Component $component, $state) use ($colors) {
             $colors = $component->evaluate($colors);
@@ -52,7 +52,7 @@ trait HasColor
     /**
      * @return string | array<string> | null
      */
-    public function getColor(mixed $state): string | array | null
+    public function getColor(mixed $state): string|array|null
     {
         $color = $this->evaluate($this->color, [
             'state' => $state,

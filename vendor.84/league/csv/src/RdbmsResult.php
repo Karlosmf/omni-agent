@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\Csv;
 
+use const SQLITE3_ASSOC;
+
 use Generator;
 use mysqli_result;
 use PDO;
@@ -28,14 +30,12 @@ use function pg_field_name;
 use function pg_num_fields;
 use function range;
 
-use const SQLITE3_ASSOC;
-
 final class RdbmsResult
 {
     /**
-     * @throws RuntimeException If no column names information is found.
-     *
      * @return list<string>
+     *
+     * @throws RuntimeException If no column names information is found.
      */
     public static function columnNames(PDOStatement|Result|mysqli_result|SQLite3Result $result): array
     {

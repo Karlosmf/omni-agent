@@ -19,7 +19,7 @@ class LivewireTagPrecompiler extends ComponentTagCompiler
             $values = array_values($attributes);
             $attributesCount = count($attributes);
 
-            for ($i=0; $i < $attributesCount; $i++) {
+            for ($i = 0; $i < $attributesCount; $i++) {
                 if ($keys[$i] === ':' && $values[$i] === 'true') {
                     if (isset($values[$i + 1]) && $values[$i + 1] === 'true') {
                         $attributes[$keys[$i + 1]] = '$'.$keys[$i + 1];
@@ -31,7 +31,9 @@ class LivewireTagPrecompiler extends ComponentTagCompiler
             // Convert all kebab-cased to camelCase.
             $attributes = collect($attributes)->mapWithKeys(function ($value, $key) {
                 // Skip snake_cased attributes.
-                if (str($key)->contains('_')) return [$key => $value];
+                if (str($key)->contains('_')) {
+                    return [$key => $value];
+                }
 
                 return [(string) str($key)->camel() => $value];
             })->toArray();
@@ -40,15 +42,21 @@ class LivewireTagPrecompiler extends ComponentTagCompiler
             // existing attributes so both snake and camel are available.
             $attributes = collect($attributes)->mapWithKeys(function ($value, $key) {
                 // Skip snake_cased attributes
-                if (! str($key)->contains('_')) return [$key => false];
+                if (! str($key)->contains('_')) {
+                    return [$key => false];
+                }
 
                 return [(string) str($key)->camel() => $value];
             })->filter()->merge($attributes)->toArray();
 
             $component = $matches[1];
 
-            if ($component === 'styles') return '@livewireStyles';
-            if ($component === 'scripts') return '@livewireScripts';
+            if ($component === 'styles') {
+                return '@livewireStyles';
+            }
+            if ($component === 'scripts') {
+                return '@livewireScripts';
+            }
             if ($component === 'dynamic-component' || $component === 'is') {
                 if (! isset($attributes['component']) && ! isset($attributes['is'])) {
                     throw new ComponentAttributeMissingOnDynamicComponentException;
@@ -82,11 +90,11 @@ class LivewireTagPrecompiler extends ComponentTagCompiler
     protected function attributesToString(array $attributes, $escapeBound = true)
     {
         return collect($attributes)
-                ->map(function (string $value, string $attribute) use ($escapeBound) {
-                    return $escapeBound && isset($this->boundAttributes[$attribute]) && $value !== 'true' && ! is_numeric($value)
-                                ? "'{$attribute}' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute({$value})"
-                                : "'{$attribute}' => {$value}";
-                })
-                ->implode(',');
+            ->map(function (string $value, string $attribute) use ($escapeBound) {
+                return $escapeBound && isset($this->boundAttributes[$attribute]) && $value !== 'true' && ! is_numeric($value)
+                            ? "'{$attribute}' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute({$value})"
+                            : "'{$attribute}' => {$value}";
+            })
+            ->implode(',');
     }
 }

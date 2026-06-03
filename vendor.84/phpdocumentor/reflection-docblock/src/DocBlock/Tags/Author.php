@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace phpDocumentor\Reflection\DocBlock\Tags;
 
+use const FILTER_VALIDATE_EMAIL;
+
 use InvalidArgumentException;
 
 use function filter_var;
 use function preg_match;
 use function trim;
-
-use const FILTER_VALIDATE_EMAIL;
 
 /**
  * Reflection class for an {@}author tag in a Docblock.
@@ -40,11 +40,11 @@ final class Author extends BaseTag implements Factory\StaticMethod
      */
     public function __construct(string $authorName, string $authorEmail)
     {
-        if ($authorEmail && !filter_var($authorEmail, FILTER_VALIDATE_EMAIL)) {
+        if ($authorEmail && ! filter_var($authorEmail, FILTER_VALIDATE_EMAIL)) {
             throw new InvalidArgumentException('The author tag does not have a valid e-mail address');
         }
 
-        $this->authorName  = $authorName;
+        $this->authorName = $authorName;
         $this->authorEmail = $authorEmail;
     }
 
@@ -74,14 +74,14 @@ final class Author extends BaseTag implements Factory\StaticMethod
     public function __toString(): string
     {
         if ($this->authorEmail) {
-            $authorEmail = '<' . $this->authorEmail . '>';
+            $authorEmail = '<'.$this->authorEmail.'>';
         } else {
             $authorEmail = '';
         }
 
         $authorName = $this->authorName;
 
-        return $authorName . ($authorEmail !== '' ? ($authorName !== '' ? ' ' : '') . $authorEmail : '');
+        return $authorName.($authorEmail !== '' ? ($authorName !== '' ? ' ' : '').$authorEmail : '');
     }
 
     /**
@@ -90,13 +90,13 @@ final class Author extends BaseTag implements Factory\StaticMethod
     public static function create(string $body): ?self
     {
         $splitTagContent = preg_match('/^([^\<]*)(?:\<([^\>]*)\>)?$/u', $body, $matches);
-        if (!$splitTagContent) {
+        if (! $splitTagContent) {
             return null;
         }
 
         $authorName = trim($matches[1]);
-        $email      = isset($matches[2]) ? trim($matches[2]) : '';
+        $email = isset($matches[2]) ? trim($matches[2]) : '';
 
-        return new static($authorName, $email);
+        return new self($authorName, $email);
     }
 }

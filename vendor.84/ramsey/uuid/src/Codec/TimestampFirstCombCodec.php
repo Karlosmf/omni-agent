@@ -43,7 +43,6 @@ use function substr_replace;
  * ```
  *
  * @deprecated Please migrate to {@link https://uuid.ramsey.dev/en/stable/rfc4122/version7.html Version 7, Unix Epoch Time UUIDs}.
- *
  * @link https://web.archive.org/web/20240118030355/https://www.informit.com/articles/printerfriendly/25862 The Cost of GUIDs as Primary Keys
  *
  * @immutable
@@ -80,7 +79,7 @@ class TimestampFirstCombCodec extends StringCodec
     /**
      * @throws InvalidUuidStringException
      *
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function decode(string $encodedUuid): UuidInterface
     {

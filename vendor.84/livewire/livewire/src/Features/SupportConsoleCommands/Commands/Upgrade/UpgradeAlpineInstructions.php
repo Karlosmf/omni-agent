@@ -26,8 +26,7 @@ class UpgradeAlpineInstructions extends UpgradeStep
         $console->line('Alpine.plugin(yourCustomPlugin);');
         $console->line('Livewire.start();');
 
-        if($console->confirm('Continue?', true))
-        {
+        if ($console->confirm('Continue?', true)) {
             return $next($console);
         }
     }

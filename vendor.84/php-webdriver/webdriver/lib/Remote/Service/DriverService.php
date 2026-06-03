@@ -39,10 +39,10 @@ class DriverService
     private $process;
 
     /**
-     * @param string $executable
-     * @param int $port The given port the service should use.
-     * @param array $args
-     * @param array|null $environment Use the system environment if it is null
+     * @param  string  $executable
+     * @param  int  $port  The given port the service should use.
+     * @param  array  $args
+     * @param  array|null  $environment  Use the system environment if it is null
      */
     public function __construct($executable, $port, $args = [], $environment = null)
     {
@@ -74,8 +74,8 @@ class DriverService
 
         $this->checkWasStarted($this->process);
 
-        $checker = new URLChecker();
-        $checker->waitUntilAvailable(20 * 1000, $this->url . '/status');
+        $checker = new URLChecker;
+        $checker->waitUntilAvailable(20 * 1000, $this->url.'/status');
 
         return $this;
     }
@@ -92,8 +92,8 @@ class DriverService
         $this->process->stop();
         $this->process = null;
 
-        $checker = new URLChecker();
-        $checker->waitUntilUnavailable(3 * 1000, $this->url . '/shutdown');
+        $checker = new URLChecker;
+        $checker->waitUntilUnavailable(3 * 1000, $this->url.'/shutdown');
 
         return $this;
     }
@@ -113,7 +113,8 @@ class DriverService
     /**
      * @deprecated Has no effect. Will be removed in next major version. Executable is now checked
      * when calling setExecutable().
-     * @param string $executable
+     *
+     * @param  string  $executable
      * @return string
      */
     protected static function checkExecutable($executable)
@@ -122,7 +123,8 @@ class DriverService
     }
 
     /**
-     * @param string $executable
+     * @param  string  $executable
+     *
      * @throws IOException
      */
     protected function setExecutable($executable)
@@ -135,19 +137,19 @@ class DriverService
 
         throw IOException::forFileError(
             'File is not executable. Make sure the path is correct or use environment variable to specify'
-            . ' location of the executable.',
+            .' location of the executable.',
             $executable
         );
     }
 
     /**
-     * @param Process $process
+     * @param  Process  $process
      */
     protected function checkWasStarted($process)
     {
         usleep(10000); // wait 10ms, otherwise the asynchronous process failure may not yet be propagated
 
-        if (!$process->isRunning()) {
+        if (! $process->isRunning()) {
             throw RuntimeException::forDriverError($process);
         }
     }
@@ -173,7 +175,7 @@ class DriverService
 
         $paths = explode(PATH_SEPARATOR, getenv('PATH'));
         foreach ($paths as $path) {
-            if (is_executable($path . DIRECTORY_SEPARATOR . $filename)) {
+            if (is_executable($path.DIRECTORY_SEPARATOR.$filename)) {
                 return true;
             }
         }

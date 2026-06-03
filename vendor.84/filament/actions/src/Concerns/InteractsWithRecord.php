@@ -17,27 +17,27 @@ trait InteractsWithRecord
     /**
      * @var Model | class-string<Model> | array<string, mixed> | Closure | null
      */
-    protected Model | string | array | Closure | null $record = null;
+    protected Model|string|array|Closure|null $record = null;
 
     protected ?Closure $resolveRecordUsing = null;
 
     /**
      * @var class-string<Model>|Closure|null
      */
-    protected string | Closure | null $model = null;
+    protected string|Closure|null $model = null;
 
-    protected string | Closure | null $modelLabel = null;
+    protected string|Closure|null $modelLabel = null;
 
-    protected string | Closure | null $pluralModelLabel = null;
+    protected string|Closure|null $pluralModelLabel = null;
 
-    protected string | Closure | null $recordTitle = null;
+    protected string|Closure|null $recordTitle = null;
 
-    protected string | Closure | null $recordTitleAttribute = null;
+    protected string|Closure|null $recordTitleAttribute = null;
 
     /**
      * @param  Model | string | array<string, mixed> | Closure | null  $record
      */
-    public function record(Model | string | array | Closure | null $record): static
+    public function record(Model|string|array|Closure|null $record): static
     {
         $this->record = $record;
 
@@ -54,35 +54,35 @@ trait InteractsWithRecord
     /**
      * @param  class-string<Model>|Closure|null  $model
      */
-    public function model(string | Closure | null $model): static
+    public function model(string|Closure|null $model): static
     {
         $this->model = $model;
 
         return $this;
     }
 
-    public function modelLabel(string | Closure | null $label): static
+    public function modelLabel(string|Closure|null $label): static
     {
         $this->modelLabel = $label;
 
         return $this;
     }
 
-    public function pluralModelLabel(string | Closure | null $label): static
+    public function pluralModelLabel(string|Closure|null $label): static
     {
         $this->pluralModelLabel = $label;
 
         return $this;
     }
 
-    public function recordTitle(string | Closure | null $title): static
+    public function recordTitle(string|Closure|null $title): static
     {
         $this->recordTitle = $title;
 
         return $this;
     }
 
-    public function recordTitleAttribute(string | Closure | null $attribute): static
+    public function recordTitleAttribute(string|Closure|null $attribute): static
     {
         $this->recordTitleAttribute = $attribute;
 
@@ -92,7 +92,7 @@ trait InteractsWithRecord
     /**
      * @return Model | array<string, mixed> | null
      */
-    public function getRecord(bool $withDefault = true): Model | array | null
+    public function getRecord(bool $withDefault = true): Model|array|null
     {
         $record = $this->evaluate($this->record);
 
@@ -135,7 +135,7 @@ trait InteractsWithRecord
      * @param  Model | array<string, mixed> | null  $record
      * @return Model | array<string, mixed> | null
      */
-    protected function ensureCorrectRecordType(Model | array | null $record): Model | array | null
+    protected function ensureCorrectRecordType(Model|array|null $record): Model|array|null
     {
         if (
             ($record instanceof Model)
@@ -180,10 +180,10 @@ trait InteractsWithRecord
     /**
      * @param  Model | array<string, mixed>  $record
      */
-    public function resolveRecordKey(Model | array $record): ?string
+    public function resolveRecordKey(Model|array $record): ?string
     {
         if (is_array($record)) {
-            return strval($record[ArrayRecord::getKeyName()] ?? throw new LogicException('Record arrays must have a unique [' . ArrayRecord::getKeyName() . '] entry for identification.'));
+            return strval($record[ArrayRecord::getKeyName()] ?? throw new LogicException('Record arrays must have a unique ['.ArrayRecord::getKeyName().'] entry for identification.'));
         }
 
         $key = $record->getKey();

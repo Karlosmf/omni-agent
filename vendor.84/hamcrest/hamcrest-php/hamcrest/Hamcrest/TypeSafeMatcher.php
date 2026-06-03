@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest;
 
 /**
@@ -9,17 +10,21 @@ namespace Hamcrest;
  * be cast to certain data types such as numerics (or even strings if
  * __toString() has not be defined).
  */
-
 abstract class TypeSafeMatcher extends BaseMatcher
 {
-
     /* Types that PHP can compare against */
     const TYPE_ANY = 0;
+
     const TYPE_STRING = 1;
+
     const TYPE_NUMERIC = 2;
+
     const TYPE_ARRAY = 3;
+
     const TYPE_OBJECT = 4;
+
     const TYPE_RESOURCE = 5;
+
     const TYPE_BOOLEAN = 6;
 
     /**
@@ -49,7 +54,7 @@ abstract class TypeSafeMatcher extends BaseMatcher
 
     final public function describeMismatch($item, Description $mismatchDescription)
     {
-        if (!$this->_isSafeType($item)) {
+        if (! $this->_isSafeType($item)) {
             parent::describeMismatch($item, $mismatchDescription);
         } else {
             $this->describeMismatchSafely($item, $mismatchDescription);

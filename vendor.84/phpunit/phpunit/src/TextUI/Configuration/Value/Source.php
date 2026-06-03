@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\Configuration;
 
 /**
@@ -20,22 +23,39 @@ final readonly class Source
      * @var non-empty-string
      */
     private ?string $baseline;
+
     private bool $ignoreBaseline;
+
     private FilterDirectoryCollection $includeDirectories;
+
     private FileCollection $includeFiles;
+
     private FilterDirectoryCollection $excludeDirectories;
+
     private FileCollection $excludeFiles;
+
     private bool $restrictNotices;
+
     private bool $restrictWarnings;
+
     private bool $ignoreSuppressionOfDeprecations;
+
     private bool $ignoreSuppressionOfPhpDeprecations;
+
     private bool $ignoreSuppressionOfErrors;
+
     private bool $ignoreSuppressionOfNotices;
+
     private bool $ignoreSuppressionOfPhpNotices;
+
     private bool $ignoreSuppressionOfWarnings;
+
     private bool $ignoreSuppressionOfPhpWarnings;
+
     private bool $ignoreSelfDeprecations;
+
     private bool $ignoreDirectDeprecations;
+
     private bool $ignoreIndirectDeprecations;
 
     /**
@@ -44,30 +64,30 @@ final readonly class Source
     private array $deprecationTriggers;
 
     /**
-     * @param non-empty-string                                                          $baseline
-     * @param array{functions: list<non-empty-string>, methods: list<non-empty-string>} $deprecationTriggers
+     * @param  non-empty-string  $baseline
+     * @param  array{functions: list<non-empty-string>, methods: list<non-empty-string>}  $deprecationTriggers
      */
     public function __construct(?string $baseline, bool $ignoreBaseline, FilterDirectoryCollection $includeDirectories, FileCollection $includeFiles, FilterDirectoryCollection $excludeDirectories, FileCollection $excludeFiles, bool $restrictNotices, bool $restrictWarnings, bool $ignoreSuppressionOfDeprecations, bool $ignoreSuppressionOfPhpDeprecations, bool $ignoreSuppressionOfErrors, bool $ignoreSuppressionOfNotices, bool $ignoreSuppressionOfPhpNotices, bool $ignoreSuppressionOfWarnings, bool $ignoreSuppressionOfPhpWarnings, array $deprecationTriggers, bool $ignoreSelfDeprecations, bool $ignoreDirectDeprecations, bool $ignoreIndirectDeprecations)
     {
-        $this->baseline                           = $baseline;
-        $this->ignoreBaseline                     = $ignoreBaseline;
-        $this->includeDirectories                 = $includeDirectories;
-        $this->includeFiles                       = $includeFiles;
-        $this->excludeDirectories                 = $excludeDirectories;
-        $this->excludeFiles                       = $excludeFiles;
-        $this->restrictNotices                    = $restrictNotices;
-        $this->restrictWarnings                   = $restrictWarnings;
-        $this->ignoreSuppressionOfDeprecations    = $ignoreSuppressionOfDeprecations;
+        $this->baseline = $baseline;
+        $this->ignoreBaseline = $ignoreBaseline;
+        $this->includeDirectories = $includeDirectories;
+        $this->includeFiles = $includeFiles;
+        $this->excludeDirectories = $excludeDirectories;
+        $this->excludeFiles = $excludeFiles;
+        $this->restrictNotices = $restrictNotices;
+        $this->restrictWarnings = $restrictWarnings;
+        $this->ignoreSuppressionOfDeprecations = $ignoreSuppressionOfDeprecations;
         $this->ignoreSuppressionOfPhpDeprecations = $ignoreSuppressionOfPhpDeprecations;
-        $this->ignoreSuppressionOfErrors          = $ignoreSuppressionOfErrors;
-        $this->ignoreSuppressionOfNotices         = $ignoreSuppressionOfNotices;
-        $this->ignoreSuppressionOfPhpNotices      = $ignoreSuppressionOfPhpNotices;
-        $this->ignoreSuppressionOfWarnings        = $ignoreSuppressionOfWarnings;
-        $this->ignoreSuppressionOfPhpWarnings     = $ignoreSuppressionOfPhpWarnings;
-        $this->deprecationTriggers                = $deprecationTriggers;
-        $this->ignoreSelfDeprecations             = $ignoreSelfDeprecations;
-        $this->ignoreDirectDeprecations           = $ignoreDirectDeprecations;
-        $this->ignoreIndirectDeprecations         = $ignoreIndirectDeprecations;
+        $this->ignoreSuppressionOfErrors = $ignoreSuppressionOfErrors;
+        $this->ignoreSuppressionOfNotices = $ignoreSuppressionOfNotices;
+        $this->ignoreSuppressionOfPhpNotices = $ignoreSuppressionOfPhpNotices;
+        $this->ignoreSuppressionOfWarnings = $ignoreSuppressionOfWarnings;
+        $this->ignoreSuppressionOfPhpWarnings = $ignoreSuppressionOfPhpWarnings;
+        $this->deprecationTriggers = $deprecationTriggers;
+        $this->ignoreSelfDeprecations = $ignoreSelfDeprecations;
+        $this->ignoreDirectDeprecations = $ignoreDirectDeprecations;
+        $this->ignoreIndirectDeprecations = $ignoreIndirectDeprecations;
     }
 
     /**
@@ -75,7 +95,7 @@ final readonly class Source
      */
     public function useBaseline(): bool
     {
-        return $this->hasBaseline() && !$this->ignoreBaseline;
+        return $this->hasBaseline() && ! $this->ignoreBaseline;
     }
 
     /**
@@ -87,13 +107,13 @@ final readonly class Source
     }
 
     /**
-     * @throws NoBaselineException
-     *
      * @return non-empty-string
+     *
+     * @throws NoBaselineException
      */
     public function baseline(): string
     {
-        if (!$this->hasBaseline()) {
+        if (! $this->hasBaseline()) {
             throw new NoBaselineException;
         }
 

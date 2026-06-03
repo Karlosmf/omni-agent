@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest;
 
 /*
@@ -13,13 +14,11 @@ namespace Hamcrest;
  */
 interface Description
 {
-
     /**
      * Appends some plain text to the description.
      *
-     * @param string $text
-     *
-     * @return \Hamcrest\Description
+     * @param  string  $text
+     * @return Description
      */
     public function appendText($text);
 
@@ -27,30 +26,27 @@ interface Description
      * Appends the description of a {@link Hamcrest\SelfDescribing} value to
      * this description.
      *
-     * @param \Hamcrest\SelfDescribing $value
      *
-     * @return \Hamcrest\Description
+     * @return Description
      */
     public function appendDescriptionOf(SelfDescribing $value);
 
     /**
      * Appends an arbitrary value to the description.
      *
-     * @param mixed $value
-     *
-     * @return \Hamcrest\Description
+     * @param  mixed  $value
+     * @return Description
      */
     public function appendValue($value);
 
     /**
      * Appends a list of values to the description.
      *
-     * @param string $start
-     * @param string $separator
-     * @param string $end
-     * @param array|\IteratorAggregate|\Iterator $values
-     *
-     * @return \Hamcrest\Description
+     * @param  string  $start
+     * @param  string  $separator
+     * @param  string  $end
+     * @param  array|\IteratorAggregate|\Iterator  $values
+     * @return Description
      */
     public function appendValueList($start, $separator, $end, $values);
 
@@ -58,13 +54,12 @@ interface Description
      * Appends a list of {@link Hamcrest\SelfDescribing} objects to the
      * description.
      *
-     * @param string $start
-     * @param string $separator
-     * @param string $end
+     * @param  string  $start
+     * @param  string  $separator
+     * @param  string  $end
      * @param array|\\IteratorAggregate|\\Iterator $values
      *   must be instances of {@link Hamcrest\SelfDescribing}
-     *
-     * @return \Hamcrest\Description
+     * @return Description
      */
     public function appendList($start, $separator, $end, $values);
 }

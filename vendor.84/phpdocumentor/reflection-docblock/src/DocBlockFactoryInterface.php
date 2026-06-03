@@ -12,12 +12,12 @@ interface DocBlockFactoryInterface
     /**
      * Factory method for easy instantiation.
      *
-     * @param array<string, class-string<Tag>> $additionalTags
+     * @param  array<string, class-string<Tag>>  $additionalTags
      */
     public static function createInstance(array $additionalTags = []): self;
 
     /**
-     * @param string|object $docblock
+     * @param  string|object  $docblock
      */
     public function create($docblock, ?Types\Context $context = null, ?Location $location = null): DocBlock;
 }

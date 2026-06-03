@@ -11,18 +11,17 @@ use Masterminds\HTML5\Entities;
  */
 class CharacterReference
 {
-    protected static $numeric_mask = array(
+    protected static $numeric_mask = [
         0x0,
         0x2FFFF,
         0,
         0xFFFF,
-    );
+    ];
 
     /**
      * Given a name (e.g. 'amp'), lookup the UTF-8 character ('&').
      *
-     * @param string $name The name to look up.
-     *
+     * @param  string  $name  The name to look up.
      * @return string The character sequence. In UTF-8 this may be more than one byte.
      */
     public static function lookupName($name)
@@ -34,13 +33,12 @@ class CharacterReference
     /**
      * Given a decimal number, return the UTF-8 character.
      *
-     * @param $int
      *
      * @return false|string|string[]|null
      */
     public static function lookupDecimal($int)
     {
-        $entity = '&#' . $int . ';';
+        $entity = '&#'.$int.';';
 
         // UNTESTED: This may fail on some planes. Couldn't find full documentation
         // on the value of the mask array.
@@ -50,7 +48,6 @@ class CharacterReference
     /**
      * Given a hexadecimal number, return the UTF-8 character.
      *
-     * @param $hexdec
      *
      * @return false|string|string[]|null
      */

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\Attributes;
 
 use Attribute;
@@ -23,14 +26,15 @@ final readonly class DataProvider
      * @var non-empty-string
      */
     private string $methodName;
+
     private bool $validateArgumentCount;
 
     /**
-     * @param non-empty-string $methodName
+     * @param  non-empty-string  $methodName
      */
     public function __construct(string $methodName, bool $validateArgumentCount = true)
     {
-        $this->methodName            = $methodName;
+        $this->methodName = $methodName;
         $this->validateArgumentCount = $validateArgumentCount;
     }
 

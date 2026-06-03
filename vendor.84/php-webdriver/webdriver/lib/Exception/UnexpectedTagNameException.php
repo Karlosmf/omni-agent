@@ -5,8 +5,8 @@ namespace Facebook\WebDriver\Exception;
 class UnexpectedTagNameException extends WebDriverException
 {
     /**
-     * @param string $expected_tag_name
-     * @param string $actual_tag_name
+     * @param  string  $expected_tag_name
+     * @param  string  $actual_tag_name
      */
     public function __construct(
         $expected_tag_name,

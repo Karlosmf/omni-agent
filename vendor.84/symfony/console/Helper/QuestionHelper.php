@@ -35,6 +35,7 @@ use function Symfony\Component\String\s;
 class QuestionHelper extends Helper
 {
     private static bool $stty = true;
+
     private static bool $stdinIsInteractive;
 
     /**
@@ -50,7 +51,7 @@ class QuestionHelper extends Helper
             $output = $output->getErrorOutput();
         }
 
-        if (!$input->isInteractive()) {
+        if (! $input->isInteractive()) {
             return $this->getDefaultAnswer($question);
         }
 
@@ -58,7 +59,7 @@ class QuestionHelper extends Helper
         $inputStream ??= \STDIN;
 
         try {
-            if (!$question->getValidator()) {
+            if (! $question->getValidator()) {
                 return $this->doAsk($inputStream, $output, $question);
             }
 
@@ -92,7 +93,7 @@ class QuestionHelper extends Helper
     /**
      * Asks the question to the user.
      *
-     * @param resource $inputStream
+     * @param  resource  $inputStream
      *
      * @throws RuntimeException In case the fallback is deactivated and the response cannot be hidden
      */
@@ -102,33 +103,33 @@ class QuestionHelper extends Helper
 
         $autocomplete = $question->getAutocompleterCallback();
 
-        if (null === $autocomplete || !self::$stty || !Terminal::hasSttyAvailable()) {
+        if ($autocomplete === null || ! self::$stty || ! Terminal::hasSttyAvailable()) {
             $ret = false;
             if ($question->isHidden()) {
                 try {
                     $hiddenResponse = $this->getHiddenResponse($output, $inputStream, $question->isTrimmable());
                     $ret = $question->isTrimmable() ? trim($hiddenResponse) : $hiddenResponse;
                 } catch (RuntimeException $e) {
-                    if (!$question->isHiddenFallback()) {
+                    if (! $question->isHiddenFallback()) {
                         throw $e;
                     }
                 }
             }
 
-            if (false === $ret) {
+            if ($ret === false) {
                 $isBlocked = stream_get_meta_data($inputStream)['blocked'] ?? true;
 
-                if (!$isBlocked) {
+                if (! $isBlocked) {
                     stream_set_blocking($inputStream, true);
                 }
 
                 $ret = $this->readInput($inputStream, $question);
 
-                if (!$isBlocked) {
+                if (! $isBlocked) {
                     stream_set_blocking($inputStream, false);
                 }
 
-                if (false === $ret) {
+                if ($ret === false) {
                     throw new MissingInputException('Aborted.');
                 }
                 if ($question->isTrimmable()) {
@@ -158,7 +159,7 @@ class QuestionHelper extends Helper
     {
         $default = $question->getDefault();
 
-        if (null === $default) {
+        if ($default === null) {
             return $default;
         }
 
@@ -167,7 +168,7 @@ class QuestionHelper extends Helper
         } elseif ($question instanceof ChoiceQuestion) {
             $choices = $question->getChoices();
 
-            if (!$question->isMultiselect()) {
+            if (! $question->isMultiselect()) {
                 return $choices[$default] ?? $default;
             }
 
@@ -222,7 +223,7 @@ class QuestionHelper extends Helper
      */
     protected function writeError(OutputInterface $output, \Exception $error): void
     {
-        if (null !== $this->getHelperSet() && $this->getHelperSet()->has('formatter')) {
+        if ($this->getHelperSet() !== null && $this->getHelperSet()->has('formatter')) {
             $message = $this->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error');
         } else {
             $message = '<error>'.$error->getMessage().'</error>';
@@ -234,8 +235,8 @@ class QuestionHelper extends Helper
     /**
      * Autocompletes a question.
      *
-     * @param resource                  $inputStream
-     * @param callable(string):string[] $autocomplete
+     * @param  resource  $inputStream
+     * @param  callable(string):string[]  $autocomplete
      */
     private function autocomplete(OutputInterface $output, Question $question, $inputStream, callable $autocomplete): string
     {
@@ -257,24 +258,24 @@ class QuestionHelper extends Helper
         $output->getFormatter()->setStyle('hl', new OutputFormatterStyle('black', 'white'));
 
         // Read a keypress
-        while (!feof($inputStream)) {
+        while (! feof($inputStream)) {
             $inputHelper->waitForInput();
             $c = fread($inputStream, 1);
 
             // as opposed to fgets(), fread() returns an empty string when the stream content is empty, not false.
-            if (false === $c || ('' === $ret && '' === $c && null === $question->getDefault())) {
+            if ($c === false || ($ret === '' && $c === '' && $question->getDefault() === null)) {
                 // Restore the terminal so it behaves normally again
                 $inputHelper->finish();
                 throw new MissingInputException('Aborted while asking: '.$question->getQuestion());
-            } elseif ("\177" === $c) { // Backspace Character
-                if (0 === $numMatches && 0 !== $i) {
-                    --$i;
+            } elseif ($c === "\177") { // Backspace Character
+                if ($numMatches === 0 && $i !== 0) {
+                    $i--;
                     $cursor->moveLeft(s($fullChoice)->slice(-1)->width(false));
 
                     $fullChoice = self::substr($fullChoice, 0, $i);
                 }
 
-                if (0 === $i) {
+                if ($i === 0) {
                     $ofs = -1;
                     $matches = $autocomplete($ret);
                     $numMatches = \count($matches);
@@ -284,26 +285,26 @@ class QuestionHelper extends Helper
 
                 // Pop the last character off the end of our string
                 $ret = self::substr($ret, 0, $i);
-            } elseif ("\033" === $c) {
+            } elseif ($c === "\033") {
                 // Did we read an escape sequence?
                 $c .= fread($inputStream, 2);
 
                 // A = Up Arrow. B = Down Arrow
-                if (isset($c[2]) && ('A' === $c[2] || 'B' === $c[2])) {
-                    if ('A' === $c[2] && -1 === $ofs) {
+                if (isset($c[2]) && ($c[2] === 'A' || $c[2] === 'B')) {
+                    if ($c[2] === 'A' && $ofs === -1) {
                         $ofs = 0;
                     }
 
-                    if (0 === $numMatches) {
+                    if ($numMatches === 0) {
                         continue;
                     }
 
-                    $ofs += ('A' === $c[2]) ? -1 : 1;
+                    $ofs += ($c[2] === 'A') ? -1 : 1;
                     $ofs = ($numMatches + $ofs) % $numMatches;
                 }
-            } elseif ('' === $c || \ord($c) < 32) {
-                if ("\t" === $c || "\n" === $c) {
-                    if ($numMatches > 0 && -1 !== $ofs) {
+            } elseif ($c === '' || \ord($c) < 32) {
+                if ($c === "\t" || $c === "\n") {
+                    if ($numMatches > 0 && $ofs !== -1) {
                         $ret = (string) $matches[$ofs];
                         // Echo out remaining chars for current match
                         $remainingCharacters = substr($ret, \strlen($this->mostRecentlyEnteredValue($fullChoice)));
@@ -313,13 +314,13 @@ class QuestionHelper extends Helper
 
                         $matches = array_filter(
                             $autocomplete($ret),
-                            fn ($match) => '' === $ret || str_starts_with($match, $ret)
+                            fn ($match) => $ret === '' || str_starts_with($match, $ret)
                         );
                         $numMatches = \count($matches);
                         $ofs = -1;
                     }
 
-                    if ("\n" === $c) {
+                    if ($c === "\n") {
                         $output->write($c);
                         break;
                     }
@@ -329,14 +330,14 @@ class QuestionHelper extends Helper
 
                 continue;
             } else {
-                if ("\x80" <= $c) {
+                if ($c >= "\x80") {
                     $c .= fread($inputStream, ["\xC0" => 1, "\xD0" => 1, "\xE0" => 2, "\xF0" => 3][$c & "\xF0"]);
                 }
 
                 $output->write($c);
                 $ret .= $c;
                 $fullChoice .= $c;
-                ++$i;
+                $i++;
 
                 $tempRet = $ret;
 
@@ -357,7 +358,7 @@ class QuestionHelper extends Helper
 
             $cursor->clearLineAfter();
 
-            if ($numMatches > 0 && -1 !== $ofs) {
+            if ($numMatches > 0 && $ofs !== -1) {
                 $cursor->savePosition();
                 // Write highlighted text, complete the partially entered response
                 $charactersEntered = \strlen($this->mostRecentlyEnteredValue($fullChoice));
@@ -375,7 +376,7 @@ class QuestionHelper extends Helper
     private function mostRecentlyEnteredValue(string $entered): string
     {
         // Determine the most recent value that the user entered
-        if (!str_contains($entered, ',')) {
+        if (! str_contains($entered, ',')) {
             return $entered;
         }
 
@@ -385,14 +386,14 @@ class QuestionHelper extends Helper
 
         $lastChoice = trim(substr($entered, $lastCommaPos + 1));
 
-        return '' !== $lastChoice ? $lastChoice : $entered;
+        return $lastChoice !== '' ? $lastChoice : $entered;
     }
 
     /**
      * Gets a hidden response from user.
      *
-     * @param resource $inputStream The handler resource
-     * @param bool     $trimmable   Is the answer trimmable
+     * @param  resource  $inputStream  The handler resource
+     * @param  bool  $trimmable  Is the answer trimmable
      *
      * @throws RuntimeException In case the fallback is deactivated and the response cannot be hidden
      */
@@ -430,7 +431,7 @@ class QuestionHelper extends Helper
 
         $value = $this->doReadInput($inputStream, helper: $inputHelper);
 
-        if (4095 === \strlen($value)) {
+        if (\strlen($value) === 4095) {
             $errOutput = $output instanceof ConsoleOutputInterface ? $output->getErrorOutput() : $output;
             $errOutput->warning('The value was possibly truncated by your shell or terminal emulator');
         }
@@ -449,7 +450,7 @@ class QuestionHelper extends Helper
     /**
      * Validates an attempt.
      *
-     * @param callable $interviewer A callable that will ask for a question and return the result
+     * @param  callable  $interviewer  A callable that will ask for a question and return the result
      *
      * @throws \Exception In case the max number of attempts has been reached and no valid response has been given
      */
@@ -458,8 +459,8 @@ class QuestionHelper extends Helper
         $error = null;
         $attempts = $question->getMaxAttempts();
 
-        while (null === $attempts || $attempts--) {
-            if (null !== $error) {
+        while ($attempts === null || $attempts--) {
+            if ($error !== null) {
                 $this->writeError($output, $error);
             }
 
@@ -490,24 +491,24 @@ class QuestionHelper extends Helper
     /**
      * Reads one or more lines of input and returns what is read.
      *
-     * @param resource $inputStream The handler resource
-     * @param Question $question    The question being asked
+     * @param  resource  $inputStream  The handler resource
+     * @param  Question  $question  The question being asked
      */
     private function readInput($inputStream, Question $question): string|false
     {
-        if (null !== $question->getTimeout() && $this->isInteractiveInput($inputStream)) {
+        if ($question->getTimeout() !== null && $this->isInteractiveInput($inputStream)) {
             $read = [$inputStream];
             $write = null;
             $except = null;
             $timeoutSeconds = $question->getTimeout();
             $changedStreams = stream_select($read, $write, $except, $timeoutSeconds);
 
-            if (0 === $changedStreams) {
-                throw new MissingInputException(\sprintf('Timed out after waiting for input for %d second%s.', $timeoutSeconds, 1 === $timeoutSeconds ? '' : 's'));
+            if ($changedStreams === 0) {
+                throw new MissingInputException(\sprintf('Timed out after waiting for input for %d second%s.', $timeoutSeconds, $timeoutSeconds === 1 ? '' : 's'));
             }
         }
 
-        if (!$question->isMultiline()) {
+        if (! $question->isMultiline()) {
             $cp = $this->setIOCodepage();
             $ret = $this->doReadInput($inputStream);
 
@@ -515,7 +516,7 @@ class QuestionHelper extends Helper
         }
 
         $multiLineStreamReader = $this->cloneInputStream($inputStream);
-        if (null === $multiLineStreamReader) {
+        if ($multiLineStreamReader === null) {
             return false;
         }
 
@@ -546,10 +547,10 @@ class QuestionHelper extends Helper
      */
     private function resetIOCodepage(int $cp, string|false $input): string|false
     {
-        if (0 !== $cp) {
+        if ($cp !== 0) {
             sapi_windows_cp_set($cp);
 
-            if (false !== $input && '' !== $input) {
+            if ($input !== false && $input !== '') {
                 $input = sapi_windows_cp_conv(sapi_windows_cp_get('oem'), $cp, $input);
             }
         }
@@ -561,8 +562,7 @@ class QuestionHelper extends Helper
      * Clones an input stream in order to act on one instance of the same
      * stream without affecting the other instance.
      *
-     * @param resource $inputStream The handler resource
-     *
+     * @param  resource  $inputStream  The handler resource
      * @return resource|null The cloned resource, null in case it could not be cloned
      */
     private function cloneInputStream($inputStream)
@@ -572,7 +572,7 @@ class QuestionHelper extends Helper
         $mode = $streamMetaData['mode'] ?? 'rb';
         $uri = $streamMetaData['uri'] ?? null;
 
-        if (null === $uri) {
+        if ($uri === null) {
             return null;
         }
 
@@ -580,7 +580,7 @@ class QuestionHelper extends Helper
 
         // For seekable and writable streams, add all the same data to the
         // cloned stream and then seek to the same offset.
-        if (true === $seekable && !\in_array($mode, ['r', 'rb', 'rt'], true)) {
+        if ($seekable === true && ! \in_array($mode, ['r', 'rb', 'rt'], true)) {
             $offset = ftell($inputStream);
             rewind($inputStream);
             stream_copy_to_stream($inputStream, $cloneStream);
@@ -592,29 +592,29 @@ class QuestionHelper extends Helper
     }
 
     /**
-     * @param resource $inputStream
+     * @param  resource  $inputStream
      */
     private function doReadInput($inputStream, ?string $exitChar = null, ?TerminalInputHelper $helper = null): string
     {
         $ret = '';
         $helper ??= new TerminalInputHelper($inputStream, false);
 
-        while (!feof($inputStream)) {
+        while (! feof($inputStream)) {
             $helper->waitForInput();
             $char = fread($inputStream, 1);
 
             // as opposed to fgets(), fread() returns an empty string when the stream content is empty, not false.
-            if (false === $char || ('' === $ret && '' === $char)) {
+            if ($char === false || ($ret === '' && $char === '')) {
                 throw new MissingInputException('Aborted.');
             }
 
-            if (\PHP_EOL === "{$ret}{$char}" || $exitChar === $char) {
+            if ("{$ret}{$char}" === \PHP_EOL || $exitChar === $char) {
                 break;
             }
 
             $ret .= $char;
 
-            if (null === $exitChar && "\n" === $char) {
+            if ($exitChar === null && $char === "\n") {
                 break;
             }
         }

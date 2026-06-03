@@ -22,7 +22,7 @@ final class Writer extends AbstractWriter
 
     public function __construct(?Options $options = null)
     {
-        $this->options = $options ?? new Options();
+        $this->options = $options ?? new Options;
     }
 
     public function getOptions(): Options
@@ -49,7 +49,7 @@ final class Writer extends AbstractWriter
     /**
      * Adds a row to the currently opened writer.
      *
-     * @param Row $row The row containing cells and styles
+     * @param  Row  $row  The row containing cells and styles
      *
      * @throws IOException If unable to write data
      */
@@ -76,12 +76,12 @@ final class Writer extends AbstractWriter
             $this->options->FIELD_ENCLOSURE,
             ''
         );
-        if (false === $wasWriteSuccessful) {
+        if ($wasWriteSuccessful === false) {
             throw new IOException('Unable to write data'); // @codeCoverageIgnore
         }
 
-        ++$this->lastWrittenRowIndex;
-        if (0 === $this->lastWrittenRowIndex % $this->options->FLUSH_THRESHOLD) {
+        $this->lastWrittenRowIndex++;
+        if ($this->lastWrittenRowIndex % $this->options->FLUSH_THRESHOLD === 0) {
             fflush($this->filePointer);
         }
     }

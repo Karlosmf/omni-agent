@@ -35,12 +35,16 @@ use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class Router implements RouterInterface, RequestMatcherInterface
+class Router implements RequestMatcherInterface, RouterInterface
 {
     protected UrlMatcherInterface|RequestMatcherInterface $matcher;
+
     protected UrlGeneratorInterface $generator;
+
     protected RequestContext $context;
+
     protected RouteCollection $collection;
+
     protected array $options = [];
 
     private ConfigCacheFactoryInterface $configCacheFactory;
@@ -60,7 +64,7 @@ class Router implements RouterInterface, RequestMatcherInterface
         protected ?LoggerInterface $logger = null,
         protected ?string $defaultLocale = null,
     ) {
-        $this->context = $context ?? new RequestContext();
+        $this->context = $context ?? new RequestContext;
         $this->setOptions($options);
     }
 
@@ -116,7 +120,7 @@ class Router implements RouterInterface, RequestMatcherInterface
      */
     public function setOption(string $key, mixed $value): void
     {
-        if (!\array_key_exists($key, $this->options)) {
+        if (! \array_key_exists($key, $this->options)) {
             throw new \InvalidArgumentException(\sprintf('The Router does not support the "%s" option.', $key));
         }
 
@@ -130,7 +134,7 @@ class Router implements RouterInterface, RequestMatcherInterface
      */
     public function getOption(string $key): mixed
     {
-        if (!\array_key_exists($key, $this->options)) {
+        if (! \array_key_exists($key, $this->options)) {
             throw new \InvalidArgumentException(\sprintf('The Router does not support the "%s" option.', $key));
         }
 
@@ -180,7 +184,7 @@ class Router implements RouterInterface, RequestMatcherInterface
     public function matchRequest(Request $request): array
     {
         $matcher = $this->getMatcher();
-        if (!$matcher instanceof RequestMatcherInterface) {
+        if (! $matcher instanceof RequestMatcherInterface) {
             // fallback to the default UrlMatcherInterface
             return $matcher->match($request->getPathInfo());
         }
@@ -197,7 +201,7 @@ class Router implements RouterInterface, RequestMatcherInterface
             return $this->matcher;
         }
 
-        if (null === $this->options['cache_dir']) {
+        if ($this->options['cache_dir'] === null) {
             $routes = $this->getRouteCollection();
             $compiled = is_a($this->options['matcher_class'], CompiledUrlMatcher::class, true);
             if ($compiled) {
@@ -239,7 +243,7 @@ class Router implements RouterInterface, RequestMatcherInterface
             return $this->generator;
         }
 
-        if (null === $this->options['cache_dir']) {
+        if ($this->options['cache_dir'] === null) {
             $routes = $this->getRouteCollection();
             $compiled = is_a($this->options['generator_class'], CompiledUrlGenerator::class, true);
             if ($compiled) {
@@ -293,11 +297,11 @@ class Router implements RouterInterface, RequestMatcherInterface
 
     private static function getCompiledRoutes(string $path): array
     {
-        if ([] === self::$cache && \function_exists('opcache_invalidate') && filter_var(\ini_get('opcache.enable'), \FILTER_VALIDATE_BOOL) && (!\in_array(\PHP_SAPI, ['cli', 'phpdbg', 'embed'], true) || filter_var(\ini_get('opcache.enable_cli'), \FILTER_VALIDATE_BOOL))) {
+        if (self::$cache === [] && \function_exists('opcache_invalidate') && filter_var(\ini_get('opcache.enable'), \FILTER_VALIDATE_BOOL) && (! \in_array(\PHP_SAPI, ['cli', 'phpdbg', 'embed'], true) || filter_var(\ini_get('opcache.enable_cli'), \FILTER_VALIDATE_BOOL))) {
             self::$cache = null;
         }
 
-        if (null === self::$cache) {
+        if (self::$cache === null) {
             return require $path;
         }
 

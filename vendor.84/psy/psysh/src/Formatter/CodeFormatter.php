@@ -20,53 +20,61 @@ use Symfony\Component\Console\Formatter\OutputFormatter;
 class CodeFormatter implements ReflectorFormatter
 {
     const LINE_MARKER = '  <urgent>></urgent> ';
+
     const NO_LINE_MARKER = '    ';
 
     const HIGHLIGHT_DEFAULT = 'default';
+
     const HIGHLIGHT_KEYWORD = 'keyword';
 
     const HIGHLIGHT_PUBLIC = 'public';
+
     const HIGHLIGHT_PROTECTED = 'protected';
+
     const HIGHLIGHT_PRIVATE = 'private';
 
     const HIGHLIGHT_CONST = 'const';
+
     const HIGHLIGHT_NUMBER = 'number';
+
     const HIGHLIGHT_STRING = 'string';
+
     const HIGHLIGHT_COMMENT = 'code_comment';
+
     const HIGHLIGHT_INLINE_HTML = 'inline_html';
 
     private const TOKEN_MAP = [
         // Not highlighted
-        \T_OPEN_TAG           => self::HIGHLIGHT_DEFAULT,
+        \T_OPEN_TAG => self::HIGHLIGHT_DEFAULT,
         \T_OPEN_TAG_WITH_ECHO => self::HIGHLIGHT_DEFAULT,
-        \T_CLOSE_TAG          => self::HIGHLIGHT_DEFAULT,
-        \T_STRING             => self::HIGHLIGHT_DEFAULT,
-        \T_VARIABLE           => self::HIGHLIGHT_DEFAULT,
-        \T_NS_SEPARATOR       => self::HIGHLIGHT_DEFAULT,
+        \T_CLOSE_TAG => self::HIGHLIGHT_DEFAULT,
+        \T_STRING => self::HIGHLIGHT_DEFAULT,
+        \T_VARIABLE => self::HIGHLIGHT_DEFAULT,
+        \T_NS_SEPARATOR => self::HIGHLIGHT_DEFAULT,
 
         // Visibility
-        \T_PUBLIC    => self::HIGHLIGHT_PUBLIC,
+        \T_PUBLIC => self::HIGHLIGHT_PUBLIC,
         \T_PROTECTED => self::HIGHLIGHT_PROTECTED,
-        \T_PRIVATE   => self::HIGHLIGHT_PRIVATE,
+        \T_PRIVATE => self::HIGHLIGHT_PRIVATE,
 
         // Constants
-        \T_DIR      => self::HIGHLIGHT_CONST,
-        \T_FILE     => self::HIGHLIGHT_CONST,
+        \T_DIR => self::HIGHLIGHT_CONST,
+        \T_FILE => self::HIGHLIGHT_CONST,
         \T_METHOD_C => self::HIGHLIGHT_CONST,
-        \T_NS_C     => self::HIGHLIGHT_CONST,
-        \T_LINE     => self::HIGHLIGHT_CONST,
-        \T_CLASS_C  => self::HIGHLIGHT_CONST,
-        \T_FUNC_C   => self::HIGHLIGHT_CONST,
-        \T_TRAIT_C  => self::HIGHLIGHT_CONST,
+        \T_NS_C => self::HIGHLIGHT_CONST,
+        \T_LINE => self::HIGHLIGHT_CONST,
+        \T_CLASS_C => self::HIGHLIGHT_CONST,
+        \T_FUNC_C => self::HIGHLIGHT_CONST,
+        \T_TRAIT_C => self::HIGHLIGHT_CONST,
 
         // Types
-        \T_DNUMBER                  => self::HIGHLIGHT_NUMBER,
-        \T_LNUMBER                  => self::HIGHLIGHT_NUMBER,
-        \T_ENCAPSED_AND_WHITESPACE  => self::HIGHLIGHT_STRING,
+        \T_DNUMBER => self::HIGHLIGHT_NUMBER,
+        \T_LNUMBER => self::HIGHLIGHT_NUMBER,
+        \T_ENCAPSED_AND_WHITESPACE => self::HIGHLIGHT_STRING,
         \T_CONSTANT_ENCAPSED_STRING => self::HIGHLIGHT_STRING,
 
         // Comments
-        \T_COMMENT     => self::HIGHLIGHT_COMMENT,
+        \T_COMMENT => self::HIGHLIGHT_COMMENT,
         \T_DOC_COMMENT => self::HIGHLIGHT_COMMENT,
 
         // @todo something better here?
@@ -76,7 +84,6 @@ class CodeFormatter implements ReflectorFormatter
     /**
      * Format the code represented by $reflector for shell output.
      *
-     * @param \Reflector $reflector
      *
      * @return string formatted code
      */
@@ -98,10 +105,6 @@ class CodeFormatter implements ReflectorFormatter
      *
      * Optionally, restrict by $startLine and $endLine line numbers, or pass $markLine to add a line marker.
      *
-     * @param string   $code
-     * @param int      $startLine
-     * @param int|null $endLine
-     * @param int|null $markLine
      *
      * @return string formatted code
      */
@@ -122,7 +125,7 @@ class CodeFormatter implements ReflectorFormatter
      *
      * This is typehinted as \Reflector but we've narrowed the input via self::isReflectable already.
      *
-     * @param \ReflectionClass|\ReflectionFunctionAbstract $reflector
+     * @param  \ReflectionClass|\ReflectionFunctionAbstract  $reflector
      */
     private static function getStartLine(\Reflector $reflector): int
     {
@@ -142,8 +145,6 @@ class CodeFormatter implements ReflectorFormatter
      * adjacent spans of the same highlight type.
      *
      * @todo consider switching \token_get_all() out for PHP-Parser-based formatting at some point.
-     *
-     * @param string $code
      *
      * @return \Generator [$spanType, $spanText] highlight spans
      */
@@ -173,9 +174,8 @@ class CodeFormatter implements ReflectorFormatter
     /**
      * Given a token and the current highlight span type, compute the next type.
      *
-     * @param array|string $token       \token_get_all token
-     * @param string|null  $currentType
-     *
+     * @param  array|string  $token  \token_get_all token
+     * @param  string|null  $currentType
      * @return string|null
      */
     private static function nextHighlightType($token, $currentType)
@@ -202,10 +202,7 @@ class CodeFormatter implements ReflectorFormatter
      *
      * Optionally, restrict by start and end line numbers.
      *
-     * @param \Generator $spans     as [$spanType, $spanText] pairs
-     * @param int        $startLine
-     * @param int|null   $endLine
-     *
+     * @param  \Generator  $spans  as [$spanType, $spanText] pairs
      * @return \Generator lines, each an array of [$spanType, $spanText] pairs
      */
     private static function splitLines(\Generator $spans, int $startLine = 1, ?int $endLine = null): \Generator
@@ -213,7 +210,7 @@ class CodeFormatter implements ReflectorFormatter
         $lineNum = 1;
         $buffer = [];
 
-        foreach ($spans as list($spanType, $spanText)) {
+        foreach ($spans as [$spanType, $spanText]) {
             foreach (\preg_split('/(\r\n?|\n)/', $spanText) as $index => $spanLine) {
                 if ($index > 0) {
                     if ($lineNum >= $startLine) {
@@ -234,7 +231,7 @@ class CodeFormatter implements ReflectorFormatter
             }
         }
 
-        if (!empty($buffer)) {
+        if (! empty($buffer)) {
             yield $lineNum => $buffer;
         }
     }
@@ -242,8 +239,7 @@ class CodeFormatter implements ReflectorFormatter
     /**
      * Format lines of highlight spans for shell output.
      *
-     * @param \Generator $spanLines lines, each an array of [$spanType, $spanText] pairs
-     *
+     * @param  \Generator  $spanLines  lines, each an array of [$spanType, $spanText] pairs
      * @return \Generator Formatted lines
      */
     private static function formatLines(\Generator $spanLines): \Generator
@@ -251,7 +247,7 @@ class CodeFormatter implements ReflectorFormatter
         foreach ($spanLines as $lineNum => $spanLine) {
             $line = '';
 
-            foreach ($spanLine as list($spanType, $spanText)) {
+            foreach ($spanLine as [$spanType, $spanText]) {
                 if ($spanType === self::HIGHLIGHT_DEFAULT) {
                     $line .= OutputFormatter::escape($spanText);
                 } else {
@@ -270,9 +266,7 @@ class CodeFormatter implements ReflectorFormatter
      *
      * Optionally, pass $markLine to add a line marker.
      *
-     * @param \Generator $lines    Formatted lines
-     * @param int|null   $markLine
-     *
+     * @param  \Generator  $lines  Formatted lines
      * @return \Generator Numbered, formatted lines
      */
     private static function numberLines(\Generator $lines, ?int $markLine = null): \Generator
@@ -309,8 +303,6 @@ class CodeFormatter implements ReflectorFormatter
      * Check whether a Reflector instance is reflectable by this formatter.
      *
      * @phpstan-assert-if-true \ReflectionClass|\ReflectionFunctionAbstract $reflector
-     *
-     * @param \Reflector $reflector
      */
     private static function isReflectable(\Reflector $reflector): bool
     {

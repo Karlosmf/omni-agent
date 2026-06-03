@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,16 +9,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\Test;
 
 use const PHP_EOL;
-use function sprintf;
-use function trim;
+
 use PHPUnit\Event\Code;
 use PHPUnit\Event\Code\ComparisonFailure;
 use PHPUnit\Event\Code\Throwable;
 use PHPUnit\Event\Event;
 use PHPUnit\Event\Telemetry;
+
+use function sprintf;
+use function trim;
 
 /**
  * @immutable
@@ -26,15 +31,18 @@ use PHPUnit\Event\Telemetry;
 final readonly class Failed implements Event
 {
     private Telemetry\Info $telemetryInfo;
+
     private Code\Test $test;
+
     private Throwable $throwable;
+
     private ?ComparisonFailure $comparisonFailure;
 
     public function __construct(Telemetry\Info $telemetryInfo, Code\Test $test, Throwable $throwable, ?ComparisonFailure $comparisonFailure)
     {
-        $this->telemetryInfo     = $telemetryInfo;
-        $this->test              = $test;
-        $this->throwable         = $throwable;
+        $this->telemetryInfo = $telemetryInfo;
+        $this->test = $test;
+        $this->throwable = $throwable;
         $this->comparisonFailure = $comparisonFailure;
     }
 
@@ -81,7 +89,7 @@ final readonly class Failed implements Event
         $message = trim($this->throwable->message());
 
         if ($message !== '') {
-            $message = PHP_EOL . $message;
+            $message = PHP_EOL.$message;
         }
 
         return sprintf(

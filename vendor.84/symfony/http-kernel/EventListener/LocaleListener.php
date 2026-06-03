@@ -35,8 +35,7 @@ class LocaleListener implements EventSubscriberInterface
         private ?RequestContextAwareInterface $router = null,
         private bool $useAcceptLanguageHeader = false,
         private array $enabledLocales = [],
-    ) {
-    }
+    ) {}
 
     public function setDefaultLocale(KernelEvent $event): void
     {

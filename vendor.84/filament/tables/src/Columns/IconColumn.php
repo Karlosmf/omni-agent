@@ -32,34 +32,34 @@ class IconColumn extends Column implements HasEmbeddedView
         getIcon as getBaseIcon;
     }
 
-    protected bool | Closure | null $isBoolean = null;
+    protected bool|Closure|null $isBoolean = null;
 
     /**
      * @var string | array<string> | Closure | null
      */
-    protected string | array | Closure | null $falseColor = null;
+    protected string|array|Closure|null $falseColor = null;
 
-    protected string | BackedEnum | Htmlable | Closure | false | null $falseIcon = null;
+    protected string|BackedEnum|Htmlable|Closure|false|null $falseIcon = null;
 
     /**
      * @var string | array<string> | Closure | null
      */
-    protected string | array | Closure | null $trueColor = null;
+    protected string|array|Closure|null $trueColor = null;
 
-    protected string | BackedEnum | Htmlable | Closure | false | null $trueIcon = null;
+    protected string|BackedEnum|Htmlable|Closure|false|null $trueIcon = null;
 
-    protected bool | Closure $isListWithLineBreaks = false;
+    protected bool|Closure $isListWithLineBreaks = false;
 
-    protected IconSize | string | Closure | null $size = null;
+    protected IconSize|string|Closure|null $size = null;
 
-    public function boolean(bool | Closure $condition = true): static
+    public function boolean(bool|Closure $condition = true): static
     {
         $this->isBoolean = $condition;
 
         return $this;
     }
 
-    public function listWithLineBreaks(bool | Closure $condition = true): static
+    public function listWithLineBreaks(bool|Closure $condition = true): static
     {
         $this->isListWithLineBreaks = $condition;
 
@@ -69,7 +69,7 @@ class IconColumn extends Column implements HasEmbeddedView
     /**
      * @param  string | array<int | string, string | int> | Closure | null  $color
      */
-    public function false(string | BackedEnum | Htmlable | Closure | false | null $icon = null, string | array | Closure | null $color = null): static
+    public function false(string|BackedEnum|Htmlable|Closure|false|null $icon = null, string|array|Closure|null $color = null): static
     {
         $this->falseIcon($icon);
         $this->falseColor($color);
@@ -80,7 +80,7 @@ class IconColumn extends Column implements HasEmbeddedView
     /**
      * @param  string | array<string> | Closure | null  $color
      */
-    public function falseColor(string | array | Closure | null $color): static
+    public function falseColor(string|array|Closure|null $color): static
     {
         $this->boolean();
         $this->falseColor = $color;
@@ -88,7 +88,7 @@ class IconColumn extends Column implements HasEmbeddedView
         return $this;
     }
 
-    public function falseIcon(string | BackedEnum | Htmlable | Closure | false | null $icon): static
+    public function falseIcon(string|BackedEnum|Htmlable|Closure|false|null $icon): static
     {
         $this->boolean();
         $this->falseIcon = $icon;
@@ -99,7 +99,7 @@ class IconColumn extends Column implements HasEmbeddedView
     /**
      * @param  string | array<int | string, string | int> | Closure | null  $color
      */
-    public function true(string | BackedEnum | Htmlable | Closure | false | null $icon = null, string | array | Closure | null $color = null): static
+    public function true(string|BackedEnum|Htmlable|Closure|false|null $icon = null, string|array|Closure|null $color = null): static
     {
         $this->trueIcon($icon);
         $this->trueColor($color);
@@ -110,7 +110,7 @@ class IconColumn extends Column implements HasEmbeddedView
     /**
      * @param  string | array<string> | Closure | null  $color
      */
-    public function trueColor(string | array | Closure | null $color): static
+    public function trueColor(string|array|Closure|null $color): static
     {
         $this->boolean();
         $this->trueColor = $color;
@@ -118,7 +118,7 @@ class IconColumn extends Column implements HasEmbeddedView
         return $this;
     }
 
-    public function trueIcon(string | BackedEnum | Htmlable | Closure | false | null $icon): static
+    public function trueIcon(string|BackedEnum|Htmlable|Closure|false|null $icon): static
     {
         $this->boolean();
         $this->trueIcon = $icon;
@@ -131,21 +131,21 @@ class IconColumn extends Column implements HasEmbeddedView
      *
      * @param  array<mixed> | Arrayable | Closure  $options
      */
-    public function options(array | Arrayable | Closure $options): static
+    public function options(array|Arrayable|Closure $options): static
     {
         $this->icons($options);
 
         return $this;
     }
 
-    public function size(IconSize | string | Closure | null $size): static
+    public function size(IconSize|string|Closure|null $size): static
     {
         $this->size = $size;
 
         return $this;
     }
 
-    public function getSize(mixed $state): IconSize | string | null
+    public function getSize(mixed $state): IconSize|string|null
     {
         $size = $this->evaluate($this->size, [
             'state' => $state,
@@ -166,7 +166,7 @@ class IconColumn extends Column implements HasEmbeddedView
         return $size;
     }
 
-    public function getIcon(mixed $state): string | BackedEnum | Htmlable | null
+    public function getIcon(mixed $state): string|BackedEnum|Htmlable|null
     {
         if (filled($icon = $this->getBaseIcon($state))) {
             return $icon;
@@ -186,7 +186,7 @@ class IconColumn extends Column implements HasEmbeddedView
     /**
      * @return string | array<int | string, string | int> | null
      */
-    public function getColor(mixed $state): string | array | null
+    public function getColor(mixed $state): string|array|null
     {
         if (filled($color = $this->getBaseColor($state))) {
             return $color;
@@ -206,12 +206,12 @@ class IconColumn extends Column implements HasEmbeddedView
     /**
      * @return string | array<string>
      */
-    public function getFalseColor(): string | array
+    public function getFalseColor(): string|array
     {
         return $this->evaluate($this->falseColor) ?? 'danger';
     }
 
-    public function getFalseIcon(): string | BackedEnum | Htmlable | null
+    public function getFalseIcon(): string|BackedEnum|Htmlable|null
     {
         $icon = $this->evaluate($this->falseIcon);
 
@@ -227,12 +227,12 @@ class IconColumn extends Column implements HasEmbeddedView
     /**
      * @return string | array<string>
      */
-    public function getTrueColor(): string | array
+    public function getTrueColor(): string|array
     {
         return $this->evaluate($this->trueColor) ?? 'success';
     }
 
-    public function getTrueIcon(): string | BackedEnum | Htmlable | null
+    public function getTrueIcon(): string|BackedEnum|Htmlable|null
     {
         $icon = $this->evaluate($this->trueIcon);
 
@@ -281,9 +281,9 @@ class IconColumn extends Column implements HasEmbeddedView
                 ->merge([
                     'x-tooltip' => filled($tooltip = $this->getEmptyTooltip())
                         ? '{
-                            content: ' . Js::from($tooltip) . ',
+                            content: '.Js::from($tooltip).',
                             theme: $store.theme,
-                            allowHTML: ' . Js::from($tooltip instanceof Htmlable) . ',
+                            allowHTML: '.Js::from($tooltip instanceof Htmlable).',
                         }'
                         : null,
                 ], escape: false);
@@ -327,9 +327,9 @@ class IconColumn extends Column implements HasEmbeddedView
                 ->merge([
                     'x-tooltip' => filled($tooltip = $this->getTooltip($stateItem))
                         ? '{
-                            content: ' . Js::from($tooltip) . ',
+                            content: '.Js::from($tooltip).',
                             theme: $store.theme,
-                            allowHTML: ' . Js::from($tooltip instanceof Htmlable) . ',
+                            allowHTML: '.Js::from($tooltip instanceof Htmlable).',
                         }'
                         : null,
                 ], escape: false)
@@ -337,7 +337,7 @@ class IconColumn extends Column implements HasEmbeddedView
                 ->toHtml();
 
             if (filled($url = $this->getUrl($stateItem))) {
-                $item = '<a ' . generate_href_html($url, $shouldOpenUrlInNewTab)->toHtml() . '>' . $item . '</a>';
+                $item = '<a '.generate_href_html($url, $shouldOpenUrlInNewTab)->toHtml().'>'.$item.'</a>';
             }
 
             return $item;

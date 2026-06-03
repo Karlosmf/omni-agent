@@ -28,20 +28,27 @@ class Context
     ];
 
     private array $scopeVariables = [];
+
     private array $commandScopeVariables = [];
+
     /** @var mixed */
     private $returnValue = null;
+
     private ?\Throwable $lastException = null;
+
     private ?string $lastStdout = null;
+
     private ?object $boundObject = null;
+
     private ?string $boundClass = null;
 
     /**
      * Get a context variable.
      *
-     * @throws \InvalidArgumentException If the variable is not found in the current context
      *
      * @return mixed
+     *
+     * @throws \InvalidArgumentException If the variable is not found in the current context
      */
     public function get(string $name)
     {
@@ -143,7 +150,7 @@ class Context
     /**
      * Set the most recent return value.
      *
-     * @param mixed $value
+     * @param  mixed  $value
      */
     public function setReturnValue($value)
     {
@@ -162,8 +169,6 @@ class Context
 
     /**
      * Set the most recent Exception or Error.
-     *
-     * @param \Throwable $e
      */
     public function setLastException(\Throwable $e)
     {
@@ -173,13 +178,14 @@ class Context
     /**
      * Get the most recent Exception or Error.
      *
-     * @throws \InvalidArgumentException If no Exception has been caught
      *
      * @return \Throwable|null
+     *
+     * @throws \InvalidArgumentException If no Exception has been caught
      */
     public function getLastException()
     {
-        if (!isset($this->lastException)) {
+        if (! isset($this->lastException)) {
             throw new \InvalidArgumentException('No most-recent exception');
         }
 
@@ -197,13 +203,14 @@ class Context
     /**
      * Get the most recent output from evaluated code.
      *
-     * @throws \InvalidArgumentException If no output has happened yet
      *
      * @return string|null
+     *
+     * @throws \InvalidArgumentException If no output has happened yet
      */
     public function getLastStdout()
     {
-        if (!isset($this->lastStdout)) {
+        if (! isset($this->lastStdout)) {
             throw new \InvalidArgumentException('No most-recent output');
         }
 
@@ -215,7 +222,7 @@ class Context
      *
      * Note that this unsets the bound class, if any exists.
      *
-     * @param object|null $boundObject
+     * @param  object|null  $boundObject
      */
     public function setBoundObject($boundObject)
     {
@@ -238,7 +245,7 @@ class Context
      *
      * Note that this unsets the bound object, if any exists.
      *
-     * @param string|null $boundClass
+     * @param  string|null  $boundClass
      */
     public function setBoundClass($boundClass)
     {

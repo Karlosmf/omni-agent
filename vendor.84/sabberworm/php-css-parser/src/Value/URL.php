@@ -21,7 +21,7 @@ class URL extends PrimitiveValue
     private $url;
 
     /**
-     * @param int<1, max>|null $lineNumber
+     * @param  int<1, max>|null  $lineNumber
      */
     public function __construct(CSSString $url, ?int $lineNumber = null)
     {
@@ -60,6 +60,7 @@ class URL extends PrimitiveValue
             $parserState->consumeWhiteSpace();
             $parserState->consume(')');
         }
+
         return $result;
     }
 

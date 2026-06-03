@@ -6,9 +6,9 @@ use Closure;
 
 trait CanBeGridContainer
 {
-    protected bool | Closure $isGridContainer = false;
+    protected bool|Closure $isGridContainer = false;
 
-    public function gridContainer(bool | Closure $condition = true): static
+    public function gridContainer(bool|Closure $condition = true): static
     {
         $this->isGridContainer = $condition;
 

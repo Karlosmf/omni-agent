@@ -12,8 +12,10 @@ interface WebDriverSearchContext
     /**
      * Find the first WebDriverElement within this element using the given mechanism.
      *
-     * @throws NoSuchElementException If no element is found
      * @return WebDriverElement
+     *
+     * @throws NoSuchElementException If no element is found
+     *
      * @see WebDriverBy
      */
     public function findElement(WebDriverBy $locator);
@@ -22,6 +24,7 @@ interface WebDriverSearchContext
      * Find all WebDriverElements within this element using the given mechanism.
      *
      * @return WebDriverElement[] A list of all WebDriverElements, or an empty array if nothing matches
+     *
      * @see WebDriverBy
      */
     public function findElements(WebDriverBy $locator);

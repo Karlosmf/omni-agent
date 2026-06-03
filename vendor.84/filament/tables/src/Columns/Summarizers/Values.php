@@ -7,7 +7,7 @@ use Illuminate\Database\Query\Builder;
 
 class Values extends Summarizer
 {
-    protected bool | Closure $isBulleted = true;
+    protected bool|Closure $isBulleted = true;
 
     /**
      * @return array<string, int>
@@ -17,7 +17,7 @@ class Values extends Summarizer
         return $query->clone()->distinct()->pluck($attribute)->all();
     }
 
-    public function bulleted(bool | Closure $condition = true): static
+    public function bulleted(bool|Closure $condition = true): static
     {
         $this->isBulleted = $condition;
 

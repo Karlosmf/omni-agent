@@ -20,16 +20,17 @@ use Symfony\Contracts\Service\ServiceLocatorTrait;
 abstract class ServiceLocatorTestCase extends TestCase
 {
     /**
-     * @param array<string, callable> $factories
+     * @param  array<string, callable>  $factories
      */
     protected function getServiceLocator(array $factories): ContainerInterface
     {
-        return new class($factories) implements ContainerInterface {
+        return new class($factories) implements ContainerInterface
+        {
             use ServiceLocatorTrait;
         };
     }
 
-    public function testHas()
+    public function test_has()
     {
         $locator = $this->getServiceLocator([
             'foo' => fn () => 'bar',
@@ -42,7 +43,7 @@ abstract class ServiceLocatorTestCase extends TestCase
         $this->assertFalse($locator->has('dummy'));
     }
 
-    public function testGet()
+    public function test_get()
     {
         $locator = $this->getServiceLocator([
             'foo' => fn () => 'bar',
@@ -53,12 +54,12 @@ abstract class ServiceLocatorTestCase extends TestCase
         $this->assertSame('baz', $locator->get('bar'));
     }
 
-    public function testGetDoesNotMemoize()
+    public function test_get_does_not_memoize()
     {
         $i = 0;
         $locator = $this->getServiceLocator([
             'foo' => function () use (&$i) {
-                ++$i;
+                $i++;
 
                 return 'bar';
             },
@@ -69,10 +70,12 @@ abstract class ServiceLocatorTestCase extends TestCase
         $this->assertSame(2, $i);
     }
 
-    public function testThrowsOnUndefinedInternalService()
+    public function test_throws_on_undefined_internal_service()
     {
         $locator = $this->getServiceLocator([
-            'foo' => function () use (&$locator) { return $locator->get('bar'); },
+            'foo' => function () use (&$locator) {
+                return $locator->get('bar');
+            },
         ]);
 
         $this->expectException(NotFoundExceptionInterface::class);
@@ -81,12 +84,18 @@ abstract class ServiceLocatorTestCase extends TestCase
         $locator->get('foo');
     }
 
-    public function testThrowsOnCircularReference()
+    public function test_throws_on_circular_reference()
     {
         $locator = $this->getServiceLocator([
-            'foo' => function () use (&$locator) { return $locator->get('bar'); },
-            'bar' => function () use (&$locator) { return $locator->get('baz'); },
-            'baz' => function () use (&$locator) { return $locator->get('bar'); },
+            'foo' => function () use (&$locator) {
+                return $locator->get('bar');
+            },
+            'bar' => function () use (&$locator) {
+                return $locator->get('baz');
+            },
+            'baz' => function () use (&$locator) {
+                return $locator->get('bar');
+            },
         ]);
 
         $this->expectException(ContainerExceptionInterface::class);

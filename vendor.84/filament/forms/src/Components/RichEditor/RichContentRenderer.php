@@ -61,7 +61,7 @@ class RichContentRenderer implements Htmlable
     /**
      * @var string | array<string, mixed>
      */
-    protected string | array | null $content = null;
+    protected string|array|null $content = null;
 
     protected ?string $fileAttachmentsDiskName = null;
 
@@ -107,7 +107,7 @@ class RichContentRenderer implements Htmlable
     /**
      * @param  string | array<string, mixed> | null  $content
      */
-    public function __construct(string | array | null $content = null)
+    public function __construct(string|array|null $content = null)
     {
         $this->content($content);
     }
@@ -115,7 +115,7 @@ class RichContentRenderer implements Htmlable
     /**
      * @param  string | array<string, mixed> | null  $content
      */
-    public static function make(string | array | null $content = null): static
+    public static function make(string|array|null $content = null): static
     {
         return app(static::class, [
             'content' => $content,
@@ -125,7 +125,7 @@ class RichContentRenderer implements Htmlable
     /**
      * @param  string | array<string, mixed> | null  $content
      */
-    public function content(string | array | null $content): static
+    public function content(string|array|null $content): static
     {
         $this->content = $content;
         $this->cachedMergeTagValues = [];
@@ -594,7 +594,7 @@ class RichContentRenderer implements Htmlable
 
         return Arr::mapWithKeys(
             $textColors,
-            fn (string | TextColor $color, string $name): array => [$name => ($color instanceof TextColor) ? $color : TextColor::make($color, $name)],
+            fn (string|TextColor $color, string $name): array => [$name => ($color instanceof TextColor) ? $color : TextColor::make($color, $name)],
         );
     }
 }

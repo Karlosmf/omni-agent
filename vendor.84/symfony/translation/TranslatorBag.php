@@ -37,7 +37,7 @@ final class TranslatorBag implements TranslatorBagInterface
 
     public function getCatalogue(?string $locale = null): MessageCatalogueInterface
     {
-        if (null === $locale || !isset($this->catalogues[$locale])) {
+        if ($locale === null || ! isset($this->catalogues[$locale])) {
             $this->catalogues[$locale] = new MessageCatalogue($locale);
         }
 
@@ -51,7 +51,7 @@ final class TranslatorBag implements TranslatorBagInterface
 
     public function diff(TranslatorBagInterface $diffBag): self
     {
-        $diff = new self();
+        $diff = new self;
 
         foreach ($this->catalogues as $locale => $catalogue) {
             if (null === $diffCatalogue = $diffBag->getCatalogue($locale)) {
@@ -76,7 +76,7 @@ final class TranslatorBag implements TranslatorBagInterface
 
     public function intersect(TranslatorBagInterface $intersectBag): self
     {
-        $diff = new self();
+        $diff = new self;
 
         foreach ($this->catalogues as $locale => $catalogue) {
             if (null === $intersectCatalogue = $intersectBag->getCatalogue($locale)) {

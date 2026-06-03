@@ -25,12 +25,12 @@ class FunctionEnumerator extends Enumerator
     protected function listItems(InputInterface $input, ?\Reflector $reflector = null, $target = null): array
     {
         // if we have a reflector, ensure that it's a namespace reflector
-        if (($target !== null || $reflector !== null) && !$reflector instanceof ReflectionNamespace) {
+        if (($target !== null || $reflector !== null) && ! $reflector instanceof ReflectionNamespace) {
             return [];
         }
 
         // only list functions if we are specifically asked
-        if (!$input->getOption('functions')) {
+        if (! $input->getOption('functions')) {
             return [];
         }
 
@@ -63,9 +63,7 @@ class FunctionEnumerator extends Enumerator
      *
      * Optionally limit functions to "user" or "internal" functions.
      *
-     * @param string|null $type "user" or "internal" (default: both)
-     *
-     * @return array
+     * @param  string|null  $type  "user" or "internal" (default: both)
      */
     protected function getFunctions(?string $type = null): array
     {
@@ -80,11 +78,6 @@ class FunctionEnumerator extends Enumerator
 
     /**
      * Prepare formatted function array.
-     *
-     * @param array       $functions
-     * @param string|null $prefix
-     *
-     * @return array
      */
     protected function prepareFunctions(array $functions, ?string $prefix = null): array
     {
@@ -101,7 +94,7 @@ class FunctionEnumerator extends Enumerator
             if ($this->showItem($name)) {
                 try {
                     $ret[$name] = [
-                        'name'  => $name,
+                        'name' => $name,
                         'style' => self::IS_FUNCTION,
                         'value' => $this->presentSignature($name),
                     ];

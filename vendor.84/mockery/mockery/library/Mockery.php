@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -82,7 +83,7 @@ class Mockery
      */
     public static function andAnyOtherArgs()
     {
-        return new AndAnyOtherArgs();
+        return new AndAnyOtherArgs;
     }
 
     /**
@@ -95,7 +96,7 @@ class Mockery
      */
     public static function andAnyOthers()
     {
-        return new AndAnyOtherArgs();
+        return new AndAnyOtherArgs;
     }
 
     /**
@@ -105,7 +106,7 @@ class Mockery
      */
     public static function any()
     {
-        return new Any();
+        return new Any;
     }
 
     /**
@@ -113,8 +114,7 @@ class Mockery
      *
      * @template TAnyOf
      *
-     * @param TAnyOf ...$args
-     *
+     * @param  TAnyOf  ...$args
      * @return AnyOf
      */
     public static function anyOf(...$args)
@@ -137,14 +137,14 @@ class Mockery
      *
      * @template TReference
      *
-     * @param TReference $reference
-     *
+     * @param  TReference  $reference
      * @return ClosureMatcher
      */
     public static function capture(&$reference)
     {
         $closure = static function ($argument) use (&$reference) {
             $reference = $argument;
+
             return true;
         };
 
@@ -183,8 +183,7 @@ class Mockery
      *
      * @template TContains
      *
-     * @param TContains $args
-     *
+     * @param  TContains  $args
      * @return Contains
      */
     public static function contains(...$args)
@@ -193,8 +192,7 @@ class Mockery
     }
 
     /**
-     * @param class-string $fqn
-     *
+     * @param  class-string  $fqn
      * @return void
      */
     public static function declareClass($fqn)
@@ -203,8 +201,7 @@ class Mockery
     }
 
     /**
-     * @param class-string $fqn
-     *
+     * @param  class-string  $fqn
      * @return void
      */
     public static function declareInterface($fqn)
@@ -217,8 +214,7 @@ class Mockery
      *
      * @template TDucktype
      *
-     * @param TDucktype ...$args
-     *
+     * @param  TDucktype  ...$args
      * @return Ducktype
      */
     public static function ducktype(...$args)
@@ -231,8 +227,7 @@ class Mockery
      *
      * @template TFetchMock of object
      *
-     * @param class-string<TFetchMock> $name
-     *
+     * @param  class-string<TFetchMock>  $name
      * @return null|(LegacyMockInterface&MockInterface&TFetchMock)
      */
     public static function fetchMock($name)
@@ -243,14 +238,13 @@ class Mockery
     /**
      * Utility method to format method name and arguments into a string.
      *
-     * @param string $method
-     *
+     * @param  string  $method
      * @return string
      */
     public static function formatArgs($method, ?array $arguments = null)
     {
         if ($arguments === null) {
-            return $method . '()';
+            return $method.'()';
         }
 
         $formattedArguments = [];
@@ -258,7 +252,7 @@ class Mockery
             $formattedArguments[] = self::formatArgument($argument);
         }
 
-        return $method . '(' . \implode(', ', $formattedArguments) . ')';
+        return $method.'('.\implode(', ', $formattedArguments).')';
     }
 
     /**
@@ -292,7 +286,7 @@ class Mockery
 
         $formatting = false;
 
-        return 'Objects: ( ' . \var_export($parts, true) . ')';
+        return 'Objects: ( '.\var_export($parts, true).')';
     }
 
     /**
@@ -304,7 +298,7 @@ class Mockery
     public static function getConfiguration()
     {
         if (self::$_config === null) {
-            self::$_config = new Configuration();
+            self::$_config = new Configuration;
         }
 
         return self::$_config;
@@ -342,7 +336,7 @@ class Mockery
      */
     public static function getDefaultLoader()
     {
-        return new EvalLoader();
+        return new EvalLoader;
     }
 
     /**
@@ -382,7 +376,7 @@ class Mockery
      */
     public static function globalHelpers()
     {
-        require_once __DIR__ . '/helpers.php';
+        require_once __DIR__.'/helpers.php';
     }
 
     /**
@@ -390,8 +384,7 @@ class Mockery
      *
      * @template THasKey
      *
-     * @param THasKey $key
-     *
+     * @param  THasKey  $key
      * @return HasKey
      */
     public static function hasKey($key)
@@ -404,8 +397,7 @@ class Mockery
      *
      * @template THasValue
      *
-     * @param THasValue $val
-     *
+     * @param  THasValue  $val
      * @return HasValue
      */
     public static function hasValue($val)
@@ -418,8 +410,7 @@ class Mockery
      *
      * @template TInstanceMock
      *
-     * @param array<class-string<TInstanceMock>|TInstanceMock|array<mixed>> $args
-     *
+     * @param  array<class-string<TInstanceMock>|TInstanceMock|array<mixed>>  $args
      * @return LegacyMockInterface&MockInterface&TInstanceMock
      */
     public static function instanceMock(...$args)
@@ -428,8 +419,7 @@ class Mockery
     }
 
     /**
-     * @param string $type
-     *
+     * @param  string  $type
      * @return bool
      *
      * @deprecated since 1.3.2 and will be removed in 2.0.
@@ -444,7 +434,7 @@ class Mockery
      *
      * @template TExpected
      *
-     * @param TExpected $expected
+     * @param  TExpected  $expected
      */
     public static function isEqual($expected): IsEqual
     {
@@ -456,7 +446,7 @@ class Mockery
      *
      * @template TExpected
      *
-     * @param TExpected $expected
+     * @param  TExpected  $expected
      */
     public static function isSame($expected): IsSame
     {
@@ -468,8 +458,7 @@ class Mockery
      *
      * @template TMock of object
      *
-     * @param array<class-string<TMock>|TMock|Closure(LegacyMockInterface&MockInterface&TMock):LegacyMockInterface&MockInterface&TMock|array<TMock>> $args
-     *
+     * @param  array<class-string<TMock>|TMock|Closure(LegacyMockInterface&MockInterface&TMock):LegacyMockInterface&MockInterface&TMock|array<TMock>>  $args
      * @return LegacyMockInterface&MockInterface&TMock
      */
     public static function mock(...$args)
@@ -482,8 +471,7 @@ class Mockery
      *
      * @template TExpected
      *
-     * @param TExpected $expected
-     *
+     * @param  TExpected  $expected
      * @return MustBe
      */
     public static function mustBe($expected)
@@ -496,15 +484,14 @@ class Mockery
      *
      * @template TNamedMock
      *
-     * @param array<class-string<TNamedMock>|TNamedMock|array<mixed>> $args
-     *
+     * @param  array<class-string<TNamedMock>|TNamedMock|array<mixed>>  $args
      * @return LegacyMockInterface&MockInterface&TNamedMock
      */
     public static function namedMock(...$args)
     {
         $name = \array_shift($args);
 
-        $builder = new MockConfigurationBuilder();
+        $builder = new MockConfigurationBuilder;
         $builder->setName($name);
 
         \array_unshift($args, $builder);
@@ -517,8 +504,7 @@ class Mockery
      *
      * @template TNotExpected
      *
-     * @param TNotExpected $expected
-     *
+     * @param  TNotExpected  $expected
      * @return Not
      */
     public static function not($expected)
@@ -531,8 +517,7 @@ class Mockery
      *
      * @template TNotAnyOf
      *
-     * @param TNotAnyOf ...$args
-     *
+     * @param  TNotAnyOf  ...$args
      * @return NotAnyOf
      */
     public static function notAnyOf(...$args)
@@ -545,8 +530,7 @@ class Mockery
      *
      * @template TClosure of Closure
      *
-     * @param TClosure $closure
-     *
+     * @param  TClosure  $closure
      * @return ClosureMatcher
      */
     public static function on($closure)
@@ -560,14 +544,13 @@ class Mockery
      *
      * @template TReturnArgs
      *
-     * @param TReturnArgs ...$args
-     * @param Closure     $add
-     *
+     * @param  TReturnArgs  ...$args
+     * @param  Closure  $add
      * @return CompositeExpectation
      */
     public static function parseShouldReturnArgs(LegacyMockInterface $mock, $args, $add)
     {
-        $composite = new CompositeExpectation();
+        $composite = new CompositeExpectation;
 
         foreach ($args as $arg) {
             if (\is_string($arg)) {
@@ -591,8 +574,7 @@ class Mockery
      *
      * @template TPatter
      *
-     * @param TPatter $expected
-     *
+     * @param  TPatter  $expected
      * @return Pattern
      */
     public static function pattern($expected)
@@ -603,7 +585,7 @@ class Mockery
     /**
      * Register a file to be deleted on tearDown.
      *
-     * @param string $fileName
+     * @param  string  $fileName
      */
     public static function registerFileForCleanUp($fileName)
     {
@@ -623,9 +605,10 @@ class Mockery
     /**
      * Static shortcut to Container::self().
      *
-     * @throws LogicException
      *
      * @return LegacyMockInterface|MockInterface
+     *
+     * @throws LogicException
      */
     public static function self()
     {
@@ -668,8 +651,7 @@ class Mockery
      *
      * @template TSpy
      *
-     * @param array<class-string<TSpy>|TSpy|Closure(LegacyMockInterface&MockInterface&TSpy):LegacyMockInterface&MockInterface&TSpy|array<TSpy>> $args
-     *
+     * @param  array<class-string<TSpy>|TSpy|Closure(LegacyMockInterface&MockInterface&TSpy):LegacyMockInterface&MockInterface&TSpy|array<TSpy>>  $args
      * @return LegacyMockInterface&MockInterface&TSpy
      */
     public static function spy(...$args)
@@ -684,8 +666,7 @@ class Mockery
     /**
      * Return instance of SUBSET matcher.
      *
-     * @param bool $strict - (Optional) True for strict comparison, false for loose
-     *
+     * @param  bool  $strict  - (Optional) True for strict comparison, false for loose
      * @return Subset
      */
     public static function subset(array $part, $strict = true)
@@ -698,8 +679,7 @@ class Mockery
      *
      * @template TExpectedType
      *
-     * @param TExpectedType $expected
-     *
+     * @param  TExpectedType  $expected
      * @return Type
      */
     public static function type($expected)
@@ -711,12 +691,11 @@ class Mockery
      * Sets up expectations on the members of the CompositeExpectation and
      * builds up any demeter chain that was passed to shouldReceive.
      *
-     * @param string  $arg
-     * @param Closure $add
+     * @param  string  $arg
+     * @param  Closure  $add
+     * @return ExpectationInterface
      *
      * @throws MockeryException
-     *
-     * @return ExpectationInterface
      */
     protected static function buildDemeterChain(LegacyMockInterface $mock, $arg, $add)
     {
@@ -732,8 +711,8 @@ class Mockery
         ) {
             throw new MockeryException(
                 "Mockery's configuration currently forbids mocking the method "
-                . \current($methodNames) . ' as it does not exist on the class or object '
-                . 'being mocked'
+                .\current($methodNames).' as it does not exist on the class or object '
+                .'being mocked'
             );
         }
 
@@ -764,7 +743,7 @@ class Mockery
                 }
             }
 
-            $parent .= '->' . $method;
+            $parent .= '->'.$method;
 
             $nextExp = static function ($n) use ($mock) {
                 return $mock->allows($n);
@@ -779,9 +758,8 @@ class Mockery
      *
      * @template TArray or array
      *
-     * @param TArray $argument
-     * @param int    $nesting
-     *
+     * @param  TArray  $argument
+     * @param  int  $nesting
      * @return TArray
      */
     private static function cleanupArray($argument, $nesting = 3)
@@ -811,9 +789,8 @@ class Mockery
      *
      * @template TArgument
      *
-     * @param TArgument $argument
-     * @param int       $nesting
-     *
+     * @param  TArgument  $argument
+     * @param  int  $nesting
      * @return mixed
      */
     private static function cleanupNesting($argument, $nesting)
@@ -833,8 +810,8 @@ class Mockery
     }
 
     /**
-     * @param string $fqn
-     * @param string $type
+     * @param  string  $fqn
+     * @param  string  $type
      */
     private static function declareType($fqn, $type): void
     {
@@ -869,9 +846,8 @@ class Mockery
     /**
      * Returns all public instance properties.
      *
-     * @param object $object
-     * @param int    $nesting
-     *
+     * @param  object  $object
+     * @param  int  $nesting
      * @return array<string, mixed>
      */
     private static function extractInstancePublicProperties($object, $nesting)
@@ -898,9 +874,8 @@ class Mockery
      * Gets the string representation
      * of any passed argument.
      *
-     * @param mixed $argument
-     * @param int   $depth
-     *
+     * @param  mixed  $argument
+     * @param  int  $depth
      * @return mixed
      */
     private static function formatArgument($argument, $depth = 0)
@@ -910,7 +885,7 @@ class Mockery
         }
 
         if (\is_object($argument)) {
-            return 'object(' . \get_class($argument) . ')';
+            return 'object('.\get_class($argument).')';
         }
 
         if (\is_int($argument) || \is_float($argument)) {
@@ -928,10 +903,10 @@ class Mockery
                     $sample[] = \sprintf('%s => %s', $key, $value);
                 }
 
-                $argument = '[' . \implode(', ', $sample) . ']';
+                $argument = '['.\implode(', ', $sample).']';
             }
 
-            return (\strlen($argument) > 1000) ? \substr($argument, 0, 1000) . '...]' : $argument;
+            return (\strlen($argument) > 1000) ? \substr($argument, 0, 1000).'...]' : $argument;
         }
 
         if (\is_bool($argument)) {
@@ -946,7 +921,7 @@ class Mockery
             return 'NULL';
         }
 
-        return "'" . $argument . "'";
+        return "'".$argument."'";
     }
 
     /**
@@ -954,8 +929,7 @@ class Mockery
      *
      * @template TMock of object
      *
-     * @param class-string<TMock> $demeterMockKey
-     *
+     * @param  class-string<TMock>  $demeterMockKey
      * @return null|(LegacyMockInterface&MockInterface&TMock)
      */
     private static function getExistingDemeterMock(Container $container, $demeterMockKey)
@@ -967,14 +941,13 @@ class Mockery
      * Gets a new demeter configured
      * mock from the container.
      *
-     * @param string $parent
-     * @param string $method
-     *
+     * @param  string  $parent
+     * @param  string  $method
      * @return LegacyMockInterface&MockInterface
      */
     private static function getNewDemeterMock(Container $container, $parent, $method, ExpectationInterface $exp)
     {
-        $newMockName = 'demeter_' . \md5($parent) . '_' . $method;
+        $newMockName = 'demeter_'.\md5($parent).'_'.$method;
 
         $parRef = null;
 
@@ -995,9 +968,9 @@ class Mockery
                 });
 
                 if ($filteredReturnTypes !== []) {
-                    $nameBuilder = new MockNameBuilder();
+                    $nameBuilder = new MockNameBuilder;
 
-                    $nameBuilder->addPart('\\' . $newMockName);
+                    $nameBuilder->addPart('\\'.$newMockName);
 
                     $mock = self::namedMock(
                         $nameBuilder->build(),
@@ -1031,9 +1004,8 @@ class Mockery
     /**
      * Utility function to turn public properties and public get* and is* method values into an array.
      *
-     * @param object $object
-     * @param int    $nesting
-     *
+     * @param  object  $object
+     * @param  int  $nesting
      * @return array
      */
     private static function objectToArray($object, $nesting = 3)
@@ -1054,7 +1026,7 @@ class Mockery
 
         $array = [
             'class' => $class,
-            'identity' => '#' . \md5(\spl_object_hash($object)),
+            'identity' => '#'.\md5(\spl_object_hash($object)),
         ];
 
         return \array_merge($array, $formatter($object, $nesting));

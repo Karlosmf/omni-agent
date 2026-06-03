@@ -20,13 +20,11 @@ use Psy\TabCompletion\Matcher\AbstractMatcher;
  */
 class AutoCompleter
 {
-    /** @var Matcher\AbstractMatcher[] */
+    /** @var AbstractMatcher[] */
     protected $matchers = [];
 
     /**
      * Register a tab completion Matcher.
-     *
-     * @param AbstractMatcher $matcher
      */
     public function addMatcher(AbstractMatcher $matcher)
     {
@@ -44,11 +42,9 @@ class AutoCompleter
     /**
      * Handle readline completion.
      *
-     * @param string $input Readline current word
-     * @param int    $index Current word index
-     * @param array  $info  readline_info() data
-     *
-     * @return array
+     * @param  string  $input  Readline current word
+     * @param  int  $index  Current word index
+     * @param  array  $info  readline_info() data
      */
     public function processCallback(string $input, int $index, array $info = []): array
     {
@@ -66,7 +62,7 @@ class AutoCompleter
 
         // remove whitespaces
         $tokens = \array_filter($tokens, function ($token) {
-            return !AbstractMatcher::tokenIs($token, AbstractMatcher::T_WHITESPACE);
+            return ! AbstractMatcher::tokenIs($token, AbstractMatcher::T_WHITESPACE);
         });
         // reset index from 0 to remove missing index number
         $tokens = \array_values($tokens);
@@ -80,18 +76,13 @@ class AutoCompleter
 
         $matches = \array_unique($matches);
 
-        return !empty($matches) ? $matches : [''];
+        return ! empty($matches) ? $matches : [''];
     }
 
     /**
      * The readline_completion_function callback handler.
      *
      * @see processCallback
-     *
-     * @param string $input
-     * @param int    $index
-     *
-     * @return array
      */
     public function callback(string $input, int $index): array
     {

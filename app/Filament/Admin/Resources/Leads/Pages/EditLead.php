@@ -2,7 +2,10 @@
 
 namespace App\Filament\Admin\Resources\Leads\Pages;
 
+use App\Filament\Admin\Resources\Customers\CustomerResource;
 use App\Filament\Admin\Resources\Leads\LeadResource;
+use App\Models\Lead;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
@@ -13,11 +16,11 @@ class EditLead extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            \Filament\Actions\Action::make('convert_to_customer')
+            Action::make('convert_to_customer')
                 ->label('Convertir a Cliente')
                 ->icon('heroicon-o-user-plus')
                 ->color('primary')
-                ->url(fn (\App\Models\Lead $record) => \App\Filament\Admin\Resources\Customers\CustomerResource::getUrl('create', [
+                ->url(fn (Lead $record) => CustomerResource::getUrl('create', [
                     'name' => $record->customer_name,
                     'phone' => $record->customer_phone,
                     'email' => $record->customer_email,
@@ -30,14 +33,14 @@ class EditLead extends EditRecord
         ];
     }
 
-    protected function getSaveFormAction(): \Filament\Actions\Action
+    protected function getSaveFormAction(): Action
     {
         return parent::getSaveFormAction()
             ->label('Guardar cambios')
             ->icon('heroicon-o-check');
     }
 
-    protected function getCancelFormAction(): \Filament\Actions\Action
+    protected function getCancelFormAction(): Action
     {
         return parent::getCancelFormAction()
             ->label('Cancelar')

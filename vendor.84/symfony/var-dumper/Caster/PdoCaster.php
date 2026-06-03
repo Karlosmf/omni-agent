@@ -68,13 +68,13 @@ class PdoCaster
         $c->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
         foreach (self::PDO_ATTRIBUTES as $k => $v) {
-            if (!isset($k[0])) {
+            if (! isset($k[0])) {
                 $k = $v;
                 $v = [];
             }
 
             try {
-                $attr[$k] = 'ERRMODE' === $k ? $errmode : $c->getAttribute(\constant('PDO::ATTR_'.$k));
+                $attr[$k] = $k === 'ERRMODE' ? $errmode : $c->getAttribute(\constant('PDO::ATTR_'.$k));
                 if ($v && isset($v[$attr[$k]])) {
                     $attr[$k] = new ConstStub($v[$attr[$k]], $attr[$k]);
                 }
@@ -101,7 +101,7 @@ class PdoCaster
             unset($a[$prefix.'inTransaction']);
         }
 
-        if (!isset($a[$prefix.'errorInfo'][1], $a[$prefix.'errorInfo'][2])) {
+        if (! isset($a[$prefix.'errorInfo'][1], $a[$prefix.'errorInfo'][2])) {
             unset($a[$prefix.'errorInfo']);
         }
 
@@ -115,7 +115,7 @@ class PdoCaster
         $prefix = Caster::PREFIX_VIRTUAL;
         $a[$prefix.'errorInfo'] = $c->errorInfo();
 
-        if (!isset($a[$prefix.'errorInfo'][1], $a[$prefix.'errorInfo'][2])) {
+        if (! isset($a[$prefix.'errorInfo'][1], $a[$prefix.'errorInfo'][2])) {
             unset($a[$prefix.'errorInfo']);
         }
 

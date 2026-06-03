@@ -14,6 +14,7 @@ use OpenSpout\Writer\XLSX\Options\WorkbookProtection;
 final class Options extends AbstractOptions
 {
     public const DEFAULT_FONT_SIZE = 12;
+
     public const DEFAULT_FONT_NAME = 'Calibri';
 
     public bool $SHOULD_USE_INLINE_STRINGS = true;
@@ -35,24 +36,24 @@ final class Options extends AbstractOptions
     {
         parent::__construct();
 
-        $defaultRowStyle = new Style();
+        $defaultRowStyle = new Style;
         $defaultRowStyle->setFontSize(self::DEFAULT_FONT_SIZE);
         $defaultRowStyle->setFontName(self::DEFAULT_FONT_NAME);
 
         $this->DEFAULT_ROW_STYLE = $defaultRowStyle;
 
-        $this->properties = new Properties();
+        $this->properties = new Properties;
     }
 
     /**
      * Row coordinates are indexed from 1, columns from 0 (A = 0),
      * so a merge B2:G2 looks like $writer->mergeCells(1, 2, 6, 2);.
      *
-     * @param 0|positive-int $topLeftColumn
-     * @param positive-int   $topLeftRow
-     * @param 0|positive-int $bottomRightColumn
-     * @param positive-int   $bottomRightRow
-     * @param 0|positive-int $sheetIndex
+     * @param  0|positive-int  $topLeftColumn
+     * @param  positive-int  $topLeftRow
+     * @param  0|positive-int  $bottomRightColumn
+     * @param  positive-int  $bottomRightRow
+     * @param  0|positive-int  $sheetIndex
      */
     public function mergeCells(
         int $topLeftColumn,

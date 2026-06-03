@@ -6,9 +6,7 @@ namespace League\Flysystem;
 
 abstract class DecoratedAdapter implements FilesystemAdapter
 {
-    public function __construct(protected FilesystemAdapter $adapter)
-    {
-    }
+    public function __construct(protected FilesystemAdapter $adapter) {}
 
     public function fileExists(string $path): bool
     {

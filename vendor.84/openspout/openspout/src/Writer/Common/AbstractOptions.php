@@ -12,8 +12,11 @@ abstract class AbstractOptions
     use TempFolderOptionTrait;
 
     public Style $DEFAULT_ROW_STYLE;
+
     public bool $SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = true;
+
     public ?float $DEFAULT_COLUMN_WIDTH = null;
+
     public ?float $DEFAULT_ROW_HEIGHT = null;
 
     /** @var ColumnWidth[] Array of min-max-width arrays */
@@ -21,13 +24,13 @@ abstract class AbstractOptions
 
     public function __construct()
     {
-        $this->DEFAULT_ROW_STYLE = new Style();
+        $this->DEFAULT_ROW_STYLE = new Style;
     }
 
     /**
      * Columns are indexed from 1 (A = 1).
      *
-     * @param positive-int ...$columns One or more columns with this width
+     * @param  positive-int  ...$columns  One or more columns with this width
      */
     final public function setColumnWidth(float $width, int ...$columns): void
     {
@@ -50,9 +53,9 @@ abstract class AbstractOptions
     /**
      * Columns are indexed from 1 (A = 1).
      *
-     * @param float        $width The width to set
-     * @param positive-int $start First column index of the range
-     * @param positive-int $end   Last column index of the range
+     * @param  float  $width  The width to set
+     * @param  positive-int  $start  First column index of the range
+     * @param  positive-int  $end  Last column index of the range
      */
     final public function setColumnWidthForRange(float $width, int $start, int $end): void
     {

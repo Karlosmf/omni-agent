@@ -60,9 +60,9 @@ final class Collection extends AbstractList
         $objectType = (string) ($this->fqsen ?? 'object');
 
         if ($this->keyType === null) {
-            return $objectType . '<' . $this->valueType . '>';
+            return $objectType.'<'.$this->valueType.'>';
         }
 
-        return $objectType . '<' . $this->keyType . ',' . $this->valueType . '>';
+        return $objectType.'<'.$this->keyType.','.$this->valueType.'>';
     }
 }

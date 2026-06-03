@@ -31,14 +31,16 @@ use Symfony\Component\Mime\RawMessage;
 abstract class AbstractTransport implements TransportInterface
 {
     private LoggerInterface $logger;
+
     private float $rate = 0;
+
     private float $lastSent = 0;
 
     public function __construct(
         private ?EventDispatcherInterface $dispatcher = null,
         ?LoggerInterface $logger = null,
     ) {
-        $this->logger = $logger ?? new NullLogger();
+        $this->logger = $logger ?? new NullLogger;
     }
 
     /**
@@ -48,7 +50,7 @@ abstract class AbstractTransport implements TransportInterface
      */
     public function setMaxPerSecond(float $rate): static
     {
-        if (0 >= $rate) {
+        if ($rate <= 0) {
             $rate = 0;
         }
 
@@ -61,10 +63,10 @@ abstract class AbstractTransport implements TransportInterface
     public function send(RawMessage $message, ?Envelope $envelope = null): ?SentMessage
     {
         $message = clone $message;
-        $envelope = null !== $envelope ? clone $envelope : Envelope::create($message);
+        $envelope = $envelope !== null ? clone $envelope : Envelope::create($message);
 
         try {
-            if (!$this->dispatcher) {
+            if (! $this->dispatcher) {
                 $sentMessage = new SentMessage($message, $envelope);
                 $this->doSend($sentMessage);
 
@@ -80,7 +82,7 @@ abstract class AbstractTransport implements TransportInterface
             $envelope = $event->getEnvelope();
             $message = $event->getMessage();
 
-            if ($message instanceof TemplatedEmail && !$message->isRendered()) {
+            if ($message instanceof TemplatedEmail && ! $message->isRendered()) {
                 throw new LogicException(\sprintf('You must configure a "%s" when a "%s" instance has a text or HTML template set.', BodyRendererInterface::class, get_debug_type($message)));
             }
 
@@ -106,8 +108,7 @@ abstract class AbstractTransport implements TransportInterface
     abstract protected function doSend(SentMessage $message): void;
 
     /**
-     * @param Address[] $addresses
-     *
+     * @param  Address[]  $addresses
      * @return string[]
      */
     protected function stringifyAddresses(array $addresses): array
@@ -122,12 +123,12 @@ abstract class AbstractTransport implements TransportInterface
 
     private function checkThrottling(): void
     {
-        if (0 == $this->rate) {
+        if ($this->rate == 0) {
             return;
         }
 
         $sleep = (1 / $this->rate) - (microtime(true) - $this->lastSent);
-        if (0 < $sleep) {
+        if ($sleep > 0) {
             $this->logger->debug(\sprintf('Email transport "%s" sleeps for %.2f seconds', __CLASS__, $sleep));
             usleep((int) ($sleep * 1000000));
         }

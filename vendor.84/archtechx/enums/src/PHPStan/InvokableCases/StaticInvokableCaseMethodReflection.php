@@ -23,7 +23,7 @@ class StaticInvokableCaseMethodReflection implements MethodReflection
         private readonly ClassReflection $classReflection,
         private readonly string $name,
     ) {
-        $this->callStaticMethod = $this->classReflection->getMethod('__callStatic', new OutOfClassScope());
+        $this->callStaticMethod = $this->classReflection->getMethod('__callStatic', new OutOfClassScope);
     }
 
     public function getDeclaringClass(): ClassReflection
@@ -72,7 +72,7 @@ class StaticInvokableCaseMethodReflection implements MethodReflection
                 TemplateTypeMap::createEmpty(),
                 [],
                 false,
-                $this->classReflection->getBackedEnumType() ?? new StringType()
+                $this->classReflection->getBackedEnumType() ?? new StringType
             ),
         ];
     }

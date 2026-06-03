@@ -27,7 +27,7 @@ class IconManager
     /**
      * @param  string|array<string>  $alias
      */
-    public function resolve(string | array $alias): string | BackedEnum | Htmlable | null
+    public function resolve(string|array $alias): string|BackedEnum|Htmlable|null
     {
         foreach (Arr::wrap($alias) as $alias) {
             if (isset($this->icons[$alias])) {

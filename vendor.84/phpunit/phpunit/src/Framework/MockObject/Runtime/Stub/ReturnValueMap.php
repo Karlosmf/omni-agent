@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,12 +9,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\MockObject\Stub;
+
+use PHPUnit\Framework\MockObject\Invocation;
 
 use function array_pop;
 use function count;
 use function is_array;
-use PHPUnit\Framework\MockObject\Invocation;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -27,7 +31,7 @@ final readonly class ReturnValueMap implements Stub
     private array $valueMap;
 
     /**
-     * @param array<mixed> $valueMap
+     * @param  array<mixed>  $valueMap
      */
     public function __construct(array $valueMap)
     {
@@ -39,7 +43,7 @@ final readonly class ReturnValueMap implements Stub
         $parameterCount = count($invocation->parameters());
 
         foreach ($this->valueMap as $map) {
-            if (!is_array($map) || $parameterCount !== (count($map) - 1)) {
+            if (! is_array($map) || $parameterCount !== (count($map) - 1)) {
                 continue;
             }
 

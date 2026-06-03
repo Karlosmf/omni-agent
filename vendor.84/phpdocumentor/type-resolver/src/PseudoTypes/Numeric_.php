@@ -29,12 +29,12 @@ final class Numeric_ extends AggregatedType implements PseudoType
 {
     public function __construct()
     {
-        AggregatedType::__construct([new NumericString(), new Integer(), new Float_()], '|');
+        AggregatedType::__construct([new NumericString, new Integer, new Float_], '|');
     }
 
     public function underlyingType(): Type
     {
-        return new Compound([new NumericString(), new Integer(), new Float_()]);
+        return new Compound([new NumericString, new Integer, new Float_]);
     }
 
     /**

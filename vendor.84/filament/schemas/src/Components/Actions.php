@@ -20,9 +20,9 @@ class Actions extends Component
 
     protected string $view = 'filament-schemas::components.actions';
 
-    protected bool | Closure $isSticky = false;
+    protected bool|Closure $isSticky = false;
 
-    protected bool | Closure $isFullWidth = false;
+    protected bool|Closure $isFullWidth = false;
 
     const BEFORE_LABEL_SCHEMA_KEY = 'before_label';
 
@@ -35,7 +35,7 @@ class Actions extends Component
     /**
      * @param  array<Action | ActionGroup> | Closure  $actions
      */
-    final public function __construct(array | Closure $actions)
+    final public function __construct(array|Closure $actions)
     {
         $this->actions($actions);
     }
@@ -43,7 +43,7 @@ class Actions extends Component
     /**
      * @param  array<Action | ActionGroup> | Closure  $actions
      */
-    public static function make(array | Closure $actions): static
+    public static function make(array|Closure $actions): static
     {
         $static = app(static::class, ['actions' => $actions]);
         $static->configure();
@@ -54,7 +54,7 @@ class Actions extends Component
     /**
      * @param  array<Action | ActionGroup> | Closure  $actions
      */
-    public function actions(array | Closure $actions): static
+    public function actions(array|Closure $actions): static
     {
         $this->components($actions);
 
@@ -76,7 +76,7 @@ class Actions extends Component
         return true;
     }
 
-    public function fullWidth(bool | Closure $isFullWidth = true): static
+    public function fullWidth(bool|Closure $isFullWidth = true): static
     {
         $this->isFullWidth = $isFullWidth;
 
@@ -91,7 +91,7 @@ class Actions extends Component
     /**
      * @param  array<Component | Action | ActionGroup> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function beforeLabel(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components): static
+    public function beforeLabel(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components): static
     {
         $this->childComponents($components, static::BEFORE_LABEL_SCHEMA_KEY);
 
@@ -101,7 +101,7 @@ class Actions extends Component
     /**
      * @param  array<Component | Action | ActionGroup> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function afterLabel(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components): static
+    public function afterLabel(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components): static
     {
         $this->childComponents($components, static::AFTER_LABEL_SCHEMA_KEY);
 
@@ -111,7 +111,7 @@ class Actions extends Component
     /**
      * @param  array<Component | Action | ActionGroup> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function aboveContent(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components): static
+    public function aboveContent(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components): static
     {
         $this->childComponents($components, static::ABOVE_CONTENT_SCHEMA_KEY);
 
@@ -121,7 +121,7 @@ class Actions extends Component
     /**
      * @param  array<Component | Action | ActionGroup> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function belowContent(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components): static
+    public function belowContent(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components): static
     {
         $this->childComponents($components, static::BELOW_CONTENT_SCHEMA_KEY);
 
@@ -161,7 +161,7 @@ class Actions extends Component
         return $schema;
     }
 
-    public function sticky(bool | Closure $condition = true): static
+    public function sticky(bool|Closure $condition = true): static
     {
         $this->isSticky = $condition;
 

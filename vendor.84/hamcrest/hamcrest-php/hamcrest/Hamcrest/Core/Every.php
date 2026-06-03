@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Core;
 
 /*
@@ -11,7 +12,6 @@ use Hamcrest\TypeSafeDiagnosingMatcher;
 
 class Every extends TypeSafeDiagnosingMatcher
 {
-
     private $_matcher;
 
     public function __construct(Matcher $matcher)
@@ -24,7 +24,7 @@ class Every extends TypeSafeDiagnosingMatcher
     protected function matchesSafelyWithDiagnosticDescription($items, Description $mismatchDescription)
     {
         foreach ($items as $item) {
-            if (!$this->_matcher->matches($item)) {
+            if (! $this->_matcher->matches($item)) {
                 $mismatchDescription->appendText('an item ');
                 $this->_matcher->describeMismatch($item, $mismatchDescription);
 
@@ -41,11 +41,10 @@ class Every extends TypeSafeDiagnosingMatcher
     }
 
     /**
-     * @param Matcher $itemMatcher
-     *   A matcher to apply to every element in an array.
-     *
-     * @return \Hamcrest\Core\Every
-     *   Evaluates to TRUE for a collection in which every item matches $itemMatcher
+     * @param  Matcher  $itemMatcher
+     *                                A matcher to apply to every element in an array.
+     * @return Every
+     *               Evaluates to TRUE for a collection in which every item matches $itemMatcher
      *
      * @factory
      */

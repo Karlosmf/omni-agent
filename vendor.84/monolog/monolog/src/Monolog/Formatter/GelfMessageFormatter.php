@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -11,13 +13,14 @@
 
 namespace Monolog\Formatter;
 
-use Monolog\Level;
 use Gelf\Message;
-use Monolog\Utils;
+use Monolog\Level;
 use Monolog\LogRecord;
+use Monolog\Utils;
 
 /**
  * Serializes a log message to GELF
+ *
  * @see http://docs.graylog.org/en/latest/pages/gelf.html
  *
  * @author Matt Lehner <mlehner@gmail.com>
@@ -52,13 +55,13 @@ class GelfMessageFormatter extends NormalizerFormatter
     private function getGraylog2Priority(Level $level): int
     {
         return match ($level) {
-            Level::Debug     => 7,
-            Level::Info      => 6,
-            Level::Notice    => 5,
-            Level::Warning   => 4,
-            Level::Error     => 3,
-            Level::Critical  => 2,
-            Level::Alert     => 1,
+            Level::Debug => 7,
+            Level::Info => 6,
+            Level::Notice => 5,
+            Level::Warning => 4,
+            Level::Error => 3,
+            Level::Critical => 2,
+            Level::Alert => 1,
             Level::Emergency => 0,
         };
     }
@@ -68,21 +71,21 @@ class GelfMessageFormatter extends NormalizerFormatter
      */
     public function __construct(?string $systemName = null, ?string $extraPrefix = null, string $contextPrefix = 'ctxt_', ?int $maxLength = null)
     {
-        if (!class_exists(Message::class)) {
+        if (! class_exists(Message::class)) {
             throw new \RuntimeException('Composer package graylog2/gelf-php is required to use Monolog\'s GelfMessageFormatter');
         }
 
         parent::__construct('U.u');
 
-        $this->systemName = (null === $systemName || $systemName === '') ? (string) gethostname() : $systemName;
+        $this->systemName = ($systemName === null || $systemName === '') ? (string) gethostname() : $systemName;
 
-        $this->extraPrefix = null === $extraPrefix ? '' : $extraPrefix;
+        $this->extraPrefix = $extraPrefix === null ? '' : $extraPrefix;
         $this->contextPrefix = $contextPrefix;
-        $this->maxLength = null === $maxLength ? self::DEFAULT_MAX_LENGTH : $maxLength;
+        $this->maxLength = $maxLength === null ? self::DEFAULT_MAX_LENGTH : $maxLength;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function format(LogRecord $record): Message
     {
@@ -96,7 +99,7 @@ class GelfMessageFormatter extends NormalizerFormatter
             $extra = parent::normalize($record->extra);
         }
 
-        $message = new Message();
+        $message = new Message;
         $message
             ->setTimestamp($record->datetime)
             ->setShortMessage($record->message)
@@ -117,31 +120,31 @@ class GelfMessageFormatter extends NormalizerFormatter
         foreach ($extra as $key => $val) {
             $key = (string) preg_replace('#[^\w.-]#', '-', (string) $key);
             $val = \is_bool($val) ? ($val ? 1 : 0) : $val;
-            $val = \is_scalar($val) || null === $val ? $val : $this->toJson($val);
-            $len = \strlen($this->extraPrefix . $key . $val);
+            $val = \is_scalar($val) || $val === null ? $val : $this->toJson($val);
+            $len = \strlen($this->extraPrefix.$key.$val);
             if ($len > $this->maxLength) {
-                $message->setAdditional($this->extraPrefix . $key, Utils::substr((string) $val, 0, $this->maxLength));
+                $message->setAdditional($this->extraPrefix.$key, Utils::substr((string) $val, 0, $this->maxLength));
 
                 continue;
             }
-            $message->setAdditional($this->extraPrefix . $key, $val);
+            $message->setAdditional($this->extraPrefix.$key, $val);
         }
 
         foreach ($context as $key => $val) {
             $key = (string) preg_replace('#[^\w.-]#', '-', (string) $key);
             $val = \is_bool($val) ? ($val ? 1 : 0) : $val;
-            $val = \is_scalar($val) || null === $val ? $val : $this->toJson($val);
-            $len = \strlen($this->contextPrefix . $key . $val);
+            $val = \is_scalar($val) || $val === null ? $val : $this->toJson($val);
+            $len = \strlen($this->contextPrefix.$key.$val);
             if ($len > $this->maxLength) {
-                $message->setAdditional($this->contextPrefix . $key, Utils::substr((string) $val, 0, $this->maxLength));
+                $message->setAdditional($this->contextPrefix.$key, Utils::substr((string) $val, 0, $this->maxLength));
 
                 continue;
             }
-            $message->setAdditional($this->contextPrefix . $key, $val);
+            $message->setAdditional($this->contextPrefix.$key, $val);
         }
 
-        if (!$message->hasAdditional('file') && isset($context['exception']['file'])) {
-            if (1 === preg_match("/^(.+):([0-9]+)$/", $context['exception']['file'], $matches)) {
+        if (! $message->hasAdditional('file') && isset($context['exception']['file'])) {
+            if (preg_match('/^(.+):([0-9]+)$/', $context['exception']['file'], $matches) === 1) {
                 $message->setAdditional('file', $matches[1]);
                 $message->setAdditional('line', $matches[2]);
             }

@@ -5,6 +5,7 @@ namespace Spatie\LaravelPackageTools\Concerns\Package;
 trait HasCommands
 {
     public array $commands = [];
+
     public array $consoleCommands = [];
 
     public function hasCommand(string $commandClassName): static

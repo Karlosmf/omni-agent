@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace ParagonIE\ConstantTime;
 
 use Override;
@@ -30,8 +32,6 @@ use Override;
 /**
  * Class Base64DotSlashOrdered
  * ./[0-9][A-Z][a-z]
- *
- * @package ParagonIE\ConstantTime
  */
 abstract class Base64DotSlashOrdered extends Base64
 {
@@ -42,9 +42,6 @@ abstract class Base64DotSlashOrdered extends Base64
      * Base64 character set:
      * [.-9]      [A-Z]      [a-z]
      * 0x2e-0x39, 0x41-0x5a, 0x61-0x7a
-     *
-     * @param int $src
-     * @return int
      */
     #[Override]
     protected static function decode6Bits(int $src): int
@@ -52,13 +49,13 @@ abstract class Base64DotSlashOrdered extends Base64
         $ret = -1;
 
         // if ($src > 0x2d && $src < 0x3a) ret += $src - 0x2e + 1; // -45
-        $ret += (((0x2d - $src) & ($src - 0x3a)) >> 8) & ($src - 45);
+        $ret += (((0x2D - $src) & ($src - 0x3A)) >> 8) & ($src - 45);
 
         // if ($src > 0x40 && $src < 0x5b) ret += $src - 0x41 + 12 + 1; // -52
-        $ret += (((0x40 - $src) & ($src - 0x5b)) >> 8) & ($src - 52);
+        $ret += (((0x40 - $src) & ($src - 0x5B)) >> 8) & ($src - 52);
 
         // if ($src > 0x60 && $src < 0x7b) ret += $src - 0x61 + 38 + 1; // -58
-        $ret += (((0x60 - $src) & ($src - 0x7b)) >> 8) & ($src - 58);
+        $ret += (((0x60 - $src) & ($src - 0x7B)) >> 8) & ($src - 58);
 
         return $ret;
     }
@@ -66,20 +63,17 @@ abstract class Base64DotSlashOrdered extends Base64
     /**
      * Uses bitwise operators instead of table-lookups to turn 8-bit integers
      * into 6-bit integers.
-     *
-     * @param int $src
-     * @return string
      */
     #[Override]
     protected static function encode6Bits(int $src): string
     {
-        $src += 0x2e;
+        $src += 0x2E;
 
         // if ($src > 0x39) $src += 0x41 - 0x3a; // 7
         $src += ((0x39 - $src) >> 8) & 7;
 
         // if ($src > 0x5a) $src += 0x61 - 0x5b; // 6
-        $src += ((0x5a - $src) >> 8) & 6;
+        $src += ((0x5A - $src) >> 8) & 6;
 
         return \pack('C', $src);
     }

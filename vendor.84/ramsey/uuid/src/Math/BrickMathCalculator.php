@@ -109,7 +109,7 @@ final class BrickMathCalculator implements CalculatorInterface
         try {
             /** @phpstan-ignore possiblyImpure.new */
             return new IntegerObject((string) BigInteger::fromBase($value, $base));
-        } catch (MathException | \InvalidArgumentException $exception) {
+        } catch (MathException|\InvalidArgumentException $exception) {
             throw new InvalidArgumentException(
                 $exception->getMessage(),
                 (int) $exception->getCode(),
@@ -122,7 +122,7 @@ final class BrickMathCalculator implements CalculatorInterface
     {
         try {
             return BigInteger::of($value->toString())->toBase($base);
-        } catch (MathException | \InvalidArgumentException $exception) {
+        } catch (MathException|\InvalidArgumentException $exception) {
             throw new InvalidArgumentException(
                 $exception->getMessage(),
                 (int) $exception->getCode(),

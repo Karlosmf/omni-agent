@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,11 +9,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event;
 
-use function assert;
-use function memory_reset_peak_usage;
-use function preg_match;
 use PHPUnit\Event\Code\ClassMethod;
 use PHPUnit\Event\Code\ComparisonFailure;
 use PHPUnit\Event\Code\IssueTrigger\IssueTrigger;
@@ -34,6 +34,10 @@ use PHPUnit\Metadata\Parser\Registry;
 use PHPUnit\TextUI\Configuration\Configuration;
 use SebastianBergmann\Comparator\Comparator;
 
+use function assert;
+use function memory_reset_peak_usage;
+use function preg_match;
+
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  *
@@ -42,16 +46,19 @@ use SebastianBergmann\Comparator\Comparator;
 final class DispatchingEmitter implements Emitter
 {
     private readonly Dispatcher $dispatcher;
+
     private readonly Telemetry\System $system;
+
     private readonly Telemetry\Snapshot $startSnapshot;
+
     private Telemetry\Snapshot $previousSnapshot;
 
     public function __construct(Dispatcher $dispatcher, Telemetry\System $system)
     {
         $this->dispatcher = $dispatcher;
-        $this->system     = $system;
+        $this->system = $system;
 
-        $this->startSnapshot    = $system->snapshot();
+        $this->startSnapshot = $system->snapshot();
         $this->previousSnapshot = $this->startSnapshot;
     }
 
@@ -97,7 +104,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param non-empty-string $filename
+     * @param  non-empty-string  $filename
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -113,9 +120,9 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param non-empty-string $filename
-     * @param non-empty-string $name
-     * @param non-empty-string $version
+     * @param  non-empty-string  $filename
+     * @param  non-empty-string  $name
+     * @param  non-empty-string  $version
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -133,8 +140,8 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param class-string          $className
-     * @param array<string, string> $parameters
+     * @param  class-string  $className
+     * @param  array<string, string>  $parameters
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -372,7 +379,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param class-string<TestCase> $testClassName
+     * @param  class-string<TestCase>  $testClassName
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -389,7 +396,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param class-string<TestCase> $testClassName
+     * @param  class-string<TestCase>  $testClassName
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -407,7 +414,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param class-string<TestCase> $testClassName
+     * @param  class-string<TestCase>  $testClassName
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -425,7 +432,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param class-string<TestCase> $testClassName
+     * @param  class-string<TestCase>  $testClassName
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -582,7 +589,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param class-string<Comparator> $className
+     * @param  class-string<Comparator>  $className
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -598,7 +605,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -614,7 +621,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param list<class-string> $interfaces
+     * @param  list<class-string>  $interfaces
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -630,7 +637,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -647,7 +654,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -663,7 +670,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param list<class-string> $interfaces
+     * @param  list<class-string>  $interfaces
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -769,7 +776,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param non-empty-string $message
+     * @param  non-empty-string  $message
      *
      * @throws InvalidArgumentException
      * @throws NoTestCaseObjectOnCallStackException
@@ -799,7 +806,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param non-empty-string $message
+     * @param  non-empty-string  $message
      *
      * @throws InvalidArgumentException
      * @throws NoTestCaseObjectOnCallStackException
@@ -817,9 +824,9 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param non-empty-string $message
-     * @param non-empty-string $file
-     * @param positive-int     $line
+     * @param  non-empty-string  $message
+     * @param  non-empty-string  $file
+     * @param  positive-int  $line
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -842,10 +849,10 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param non-empty-string $message
-     * @param non-empty-string $file
-     * @param positive-int     $line
-     * @param non-empty-string $stackTrace
+     * @param  non-empty-string  $message
+     * @param  non-empty-string  $file
+     * @param  positive-int  $line
+     * @param  non-empty-string  $stackTrace
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -869,9 +876,9 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param non-empty-string $message
-     * @param non-empty-string $file
-     * @param positive-int     $line
+     * @param  non-empty-string  $message
+     * @param  non-empty-string  $file
+     * @param  positive-int  $line
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -891,9 +898,9 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param non-empty-string $message
-     * @param non-empty-string $file
-     * @param positive-int     $line
+     * @param  non-empty-string  $message
+     * @param  non-empty-string  $file
+     * @param  positive-int  $line
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -914,9 +921,9 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param non-empty-string $message
-     * @param non-empty-string $file
-     * @param positive-int     $line
+     * @param  non-empty-string  $message
+     * @param  non-empty-string  $file
+     * @param  positive-int  $line
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -937,9 +944,9 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param non-empty-string $message
-     * @param non-empty-string $file
-     * @param positive-int     $line
+     * @param  non-empty-string  $message
+     * @param  non-empty-string  $file
+     * @param  positive-int  $line
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -960,9 +967,9 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param non-empty-string $message
-     * @param non-empty-string $file
-     * @param positive-int     $line
+     * @param  non-empty-string  $message
+     * @param  non-empty-string  $file
+     * @param  positive-int  $line
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -983,7 +990,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param non-empty-string $message
+     * @param  non-empty-string  $message
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -1000,7 +1007,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param non-empty-string $message
+     * @param  non-empty-string  $message
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -1019,7 +1026,7 @@ final class DispatchingEmitter implements Emitter
 
                 $messagePattern = $metadata[0]->messagePattern();
 
-                if ($messagePattern === null || (bool) preg_match('{' . $messagePattern . '}', $message)) {
+                if ($messagePattern === null || (bool) preg_match('{'.$messagePattern.'}', $message)) {
                     $ignoredByTest = true;
                 }
             }
@@ -1036,7 +1043,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param non-empty-string $output
+     * @param  non-empty-string  $output
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -1052,7 +1059,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param non-empty-string $additionalInformation
+     * @param  non-empty-string  $additionalInformation
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -1069,7 +1076,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param non-negative-int $numberOfAssertionsPerformed
+     * @param  non-negative-int  $numberOfAssertionsPerformed
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -1210,7 +1217,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param class-string<TestCase> $testClassName
+     * @param  class-string<TestCase>  $testClassName
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -1227,7 +1234,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param class-string<TestCase> $testClassName
+     * @param  class-string<TestCase>  $testClassName
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -1245,7 +1252,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param class-string<TestCase> $testClassName
+     * @param  class-string<TestCase>  $testClassName
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -1263,7 +1270,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param class-string<TestCase> $testClassName
+     * @param  class-string<TestCase>  $testClassName
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -1307,8 +1314,8 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param non-negative-int $cacheHits
-     * @param non-negative-int $cacheMisses
+     * @param  non-negative-int  $cacheHits
+     * @param  non-negative-int  $cacheMisses
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -1325,7 +1332,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param non-empty-string $message
+     * @param  non-empty-string  $message
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -1348,7 +1355,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param non-empty-string $message
+     * @param  non-empty-string  $message
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException
@@ -1364,7 +1371,7 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
-     * @param non-empty-string $message
+     * @param  non-empty-string  $message
      *
      * @throws InvalidArgumentException
      * @throws UnknownEventTypeException

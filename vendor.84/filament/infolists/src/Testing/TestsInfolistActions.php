@@ -17,7 +17,7 @@ class TestsInfolistActions
 {
     public function mountInfolistAction(): Closure
     {
-        return function (string $component, string | array $actions, string $schema = 'infolist'): static {
+        return function (string $component, string|array $actions, string $schema = 'infolist'): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedInfolistActions($component, $actions, $schema);
@@ -48,7 +48,7 @@ class TestsInfolistActions
 
     public function assertInfolistActionDataSet(): Closure
     {
-        return function (array | Closure $data): static {
+        return function (array|Closure $data): static {
             $this->assertSchemaStateSet($data);
 
             return $this;
@@ -57,7 +57,7 @@ class TestsInfolistActions
 
     public function callInfolistAction(): Closure
     {
-        return function (string $component, string | array $actions, array $data = [], array $arguments = [], string $schema = 'infolist'): static {
+        return function (string $component, string|array $actions, array $data = [], array $arguments = [], string $schema = 'infolist'): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedInfolistActions($component, $actions, $schema, $arguments);
@@ -79,7 +79,7 @@ class TestsInfolistActions
 
     public function assertInfolistActionExists(): Closure
     {
-        return function (string $component, string | array $actions, string $schema = 'infolist'): static {
+        return function (string $component, string|array $actions, string $schema = 'infolist'): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedInfolistActions($component, $actions, $schema);
@@ -92,7 +92,7 @@ class TestsInfolistActions
 
     public function assertInfolistActionDoesNotExist(): Closure
     {
-        return function (string $component, string | array $actions, string $schema = 'infolist'): static {
+        return function (string $component, string|array $actions, string $schema = 'infolist'): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedInfolistActions($component, $actions, $schema);
@@ -105,7 +105,7 @@ class TestsInfolistActions
 
     public function assertInfolistActionVisible(): Closure
     {
-        return function (string $component, string | array $actions, string $schema = 'infolist'): static {
+        return function (string $component, string|array $actions, string $schema = 'infolist'): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedInfolistActions($component, $actions, $schema);
@@ -118,7 +118,7 @@ class TestsInfolistActions
 
     public function assertInfolistActionHidden(): Closure
     {
-        return function (string $component, string | array $actions, string $schema = 'infolist'): static {
+        return function (string $component, string|array $actions, string $schema = 'infolist'): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedInfolistActions($component, $actions, $schema);
@@ -131,7 +131,7 @@ class TestsInfolistActions
 
     public function assertInfolistActionEnabled(): Closure
     {
-        return function (string $component, string | array $actions, string $schema = 'infolist'): static {
+        return function (string $component, string|array $actions, string $schema = 'infolist'): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedInfolistActions($component, $actions, $schema);
@@ -144,7 +144,7 @@ class TestsInfolistActions
 
     public function assertInfolistActionDisabled(): Closure
     {
-        return function (string $component, string | array $actions, string $schema = 'infolist'): static {
+        return function (string $component, string|array $actions, string $schema = 'infolist'): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedInfolistActions($component, $actions, $schema);
@@ -157,7 +157,7 @@ class TestsInfolistActions
 
     public function assertInfolistActionHasIcon(): Closure
     {
-        return function (string $component, string | array $actions, string | BackedEnum $icon, string $schema = 'infolist'): static {
+        return function (string $component, string|array $actions, string|BackedEnum $icon, string $schema = 'infolist'): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedInfolistActions($component, $actions, $schema);
@@ -170,7 +170,7 @@ class TestsInfolistActions
 
     public function assertInfolistActionDoesNotHaveIcon(): Closure
     {
-        return function (string $component, string | array $actions, string | BackedEnum $icon, string $schema = 'infolist'): static {
+        return function (string $component, string|array $actions, string|BackedEnum $icon, string $schema = 'infolist'): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedInfolistActions($component, $actions, $schema);
@@ -183,7 +183,7 @@ class TestsInfolistActions
 
     public function assertInfolistActionHasLabel(): Closure
     {
-        return function (string $component, string | array $actions, string $label, string $schema = 'infolist'): static {
+        return function (string $component, string|array $actions, string $label, string $schema = 'infolist'): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedInfolistActions($component, $actions, $schema);
@@ -196,7 +196,7 @@ class TestsInfolistActions
 
     public function assertInfolistActionDoesNotHaveLabel(): Closure
     {
-        return function (string $component, string | array $actions, string $label, string $schema = 'infolist'): static {
+        return function (string $component, string|array $actions, string $label, string $schema = 'infolist'): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedInfolistActions($component, $actions, $schema);
@@ -209,7 +209,7 @@ class TestsInfolistActions
 
     public function assertInfolistActionHasColor(): Closure
     {
-        return function (string $component, string | array $actions, string | array $color, string $schema = 'infolist'): static {
+        return function (string $component, string|array $actions, string|array $color, string $schema = 'infolist'): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedInfolistActions($component, $actions, $schema);
@@ -222,7 +222,7 @@ class TestsInfolistActions
 
     public function assertInfolistActionDoesNotHaveColor(): Closure
     {
-        return function (string $component, string | array $actions, string | array $color, string $schema = 'infolist'): static {
+        return function (string $component, string|array $actions, string|array $color, string $schema = 'infolist'): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedInfolistActions($component, $actions, $schema);
@@ -235,7 +235,7 @@ class TestsInfolistActions
 
     public function assertInfolistActionHasUrl(): Closure
     {
-        return function (string $component, string | array $actions, string $url, string $schema = 'infolist'): static {
+        return function (string $component, string|array $actions, string $url, string $schema = 'infolist'): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedInfolistActions($component, $actions, $schema);
@@ -248,7 +248,7 @@ class TestsInfolistActions
 
     public function assertInfolistActionDoesNotHaveUrl(): Closure
     {
-        return function (string $component, string | array $actions, string $url, string $schema = 'infolist'): static {
+        return function (string $component, string|array $actions, string $url, string $schema = 'infolist'): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedInfolistActions($component, $actions, $schema);
@@ -261,7 +261,7 @@ class TestsInfolistActions
 
     public function assertInfolistActionShouldOpenUrlInNewTab(): Closure
     {
-        return function (string $component, string | array $actions, string $schema = 'infolist'): static {
+        return function (string $component, string|array $actions, string $schema = 'infolist'): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedInfolistActions($component, $actions, $schema);
@@ -274,7 +274,7 @@ class TestsInfolistActions
 
     public function assertInfolistActionShouldNotOpenUrlInNewTab(): Closure
     {
-        return function (string $component, string | array $actions, string $schema = 'infolist'): static {
+        return function (string $component, string|array $actions, string $schema = 'infolist'): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedInfolistActions($component, $actions, $schema);
@@ -287,7 +287,7 @@ class TestsInfolistActions
 
     public function assertInfolistActionMounted(): Closure
     {
-        return function (string $component, string | array $actions, string $schema = 'infolist'): static {
+        return function (string $component, string|array $actions, string $schema = 'infolist'): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedInfolistActions($component, $actions, $schema);
@@ -300,7 +300,7 @@ class TestsInfolistActions
 
     public function assertInfolistActionNotMounted(): Closure
     {
-        return function (string $component, string | array $actions, string $schema = 'infolist'): static {
+        return function (string $component, string|array $actions, string $schema = 'infolist'): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedInfolistActions($component, $actions, $schema);
@@ -336,7 +336,7 @@ class TestsInfolistActions
 
     public function parseNestedInfolistActions(): Closure
     {
-        return function (string $component, string | array $actions, string $infolist, array $arguments = []): array {
+        return function (string $component, string|array $actions, string $infolist, array $arguments = []): array {
             /** @var array<array<string, mixed>> $actions */
             $actions = $this->parseNestedActions($actions, $arguments);
 

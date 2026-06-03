@@ -17,7 +17,7 @@ class DatabaseNotificationsSent implements ShouldBroadcast
     use SerializesModels;
 
     public function __construct(
-        protected Model | Authenticatable $user,
+        protected Model|Authenticatable $user,
     ) {}
 
     public function broadcastOn(): string

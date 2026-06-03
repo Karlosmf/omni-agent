@@ -44,7 +44,7 @@ class MessageEvents
      */
     public function getEvents(?string $name = null): array
     {
-        if (null === $name) {
+        if ($name === null) {
             return $this->events;
         }
 

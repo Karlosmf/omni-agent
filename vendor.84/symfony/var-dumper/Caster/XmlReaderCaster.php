@@ -70,7 +70,7 @@ class XmlReaderCaster
             'nodeType' => new ConstStub(self::NODE_TYPES[$reader->nodeType], $reader->nodeType),
             'depth' => $reader->depth,
             'isDefault' => $reader->isDefault,
-            'isEmptyElement' => \XMLReader::NONE === $reader->nodeType ? null : $reader->isEmptyElement,
+            'isEmptyElement' => $reader->nodeType === \XMLReader::NONE ? null : $reader->isEmptyElement,
             'xmlLang' => $reader->xmlLang,
             'attributeCount' => $reader->attributeCount,
             'value' => $reader->value,

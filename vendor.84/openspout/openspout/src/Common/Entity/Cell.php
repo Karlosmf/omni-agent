@@ -31,7 +31,7 @@ abstract class Cell
 
     final public function setStyle(?Style $style): void
     {
-        $this->style = $style ?? new Style();
+        $this->style = $style ?? new Style;
     }
 
     final public function getStyle(): Style
@@ -44,7 +44,7 @@ abstract class Cell
         if (\is_bool($value)) {
             return new BooleanCell($value, $style);
         }
-        if (null === $value || '' === $value) {
+        if ($value === null || $value === '') {
             return new EmptyCell($value, $style);
         }
         if (\is_int($value) || \is_float($value)) {
@@ -56,7 +56,7 @@ abstract class Cell
         if ($value instanceof DateInterval) {
             return new DateIntervalCell($value, $style);
         }
-        if (isset($value[0]) && '=' === $value[0]) {
+        if (isset($value[0]) && $value[0] === '=') {
             return new FormulaCell($value, $style, null);
         }
 

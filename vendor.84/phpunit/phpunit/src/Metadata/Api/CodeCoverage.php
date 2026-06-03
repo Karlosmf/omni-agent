@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,9 +9,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Metadata\Api;
 
-use function assert;
 use PHPUnit\Event\Facade as EventFacade;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Metadata\CoversClass;
@@ -30,6 +32,8 @@ use PHPUnit\Metadata\UsesTrait;
 use SebastianBergmann\CodeCoverage\Test\Target\Target;
 use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
 
+use function assert;
+
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  *
@@ -38,8 +42,8 @@ use SebastianBergmann\CodeCoverage\Test\Target\TargetCollection;
 final class CodeCoverage
 {
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      */
     public function coversTargets(string $className, string $methodName): TargetCollection
     {
@@ -93,8 +97,8 @@ final class CodeCoverage
     }
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      */
     public function usesTargets(string $className, string $methodName): TargetCollection
     {
@@ -149,9 +153,9 @@ final class CodeCoverage
 
     public function shouldCodeCoverageBeCollectedFor(TestCase $test): bool
     {
-        $className  = $test::class;
+        $className = $test::class;
         $methodName = $test->name();
-        $parser     = Registry::parser();
+        $parser = Registry::parser();
 
         if ($parser->forMethod($className, $methodName)->isCoversNothing()->isNotEmpty()) {
             EventFacade::emitter()->testTriggeredPhpunitDeprecation(

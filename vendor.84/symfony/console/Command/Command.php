@@ -36,22 +36,37 @@ class Command implements SignalableCommandInterface
 {
     // see https://tldp.org/LDP/abs/html/exitcodes.html
     public const SUCCESS = 0;
+
     public const FAILURE = 1;
+
     public const INVALID = 2;
 
     private ?Application $application = null;
+
     private ?string $name = null;
+
     private ?string $processTitle = null;
+
     private array $aliases = [];
+
     private InputDefinition $definition;
+
     private bool $hidden = false;
+
     private string $help = '';
+
     private string $description = '';
+
     private ?InputDefinition $fullDefinition = null;
+
     private bool $ignoreValidationErrors = false;
+
     private ?InvokableCommand $code = null;
+
     private array $synopsis = [];
+
     private array $usages = [];
+
     private ?HelperSet $helperSet = null;
 
     /**
@@ -83,14 +98,14 @@ class Command implements SignalableCommandInterface
     }
 
     /**
-     * @param string|null $name The name of the command; passing null means it must be set in configure()
+     * @param  string|null  $name  The name of the command; passing null means it must be set in configure()
      *
      * @throws LogicException When the command name is empty
      */
     public function __construct(?string $name = null, ?callable $code = null)
     {
-        if (null !== $code) {
-            if (!\is_object($code) || $code instanceof \Closure) {
+        if ($code !== null) {
+            if (! \is_object($code) || $code instanceof \Closure) {
                 throw new InvalidArgumentException(\sprintf('The command must be an instance of "%s" or an invokable object.', self::class));
             }
             /** @var AsCommand $attribute */
@@ -101,9 +116,9 @@ class Command implements SignalableCommandInterface
             $attribute = ((new \ReflectionClass(static::class))->getAttributes(AsCommand::class)[0] ?? null)?->newInstance();
         }
 
-        $this->definition = new InputDefinition();
-        if (null === $name) {
-            if (self::class !== (new \ReflectionMethod($this, 'getDefaultName'))->class) {
+        $this->definition = new InputDefinition;
+        if ($name === null) {
+            if ((new \ReflectionMethod($this, 'getDefaultName'))->class !== self::class) {
                 trigger_deprecation('symfony/console', '7.3', 'Overriding "Command::getDefaultName()" in "%s" is deprecated and will be removed in Symfony 8.0, use the #[AsCommand] attribute instead.', static::class);
 
                 $name = static::getDefaultName();
@@ -112,7 +127,7 @@ class Command implements SignalableCommandInterface
             }
         }
 
-        if (null !== $name) {
+        if ($name !== null) {
             $aliases = explode('|', $name);
 
             if ('' === $name = array_shift($aliases)) {
@@ -129,12 +144,12 @@ class Command implements SignalableCommandInterface
             $this->setAliases($aliases);
         }
 
-        if (null !== $name) {
+        if ($name !== null) {
             $this->setName($name);
         }
 
-        if ('' === $this->description) {
-            if (self::class !== (new \ReflectionMethod($this, 'getDefaultDescription'))->class) {
+        if ($this->description === '') {
+            if ((new \ReflectionMethod($this, 'getDefaultDescription'))->class !== self::class) {
                 trigger_deprecation('symfony/console', '7.3', 'Overriding "Command::getDefaultDescription()" in "%s" is deprecated and will be removed in Symfony 8.0, use the #[AsCommand] attribute instead.', static::class);
 
                 $defaultDescription = static::getDefaultDescription();
@@ -145,7 +160,7 @@ class Command implements SignalableCommandInterface
             $this->setDescription($defaultDescription ?? '');
         }
 
-        if ('' === $this->help) {
+        if ($this->help === '') {
             $this->setHelp($attribute?->help ?? '');
         }
 
@@ -153,7 +168,7 @@ class Command implements SignalableCommandInterface
             $this->addUsage($usage);
         }
 
-        if (!$code && \is_callable($this) && self::class === (new \ReflectionMethod($this, 'execute'))->getDeclaringClass()->name) {
+        if (! $code && \is_callable($this) && (new \ReflectionMethod($this, 'execute'))->getDeclaringClass()->name === self::class) {
             $this->code = new InvokableCommand($this, $this(...));
         }
 
@@ -219,9 +234,7 @@ class Command implements SignalableCommandInterface
      *
      * @return void
      */
-    protected function configure()
-    {
-    }
+    protected function configure() {}
 
     /**
      * Executes the current command.
@@ -251,9 +264,7 @@ class Command implements SignalableCommandInterface
      *
      * @return void
      */
-    protected function interact(InputInterface $input, OutputInterface $output)
-    {
-    }
+    protected function interact(InputInterface $input, OutputInterface $output) {}
 
     /**
      * Initializes the command after the input has been bound and before the input
@@ -267,9 +278,7 @@ class Command implements SignalableCommandInterface
      *
      * @return void
      */
-    protected function initialize(InputInterface $input, OutputInterface $output)
-    {
-    }
+    protected function initialize(InputInterface $input, OutputInterface $output) {}
 
     /**
      * Runs the command.
@@ -294,16 +303,16 @@ class Command implements SignalableCommandInterface
         try {
             $input->bind($this->getDefinition());
         } catch (ExceptionInterface $e) {
-            if (!$this->ignoreValidationErrors) {
+            if (! $this->ignoreValidationErrors) {
                 throw $e;
             }
         }
 
         $this->initialize($input, $output);
 
-        if (null !== $this->processTitle) {
+        if ($this->processTitle !== null) {
             if (\function_exists('cli_set_process_title')) {
-                if (!@cli_set_process_title($this->processTitle)) {
+                if (! @cli_set_process_title($this->processTitle)) {
                     if ('Darwin' === \PHP_OS) {
                         $output->writeln('<comment>Running "cli_set_process_title" as an unprivileged user is not supported on MacOS.</comment>', OutputInterface::VERBOSITY_VERY_VERBOSE);
                     } else {
@@ -312,7 +321,7 @@ class Command implements SignalableCommandInterface
                 }
             } elseif (\function_exists('setproctitle')) {
                 setproctitle($this->processTitle);
-            } elseif (OutputInterface::VERBOSITY_VERY_VERBOSE === $output->getVerbosity()) {
+            } elseif ($output->getVerbosity() === OutputInterface::VERBOSITY_VERY_VERBOSE) {
                 $output->writeln('<comment>Install the proctitle PECL to be able to change the process title.</comment>');
             }
         }
@@ -328,7 +337,7 @@ class Command implements SignalableCommandInterface
         // The command name argument is often omitted when a command is executed directly with its run() method.
         // It would fail the validation if we didn't make sure the command argument is present,
         // since it's required by the application.
-        if ($input->hasArgument('command') && null === $input->getArgument('command')) {
+        if ($input->hasArgument('command') && $input->getArgument('command') === null) {
             $input->setArgument('command', $this->getName());
         }
 
@@ -347,9 +356,9 @@ class Command implements SignalableCommandInterface
     public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
     {
         $definition = $this->getDefinition();
-        if (CompletionInput::TYPE_OPTION_VALUE === $input->getCompletionType() && $definition->hasOption($input->getCompletionName())) {
+        if ($input->getCompletionType() === CompletionInput::TYPE_OPTION_VALUE && $definition->hasOption($input->getCompletionName())) {
             $definition->getOption($input->getCompletionName())->complete($input, $suggestions);
-        } elseif (CompletionInput::TYPE_ARGUMENT_VALUE === $input->getCompletionType() && $definition->hasArgument($input->getCompletionName())) {
+        } elseif ($input->getCompletionType() === CompletionInput::TYPE_ARGUMENT_VALUE && $definition->hasArgument($input->getCompletionName())) {
             $definition->getArgument($input->getCompletionName())->complete($input, $suggestions);
         }
     }
@@ -370,8 +379,7 @@ class Command implements SignalableCommandInterface
      * If this method is used, it overrides the code defined
      * in the execute() method.
      *
-     * @param callable $code A callable(InputInterface $input, OutputInterface $output)
-     *
+     * @param  callable  $code  A callable(InputInterface $input, OutputInterface $output)
      * @return $this
      *
      * @throws InvalidArgumentException
@@ -390,17 +398,17 @@ class Command implements SignalableCommandInterface
      *
      * This method is not part of public API and should not be used directly.
      *
-     * @param bool $mergeArgs Whether to merge or not the Application definition arguments to Command definition arguments
+     * @param  bool  $mergeArgs  Whether to merge or not the Application definition arguments to Command definition arguments
      *
      * @internal
      */
     public function mergeApplicationDefinition(bool $mergeArgs = true): void
     {
-        if (null === $this->application) {
+        if ($this->application === null) {
             return;
         }
 
-        $this->fullDefinition = new InputDefinition();
+        $this->fullDefinition = new InputDefinition;
         $this->fullDefinition->setOptions($this->definition->getOptions());
         $this->fullDefinition->addOptions($this->application->getDefinition()->getOptions());
 
@@ -450,7 +458,7 @@ class Command implements SignalableCommandInterface
     {
         $definition = $this->definition ?? throw new LogicException(\sprintf('Command class "%s" is not correctly initialized. You probably forgot to call the parent constructor.', static::class));
 
-        if ($this->code && !$definition->getArguments() && !$definition->getOptions()) {
+        if ($this->code && ! $definition->getArguments() && ! $definition->getOptions()) {
             $this->code->configure($definition);
         }
 
@@ -460,10 +468,9 @@ class Command implements SignalableCommandInterface
     /**
      * Adds an argument.
      *
-     * @param                                                                               $mode            The argument mode: InputArgument::REQUIRED or InputArgument::OPTIONAL
-     * @param                                                                               $default         The default value (for InputArgument::OPTIONAL mode only)
-     * @param array|\Closure(CompletionInput,CompletionSuggestions):list<string|Suggestion> $suggestedValues The values used for input completion
-     *
+     * @param  $mode  The argument mode: InputArgument::REQUIRED or InputArgument::OPTIONAL
+     * @param  $default  The default value (for InputArgument::OPTIONAL mode only)
+     * @param  array|\Closure(CompletionInput,CompletionSuggestions):list<string|Suggestion>  $suggestedValues  The values used for input completion
      * @return $this
      *
      * @throws InvalidArgumentException When argument mode is not valid
@@ -479,11 +486,10 @@ class Command implements SignalableCommandInterface
     /**
      * Adds an option.
      *
-     * @param                                                                               $shortcut        The shortcuts, can be null, a string of shortcuts delimited by | or an array of shortcuts
-     * @param                                                                               $mode            The option mode: One of the InputOption::VALUE_* constants
-     * @param                                                                               $default         The default value (must be null for InputOption::VALUE_NONE)
-     * @param array|\Closure(CompletionInput,CompletionSuggestions):list<string|Suggestion> $suggestedValues The values used for input completion
-     *
+     * @param  $shortcut  The shortcuts, can be null, a string of shortcuts delimited by | or an array of shortcuts
+     * @param  $mode  The option mode: One of the InputOption::VALUE_* constants
+     * @param  $default  The default value (must be null for InputOption::VALUE_NONE)
+     * @param  array|\Closure(CompletionInput,CompletionSuggestions):list<string|Suggestion>  $suggestedValues  The values used for input completion
      * @return $this
      *
      * @throws InvalidArgumentException If option mode is invalid or incompatible
@@ -541,8 +547,7 @@ class Command implements SignalableCommandInterface
     }
 
     /**
-     * @param bool $hidden Whether or not the command should be hidden from the list of commands
-     *
+     * @param  bool  $hidden  Whether or not the command should be hidden from the list of commands
      * @return $this
      */
     public function setHidden(bool $hidden = true): static
@@ -624,8 +629,7 @@ class Command implements SignalableCommandInterface
     /**
      * Sets the aliases for the command.
      *
-     * @param string[] $aliases An array of aliases for the command
-     *
+     * @param  string[]  $aliases  An array of aliases for the command
      * @return $this
      *
      * @throws InvalidArgumentException When an alias is invalid
@@ -655,13 +659,13 @@ class Command implements SignalableCommandInterface
     /**
      * Returns the synopsis for the command.
      *
-     * @param bool $short Whether to show the short version of the synopsis (with options folded) or not
+     * @param  bool  $short  Whether to show the short version of the synopsis (with options folded) or not
      */
     public function getSynopsis(bool $short = false): string
     {
         $key = $short ? 'short' : 'long';
 
-        if (!isset($this->synopsis[$key])) {
+        if (! isset($this->synopsis[$key])) {
             $this->synopsis[$key] = trim(\sprintf('%s %s', $this->name, $this->definition->getSynopsis($short)));
         }
 
@@ -675,7 +679,7 @@ class Command implements SignalableCommandInterface
      */
     public function addUsage(string $usage): static
     {
-        if (!str_starts_with($usage, $this->name)) {
+        if (! str_starts_with($usage, $this->name)) {
             $usage = \sprintf('%s %s', $this->name, $usage);
         }
 
@@ -695,12 +699,12 @@ class Command implements SignalableCommandInterface
     /**
      * Gets a helper instance by name.
      *
-     * @throws LogicException           if no HelperSet is defined
+     * @throws LogicException if no HelperSet is defined
      * @throws InvalidArgumentException if the helper is not defined
      */
     public function getHelper(string $name): HelperInterface
     {
-        if (null === $this->helperSet) {
+        if ($this->helperSet === null) {
             throw new LogicException(\sprintf('Cannot retrieve helper "%s" because there is no HelperSet defined. Did you forget to add your command to the application or to set the application on the command using the setApplication() method? You can also set the HelperSet directly using the setHelperSet() method.', $name));
         }
 
@@ -726,7 +730,7 @@ class Command implements SignalableCommandInterface
      */
     private function validateName(string $name): void
     {
-        if (!preg_match('/^[^\:]++(\:[^\:]++)*$/', $name)) {
+        if (! preg_match('/^[^\:]++(\:[^\:]++)*$/', $name)) {
             throw new InvalidArgumentException(\sprintf('Command name "%s" is invalid.', $name));
         }
     }

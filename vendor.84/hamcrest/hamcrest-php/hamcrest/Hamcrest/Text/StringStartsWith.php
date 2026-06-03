@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Text;
 
 /*
@@ -10,7 +11,6 @@ namespace Hamcrest\Text;
  */
 class StringStartsWith extends SubstringMatcher
 {
-
     public function __construct($substring)
     {
         parent::__construct($substring);
@@ -30,7 +30,7 @@ class StringStartsWith extends SubstringMatcher
 
     protected function evalSubstringOf($string)
     {
-        return (substr($string, 0, strlen($this->_substring)) === $this->_substring);
+        return substr($string, 0, strlen($this->_substring)) === $this->_substring;
     }
 
     protected function relationship()

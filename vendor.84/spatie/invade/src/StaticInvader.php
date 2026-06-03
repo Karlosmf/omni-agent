@@ -9,12 +9,11 @@ class StaticInvader
     private ?string $method = null;
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      */
     public function __construct(
         public string $className,
-    ) {
-    }
+    ) {}
 
     public function get(string $name): mixed
     {

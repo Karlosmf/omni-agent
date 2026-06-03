@@ -50,7 +50,7 @@ class DesiredCapabilities implements WebDriverCapabilities
     }
 
     /**
-     * @param string $browser_name
+     * @param  string  $browser_name
      * @return DesiredCapabilities
      */
     public function setBrowserName($browser_name)
@@ -69,7 +69,7 @@ class DesiredCapabilities implements WebDriverCapabilities
     }
 
     /**
-     * @param string $version
+     * @param  string  $version
      * @return DesiredCapabilities
      */
     public function setVersion($version)
@@ -80,7 +80,7 @@ class DesiredCapabilities implements WebDriverCapabilities
     }
 
     /**
-     * @param string $name
+     * @param  string  $name
      * @return mixed The value of a capability.
      */
     public function getCapability($name)
@@ -89,8 +89,8 @@ class DesiredCapabilities implements WebDriverCapabilities
     }
 
     /**
-     * @param string $name
-     * @param mixed $value
+     * @param  string  $name
+     * @param  mixed  $value
      * @return DesiredCapabilities
      */
     public function setCapability($name, $value)
@@ -100,7 +100,7 @@ class DesiredCapabilities implements WebDriverCapabilities
         // using FirefoxProfile, thus not overwritten by adding 'moz:firefoxOptions')
         // TODO: remove in next major version, once FirefoxOptions are only accepted as object instance and not as array
         if ($name === FirefoxOptions::CAPABILITY && is_array($value)) {
-            $defaultOptions = (new FirefoxOptions())->toArray();
+            $defaultOptions = (new FirefoxOptions)->toArray();
             $value = array_merge($defaultOptions, $value);
         }
 
@@ -118,7 +118,7 @@ class DesiredCapabilities implements WebDriverCapabilities
     }
 
     /**
-     * @param string $platform
+     * @param  string  $platform
      * @return DesiredCapabilities
      */
     public function setPlatform($platform)
@@ -129,7 +129,7 @@ class DesiredCapabilities implements WebDriverCapabilities
     }
 
     /**
-     * @param string $capability_name
+     * @param  string  $capability_name
      * @return bool Whether the value is not null and not false.
      */
     public function is($capability_name)
@@ -139,7 +139,9 @@ class DesiredCapabilities implements WebDriverCapabilities
 
     /**
      * @todo Remove in next major release (BC)
+     *
      * @deprecated All browsers are always JS enabled except HtmlUnit and it's not meaningful to disable JS execution.
+     *
      * @return bool Whether javascript is enabled.
      */
     public function isJavascriptEnabled()
@@ -150,9 +152,11 @@ class DesiredCapabilities implements WebDriverCapabilities
     /**
      * This is a htmlUnit-only option.
      *
-     * @param bool $enabled
-     * @throws UnsupportedOperationException
+     * @param  bool  $enabled
      * @return DesiredCapabilities
+     *
+     * @throws UnsupportedOperationException
+     *
      * @see https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities#read-write-capabilities
      */
     public function setJavascriptEnabled($enabled)
@@ -160,7 +164,7 @@ class DesiredCapabilities implements WebDriverCapabilities
         $browser = $this->getBrowserName();
         if ($browser && $browser !== WebDriverBrowserType::HTMLUNIT) {
             throw new UnsupportedOperationException(
-                'isJavascriptEnabled() is a htmlunit-only option. ' .
+                'isJavascriptEnabled() is a htmlunit-only option. '.
                 'See https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities#read-write-capabilities.'
             );
         }
@@ -172,6 +176,7 @@ class DesiredCapabilities implements WebDriverCapabilities
 
     /**
      * @todo Remove side-effects - not change eg. ChromeOptions::CAPABILITY from instance of ChromeOptions to an array
+     *
      * @return array
      */
     public function toArray()
@@ -255,8 +260,8 @@ class DesiredCapabilities implements WebDriverCapabilities
         // Convert Firefox profile
         if (array_key_exists(FirefoxDriver::PROFILE, $ossCapabilities)) {
             // Convert profile only if not already set in moz:firefoxOptions
-            if (!array_key_exists(FirefoxOptions::CAPABILITY, $ossCapabilities)
-                || !array_key_exists('profile', $ossCapabilities[FirefoxOptions::CAPABILITY])) {
+            if (! array_key_exists(FirefoxOptions::CAPABILITY, $ossCapabilities)
+                || ! array_key_exists('profile', $ossCapabilities[FirefoxOptions::CAPABILITY])) {
                 $w3cCapabilities[FirefoxOptions::CAPABILITY]['profile'] = $ossCapabilities[FirefoxDriver::PROFILE];
             }
         }
@@ -296,7 +301,7 @@ class DesiredCapabilities implements WebDriverCapabilities
             WebDriverCapabilityType::PLATFORM => WebDriverPlatform::ANY,
         ]);
 
-        $caps->setCapability(FirefoxOptions::CAPABILITY, new FirefoxOptions()); // to add default options
+        $caps->setCapability(FirefoxOptions::CAPABILITY, new FirefoxOptions); // to add default options
 
         return $caps;
     }
@@ -394,6 +399,7 @@ class DesiredCapabilities implements WebDriverCapabilities
     /**
      * @deprecated PhantomJS is no longer developed and its support will be removed in next major version.
      * Use headless Chrome or Firefox instead.
+     *
      * @return static
      */
     public static function phantomjs()
@@ -405,8 +411,8 @@ class DesiredCapabilities implements WebDriverCapabilities
     }
 
     /**
-     * @param string $key
-     * @param mixed $value
+     * @param  string  $key
+     * @param  mixed  $value
      * @return DesiredCapabilities
      */
     private function set($key, $value)
@@ -417,8 +423,8 @@ class DesiredCapabilities implements WebDriverCapabilities
     }
 
     /**
-     * @param string $key
-     * @param mixed $default
+     * @param  string  $key
+     * @param  mixed  $default
      * @return mixed
      */
     private function get($key, $default = null)

@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Core;
 
 /*
@@ -15,7 +16,6 @@ use Hamcrest\Util;
  */
 class AllOf extends DiagnosingMatcher
 {
-
     private $_matchers;
 
     public function __construct(array $matchers)
@@ -29,7 +29,7 @@ class AllOf extends DiagnosingMatcher
     {
         /** @var $matcher \Hamcrest\Matcher */
         foreach ($this->_matchers as $matcher) {
-            if (!$matcher->matches($item)) {
+            if (! $matcher->matches($item)) {
                 $mismatchDescription->appendDescriptionOf($matcher)->appendText(' ');
                 $matcher->describeMismatch($item, $mismatchDescription);
 

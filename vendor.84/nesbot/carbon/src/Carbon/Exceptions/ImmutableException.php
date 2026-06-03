@@ -28,9 +28,8 @@ class ImmutableException extends BaseRuntimeException implements RuntimeExceptio
     /**
      * Constructor.
      *
-     * @param string         $value    the immutable type/value
-     * @param int            $code
-     * @param Throwable|null $previous
+     * @param  string  $value  the immutable type/value
+     * @param  int  $code
      */
     public function __construct($value, $code = 0, ?Throwable $previous = null)
     {
@@ -40,8 +39,6 @@ class ImmutableException extends BaseRuntimeException implements RuntimeExceptio
 
     /**
      * Get the value.
-     *
-     * @return string
      */
     public function getValue(): string
     {

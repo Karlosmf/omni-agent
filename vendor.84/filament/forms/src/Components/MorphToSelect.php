@@ -31,20 +31,20 @@ class MorphToSelect extends Component
 
     protected string $view = 'filament-schemas::components.fieldset';
 
-    protected bool | Closure $isRequired = false;
+    protected bool|Closure $isRequired = false;
 
-    protected int | Closure $optionsLimit = 50;
+    protected int|Closure $optionsLimit = 50;
 
     /**
      * @var array<Type> | Closure
      */
-    protected array | Closure $types = [];
+    protected array|Closure $types = [];
 
     protected ?Closure $modifyTypeSelectUsing = null;
 
     protected ?Closure $modifyKeySelectUsing = null;
 
-    protected bool | Closure $hasTypeSelectToggleButtons = false;
+    protected bool|Closure $hasTypeSelectToggleButtons = false;
 
     final public function __construct(string $name)
     {
@@ -194,7 +194,7 @@ class MorphToSelect extends Component
         return $this->modifyKeySelectUsing;
     }
 
-    public function typeSelectToggleButtons(bool | Closure $condition = true): static
+    public function typeSelectToggleButtons(bool|Closure $condition = true): static
     {
         $this->hasTypeSelectToggleButtons = $condition;
 
@@ -206,14 +206,14 @@ class MorphToSelect extends Component
         return (bool) $this->evaluate($this->hasTypeSelectToggleButtons);
     }
 
-    public function optionsLimit(int | Closure $limit): static
+    public function optionsLimit(int|Closure $limit): static
     {
         $this->optionsLimit = $limit;
 
         return $this;
     }
 
-    public function required(bool | Closure $condition = true): static
+    public function required(bool|Closure $condition = true): static
     {
         $this->isRequired = $condition;
 
@@ -223,7 +223,7 @@ class MorphToSelect extends Component
     /**
      * @param  array<Type> | Closure  $types
      */
-    public function types(array | Closure $types): static
+    public function types(array|Closure $types): static
     {
         $this->types = $types;
 
@@ -267,7 +267,7 @@ class MorphToSelect extends Component
         return $this->evaluate($this->optionsLimit);
     }
 
-    public function getLabel(): string | Htmlable | null
+    public function getLabel(): string|Htmlable|null
     {
         if (filled($label = $this->getBaseLabel())) {
             return $label;

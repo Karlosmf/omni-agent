@@ -25,13 +25,15 @@ use Symfony\Component\Serializer\SerializerInterface;
 class SerializerErrorRenderer implements ErrorRendererInterface
 {
     private string|\Closure $format;
+
     private ErrorRendererInterface $fallbackErrorRenderer;
+
     private bool|\Closure $debug;
 
     /**
-     * @param string|callable(FlattenException): string $format The format as a string or a callable that should return it
-     *                                                          formats not supported by Request::getMimeTypes() should be given as mime types
-     * @param bool|callable                             $debug  The debugging mode as a boolean or a callable that should return it
+     * @param  string|callable(FlattenException): string  $format  The format as a string or a callable that should return it
+     *                                                             formats not supported by Request::getMimeTypes() should be given as mime types
+     * @param  bool|callable  $debug  The debugging mode as a boolean or a callable that should return it
      */
     public function __construct(
         private SerializerInterface $serializer,
@@ -40,7 +42,7 @@ class SerializerErrorRenderer implements ErrorRendererInterface
         bool|callable $debug = false,
     ) {
         $this->format = \is_string($format) ? $format : $format(...);
-        $this->fallbackErrorRenderer = $fallbackErrorRenderer ?? new HtmlErrorRenderer();
+        $this->fallbackErrorRenderer = $fallbackErrorRenderer ?? new HtmlErrorRenderer;
         $this->debug = \is_bool($debug) ? $debug : $debug(...);
     }
 
@@ -73,8 +75,8 @@ class SerializerErrorRenderer implements ErrorRendererInterface
     public static function getPreferredFormat(RequestStack $requestStack): \Closure
     {
         return static function () use ($requestStack) {
-            if (!$request = $requestStack->getCurrentRequest()) {
-                throw new NotEncodableValueException();
+            if (! $request = $requestStack->getCurrentRequest()) {
+                throw new NotEncodableValueException;
             }
 
             return $request->getPreferredFormat();

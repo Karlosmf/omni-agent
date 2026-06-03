@@ -13,15 +13,17 @@ declare(strict_types=1);
 
 namespace Fidry\CpuCoreCounter;
 
+use const PHP_EOL;
+
 use Fidry\CpuCoreCounter\Finder\CpuCoreFinder;
 use Fidry\CpuCoreCounter\Finder\EnvVariableFinder;
 use Fidry\CpuCoreCounter\Finder\FinderRegistry;
 use InvalidArgumentException;
+
 use function implode;
 use function max;
 use function sprintf;
 use function sys_getloadavg;
-use const PHP_EOL;
 
 final class CpuCoreCounter
 {
@@ -36,7 +38,7 @@ final class CpuCoreCounter
     private $count;
 
     /**
-     * @param list<CpuCoreFinder>|null $finders
+     * @param  list<CpuCoreFinder>|null  $finders
      */
     public function __construct(?array $finders = null)
     {
@@ -44,36 +46,36 @@ final class CpuCoreCounter
     }
 
     /**
-     * @param positive-int|0    $reservedCpus      Number of CPUs to reserve. This is useful when you want
-     *                                             to reserve some CPUs for other processes. If the main
-     *                                             process is going to be busy still, you may want to set
-     *                                             this value to 1.
-     * @param non-zero-int|null $countLimit        The maximum number of CPUs to return. If not provided, it
-     *                                             may look for a limit in the environment variables, e.g.
-     *                                             KUBERNETES_CPU_LIMIT. If negative, the limit will be
-     *                                             the total number of cores found minus the absolute value.
-     *                                             For instance if the system has 10 cores and countLimit=-2,
-     *                                             then the effective limit considered will be 8.
-     * @param float|null        $loadLimit         Element of [0., 1.]. Percentage representing the
-     *                                             amount of cores that should be used among the available
-     *                                             resources. For instance, if set to 0.7, it will use 70%
-     *                                             of the available cores, i.e. if 1 core is reserved, 11
-     *                                             cores are available and 5 are busy, it will use 70%
-     *                                             of (11-1-5)=5 cores, so 3 cores. Set this parameter to null
-     *                                             to skip this check. Beware that 1 does not mean "no limit",
-     *                                             but 100% of the _available_ resources, i.e. with the
-     *                                             previous example, it will return 5 cores. How busy is
-     *                                             the system is determined by the system load average
-     *                                             (see $systemLoadAverage).
-     * @param float|null        $systemLoadAverage The system load average. If passed, it will use
-     *                                             this information to limit the available cores based
-     *                                             on the _available_ resources. For instance, if there
-     *                                             is 10 cores but 3 are busy, then only 7 cores will
-     *                                             be considered for further calculation. If set to
-     *                                             `null`, it will use `sys_getloadavg()` to check the
-     *                                             load of the system in the past minute. You can
-     *                                             otherwise pass an arbitrary value. Should be a
-     *                                             positive float.
+     * @param  positive-int|0  $reservedCpus  Number of CPUs to reserve. This is useful when you want
+     *                                        to reserve some CPUs for other processes. If the main
+     *                                        process is going to be busy still, you may want to set
+     *                                        this value to 1.
+     * @param  non-zero-int|null  $countLimit  The maximum number of CPUs to return. If not provided, it
+     *                                         may look for a limit in the environment variables, e.g.
+     *                                         KUBERNETES_CPU_LIMIT. If negative, the limit will be
+     *                                         the total number of cores found minus the absolute value.
+     *                                         For instance if the system has 10 cores and countLimit=-2,
+     *                                         then the effective limit considered will be 8.
+     * @param  float|null  $loadLimit  Element of [0., 1.]. Percentage representing the
+     *                                 amount of cores that should be used among the available
+     *                                 resources. For instance, if set to 0.7, it will use 70%
+     *                                 of the available cores, i.e. if 1 core is reserved, 11
+     *                                 cores are available and 5 are busy, it will use 70%
+     *                                 of (11-1-5)=5 cores, so 3 cores. Set this parameter to null
+     *                                 to skip this check. Beware that 1 does not mean "no limit",
+     *                                 but 100% of the _available_ resources, i.e. with the
+     *                                 previous example, it will return 5 cores. How busy is
+     *                                 the system is determined by the system load average
+     *                                 (see $systemLoadAverage).
+     * @param  float|null  $systemLoadAverage  The system load average. If passed, it will use
+     *                                         this information to limit the available cores based
+     *                                         on the _available_ resources. For instance, if there
+     *                                         is 10 cores but 3 are busy, then only 7 cores will
+     *                                         be considered for further calculation. If set to
+     *                                         `null`, it will use `sys_getloadavg()` to check the
+     *                                         load of the system in the past minute. You can
+     *                                         otherwise pass an arbitrary value. Should be a
+     *                                         positive float.
      *
      * @see https://php.net/manual/en/function.sys-getloadavg.php
      */
@@ -91,10 +93,10 @@ final class CpuCoreCounter
         $availableCores = max(1, $totalCoreCount - $reservedCpus);
 
         // Adjust available CPUs based on current load
-        if (null !== $loadLimit) {
+        if ($loadLimit !== null) {
             // https://github.com/phpstan/phpstan/issues/13198
             /** @var float $correctedSystemLoadAverage */
-            $correctedSystemLoadAverage = null === $systemLoadAverage
+            $correctedSystemLoadAverage = $systemLoadAverage === null
                 ? sys_getloadavg()[0] ?? 0.
                 : $systemLoadAverage;
 
@@ -104,7 +106,7 @@ final class CpuCoreCounter
             );
         }
 
-        if (null === $countLimit) {
+        if ($countLimit === null) {
             $correctedCountLimit = self::getKubernetesLimit();
         } else {
             $correctedCountLimit = $countLimit > 0
@@ -112,7 +114,7 @@ final class CpuCoreCounter
                 : max(1, $totalCoreCount + $countLimit);
         }
 
-        if (null !== $correctedCountLimit && $availableCores > $correctedCountLimit) {
+        if ($correctedCountLimit !== null && $availableCores > $correctedCountLimit) {
             $availableCores = $correctedCountLimit;
         }
 
@@ -129,14 +131,14 @@ final class CpuCoreCounter
     }
 
     /**
-     * @throws NumberOfCpuCoreNotFound
-     *
      * @return positive-int
+     *
+     * @throws NumberOfCpuCoreNotFound
      */
     public function getCount(): int
     {
         // Memoize result
-        if (null === $this->count) {
+        if ($this->count === null) {
             $this->count = $this->findCount();
         }
 
@@ -144,8 +146,7 @@ final class CpuCoreCounter
     }
 
     /**
-     * @param positive-int $fallback
-     *
+     * @param  positive-int  $fallback
      * @return positive-int
      */
     public function getCountWithFallback(int $fallback): int
@@ -173,7 +174,7 @@ final class CpuCoreCounter
 
             $cores = $finder->find();
 
-            if (null !== $cores) {
+            if ($cores !== null) {
                 $output[] = 'Result found: '.$cores;
 
                 break;
@@ -186,16 +187,16 @@ final class CpuCoreCounter
     }
 
     /**
-     * @throws NumberOfCpuCoreNotFound
-     *
      * @return positive-int
+     *
+     * @throws NumberOfCpuCoreNotFound
      */
     private function findCount(): int
     {
         foreach ($this->finders as $finder) {
             $cores = $finder->find();
 
-            if (null !== $cores) {
+            if ($cores !== null) {
                 return $cores;
             }
         }
@@ -204,16 +205,16 @@ final class CpuCoreCounter
     }
 
     /**
-     * @throws NumberOfCpuCoreNotFound
-     *
      * @return array{CpuCoreFinder, positive-int}
+     *
+     * @throws NumberOfCpuCoreNotFound
      */
     public function getFinderAndCores(): array
     {
         foreach ($this->finders as $finder) {
             $cores = $finder->find();
 
-            if (null !== $cores) {
+            if ($cores !== null) {
                 return [$finder, $cores];
             }
         }
@@ -233,7 +234,7 @@ final class CpuCoreCounter
 
     private static function checkCountLimit(?int $countLimit): void
     {
-        if (0 === $countLimit) {
+        if ($countLimit === 0) {
             throw new InvalidArgumentException(
                 'The count limit must be a non zero integer. Got "0".'
             );
@@ -242,7 +243,7 @@ final class CpuCoreCounter
 
     private static function checkLoadLimit(?float $loadLimit): void
     {
-        if (null === $loadLimit) {
+        if ($loadLimit === null) {
             return;
         }
 
@@ -258,7 +259,7 @@ final class CpuCoreCounter
 
     private static function checkSystemLoadAverage(?float $systemLoadAverage): void
     {
-        if (null !== $systemLoadAverage && $systemLoadAverage < 0.) {
+        if ($systemLoadAverage !== null && $systemLoadAverage < 0.) {
             throw new InvalidArgumentException(
                 sprintf(
                     'The system load average must be a positive float, got "%s".',

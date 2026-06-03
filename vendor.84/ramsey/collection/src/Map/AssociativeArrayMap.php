@@ -19,6 +19,4 @@ namespace Ramsey\Collection\Map;
  *
  * @extends AbstractMap<string, mixed>
  */
-class AssociativeArrayMap extends AbstractMap
-{
-}
+class AssociativeArrayMap extends AbstractMap {}

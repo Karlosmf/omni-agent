@@ -24,8 +24,8 @@ class Bound
     private $isInclusive;
 
     /**
-     * @param string $version
-     * @param bool   $isInclusive
+     * @param  string  $version
+     * @param  bool  $isInclusive
      */
     public function __construct($version, $isInclusive)
     {
@@ -62,20 +62,18 @@ class Bound
      */
     public function isPositiveInfinity()
     {
-        return $this->getVersion() === PHP_INT_MAX.'.0.0.0' && !$this->isInclusive();
+        return $this->getVersion() === PHP_INT_MAX.'.0.0.0' && ! $this->isInclusive();
     }
 
     /**
      * Compares a bound to another with a given operator.
      *
-     * @param Bound  $other
-     * @param string $operator
-     *
+     * @param  string  $operator
      * @return bool
      */
     public function compareTo(Bound $other, $operator)
     {
-        if (!\in_array($operator, array('<', '>'), true)) {
+        if (! \in_array($operator, ['<', '>'], true)) {
             throw new \InvalidArgumentException('Does not support any other operator other than > or <.');
         }
 
@@ -87,12 +85,12 @@ class Bound
         $compareResult = version_compare($this->getVersion(), $other->getVersion());
 
         // Not the same version means we don't need to check if the bounds are inclusive or not
-        if (0 !== $compareResult) {
-            return (('>' === $operator) ? 1 : -1) === $compareResult;
+        if ($compareResult !== 0) {
+            return (($operator === '>') ? 1 : -1) === $compareResult;
         }
 
         // Question we're answering here is "am I higher than $other?"
-        return '>' === $operator ? $other->isInclusive() : !$other->isInclusive();
+        return $operator === '>' ? $other->isInclusive() : ! $other->isInclusive();
     }
 
     public function __toString()

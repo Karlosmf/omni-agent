@@ -14,10 +14,10 @@ class LeadController extends Controller
     {
         // 1. Create Lead synchronously
         $lead = $captureLeadAction->execute([
-            'customer_name'  => $request->validated('customer_name'),
+            'customer_name' => $request->validated('customer_name'),
             'customer_phone' => $request->validated('customer_phone'),
-            'raw_message'    => $request->validated('raw_message'),
-            'source'         => $request->validated('source') ?? 'api',
+            'raw_message' => $request->validated('raw_message'),
+            'source' => $request->validated('source') ?? 'api',
         ]);
 
         // 2. Dispatch AI processing asynchronously

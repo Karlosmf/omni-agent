@@ -67,10 +67,7 @@ class Event
     /**
      * Privatize the constructor.
      */
-    private function __construct()
-    {
-        return;
-    }
+    private function __construct() {}
 
     /**
      * Manage multiton of events, with the principle of asynchronous
@@ -78,9 +75,9 @@ class Event
      */
     public static function getEvent(string $eventId): self
     {
-        if (!isset(self::$_register[$eventId][self::KEY_EVENT])) {
+        if (! isset(self::$_register[$eventId][self::KEY_EVENT])) {
             self::$_register[$eventId] = [
-                self::KEY_EVENT  => new self(),
+                self::KEY_EVENT => new self,
                 self::KEY_SOURCE => null,
             ];
         }
@@ -94,22 +91,22 @@ class Event
      */
     public static function register(string $eventId, /* Source|string */ $source)
     {
-        if (true === self::eventExists($eventId)) {
+        if (self::eventExists($eventId) === true) {
             throw new EventException('Cannot redeclare an event with the same ID, i.e. the event '.'ID %s already exists.', 0, $eventId);
         }
 
-        if (\is_object($source) && !($source instanceof EventSource)) {
+        if (\is_object($source) && ! ($source instanceof EventSource)) {
             throw new EventException('The source must implement \Hoa\Event\Source '.'interface; given %s.', 1, \get_class($source));
         } else {
             $reflection = new \ReflectionClass($source);
 
-            if (false === $reflection->implementsInterface('\Psy\Readline\Hoa\EventSource')) {
+            if ($reflection->implementsInterface('\Psy\Readline\Hoa\EventSource') === false) {
                 throw new EventException('The source must implement \Hoa\Event\Source '.'interface; given %s.', 2, $source);
             }
         }
 
-        if (!isset(self::$_register[$eventId][self::KEY_EVENT])) {
-            self::$_register[$eventId][self::KEY_EVENT] = new self();
+        if (! isset(self::$_register[$eventId][self::KEY_EVENT])) {
+            self::$_register[$eventId][self::KEY_EVENT] = new self;
         }
 
         self::$_register[$eventId][self::KEY_SOURCE] = $source;
@@ -123,7 +120,7 @@ class Event
      */
     public static function unregister(string $eventId, bool $hard = false)
     {
-        if (false !== $hard) {
+        if ($hard !== false) {
             unset(self::$_register[$eventId]);
         } else {
             self::$_register[$eventId][self::KEY_SOURCE] = null;
@@ -161,7 +158,7 @@ class Event
      */
     public function isListened(): bool
     {
-        return !empty($this->_callable);
+        return ! empty($this->_callable);
     }
 
     /**
@@ -169,7 +166,7 @@ class Event
      */
     public static function notify(string $eventId, EventSource $source, EventBucket $data)
     {
-        if (false === self::eventExists($eventId)) {
+        if (self::eventExists($eventId) === false) {
             throw new EventException('Event ID %s does not exist, cannot send notification.', 3, $eventId);
         }
 

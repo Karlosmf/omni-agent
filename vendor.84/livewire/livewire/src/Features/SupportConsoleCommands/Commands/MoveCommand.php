@@ -32,14 +32,22 @@ class MoveCommand extends FileManipulationCommand
         $inline = $this->option('inline');
 
         $class = $this->renameClass();
-        if (! $inline) $view = $this->renameView();
+        if (! $inline) {
+            $view = $this->renameView();
+        }
 
         $test = $this->renameTest();
 
-        if ($class) $this->line("<options=bold,reverse;fg=green> COMPONENT MOVED </> 🤙\n");
+        if ($class) {
+            $this->line("<options=bold,reverse;fg=green> COMPONENT MOVED </> 🤙\n");
+        }
         $class && $this->line("<options=bold;fg=green>CLASS:</> {$this->parser->relativeClassPath()} <options=bold;fg=green>=></> {$this->newParser->relativeClassPath()}");
-        if (! $inline) $view && $this->line("<options=bold;fg=green>VIEW:</>  {$this->parser->relativeViewPath()} <options=bold;fg=green>=></> {$this->newParser->relativeViewPath()}");
-        if ($test) $test && $this->line("<options=bold;fg=green>Test:</>  {$this->parser->relativeTestPath()} <options=bold;fg=green>=></> {$this->newParser->relativeTestPath()}");
+        if (! $inline) {
+            $view && $this->line("<options=bold;fg=green>VIEW:</>  {$this->parser->relativeViewPath()} <options=bold;fg=green>=></> {$this->newParser->relativeViewPath()}");
+        }
+        if ($test) {
+            $test && $this->line("<options=bold;fg=green>Test:</>  {$this->parser->relativeTestPath()} <options=bold;fg=green>=></> {$this->newParser->relativeTestPath()}");
+        }
     }
 
     protected function renameClass()

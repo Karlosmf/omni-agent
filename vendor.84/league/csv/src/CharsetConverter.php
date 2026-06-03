@@ -13,6 +13,12 @@ declare(strict_types=1);
 
 namespace League\Csv;
 
+use const PSFS_ERR_FATAL;
+use const PSFS_FEED_ME;
+use const PSFS_PASS_ON;
+use const STREAM_FILTER_READ;
+use const STREAM_FILTER_WRITE;
+
 use Deprecated;
 use OutOfRangeException;
 use php_user_filter;
@@ -39,24 +45,23 @@ use function stream_get_filters;
 use function strtolower;
 use function substr;
 
-use const PSFS_ERR_FATAL;
-use const PSFS_FEED_ME;
-use const PSFS_PASS_ON;
-use const STREAM_FILTER_READ;
-use const STREAM_FILTER_WRITE;
-
 /**
  * Converts resource stream or tabular data content charset.
  */
 class CharsetConverter extends php_user_filter
 {
     public const FILTERNAME = 'convert.league.csv';
+
     public const BOM_SEQUENCE = 'bom_sequence';
+
     public const SKIP_BOM_SEQUENCE = 'skip_bom_sequence';
 
     protected string $input_encoding = 'UTF-8';
+
     protected string $output_encoding = 'UTF-8';
-    protected bool $skipBomSequence =  false;
+
+    protected bool $skipBomSequence = false;
+
     protected string $buffer = '';
 
     /**
@@ -84,12 +89,11 @@ class CharsetConverter extends php_user_filter
     }
 
     /**
-     * @param resource $stream
+     * @param  resource  $stream
+     * @return resource
      *
      * @throws TypeError
      * @throws RuntimeException
-     *
-     * @return resource
      */
     public static function appendOnReadTo(mixed $stream, string $input_encoding = 'UTF-8', string $output_encoding = 'UTF-8'): mixed
     {
@@ -97,12 +101,11 @@ class CharsetConverter extends php_user_filter
     }
 
     /**
-     * @param resource $stream
+     * @param  resource  $stream
+     * @return resource
      *
      * @throws TypeError
      * @throws RuntimeException
-     *
-     * @return resource
      */
     public static function appendOnWriteTo(mixed $stream, string $input_encoding = 'UTF-8', string $output_encoding = 'UTF-8'): mixed
     {
@@ -110,12 +113,11 @@ class CharsetConverter extends php_user_filter
     }
 
     /**
-     * @param resource $stream
+     * @param  resource  $stream
+     * @return resource
      *
      * @throws TypeError
      * @throws RuntimeException
-     *
-     * @return resource
      */
     public static function prependOnReadTo(mixed $stream, string $input_encoding = 'UTF-8', string $output_encoding = 'UTF-8'): mixed
     {
@@ -123,12 +125,11 @@ class CharsetConverter extends php_user_filter
     }
 
     /**
-     * @param resource $stream
+     * @param  resource  $stream
+     * @return resource
      *
      * @throws TypeError
      * @throws RuntimeException
-     *
-     * @return resource
      */
     public static function prependOnWriteTo(mixed $stream, string $input_encoding = 'UTF-8', string $output_encoding = 'UTF-8'): mixed
     {
@@ -136,11 +137,10 @@ class CharsetConverter extends php_user_filter
     }
 
     /**
-     * @param resource $stream
+     * @param  resource  $stream
+     * @return resource
      *
      * @throws RuntimeException|TypeError
-     *
-     * @return resource
      */
     final protected static function appendFilter(mixed $stream, int $mode, string $input_encoding = 'UTF-8', string $output_encoding = 'UTF-8'): mixed
     {
@@ -155,11 +155,10 @@ class CharsetConverter extends php_user_filter
     }
 
     /**
-     * @param resource $stream
+     * @param  resource  $stream
+     * @return resource
      *
      * @throws RuntimeException|TypeError
-     *
-     * @return resource
      */
     final protected static function prependFilter(mixed $stream, int $mode, string $input_encoding = 'UTF-8', string $output_encoding = 'UTF-8'): mixed
     {
@@ -174,11 +173,10 @@ class CharsetConverter extends php_user_filter
     }
 
     /**
-     * @param resource $stream
+     * @param  resource  $stream
+     * @return resource
      *
      * @throws TypeError
-     *
-     * @return resource
      */
     final protected static function filterStream(mixed $stream): mixed
     {
@@ -218,12 +216,12 @@ class CharsetConverter extends php_user_filter
     public function onCreate(): bool
     {
         $prefix = self::FILTERNAME.'.';
-        if (!str_starts_with($this->filtername, $prefix)) {
+        if (! str_starts_with($this->filtername, $prefix)) {
             return false;
         }
 
         $encodings = substr($this->filtername, strlen($prefix));
-        if (1 !== preg_match(',^(?<input>[-\w]+)/(?<output>[-\w]+)$,', $encodings, $matches)) {
+        if (preg_match(',^(?<input>[-\w]+)/(?<output>[-\w]+)$,', $encodings, $matches) !== 1) {
             return false;
         }
 
@@ -232,7 +230,7 @@ class CharsetConverter extends php_user_filter
             $this->output_encoding = self::filterEncoding($matches['output']);
             $this->skipBomSequence = is_array($this->params)
                 && isset($this->params[self::BOM_SEQUENCE])
-                && self::SKIP_BOM_SEQUENCE === $this->params[self::BOM_SEQUENCE];
+                && $this->params[self::BOM_SEQUENCE] === self::SKIP_BOM_SEQUENCE;
         } catch (OutOfRangeException) {
             return false;
         }
@@ -248,7 +246,7 @@ class CharsetConverter extends php_user_filter
             $consumed += $bucket->datalen;
         }
 
-        if ('' === $inputBuffer && !$closing) {
+        if ($inputBuffer === '' && ! $closing) {
             return PSFS_FEED_ME;
         }
 
@@ -258,7 +256,7 @@ class CharsetConverter extends php_user_filter
 
         // if the stream content is invalid then we store it and
         // ask for more content to try to correctly convert the data
-        if (!mb_check_encoding($inputBuffer, $this->input_encoding) && !$closing) {
+        if (! mb_check_encoding($inputBuffer, $this->input_encoding) && ! $closing) {
             $this->buffer = $inputBuffer;
 
             return PSFS_FEED_ME;
@@ -271,6 +269,7 @@ class CharsetConverter extends php_user_filter
 
                 stream_bucket_append($out, $streamBucket);
             });
+
             return PSFS_PASS_ON;
         } catch (Throwable) {
             return PSFS_ERR_FATAL;
@@ -310,11 +309,11 @@ class CharsetConverter extends php_user_filter
      */
     final protected function encodeField(int|float|string|null $value, int|string $offset): array
     {
-        if (null !== $value && !is_numeric($value)) {
+        if ($value !== null && ! is_numeric($value)) {
             $value = mb_convert_encoding($value, $this->output_encoding, $this->input_encoding);
         }
 
-        if (!is_numeric($offset)) {
+        if (! is_numeric($offset)) {
             $offset = mb_convert_encoding($offset, $this->output_encoding, $this->input_encoding);
         }
 
@@ -357,18 +356,18 @@ class CharsetConverter extends php_user_filter
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @codeCoverageIgnore
+     *
      * @see self::appendOnReadTo()
      * @see self::appendOnWriteTo()
      * @deprecated since version 9.22.0
      *
-     * @param resource $stream
+     * @param  resource  $stream
+     * @return resource
      *
      * @throws TypeError
      * @throws RuntimeException
-     *
-     * @return resource
      */
-    #[Deprecated(message:'use League\Csv\CharserConverter::appendOnReadTo() or League\Csv\CharserConverter::appendOnWriteTo() instead', since:'league/csv:9.22.0')]
+    #[Deprecated(message: 'use League\Csv\CharserConverter::appendOnReadTo() or League\Csv\CharserConverter::appendOnWriteTo() instead', since: 'league/csv:9.22.0')]
     public static function appendTo(mixed $stream, string $input_encoding = 'UTF-8', string $output_encoding = 'UTF-8'): mixed
     {
         return self::appendFilter($stream, 0, $input_encoding, $output_encoding);
@@ -378,18 +377,18 @@ class CharsetConverter extends php_user_filter
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @codeCoverageIgnore
+     *
      * @see self::prependOnReadTo()
      * @see self::prependOnWriteTo()
      * @deprecated since version 9.22.0
      *
-     * @param resource $stream
+     * @param  resource  $stream
+     * @return resource
      *
      * @throws TypeError
      * @throws RuntimeException
-     *
-     * @return resource
      */
-    #[Deprecated(message:'use League\Csv\CharserConverter::prependOnReadTo() or League\Csv\CharserConverter::prependOnWriteTo() instead', since:'league/csv:9.22.0')]
+    #[Deprecated(message: 'use League\Csv\CharserConverter::prependOnReadTo() or League\Csv\CharserConverter::prependOnWriteTo() instead', since: 'league/csv:9.22.0')]
     public static function prependTo(mixed $stream, string $input_encoding = 'UTF-8', string $output_encoding = 'UTF-8'): mixed
     {
         return self::prependFilter($stream, 0, $input_encoding, $output_encoding);

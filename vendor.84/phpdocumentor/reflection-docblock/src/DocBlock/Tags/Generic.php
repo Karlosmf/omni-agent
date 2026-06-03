@@ -30,14 +30,14 @@ final class Generic extends BaseTag implements Factory\StaticMethod
     /**
      * Parses a tag and populates the member variables.
      *
-     * @param string      $name        Name of the tag.
-     * @param Description $description The contents of the given tag.
+     * @param  string  $name  Name of the tag.
+     * @param  Description  $description  The contents of the given tag.
      */
     public function __construct(string $name, ?Description $description = null)
     {
         $this->validateTagName($name);
 
-        $this->name        = $name;
+        $this->name = $name;
         $this->description = $description;
     }
 
@@ -57,7 +57,7 @@ final class Generic extends BaseTag implements Factory\StaticMethod
 
         $description = $body !== '' ? $descriptionFactory->create($body, $context) : null;
 
-        return new static($name, $description);
+        return new self($name, $description);
     }
 
     /**
@@ -79,10 +79,10 @@ final class Generic extends BaseTag implements Factory\StaticMethod
      */
     private function validateTagName(string $name): void
     {
-        if (!preg_match('/^' . StandardTagFactory::REGEX_TAGNAME . '$/u', $name)) {
+        if (! preg_match('/^'.StandardTagFactory::REGEX_TAGNAME.'$/u', $name)) {
             throw new InvalidArgumentException(
-                'The tag name "' . $name . '" is not wellformed. Tags may only consist of letters, underscores, '
-                . 'hyphens and backslashes.'
+                'The tag name "'.$name.'" is not wellformed. Tags may only consist of letters, underscores, '
+                .'hyphens and backslashes.'
             );
         }
     }

@@ -11,7 +11,7 @@ trait InteractsWithToolbarButtons
     /**
      * @var array<string | array<string>> | Closure | null
      */
-    protected array | Closure | null $toolbarButtons = null;
+    protected array|Closure|null $toolbarButtons = null;
 
     /**
      * @var array<array{type: string, buttons?: array<string>}>
@@ -64,7 +64,7 @@ trait InteractsWithToolbarButtons
     /**
      * @param  array<string | array<string>> | Closure | null  $buttons
      */
-    public function toolbarButtons(array | Closure | null $buttons): static
+    public function toolbarButtons(array|Closure|null $buttons): static
     {
         $this->toolbarButtons = $buttons;
         $this->toolbarButtonsModifications = [];
@@ -86,7 +86,7 @@ trait InteractsWithToolbarButtons
                 'disableAll' => [],
                 'disable' => $this->applyDisableToolbarButtonsModification($buttons, $modification['buttons']),
                 'enable' => [...$buttons, ...$modification['buttons']],
-                default => throw new Exception('Unknown toolbar buttons modification type: [' . $modification['type'] . '].'),
+                default => throw new Exception('Unknown toolbar buttons modification type: ['.$modification['type'].'].'),
             };
         }
 
@@ -163,7 +163,7 @@ trait InteractsWithToolbarButtons
     /**
      * @param  string | array<string>  $button
      */
-    public function hasToolbarButton(string | array $button): bool
+    public function hasToolbarButton(string|array $button): bool
     {
         foreach ($this->getToolbarButtons() as $buttonGroup) {
             if (is_array($button)) {

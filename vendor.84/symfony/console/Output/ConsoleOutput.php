@@ -30,18 +30,19 @@ use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
 {
     private OutputInterface $stderr;
+
     private array $consoleSectionOutputs = [];
 
     /**
-     * @param int                           $verbosity The verbosity level (one of the VERBOSITY constants in OutputInterface)
-     * @param bool|null                     $decorated Whether to decorate messages (null for auto-guessing)
-     * @param OutputFormatterInterface|null $formatter Output formatter instance (null to use default OutputFormatter)
+     * @param  int  $verbosity  The verbosity level (one of the VERBOSITY constants in OutputInterface)
+     * @param  bool|null  $decorated  Whether to decorate messages (null for auto-guessing)
+     * @param  OutputFormatterInterface|null  $formatter  Output formatter instance (null to use default OutputFormatter)
      */
     public function __construct(int $verbosity = self::VERBOSITY_NORMAL, ?bool $decorated = null, ?OutputFormatterInterface $formatter = null)
     {
         parent::__construct($this->openOutputStream(), $verbosity, $decorated, $formatter);
 
-        if (null === $formatter) {
+        if ($formatter === null) {
             // for BC reasons, stdErr has it own Formatter only when user don't inject a specific formatter.
             $this->stderr = new StreamOutput($this->openErrorStream(), $verbosity, $decorated);
 
@@ -51,7 +52,7 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
         $actualDecorated = $this->isDecorated();
         $this->stderr = new StreamOutput($this->openErrorStream(), $verbosity, $decorated, $this->getFormatter());
 
-        if (null === $decorated) {
+        if ($decorated === null) {
             $this->setDecorated($actualDecorated && $this->stderr->isDecorated());
         }
     }
@@ -98,7 +99,7 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
      */
     protected function hasStdoutSupport(): bool
     {
-        return false === $this->isRunningOS400();
+        return $this->isRunningOS400() === false;
     }
 
     /**
@@ -107,7 +108,7 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
      */
     protected function hasStderrSupport(): bool
     {
-        return false === $this->isRunningOS400();
+        return $this->isRunningOS400() === false;
     }
 
     /**
@@ -122,7 +123,7 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
             \PHP_OS,
         ];
 
-        return false !== stripos(implode(';', $checks), 'OS400');
+        return stripos(implode(';', $checks), 'OS400') !== false;
     }
 
     /**
@@ -130,7 +131,7 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
      */
     private function openOutputStream()
     {
-        if (!$this->hasStdoutSupport()) {
+        if (! $this->hasStdoutSupport()) {
             return fopen('php://output', 'w');
         }
 
@@ -143,7 +144,7 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
      */
     private function openErrorStream()
     {
-        if (!$this->hasStderrSupport()) {
+        if (! $this->hasStderrSupport()) {
             return fopen('php://output', 'w');
         }
 

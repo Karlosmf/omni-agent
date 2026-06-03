@@ -81,7 +81,7 @@ class PgSqlCaster
     public static function castLink($link, array $a, Stub $stub, bool $isNested): array
     {
         $a['status'] = pg_connection_status($link);
-        $a['status'] = new ConstStub(\PGSQL_CONNECTION_OK === $a['status'] ? 'PGSQL_CONNECTION_OK' : 'PGSQL_CONNECTION_BAD', $a['status']);
+        $a['status'] = new ConstStub($a['status'] === \PGSQL_CONNECTION_OK ? 'PGSQL_CONNECTION_OK' : 'PGSQL_CONNECTION_BAD', $a['status']);
         $a['busy'] = pg_connection_busy($link);
 
         $a['transaction'] = pg_transaction_status($link);
@@ -119,7 +119,7 @@ class PgSqlCaster
         }
         $a['command-completion tag'] = pg_result_status($result, \PGSQL_STATUS_STRING);
 
-        if (-1 === $a['num rows']) {
+        if ($a['num rows'] === -1) {
             foreach (self::DIAG_CODES as $k => $v) {
                 $a['error'][$k] = pg_result_error_field($result, $v);
             }
@@ -130,7 +130,7 @@ class PgSqlCaster
 
         $fields = pg_num_fields($result);
 
-        for ($i = 0; $i < $fields; ++$i) {
+        for ($i = 0; $i < $fields; $i++) {
             $field = [
                 'name' => pg_field_name($result, $i),
                 'table' => \sprintf('%s (OID: %s)', pg_field_table($result, $i), pg_field_table($result, $i, true)),
@@ -139,15 +139,15 @@ class PgSqlCaster
                 'storage' => pg_field_size($result, $i).' bytes',
                 'display' => (\PHP_VERSION_ID >= 80300 ? pg_field_prtlen($result, null, $i) : pg_field_prtlen($result, $i)).' chars',
             ];
-            if (' (OID: )' === $field['table']) {
+            if ($field['table'] === ' (OID: )') {
                 $field['table'] = null;
             }
-            if ('-1 bytes' === $field['storage']) {
+            if ($field['storage'] === '-1 bytes') {
                 $field['storage'] = 'variable size';
-            } elseif ('1 bytes' === $field['storage']) {
+            } elseif ($field['storage'] === '1 bytes') {
                 $field['storage'] = '1 byte';
             }
-            if ('1 chars' === $field['display']) {
+            if ($field['display'] === '1 chars') {
                 $field['display'] = '1 char';
             }
             $a['fields'][] = new EnumStub($field);

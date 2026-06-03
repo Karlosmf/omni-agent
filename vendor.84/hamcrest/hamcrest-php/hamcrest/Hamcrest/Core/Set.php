@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Core;
 
 /*
@@ -21,8 +22,8 @@ use Hamcrest\Description;
  */
 class Set extends BaseMatcher
 {
-
     private $_property;
+
     private $_not;
 
     public function __construct($property, $not = false)
@@ -47,7 +48,7 @@ class Set extends BaseMatcher
             throw new \InvalidArgumentException('Must pass an object, array, or class name');
         }
 
-        return $this->_not ? !$result : $result;
+        return $this->_not ? ! $result : $result;
     }
 
     public function describeTo(Description $description)
@@ -58,7 +59,7 @@ class Set extends BaseMatcher
     public function describeMismatch($item, Description $description)
     {
         $value = '';
-        if (!$this->_not) {
+        if (! $this->_not) {
             $description->appendText('was not set');
         } else {
             $property = $this->_property;

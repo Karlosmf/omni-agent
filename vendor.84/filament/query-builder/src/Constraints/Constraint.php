@@ -32,11 +32,11 @@ class Constraint extends Component
 
     protected string $evaluationIdentifier = 'constraint';
 
-    protected string | Closure | null $attribute = null;
+    protected string|Closure|null $attribute = null;
 
-    protected string | Closure | null $attributeLabel = null;
+    protected string|Closure|null $attributeLabel = null;
 
-    protected string | Closure | null $relationship = null;
+    protected string|Closure|null $relationship = null;
 
     protected ?Closure $modifyRelationshipQueryUsing = null;
 
@@ -190,14 +190,14 @@ class Constraint extends Component
         return [$operator, false];
     }
 
-    public function attribute(string | Closure | null $name): static
+    public function attribute(string|Closure|null $name): static
     {
         $this->attribute = $name;
 
         return $this;
     }
 
-    public function attributeLabel(string | Closure | null $label): static
+    public function attributeLabel(string|Closure|null $label): static
     {
         $this->attributeLabel = $label;
 

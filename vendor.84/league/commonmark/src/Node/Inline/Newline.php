@@ -20,6 +20,7 @@ final class Newline extends AbstractInline
 {
     // Any changes to these constants should be reflected in .phpstorm.meta.php
     public const HARDBREAK = 0;
+
     public const SOFTBREAK = 1;
 
     /** @psalm-readonly */

@@ -19,8 +19,7 @@ class Json
     /**
      * Encode a value as JSON.
      *
-     * @param mixed $val
-     * @param int   $opt
+     * @param  mixed  $val
      */
     public static function encode($val, int $opt = 0): string
     {

@@ -2,6 +2,8 @@
 
 namespace Faker\ORM\Mandango;
 
+use Faker\Generator;
+use Faker\Guesser\Name;
 use Faker\Provider\Base;
 use Mandango\Mandango;
 
@@ -11,10 +13,11 @@ use Mandango\Mandango;
 class EntityPopulator
 {
     protected $class;
+
     protected $columnFormatters = [];
 
     /**
-     * @param string $class A Mandango ActiveRecord classname
+     * @param  string  $class  A Mandango ActiveRecord classname
      */
     public function __construct($class)
     {
@@ -50,11 +53,11 @@ class EntityPopulator
     /**
      * @return array
      */
-    public function guessColumnFormatters(\Faker\Generator $generator, Mandango $mandango)
+    public function guessColumnFormatters(Generator $generator, Mandango $mandango)
     {
         $formatters = [];
-        $nameGuesser = new \Faker\Guesser\Name($generator);
-        $columnTypeGuesser = new \Faker\ORM\Mandango\ColumnTypeGuesser($generator);
+        $nameGuesser = new Name($generator);
+        $columnTypeGuesser = new ColumnTypeGuesser($generator);
 
         $metadata = $mandango->getMetadata($this->class);
 
@@ -75,7 +78,7 @@ class EntityPopulator
 
         // references
         foreach (array_merge($metadata['referencesOne'], $metadata['referencesMany']) as $referenceName => $reference) {
-            if (!isset($reference['class'])) {
+            if (! isset($reference['class'])) {
                 continue;
             }
             $referenceClass = $reference['class'];
@@ -102,7 +105,7 @@ class EntityPopulator
         $obj = $mandango->create($this->class);
 
         foreach ($this->columnFormatters as $column => $format) {
-            if (null !== $format) {
+            if ($format !== null) {
                 $value = is_callable($format) ? $format($insertedEntities, $obj) : $format;
 
                 if (isset($metadata['fields'][$column])
@@ -111,7 +114,7 @@ class EntityPopulator
                 }
 
                 if (isset($metadata['referencesMany'][$column])) {
-                    $adder = 'add' . ucfirst($column);
+                    $adder = 'add'.ucfirst($column);
                     $obj->$adder($value);
                 }
             }

@@ -13,11 +13,12 @@ declare(strict_types=1);
 
 namespace Fidry\CpuCoreCounter\Finder;
 
+use const PHP_EOL;
+
 use function count;
 use function explode;
 use function is_array;
 use function preg_grep;
-use const PHP_EOL;
 
 /**
  * The number of logical cores.
@@ -36,13 +37,13 @@ final class LscpuLogicalFinder extends ProcOpenBasedFinder
         $lines = explode(PHP_EOL, $process);
         $actualLines = preg_grep('/^\d+,/', $lines);
 
-        if (!is_array($actualLines)) {
+        if (! is_array($actualLines)) {
             return null;
         }
 
         $count = count($actualLines);
 
-        return 0 === $count ? null : $count;
+        return $count === 0 ? null : $count;
     }
 
     public function toString(): string

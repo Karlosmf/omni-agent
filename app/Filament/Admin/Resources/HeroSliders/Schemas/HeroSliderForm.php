@@ -2,18 +2,18 @@
 
 namespace App\Filament\Admin\Resources\HeroSliders\Schemas;
 
-use Filament\Schemas\Schema;
-
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
-
-use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
+use Illuminate\Support\HtmlString;
 
 class HeroSliderForm
 {
@@ -23,7 +23,7 @@ class HeroSliderForm
             ->components([
                 Section::make('Contenido de la Diapositiva')
                     ->schema([
-                        \Filament\Forms\Components\Select::make('slider_type')
+                        Select::make('slider_type')
                             ->label('Ubicación del Slider')
                             ->options([
                                 'main' => 'Slider Principal (Pantalla completa)',
@@ -44,7 +44,7 @@ class HeroSliderForm
                         Textarea::make('description')
                             ->label('Descripción')
                             ->rows(3),
-                        
+
                         Radio::make('image_type')
                             ->label('Tipo de Imagen')
                             ->options([
@@ -70,7 +70,7 @@ class HeroSliderForm
                             ->image()
                             ->disk('public')
                             ->directory('sliders')
-                            ->helperText(fn (Get $get) => match($get('slider_type')) {
+                            ->helperText(fn (Get $get) => match ($get('slider_type')) {
                                 'main' => 'Resolución recomendada: 1920x1080px (Apaisada / Pantalla Completa)',
                                 'hero_stack' => 'Resolución recomendada: 800x1000px (Vertical / Retrato)',
                                 'promo' => 'Resolución recomendada: 1600x400px (Banner panorámico)',
@@ -82,7 +82,7 @@ class HeroSliderForm
                         TextInput::make('image_path_url')
                             ->label('URL de la Imagen')
                             ->url()
-                            ->helperText(fn (Get $get) => match($get('slider_type')) {
+                            ->helperText(fn (Get $get) => match ($get('slider_type')) {
                                 'main' => 'Resolución recomendada: 1920x1080px (Apaisada / Pantalla Completa)',
                                 'hero_stack' => 'Resolución recomendada: 800x1000px (Vertical / Retrato)',
                                 'promo' => 'Resolución recomendada: 1600x400px (Banner panorámico)',
@@ -114,18 +114,25 @@ class HeroSliderForm
                                 }
                             }),
 
-                        \Filament\Forms\Components\Placeholder::make('image_preview')
+                        Placeholder::make('image_preview')
                             ->label('Vista Previa')
                             ->content(function (Get $get) {
                                 if ($get('image_type') === 'predefined') {
                                     $path = $get('image_path_predefined');
-                                    if (!$path) return 'Seleccione una imagen para ver la vista previa.';
-                                    return new \Illuminate\Support\HtmlString('<img src="' . asset('storage/' . $path) . '" style="max-height: 200px; border-radius: 8px;">');
+                                    if (! $path) {
+                                        return 'Seleccione una imagen para ver la vista previa.';
+                                    }
+
+                                    return new HtmlString('<img src="'.asset('storage/'.$path).'" style="max-height: 200px; border-radius: 8px;">');
                                 } elseif ($get('image_type') === 'url') {
                                     $url = $get('image_path_url');
-                                    if (!$url) return 'Ingrese una URL para ver la vista previa.';
-                                    return new \Illuminate\Support\HtmlString('<img src="' . $url . '" style="max-height: 200px; border-radius: 8px;" onerror="this.style.display=\'none\'">');
+                                    if (! $url) {
+                                        return 'Ingrese una URL para ver la vista previa.';
+                                    }
+
+                                    return new HtmlString('<img src="'.$url.'" style="max-height: 200px; border-radius: 8px;" onerror="this.style.display=\'none\'">');
                                 }
+
                                 return '';
                             })
                             ->visible(fn (Get $get) => ($get('image_type') === 'predefined' && $get('image_path_predefined')) || ($get('image_type') === 'url' && $get('image_path_url'))),

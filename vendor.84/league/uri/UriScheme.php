@@ -151,7 +151,7 @@ enum UriScheme: string
             self::File => SchemeType::Hierarchical,
             self::News => SchemeType::Unknown,
             default => match (true) {
-                null !== $this->port() => SchemeType::Hierarchical,
+                $this->port() !== null => SchemeType::Hierarchical,
                 default => SchemeType::Unknown,
             },
         };
@@ -174,13 +174,13 @@ enum UriScheme: string
      */
     public static function fromPort(?int $port): array
     {
-        null === $port || 0 <= $port || throw new ValueError('The submitted port cannot be negative.');
+        $port === null || $port >= 0 || throw new ValueError('The submitted port cannot be negative.');
 
         static $reverse = [];
-        if ([] === $reverse) {
+        if ($reverse === []) {
             foreach (self::cases() as $case) {
                 $defaultPort = $case->port();
-                if (null === $defaultPort) {
+                if ($defaultPort === null) {
                     continue;
                 }
                 $reverse[$defaultPort] ??= [];

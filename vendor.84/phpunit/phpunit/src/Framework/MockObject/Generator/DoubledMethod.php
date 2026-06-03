@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,7 +9,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\MockObject\Generator;
+
+use ReflectionMethod;
+use ReflectionParameter;
+use SebastianBergmann\Type\ReflectionMapper;
+use SebastianBergmann\Type\Type;
+use SebastianBergmann\Type\UnknownType;
 
 use function array_key_exists;
 use function assert;
@@ -25,11 +34,6 @@ use function substr;
 use function substr_count;
 use function trim;
 use function var_export;
-use ReflectionMethod;
-use ReflectionParameter;
-use SebastianBergmann\Type\ReflectionMapper;
-use SebastianBergmann\Type\Type;
-use SebastianBergmann\Type\UnknownType;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -49,12 +53,19 @@ final class DoubledMethod
      * @var non-empty-string
      */
     private readonly string $methodName;
+
     private readonly string $modifier;
+
     private readonly string $argumentsForDeclaration;
+
     private readonly string $argumentsForCall;
+
     private readonly Type $returnType;
+
     private readonly string $reference;
+
     private readonly bool $static;
+
     private readonly ?string $deprecation;
 
     /**
@@ -117,8 +128,8 @@ final class DoubledMethod
     }
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      */
     public static function fromName(string $className, string $methodName): self
     {
@@ -138,24 +149,24 @@ final class DoubledMethod
     }
 
     /**
-     * @param class-string      $className
-     * @param non-empty-string  $methodName
-     * @param array<int, mixed> $defaultParameterValues
-     * @param non-negative-int  $numberOfParameters
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
+     * @param  array<int, mixed>  $defaultParameterValues
+     * @param  non-negative-int  $numberOfParameters
      */
     private function __construct(string $className, string $methodName, string $modifier, string $argumentsForDeclaration, string $argumentsForCall, array $defaultParameterValues, int $numberOfParameters, Type $returnType, string $reference, bool $static, ?string $deprecation)
     {
-        $this->className               = $className;
-        $this->methodName              = $methodName;
-        $this->modifier                = $modifier;
+        $this->className = $className;
+        $this->methodName = $methodName;
+        $this->modifier = $modifier;
         $this->argumentsForDeclaration = $argumentsForDeclaration;
-        $this->argumentsForCall        = $argumentsForCall;
-        $this->defaultParameterValues  = $defaultParameterValues;
-        $this->numberOfParameters      = $numberOfParameters;
-        $this->returnType              = $returnType;
-        $this->reference               = $reference;
-        $this->static                  = $static;
-        $this->deprecation             = $deprecation;
+        $this->argumentsForCall = $argumentsForCall;
+        $this->defaultParameterValues = $defaultParameterValues;
+        $this->numberOfParameters = $numberOfParameters;
+        $this->returnType = $returnType;
+        $this->reference = $reference;
+        $this->static = $static;
+        $this->deprecation = $deprecation;
     }
 
     /**
@@ -177,10 +188,10 @@ final class DoubledMethod
             $templateFile = 'doubled_method.tpl';
         }
 
-        $deprecation  = $this->deprecation;
+        $deprecation = $this->deprecation;
         $returnResult = '';
 
-        if (!$this->returnType->isNever() && !$this->returnType->isVoid()) {
+        if (! $this->returnType->isNever() && ! $this->returnType->isVoid()) {
             $returnResult = <<<'EOT'
 
 
@@ -188,8 +199,8 @@ final class DoubledMethod
 EOT;
         }
 
-        if (null !== $this->deprecation) {
-            $deprecation         = "The {$this->className}::{$this->methodName} method is deprecated ({$this->deprecation}).";
+        if ($this->deprecation !== null) {
+            $deprecation = "The {$this->className}::{$this->methodName} method is deprecated ({$this->deprecation}).";
             $deprecationTemplate = $this->loadTemplate('deprecation.tpl');
 
             $deprecationTemplate->setVar(
@@ -211,26 +222,26 @@ EOT;
             $argumentsCount = substr_count($this->argumentsForCall, ',') + 1;
         }
 
-        $returnDeclaration  = '';
+        $returnDeclaration = '';
         $returnTypeAsString = $this->returnType->asString();
 
         if ($returnTypeAsString !== '') {
-            $returnDeclaration = ': ' . $returnTypeAsString;
+            $returnDeclaration = ': '.$returnTypeAsString;
         }
 
         $template->setVar(
             [
-                'arguments_decl'     => $this->argumentsForDeclaration,
-                'arguments_call'     => $this->argumentsForCall,
+                'arguments_decl' => $this->argumentsForDeclaration,
+                'arguments_call' => $this->argumentsForCall,
                 'return_declaration' => $returnDeclaration,
-                'return_type'        => $this->returnType->asString(),
-                'arguments_count'    => (string) $argumentsCount,
-                'class_name'         => $this->className,
-                'method_name'        => $this->methodName,
-                'modifier'           => $this->modifier,
-                'reference'          => $this->reference,
-                'deprecation'        => $deprecation,
-                'return_result'      => $returnResult,
+                'return_type' => $this->returnType->asString(),
+                'arguments_count' => (string) $argumentsCount,
+                'class_name' => $this->className,
+                'method_name' => $this->methodName,
+                'modifier' => $this->modifier,
+                'reference' => $this->reference,
+                'deprecation' => $deprecation,
+                'return_result' => $returnResult,
             ],
         );
 
@@ -266,26 +277,26 @@ EOT;
     private static function methodParametersForDeclaration(ReflectionMethod $method): string
     {
         $parameters = [];
-        $types      = (new ReflectionMapper)->fromParameterTypes($method);
+        $types = (new ReflectionMapper)->fromParameterTypes($method);
 
         foreach ($method->getParameters() as $i => $parameter) {
-            $name = '$' . $parameter->getName();
+            $name = '$'.$parameter->getName();
 
             /* Note: PHP extensions may use empty names for reference arguments
              * or "..." for methods taking a variable number of arguments.
              */
             if ($name === '$' || $name === '$...') {
-                $name = '$arg' . $i;
+                $name = '$arg'.$i;
             }
 
-            $default         = '';
-            $reference       = '';
+            $default = '';
+            $reference = '';
             $typeDeclaration = '';
 
             assert(array_key_exists($i, $types));
 
-            if (!$types[$i]->type()->isUnknown()) {
-                $typeDeclaration = $types[$i]->type()->asString() . ' ';
+            if (! $types[$i]->type()->isUnknown()) {
+                $typeDeclaration = $types[$i]->type()->asString().' ';
             }
 
             if ($parameter->isPassedByReference()) {
@@ -293,14 +304,14 @@ EOT;
             }
 
             if ($parameter->isVariadic()) {
-                $name = '...' . $name;
+                $name = '...'.$name;
             } elseif ($parameter->isDefaultValueAvailable()) {
-                $default = ' = ' . self::exportDefaultValue($parameter);
+                $default = ' = '.self::exportDefaultValue($parameter);
             } elseif ($parameter->isOptional()) {
                 $default = ' = null';
             }
 
-            $parameters[] = $typeDeclaration . $reference . $name . $default;
+            $parameters[] = $typeDeclaration.$reference.$name.$default;
         }
 
         return implode(', ', $parameters);
@@ -316,13 +327,13 @@ EOT;
         $parameters = [];
 
         foreach ($method->getParameters() as $i => $parameter) {
-            $name = '$' . $parameter->getName();
+            $name = '$'.$parameter->getName();
 
             /* Note: PHP extensions may use empty names for reference arguments
              * or "..." for methods taking a variable number of arguments.
              */
             if ($name === '$' || $name === '$...') {
-                $name = '$arg' . $i;
+                $name = '$arg'.$i;
             }
 
             if ($parameter->isVariadic()) {
@@ -330,7 +341,7 @@ EOT;
             }
 
             if ($parameter->isPassedByReference()) {
-                $parameters[] = '&' . $name;
+                $parameters[] = '&'.$name;
             } else {
                 $parameters[] = $name;
             }
@@ -347,7 +358,7 @@ EOT;
         try {
             $defaultValue = $parameter->getDefaultValue();
 
-            if (!is_object($defaultValue)) {
+            if (! is_object($defaultValue)) {
                 return var_export($defaultValue, true);
             }
 
@@ -383,7 +394,7 @@ EOT;
         $result = [];
 
         foreach ($method->getParameters() as $i => $parameter) {
-            if (!$parameter->isDefaultValueAvailable()) {
+            if (! $parameter->isDefaultValueAvailable()) {
                 continue;
             }
 

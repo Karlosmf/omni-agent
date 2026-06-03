@@ -2,11 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\ServiceType;
+use App\Models\TravelPackage;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\TravelPackage>
+ * @extends Factory<TravelPackage>
  */
 class TravelPackageFactory extends Factory
 {
@@ -53,7 +55,7 @@ class TravelPackageFactory extends Factory
             ],
             'services' => [
                 [
-                    'service_type_id' => \App\Models\ServiceType::where('key', 'flight')->value('id') ?? 1,
+                    'service_type_id' => ServiceType::where('key', 'flight')->value('id') ?? 1,
                     'description' => 'Vuelos internacionales ida y vuelta clase económica',
                     'supplier_id' => null,
                     'currency' => 'USD',
@@ -61,7 +63,7 @@ class TravelPackageFactory extends Factory
                     'sell' => 1200.00,
                 ],
                 [
-                    'service_type_id' => \App\Models\ServiceType::where('key', 'hotel')->value('id') ?? 2,
+                    'service_type_id' => ServiceType::where('key', 'hotel')->value('id') ?? 2,
                     'description' => 'Alojamiento en Hotel 4 estrellas con desayuno',
                     'supplier_id' => null,
                     'currency' => 'USD',
@@ -69,7 +71,7 @@ class TravelPackageFactory extends Factory
                     'sell' => 750.00,
                 ],
                 [
-                    'service_type_id' => \App\Models\ServiceType::where('key', 'transfer')->value('id') ?? 4,
+                    'service_type_id' => ServiceType::where('key', 'transfer')->value('id') ?? 4,
                     'description' => 'Traslados Aeropuerto - Hotel - Aeropuerto',
                     'supplier_id' => null,
                     'currency' => 'USD',

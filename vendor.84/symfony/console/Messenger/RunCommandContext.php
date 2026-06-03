@@ -20,6 +20,5 @@ final class RunCommandContext
         public readonly RunCommandMessage $message,
         public readonly int $exitCode,
         public readonly string $output,
-    ) {
-    }
+    ) {}
 }

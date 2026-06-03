@@ -29,10 +29,10 @@ class MentionExtension extends Node
     {
         return [
             [
-                'tag' => 'span[data-type="' . self::$name . '"]',
+                'tag' => 'span[data-type="'.self::$name.'"]',
             ],
             [
-                'tag' => 'a[data-type="' . self::$name . '"]',
+                'tag' => 'a[data-type="'.self::$name.'"]',
             ],
         ];
     }

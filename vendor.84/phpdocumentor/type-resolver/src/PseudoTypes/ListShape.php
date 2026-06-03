@@ -11,6 +11,6 @@ final class ListShape extends ArrayShape
 {
     public function __toString(): string
     {
-        return 'list{' . implode(', ', $this->getItems()) . '}';
+        return 'list{'.implode(', ', $this->getItems()).'}';
     }
 }

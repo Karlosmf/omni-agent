@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,14 +9,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\Configuration;
 
 use const PHP_EOL;
+
+use PHPUnit\Event\Facade as EventFacade;
+use Throwable;
+
 use function in_array;
 use function is_readable;
 use function sprintf;
-use PHPUnit\Event\Facade as EventFacade;
-use Throwable;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -29,14 +34,14 @@ final class BootstrapLoader
      */
     public function handle(Configuration $configuration): void
     {
-        if (!$configuration->hasBootstrap()) {
+        if (! $configuration->hasBootstrap()) {
             return;
         }
 
         $this->load($configuration->bootstrap());
 
         foreach ($configuration->bootstrapForTestSuite() as $testSuiteName => $bootstrapForTestSuite) {
-            if ($configuration->includeTestSuites() !== [] && !in_array($testSuiteName, $configuration->includeTestSuites(), true)) {
+            if ($configuration->includeTestSuites() !== [] && ! in_array($testSuiteName, $configuration->includeTestSuites(), true)) {
                 continue;
             }
 
@@ -49,11 +54,11 @@ final class BootstrapLoader
     }
 
     /**
-     * @param non-empty-string $filename
+     * @param  non-empty-string  $filename
      */
     private function load(string $filename): void
     {
-        if (!is_readable($filename)) {
+        if (! is_readable($filename)) {
             throw new BootstrapScriptDoesNotExistException($filename);
         }
 

@@ -191,8 +191,7 @@ final class OutputFormat
     }
 
     /**
-     * @param non-empty-string $quotingType
-     *
+     * @param  non-empty-string  $quotingType
      * @return $this fluent interface
      */
     public function setStringQuotingType(string $quotingType): self
@@ -465,8 +464,7 @@ final class OutputFormat
     }
 
     /**
-     * @param array<non-empty-string, string> $separatorSpaces
-     *
+     * @param  array<non-empty-string, string>  $separatorSpaces
      * @return $this fluent interface
      */
     public function setSpaceBeforeListArgumentSeparators(array $separatorSpaces): self
@@ -505,8 +503,7 @@ final class OutputFormat
     }
 
     /**
-     * @param array<non-empty-string, string> $separatorSpaces
-     *
+     * @param  array<non-empty-string, string>  $separatorSpaces
      * @return $this fluent interface
      */
     public function setSpaceAfterListArgumentSeparators(array $separatorSpaces): self
@@ -653,8 +650,7 @@ final class OutputFormat
     }
 
     /**
-     * @param int<1, max> $numberOfTabs
-     *
+     * @param  int<1, max>  $numberOfTabs
      * @return $this fluent interface
      */
     public function indentWithTabs(int $numberOfTabs = 1): self
@@ -663,8 +659,7 @@ final class OutputFormat
     }
 
     /**
-     * @param int<1, max> $numberOfSpaces
-     *
+     * @param  int<1, max>  $numberOfSpaces
      * @return $this fluent interface
      */
     public function indentWithSpaces(int $numberOfSpaces = 2): self
@@ -682,6 +677,7 @@ final class OutputFormat
             $this->nextLevelFormat->indentationLevel++;
             $this->nextLevelFormat->outputFormatter = null;
         }
+
         return $this->nextLevelFormat;
     }
 
@@ -707,7 +703,7 @@ final class OutputFormat
      */
     public static function create(): self
     {
-        return new OutputFormat();
+        return new OutputFormat;
     }
 
     /**

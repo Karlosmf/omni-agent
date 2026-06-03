@@ -28,15 +28,14 @@ class SurrogateListener implements EventSubscriberInterface
 {
     public function __construct(
         private ?SurrogateInterface $surrogate = null,
-    ) {
-    }
+    ) {}
 
     /**
      * Filters the Response.
      */
     public function onKernelResponse(ResponseEvent $event): void
     {
-        if (!$event->isMainRequest()) {
+        if (! $event->isMainRequest()) {
             return;
         }
 
@@ -44,12 +43,12 @@ class SurrogateListener implements EventSubscriberInterface
         $surrogate = $this->surrogate;
         if ($kernel instanceof HttpCache) {
             $surrogate = $kernel->getSurrogate();
-            if (null !== $this->surrogate && $this->surrogate->getName() !== $surrogate->getName()) {
+            if ($this->surrogate !== null && $this->surrogate->getName() !== $surrogate->getName()) {
                 $surrogate = $this->surrogate;
             }
         }
 
-        if (null === $surrogate) {
+        if ($surrogate === null) {
             return;
         }
 

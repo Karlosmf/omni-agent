@@ -6,5 +6,5 @@ use Livewire\Features\SupportPagination\WithoutUrlPagination as BaseWithoutUrlPa
 
 trait WithoutUrlPagination
 {
-   use BaseWithoutUrlPagination;
+    use BaseWithoutUrlPagination;
 }

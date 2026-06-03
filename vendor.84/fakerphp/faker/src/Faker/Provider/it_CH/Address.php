@@ -83,6 +83,7 @@ class Address extends \Faker\Provider\it_IT\Address
     protected static $streetAddressFormats = [
         '{{streetName}} {{buildingNumber}}',
     ];
+
     protected static $addressFormats = [
         "{{streetAddress}}\n{{postcode}} {{city}}",
     ];

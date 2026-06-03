@@ -1,10 +1,9 @@
 <?php
 
+use App\Enums\UserRole;
+use App\Filament\Admin\Pages\ManageAgencySettings;
 use App\Models\AgencySetting;
 use App\Models\User;
-use App\Enums\UserRole;
-use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -34,22 +33,22 @@ it('converts hex to oklch format and handles null', function () {
     expect($oklch)->toMatch('/^\d+\.\d+ \d+\.\d+ \d+\.\d+$/');
 
     // Test null/empty handling
-    expect(hex_to_oklch(null))->toBe("1.00 0.000 0.0");
-    expect(hex_to_oklch(''))->toBe("1.00 0.000 0.0");
+    expect(hex_to_oklch(null))->toBe('1.00 0.000 0.0');
+    expect(hex_to_oklch(''))->toBe('1.00 0.000 0.0');
 });
 
 it('allows admin to access ManageAgencySettings Filament page', function () {
     $admin = User::factory()->create(['role' => UserRole::Admin]);
     $this->actingAs($admin);
-    
-    $canAccess = \App\Filament\Admin\Pages\ManageAgencySettings::canAccess();
+
+    $canAccess = ManageAgencySettings::canAccess();
     expect($canAccess)->toBeTrue();
 });
 
 it('denies non-admin access to ManageAgencySettings Filament page', function () {
     $staff = User::factory()->create(['role' => UserRole::Staff]);
     $this->actingAs($staff);
-    
-    $canAccess = \App\Filament\Admin\Pages\ManageAgencySettings::canAccess();
+
+    $canAccess = ManageAgencySettings::canAccess();
     expect($canAccess)->toBeFalse();
 });

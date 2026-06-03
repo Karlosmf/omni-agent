@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,16 +9,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework;
 
 use const PHP_EOL;
-use function array_diff_assoc;
-use function array_intersect;
-use function array_unique;
-use function assert;
-use function extension_loaded;
-use function sprintf;
-use function xdebug_is_debugger_active;
+
 use AssertionError;
 use PHPUnit\Event\Facade;
 use PHPUnit\Metadata\Api\CodeCoverage as CodeCoverageMetadataApi;
@@ -34,6 +31,14 @@ use SebastianBergmann\Invoker\Invoker;
 use SebastianBergmann\Invoker\TimeoutException;
 use Throwable;
 
+use function array_diff_assoc;
+use function array_intersect;
+use function array_unique;
+use function assert;
+use function extension_loaded;
+use function sprintf;
+use function xdebug_is_debugger_active;
+
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  *
@@ -42,6 +47,7 @@ use Throwable;
 final class TestRunner
 {
     private ?bool $timeLimitCanBeEnforced = null;
+
     private readonly Configuration $configuration;
 
     public function __construct()
@@ -74,11 +80,11 @@ final class TestRunner
 
         $this->performSanityChecks($test, $coversTargets, $usesTargets, $shouldCodeCoverageBeCollected);
 
-        $error      = false;
-        $failure    = false;
+        $error = false;
+        $failure = false;
         $incomplete = false;
-        $risky      = false;
-        $skipped    = false;
+        $risky = false;
+        $skipped = false;
 
         if ($this->shouldErrorHandlerBeUsed($test)) {
             ErrorHandler::instance()->enable($test);
@@ -110,7 +116,7 @@ final class TestRunner
             $test->addToAssertionCount(1);
 
             $failure = true;
-            $frame   = $e->getTrace()[0];
+            $frame = $e->getTrace()[0];
 
             assert(isset($frame['file']));
             assert(isset($frame['line']));
@@ -130,14 +136,14 @@ final class TestRunner
         $test->addToAssertionCount(Assert::getCount());
 
         if ($this->configuration->reportUselessTests() &&
-            !$test->doesNotPerformAssertions() &&
+            ! $test->doesNotPerformAssertions() &&
             $test->numberOfAssertionsPerformed() === 0) {
             $risky = true;
         }
 
-        if (!$error && !$failure && !$incomplete && !$skipped && !$risky &&
+        if (! $error && ! $failure && ! $incomplete && ! $skipped && ! $risky &&
             $this->configuration->requireCoverageMetadata() &&
-            !$this->hasCoverageMetadata($test::class, $test->name())) {
+            ! $this->hasCoverageMetadata($test::class, $test->name())) {
             Facade::emitter()->testConsideredRisky(
                 $test->valueObjectForEvents(),
                 'This test does not define a code coverage target but is expected to do so',
@@ -147,11 +153,11 @@ final class TestRunner
         }
 
         if ($collectCodeCoverage) {
-            $append = !$risky && !$incomplete && !$skipped;
+            $append = ! $risky && ! $incomplete && ! $skipped;
 
-            if (!$append) {
+            if (! $append) {
                 $coversTargets = false;
-                $usesTargets   = null;
+                $usesTargets = null;
             }
 
             try {
@@ -163,8 +169,8 @@ final class TestRunner
             } catch (UnintentionallyCoveredCodeException $cce) {
                 Facade::emitter()->testConsideredRisky(
                     $test->valueObjectForEvents(),
-                    'This test executed code that is not listed as code to be covered or used:' .
-                    PHP_EOL .
+                    'This test executed code that is not listed as code to be covered or used:'.
+                    PHP_EOL.
                     $cce->getMessage(),
                 );
             } catch (CodeCoverageException $cce) {
@@ -176,11 +182,11 @@ final class TestRunner
 
         ErrorHandler::instance()->disable();
 
-        if (!$error &&
-            !$incomplete &&
-            !$skipped &&
+        if (! $error &&
+            ! $incomplete &&
+            ! $skipped &&
             $this->configuration->reportUselessTests() &&
-            !$test->doesNotPerformAssertions() &&
+            ! $test->doesNotPerformAssertions() &&
             $test->numberOfAssertionsPerformed() === 0) {
             Facade::emitter()->testConsideredRisky(
                 $test->valueObjectForEvents(),
@@ -223,8 +229,8 @@ final class TestRunner
     }
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      */
     private function hasCoverageMetadata(string $className, string $methodName): bool
     {
@@ -278,11 +284,11 @@ final class TestRunner
 
     private function shouldTimeLimitBeEnforced(TestCase $test): bool
     {
-        if (!$this->configuration->enforceTimeLimit()) {
+        if (! $this->configuration->enforceTimeLimit()) {
             return false;
         }
 
-        if (!(($this->configuration->defaultTimeLimit() > 0 || $test->size()->isKnown()))) {
+        if (! (($this->configuration->defaultTimeLimit() > 0 || $test->size()->isKnown()))) {
             return false;
         }
 
@@ -338,7 +344,7 @@ final class TestRunner
 
     private function performSanityChecks(TestCase $test, TargetCollection $coversTargets, TargetCollection $usesTargets, bool $shouldCodeCoverageBeCollected): void
     {
-        if (!$shouldCodeCoverageBeCollected) {
+        if (! $shouldCodeCoverageBeCollected) {
             if ($coversTargets->isNotEmpty() || $usesTargets->isNotEmpty()) {
                 Facade::emitter()->testTriggeredPhpunitWarning(
                     $test->valueObjectForEvents(),
@@ -348,7 +354,7 @@ final class TestRunner
         }
 
         $coversAsString = [];
-        $usesAsString   = [];
+        $usesAsString = [];
 
         foreach ($coversTargets as $coversTarget) {
             $coversAsString[] = $coversTarget->description();
@@ -359,8 +365,8 @@ final class TestRunner
         }
 
         $coversDuplicates = array_unique(array_diff_assoc($coversAsString, array_unique($coversAsString)));
-        $usesDuplicates   = array_unique(array_diff_assoc($usesAsString, array_unique($usesAsString)));
-        $coversAndUses    = array_intersect($coversAsString, $usesAsString);
+        $usesDuplicates = array_unique(array_diff_assoc($usesAsString, array_unique($usesAsString)));
+        $coversAndUses = array_intersect($coversAsString, $usesAsString);
 
         foreach ($coversDuplicates as $target) {
             Facade::emitter()->testTriggeredPhpunitWarning(

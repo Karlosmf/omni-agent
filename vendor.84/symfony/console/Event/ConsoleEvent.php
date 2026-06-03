@@ -27,8 +27,7 @@ class ConsoleEvent extends Event
         protected ?Command $command,
         private InputInterface $input,
         private OutputInterface $output,
-    ) {
-    }
+    ) {}
 
     /**
      * Gets the command that is executed.

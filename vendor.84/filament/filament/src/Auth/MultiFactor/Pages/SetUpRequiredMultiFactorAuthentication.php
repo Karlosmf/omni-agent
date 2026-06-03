@@ -22,17 +22,17 @@ class SetUpRequiredMultiFactorAuthentication extends SimplePage
         }
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('filament-panels::auth/multi-factor/pages/set-up-required-multi-factor-authentication.title');
     }
 
-    public function getHeading(): string | Htmlable | null
+    public function getHeading(): string|Htmlable|null
     {
         return __('filament-panels::auth/multi-factor/pages/set-up-required-multi-factor-authentication.heading');
     }
 
-    public function getSubheading(): string | Htmlable | null
+    public function getSubheading(): string|Htmlable|null
     {
         return __('filament-panels::auth/multi-factor/pages/set-up-required-multi-factor-authentication.subheading');
     }

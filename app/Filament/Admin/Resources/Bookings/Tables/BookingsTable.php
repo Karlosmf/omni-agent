@@ -3,6 +3,9 @@
 namespace App\Filament\Admin\Resources\Bookings\Tables;
 
 use App\Enums\BookingStatus;
+use App\Enums\UserRole;
+use App\Models\Booking;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -10,8 +13,11 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ReplicateAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class BookingsTable
@@ -64,15 +70,15 @@ class BookingsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                \Filament\Tables\Filters\SelectFilter::make('status')
+                SelectFilter::make('status')
                     ->label('Estado')
                     ->options(BookingStatus::class),
-                \Filament\Tables\Filters\Filter::make('travel_date')
+                Filter::make('travel_date')
                     ->label('Rango de Fecha Viaje')
                     ->form([
-                        \Filament\Forms\Components\DatePicker::make('travel_date_from')
+                        DatePicker::make('travel_date_from')
                             ->label('Desde'),
-                        \Filament\Forms\Components\DatePicker::make('travel_date_to')
+                        DatePicker::make('travel_date_to')
                             ->label('Hasta'),
                     ])
                     ->query(function ($query, array $data) {
@@ -88,20 +94,20 @@ class BookingsTable
                     ->form([
                         Select::make('customer_id')
                             ->label('Cliente')
-                            ->options(\App\Models\User::where('role', \App\Enums\UserRole::Customer)->pluck('name', 'id'))
+                            ->options(User::where('role', UserRole::Customer)->pluck('name', 'id'))
                             ->searchable()
                             ->required()
-                            ->default(fn (\App\Models\Booking $record) => $record->customer_id)
+                            ->default(fn (Booking $record) => $record->customer_id)
                             ->helperText('Selecciona el cliente para el duplicado.'),
                     ])
-                    ->beforeReplicaSaved(function (\App\Models\Booking $replica, array $data) {
+                    ->beforeReplicaSaved(function (Booking $replica, array $data) {
                         $replica->customer_id = $data['customer_id'];
                         $replica->lead_id = null;
                         $replica->file_number = null; // Generated on boot
                         $replica->status = BookingStatus::Borrador;
                         $replica->valid_until = now()->addDays(7);
                     })
-                    ->afterReplicaSaved(function (\App\Models\Booking $replica, \App\Models\Booking $record) {
+                    ->afterReplicaSaved(function (Booking $replica, Booking $record) {
                         foreach ($record->items as $item) {
                             $newItem = $item->replicate();
                             $newItem->booking_id = $replica->id;

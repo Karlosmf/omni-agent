@@ -35,16 +35,16 @@ class Tokenizer
 
     public function __construct()
     {
-        $patterns = new TokenizerPatterns();
+        $patterns = new TokenizerPatterns;
         $escaping = new TokenizerEscaping($patterns);
 
         $this->handlers = [
-            new Handler\WhitespaceHandler(),
+            new Handler\WhitespaceHandler,
             new Handler\IdentifierHandler($patterns, $escaping),
             new Handler\HashHandler($patterns, $escaping),
             new Handler\StringHandler($patterns, $escaping),
             new Handler\NumberHandler($patterns),
-            new Handler\CommentHandler(),
+            new Handler\CommentHandler,
         ];
     }
 
@@ -53,9 +53,9 @@ class Tokenizer
      */
     public function tokenize(Reader $reader): TokenStream
     {
-        $stream = new TokenStream();
+        $stream = new TokenStream;
 
-        while (!$reader->isEOF()) {
+        while (! $reader->isEOF()) {
             foreach ($this->handlers as $handler) {
                 if ($handler->handle($reader, $stream)) {
                     continue 2;

@@ -67,9 +67,7 @@ HELP
     /**
      * A helper method for wrapping buffer lines in `<urgent>` and `<return>` formatter strings.
      *
-     * @param array  $lines
-     * @param string $type  (default: 'return')
-     *
+     * @param  string  $type  (default: 'return')
      * @return array Formatted strings
      */
     protected function formatLines(array $lines, string $type = 'return'): array

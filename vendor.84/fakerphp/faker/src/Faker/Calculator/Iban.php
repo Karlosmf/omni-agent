@@ -12,7 +12,7 @@ class Iban
     public static function checksum(string $iban)
     {
         // Move first four digits to end and set checksum to '00'
-        $checkString = substr($iban, 4) . substr($iban, 0, 2) . '00';
+        $checkString = substr($iban, 4).substr($iban, 0, 2).'00';
 
         // Replace all letters with their number equivalents
         $checkString = preg_replace_callback(
@@ -42,15 +42,14 @@ class Iban
     /**
      * Calculates mod97 on a numeric string
      *
-     * @param string $number Numeric string
-     *
+     * @param  string  $number  Numeric string
      * @return int
      */
     public static function mod97(string $number)
     {
         $checksum = (int) $number[0];
 
-        for ($i = 1, $size = strlen($number); $i < $size; ++$i) {
+        for ($i = 1, $size = strlen($number); $i < $size; $i++) {
             $checksum = (10 * $checksum + (int) $number[$i]) % 97;
         }
 

@@ -34,8 +34,7 @@ final class MessageEvent extends Event
         private Envelope $envelope,
         private string $transport,
         private bool $queued = false,
-    ) {
-    }
+    ) {}
 
     public function getMessage(): RawMessage
     {
@@ -80,7 +79,7 @@ final class MessageEvent extends Event
 
     public function addStamp(StampInterface $stamp): void
     {
-        if (!$this->queued) {
+        if (! $this->queued) {
             throw new LogicException(\sprintf('Cannot call "%s()" on a message that is not meant to be queued.', __METHOD__));
         }
 
@@ -92,7 +91,7 @@ final class MessageEvent extends Event
      */
     public function getStamps(): array
     {
-        if (!$this->queued) {
+        if (! $this->queued) {
             throw new LogicException(\sprintf('Cannot call "%s()" on a message that is not meant to be queued.', __METHOD__));
         }
 

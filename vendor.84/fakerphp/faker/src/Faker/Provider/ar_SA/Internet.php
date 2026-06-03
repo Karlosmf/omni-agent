@@ -10,6 +10,7 @@ class Internet extends \Faker\Provider\Internet
         '{{firstNameAscii}}##',
         '?{{lastNameAscii}}',
     ];
+
     protected static $safeEmailTld = [
         'com', 'jo', 'me', 'net', 'org',
     ];
@@ -21,6 +22,7 @@ class Internet extends \Faker\Provider\Internet
     protected static $lastNameAscii = [
         'abbad', 'abbadi', 'abbas', 'abulebbeh', 'flefel', 'hadi', 'hamad', 'hasan', 'jabri', 'kanaan', 'karam', 'maanee', 'melhem', 'nimry', 'obaisi', 'qasem', 'qawasmee', 'rabee', 'rashwani', 'shami', 'zaloum',
     ];
+
     protected static $firstNameAscii = [
         'abd', 'abdullah', 'ahmad', 'akram', 'amr', 'bashar', 'bilal', 'fadi', 'ibrahim', 'khaled', 'layth', 'mohammad', 'mutaz', 'omar', 'osama', 'rami', 'saleem', 'samer', 'sami', 'yazan',
     ];
@@ -50,6 +52,6 @@ class Internet extends \Faker\Provider\Internet
      */
     public function domainName()
     {
-        return static::randomElement(static::$lastNameAscii) . '.' . $this->tld();
+        return static::randomElement(static::$lastNameAscii).'.'.$this->tld();
     }
 }

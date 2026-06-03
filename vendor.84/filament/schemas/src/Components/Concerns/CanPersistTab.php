@@ -6,9 +6,9 @@ use Closure;
 
 trait CanPersistTab
 {
-    public bool | Closure $isTabPersisted = false;
+    public bool|Closure $isTabPersisted = false;
 
-    public function persistTab(bool | Closure $condition = true): static
+    public function persistTab(bool|Closure $condition = true): static
     {
         $this->isTabPersisted = $condition;
 

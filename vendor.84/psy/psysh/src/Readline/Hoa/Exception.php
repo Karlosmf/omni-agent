@@ -56,13 +56,12 @@ class Exception extends ExceptionIdle implements EventSource
     ) {
         parent::__construct($message, $code, $arguments, $previous);
 
-        if (false === Event::eventExists('hoa://Event/Exception')) {
+        if (Event::eventExists('hoa://Event/Exception') === false) {
             Event::register('hoa://Event/Exception', __CLASS__);
         }
 
         $this->send();
 
-        return;
     }
 
     /**

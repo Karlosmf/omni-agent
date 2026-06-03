@@ -43,13 +43,13 @@ final class Worksheet
      */
     public function getFilePointer()
     {
-        \assert(null !== $this->filePointer);
+        \assert($this->filePointer !== null);
 
         return $this->filePointer;
     }
 
     /**
-     * @param resource $filePointer
+     * @param  resource  $filePointer
      */
     public function setFilePointer($filePointer): void
     {

@@ -24,6 +24,4 @@ namespace phpDocumentor\Reflection\Types;
  *
  * @psalm-immutable
  */
-class Array_ extends AbstractList
-{
-}
+class Array_ extends AbstractList {}

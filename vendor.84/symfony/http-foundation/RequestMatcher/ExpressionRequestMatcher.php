@@ -26,8 +26,7 @@ class ExpressionRequestMatcher implements RequestMatcherInterface
     public function __construct(
         private ExpressionLanguage $language,
         private Expression|string $expression,
-    ) {
-    }
+    ) {}
 
     public function matches(Request $request): bool
     {

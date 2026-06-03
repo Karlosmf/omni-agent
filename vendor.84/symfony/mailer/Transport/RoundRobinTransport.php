@@ -30,21 +30,22 @@ class RoundRobinTransport implements TransportInterface
      * @var \SplObjectStorage<TransportInterface, float>
      */
     private \SplObjectStorage $deadTransports;
+
     private int $cursor = -1;
 
     /**
-     * @param TransportInterface[] $transports
+     * @param  TransportInterface[]  $transports
      */
     public function __construct(
         private array $transports,
         private int $retryPeriod = 60,
-        private LoggerInterface $logger = new NullLogger(),
+        private LoggerInterface $logger = new NullLogger,
     ) {
-        if (!$transports) {
+        if (! $transports) {
             throw new TransportException(\sprintf('"%s" must have at least one transport configured.', static::class));
         }
 
-        $this->deadTransports = new \SplObjectStorage();
+        $this->deadTransports = new \SplObjectStorage;
     }
 
     public function send(RawMessage $message, ?Envelope $envelope = null): ?SentMessage
@@ -75,7 +76,7 @@ class RoundRobinTransport implements TransportInterface
      */
     protected function getNextTransport(): ?TransportInterface
     {
-        if (-1 === $this->cursor) {
+        if ($this->cursor === -1) {
             $this->cursor = $this->getInitialCursor();
         }
 
@@ -83,7 +84,7 @@ class RoundRobinTransport implements TransportInterface
         while (true) {
             $transport = $this->transports[$cursor];
 
-            if (!$this->isTransportDead($transport)) {
+            if (! $this->isTransportDead($transport)) {
                 break;
             }
 

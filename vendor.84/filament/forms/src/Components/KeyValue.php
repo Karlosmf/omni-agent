@@ -22,29 +22,29 @@ class KeyValue extends Field
      */
     protected string $view = 'filament-forms::components.key-value';
 
-    protected string | Closure | null $addActionLabel = null;
+    protected string|Closure|null $addActionLabel = null;
 
-    protected string | Closure | null $deleteActionLabel = null;
+    protected string|Closure|null $deleteActionLabel = null;
 
-    protected string | Closure | null $reorderActionLabel = null;
+    protected string|Closure|null $reorderActionLabel = null;
 
-    protected bool | Closure $isAddable = true;
+    protected bool|Closure $isAddable = true;
 
-    protected bool | Closure $isDeletable = true;
+    protected bool|Closure $isDeletable = true;
 
-    protected bool | Closure $canEditKeys = true;
+    protected bool|Closure $canEditKeys = true;
 
-    protected bool | Closure $canEditValues = true;
+    protected bool|Closure $canEditValues = true;
 
-    protected string | Closure | null $keyLabel = null;
+    protected string|Closure|null $keyLabel = null;
 
-    protected string | Closure | null $valueLabel = null;
+    protected string|Closure|null $valueLabel = null;
 
-    protected string | Closure | null $keyPlaceholder = null;
+    protected string|Closure|null $keyPlaceholder = null;
 
-    protected string | Closure | null $valuePlaceholder = null;
+    protected string|Closure|null $valuePlaceholder = null;
 
-    protected bool | Closure $isReorderable = false;
+    protected bool|Closure $isReorderable = false;
 
     protected ?Closure $modifyAddActionUsing = null;
 
@@ -159,21 +159,21 @@ class KeyValue extends Field
         return 'reorder';
     }
 
-    public function addActionLabel(string | Closure | null $label): static
+    public function addActionLabel(string|Closure|null $label): static
     {
         $this->addActionLabel = $label;
 
         return $this;
     }
 
-    public function deleteActionLabel(string | Closure | null $label): static
+    public function deleteActionLabel(string|Closure|null $label): static
     {
         $this->deleteActionLabel = $label;
 
         return $this;
     }
 
-    public function reorderActionLabel(string | Closure | null $label): static
+    public function reorderActionLabel(string|Closure|null $label): static
     {
         $this->reorderActionLabel = $label;
 
@@ -183,7 +183,7 @@ class KeyValue extends Field
     /**
      * @deprecated Use `addActionLabel()` instead.
      */
-    public function addButtonLabel(string | Closure | null $label): static
+    public function addButtonLabel(string|Closure|null $label): static
     {
         $this->addActionLabel($label);
 
@@ -193,7 +193,7 @@ class KeyValue extends Field
     /**
      * @deprecated Use `deleteActionLabel()` instead.
      */
-    public function deleteButtonLabel(string | Closure | null $label): static
+    public function deleteButtonLabel(string|Closure|null $label): static
     {
         $this->deleteActionLabel($label);
 
@@ -203,35 +203,35 @@ class KeyValue extends Field
     /**
      * @deprecated Use `reorderActionLabel()` instead.
      */
-    public function reorderButtonLabel(string | Closure | null $label): static
+    public function reorderButtonLabel(string|Closure|null $label): static
     {
         $this->reorderActionLabel($label);
 
         return $this;
     }
 
-    public function addable(bool | Closure $condition = true): static
+    public function addable(bool|Closure $condition = true): static
     {
         $this->isAddable = $condition;
 
         return $this;
     }
 
-    public function deletable(bool | Closure $condition = true): static
+    public function deletable(bool|Closure $condition = true): static
     {
         $this->isDeletable = $condition;
 
         return $this;
     }
 
-    public function editableKeys(bool | Closure $condition = true): static
+    public function editableKeys(bool|Closure $condition = true): static
     {
         $this->canEditKeys = $condition;
 
         return $this;
     }
 
-    public function editableValues(bool | Closure $condition = true): static
+    public function editableValues(bool|Closure $condition = true): static
     {
         $this->canEditValues = $condition;
 
@@ -241,7 +241,7 @@ class KeyValue extends Field
     /**
      * @deprecated Use `addable()` instead.
      */
-    public function disableAddingRows(bool | Closure $condition = true): static
+    public function disableAddingRows(bool|Closure $condition = true): static
     {
         $this->addable(fn (KeyValue $component): bool => ! $component->evaluate($condition));
 
@@ -251,7 +251,7 @@ class KeyValue extends Field
     /**
      * @deprecated Use `deletable()` instead.
      */
-    public function disableDeletingRows(bool | Closure $condition = true): static
+    public function disableDeletingRows(bool|Closure $condition = true): static
     {
         $this->deletable(fn (KeyValue $component): bool => ! $component->evaluate($condition));
 
@@ -261,7 +261,7 @@ class KeyValue extends Field
     /**
      * @deprecated Use `editableKeys()` instead.
      */
-    public function disableEditingKeys(bool | Closure $condition = true): static
+    public function disableEditingKeys(bool|Closure $condition = true): static
     {
         $this->editableKeys(fn (KeyValue $component): bool => ! $component->evaluate($condition));
 
@@ -271,42 +271,42 @@ class KeyValue extends Field
     /**
      * @deprecated Use `editableValues()` instead.
      */
-    public function disableEditingValues(bool | Closure $condition = true): static
+    public function disableEditingValues(bool|Closure $condition = true): static
     {
         $this->editableValues(fn (KeyValue $component): bool => ! $component->evaluate($condition));
 
         return $this;
     }
 
-    public function keyLabel(string | Closure | null $label): static
+    public function keyLabel(string|Closure|null $label): static
     {
         $this->keyLabel = $label;
 
         return $this;
     }
 
-    public function valueLabel(string | Closure | null $label): static
+    public function valueLabel(string|Closure|null $label): static
     {
         $this->valueLabel = $label;
 
         return $this;
     }
 
-    public function keyPlaceholder(string | Closure | null $placeholder): static
+    public function keyPlaceholder(string|Closure|null $placeholder): static
     {
         $this->keyPlaceholder = $placeholder;
 
         return $this;
     }
 
-    public function valuePlaceholder(string | Closure | null $placeholder): static
+    public function valuePlaceholder(string|Closure|null $placeholder): static
     {
         $this->valuePlaceholder = $placeholder;
 
         return $this;
     }
 
-    public function reorderable(bool | Closure $condition = true): static
+    public function reorderable(bool|Closure $condition = true): static
     {
         $this->isReorderable = $condition;
 

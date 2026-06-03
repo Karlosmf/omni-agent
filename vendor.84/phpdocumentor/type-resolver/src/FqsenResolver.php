@@ -64,17 +64,17 @@ class FqsenResolver
         $namespaceAliases = $context->getNamespaceAliases();
 
         // if the first segment is not an alias; prepend namespace name and return
-        if (!isset($namespaceAliases[$typeParts[0]])) {
+        if (! isset($namespaceAliases[$typeParts[0]])) {
             $namespace = $context->getNamespace();
             if ($namespace !== '') {
                 $namespace .= self::OPERATOR_NAMESPACE;
             }
 
-            return new Fqsen(self::OPERATOR_NAMESPACE . $namespace . $type);
+            return new Fqsen(self::OPERATOR_NAMESPACE.$namespace.$type);
         }
 
         $typeParts[0] = $namespaceAliases[$typeParts[0]];
 
-        return new Fqsen(self::OPERATOR_NAMESPACE . implode(self::OPERATOR_NAMESPACE, $typeParts));
+        return new Fqsen(self::OPERATOR_NAMESPACE.implode(self::OPERATOR_NAMESPACE, $typeParts));
     }
 }

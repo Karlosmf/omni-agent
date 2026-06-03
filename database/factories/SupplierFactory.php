@@ -2,10 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\ServiceType;
+use App\Models\Supplier;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Supplier>
+ * @extends Factory<Supplier>
  */
 class SupplierFactory extends Factory
 {
@@ -22,7 +24,7 @@ class SupplierFactory extends Factory
             'contact_email' => fake()->companyEmail(),
             'contact_phone' => fake()->phoneNumber(),
             'website' => fake()->url(),
-            'service_type_id' => \App\Models\ServiceType::inRandomOrder()->first()?->id ?? 1,
+            'service_type_id' => ServiceType::inRandomOrder()->first()?->id ?? 1,
             'category' => fake()->word(),
             'location' => fake()->city(),
             'cuit' => fake()->numerify('##-########-#'),

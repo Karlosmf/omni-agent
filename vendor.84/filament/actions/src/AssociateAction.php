@@ -27,18 +27,18 @@ class AssociateAction extends Action
 
     protected ?Closure $modifyRecordSelectOptionsQueryUsing = null;
 
-    protected bool | Closure $canAssociateAnother = true;
+    protected bool|Closure $canAssociateAnother = true;
 
-    protected bool | Closure $isRecordSelectPreloaded = false;
+    protected bool|Closure $isRecordSelectPreloaded = false;
 
     /**
      * @var array<string> | Closure | null
      */
-    protected array | Closure | null $recordSelectSearchColumns = null;
+    protected array|Closure|null $recordSelectSearchColumns = null;
 
-    protected bool | Closure | null $isSearchForcedCaseInsensitive = null;
+    protected bool|Closure|null $isSearchForcedCaseInsensitive = null;
 
-    protected bool | Closure $isMultiple = false;
+    protected bool|Closure $isMultiple = false;
 
     public static function getDefaultName(): ?string
     {
@@ -124,7 +124,7 @@ class AssociateAction extends Action
         return $this;
     }
 
-    public function associateAnother(bool | Closure $condition = true): static
+    public function associateAnother(bool|Closure $condition = true): static
     {
         $this->canAssociateAnother = $condition;
 
@@ -134,14 +134,14 @@ class AssociateAction extends Action
     /**
      * @deprecated Use `associateAnother()` instead.
      */
-    public function disableAssociateAnother(bool | Closure $condition = true): static
+    public function disableAssociateAnother(bool|Closure $condition = true): static
     {
         $this->associateAnother(fn (AssociateAction $action): bool => ! $action->evaluate($condition));
 
         return $this;
     }
 
-    public function preloadRecordSelect(bool | Closure $condition = true): static
+    public function preloadRecordSelect(bool|Closure $condition = true): static
     {
         $this->isRecordSelectPreloaded = $condition;
 
@@ -161,7 +161,7 @@ class AssociateAction extends Action
     /**
      * @param  array<string> | Closure | null  $columns
      */
-    public function recordSelectSearchColumns(array | Closure | null $columns): static
+    public function recordSelectSearchColumns(array|Closure|null $columns): static
     {
         $this->recordSelectSearchColumns = $columns;
 
@@ -176,7 +176,7 @@ class AssociateAction extends Action
         return $this->evaluate($this->recordSelectSearchColumns);
     }
 
-    public function multiple(bool | Closure $condition = true): static
+    public function multiple(bool|Closure $condition = true): static
     {
         $this->isMultiple = $condition;
 
@@ -305,7 +305,7 @@ class AssociateAction extends Action
         return $select;
     }
 
-    public function forceSearchCaseInsensitive(bool | Closure | null $condition = true): static
+    public function forceSearchCaseInsensitive(bool|Closure|null $condition = true): static
     {
         $this->isSearchForcedCaseInsensitive = $condition;
 

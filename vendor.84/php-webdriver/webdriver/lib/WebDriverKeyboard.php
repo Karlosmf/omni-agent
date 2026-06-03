@@ -7,7 +7,7 @@ interface WebDriverKeyboard
     /**
      * Send a sequence of keys.
      *
-     * @param string $keys
+     * @param  string  $keys
      * @return $this
      */
     public function sendKeys($keys);
@@ -16,7 +16,8 @@ interface WebDriverKeyboard
      * Press a key
      *
      * @see WebDriverKeys
-     * @param string $key
+     *
+     * @param  string  $key
      * @return $this
      */
     public function pressKey($key);
@@ -25,7 +26,8 @@ interface WebDriverKeyboard
      * Release a key
      *
      * @see WebDriverKeys
-     * @param string $key
+     *
+     * @param  string  $key
      * @return $this
      */
     public function releaseKey($key);

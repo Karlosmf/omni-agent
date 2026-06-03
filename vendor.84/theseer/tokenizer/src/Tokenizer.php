@@ -1,10 +1,15 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
+
 namespace TheSeer\Tokenizer;
 
 use PhpToken;
+
 use function preg_split;
 
-class Tokenizer {
+class Tokenizer
+{
     /**
      * Token Map for "non-tokens"
      *
@@ -37,11 +42,12 @@ class Tokenizer {
         '$' => 'T_DOLLAR',
         '^' => 'T_CARET',
         '~' => 'T_TILDE',
-        '`' => 'T_BACKTICK'
+        '`' => 'T_BACKTICK',
     ];
 
-    public function parse(string $source): TokenCollection {
-        $result = new TokenCollection();
+    public function parse(string $source): TokenCollection
+    {
+        $result = new TokenCollection;
 
         if ($source === '') {
             return $result;
@@ -68,10 +74,10 @@ class Tokenizer {
                 continue;
             }
 
-            $line   = $tok->line;
+            $line = $tok->line;
             $values = preg_split('/\R+/Uu', $tok->text);
 
-            if (!$values) {
+            if (! $values) {
                 $result->addToken(
                     new Token(
                         $line,
@@ -103,19 +109,20 @@ class Tokenizer {
         return $this->fillBlanks($result, $lastToken->getLine());
     }
 
-    private function fillBlanks(TokenCollection $tokens, int $maxLine): TokenCollection {
+    private function fillBlanks(TokenCollection $tokens, int $maxLine): TokenCollection
+    {
         $prev = new Token(
             0,
             'Placeholder',
             ''
         );
 
-        $final    = new TokenCollection();
+        $final = new TokenCollection;
         $prevLine = $prev->getLine();
 
         foreach ($tokens as $token) {
             $line = $token->getLine();
-            $gap  = $line - $prevLine;
+            $gap = $line - $prevLine;
 
             while ($gap > 1) {
                 $linebreak = new Token(

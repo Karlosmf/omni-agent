@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -24,6 +26,5 @@ final class WithMonologChannel
 {
     public function __construct(
         public readonly string $channel
-    ) {
-    }
+    ) {}
 }

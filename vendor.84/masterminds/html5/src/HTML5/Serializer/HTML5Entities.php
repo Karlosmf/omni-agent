@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * This contains HTML5 entities to use with serializing.
@@ -18,7 +19,7 @@ namespace Masterminds\HTML5\Serializer;
  */
 class HTML5Entities
 {
-    public static $map = array(
+    public static $map = [
         '	' => '&Tab;',
         "\n" => '&NewLine;',
         '!' => '&excl;',
@@ -1529,5 +1530,5 @@ class HTML5Entities
         '𝕩' => '&xopf;',
         '𝕪' => '&yopf;',
         '𝕫' => '&zopf;',
-    );
+    ];
 }

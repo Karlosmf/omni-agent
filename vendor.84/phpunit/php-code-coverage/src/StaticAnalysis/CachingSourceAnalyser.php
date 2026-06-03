@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,9 +9,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
 use const DIRECTORY_SEPARATOR;
+
+use SebastianBergmann\CodeCoverage\Util\Filesystem;
+use SebastianBergmann\CodeCoverage\Version;
+
 use function file_get_contents;
 use function file_put_contents;
 use function hash;
@@ -17,8 +24,6 @@ use function implode;
 use function is_file;
 use function serialize;
 use function unserialize;
-use SebastianBergmann\CodeCoverage\Util\Filesystem;
-use SebastianBergmann\CodeCoverage\Version;
 
 /**
  * @internal This interface is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -29,6 +34,7 @@ final class CachingSourceAnalyser implements SourceAnalyser
      * @var non-empty-string
      */
     private readonly string $directory;
+
     private readonly SourceAnalyser $sourceAnalyser;
 
     /**
@@ -45,12 +51,12 @@ final class CachingSourceAnalyser implements SourceAnalyser
     {
         Filesystem::createDirectory($directory);
 
-        $this->directory      = $directory;
+        $this->directory = $directory;
         $this->sourceAnalyser = $sourceAnalyser;
     }
 
     /**
-     * @param non-empty-string $sourceCodeFile
+     * @param  non-empty-string  $sourceCodeFile
      */
     public function analyse(string $sourceCodeFile, string $sourceCode, bool $useAnnotationsForIgnoringCode, bool $ignoreDeprecatedCode): AnalysisResult
     {
@@ -99,11 +105,11 @@ final class CachingSourceAnalyser implements SourceAnalyser
     }
 
     /**
-     * @param non-empty-string $cacheFile
+     * @param  non-empty-string  $cacheFile
      */
     private function read(string $cacheFile): AnalysisResult|false
     {
-        if (!is_file($cacheFile)) {
+        if (! is_file($cacheFile)) {
             return false;
         }
 
@@ -124,7 +130,7 @@ final class CachingSourceAnalyser implements SourceAnalyser
     }
 
     /**
-     * @param non-empty-string $cacheFile
+     * @param  non-empty-string  $cacheFile
      */
     private function write(string $cacheFile, AnalysisResult $result): void
     {
@@ -149,6 +155,6 @@ final class CachingSourceAnalyser implements SourceAnalyser
             ),
         );
 
-        return $this->directory . DIRECTORY_SEPARATOR . $cacheKey;
+        return $this->directory.DIRECTORY_SEPARATOR.$cacheKey;
     }
 }

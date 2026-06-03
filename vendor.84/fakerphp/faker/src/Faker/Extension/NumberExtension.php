@@ -10,8 +10,8 @@ interface NumberExtension extends Extension
     /**
      * Returns a random number between $int1 and $int2 (any order)
      *
-     * @param int $min default to 0
-     * @param int $max defaults to 32 bit max integer, ie 2147483647
+     * @param  int  $min  default to 0
+     * @param  int  $max  defaults to 32 bit max integer, ie 2147483647
      *
      * @example 79907610
      */
@@ -44,8 +44,8 @@ interface NumberExtension extends Extension
      *
      * The maximum value returned is mt_getrandmax()
      *
-     * @param int|null $nbDigits Defaults to a random number between 1 and 9
-     * @param bool     $strict   Whether the returned number should have exactly $nbDigits
+     * @param  int|null  $nbDigits  Defaults to a random number between 1 and 9
+     * @param  bool  $strict  Whether the returned number should have exactly $nbDigits
      *
      * @example 79907610
      */

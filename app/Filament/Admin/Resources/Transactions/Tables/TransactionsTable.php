@@ -10,6 +10,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class TransactionsTable
@@ -51,13 +52,13 @@ class TransactionsTable
                     ->sortable(),
             ])
             ->filters([
-                \Filament\Tables\Filters\SelectFilter::make('type')
+                SelectFilter::make('type')
                     ->label('Tipo de Transacción')
                     ->options(TransactionType::class),
-                \Filament\Tables\Filters\SelectFilter::make('currency')
+                SelectFilter::make('currency')
                     ->label('Moneda')
                     ->options(Currency::class),
-                \Filament\Tables\Filters\SelectFilter::make('booking')
+                SelectFilter::make('booking')
                     ->label('Expediente')
                     ->relationship('booking', 'file_number'),
             ])

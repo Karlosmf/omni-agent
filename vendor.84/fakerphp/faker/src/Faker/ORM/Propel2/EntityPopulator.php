@@ -2,6 +2,8 @@
 
 namespace Faker\ORM\Propel2;
 
+use Faker\Generator;
+use Faker\Guesser\Name;
 use Faker\Provider\Base;
 use Propel\Runtime\Map\ColumnMap;
 
@@ -11,11 +13,13 @@ use Propel\Runtime\Map\ColumnMap;
 class EntityPopulator
 {
     protected $class;
+
     protected $columnFormatters = [];
+
     protected $modifiers = [];
 
     /**
-     * @param string $class A Propel ActiveRecord classname
+     * @param  string  $class  A Propel ActiveRecord classname
      */
     public function __construct($class)
     {
@@ -51,14 +55,14 @@ class EntityPopulator
     /**
      * @return array
      */
-    public function guessColumnFormatters(\Faker\Generator $generator)
+    public function guessColumnFormatters(Generator $generator)
     {
         $formatters = [];
         $class = $this->class;
         $peerClass = $class::TABLE_MAP;
         $tableMap = $peerClass::getTableMap();
-        $nameGuesser = new \Faker\Guesser\Name($generator);
-        $columnTypeGuesser = new \Faker\ORM\Propel2\ColumnTypeGuesser($generator);
+        $nameGuesser = new Name($generator);
+        $columnTypeGuesser = new ColumnTypeGuesser($generator);
 
         foreach ($tableMap->getColumns() as $columnMap) {
             // skip behavior columns, handled by modifiers
@@ -150,7 +154,7 @@ class EntityPopulator
     /**
      * @return array
      */
-    public function guessModifiers(\Faker\Generator $generator)
+    public function guessModifiers(Generator $generator)
     {
         $modifiers = [];
         $class = $this->class;
@@ -162,7 +166,7 @@ class EntityPopulator
                 case 'nested_set':
                     $modifiers['nested_set'] = static function ($obj, $inserted) use ($class, $generator): void {
                         if (isset($inserted[$class])) {
-                            $queryClass = $class . 'Query';
+                            $queryClass = $class.'Query';
                             $parent = $queryClass::create()->findPk($generator->randomElement($inserted[$class]));
                             $obj->insertAsLastChildOf($parent);
                         } else {
@@ -189,10 +193,10 @@ class EntityPopulator
      */
     public function execute($con, $insertedEntities)
     {
-        $obj = new $this->class();
+        $obj = new $this->class;
 
         foreach ($this->getColumnFormatters() as $column => $format) {
-            if (null !== $format) {
+            if ($format !== null) {
                 $obj->setByName($column, is_callable($format) ? $format($insertedEntities, $obj) : $format);
             }
         }

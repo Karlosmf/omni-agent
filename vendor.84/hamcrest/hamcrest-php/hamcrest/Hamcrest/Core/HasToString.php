@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Core;
 
 /*
@@ -14,7 +15,6 @@ use Hamcrest\Util;
  */
 class HasToString extends FeatureMatcher
 {
-
     public function __construct(Matcher $toStringMatcher)
     {
         parent::__construct(

@@ -259,15 +259,15 @@ class MakeThemeCommand extends Command
             // Extract the indentation from existing array entries (look for newline followed by spaces and a quote)
             preg_match('/\n(\s+)[\'"]/', $inputArrayContents, $indentMatch);
             $indent = $indentMatch[1] ?? '            ';
-            $newInputArrayContents = $beforeTrailing . ",\n{$indent}{$newEntry}," . $trailingWhitespace;
+            $newInputArrayContents = $beforeTrailing.",\n{$indent}{$newEntry},".$trailingWhitespace;
         } else {
             // Single line - just append with comma
-            $newInputArrayContents = $beforeTrailing . ", {$newEntry}" . $trailingWhitespace;
+            $newInputArrayContents = $beforeTrailing.", {$newEntry}".$trailingWhitespace;
         }
 
         $newContents = preg_replace(
             $pattern,
-            '$1' . str_replace(['\\', '$'], ['\\\\', '\\$'], $newInputArrayContents) . '$3',
+            '$1'.str_replace(['\\', '$'], ['\\\\', '\\$'], $newInputArrayContents).'$3',
             $contents,
             1
         );
@@ -287,7 +287,7 @@ class MakeThemeCommand extends Command
         $panelId = $this->panel->getId();
 
         // Find the panel provider file
-        $providerPath = app_path('Providers/Filament/' . Str::studly($panelId) . 'PanelProvider.php');
+        $providerPath = app_path('Providers/Filament/'.Str::studly($panelId).'PanelProvider.php');
 
         if (! $this->filesystem->exists($providerPath)) {
             return false;
@@ -303,7 +303,7 @@ class MakeThemeCommand extends Command
         }
 
         // Look for ->id('panelId') to confirm we're in the right file
-        $idPattern = '/(->id\s*\(\s*[\'"]' . preg_quote($panelId, '/') . '[\'"]\s*\))(\s*\n)/';
+        $idPattern = '/(->id\s*\(\s*[\'"]'.preg_quote($panelId, '/').'[\'"]\s*\))(\s*\n)/';
         if (! preg_match($idPattern, $contents)) {
             return false;
         }
@@ -318,7 +318,7 @@ class MakeThemeCommand extends Command
             $pattern = $idPattern;
         }
 
-        $replacement = '$1' . "\n            ->viteTheme('{$this->themePath}')" . '$2';
+        $replacement = '$1'."\n            ->viteTheme('{$this->themePath}')".'$2';
         $newContents = preg_replace($pattern, $replacement, $contents, 1);
 
         if ($newContents === null || $newContents === $contents) {

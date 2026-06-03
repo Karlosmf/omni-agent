@@ -34,6 +34,7 @@ class XmlFileLoader extends FileLoader
     use PrefixTrait;
 
     public const NAMESPACE_URI = 'http://symfony.com/schema/routing';
+
     public const SCHEME_PATH = '/schema/routing/routing-1.0.xsd';
 
     /**
@@ -48,12 +49,12 @@ class XmlFileLoader extends FileLoader
 
         $xml = $this->loadFile($path);
 
-        $collection = new RouteCollection();
+        $collection = new RouteCollection;
         $collection->addResource(new FileResource($path));
 
         // process routes and imports
         foreach ($xml->documentElement->childNodes as $node) {
-            if (!$node instanceof \DOMElement) {
+            if (! $node instanceof \DOMElement) {
                 continue;
             }
 
@@ -70,7 +71,7 @@ class XmlFileLoader extends FileLoader
      */
     protected function parseNode(RouteCollection $collection, \DOMElement $node, string $path, string $file): void
     {
-        if (self::NAMESPACE_URI !== $node->namespaceURI) {
+        if ($node->namespaceURI !== self::NAMESPACE_URI) {
             return;
         }
 
@@ -82,7 +83,7 @@ class XmlFileLoader extends FileLoader
                 $this->parseImport($collection, $node, $path, $file);
                 break;
             case 'when':
-                if (!$this->env || $node->getAttribute('env') !== $this->env) {
+                if (! $this->env || $node->getAttribute('env') !== $this->env) {
                     break;
                 }
                 foreach ($node->childNodes as $node) {
@@ -98,7 +99,7 @@ class XmlFileLoader extends FileLoader
 
     public function supports(mixed $resource, ?string $type = null): bool
     {
-        return \is_string($resource) && 'xml' === pathinfo($resource, \PATHINFO_EXTENSION) && (!$type || 'xml' === $type);
+        return \is_string($resource) && pathinfo($resource, \PATHINFO_EXTENSION) === 'xml' && (! $type || $type === 'xml');
     }
 
     /**
@@ -127,15 +128,15 @@ class XmlFileLoader extends FileLoader
 
         [$defaults, $requirements, $options, $condition, $paths, /* $prefixes */, $hosts] = $this->parseConfigs($node, $path);
 
-        if (!$paths && '' === $node->getAttribute('path')) {
+        if (! $paths && $node->getAttribute('path') === '') {
             throw new \InvalidArgumentException(\sprintf('The <route> element in file "%s" must have a "path" attribute or <path> child nodes.', $path));
         }
 
-        if ($paths && '' !== $node->getAttribute('path')) {
+        if ($paths && $node->getAttribute('path') !== '') {
             throw new \InvalidArgumentException(\sprintf('The <route> element in file "%s" must not have both a "path" attribute and <path> child nodes.', $path));
         }
 
-        $routes = $this->createLocalizedRoute(new RouteCollection(), $id, $paths ?: $node->getAttribute('path'));
+        $routes = $this->createLocalizedRoute(new RouteCollection, $id, $paths ?: $node->getAttribute('path'));
         $routes->addDefaults($defaults);
         $routes->addRequirements($requirements);
         $routes->addOptions($options);
@@ -143,7 +144,7 @@ class XmlFileLoader extends FileLoader
         $routes->setMethods($methods);
         $routes->setCondition($condition);
 
-        if (null !== $hosts) {
+        if ($hosts !== null) {
             $this->addHost($routes, $hosts);
         }
 
@@ -158,7 +159,7 @@ class XmlFileLoader extends FileLoader
     protected function parseImport(RouteCollection $collection, \DOMElement $node, string $path, string $file): void
     {
         /** @var \DOMElement $resourceElement */
-        if (!($resource = $node->getAttribute('resource') ?: null) && $resourceElement = $node->getElementsByTagName('resource')[0] ?? null) {
+        if (! ($resource = $node->getAttribute('resource') ?: null) && $resourceElement = $node->getElementsByTagName('resource')[0] ?? null) {
             $resource = [];
             /** @var \DOMAttr $attribute */
             foreach ($resourceElement->attributes as $attribute) {
@@ -166,7 +167,7 @@ class XmlFileLoader extends FileLoader
             }
         }
 
-        if (!$resource) {
+        if (! $resource) {
             throw new \InvalidArgumentException(\sprintf('The <import> element in file "%s" must have a "resource" attribute or element.', $path));
         }
 
@@ -179,13 +180,13 @@ class XmlFileLoader extends FileLoader
 
         [$defaults, $requirements, $options, $condition, /* $paths */, $prefixes, $hosts] = $this->parseConfigs($node, $path);
 
-        if ('' !== $prefix && $prefixes) {
+        if ($prefix !== '' && $prefixes) {
             throw new \InvalidArgumentException(\sprintf('The <route> element in file "%s" must not have both a "prefix" attribute and <prefix> child nodes.', $path));
         }
 
         $exclude = [];
         foreach ($node->childNodes as $child) {
-            if ($child instanceof \DOMElement && $child->localName === $exclude && self::NAMESPACE_URI === $child->namespaceURI) {
+            if ($child instanceof \DOMElement && $child->localName === $exclude && $child->namespaceURI === self::NAMESPACE_URI) {
                 $exclude[] = $child->nodeValue;
             }
         }
@@ -200,29 +201,29 @@ class XmlFileLoader extends FileLoader
         $this->setCurrentDir(\dirname($path));
 
         /** @var RouteCollection[] $imported */
-        $imported = $this->import($resource, '' !== $type ? $type : null, false, $file, $exclude) ?: [];
+        $imported = $this->import($resource, $type !== '' ? $type : null, false, $file, $exclude) ?: [];
 
-        if (!\is_array($imported)) {
+        if (! \is_array($imported)) {
             $imported = [$imported];
         }
 
         foreach ($imported as $subCollection) {
             $this->addPrefix($subCollection, $prefixes ?: $prefix, $trailingSlashOnRoot);
 
-            if (null !== $hosts) {
+            if ($hosts !== null) {
                 $this->addHost($subCollection, $hosts);
             }
 
-            if (null !== $condition) {
+            if ($condition !== null) {
                 $subCollection->setCondition($condition);
             }
-            if (null !== $schemes) {
+            if ($schemes !== null) {
                 $subCollection->setSchemes($schemes);
             }
-            if (null !== $methods) {
+            if ($methods !== null) {
                 $subCollection->setMethods($methods);
             }
-            if (null !== $namePrefix) {
+            if ($namePrefix !== null) {
                 $subCollection->addNamePrefix($namePrefix);
             }
             $subCollection->addDefaults($defaults);
@@ -326,7 +327,7 @@ class XmlFileLoader extends FileLoader
             $defaults['_stateless'] = XmlUtils::phpize($stateless);
         }
 
-        if (!$hosts) {
+        if (! $hosts) {
             $hosts = $node->hasAttribute('host') ? $node->getAttribute('host') : null;
         }
 
@@ -346,11 +347,11 @@ class XmlFileLoader extends FileLoader
         // only be a single element inside a default element. So this element
         // (if one was found) can safely be returned.
         foreach ($element->childNodes as $child) {
-            if (!$child instanceof \DOMElement) {
+            if (! $child instanceof \DOMElement) {
                 continue;
             }
 
-            if (self::NAMESPACE_URI !== $child->namespaceURI) {
+            if ($child->namespaceURI !== self::NAMESPACE_URI) {
                 continue;
             }
 
@@ -376,7 +377,7 @@ class XmlFileLoader extends FileLoader
 
         switch ($node->localName) {
             case 'bool':
-                return 'true' === trim($node->nodeValue) || '1' === trim($node->nodeValue);
+                return trim($node->nodeValue) === 'true' || trim($node->nodeValue) === '1';
             case 'int':
                 return (int) trim($node->nodeValue);
             case 'float':
@@ -387,11 +388,11 @@ class XmlFileLoader extends FileLoader
                 $list = [];
 
                 foreach ($node->childNodes as $element) {
-                    if (!$element instanceof \DOMElement) {
+                    if (! $element instanceof \DOMElement) {
                         continue;
                     }
 
-                    if (self::NAMESPACE_URI !== $element->namespaceURI) {
+                    if ($element->namespaceURI !== self::NAMESPACE_URI) {
                         continue;
                     }
 
@@ -403,11 +404,11 @@ class XmlFileLoader extends FileLoader
                 $map = [];
 
                 foreach ($node->childNodes as $element) {
-                    if (!$element instanceof \DOMElement) {
+                    if (! $element instanceof \DOMElement) {
                         continue;
                     }
 
-                    if (self::NAMESPACE_URI !== $element->namespaceURI) {
+                    if ($element->namespaceURI !== self::NAMESPACE_URI) {
                         continue;
                     }
 
@@ -424,11 +425,11 @@ class XmlFileLoader extends FileLoader
     {
         $namespaceUri = 'http://www.w3.org/2001/XMLSchema-instance';
 
-        if (!$element->hasAttributeNS($namespaceUri, 'nil')) {
+        if (! $element->hasAttributeNS($namespaceUri, 'nil')) {
             return false;
         }
 
-        return 'true' === $element->getAttributeNS($namespaceUri, 'nil') || '1' === $element->getAttributeNS($namespaceUri, 'nil');
+        return $element->getAttributeNS($namespaceUri, 'nil') === 'true' || $element->getAttributeNS($namespaceUri, 'nil') === '1';
     }
 
     /**
@@ -440,24 +441,24 @@ class XmlFileLoader extends FileLoader
     {
         $deprecatedNode = null;
         foreach ($node->childNodes as $child) {
-            if (!$child instanceof \DOMElement || self::NAMESPACE_URI !== $child->namespaceURI) {
+            if (! $child instanceof \DOMElement || $child->namespaceURI !== self::NAMESPACE_URI) {
                 continue;
             }
-            if ('deprecated' !== $child->localName) {
+            if ($child->localName !== 'deprecated') {
                 throw new \InvalidArgumentException(\sprintf('Invalid child element "%s" defined for alias "%s" in "%s".', $child->localName, $node->getAttribute('id'), $path));
             }
 
             $deprecatedNode = $child;
         }
 
-        if (null === $deprecatedNode) {
+        if ($deprecatedNode === null) {
             return [];
         }
 
-        if (!$deprecatedNode->hasAttribute('package')) {
+        if (! $deprecatedNode->hasAttribute('package')) {
             throw new \InvalidArgumentException(\sprintf('The <deprecated> element in file "%s" must have a "package" attribute.', $path));
         }
-        if (!$deprecatedNode->hasAttribute('version')) {
+        if (! $deprecatedNode->hasAttribute('version')) {
             throw new \InvalidArgumentException(\sprintf('The <deprecated> element in file "%s" must have a "version" attribute.', $path));
         }
 

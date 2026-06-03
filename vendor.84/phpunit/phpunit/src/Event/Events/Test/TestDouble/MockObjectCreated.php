@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,11 +9,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\Test;
 
-use function sprintf;
 use PHPUnit\Event\Event;
 use PHPUnit\Event\Telemetry;
+
+use function sprintf;
 
 /**
  * @immutable
@@ -28,12 +32,12 @@ final readonly class MockObjectCreated implements Event
     private string $className;
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      */
     public function __construct(Telemetry\Info $telemetryInfo, string $className)
     {
         $this->telemetryInfo = $telemetryInfo;
-        $this->className     = $className;
+        $this->className = $className;
     }
 
     public function telemetryInfo(): Telemetry\Info

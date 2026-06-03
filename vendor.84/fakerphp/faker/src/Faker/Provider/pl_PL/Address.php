@@ -7,12 +7,15 @@ class Address extends \Faker\Provider\Address
     protected static $streetAddressFormats = [
         '{{streetName}} {{buildingNumber}}',
     ];
+
     protected static $addressFormats = [
         '{{streetAddress}}, {{postcode}} {{city}}',
     ];
 
     protected static $buildingNumber = ['##A', '%#', '##A/%#', '%#/%#'];
+
     protected static $postcode = ['##-###'];
+
     /**
      * @var array full list of Polish voivodeship
      */
@@ -21,6 +24,7 @@ class Address extends \Faker\Provider\Address
         'opolskie', 'podkarpackie', 'podlaskie', 'pomorskie', 'śląskie', 'świętokrzyskie', 'warmińsko-mazurskie',
         'wielkopolskie', 'zachodniopomorskie',
     ];
+
     /**
      * @var array Countries in Polish
      *
@@ -51,6 +55,7 @@ class Address extends \Faker\Provider\Address
         'Wielka Brytania', 'Wietnam', 'Włochy', 'Wybrzeże Kości Słoniowej', 'Wyspy Marshalla', 'Wyspy Salomona',
         'Wyspy Świętego Tomasza i Książęca', 'Zambia', 'Zimbabwe', 'Zjednoczone Emiraty Arabskie',
     ];
+
     /**
      * @var array 250 Polish cities with biggest number of streets. Extracted from data issued by the official
      *            public postal service of Poland.
@@ -92,6 +97,7 @@ class Address extends \Faker\Provider\Address
         'Ząbki', 'Zborowskie', 'Zduńska Wola', 'Zgierz', 'Zgorzelec', 'Zielona Góra', 'Żary', 'Żory',
         'Żyrardów', 'Żywiec',
     ];
+
     /**
      * @var array 549 most common Polish street names. Extracted from data issued by the official public
      *            postal service of Poland.

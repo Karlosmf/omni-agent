@@ -7,7 +7,7 @@ use Filament\Schemas\Components\Contracts\CanConcealComponents;
 
 trait CanBeConcealed
 {
-    protected Component | bool | null $cachedConcealingComponent = null;
+    protected Component|bool|null $cachedConcealingComponent = null;
 
     public function getConcealingComponent(): ?Component
     {

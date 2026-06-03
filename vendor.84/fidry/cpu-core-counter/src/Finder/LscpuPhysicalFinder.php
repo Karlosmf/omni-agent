@@ -13,12 +13,13 @@ declare(strict_types=1);
 
 namespace Fidry\CpuCoreCounter\Finder;
 
+use const PHP_EOL;
+
 use function count;
 use function explode;
 use function is_array;
 use function preg_grep;
 use function strtok;
-use const PHP_EOL;
 
 /**
  * The number of physical processors.
@@ -43,7 +44,7 @@ final class LscpuPhysicalFinder extends ProcOpenBasedFinder
         /** @var string[]|false $actualLines */
         $actualLines = preg_grep('/^\d+/', $lines);
 
-        if (!is_array($actualLines)) {
+        if (! is_array($actualLines)) {
             return null;
         }
 
@@ -52,7 +53,7 @@ final class LscpuPhysicalFinder extends ProcOpenBasedFinder
             strtok($line, ',');
             $core = strtok(',');
 
-            if (false === $core) {
+            if ($core === false) {
                 continue;
             }
 
@@ -62,6 +63,6 @@ final class LscpuPhysicalFinder extends ProcOpenBasedFinder
 
         $count = count($cores);
 
-        return 0 === $count ? null : $count;
+        return $count === 0 ? null : $count;
     }
 }

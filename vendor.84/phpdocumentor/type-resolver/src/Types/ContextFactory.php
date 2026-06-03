@@ -13,6 +13,18 @@ declare(strict_types=1);
 
 namespace phpDocumentor\Reflection\Types;
 
+use const T_AS;
+use const T_CLASS;
+use const T_CURLY_OPEN;
+use const T_DOLLAR_OPEN_CURLY_BRACES;
+use const T_NAME_FULLY_QUALIFIED;
+use const T_NAME_QUALIFIED;
+use const T_NAMESPACE;
+use const T_NS_SEPARATOR;
+use const T_STRING;
+use const T_TRAIT;
+use const T_USE;
+
 use ArrayIterator;
 use InvalidArgumentException;
 use ReflectionClass;
@@ -36,23 +48,11 @@ use function substr;
 use function token_get_all;
 use function trim;
 
-use const T_AS;
-use const T_CLASS;
-use const T_CURLY_OPEN;
-use const T_DOLLAR_OPEN_CURLY_BRACES;
-use const T_NAME_FULLY_QUALIFIED;
-use const T_NAME_QUALIFIED;
-use const T_NAMESPACE;
-use const T_NS_SEPARATOR;
-use const T_STRING;
-use const T_TRAIT;
-use const T_USE;
-
-if (!defined('T_NAME_QUALIFIED')) {
+if (! defined('T_NAME_QUALIFIED')) {
     define('T_NAME_QUALIFIED', 10001);
 }
 
-if (!defined('T_NAME_FULLY_QUALIFIED')) {
+if (! defined('T_NAME_FULLY_QUALIFIED')) {
     define('T_NAME_FULLY_QUALIFIED', 10002);
 }
 
@@ -81,7 +81,7 @@ final class ContextFactory
     public function createFromReflector(Reflector $reflector): Context
     {
         if ($reflector instanceof ReflectionClass) {
-            //phpcs:ignore SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration.MissingVariable
+            // phpcs:ignore SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration.MissingVariable
             /** @var ReflectionClass<object> $reflector */
 
             return $this->createFromReflectionClass($reflector);
@@ -103,14 +103,14 @@ final class ContextFactory
             return $this->createFromReflectionClassConstant($reflector);
         }
 
-        throw new UnexpectedValueException('Unhandled \Reflector instance given:  ' . get_class($reflector));
+        throw new UnexpectedValueException('Unhandled \Reflector instance given:  '.get_class($reflector));
     }
 
     private function createFromReflectionParameter(ReflectionParameter $parameter): Context
     {
         $class = $parameter->getDeclaringClass();
-        if (!$class) {
-            throw new InvalidArgumentException('Unable to get class of ' . $parameter->getName());
+        if (! $class) {
+            throw new InvalidArgumentException('Unable to get class of '.$parameter->getName());
         }
 
         return $this->createFromReflectionClass($class);
@@ -132,7 +132,7 @@ final class ContextFactory
 
     private function createFromReflectionClassConstant(ReflectionClassConstant $constant): Context
     {
-        //phpcs:ignore SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration.MissingVariable
+        // phpcs:ignore SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration.MissingVariable
         /** @phpstan-var ReflectionClass<object> $class */
         $class = $constant->getDeclaringClass();
 
@@ -144,13 +144,13 @@ final class ContextFactory
      */
     private function createFromReflectionClass(ReflectionClass $class): Context
     {
-        $fileName  = $class->getFileName();
+        $fileName = $class->getFileName();
         $namespace = $class->getNamespaceName();
 
         if (is_string($fileName) && file_exists($fileName)) {
             $contents = file_get_contents($fileName);
             if ($contents === false) {
-                throw new RuntimeException('Unable to read file "' . $fileName . '"');
+                throw new RuntimeException('Unable to read file "'.$fileName.'"');
             }
 
             return $this->createForNamespace($namespace, $contents);
@@ -164,16 +164,16 @@ final class ContextFactory
      *
      * @see Context for more information on Contexts.
      *
-     * @param string $namespace    It does not matter if a `\` precedes the namespace name,
-     * this method first normalizes.
-     * @param string $fileContents The file's contents to retrieve the aliases from with the given namespace.
+     * @param  string  $namespace  It does not matter if a `\` precedes the namespace name,
+     *                             this method first normalizes.
+     * @param  string  $fileContents  The file's contents to retrieve the aliases from with the given namespace.
      */
     public function createForNamespace(string $namespace, string $fileContents): Context
     {
-        $namespace        = trim($namespace, '\\');
-        $useStatements    = [];
+        $namespace = trim($namespace, '\\');
+        $useStatements = [];
         $currentNamespace = '';
-        $tokens           = new ArrayIterator(token_get_all($fileContents));
+        $tokens = new ArrayIterator(token_get_all($fileContents));
 
         while ($tokens->valid()) {
             $currentToken = $tokens->current();
@@ -186,23 +186,23 @@ final class ContextFactory
                     // Fast-forward the iterator through the class so that any
                     // T_USE tokens found within are skipped - these are not
                     // valid namespace use statements so should be ignored.
-                    $braceLevel      = 0;
+                    $braceLevel = 0;
                     $firstBraceFound = false;
-                    while ($tokens->valid() && ($braceLevel > 0 || !$firstBraceFound)) {
+                    while ($tokens->valid() && ($braceLevel > 0 || ! $firstBraceFound)) {
                         $currentToken = $tokens->current();
                         if (
                             $currentToken === '{'
                             || in_array($currentToken[0], [T_CURLY_OPEN, T_DOLLAR_OPEN_CURLY_BRACES], true)
                         ) {
-                            if (!$firstBraceFound) {
+                            if (! $firstBraceFound) {
                                 $firstBraceFound = true;
                             }
 
-                            ++$braceLevel;
+                            $braceLevel++;
                         }
 
                         if ($currentToken === '}') {
-                            --$braceLevel;
+                            $braceLevel--;
                         }
 
                         $tokens->next();
@@ -226,7 +226,7 @@ final class ContextFactory
     /**
      * Deduce the name from tokens when we are at the T_NAMESPACE token.
      *
-     * @param ArrayIterator<int, string|array{0:int,1:string,2:int}> $tokens
+     * @param  ArrayIterator<int, string|array{0:int,1:string,2:int}>  $tokens
      */
     private function parseNamespace(ArrayIterator $tokens): string
     {
@@ -246,9 +246,9 @@ final class ContextFactory
     /**
      * Deduce the names of all imports when we are at the T_USE token.
      *
-     * @param ArrayIterator<int, string|array{0:int,1:string,2:int}> $tokens
-     *
+     * @param  ArrayIterator<int, string|array{0:int,1:string,2:int}>  $tokens
      * @return string[]
+     *
      * @psalm-return array<string, string>
      */
     private function parseUseStatement(ArrayIterator $tokens): array
@@ -271,7 +271,7 @@ final class ContextFactory
     /**
      * Fast-forwards the iterator as longs as we don't encounter a T_STRING or T_NS_SEPARATOR token.
      *
-     * @param ArrayIterator<int, string|array{0:int,1:string,2:int}> $tokens
+     * @param  ArrayIterator<int, string|array{0:int,1:string,2:int}>  $tokens
      */
     private function skipToNextStringOrNamespaceSeparator(ArrayIterator $tokens): void
     {
@@ -297,9 +297,9 @@ final class ContextFactory
      * Deduce the namespace name and alias of an import when we are at the T_USE token or have not reached the end of
      * a USE statement yet. This will return a key/value array of the alias => namespace.
      *
-     * @param ArrayIterator<int, string|array{0:int,1:string,2:int}> $tokens
-     *
+     * @param  ArrayIterator<int, string|array{0:int,1:string,2:int}>  $tokens
      * @return string[]
+     *
      * @psalm-return array<string, string>
      *
      * @psalm-suppress TypeDoesNotContainType
@@ -307,26 +307,26 @@ final class ContextFactory
     private function extractUseStatements(ArrayIterator $tokens): array
     {
         $extractedUseStatements = [];
-        $groupedNs              = '';
-        $currentNs              = '';
-        $currentAlias           = '';
-        $state                  = 'start';
+        $groupedNs = '';
+        $currentNs = '';
+        $currentAlias = '';
+        $state = 'start';
 
         while ($tokens->valid()) {
             $currentToken = $tokens->current();
-            $tokenId      = is_string($currentToken) ? $currentToken : $currentToken[0];
-            $tokenValue   = is_string($currentToken) ? null : $currentToken[1];
+            $tokenId = is_string($currentToken) ? $currentToken : $currentToken[0];
+            $tokenValue = is_string($currentToken) ? null : $currentToken[1];
             switch ($state) {
                 case 'start':
                     switch ($tokenId) {
                         case T_STRING:
                         case T_NS_SEPARATOR:
-                            $currentNs   .= (string) $tokenValue;
-                            $currentAlias =  $tokenValue;
+                            $currentNs .= (string) $tokenValue;
+                            $currentAlias = $tokenValue;
                             break;
                         case T_NAME_QUALIFIED:
                         case T_NAME_FULLY_QUALIFIED:
-                            $currentNs   .= (string) $tokenValue;
+                            $currentNs .= (string) $tokenValue;
                             $currentAlias = substr(
                                 (string) $tokenValue,
                                 (int) (strrpos((string) $tokenValue, '\\')) + 1
@@ -334,7 +334,7 @@ final class ContextFactory
                             break;
                         case T_CURLY_OPEN:
                         case '{':
-                            $state     = 'grouped';
+                            $state = 'grouped';
                             $groupedNs = $currentNs;
                             break;
                         case T_AS:
@@ -367,17 +367,17 @@ final class ContextFactory
                     switch ($tokenId) {
                         case T_STRING:
                         case T_NS_SEPARATOR:
-                            $currentNs   .= (string) $tokenValue;
+                            $currentNs .= (string) $tokenValue;
                             $currentAlias = $tokenValue;
                             break;
                         case T_AS:
                             $state = 'grouped-alias';
                             break;
                         case self::T_LITERAL_USE_SEPARATOR:
-                            $state                                          = 'grouped';
+                            $state = 'grouped';
                             $extractedUseStatements[(string) $currentAlias] = $currentNs;
-                            $currentNs                                      = $groupedNs;
-                            $currentAlias                                   = '';
+                            $currentNs = $groupedNs;
+                            $currentAlias = '';
                             break;
                         case self::T_LITERAL_END_OF_USE:
                             $state = 'end';
@@ -393,10 +393,10 @@ final class ContextFactory
                             $currentAlias = $tokenValue;
                             break;
                         case self::T_LITERAL_USE_SEPARATOR:
-                            $state                                          = 'grouped';
+                            $state = 'grouped';
                             $extractedUseStatements[(string) $currentAlias] = $currentNs;
-                            $currentNs                                      = $groupedNs;
-                            $currentAlias                                   = '';
+                            $currentNs = $groupedNs;
+                            $currentAlias = '';
                             break;
                         case self::T_LITERAL_END_OF_USE:
                             $state = 'end';

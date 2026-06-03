@@ -31,7 +31,7 @@ final class Some extends Option
     private $value;
 
     /**
-     * @param T $value
+     * @param  T  $value
      */
     public function __construct($value)
     {
@@ -41,8 +41,7 @@ final class Some extends Option
     /**
      * @template U
      *
-     * @param U $value
-     *
+     * @param  U  $value
      * @return Some<U>
      */
     public static function create($value): self
@@ -106,7 +105,7 @@ final class Some extends Option
     {
         /** @var mixed */
         $rs = $callable($this->value);
-        if (!$rs instanceof Option) {
+        if (! $rs instanceof Option) {
             throw new \RuntimeException('Callables passed to flatMap() must return an Option. Maybe you should use map() instead?');
         }
 
@@ -115,7 +114,7 @@ final class Some extends Option
 
     public function filter($callable)
     {
-        if (true === $callable($this->value)) {
+        if ($callable($this->value) === true) {
             return $this;
         }
 
@@ -124,7 +123,7 @@ final class Some extends Option
 
     public function filterNot($callable)
     {
-        if (false === $callable($this->value)) {
+        if ($callable($this->value) === false) {
             return $this;
         }
 

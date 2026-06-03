@@ -23,7 +23,7 @@ class CSSString extends PrimitiveValue
     private $string;
 
     /**
-     * @param int<1, max>|null $lineNumber
+     * @param  int<1, max>|null  $lineNumber
      */
     public function __construct(string $string, ?int $lineNumber = null)
     {
@@ -58,7 +58,7 @@ class CSSString extends PrimitiveValue
                 $result .= $parserState->parseCharacter(false);
             }
         } else {
-            while (!$parserState->comes($quote)) {
+            while (! $parserState->comes($quote)) {
                 $content = $parserState->parseCharacter(false);
                 if ($content === null) {
                     throw new SourceException(
@@ -70,6 +70,7 @@ class CSSString extends PrimitiveValue
             }
             $parserState->consume($quote);
         }
+
         return new CSSString($result, $parserState->currentLine());
     }
 
@@ -90,6 +91,7 @@ class CSSString extends PrimitiveValue
     {
         $string = \addslashes($this->string);
         $string = \str_replace("\n", '\\A', $string);
-        return $outputFormat->getStringQuotingType() . $string . $outputFormat->getStringQuotingType();
+
+        return $outputFormat->getStringQuotingType().$string.$outputFormat->getStringQuotingType();
     }
 }

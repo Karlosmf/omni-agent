@@ -16,6 +16,4 @@ namespace Symfony\Component\HttpFoundation\File\Exception;
  *
  * @author Florent Mata <florentmata@gmail.com>
  */
-class FormSizeFileException extends FileException
-{
-}
+class FormSizeFileException extends FileException {}

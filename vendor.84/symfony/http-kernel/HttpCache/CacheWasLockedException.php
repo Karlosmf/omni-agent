@@ -14,6 +14,4 @@ namespace Symfony\Component\HttpKernel\HttpCache;
 /**
  * @internal
  */
-class CacheWasLockedException extends \Exception
-{
-}
+class CacheWasLockedException extends \Exception {}

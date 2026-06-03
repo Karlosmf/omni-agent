@@ -19,15 +19,15 @@ namespace Symfony\Component\HttpFoundation\Session\Flash;
 class AutoExpireFlashBag implements FlashBagInterface
 {
     private string $name = 'flashes';
+
     private array $flashes = ['display' => [], 'new' => []];
 
     /**
-     * @param string $storageKey The key used to store flashes in the session
+     * @param  string  $storageKey  The key used to store flashes in the session
      */
     public function __construct(
         private string $storageKey = '_symfony_flashes',
-    ) {
-    }
+    ) {}
 
     public function getName(): string
     {
@@ -69,7 +69,7 @@ class AutoExpireFlashBag implements FlashBagInterface
     {
         $return = $default;
 
-        if (!$this->has($type)) {
+        if (! $this->has($type)) {
             return $return;
         }
 

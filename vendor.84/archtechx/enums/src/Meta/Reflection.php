@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ArchTech\Enums\Meta;
 
+use ArchTech\Enums\Metadata;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionEnumUnitCase;
@@ -14,7 +15,7 @@ class Reflection
     /**
      * Get the meta properties enabled on an Enum.
      *
-     * @param \Enum&\ArchTech\Enums\Metadata $enum
+     * @param  \Enum&Metadata  $enum
      * @return string[]|array<\class-string<MetaProperty>>
      */
     public static function metaProperties(mixed $enum): array
@@ -52,8 +53,8 @@ class Reflection
     /**
      * Get the value of a meta property on the provided enum.
      *
-     * @param class-string<MetaProperty> $metaProperty
-     * @param \Enum $enum
+     * @param  class-string<MetaProperty>  $metaProperty
+     * @param  \Enum  $enum
      */
     public static function metaValue(string $metaProperty, mixed $enum): mixed
     {

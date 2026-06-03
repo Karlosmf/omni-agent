@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Ramsey\Uuid\Generator;
 
+use const STR_PAD_LEFT;
+
 use Ramsey\Uuid\Converter\NumberConverterInterface;
 use Ramsey\Uuid\Exception\DceSecurityException;
 use Ramsey\Uuid\Provider\DceSecurityProviderInterface;
@@ -27,8 +29,6 @@ use function pack;
 use function str_pad;
 use function strlen;
 use function substr_replace;
-
-use const STR_PAD_LEFT;
 
 /**
  * DceSecurityGenerator generates strings of binary data based on a local domain, local identifier, node ID, clock
@@ -56,8 +56,7 @@ class DceSecurityGenerator implements DceSecurityGeneratorInterface
         private NumberConverterInterface $numberConverter,
         private TimeGeneratorInterface $timeGenerator,
         private DceSecurityProviderInterface $dceSecurityProvider,
-    ) {
-    }
+    ) {}
 
     public function generate(
         int $localDomain,
@@ -65,7 +64,7 @@ class DceSecurityGenerator implements DceSecurityGeneratorInterface
         ?Hexadecimal $node = null,
         ?int $clockSeq = null,
     ): string {
-        if (!in_array($localDomain, self::DOMAINS)) {
+        if (! in_array($localDomain, self::DOMAINS)) {
             throw new DceSecurityException('Local domain must be a valid DCE Security domain');
         }
 

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -16,6 +18,4 @@ namespace Monolog\Handler;
  *
  * @author Christian Bergau <cbergau86@gmail.com>
  */
-class MissingExtensionException extends \Exception
-{
-}
+class MissingExtensionException extends \Exception {}

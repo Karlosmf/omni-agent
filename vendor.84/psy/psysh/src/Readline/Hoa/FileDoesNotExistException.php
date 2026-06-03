@@ -43,6 +43,4 @@ namespace Psy\Readline\Hoa;
  *
  * @license    New BSD License
  */
-class FileDoesNotExistException extends FileException
-{
-}
+class FileDoesNotExistException extends FileException {}

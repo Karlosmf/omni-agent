@@ -6,9 +6,9 @@ use Closure;
 
 trait CanBeSorted
 {
-    protected int | Closure | null $sort = null;
+    protected int|Closure|null $sort = null;
 
-    public function sort(int | Closure | null $sort): static
+    public function sort(int|Closure|null $sort): static
     {
         $this->sort = $sort;
 

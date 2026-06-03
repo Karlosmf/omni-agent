@@ -236,14 +236,18 @@ class Uuid implements UuidInterface
 
     /**
      * @var bool flag to detect if the UUID factory was replaced internally, which disables all optimizations for the
-     *     default/happy path internal scenarios
+     *           default/happy path internal scenarios
+     *
      * @phpstan-ignore property.readOnlyByPhpDocDefaultValue
      */
     private static bool $factoryReplaced = false;
 
     protected CodecInterface $codec;
+
     protected NumberConverterInterface $numberConverter;
+
     protected Rfc4122FieldsInterface $fields;
+
     protected TimeConverterInterface $timeConverter;
 
     /**
@@ -261,11 +265,11 @@ class Uuid implements UuidInterface
      * $namespaceSha1Uuid = Uuid::uuid5(Uuid::NAMESPACE_URL, 'http://php.net/');
      * ```
      *
-     * @param Rfc4122FieldsInterface $fields The fields from which to construct a UUID
-     * @param NumberConverterInterface $numberConverter The number converter to use for converting hex values to/from integers
-     * @param CodecInterface $codec The codec to use when encoding or decoding UUID strings
-     * @param TimeConverterInterface $timeConverter The time converter to use for converting timestamps extracted from a
-     *     UUID to unix timestamps
+     * @param  Rfc4122FieldsInterface  $fields  The fields from which to construct a UUID
+     * @param  NumberConverterInterface  $numberConverter  The number converter to use for converting hex values to/from integers
+     * @param  CodecInterface  $codec  The codec to use when encoding or decoding UUID strings
+     * @param  TimeConverterInterface  $timeConverter  The time converter to use for converting timestamps extracted from a
+     *                                                 UUID to unix timestamps
      */
     public function __construct(
         Rfc4122FieldsInterface $fields,
@@ -314,7 +318,7 @@ class Uuid implements UuidInterface
     /**
      * Re-constructs the object from its serialized form
      *
-     * @param string $data The serialized PHP string to unserialize into a UuidInterface instance
+     * @param  string  $data  The serialized PHP string to unserialize into a UuidInterface instance
      */
     public function unserialize(string $data): void
     {
@@ -340,12 +344,12 @@ class Uuid implements UuidInterface
     }
 
     /**
-     * @param array{bytes?: string} $data
+     * @param  array{bytes?: string}  $data
      */
     public function __unserialize(array $data): void
     {
         // @codeCoverageIgnoreStart
-        if (!isset($data['bytes'])) {
+        if (! isset($data['bytes'])) {
             throw new ValueError(sprintf('%s(): Argument #1 ($data) is invalid', __METHOD__));
         }
         // @codeCoverageIgnoreEnd
@@ -370,7 +374,7 @@ class Uuid implements UuidInterface
 
     public function equals(?object $other): bool
     {
-        if (!$other instanceof UuidInterface) {
+        if (! $other instanceof UuidInterface) {
             return false;
         }
 
@@ -402,7 +406,7 @@ class Uuid implements UuidInterface
 
     public function getUrn(): string
     {
-        return 'urn:uuid:' . $this->toString();
+        return 'urn:uuid:'.$this->toString();
     }
 
     /**
@@ -419,7 +423,7 @@ class Uuid implements UuidInterface
     public static function getFactory(): UuidFactoryInterface
     {
         if (self::$factory === null) {
-            self::$factory = new UuidFactory();
+            self::$factory = new UuidFactory;
         }
 
         return self::$factory;
@@ -428,14 +432,14 @@ class Uuid implements UuidInterface
     /**
      * Sets the factory used to create UUIDs
      *
-     * @param UuidFactoryInterface $factory A factory that will be used by this class to create UUIDs
+     * @param  UuidFactoryInterface  $factory  A factory that will be used by this class to create UUIDs
      */
     public static function setFactory(UuidFactoryInterface $factory): void
     {
         // Note: non-strict equality is intentional here. If the factory is configured differently, every assumption
         //       around purity is broken, and we have to internally decide everything differently.
         // phpcs:ignore SlevomatCodingStandard.Operators.DisallowEqualOperators.DisallowedNotEqualOperator
-        self::$factoryReplaced = ($factory != new UuidFactory());
+        self::$factoryReplaced = ($factory != new UuidFactory);
 
         self::$factory = $factory;
     }
@@ -443,8 +447,7 @@ class Uuid implements UuidInterface
     /**
      * Creates a UUID from a byte string
      *
-     * @param string $bytes A binary string
-     *
+     * @param  string  $bytes  A binary string
      * @return UuidInterface A UuidInterface instance created from a binary string representation
      *
      * @throws InvalidArgumentException
@@ -454,20 +457,20 @@ class Uuid implements UuidInterface
     public static function fromBytes(string $bytes): UuidInterface
     {
         /** @phpstan-ignore impure.staticPropertyAccess */
-        if (!self::$factoryReplaced && strlen($bytes) === 16) {
+        if (! self::$factoryReplaced && strlen($bytes) === 16) {
             $base16Uuid = bin2hex($bytes);
 
             // Note: we are calling `fromString` internally because we don't know if the given `$bytes` is a valid UUID
             return self::fromString(
                 substr($base16Uuid, 0, 8)
-                    . '-'
-                    . substr($base16Uuid, 8, 4)
-                    . '-'
-                    . substr($base16Uuid, 12, 4)
-                    . '-'
-                    . substr($base16Uuid, 16, 4)
-                    . '-'
-                    . substr($base16Uuid, 20, 12),
+                    .'-'
+                    .substr($base16Uuid, 8, 4)
+                    .'-'
+                    .substr($base16Uuid, 12, 4)
+                    .'-'
+                    .substr($base16Uuid, 16, 4)
+                    .'-'
+                    .substr($base16Uuid, 20, 12),
             );
         }
 
@@ -478,8 +481,7 @@ class Uuid implements UuidInterface
     /**
      * Creates a UUID from the string standard representation
      *
-     * @param string $uuid A hexadecimal string
-     *
+     * @param  string  $uuid  A hexadecimal string
      * @return UuidInterface A UuidInterface instance created from a hexadecimal string representation
      *
      * @throws InvalidArgumentException
@@ -490,7 +492,7 @@ class Uuid implements UuidInterface
     {
         $uuid = strtolower($uuid);
         /** @phpstan-ignore impure.staticPropertyAccess, possiblyImpure.functionCall */
-        if (!self::$factoryReplaced && preg_match(LazyUuidFromString::VALID_REGEX, $uuid) === 1) {
+        if (! self::$factoryReplaced && preg_match(LazyUuidFromString::VALID_REGEX, $uuid) === 1) {
             /** @phpstan-ignore possiblyImpure.functionCall */
             assert($uuid !== '');
 
@@ -505,11 +507,10 @@ class Uuid implements UuidInterface
     /**
      * Creates a UUID from a DateTimeInterface instance
      *
-     * @param DateTimeInterface $dateTime The date and time
-     * @param Hexadecimal | null $node A 48-bit number representing the hardware address
-     * @param int | null $clockSeq A 14-bit number used to help avoid duplicates that could arise when the clock is set
-     *     backwards in time or if the node ID changes
-     *
+     * @param  DateTimeInterface  $dateTime  The date and time
+     * @param  Hexadecimal | null  $node  A 48-bit number representing the hardware address
+     * @param  int | null  $clockSeq  A 14-bit number used to help avoid duplicates that could arise when the clock is set
+     *                                backwards in time or if the node ID changes
      * @return UuidInterface A UuidInterface instance that represents a version 1 UUID created from a DateTimeInterface instance
      */
     public static function fromDateTime(
@@ -523,8 +524,7 @@ class Uuid implements UuidInterface
     /**
      * Creates a UUID from the Hexadecimal object
      *
-     * @param Hexadecimal $hex Hexadecimal object representing a hexadecimal number
-     *
+     * @param  Hexadecimal  $hex  Hexadecimal object representing a hexadecimal number
      * @return UuidInterface A UuidInterface instance created from the Hexadecimal object representing a hexadecimal number
      *
      * @throws InvalidArgumentException
@@ -551,8 +551,7 @@ class Uuid implements UuidInterface
     /**
      * Creates a UUID from a 128-bit integer string
      *
-     * @param string $integer String representation of 128-bit integer
-     *
+     * @param  string  $integer  String representation of 128-bit integer
      * @return UuidInterface A UuidInterface instance created from the string representation of a 128-bit integer
      *
      * @throws InvalidArgumentException
@@ -568,8 +567,7 @@ class Uuid implements UuidInterface
     /**
      * Returns true if the provided string is a valid UUID
      *
-     * @param string $uuid A string to validate as a UUID
-     *
+     * @param  string  $uuid  A string to validate as a UUID
      * @return bool True if the string is a valid UUID, false otherwise
      *
      * @phpstan-assert-if-true =non-empty-string $uuid
@@ -585,11 +583,10 @@ class Uuid implements UuidInterface
     /**
      * Returns a version 1 (Gregorian time) UUID from a host ID, sequence number, and the current time
      *
-     * @param Hexadecimal | int | string | null $node A 48-bit number representing the hardware address; this number may
-     *     be represented as an integer or a hexadecimal string
-     * @param int | null $clockSeq A 14-bit number used to help avoid duplicates that could arise when the clock is set
-     *     backwards in time or if the node ID changes
-     *
+     * @param  Hexadecimal | int | string | null  $node  A 48-bit number representing the hardware address; this number may
+     *                                                   be represented as an integer or a hexadecimal string
+     * @param  int | null  $clockSeq  A 14-bit number used to help avoid duplicates that could arise when the clock is set
+     *                                backwards in time or if the node ID changes
      * @return UuidInterface A UuidInterface instance that represents a version 1 UUID
      */
     public static function uuid1($node = null, ?int $clockSeq = null): UuidInterface
@@ -600,15 +597,14 @@ class Uuid implements UuidInterface
     /**
      * Returns a version 2 (DCE Security) UUID from a local domain, local identifier, host ID, clock sequence, and the current time
      *
-     * @param int $localDomain The local domain to use when generating bytes, according to DCE Security
-     * @param IntegerObject | null $localIdentifier The local identifier for the given domain; this may be a UID or GID
-     *     on POSIX systems, if the local domain is "person" or "group," or it may be a site-defined identifier if the
-     *     local domain is "org"
-     * @param Hexadecimal | null $node A 48-bit number representing the hardware address
-     * @param int | null $clockSeq A 14-bit number used to help avoid duplicates that could arise when the clock is set
-     *     backwards in time or if the node ID changes (in a version 2 UUID, the lower 8 bits of this number are
-     *     replaced with the domain).
-     *
+     * @param  int  $localDomain  The local domain to use when generating bytes, according to DCE Security
+     * @param  IntegerObject | null  $localIdentifier  The local identifier for the given domain; this may be a UID or GID
+     *                                                 on POSIX systems, if the local domain is "person" or "group," or it may be a site-defined identifier if the
+     *                                                 local domain is "org"
+     * @param  Hexadecimal | null  $node  A 48-bit number representing the hardware address
+     * @param  int | null  $clockSeq  A 14-bit number used to help avoid duplicates that could arise when the clock is set
+     *                                backwards in time or if the node ID changes (in a version 2 UUID, the lower 8 bits of this number are
+     *                                replaced with the domain).
      * @return UuidInterface A UuidInterface instance that represents a version 2 UUID
      */
     public static function uuid2(
@@ -623,9 +619,8 @@ class Uuid implements UuidInterface
     /**
      * Returns a version 3 (name-based) UUID based on the MD5 hash of a namespace ID and a name
      *
-     * @param UuidInterface | string $ns The namespace (must be a valid UUID)
-     * @param string $name The name to use for creating a UUID
-     *
+     * @param  UuidInterface | string  $ns  The namespace (must be a valid UUID)
+     * @param  string  $name  The name to use for creating a UUID
      * @return UuidInterface A UuidInterface instance that represents a version 3 UUID
      *
      * @pure
@@ -649,9 +644,8 @@ class Uuid implements UuidInterface
     /**
      * Returns a version 5 (name-based) UUID based on the SHA-1 hash of a namespace ID and a name
      *
-     * @param UuidInterface | string $ns The namespace (must be a valid UUID)
-     * @param string $name The name to use for creating a UUID
-     *
+     * @param  UuidInterface | string  $ns  The namespace (must be a valid UUID)
+     * @param  string  $name  The name to use for creating a UUID
      * @return UuidInterface A UuidInterface instance that represents a version 5 UUID
      *
      * @pure
@@ -665,10 +659,9 @@ class Uuid implements UuidInterface
     /**
      * Returns a version 6 (reordered Gregorian time) UUID from a host ID, sequence number, and the current time
      *
-     * @param Hexadecimal | null $node A 48-bit number representing the hardware address
-     * @param int | null $clockSeq A 14-bit number used to help avoid duplicates that could arise when the clock is set
-     *     backwards in time or if the node ID changes
-     *
+     * @param  Hexadecimal | null  $node  A 48-bit number representing the hardware address
+     * @param  int | null  $clockSeq  A 14-bit number used to help avoid duplicates that could arise when the clock is set
+     *                                backwards in time or if the node ID changes
      * @return UuidInterface A UuidInterface instance that represents a version 6 UUID
      */
     public static function uuid6(
@@ -681,9 +674,8 @@ class Uuid implements UuidInterface
     /**
      * Returns a version 7 (Unix Epoch time) UUID
      *
-     * @param DateTimeInterface | null $dateTime An optional date/time from which to create the version 7 UUID. If not
-     *     provided, the UUID is generated using the current date/time.
-     *
+     * @param  DateTimeInterface | null  $dateTime  An optional date/time from which to create the version 7 UUID. If not
+     *                                              provided, the UUID is generated using the current date/time.
      * @return UuidInterface A UuidInterface instance that represents a version 7 UUID
      */
     public static function uuid7(?DateTimeInterface $dateTime = null): UuidInterface
@@ -704,10 +696,9 @@ class Uuid implements UuidInterface
      * The bytes provided may contain any value according to your application's needs. Be aware, however, that other
      * applications may not understand the semantics of the value.
      *
-     * @param string $bytes A 16-byte octet string. This is an open blob of data that you may fill with 128 bits of
-     *     information. Be aware, however, bits 48 through 51 will be replaced with the UUID version field, and bits 64
-     *     and 65 will be replaced with the UUID variant. You MUST NOT rely on these bits for your application needs.
-     *
+     * @param  string  $bytes  A 16-byte octet string. This is an open blob of data that you may fill with 128 bits of
+     *                         information. Be aware, however, bits 48 through 51 will be replaced with the UUID version field, and bits 64
+     *                         and 65 will be replaced with the UUID variant. You MUST NOT rely on these bits for your application needs.
      * @return UuidInterface A UuidInterface instance that represents a version 8 UUID
      *
      * @pure
@@ -720,6 +711,7 @@ class Uuid implements UuidInterface
         if (method_exists($factory, 'uuid8')) {
             /**
              * @var UuidInterface
+             *
              * @phpstan-ignore possiblyImpure.methodCall
              */
             return $factory->uuid8($bytes);

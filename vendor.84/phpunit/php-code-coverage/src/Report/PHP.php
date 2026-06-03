@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,18 +9,21 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Report;
 
 use const PHP_EOL;
-use function serialize;
+
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
 use SebastianBergmann\CodeCoverage\WriteOperationFailedException;
 
+use function serialize;
+
 final class PHP
 {
     /**
-     * @param null|non-empty-string $target
+     * @param  null|non-empty-string  $target
      *
      * @throws WriteOperationFailedException
      */
@@ -27,7 +32,7 @@ final class PHP
         $coverage->clearCache();
 
         $buffer = "<?php
-return \unserialize(<<<'END_OF_COVERAGE_SERIALIZATION'" . PHP_EOL . serialize($coverage) . PHP_EOL . 'END_OF_COVERAGE_SERIALIZATION' . PHP_EOL . ');';
+return \unserialize(<<<'END_OF_COVERAGE_SERIALIZATION'".PHP_EOL.serialize($coverage).PHP_EOL.'END_OF_COVERAGE_SERIALIZATION'.PHP_EOL.');';
 
         if ($target !== null) {
             Filesystem::write($target, $buffer);

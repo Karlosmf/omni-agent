@@ -40,8 +40,7 @@ class UTF8Utils
      * Count the number of characters in a string.
      * UTF-8 aware. This will try (in order) iconv, MB, and finally a custom counter.
      *
-     * @param string $string
-     *
+     * @param  string  $string
      * @return int
      */
     public static function countChars($string)
@@ -68,9 +67,8 @@ class UTF8Utils
      * This has not yet been tested with charactersets other than UTF-8.
      * It should work with ISO-8859-1/-13 and standard Latin Win charsets.
      *
-     * @param string $data     The data to convert
-     * @param string $encoding A valid encoding. Examples: http://www.php.net/manual/en/mbstring.supported-encodings.php
-     *
+     * @param  string  $data  The data to convert
+     * @param  string  $encoding  A valid encoding. Examples: http://www.php.net/manual/en/mbstring.supported-encodings.php
      * @return string
      */
     public static function convertToUTF8($data, $encoding = 'UTF-8')
@@ -104,7 +102,7 @@ class UTF8Utils
             mb_substitute_character($save);
         }
         // @todo Get iconv running in at least some environments if that is possible.
-        elseif (function_exists('iconv') && 'auto' !== $encoding) {
+        elseif (function_exists('iconv') && $encoding !== 'auto') {
             // fprintf(STDOUT, "iconv found\n");
             // iconv has the following behaviors:
             // - Overlong representations are ignored.
@@ -118,7 +116,7 @@ class UTF8Utils
         /*
          * One leading U+FEFF BYTE ORDER MARK character must be ignored if any are present.
          */
-        if ("\xEF\xBB\xBF" === substr($data, 0, 3)) {
+        if (substr($data, 0, 3) === "\xEF\xBB\xBF") {
             $data = substr($data, 3);
         }
 
@@ -128,20 +126,19 @@ class UTF8Utils
     /**
      * Checks for Unicode code points that are not valid in a document.
      *
-     * @param string $data A string to analyze
-     *
+     * @param  string  $data  A string to analyze
      * @return array An array of (string) error messages produced by the scanning
      */
     public static function checkForIllegalCodepoints($data)
     {
         // Vestigal error handling.
-        $errors = array();
+        $errors = [];
 
         /*
          * All U+0000 null characters in the input must be replaced by U+FFFD REPLACEMENT CHARACTERs.
          * Any occurrences of such characters is a parse error.
          */
-        for ($i = 0, $count = substr_count($data, "\0"); $i < $count; ++$i) {
+        for ($i = 0, $count = substr_count($data, "\0"); $i < $count; $i++) {
             $errors[] = 'null-character';
         }
 
@@ -168,7 +165,7 @@ class UTF8Utils
       |
         [\xF0-\xF4][\x8F-\xBF]\xBF[\xBE\xBF] # U+nFFFE and U+nFFFF (1 <= n <= 10_{16})
       )/x', $data, $matches);
-        for ($i = 0; $i < $count; ++$i) {
+        for ($i = 0; $i < $count; $i++) {
             $errors[] = 'invalid-codepoint';
         }
 

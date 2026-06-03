@@ -31,7 +31,7 @@ class Unescaper
     /**
      * Unescapes a single quoted string.
      *
-     * @param string $value A single quoted string
+     * @param  string  $value  A single quoted string
      */
     public function unescapeSingleQuotedString(string $value): string
     {
@@ -41,7 +41,7 @@ class Unescaper
     /**
      * Unescapes a double quoted string.
      *
-     * @param string $value A double quoted string
+     * @param  string  $value  A double quoted string
      */
     public function unescapeDoubleQuotedString(string $value): string
     {
@@ -54,7 +54,7 @@ class Unescaper
     /**
      * Unescapes a character that was found in a double-quoted string.
      *
-     * @param string $value An escaped character
+     * @param  string  $value  An escaped character
      */
     private function unescapeCharacter(string $value): string
     {
@@ -96,10 +96,10 @@ class Unescaper
         if (0x80 > $c %= 0x200000) {
             return \chr($c);
         }
-        if (0x800 > $c) {
+        if ($c < 0x800) {
             return \chr(0xC0 | $c >> 6).\chr(0x80 | $c & 0x3F);
         }
-        if (0x10000 > $c) {
+        if ($c < 0x10000) {
             return \chr(0xE0 | $c >> 12).\chr(0x80 | $c >> 6 & 0x3F).\chr(0x80 | $c & 0x3F);
         }
 

@@ -28,7 +28,7 @@ final class Php80
     public static function get_debug_type($value): string
     {
         switch (true) {
-            case null === $value: return 'null';
+            case $value === null: return 'null';
             case \is_bool($value): return 'bool';
             case \is_string($value): return 'string';
             case \is_array($value): return 'array';
@@ -41,7 +41,7 @@ final class Php80
                     return 'unknown';
                 }
 
-                if ('Unknown' === $type) {
+                if ($type === 'Unknown') {
                     $type = 'closed';
                 }
 
@@ -50,7 +50,7 @@ final class Php80
 
         $class = \get_class($value);
 
-        if (false === strpos($class, '@')) {
+        if (strpos($class, '@') === false) {
             return $class;
         }
 
@@ -59,7 +59,7 @@ final class Php80
 
     public static function get_resource_id($res): int
     {
-        if (!\is_resource($res) && null === @get_resource_type($res)) {
+        if (! \is_resource($res) && @get_resource_type($res) === null) {
             throw new \TypeError(sprintf('Argument 1 passed to get_resource_id() must be of the type resource, %s given', get_debug_type($res)));
         }
 
@@ -90,26 +90,26 @@ final class Php80
 
     public static function str_contains(string $haystack, string $needle): bool
     {
-        return '' === $needle || false !== strpos($haystack, $needle);
+        return $needle === '' || strpos($haystack, $needle) !== false;
     }
 
     public static function str_starts_with(string $haystack, string $needle): bool
     {
-        return 0 === strncmp($haystack, $needle, \strlen($needle));
+        return strncmp($haystack, $needle, \strlen($needle)) === 0;
     }
 
     public static function str_ends_with(string $haystack, string $needle): bool
     {
-        if ('' === $needle || $needle === $haystack) {
+        if ($needle === '' || $needle === $haystack) {
             return true;
         }
 
-        if ('' === $haystack) {
+        if ($haystack === '') {
             return false;
         }
 
         $needleLength = \strlen($needle);
 
-        return $needleLength <= \strlen($haystack) && 0 === substr_compare($haystack, $needle, -$needleLength);
+        return $needleLength <= \strlen($haystack) && substr_compare($haystack, $needle, -$needleLength) === 0;
     }
 }

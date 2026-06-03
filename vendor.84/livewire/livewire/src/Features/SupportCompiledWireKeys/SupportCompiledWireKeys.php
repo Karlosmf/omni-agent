@@ -10,6 +10,7 @@ use function Livewire\on;
 class SupportCompiledWireKeys extends ComponentHook
 {
     public static $loopStack = [];
+
     public static $currentLoop = [
         'count' => null,
         'index' => null,
@@ -55,7 +56,7 @@ class SupportCompiledWireKeys extends ComponentHook
         foreach ($keys[0] as $index => $key) {
             $escapedKey = str_replace("'", "\'", $keys[1][$index]);
             $prefix = "<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('{$escapedKey}', get_defined_vars()); ?>";
-            $contents = str_replace($key, $prefix . $key, $contents);
+            $contents = str_replace($key, $prefix.$key, $contents);
         }
 
         // Handle `wire:key` attributes on Blade components...
@@ -68,7 +69,8 @@ class SupportCompiledWireKeys extends ComponentHook
         return $contents;
     }
 
-    public static function openLoop() {
+    public static function openLoop()
+    {
         if (static::$currentLoop['count'] === null) {
             static::$currentLoop['count'] = 0;
         } else {
@@ -83,12 +85,14 @@ class SupportCompiledWireKeys extends ComponentHook
             'key' => null,
         ];
     }
-    
-    public static function startLoop($index) {
+
+    public static function startLoop($index)
+    {
         static::$currentLoop['index'] = $index;
     }
 
-    public static function endLoop() {
+    public static function endLoop()
+    {
         static::$currentLoop = [
             'count' => null,
             'index' => null,
@@ -96,7 +100,8 @@ class SupportCompiledWireKeys extends ComponentHook
         ];
     }
 
-    public static function closeLoop() {
+    public static function closeLoop()
+    {
         static::$currentLoop = array_pop(static::$loopStack);
     }
 
@@ -117,23 +122,23 @@ class SupportCompiledWireKeys extends ComponentHook
     public static function generateKey($deterministicBladeKey, $key = null)
     {
         $finalKey = $deterministicBladeKey;
-        
+
         $loops = array_merge(static::$loopStack, [static::$currentLoop]);
-        
+
         foreach ($loops as $loop) {
             if (isset($loop['key']) || isset($loop['index'])) {
                 $finalKey .= isset($loop['key'])
-                    ? '-' . $loop['key']
-                    : '-' . $loop['index'];
+                    ? '-'.$loop['key']
+                    : '-'.$loop['index'];
             }
 
             if (isset($loop['count'])) {
-                $finalKey .= '-' . $loop['count'];
+                $finalKey .= '-'.$loop['count'];
             }
         }
 
         if (isset($key) && $key !== '') {
-            $finalKey .= '-' . $key;
+            $finalKey .= '-'.$key;
         }
 
         return $finalKey;

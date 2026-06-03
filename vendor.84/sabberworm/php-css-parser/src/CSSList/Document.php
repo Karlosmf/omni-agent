@@ -34,10 +34,9 @@ class Document extends CSSBlockList
      * Note that this does not yield the full `DeclarationBlock` that the selector belongs to
      * (and, currently, there is no way to get to that).
      *
-     * @param string|null $specificitySearch
-     *        An optional filter by specificity.
-     *        May contain a comparison operator and a number or just a number (defaults to "==").
-     *
+     * @param  string|null  $specificitySearch
+     *                                          An optional filter by specificity.
+     *                                          May contain a comparison operator and a number or just a number (defaults to "==").
      * @return list<Selector>
      *
      * @example `getSelectorsBySpecificity('>= 100')`
@@ -53,9 +52,10 @@ class Document extends CSSBlockList
     public function render(?OutputFormat $outputFormat = null): string
     {
         if ($outputFormat === null) {
-            $outputFormat = new OutputFormat();
+            $outputFormat = new OutputFormat;
         }
-        return $outputFormat->getFormatter()->comments($this) . $this->renderListContents($outputFormat);
+
+        return $outputFormat->getFormatter()->comments($this).$this->renderListContents($outputFormat);
     }
 
     public function isRootList(): bool

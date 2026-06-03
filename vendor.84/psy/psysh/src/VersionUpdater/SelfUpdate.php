@@ -24,11 +24,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SelfUpdate
 {
     const URL_PREFIX = 'https://github.com/bobthecow/psysh/releases/download';
+
     const SUCCESS = 0;
+
     const FAILURE = 1;
 
     private Checker $checker;
+
     private Installer $installer;
+
     private ?Downloader $downloader = null;
 
     public function __construct(Checker $checker, Installer $installer)
@@ -54,7 +58,7 @@ class SelfUpdate
      */
     private function getDownloader(): Downloader
     {
-        if (!isset($this->downloader)) {
+        if (! isset($this->downloader)) {
             return Downloader\Factory::getDownloader();
         }
 
@@ -98,13 +102,13 @@ class SelfUpdate
         }
 
         // can overwrite current version?
-        if (!$this->installer->isInstallLocationWritable()) {
+        if (! $this->installer->isInstallLocationWritable()) {
             $output->writeln('<error>Installed version is not writable.</error>');
 
             return self::FAILURE;
         }
         // can download to, and create a backup in the temp directory?
-        if (!$this->installer->isTempDirectoryWritable()) {
+        if (! $this->installer->isTempDirectoryWritable()) {
             $output->writeln('<error>Temporary directory is not writable.</error>');
 
             return self::FAILURE;
@@ -126,7 +130,7 @@ class SelfUpdate
             return self::FAILURE;
         }
 
-        if (!$downloaded) {
+        if (! $downloaded) {
             $output->writeln('<error>Download failed.</error>');
             $downloader->cleanup();
 
@@ -137,7 +141,7 @@ class SelfUpdate
 
         $downloadedFile = $downloader->getFilename();
 
-        if (!$this->installer->isValidSource($downloadedFile)) {
+        if (! $this->installer->isValidSource($downloadedFile)) {
             $downloader->cleanup();
             $output->writeln('<error>Downloaded file is not a valid archive.</error>');
 
@@ -146,7 +150,7 @@ class SelfUpdate
 
         // create backup as bin.old-version in the temporary directory
         $backupCreated = $this->installer->createBackup($currentVersion);
-        if (!$backupCreated) {
+        if (! $backupCreated) {
             $downloader->cleanup();
             $output->writeln('<error>Failed to create a backup of the current version.</error>');
 
@@ -156,7 +160,7 @@ class SelfUpdate
             $output->writeln('Created backup of current version: '.$backupFilename);
         }
 
-        if (!$this->installer->install($downloadedFile)) {
+        if (! $this->installer->install($downloadedFile)) {
             $this->installer->restoreFromBackup($currentVersion);
             $downloader->cleanup();
             $output->writeln("<error>Failed to install new PsySH version $latestVersion.</error>");

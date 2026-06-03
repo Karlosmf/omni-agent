@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Ramsey\Uuid\Provider\Dce;
 
+use const PREG_SPLIT_NO_EMPTY;
+
 use Ramsey\Uuid\Exception\DceSecurityException;
 use Ramsey\Uuid\Provider\DceSecurityProviderInterface;
 use Ramsey\Uuid\Type\Integer as IntegerObject;
@@ -27,8 +29,6 @@ use function strtoupper;
 use function substr;
 use function trim;
 
-use const PREG_SPLIT_NO_EMPTY;
-
 /**
  * SystemDceSecurityProvider retrieves the user or group identifiers from the system
  */
@@ -37,7 +37,7 @@ class SystemDceSecurityProvider implements DceSecurityProviderInterface
     /**
      * @throws DceSecurityException if unable to get a user identifier
      *
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getUid(): IntegerObject
     {
@@ -55,7 +55,7 @@ class SystemDceSecurityProvider implements DceSecurityProviderInterface
         if ($uid === '') {
             throw new DceSecurityException(
                 'Unable to get a user identifier using the system DCE Security provider; please provide a custom '
-                . 'identifier or use a different provider',
+                .'identifier or use a different provider',
             );
         }
 
@@ -67,7 +67,7 @@ class SystemDceSecurityProvider implements DceSecurityProviderInterface
     /**
      * @throws DceSecurityException if unable to get a group identifier
      *
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getGid(): IntegerObject
     {
@@ -85,7 +85,7 @@ class SystemDceSecurityProvider implements DceSecurityProviderInterface
         if ($gid === '') {
             throw new DceSecurityException(
                 'Unable to get a group identifier using the system DCE Security provider; please provide a custom '
-                . 'identifier or use a different provider',
+                .'identifier or use a different provider',
             );
         }
 
@@ -99,7 +99,7 @@ class SystemDceSecurityProvider implements DceSecurityProviderInterface
      */
     private function getSystemUid(): string
     {
-        if (!$this->hasShellExec()) {
+        if (! $this->hasShellExec()) {
             return '';
         }
 
@@ -114,7 +114,7 @@ class SystemDceSecurityProvider implements DceSecurityProviderInterface
      */
     private function getSystemGid(): string
     {
-        if (!$this->hasShellExec()) {
+        if (! $this->hasShellExec()) {
             return '';
         }
 
@@ -129,7 +129,7 @@ class SystemDceSecurityProvider implements DceSecurityProviderInterface
      */
     private function hasShellExec(): bool
     {
-        return !str_contains(strtolower((string) ini_get('disable_functions')), 'shell_exec');
+        return ! str_contains(strtolower((string) ini_get('disable_functions')), 'shell_exec');
     }
 
     /**
@@ -198,7 +198,7 @@ class SystemDceSecurityProvider implements DceSecurityProviderInterface
             return '';
         }
 
-        $response = shell_exec('wmic group get name,sid | findstr /b /i ' . escapeshellarg($firstGroup));
+        $response = shell_exec('wmic group get name,sid | findstr /b /i '.escapeshellarg($firstGroup));
 
         if ($response === null) {
             return '';

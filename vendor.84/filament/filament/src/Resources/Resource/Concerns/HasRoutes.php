@@ -19,19 +19,19 @@ trait HasRoutes
     /**
      * @var string | array<string>
      */
-    protected static string | array $routeMiddleware = [];
+    protected static string|array $routeMiddleware = [];
 
     /**
      * @var string | array<string>
      */
-    protected static string | array $withoutRouteMiddleware = [];
+    protected static string|array $withoutRouteMiddleware = [];
 
     public static function getRecordRouteBindingEloquentQuery(): Builder
     {
         return static::getEloquentQuery();
     }
 
-    public static function resolveRecordRouteBinding(int | string $key, ?Closure $modifyQuery = null): ?Model
+    public static function resolveRecordRouteBinding(int|string $key, ?Closure $modifyQuery = null): ?Model
     {
         $query = static::getRecordRouteBindingEloquentQuery();
 
@@ -49,7 +49,7 @@ trait HasRoutes
         $panel ??= Filament::getCurrentOrDefaultPanel();
 
         if ($parentResource = static::getParentResourceRegistration()) {
-            return $parentResource->getParentResource()::getRouteBaseName($panel) . '.' . $parentResource->getRouteName();
+            return $parentResource->getParentResource()::getRouteBaseName($panel).'.'.$parentResource->getRouteName();
         }
 
         $routeBaseName = (string) str(static::getSlug($panel))
@@ -70,7 +70,7 @@ trait HasRoutes
 
     public static function routes(Panel $panel, ?Closure $registerPageRoutes = null): void
     {
-        Route::name(static::getRelativeRouteName($panel) . '.')
+        Route::name(static::getRelativeRouteName($panel).'.')
             ->prefix(static::getRoutePrefix($panel))
             ->middleware(static::getRouteMiddleware($panel))
             ->withoutMiddleware(static::getWithoutRouteMiddleware($panel))
@@ -87,8 +87,8 @@ trait HasRoutes
 
         if ($parentResource = static::getParentResourceRegistration()) {
             $parentResource->getParentResource()::registerRoutes($panel, function () use ($panel, $parentResource, $registerPageRoutes): void {
-                Route::name($parentResource->getRouteName() . '.')
-                    ->prefix('{' . $parentResource->getParentRouteParameterName() . '}/' . static::getSlug($panel))
+                Route::name($parentResource->getRouteName().'.')
+                    ->prefix('{'.$parentResource->getParentRouteParameterName().'}/'.static::getSlug($panel))
                     ->group($registerPageRoutes);
             });
 
@@ -121,7 +121,7 @@ trait HasRoutes
     /**
      * @return string | array<string>
      */
-    public static function getRouteMiddleware(Panel $panel): string | array
+    public static function getRouteMiddleware(Panel $panel): string|array
     {
         return static::$routeMiddleware;
     }
@@ -129,7 +129,7 @@ trait HasRoutes
     /**
      * @return string | array<string>
      */
-    public static function getWithoutRouteMiddleware(Panel $panel): string | array
+    public static function getWithoutRouteMiddleware(Panel $panel): string|array
     {
         return static::$withoutRouteMiddleware;
     }

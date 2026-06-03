@@ -15,7 +15,7 @@ trait HasColumns
     /**
      * @param  array<string, int | Closure | null> | int | Closure | null  $columns
      */
-    public function columns(array | int | Closure | null $columns = 2): static
+    public function columns(array|int|Closure|null $columns = 2): static
     {
         if ($columns instanceof Closure) {
             $this->columns[] = $columns;
@@ -40,7 +40,7 @@ trait HasColumns
     /**
      * @return array<string, ?int> | int | null
      */
-    public function getColumns(?string $breakpoint = null): array | int | null
+    public function getColumns(?string $breakpoint = null): array|int|null
     {
         $columns = $this->getAllColumns();
 

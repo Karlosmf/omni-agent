@@ -28,9 +28,8 @@ class UnknownGetterException extends BaseInvalidArgumentException implements Inv
     /**
      * Constructor.
      *
-     * @param string         $getter   getter name
-     * @param int            $code
-     * @param Throwable|null $previous
+     * @param  string  $getter  getter name
+     * @param  int  $code
      */
     public function __construct($getter, $code = 0, ?Throwable $previous = null)
     {
@@ -41,8 +40,6 @@ class UnknownGetterException extends BaseInvalidArgumentException implements Inv
 
     /**
      * Get the getter.
-     *
-     * @return string
      */
     public function getGetter(): string
     {

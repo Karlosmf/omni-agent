@@ -15,7 +15,7 @@ trait HasExtraAlpineAttributes
     /**
      * @param  array<mixed> | Closure  $attributes
      */
-    public function extraAlpineAttributes(array | Closure $attributes, bool $merge = false): static
+    public function extraAlpineAttributes(array|Closure $attributes, bool $merge = false): static
     {
         if ($merge) {
             $this->extraAlpineAttributes[] = $attributes;

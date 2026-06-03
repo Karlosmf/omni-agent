@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\Attributes;
 
 use Attribute;
@@ -23,15 +26,16 @@ final readonly class WithEnvironmentVariable
      * @var non-empty-string
      */
     private string $environmentVariableName;
-    private null|string $value;
+
+    private ?string $value;
 
     /**
-     * @param non-empty-string $environmentVariableName
+     * @param  non-empty-string  $environmentVariableName
      */
-    public function __construct(string $environmentVariableName, null|string $value = null)
+    public function __construct(string $environmentVariableName, ?string $value = null)
     {
         $this->environmentVariableName = $environmentVariableName;
-        $this->value                   = $value;
+        $this->value = $value;
     }
 
     /**
@@ -42,7 +46,7 @@ final readonly class WithEnvironmentVariable
         return $this->environmentVariableName;
     }
 
-    public function value(): null|string
+    public function value(): ?string
     {
         return $this->value;
     }

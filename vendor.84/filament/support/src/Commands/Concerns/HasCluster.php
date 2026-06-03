@@ -48,7 +48,7 @@ trait HasCluster
             if (! class_exists($cluster)) {
                 $this->components->warn('The cluster class provided does not exist.');
             } elseif (! is_subclass_of($cluster, Cluster::class)) {
-                $this->components->warn('The cluster class or one of its parents must extend [' . Cluster::class . '].');
+                $this->components->warn('The cluster class or one of its parents must extend ['.Cluster::class.'].');
             } else {
                 return $cluster;
             }
@@ -57,7 +57,7 @@ trait HasCluster
         if (empty($clusterFqns)) {
             $clusterFqn = (string) str(text(
                 label: "No clusters were found within the [{$this->panel->getId()}] panel. {$question}",
-                placeholder: app()->getNamespace() . 'Filament\\Clusters\\Blog',
+                placeholder: app()->getNamespace().'Filament\\Clusters\\Blog',
                 required: true,
                 validate: function (string $value): ?string {
                     $value = (string) str($value)
@@ -68,14 +68,14 @@ trait HasCluster
 
                     if (
                         (! class_exists($value)) &&
-                        class_exists("{$value}\\" . class_basename($value) . 'Cluster')
+                        class_exists("{$value}\\".class_basename($value).'Cluster')
                     ) {
-                        $value = "{$value}\\" . class_basename($value) . 'Cluster';
+                        $value = "{$value}\\".class_basename($value).'Cluster';
                     }
 
                     return match (true) {
                         ! class_exists($value) => 'The cluster class doesn\'t exist, please use the fully-qualified class name.',
-                        ! is_subclass_of($value, Cluster::class) => 'The cluster class or one of its parents must extend [' . Cluster::class . '].',
+                        ! is_subclass_of($value, Cluster::class) => 'The cluster class or one of its parents must extend ['.Cluster::class.'].',
                         default => null,
                     };
                 },
@@ -88,9 +88,9 @@ trait HasCluster
 
             if (
                 (! class_exists($clusterFqn)) &&
-                class_exists("{$clusterFqn}\\" . class_basename($clusterFqn) . 'Cluster')
+                class_exists("{$clusterFqn}\\".class_basename($clusterFqn).'Cluster')
             ) {
-                return "{$clusterFqn}\\" . class_basename($clusterFqn) . 'Cluster';
+                return "{$clusterFqn}\\".class_basename($clusterFqn).'Cluster';
             }
 
             return $clusterFqn;

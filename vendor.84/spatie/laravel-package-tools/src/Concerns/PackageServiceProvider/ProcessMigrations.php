@@ -49,14 +49,14 @@ trait ProcessMigrations
         $now = Carbon::now();
         $migrationsPath = trim($this->package->migrationsPath, '/');
 
-        $files = (new Filesystem())->files($this->package->basePath("/../{$migrationsPath}"));
+        $files = (new Filesystem)->files($this->package->basePath("/../{$migrationsPath}"));
 
         foreach ($files as $file) {
             $filePath = $file->getPathname();
             $migrationFileName = Str::replace(['.stub', '.php'], '', $file->getFilename());
 
             // Publish but do not add timestamp to non migration files
-            if (Str::endsWith($filePath, [".php", ".php.stub"])) {
+            if (Str::endsWith($filePath, ['.php', '.php.stub'])) {
                 $appMigration = $this->generateMigrationName($migrationFileName, $now->addSecond());
             } else {
                 $appMigration = database_path("migrations/{$file->getFilename()}");
@@ -70,7 +70,7 @@ trait ProcessMigrations
             }
 
             // Do not load non migration files
-            if ($this->package->runsMigrations && Str::endsWith($filePath, [".php", ".php.stub"])) {
+            if ($this->package->runsMigrations && Str::endsWith($filePath, ['.php', '.php.stub'])) {
                 $this->loadMigrationsFrom($filePath);
             }
         }
@@ -78,7 +78,7 @@ trait ProcessMigrations
 
     protected function generateMigrationName(string $migrationFileName, Carbon|CarbonImmutable $now): string
     {
-        $migrationsPath = 'migrations/' . dirname($migrationFileName) . '/';
+        $migrationsPath = 'migrations/'.dirname($migrationFileName).'/';
         $migrationFileName = basename($migrationFileName);
 
         $len = strlen($migrationFileName) + 4;
@@ -89,7 +89,7 @@ trait ProcessMigrations
         }
 
         foreach (glob(database_path("{$migrationsPath}*.php")) as $filename) {
-            if ((substr($filename, -$len) === $migrationFileName . '.php')) {
+            if ((substr($filename, -$len) === $migrationFileName.'.php')) {
                 return $filename;
             }
         }

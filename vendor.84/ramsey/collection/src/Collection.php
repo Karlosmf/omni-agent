@@ -71,6 +71,7 @@ namespace Ramsey\Collection;
  * ```
  *
  * @template T
+ *
  * @extends AbstractCollection<T>
  */
 class Collection extends AbstractCollection
@@ -79,9 +80,9 @@ class Collection extends AbstractCollection
      * Constructs a collection object of the specified type, optionally with the
      * specified data.
      *
-     * @param string $collectionType The type or class name associated with this
-     *     collection.
-     * @param array<array-key, T> $data The initial items to store in the collection.
+     * @param  string  $collectionType  The type or class name associated with this
+     *                                  collection.
+     * @param  array<array-key, T>  $data  The initial items to store in the collection.
      */
     public function __construct(private readonly string $collectionType, array $data = [])
     {

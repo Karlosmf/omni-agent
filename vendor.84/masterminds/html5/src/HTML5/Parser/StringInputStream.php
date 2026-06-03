@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Loads a string to be parsed.
  */
@@ -63,14 +64,14 @@ class StringInputStream implements InputStream
     /**
      * Parse errors.
      */
-    public $errors = array();
+    public $errors = [];
 
     /**
      * Create a new InputStream wrapper.
      *
-     * @param string $data     Data to parse.
-     * @param string $encoding The encoding to use for the data.
-     * @param string $debug    A fprintf format to use to echo the data on stdout.
+     * @param  string  $data  Data to parse.
+     * @param  string  $encoding  The encoding to use for the data.
+     * @param  string  $debug  A fprintf format to use to echo the data on stdout.
      */
     public function __construct($data, $encoding = 'UTF-8', $debug = '')
     {
@@ -108,11 +109,11 @@ class StringInputStream implements InputStream
          * represented by LF characters, and there are never any CR characters in the input to the tokenization
          * stage.
          */
-        $crlfTable = array(
+        $crlfTable = [
             "\0" => "\xEF\xBF\xBD",
             "\r\n" => "\n",
             "\r" => "\n",
-        );
+        ];
 
         return strtr($data, $crlfTable);
     }
@@ -122,9 +123,10 @@ class StringInputStream implements InputStream
      */
     public function currentLine()
     {
-        if (empty($this->EOF) || 0 === $this->char) {
+        if (empty($this->EOF) || $this->char === 0) {
             return 1;
         }
+
         // Add one to $this->char because we want the number for the next
         // byte to be processed.
         return substr_count($this->data, "\n", 0, min($this->char, $this->EOF)) + 1;
@@ -147,7 +149,7 @@ class StringInputStream implements InputStream
     public function columnOffset()
     {
         // Short circuit for the first char.
-        if (0 === $this->char) {
+        if ($this->char === 0) {
             return 0;
         }
         // strrpos is weird, and the offset needs to be negative for what we
@@ -160,7 +162,7 @@ class StringInputStream implements InputStream
 
         // However, for here we want the length up until the next byte to be
         // processed, so add one to the current byte ($this->char).
-        if (false !== $lastLine) {
+        if ($lastLine !== false) {
             $findLengthOf = substr($this->data, $lastLine + 1, $this->char - 1 - $lastLine);
         } else {
             // After a newline.
@@ -196,7 +198,7 @@ class StringInputStream implements InputStream
     #[\ReturnTypeWillChange]
     public function next()
     {
-        ++$this->char;
+        $this->char++;
     }
 
     /**
@@ -250,9 +252,8 @@ class StringInputStream implements InputStream
      * Matches as far as possible until we reach a certain set of bytes
      * and returns the matched substring.
      *
-     * @param string $bytes Bytes to match.
-     * @param int    $max   Maximum number of bytes to scan.
-     *
+     * @param  string  $bytes  Bytes to match.
+     * @param  int  $max  Maximum number of bytes to scan.
      * @return mixed Index or false if no match is found. You should use strong
      *               equality when checking the result, since index could be 0.
      */
@@ -262,7 +263,7 @@ class StringInputStream implements InputStream
             return false;
         }
 
-        if (0 === $max || $max) {
+        if ($max === 0 || $max) {
             $len = strcspn($this->data, $bytes, $this->char, $max);
         } else {
             $len = strcspn($this->data, $bytes, $this->char);
@@ -280,11 +281,10 @@ class StringInputStream implements InputStream
      * Matches as far as possible with a certain set of bytes
      * and returns the matched substring.
      *
-     * @param string $bytes A mask of bytes to match. If ANY byte in this mask matches the
-     *                      current char, the pointer advances and the char is part of the
-     *                      substring.
-     * @param int    $max   The max number of chars to read.
-     *
+     * @param  string  $bytes  A mask of bytes to match. If ANY byte in this mask matches the
+     *                         current char, the pointer advances and the char is part of the
+     *                         substring.
+     * @param  int  $max  The max number of chars to read.
      * @return string
      */
     public function charsWhile($bytes, $max = null)
@@ -293,7 +293,7 @@ class StringInputStream implements InputStream
             return false;
         }
 
-        if (0 === $max || $max) {
+        if ($max === 0 || $max) {
             $len = strspn($this->data, $bytes, $this->char, $max);
         } else {
             $len = strspn($this->data, $bytes, $this->char);
@@ -307,7 +307,7 @@ class StringInputStream implements InputStream
     /**
      * Unconsume characters.
      *
-     * @param int $howMany The number of characters to unconsume.
+     * @param  int  $howMany  The number of characters to unconsume.
      */
     public function unconsume($howMany = 1)
     {

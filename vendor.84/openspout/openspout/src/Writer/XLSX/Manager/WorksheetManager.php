@@ -84,7 +84,7 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
     public function startSheet(Worksheet $worksheet): void
     {
         $sheetFilePointer = fopen($worksheet->getFilePath(), 'w');
-        \assert(false !== $sheetFilePointer);
+        \assert($sheetFilePointer !== false);
 
         $worksheet->setFilePointer($sheetFilePointer);
         $this->commentsManager->createWorksheetCommentFiles($worksheet);
@@ -92,7 +92,7 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
 
     public function addRow(Worksheet $worksheet, Row $row): void
     {
-        if (!$row->isEmpty()) {
+        if (! $row->isEmpty()) {
             $this->addNonEmptyRow($worksheet, $row);
             $this->commentsManager->addComments($worksheet, $row);
         }
@@ -109,11 +109,11 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
     /**
      * Adds non empty row to the worksheet.
      *
-     * @param Worksheet $worksheet The worksheet to add the row to
-     * @param Row       $row       The row to be written
+     * @param  Worksheet  $worksheet  The worksheet to add the row to
+     * @param  Row  $row  The row to be written
      *
      * @throws InvalidArgumentException If a cell value's type is not supported
-     * @throws IOException              If the data cannot be written
+     * @throws IOException If the data cannot be written
      */
     private function addNonEmptyRow(Worksheet $worksheet, Row $row): void
     {
@@ -138,7 +138,7 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
         $rowXML .= '</row>';
 
         $wasWriteSuccessful = fwrite($sheetFilePointer, $rowXML);
-        if (false === $wasWriteSuccessful) {
+        if ($wasWriteSuccessful === false) {
             throw new IOException("Unable to write data in {$worksheet->getFilePath()}");
         }
     }
@@ -222,8 +222,7 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
     /**
      * Returns the XML fragment for a cell containing a non empty string.
      *
-     * @param string $cellValue The cell value
-     *
+     * @param  string  $cellValue  The cell value
      * @return string The XML fragment representing the cell
      *
      * @throws InvalidArgumentException If the string exceeds the maximum number of characters allowed per cell

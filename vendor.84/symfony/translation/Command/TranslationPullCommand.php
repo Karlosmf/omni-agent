@@ -77,11 +77,11 @@ final class TranslationPullCommand extends Command
     protected function configure(): void
     {
         $keys = $this->providerCollection->keys();
-        $defaultProvider = 1 === \count($keys) ? $keys[0] : null;
+        $defaultProvider = \count($keys) === 1 ? $keys[0] : null;
 
         $this
             ->setDefinition([
-                new InputArgument('provider', null !== $defaultProvider ? InputArgument::OPTIONAL : InputArgument::REQUIRED, 'The provider to pull translations from.', $defaultProvider),
+                new InputArgument('provider', $defaultProvider !== null ? InputArgument::OPTIONAL : InputArgument::REQUIRED, 'The provider to pull translations from.', $defaultProvider),
                 new InputOption('force', null, InputOption::VALUE_NONE, 'Override existing translations with provider ones (it will delete not synchronized messages).'),
                 new InputOption('intl-icu', null, InputOption::VALUE_NONE, 'Associated to --force option, it will write messages in "%domain%+intl-icu.%locale%.xlf" files.'),
                 new InputOption('domains', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Specify the domains to pull.'),
@@ -105,8 +105,7 @@ final class TranslationPullCommand extends Command
                 Local translations for the specified domains and locale are deleted if they're not present on the provider and overwritten if it's the case.
                 Local translations for others domains and locales are ignored.
                 EOF
-            )
-        ;
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -122,7 +121,7 @@ final class TranslationPullCommand extends Command
         $asTree = (int) $input->getOption('as-tree');
         $xliffVersion = '1.2';
 
-        if ($intlIcu && !$force) {
+        if ($intlIcu && ! $force) {
             $io->note('--intl-icu option only has an effect when used with --force. Here, it will be ignored.');
         }
 
@@ -140,7 +139,7 @@ final class TranslationPullCommand extends Command
             'inline' => $asTree,
         ];
 
-        if (!$domains) {
+        if (! $domains) {
             $domains = $provider->getDomains();
         }
 

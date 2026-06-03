@@ -6,14 +6,14 @@ use Closure;
 
 trait CanDispatchEvent
 {
-    protected string | Closure | null $event = null;
+    protected string|Closure|null $event = null;
 
     /**
      * @var array<mixed> | Closure
      */
-    protected array | Closure $eventData = [];
+    protected array|Closure $eventData = [];
 
-    protected string | bool $dispatchDirection = false;
+    protected string|bool $dispatchDirection = false;
 
     protected ?string $dispatchToComponent = null;
 
@@ -21,8 +21,8 @@ trait CanDispatchEvent
      * @param  array<mixed> | Closure  $data
      */
     public function dispatch(
-        string | Closure | null $event,
-        array | Closure $data = [],
+        string|Closure|null $event,
+        array|Closure $data = [],
     ): static {
         $this->event = $event;
         $this->eventData($data);
@@ -35,8 +35,8 @@ trait CanDispatchEvent
      * @param  array<int, mixed> | Closure  $data
      */
     public function dispatchSelf(
-        string | Closure | null $event,
-        array | Closure $data = [],
+        string|Closure|null $event,
+        array|Closure $data = [],
     ): static {
         $this->dispatch($event, $data);
         $this->dispatchDirection = 'self';
@@ -49,8 +49,8 @@ trait CanDispatchEvent
      */
     public function dispatchTo(
         string $component,
-        string | Closure | null $event,
-        array | Closure $data = [],
+        string|Closure|null $event,
+        array|Closure $data = [],
     ): static {
         $this->dispatch($event, $data);
         $this->dispatchDirection = 'to';
@@ -65,8 +65,8 @@ trait CanDispatchEvent
      * @param  array<int, mixed> | Closure  $data
      */
     public function emit(
-        string | Closure | null $event,
-        array | Closure $data = [],
+        string|Closure|null $event,
+        array|Closure $data = [],
     ): static {
         $this->dispatch($event, $data);
 
@@ -79,8 +79,8 @@ trait CanDispatchEvent
      * @param  array<int, mixed> | Closure  $data
      */
     public function emitSelf(
-        string | Closure | null $event,
-        array | Closure $data = [],
+        string|Closure|null $event,
+        array|Closure $data = [],
     ): static {
         $this->dispatchSelf($event, $data);
 
@@ -94,8 +94,8 @@ trait CanDispatchEvent
      */
     public function emitTo(
         string $component,
-        string | Closure | null $event,
-        array | Closure $data = [],
+        string|Closure|null $event,
+        array|Closure $data = [],
     ): static {
         $this->dispatchTo($component, $event, $data);
 
@@ -110,7 +110,7 @@ trait CanDispatchEvent
     /**
      * @param  array<mixed> | Closure  $data
      */
-    public function eventData(array | Closure $data): static
+    public function eventData(array|Closure $data): static
     {
         $this->eventData = $data;
 
@@ -125,7 +125,7 @@ trait CanDispatchEvent
         return $this->evaluate($this->eventData);
     }
 
-    public function getDispatchDirection(): string | bool
+    public function getDispatchDirection(): string|bool
     {
         return $this->dispatchDirection;
     }

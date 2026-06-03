@@ -33,7 +33,7 @@ trait IncompleteDsnTestTrait
         $dsn = new Dsn($dsn);
 
         $this->expectException(IncompleteDsnException::class);
-        if (null !== $message) {
+        if ($message !== null) {
             $this->expectExceptionMessage($message);
         }
 

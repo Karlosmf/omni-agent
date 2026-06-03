@@ -38,8 +38,9 @@ use function class_exists;
  * Defines the URI Template syntax and the process for expanding a URI Template into a URI reference.
  *
  * @link    https://tools.ietf.org/html/rfc6570
- * @package League\Uri
+ *
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ *
  * @since   6.1.0
  *
  * @phpstan-import-type InputValue from VariableBag
@@ -47,6 +48,7 @@ use function class_exists;
 final class UriTemplate implements Stringable
 {
     private readonly Template $template;
+
     private readonly VariableBag $defaultVariables;
 
     /**
@@ -61,7 +63,7 @@ final class UriTemplate implements Stringable
 
     private function filterVariables(iterable $variables): VariableBag
     {
-        if (!$variables instanceof VariableBag) {
+        if (! $variables instanceof VariableBag) {
             $variables = new VariableBag($variables);
         }
 
@@ -137,7 +139,7 @@ final class UriTemplate implements Stringable
     {
         $expanded = $this->templateExpanded($variables);
 
-        return null === $baseUri ? Uri::new($expanded) : (Uri::parse($expanded, $baseUri) ?? throw new SyntaxError('Unable to expand URI'));
+        return $baseUri === null ? Uri::new($expanded) : (Uri::parse($expanded, $baseUri) ?? throw new SyntaxError('Unable to expand URI'));
     }
 
     /**
@@ -159,7 +161,7 @@ final class UriTemplate implements Stringable
      * @throws InvalidUrlException if the base URI cannot be converted to a Uri\Whatwg\Url instance
      * @throws InvalidUrlException if the resulting expansion cannot be converted to a Uri\Whatwg\Url instance
      */
-    public function expandToUrl(iterable $variables = [], Rfc3986Uri|WhatWgUrl|BackedEnum|Stringable|string|null $baseUrl = null, array|null &$errors = []): WhatWgUrl
+    public function expandToUrl(iterable $variables = [], Rfc3986Uri|WhatWgUrl|BackedEnum|Stringable|string|null $baseUrl = null, ?array &$errors = []): WhatWgUrl
     {
         class_exists(WhatWgUrl::class) || throw new MissingFeature('Support for '.WhatWgUrl::class.' requires PHP8.5+ or a polyfill. Run "composer require league/uri-polyfill" or use you own polyfill.');
 
@@ -173,12 +175,12 @@ final class UriTemplate implements Stringable
     public function expandToPsr7Uri(
         iterable $variables = [],
         Rfc3986Uri|WhatWgUrl|BackedEnum|Stringable|string|null $baseUrl = null,
-        UriFactoryInterface $uriFactory = new HttpFactory()
+        UriFactoryInterface $uriFactory = new HttpFactory
     ): Psr7UriInterface {
         $uriString = $this->templateExpandedOrFail($variables);
 
         return $uriFactory->createUri(
-            null === $baseUrl
+            $baseUrl === null
             ? $uriString
             : UriString::resolve($uriString, match (true) {
                 $baseUrl instanceof Rfc3986Uri => $baseUrl->toRawString(),
@@ -196,7 +198,7 @@ final class UriTemplate implements Stringable
     {
         $expanded = $this->templateExpandedOrFail($variables);
 
-        return null === $baseUri ? Uri::new($expanded) : (Uri::parse($expanded, $baseUri) ?? throw new SyntaxError('Unable to expand URI'));
+        return $baseUri === null ? Uri::new($expanded) : (Uri::parse($expanded, $baseUri) ?? throw new SyntaxError('Unable to expand URI'));
     }
 
     /**
@@ -218,7 +220,7 @@ final class UriTemplate implements Stringable
      * @throws InvalidUrlException if the base URI cannot be converted to a Uri\Whatwg\Url instance
      * @throws InvalidUrlException if the resulting expansion cannot be converted to a Uri\Whatwg\Url instance
      */
-    public function expandToUrlOrFail(iterable $variables = [], Rfc3986Uri|WhatWgUrl|BackedEnum|Stringable|string|null $baseUrl = null, array|null &$errors = []): WhatWgUrl
+    public function expandToUrlOrFail(iterable $variables = [], Rfc3986Uri|WhatWgUrl|BackedEnum|Stringable|string|null $baseUrl = null, ?array &$errors = []): WhatWgUrl
     {
         class_exists(WhatWgUrl::class) || throw new MissingFeature('Support for '.WhatWgUrl::class.' requires PHP8.5+ or a polyfill. Run "composer require league/uri-polyfill" or use you own polyfill.');
 
@@ -232,12 +234,12 @@ final class UriTemplate implements Stringable
     public function expandToPsr7UriOrFail(
         iterable $variables = [],
         Rfc3986Uri|WhatWgUrl|BackedEnum|Stringable|string|null $baseUrl = null,
-        UriFactoryInterface $uriFactory = new HttpFactory()
+        UriFactoryInterface $uriFactory = new HttpFactory
     ): Psr7UriInterface {
         $uriString = $this->templateExpandedOrFail($variables);
 
         return $uriFactory->createUri(
-            null === $baseUrl
+            $baseUrl === null
             ? $uriString
             : UriString::resolve($uriString, match (true) {
                 $baseUrl instanceof Rfc3986Uri => $baseUrl->toRawString(),
@@ -253,7 +255,7 @@ final class UriTemplate implements Stringable
     private function newWhatWgUrl(Rfc3986Uri|WhatWgUrl|BackedEnum|Stringable|string|null $url = null): ?WhatWgUrl
     {
         return match (true) {
-            null === $url => null,
+            $url === null => null,
             $url instanceof WhatWgUrl => $url,
             $url instanceof Rfc3986Uri => new WhatWgUrl($url->toRawString()),
             $url instanceof BackedEnum => new WhatWgUrl((string) $url->value),
@@ -267,7 +269,7 @@ final class UriTemplate implements Stringable
     private function newRfc3986Uri(Rfc3986Uri|WhatWgUrl|BackedEnum|Stringable|string|null $uri = null): ?Rfc3986Uri
     {
         return match (true) {
-            null === $uri => null,
+            $uri === null => null,
             $uri instanceof Rfc3986Uri => $uri,
             $uri instanceof WhatWgUrl => new Rfc3986Uri($uri->toAsciiString()),
             $uri instanceof BackedEnum => new Rfc3986Uri((string) $uri->value),
@@ -279,12 +281,14 @@ final class UriTemplate implements Stringable
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @deprecated Since version 7.6.0
+     *
      * @codeCoverageIgnore
+     *
      * @see UriTemplate::toString()
      *
      * Create a new instance from the environment.
      */
-    #[Deprecated(message:'use League\Uri\UriTemplate::__toString() instead', since:'league/uri:7.6.0')]
+    #[Deprecated(message: 'use League\Uri\UriTemplate::__toString() instead', since: 'league/uri:7.6.0')]
     public function getTemplate(): string
     {
         return $this->__toString();

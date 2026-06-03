@@ -66,10 +66,10 @@ final class MessageConverter
 
     private static function createEmailFromTextPart(Message $message, TextPart $part): Email
     {
-        if ('text' === $part->getMediaType() && 'plain' === $part->getMediaSubtype()) {
+        if ($part->getMediaType() === 'text' && $part->getMediaSubtype() === 'plain') {
             return (new Email(clone $message->getHeaders()))->text($part->getBody(), $part->getPreparedHeaders()->getHeaderParameter('Content-Type', 'charset') ?: 'utf-8');
         }
-        if ('text' === $part->getMediaType() && 'html' === $part->getMediaSubtype()) {
+        if ($part->getMediaType() === 'text' && $part->getMediaSubtype() === 'html') {
             return (new Email(clone $message->getHeaders()))->html($part->getBody(), $part->getPreparedHeaders()->getHeaderParameter('Content-Type', 'charset') ?: 'utf-8');
         }
 
@@ -80,14 +80,13 @@ final class MessageConverter
     {
         $parts = $part->getParts();
         if (
-            2 === \count($parts)
-            && $parts[0] instanceof TextPart && 'text' === $parts[0]->getMediaType() && 'plain' === $parts[0]->getMediaSubtype()
-            && $parts[1] instanceof TextPart && 'text' === $parts[1]->getMediaType() && 'html' === $parts[1]->getMediaSubtype()
+            \count($parts) === 2
+            && $parts[0] instanceof TextPart && $parts[0]->getMediaType() === 'text' && $parts[0]->getMediaSubtype() === 'plain'
+            && $parts[1] instanceof TextPart && $parts[1]->getMediaType() === 'text' && $parts[1]->getMediaSubtype() === 'html'
         ) {
             return (new Email(clone $message->getHeaders()))
                 ->text($parts[0]->getBody(), $parts[0]->getPreparedHeaders()->getHeaderParameter('Content-Type', 'charset') ?: 'utf-8')
-                ->html($parts[1]->getBody(), $parts[1]->getPreparedHeaders()->getHeaderParameter('Content-Type', 'charset') ?: 'utf-8')
-            ;
+                ->html($parts[1]->getBody(), $parts[1]->getPreparedHeaders()->getHeaderParameter('Content-Type', 'charset') ?: 'utf-8');
         }
 
         throw new RuntimeException(\sprintf('Unable to create an Email from an instance of "%s" as the body is too complex.', get_debug_type($message)));
@@ -110,7 +109,7 @@ final class MessageConverter
     private static function addParts(Email $email, array $parts): Email
     {
         foreach ($parts as $part) {
-            if (!$part instanceof DataPart) {
+            if (! $part instanceof DataPart) {
                 throw new RuntimeException(\sprintf('Unable to create an Email from an instance of "%s" as the body is too complex.', get_debug_type($email)));
             }
 

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Test\Target;
 
 /**
@@ -22,7 +25,7 @@ final class Namespace_ extends Target
     private string $namespace;
 
     /**
-     * @param non-empty-string $namespace
+     * @param  non-empty-string  $namespace
      */
     protected function __construct(string $namespace)
     {
@@ -63,6 +66,6 @@ final class Namespace_ extends Target
      */
     public function description(): string
     {
-        return 'Namespace ' . $this->target();
+        return 'Namespace '.$this->target();
     }
 }

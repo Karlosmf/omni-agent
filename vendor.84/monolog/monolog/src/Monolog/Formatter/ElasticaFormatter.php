@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -29,11 +31,11 @@ class ElasticaFormatter extends NormalizerFormatter
     /**
      * @var string|null Elastic search document type
      */
-    protected string|null $type;
+    protected ?string $type;
 
     /**
-     * @param string  $index Elastic Search index name
-     * @param ?string $type  Elastic Search document type, deprecated as of Elastica 7
+     * @param  string  $index  Elastic Search index name
+     * @param  ?string  $type  Elastic Search document type, deprecated as of Elastica 7
      */
     public function __construct(string $index, ?string $type)
     {
@@ -45,7 +47,7 @@ class ElasticaFormatter extends NormalizerFormatter
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function format(LogRecord $record)
     {
@@ -71,11 +73,11 @@ class ElasticaFormatter extends NormalizerFormatter
     /**
      * Convert a log message into an Elastica Document
      *
-     * @param mixed[] $record
+     * @param  mixed[]  $record
      */
     protected function getDocument(array $record): Document
     {
-        $document = new Document();
+        $document = new Document;
         $document->setData($record);
         $document->setIndex($this->index);
 

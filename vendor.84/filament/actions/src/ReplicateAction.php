@@ -20,7 +20,7 @@ class ReplicateAction extends Action
     /**
      * @var array<string> | Closure | null
      */
-    protected array | Closure | null $excludedAttributes = null;
+    protected array|Closure|null $excludedAttributes = null;
 
     protected ?Model $replica = null;
 
@@ -109,7 +109,7 @@ class ReplicateAction extends Action
     /**
      * @param  array<string> | Closure | null  $attributes
      */
-    public function excludeAttributes(array | Closure | null $attributes): static
+    public function excludeAttributes(array|Closure|null $attributes): static
     {
         $this->excludedAttributes = $attributes;
 

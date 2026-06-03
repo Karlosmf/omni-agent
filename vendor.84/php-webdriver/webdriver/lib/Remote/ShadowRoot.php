@@ -74,7 +74,7 @@ class ShadowRoot implements WebDriverSearchContext
             $params
         );
 
-        if (!is_array($rawElements)) {
+        if (! is_array($rawElements)) {
             throw UnexpectedResponseException::forError(
                 'Server response to findElementsFromShadowRoot command is not an array'
             );

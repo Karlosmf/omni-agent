@@ -21,12 +21,19 @@ use Symfony\Component\Translation\Exception\MissingRequiredOptionException;
 final class Dsn
 {
     private ?string $scheme;
+
     private ?string $host;
+
     private ?string $user;
+
     private ?string $password;
+
     private ?int $port;
+
     private ?string $path;
+
     private array $options = [];
+
     private string $originalDsn;
 
     public function __construct(#[\SensitiveParameter] string $dsn)
@@ -37,12 +44,12 @@ final class Dsn
             throw new InvalidArgumentException('The translation provider DSN is invalid.');
         }
 
-        if (!isset($params['scheme'])) {
+        if (! isset($params['scheme'])) {
             throw new InvalidArgumentException('The translation provider DSN must contain a scheme.');
         }
         $this->scheme = $params['scheme'];
 
-        if (!isset($params['host'])) {
+        if (! isset($params['host'])) {
             throw new InvalidArgumentException('The translation provider DSN must contain a host (use "default" by default).');
         }
         $this->host = $params['host'];
@@ -86,7 +93,7 @@ final class Dsn
 
     public function getRequiredOption(string $key): mixed
     {
-        if (!\array_key_exists($key, $this->options) || '' === trim($this->options[$key])) {
+        if (! \array_key_exists($key, $this->options) || trim($this->options[$key]) === '') {
             throw new MissingRequiredOptionException($key);
         }
 

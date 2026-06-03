@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Ramsey\Uuid\Generator;
 
+use const STR_PAD_LEFT;
+
 use Ramsey\Uuid\Converter\TimeConverterInterface;
 use Ramsey\Uuid\Exception\InvalidArgumentException;
 use Ramsey\Uuid\Exception\RandomSourceException;
@@ -32,8 +34,6 @@ use function sprintf;
 use function str_pad;
 use function strlen;
 
-use const STR_PAD_LEFT;
-
 /**
  * DefaultTimeGenerator generates strings of binary data based on a node ID, clock sequence, and the current time
  */
@@ -43,14 +43,13 @@ class DefaultTimeGenerator implements TimeGeneratorInterface
         private NodeProviderInterface $nodeProvider,
         private TimeConverterInterface $timeConverter,
         private TimeProviderInterface $timeProvider,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws InvalidArgumentException if the parameters contain invalid values
      * @throws RandomSourceException if random_int() throws an exception/error
      *
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function generate($node = null, ?int $clockSeq = null): string
     {
@@ -63,7 +62,7 @@ class DefaultTimeGenerator implements TimeGeneratorInterface
         if ($clockSeq === null) {
             try {
                 // This does not use "stable storage"; see RFC 9562, section 6.3.
-                $clockSeq = random_int(0, 0x3fff);
+                $clockSeq = random_int(0, 0x3FFF);
             } catch (Throwable $exception) {
                 throw new RandomSourceException($exception->getMessage(), (int) $exception->getCode(), $exception);
             }
@@ -84,21 +83,20 @@ class DefaultTimeGenerator implements TimeGeneratorInterface
 
         $timeBytes = (string) hex2bin($timeHex);
 
-        return $timeBytes[4] . $timeBytes[5] . $timeBytes[6] . $timeBytes[7]
-            . $timeBytes[2] . $timeBytes[3] . $timeBytes[0] . $timeBytes[1]
-            . pack('n*', $clockSeq) . $node;
+        return $timeBytes[4].$timeBytes[5].$timeBytes[6].$timeBytes[7]
+            .$timeBytes[2].$timeBytes[3].$timeBytes[0].$timeBytes[1]
+            .pack('n*', $clockSeq).$node;
     }
 
     /**
      * Uses the node provider given when constructing this instance to get the node ID (usually a MAC address)
      *
-     * @param int | string | null $node A node value that may be used to override the node provider
-     *
+     * @param  int | string | null  $node  A node value that may be used to override the node provider
      * @return string 6-byte binary string representation of the node
      *
      * @throws InvalidArgumentException
      */
-    private function getValidNode(int | string | null $node): string
+    private function getValidNode(int|string|null $node): string
     {
         if ($node === null) {
             $node = $this->nodeProvider->getNode();
@@ -109,7 +107,7 @@ class DefaultTimeGenerator implements TimeGeneratorInterface
             $node = dechex($node);
         }
 
-        if (!preg_match('/^[A-Fa-f0-9]+$/', (string) $node) || strlen((string) $node) > 12) {
+        if (! preg_match('/^[A-Fa-f0-9]+$/', (string) $node) || strlen((string) $node) > 12) {
             throw new InvalidArgumentException('Invalid node value');
         }
 

@@ -15,6 +15,4 @@ namespace League\Csv;
 
 use RuntimeException;
 
-final class FragmentNotFound extends RuntimeException implements UnableToProcessCsv
-{
-}
+final class FragmentNotFound extends RuntimeException implements UnableToProcessCsv {}

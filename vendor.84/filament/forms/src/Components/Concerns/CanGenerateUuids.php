@@ -7,9 +7,9 @@ use Illuminate\Support\Str;
 
 trait CanGenerateUuids
 {
-    protected Closure | bool | null $generateUuidUsing = null;
+    protected Closure|bool|null $generateUuidUsing = null;
 
-    public function generateUuidUsing(Closure | bool | null $callback): static
+    public function generateUuidUsing(Closure|bool|null $callback): static
     {
         $this->generateUuidUsing = $callback;
 

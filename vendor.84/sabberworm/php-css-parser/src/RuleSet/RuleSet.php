@@ -40,7 +40,7 @@ class RuleSet implements CSSElement, CSSListItem, Positionable, RuleContainer
     private $rules = [];
 
     /**
-     * @param int<1, max>|null $lineNumber
+     * @param  int<1, max>|null  $lineNumber
      */
     public function __construct(?int $lineNumber = null)
     {
@@ -95,13 +95,13 @@ class RuleSet implements CSSElement, CSSListItem, Positionable, RuleContainer
 
     /**
      * @throws \UnexpectedValueException
-     *         if the last `Rule` is needed as a basis for setting position, but does not have a valid position,
-     *         which should never happen
+     *                                   if the last `Rule` is needed as a basis for setting position, but does not have a valid position,
+     *                                   which should never happen
      */
     public function addRule(Rule $ruleToAdd, ?Rule $sibling = null): void
     {
         $propertyName = $ruleToAdd->getRule();
-        if (!isset($this->rules[$propertyName])) {
+        if (! isset($this->rules[$propertyName])) {
             $this->rules[$propertyName] = [];
         }
 
@@ -145,14 +145,14 @@ class RuleSet implements CSSElement, CSSListItem, Positionable, RuleContainer
         }
 
         if ($ruleToAdd->getLineNumber() === null) {
-            //this node is added manually, give it the next best line
+            // this node is added manually, give it the next best line
             $columnNumber = $ruleToAdd->getColumnNumber() ?? 0;
             $rules = $this->getRules();
             $rulesCount = \count($rules);
             if ($rulesCount > 0) {
                 $last = $rules[$rulesCount - 1];
                 $lastsLineNumber = $last->getLineNumber();
-                if (!\is_int($lastsLineNumber)) {
+                if (! \is_int($lastsLineNumber)) {
                     throw new \UnexpectedValueException(
                         'A Rule without a line number was found during addRule',
                         1750718399
@@ -173,15 +173,13 @@ class RuleSet implements CSSElement, CSSListItem, Positionable, RuleContainer
      * Returns all rules matching the given rule name
      *
      * @example $ruleSet->getRules('font') // returns array(0 => $rule, …) or array().
-     *
      * @example $ruleSet->getRules('font-')
      *          //returns an array of all rules either beginning with font- or matching font.
      *
-     * @param string|null $searchPattern
-     *        Pattern to search for. If null, returns all rules.
-     *        If the pattern ends with a dash, all rules starting with the pattern are returned
-     *        as well as one matching the pattern with the dash excluded.
-     *
+     * @param  string|null  $searchPattern
+     *                                      Pattern to search for. If null, returns all rules.
+     *                                      If the pattern ends with a dash, all rules starting with the pattern are returned
+     *                                      as well as one matching the pattern with the dash excluded.
      * @return array<int<0, max>, Rule>
      */
     public function getRules(?string $searchPattern = null): array
@@ -209,7 +207,7 @@ class RuleSet implements CSSElement, CSSListItem, Positionable, RuleContainer
     /**
      * Overrides all the rules of this set.
      *
-     * @param array<Rule> $rules The rules to override with.
+     * @param  array<Rule>  $rules  The rules to override with.
      */
     public function setRules(array $rules): void
     {
@@ -227,11 +225,10 @@ class RuleSet implements CSSElement, CSSListItem, Positionable, RuleContainer
      * like `{ background-color: green; background-color; rgba(0, 127, 0, 0.7); }` will only yield an associative array
      * containing the rgba-valued rule while `getRules()` would yield an indexed array containing both.
      *
-     * @param string|null $searchPattern
-     *        Pattern to search for. If null, returns all rules. If the pattern ends with a dash,
-     *        all rules starting with the pattern are returned as well as one matching the pattern with the dash
-     *        excluded.
-     *
+     * @param  string|null  $searchPattern
+     *                                      Pattern to search for. If null, returns all rules. If the pattern ends with a dash,
+     *                                      all rules starting with the pattern are returned as well as one matching the pattern with the dash
+     *                                      excluded.
      * @return array<string, Rule>
      */
     public function getRulesAssoc(?string $searchPattern = null): array
@@ -251,7 +248,7 @@ class RuleSet implements CSSElement, CSSListItem, Positionable, RuleContainer
     public function removeRule(Rule $ruleToRemove): void
     {
         $nameOfPropertyToRemove = $ruleToRemove->getRule();
-        if (!isset($this->rules[$nameOfPropertyToRemove])) {
+        if (! isset($this->rules[$nameOfPropertyToRemove])) {
             return;
         }
         foreach ($this->rules[$nameOfPropertyToRemove] as $key => $rule) {
@@ -264,11 +261,11 @@ class RuleSet implements CSSElement, CSSListItem, Positionable, RuleContainer
     /**
      * Removes rules by property name or search pattern.
      *
-     * @param string $searchPattern
-     *        pattern to remove.
-     *        If the pattern ends in a dash,
-     *        all rules starting with the pattern are removed as well as one matching the pattern with the dash
-     *        excluded.
+     * @param  string  $searchPattern
+     *                                 pattern to remove.
+     *                                 If the pattern ends in a dash,
+     *                                 all rules starting with the pattern are removed as well as one matching the pattern with the dash
+     *                                 excluded.
      */
     public function removeMatchingRules(string $searchPattern): void
     {
@@ -323,7 +320,7 @@ class RuleSet implements CSSElement, CSSListItem, Positionable, RuleContainer
         }
 
         $formatter = $outputFormat->getFormatter();
-        if (!$isFirst) {
+        if (! $isFirst) {
             // Had some output
             $result .= $formatter->spaceAfterRules();
         }
@@ -340,7 +337,7 @@ class RuleSet implements CSSElement, CSSListItem, Positionable, RuleContainer
     {
         $firstsLineNumber = $first->getLineNumber();
         $secondsLineNumber = $second->getLineNumber();
-        if (!\is_int($firstsLineNumber) || !\is_int($secondsLineNumber)) {
+        if (! \is_int($firstsLineNumber) || ! \is_int($secondsLineNumber)) {
             throw new \UnexpectedValueException(
                 'A Rule without a line number was passed to comparePositionable',
                 1750637683
@@ -350,12 +347,13 @@ class RuleSet implements CSSElement, CSSListItem, Positionable, RuleContainer
         if ($firstsLineNumber === $secondsLineNumber) {
             $firstsColumnNumber = $first->getColumnNumber();
             $secondsColumnNumber = $second->getColumnNumber();
-            if (!\is_int($firstsColumnNumber) || !\is_int($secondsColumnNumber)) {
+            if (! \is_int($firstsColumnNumber) || ! \is_int($secondsColumnNumber)) {
                 throw new \UnexpectedValueException(
                     'A Rule without a column number was passed to comparePositionable',
                     1750637761
                 );
             }
+
             return $firstsColumnNumber - $secondsColumnNumber;
         }
 

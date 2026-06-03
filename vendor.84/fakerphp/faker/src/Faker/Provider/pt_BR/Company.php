@@ -21,8 +21,7 @@ class Company extends \Faker\Provider\Company
      *
      * @see http://en.wikipedia.org/wiki/CNPJ
      *
-     * @param bool $formatted If the number should have dots/slashes/dashes or not.
-     *
+     * @param  bool  $formatted  If the number should have dots/slashes/dashes or not.
      * @return string
      */
     public function cnpj($formatted = true)

@@ -19,7 +19,9 @@ namespace Symfony\Component\HttpFoundation\Session;
 final class SessionBagProxy implements SessionBagInterface
 {
     private array $data;
+
     private ?int $usageIndex;
+
     private ?\Closure $usageReporter;
 
     public function __construct(
@@ -31,13 +33,13 @@ final class SessionBagProxy implements SessionBagInterface
         $this->bag = $bag;
         $this->data = &$data;
         $this->usageIndex = &$usageIndex;
-        $this->usageReporter = null === $usageReporter ? null : $usageReporter(...);
+        $this->usageReporter = $usageReporter === null ? null : $usageReporter(...);
     }
 
     public function getBag(): SessionBagInterface
     {
-        ++$this->usageIndex;
-        if ($this->usageReporter && 0 <= $this->usageIndex) {
+        $this->usageIndex++;
+        if ($this->usageReporter && $this->usageIndex >= 0) {
             ($this->usageReporter)();
         }
 
@@ -46,11 +48,11 @@ final class SessionBagProxy implements SessionBagInterface
 
     public function isEmpty(): bool
     {
-        if (!isset($this->data[$this->bag->getStorageKey()])) {
+        if (! isset($this->data[$this->bag->getStorageKey()])) {
             return true;
         }
-        ++$this->usageIndex;
-        if ($this->usageReporter && 0 <= $this->usageIndex) {
+        $this->usageIndex++;
+        if ($this->usageReporter && $this->usageIndex >= 0) {
             ($this->usageReporter)();
         }
 
@@ -64,8 +66,8 @@ final class SessionBagProxy implements SessionBagInterface
 
     public function initialize(array &$array): void
     {
-        ++$this->usageIndex;
-        if ($this->usageReporter && 0 <= $this->usageIndex) {
+        $this->usageIndex++;
+        if ($this->usageReporter && $this->usageIndex >= 0) {
             ($this->usageReporter)();
         }
 

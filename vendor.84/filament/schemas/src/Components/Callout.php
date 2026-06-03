@@ -47,14 +47,14 @@ class Callout extends Component
 
     protected bool $hasColor = false;
 
-    protected string | Closure | null $status = null;
+    protected string|Closure|null $status = null;
 
-    final public function __construct(string | Htmlable | Closure | null $heading = null)
+    final public function __construct(string|Htmlable|Closure|null $heading = null)
     {
         $this->heading($heading);
     }
 
-    public static function make(string | Htmlable | Closure | null $heading = null): static
+    public static function make(string|Htmlable|Closure|null $heading = null): static
     {
         $static = app(static::class, ['heading' => $heading]);
         $static->configure();
@@ -89,7 +89,7 @@ class Callout extends Component
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function footer(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components): static
+    public function footer(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components): static
     {
         $this->childComponents($components, static::FOOTER_SCHEMA_KEY);
 
@@ -99,7 +99,7 @@ class Callout extends Component
     /**
      * @param  string | array<string> | Closure | null  $color
      */
-    public function color(string | array | Closure | null $color): static
+    public function color(string|array|Closure|null $color): static
     {
         $this->hasColor = true;
 
@@ -108,7 +108,7 @@ class Callout extends Component
         return $this;
     }
 
-    public function status(string | Closure | null $status): static
+    public function status(string|Closure|null $status): static
     {
         $this->status = $status;
 
@@ -140,7 +140,7 @@ class Callout extends Component
         return $this->status('warning');
     }
 
-    public function getIcon(): string | BackedEnum | Htmlable | null
+    public function getIcon(): string|BackedEnum|Htmlable|null
     {
         return $this->getBaseIcon() ?? match ($this->getStatus()) {
             'danger' => FilamentIcon::resolve(SchemaIconAlias::COMPONENTS_CALLOUT_DANGER) ?? Heroicon::OutlinedXCircle,
@@ -154,7 +154,7 @@ class Callout extends Component
     /**
      * @return string | array<string> | null
      */
-    public function getIconColor(): string | array | null
+    public function getIconColor(): string|array|null
     {
         return $this->getBaseIconColor() ?? $this->getStatus();
     }
@@ -162,7 +162,7 @@ class Callout extends Component
     /**
      * @return string | array<string> | null
      */
-    public function getColor(): string | array | null
+    public function getColor(): string|array|null
     {
         if ($this->hasColor) {
             return $this->getBaseColor();

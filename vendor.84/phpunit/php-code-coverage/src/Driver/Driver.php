@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,11 +9,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Driver;
 
-use function sprintf;
 use SebastianBergmann\CodeCoverage\BranchAndPathCoverageNotSupportedException;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
+
+use function sprintf;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -41,7 +45,8 @@ abstract class Driver
     /**
      * @see http://xdebug.org/docs/code_coverage
      */
-    public const int BRANCH_HIT                = 1;
+    public const int BRANCH_HIT = 1;
+
     private bool $collectBranchAndPathCoverage = false;
 
     public function canCollectBranchAndPathCoverage(): bool
@@ -59,7 +64,7 @@ abstract class Driver
      */
     public function enableBranchAndPathCoverage(): void
     {
-        if (!$this->canCollectBranchAndPathCoverage()) {
+        if (! $this->canCollectBranchAndPathCoverage()) {
             throw new BranchAndPathCoverageNotSupportedException(
                 sprintf(
                     '%s does not support branch and path coverage',

@@ -13,13 +13,15 @@ class RemoteKeyboard implements WebDriverKeyboard
 {
     /** @var RemoteExecuteMethod */
     private $executor;
+
     /** @var WebDriver */
     private $driver;
+
     /** @var bool */
     private $isW3cCompliant;
 
     /**
-     * @param bool $isW3cCompliant
+     * @param  bool  $isW3cCompliant
      */
     public function __construct(RemoteExecuteMethod $executor, WebDriver $driver, $isW3cCompliant = false)
     {
@@ -30,7 +32,8 @@ class RemoteKeyboard implements WebDriverKeyboard
 
     /**
      * Send keys to active element
-     * @param string|array $keys
+     *
+     * @param  string|array  $keys
      * @return $this
      */
     public function sendKeys($keys)
@@ -51,7 +54,8 @@ class RemoteKeyboard implements WebDriverKeyboard
      * Press a modifier key
      *
      * @see WebDriverKeys
-     * @param string $key
+     *
+     * @param  string  $key
      * @return $this
      */
     public function pressKey($key)
@@ -79,7 +83,8 @@ class RemoteKeyboard implements WebDriverKeyboard
      * Release a modifier key
      *
      * @see WebDriverKeys
-     * @param string $key
+     *
+     * @param  string  $key
      * @return $this
      */
     public function releaseKey($key)

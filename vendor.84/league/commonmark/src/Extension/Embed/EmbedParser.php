@@ -52,11 +52,7 @@ class EmbedParser implements BlockContinueParserInterface
         return BlockContinue::none();
     }
 
-    public function addLine(string $line): void
-    {
-    }
+    public function addLine(string $line): void {}
 
-    public function closeBlock(): void
-    {
-    }
+    public function closeBlock(): void {}
 }

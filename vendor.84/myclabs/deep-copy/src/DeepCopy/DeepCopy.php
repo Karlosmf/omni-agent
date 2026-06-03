@@ -57,23 +57,22 @@ class DeepCopy
     private $useCloneMethod;
 
     /**
-     * @param bool $useCloneMethod   If set to true, when an object implements the __clone() function, it will be used
-     *                               instead of the regular deep cloning.
+     * @param  bool  $useCloneMethod  If set to true, when an object implements the __clone() function, it will be used
+     *                                instead of the regular deep cloning.
      */
     public function __construct($useCloneMethod = false)
     {
         $this->useCloneMethod = $useCloneMethod;
 
         $this->addTypeFilter(new ArrayObjectFilter($this), new TypeMatcher(ArrayObject::class));
-        $this->addTypeFilter(new DateIntervalFilter(), new TypeMatcher(DateInterval::class));
-        $this->addTypeFilter(new DatePeriodFilter(), new TypeMatcher(DatePeriod::class));
+        $this->addTypeFilter(new DateIntervalFilter, new TypeMatcher(DateInterval::class));
+        $this->addTypeFilter(new DatePeriodFilter, new TypeMatcher(DatePeriod::class));
         $this->addTypeFilter(new SplDoublyLinkedListFilter($this), new TypeMatcher(SplDoublyLinkedList::class));
     }
 
     /**
      * If enabled, will not throw an exception when coming across an uncloneable property.
      *
-     * @param $skipUncloneable
      *
      * @return $this
      */
@@ -89,8 +88,7 @@ class DeepCopy
      *
      * @template TObject
      *
-     * @param TObject $object
-     *
+     * @param  TObject  $object
      * @return TObject
      */
     public function copy($object)
@@ -104,7 +102,7 @@ class DeepCopy
     {
         $this->filters[] = [
             'matcher' => $matcher,
-            'filter'  => $filter,
+            'filter' => $filter,
         ];
     }
 
@@ -112,7 +110,7 @@ class DeepCopy
     {
         array_unshift($this->filters, [
             'matcher' => $matcher,
-            'filter'  => $filter,
+            'filter' => $filter,
         ]);
     }
 
@@ -120,7 +118,7 @@ class DeepCopy
     {
         $this->typeFilters[] = [
             'matcher' => $matcher,
-            'filter'  => $filter,
+            'filter' => $filter,
         ];
     }
 
@@ -128,7 +126,7 @@ class DeepCopy
     {
         array_unshift($this->typeFilters, [
             'matcher' => $matcher,
-            'filter'  => $filter,
+            'filter' => $filter,
         ]);
     }
 
@@ -165,7 +163,7 @@ class DeepCopy
 
     /**
      * Copy an array
-     * @param array $array
+     *
      * @return array
      */
     private function copyArray(array $array)
@@ -180,11 +178,10 @@ class DeepCopy
     /**
      * Copies an object.
      *
-     * @param object $object
+     * @param  object  $object
+     * @return object
      *
      * @throws CloneException
-     *
-     * @return object
      */
     private function copyObject($object)
     {
@@ -197,7 +194,7 @@ class DeepCopy
         $reflectedObject = new ReflectionObject($object);
         $isCloneable = $reflectedObject->isCloneable();
 
-        if (false === $isCloneable) {
+        if ($isCloneable === false) {
             if ($this->skipUncloneable) {
                 $this->hashMap[$objectHash] = $object;
 
@@ -272,7 +269,7 @@ class DeepCopy
         }
 
         // Ignore uninitialized properties (for PHP >7.4)
-        if (method_exists($property, 'isInitialized') && !$property->isInitialized($object)) {
+        if (method_exists($property, 'isInitialized') && ! $property->isInitialized($object)) {
             return;
         }
 
@@ -285,10 +282,9 @@ class DeepCopy
     /**
      * Returns first filter that matches variable, `null` if no such filter found.
      *
-     * @param array $filterRecords Associative array with 2 members: 'filter' with value of type {@see TypeFilter} and
-     *                             'matcher' with value of type {@see TypeMatcher}
-     * @param mixed $var
-     *
+     * @param  array  $filterRecords  Associative array with 2 members: 'filter' with value of type {@see TypeFilter} and
+     *                                'matcher' with value of type {@see TypeMatcher}
+     * @param  mixed  $var
      * @return TypeFilter|null
      */
     private function getFirstMatchedTypeFilter(array $filterRecords, $var)
@@ -309,9 +305,8 @@ class DeepCopy
     /**
      * Returns first element that matches predicate, `null` if no such element found.
      *
-     * @param array    $elements Array of ['filter' => Filter, 'matcher' => Matcher] pairs.
-     * @param callable $predicate Predicate arguments are: element.
-     *
+     * @param  array  $elements  Array of ['filter' => Filter, 'matcher' => Matcher] pairs.
+     * @param  callable  $predicate  Predicate arguments are: element.
      * @return array|null Associative array with 2 members: 'filter' with value of type {@see TypeFilter} and 'matcher'
      *                    with value of type {@see TypeMatcher} or `null`.
      */

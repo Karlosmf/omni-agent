@@ -1,9 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace PhpParser;
 
-if (!\function_exists('PhpParser\defineCompatibilityTokens')) {
-    function defineCompatibilityTokens(): void {
+if (! \function_exists('PhpParser\defineCompatibilityTokens')) {
+    function defineCompatibilityTokens(): void
+    {
         $compatTokens = [
             // PHP 8.0
             'T_NAME_QUALIFIED',
@@ -34,9 +37,9 @@ if (!\function_exists('PhpParser\defineCompatibilityTokens')) {
         foreach ($compatTokens as $token) {
             if (\defined($token)) {
                 $tokenId = \constant($token);
-                if (!\is_int($tokenId)) {
+                if (! \is_int($tokenId)) {
                     throw new \Error(sprintf(
-                        'Token %s has ID of type %s, should be int. ' .
+                        'Token %s has ID of type %s, should be int. '.
                         'You may be using a library with broken token emulation',
                         $token, \gettype($tokenId)
                     ));
@@ -44,7 +47,7 @@ if (!\function_exists('PhpParser\defineCompatibilityTokens')) {
                 $clashingToken = $usedTokenIds[$tokenId] ?? null;
                 if ($clashingToken !== null) {
                     throw new \Error(sprintf(
-                        'Token %s has same ID as token %s, ' .
+                        'Token %s has same ID as token %s, '.
                         'you may be using a library with broken token emulation',
                         $token, $clashingToken
                     ));
@@ -57,7 +60,7 @@ if (!\function_exists('PhpParser\defineCompatibilityTokens')) {
         // downwards, but skip any IDs that may already be in use.
         $newTokenId = -1;
         foreach ($compatTokens as $token) {
-            if (!\defined($token)) {
+            if (! \defined($token)) {
                 while (isset($usedTokenIds[$newTokenId])) {
                     $newTokenId--;
                 }

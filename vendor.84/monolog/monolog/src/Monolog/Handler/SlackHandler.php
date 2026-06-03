@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -12,15 +14,16 @@
 namespace Monolog\Handler;
 
 use Monolog\Formatter\FormatterInterface;
-use Monolog\Level;
-use Monolog\Utils;
 use Monolog\Handler\Slack\SlackRecord;
+use Monolog\Level;
 use Monolog\LogRecord;
+use Monolog\Utils;
 
 /**
  * Sends notifications through Slack API
  *
  * @author Greg Kedzierski <greg@gregkedzierski.com>
+ *
  * @see    https://api.slack.com/
  */
 class SlackHandler extends SocketHandler
@@ -36,14 +39,15 @@ class SlackHandler extends SocketHandler
     private SlackRecord $slackRecord;
 
     /**
-     * @param  string                    $token                  Slack API token
-     * @param  string                    $channel                Slack channel (encoded ID or name)
-     * @param  string|null               $username               Name of a bot
-     * @param  bool                      $useAttachment          Whether the message should be added to Slack as attachment (plain text otherwise)
-     * @param  string|null               $iconEmoji              The emoji name to use (or null)
-     * @param  bool                      $useShortAttachment     Whether the context/extra messages added to Slack as attachments are in a short style
-     * @param  bool                      $includeContextAndExtra Whether the attachment should include context and extra data
-     * @param  string[]                  $excludeFields          Dot separated list of fields to exclude from slack message. E.g. ['context.field1', 'extra.field2']
+     * @param  string  $token  Slack API token
+     * @param  string  $channel  Slack channel (encoded ID or name)
+     * @param  string|null  $username  Name of a bot
+     * @param  bool  $useAttachment  Whether the message should be added to Slack as attachment (plain text otherwise)
+     * @param  string|null  $iconEmoji  The emoji name to use (or null)
+     * @param  bool  $useShortAttachment  Whether the context/extra messages added to Slack as attachments are in a short style
+     * @param  bool  $includeContextAndExtra  Whether the attachment should include context and extra data
+     * @param  string[]  $excludeFields  Dot separated list of fields to exclude from slack message. E.g. ['context.field1', 'extra.field2']
+     *
      * @throws MissingExtensionException If no OpenSSL PHP extension configured
      */
     public function __construct(
@@ -63,7 +67,7 @@ class SlackHandler extends SocketHandler
         ?float $connectionTimeout = null,
         ?int $chunkSize = null
     ) {
-        if (!\extension_loaded('openssl')) {
+        if (! \extension_loaded('openssl')) {
             throw new MissingExtensionException('The OpenSSL PHP extension is required to use the SlackHandler');
         }
 
@@ -102,13 +106,13 @@ class SlackHandler extends SocketHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function generateDataStream(LogRecord $record): string
     {
         $content = $this->buildContent($record);
 
-        return $this->buildHeader($content) . $content;
+        return $this->buildHeader($content).$content;
     }
 
     /**
@@ -144,14 +148,14 @@ class SlackHandler extends SocketHandler
         $header = "POST /api/chat.postMessage HTTP/1.1\r\n";
         $header .= "Host: slack.com\r\n";
         $header .= "Content-Type: application/x-www-form-urlencoded\r\n";
-        $header .= "Content-Length: " . \strlen($content) . "\r\n";
+        $header .= 'Content-Length: '.\strlen($content)."\r\n";
         $header .= "\r\n";
 
         return $header;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function write(LogRecord $record): void
     {
@@ -255,7 +259,7 @@ class SlackHandler extends SocketHandler
     }
 
     /**
-     * @param  string[] $excludeFields
+     * @param  string[]  $excludeFields
      * @return $this
      */
     public function excludeFields(array $excludeFields): self

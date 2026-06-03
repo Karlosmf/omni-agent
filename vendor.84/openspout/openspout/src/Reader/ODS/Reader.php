@@ -25,7 +25,7 @@ final class Reader extends AbstractReader
 
     public function __construct(?Options $options = null)
     {
-        $this->options = $options ?? new Options();
+        $this->options = $options ?? new Options;
     }
 
     public function getSheetIterator(): SheetIterator
@@ -46,18 +46,18 @@ final class Reader extends AbstractReader
     /**
      * Opens the file at the given file path to make it ready to be read.
      *
-     * @param string $filePath Path of the file to be read
+     * @param  string  $filePath  Path of the file to be read
      *
-     * @throws IOException            If the file at the given path or its content cannot be read
+     * @throws IOException If the file at the given path or its content cannot be read
      * @throws NoSheetsFoundException If there are no sheets in the file
      */
     protected function openReader(string $filePath): void
     {
-        $this->zip = new ZipArchive();
+        $this->zip = new ZipArchive;
 
         $openResult = $this->zip->open($filePath);
 
-        if (true !== $openResult) {
+        if ($openResult !== true) {
             $errorMessage = match ($openResult) {
                 ZipArchive::ER_INCONS => 'Zip archive inconsistent',
                 ZipArchive::ER_INVAL => 'Invalid argument',
@@ -73,7 +73,7 @@ final class Reader extends AbstractReader
             throw new IOException("Could not open {$filePath} for reading: {$errorMessage}.");
         }
 
-        $this->sheetIterator = new SheetIterator($filePath, $this->options, new ODS(), new SettingsHelper());
+        $this->sheetIterator = new SheetIterator($filePath, $this->options, new ODS, new SettingsHelper);
     }
 
     /**

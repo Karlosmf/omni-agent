@@ -139,7 +139,7 @@ class SupportServiceProvider extends PackageServiceProvider
 
         $this->callAfterResolving(BladeIconsFactory::class, function (BladeIconsFactory $factory): void {
             $factory->add('filament', [
-                'path' => __DIR__ . '/../resources/svg',
+                'path' => __DIR__.'/../resources/svg',
                 'prefix' => 'fi',
             ]);
         });
@@ -150,7 +150,7 @@ class SupportServiceProvider extends PackageServiceProvider
         app('livewire')->componentHook(new PartialsComponentHook);
 
         FilamentAsset::register([
-            Js::make('support', __DIR__ . '/../dist/index.js'),
+            Js::make('support', __DIR__.'/../dist/index.js'),
         ], 'filament/support');
 
         Blade::directive('captureSlots', function (string $expression): string {
@@ -169,7 +169,7 @@ class SupportServiceProvider extends PackageServiceProvider
             return preg_replace('/\s*@trim\s*/m', '', $view);
         });
 
-        ComponentAttributeBag::macro('color', function (string | HasColor $component, string | array | null $color): ComponentAttributeBag {
+        ComponentAttributeBag::macro('color', function (string|HasColor $component, string|array|null $color): ComponentAttributeBag {
             if (is_array($color)) {
                 return $this
                     ->class(['fi-color'])
@@ -179,7 +179,7 @@ class SupportServiceProvider extends PackageServiceProvider
             return $this->class(FilamentColor::getComponentClasses($component, $color));
         });
 
-        ComponentAttributeBag::macro('grid', function (array | int | null $columns = [], GridDirection $direction = GridDirection::Row): ComponentAttributeBag {
+        ComponentAttributeBag::macro('grid', function (array|int|null $columns = [], GridDirection $direction = GridDirection::Row): ComponentAttributeBag {
             if (! is_array($columns)) {
                 $columns = ['lg' => $columns];
             }
@@ -202,15 +202,15 @@ class SupportServiceProvider extends PackageServiceProvider
                 ])
                 ->style(array_map(
                     fn (string $breakpoint, int $columns): string => match ($direction) {
-                        GridDirection::Row => '--cols-' . str_replace('!', 'n', str_replace('@', 'c', $breakpoint)) . ": repeat({$columns}, minmax(0, 1fr))",
-                        GridDirection::Column => '--cols-' . str_replace('!', 'n', str_replace('@', 'c', $breakpoint)) . ": {$columns}",
+                        GridDirection::Row => '--cols-'.str_replace('!', 'n', str_replace('@', 'c', $breakpoint)).": repeat({$columns}, minmax(0, 1fr))",
+                        GridDirection::Column => '--cols-'.str_replace('!', 'n', str_replace('@', 'c', $breakpoint)).": {$columns}",
                     },
                     array_keys($columns),
                     array_values($columns),
                 ));
         });
 
-        ComponentAttributeBag::macro('gridColumn', function (array | int | string | null $span = [], array | int | null $start = [], array | int | string | null $order = [], bool $isHidden = false): ComponentAttributeBag {
+        ComponentAttributeBag::macro('gridColumn', function (array|int|string|null $span = [], array|int|null $start = [], array|int|string|null $order = [], bool $isHidden = false): ComponentAttributeBag {
             if (! is_array($span)) {
                 $span = ['lg' => $span];
             }
@@ -257,7 +257,7 @@ class SupportServiceProvider extends PackageServiceProvider
                 ])
                 ->style([
                     ...array_map(
-                        fn (string $breakpoint, int | string $span): string => '--col-span-' . str_replace('!', 'n', str_replace('@', 'c', $breakpoint)) . ': ' . match ($span) {
+                        fn (string $breakpoint, int|string $span): string => '--col-span-'.str_replace('!', 'n', str_replace('@', 'c', $breakpoint)).': '.match ($span) {
                             'full' => '1 / -1',
                             default => "span {$span} / span {$span}",
                         },
@@ -265,12 +265,12 @@ class SupportServiceProvider extends PackageServiceProvider
                         array_values($span),
                     ),
                     ...array_map(
-                        fn (string $breakpoint, int $start): string => '--col-start-' . str_replace('!', 'n', str_replace('@', 'c', $breakpoint)) . ': ' . $start,
+                        fn (string $breakpoint, int $start): string => '--col-start-'.str_replace('!', 'n', str_replace('@', 'c', $breakpoint)).': '.$start,
                         array_keys($start),
                         array_values($start),
                     ),
                     ...array_map(
-                        fn (string $breakpoint, int $order): string => '--col-order-' . str_replace('!', 'n', str_replace('@', 'c', $breakpoint)) . ': ' . $order,
+                        fn (string $breakpoint, int $order): string => '--col-order-'.str_replace('!', 'n', str_replace('@', 'c', $breakpoint)).': '.$order,
                         array_keys($order),
                         array_values($order),
                     ),

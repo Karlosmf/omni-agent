@@ -11,7 +11,7 @@ class Panel extends Component implements HasEmbeddedView
     /**
      * @param  array<Column | Component> | Closure  $schema
      */
-    final public function __construct(array | Closure $schema)
+    final public function __construct(array|Closure $schema)
     {
         $this->schema($schema);
     }
@@ -19,7 +19,7 @@ class Panel extends Component implements HasEmbeddedView
     /**
      * @param  array<Column | Component> | Closure  $schema
      */
-    public static function make(array | Closure $schema): static
+    public static function make(array|Closure $schema): static
     {
         $static = app(static::class, ['schema' => $schema]);
         $static->configure();

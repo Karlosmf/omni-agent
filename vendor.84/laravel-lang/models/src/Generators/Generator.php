@@ -59,9 +59,9 @@ abstract class Generator
     protected function baseData(): array
     {
         return [
-            'fqn'       => $this->getFqn(),
+            'fqn' => $this->getFqn(),
             'namespace' => $this->getNamespace(),
-            'model'     => $this->getModel(),
+            'model' => $this->getModel(),
         ];
     }
 
@@ -110,7 +110,7 @@ abstract class Generator
 
     protected function translationModelNamespace(): string
     {
-        return $this->model . $this->modelSuffix();
+        return $this->model.$this->modelSuffix();
     }
 
     protected function modelSuffix(): string

@@ -19,8 +19,7 @@ final class ResponseStatusCodeSame extends Constraint
     public function __construct(
         private int $statusCode,
         private readonly bool $verbose = true,
-    ) {
-    }
+    ) {}
 
     public function toString(): string
     {
@@ -28,7 +27,7 @@ final class ResponseStatusCodeSame extends Constraint
     }
 
     /**
-     * @param Response $response
+     * @param  Response  $response
      */
     protected function matches($response): bool
     {
@@ -36,7 +35,7 @@ final class ResponseStatusCodeSame extends Constraint
     }
 
     /**
-     * @param Response $response
+     * @param  Response  $response
      */
     protected function failureDescription($response): string
     {
@@ -44,7 +43,7 @@ final class ResponseStatusCodeSame extends Constraint
     }
 
     /**
-     * @param Response $response
+     * @param  Response  $response
      */
     protected function additionalFailureDescription($response): string
     {

@@ -9,41 +9,39 @@ declare(strict_types=1);
 
 namespace Nette\PhpGenerator\Traits;
 
-
 /**
  * @internal
  */
 trait CommentAware
 {
-	private ?string $comment = null;
+    private ?string $comment = null;
 
+    public function setComment(?string $val): static
+    {
+        $this->comment = $val;
 
-	public function setComment(?string $val): static
-	{
-		$this->comment = $val;
-		return $this;
-	}
+        return $this;
+    }
 
+    public function getComment(): ?string
+    {
+        return $this->comment;
+    }
 
-	public function getComment(): ?string
-	{
-		return $this->comment;
-	}
+    /**
+     * Adds a new line to the comment.
+     */
+    public function addComment(string $val): static
+    {
+        $this->comment .= $this->comment ? "\n$val" : $val;
 
+        return $this;
+    }
 
-	/**
-	 * Adds a new line to the comment.
-	 */
-	public function addComment(string $val): static
-	{
-		$this->comment .= $this->comment ? "\n$val" : $val;
-		return $this;
-	}
+    public function removeComment(): static
+    {
+        $this->comment = null;
 
-
-	public function removeComment(): static
-	{
-		$this->comment = null;
-		return $this;
-	}
+        return $this;
+    }
 }

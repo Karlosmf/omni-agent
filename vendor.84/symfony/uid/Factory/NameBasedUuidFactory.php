@@ -20,8 +20,7 @@ class NameBasedUuidFactory
     public function __construct(
         private string $class,
         private Uuid $namespace,
-    ) {
-    }
+    ) {}
 
     public function create(string $name): UuidV5|UuidV3
     {

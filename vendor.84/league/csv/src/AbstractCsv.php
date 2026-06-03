@@ -13,6 +13,12 @@ declare(strict_types=1);
 
 namespace League\Csv;
 
+use const FILTER_FLAG_STRIP_HIGH;
+use const FILTER_FLAG_STRIP_LOW;
+use const FILTER_UNSAFE_RAW;
+use const STREAM_FILTER_READ;
+use const STREAM_FILTER_WRITE;
+
 use Closure;
 use Deprecated;
 use Generator;
@@ -35,12 +41,6 @@ use function str_split;
 use function strcspn;
 use function strlen;
 
-use const FILTER_FLAG_STRIP_HIGH;
-use const FILTER_FLAG_STRIP_LOW;
-use const FILTER_UNSAFE_RAW;
-use const STREAM_FILTER_READ;
-use const STREAM_FILTER_WRITE;
-
 /**
  * An abstract class to enable CSV document loading.
  */
@@ -50,12 +50,19 @@ abstract class AbstractCsv implements ByteSequence
 
     /** @var array<string, bool> collection of stream filters. */
     protected array $stream_filters = [];
+
     protected ?Bom $input_bom = null;
+
     protected ?Bom $output_bom = null;
+
     protected string $delimiter = ',';
+
     protected string $enclosure = '"';
+
     protected string $escape = '\\';
+
     protected bool $is_input_bom_included = false;
+
     /** @var array<Closure(array): array> collection of Closure to format the record before reading. */
     protected array $formatters = [];
 
@@ -71,9 +78,7 @@ abstract class AbstractCsv implements ByteSequence
     /**
      * Reset dynamic object properties to improve performance.
      */
-    protected function resetProperties(): void
-    {
-    }
+    protected function resetProperties(): void {}
 
     /**
      * @throws UnavailableStream
@@ -94,9 +99,9 @@ abstract class AbstractCsv implements ByteSequence
     /**
      * Returns a new instance from a file path.
      *
-     * @param SplFileInfo|SplFileObject|resource|string $filename an SPL file object, a resource stream or a file path
-     * @param non-empty-string $mode the file path open mode used with a file path or a SplFileInfo object
-     * @param resource|null $context the resource context used with a file pathor a SplFileInfo object
+     * @param  SplFileInfo|SplFileObject|resource|string  $filename  an SPL file object, a resource stream or a file path
+     * @param  non-empty-string  $mode  the file path open mode used with a file path or a SplFileInfo object
+     * @param  resource|null  $context  the resource context used with a file pathor a SplFileInfo object
      *
      * @throws UnavailableStream
      */
@@ -154,7 +159,7 @@ abstract class AbstractCsv implements ByteSequence
      */
     public function getInputBOM(): string
     {
-        if (null === $this->input_bom) {
+        if ($this->input_bom === null) {
             $this->document->setFlags(SplFileObject::READ_CSV);
             $this->input_bom = Bom::tryFromSequence($this->document);
         }
@@ -167,7 +172,7 @@ abstract class AbstractCsv implements ByteSequence
      */
     public function supportsStreamFilterOnRead(): bool
     {
-        if (!$this->document instanceof Stream) {
+        if (! $this->document instanceof Stream) {
             return false;
         }
 
@@ -181,7 +186,7 @@ abstract class AbstractCsv implements ByteSequence
      */
     public function supportsStreamFilterOnWrite(): bool
     {
-        if (!$this->document instanceof Stream) {
+        if (! $this->document instanceof Stream) {
             return false;
         }
 
@@ -213,18 +218,18 @@ abstract class AbstractCsv implements ByteSequence
      */
     public function chunk(int $length): Generator
     {
-        0 < $length || throw InvalidArgument::dueToInvalidChunkSize($length, __METHOD__);
+        $length > 0 || throw InvalidArgument::dueToInvalidChunkSize($length, __METHOD__);
 
         $this->getInputBOM();
         $this->document->rewind();
         $this->document->setFlags(0);
-        $this->is_input_bom_included || -1 < $this->document->fseek($this->input_bom?->length() ?? 0) || throw new RuntimeException('Unable to seek the document.');
+        $this->is_input_bom_included || $this->document->fseek($this->input_bom?->length() ?? 0) > -1 || throw new RuntimeException('Unable to seek the document.');
 
         yield from str_split($this->output_bom?->value.$this->document->fread($length), $length);
 
-        while (!$this->document->eof()) {
+        while (! $this->document->eof()) {
             $chunk = $this->document->fread($length);
-            false !== $chunk || throw new RuntimeException('Unable to read the document.');
+            $chunk !== false || throw new RuntimeException('Unable to read the document.');
 
             yield $chunk;
         }
@@ -254,24 +259,24 @@ abstract class AbstractCsv implements ByteSequence
      */
     public function download(?string $filename = null): int
     {
-        if (null !== $filename) {
+        if ($filename !== null) {
             HttpHeaders::forFileDownload($filename, 'text/csv');
         }
 
         $bytes = 0;
         $output = new SplFileObject('php://output', 'wb');
-        if (null !== $this->output_bom) {
+        if ($this->output_bom !== null) {
             $bytes += $output->fwrite($this->output_bom->value);
         }
 
         $this->getInputBOM();
         $this->document->rewind();
         $this->document->setFlags(0);
-        $this->is_input_bom_included || -1 < $this->document->fseek($this->input_bom?->length() ?? 0) || throw new RuntimeException('Unable to seek the document.');
+        $this->is_input_bom_included || $this->document->fseek($this->input_bom?->length() ?? 0) > -1 || throw new RuntimeException('Unable to seek the document.');
 
-        while (!$this->document->eof()) {
+        while (! $this->document->eof()) {
             $chunk = $this->document->fread(8192);
-            false !== $chunk || throw new RuntimeException('Unable to read the document.');
+            $chunk !== false || throw new RuntimeException('Unable to read the document.');
             $bytes += $output->fwrite($chunk);
             $output->fflush();
         }
@@ -290,7 +295,7 @@ abstract class AbstractCsv implements ByteSequence
             return $this;
         }
 
-        1 === strlen($delimiter) || throw InvalidArgument::dueToInvalidDelimiterCharacter($delimiter, __METHOD__);
+        strlen($delimiter) === 1 || throw InvalidArgument::dueToInvalidDelimiterCharacter($delimiter, __METHOD__);
 
         $this->delimiter = $delimiter;
         $this->resetProperties();
@@ -309,7 +314,7 @@ abstract class AbstractCsv implements ByteSequence
             return $this;
         }
 
-        1 === strlen($enclosure) || throw InvalidArgument::dueToInvalidEnclosureCharacter($enclosure, __METHOD__);
+        strlen($enclosure) === 1 || throw InvalidArgument::dueToInvalidEnclosureCharacter($enclosure, __METHOD__);
 
         $this->enclosure = $enclosure;
         $this->resetProperties();
@@ -328,7 +333,7 @@ abstract class AbstractCsv implements ByteSequence
             return $this;
         }
 
-        if ('' !== $escape && 1 !== strlen($escape)) {
+        if ($escape !== '' && strlen($escape) !== 1) {
             throw InvalidArgument::dueToInvalidEscapeCharacter($escape, __METHOD__);
         }
 
@@ -341,11 +346,11 @@ abstract class AbstractCsv implements ByteSequence
     /**
      * Adds a record formatter.
      *
-     * @param callable(array): array $formatter
+     * @param  callable(array): array  $formatter
      */
     public function addFormatter(callable $formatter): static
     {
-        $this->formatters[] = !$formatter instanceof Closure ? $formatter(...) : $formatter;
+        $this->formatters[] = ! $formatter instanceof Closure ? $formatter(...) : $formatter;
 
         return $this;
     }
@@ -380,8 +385,8 @@ abstract class AbstractCsv implements ByteSequence
         try {
             $this->output_bom = match (true) {
                 $str instanceof Bom => $str,
-                null === $str,
-                '' === $str => null,
+                $str === null,
+                $str === '' => null,
                 default => Bom::fromSequence($str),
             };
 
@@ -469,11 +474,12 @@ abstract class AbstractCsv implements ByteSequence
      * @deprecated since version 9.7.0
      * @see AbstractCsv::supportsStreamFilterOnRead
      * @see AbstractCsv::supportsStreamFilterOnWrite
+     *
      * @codeCoverageIgnore
      *
      * Returns the stream filter mode.
      */
-    #[Deprecated(message:'use League\Csv\AbstractCsv::supportsStreamFilterOnRead() or League\Csv\AbstractCsv::supportsStreamFilterOnWrite() instead', since:'league/csv:9.7.0')]
+    #[Deprecated(message: 'use League\Csv\AbstractCsv::supportsStreamFilterOnRead() or League\Csv\AbstractCsv::supportsStreamFilterOnWrite() instead', since: 'league/csv:9.7.0')]
     public function getStreamFilterMode(): int
     {
         return static::STREAM_FILTER_MODE;
@@ -485,11 +491,12 @@ abstract class AbstractCsv implements ByteSequence
      * @deprecated since version 9.7.0
      * @see AbstractCsv::supportsStreamFilterOnRead
      * @see AbstractCsv::supportsStreamFilterOnWrite
+     *
      * @codeCoverageIgnore
      *
      * Tells whether the stream filter capabilities can be used.
      */
-    #[Deprecated(message:'use League\Csv\AbstractCsv::supportsStreamFilterOnRead() or League\Csv\AbstractCsv::supportsStreamFilterOnWrite() instead', since:'league/csv:9.7.0')]
+    #[Deprecated(message: 'use League\Csv\AbstractCsv::supportsStreamFilterOnRead() or League\Csv\AbstractCsv::supportsStreamFilterOnWrite() instead', since: 'league/csv:9.7.0')]
     public function supportsStreamFilter(): bool
     {
         return $this->document instanceof Stream;
@@ -502,9 +509,10 @@ abstract class AbstractCsv implements ByteSequence
      *
      * @deprecated since version 9.7.0
      * @see AbstractCsv::toString
+     *
      * @codeCoverageIgnore
      */
-    #[Deprecated(message:'use League\Csv\AbstractCsv::toString() instead', since:'league/csv:9.7.0')]
+    #[Deprecated(message: 'use League\Csv\AbstractCsv::toString() instead', since: 'league/csv:9.7.0')]
     public function getContent(): string
     {
         return $this->toString();
@@ -515,11 +523,12 @@ abstract class AbstractCsv implements ByteSequence
      *
      * @deprecated since version 9.1.0
      * @see AbstractCsv::toString
+     *
      * @codeCoverageIgnore
      *
      * Retrieves the CSV content
      */
-    #[Deprecated(message:'use League\Csv\AbstractCsv::toString() instead', since:'league/csv:9.1.0')]
+    #[Deprecated(message: 'use League\Csv\AbstractCsv::toString() instead', since: 'league/csv:9.1.0')]
     public function __toString(): string
     {
         return $this->toString();
@@ -531,6 +540,7 @@ abstract class AbstractCsv implements ByteSequence
      * @throws Exception if the submitted header is invalid according to RFC 6266
      *
      * @see HttpHeaders::forFileDownload()
+     *
      * @codeCoverageIgnore
      *
      * Send the CSV headers.
@@ -540,7 +550,7 @@ abstract class AbstractCsv implements ByteSequence
      * @deprecated since version 9.17.0
      * @see https://tools.ietf.org/html/rfc6266#section-4.3
      */
-    #[Deprecated(message:'the method no longer affect the outcome of the class, use League\Csv\HttpHeaders::forFileDownload instead', since:'league/csv:9.17.0')]
+    #[Deprecated(message: 'the method no longer affect the outcome of the class, use League\Csv\HttpHeaders::forFileDownload instead', since: 'league/csv:9.17.0')]
     protected function sendHeaders(string $filename): void
     {
         if (strlen($filename) !== strcspn($filename, '\\/')) {
@@ -548,7 +558,7 @@ abstract class AbstractCsv implements ByteSequence
         }
 
         $flag = FILTER_FLAG_STRIP_LOW;
-        if (1 === preg_match('/[^\x20-\x7E]/', $filename)) {
+        if (preg_match('/[^\x20-\x7E]/', $filename) === 1) {
             $flag |= FILTER_FLAG_STRIP_HIGH;
         }
 
@@ -571,6 +581,7 @@ abstract class AbstractCsv implements ByteSequence
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @codeCoverageIgnore
+     *
      * @deprecated since version 9.18.0
      * @see AbstractCsv::download()
      *
@@ -580,7 +591,7 @@ abstract class AbstractCsv implements ByteSequence
      *
      * @throws Exception
      */
-    #[Deprecated(message:'use League\Csv\AbstractCsv::download() instead', since:'league/csv:9.18.0')]
+    #[Deprecated(message: 'use League\Csv\AbstractCsv::download() instead', since: 'league/csv:9.18.0')]
     public function output(?string $filename = null): int
     {
         try {
@@ -592,7 +603,9 @@ abstract class AbstractCsv implements ByteSequence
 
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
      * @codeCoverageIgnore
+     *
      * @deprecated since version 9.22.0
      * @see AbstractCsv::appendStreamFilterOnRead()
      * @see AbstractCsv::appendStreamFilterOnWrite()
@@ -602,10 +615,10 @@ abstract class AbstractCsv implements ByteSequence
      * @throws InvalidArgument If the stream filter API can not be appended
      * @throws UnavailableFeature If the stream filter API can not be used
      */
-    #[Deprecated(message:'use League\Csv\AbstractCsv::appendStreamFilterOnRead() or League\Csv\AbstractCsv::prependStreamFilterOnRead() instead', since:'league/csv:9.18.0')]
+    #[Deprecated(message: 'use League\Csv\AbstractCsv::appendStreamFilterOnRead() or League\Csv\AbstractCsv::prependStreamFilterOnRead() instead', since: 'league/csv:9.18.0')]
     public function addStreamFilter(string $filtername, ?array $params = null): static
     {
-        if (STREAM_FILTER_READ === static::STREAM_FILTER_MODE) {
+        if (static::STREAM_FILTER_MODE === STREAM_FILTER_READ) {
             return $this->appendStreamFilterOnRead($filtername, $params);
         }
 
@@ -614,12 +627,14 @@ abstract class AbstractCsv implements ByteSequence
 
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
      * @codeCoverageIgnore
+     *
      * @deprecated since version 9.27.0
      *
      * Returns a new instance from a SplFileObject.
      */
-    #[Deprecated(message:'use League\Csv\AbstractCsv::from() instead', since:'league/csv:9.27.0')]
+    #[Deprecated(message: 'use League\Csv\AbstractCsv::from() instead', since: 'league/csv:9.27.0')]
     public static function createFromFileObject(SplFileObject $file): static
     {
         return new static($file);
@@ -627,14 +642,16 @@ abstract class AbstractCsv implements ByteSequence
 
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
      * @codeCoverageIgnore
+     *
      * @deprecated since version 9.27.0
      *
      * Returns a new instance from a PHP resource stream.
      *
-     * @param resource $stream
+     * @param  resource  $stream
      */
-    #[Deprecated(message:'use League\Csv\AbstractCsv::from() instead', since:'league/csv:9.27.0')]
+    #[Deprecated(message: 'use League\Csv\AbstractCsv::from() instead', since: 'league/csv:9.27.0')]
     public static function createFromStream($stream): static
     {
         is_resource($stream) || throw new TypeError('Argument passed must be a stream resource or a string, '.gettype($stream).' given.');
@@ -644,12 +661,14 @@ abstract class AbstractCsv implements ByteSequence
 
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
      * @codeCoverageIgnore
+     *
      * @deprecated since version 9.27.0
      *
      * Returns a new instance from a string.
      */
-    #[Deprecated(message:'use League\Csv\AbstractCsv::fromString() instead', since:'league/csv:9.27.0')]
+    #[Deprecated(message: 'use League\Csv\AbstractCsv::fromString() instead', since: 'league/csv:9.27.0')]
     public static function createFromString(Stringable|string $content = ''): static
     {
         return self::fromString($content);
@@ -657,17 +676,19 @@ abstract class AbstractCsv implements ByteSequence
 
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
      * @codeCoverageIgnore
+     *
      * @deprecated since version 9.27.0
      *
      * Returns a new instance from a file path.
      *
-     * @param non-empty-string $open_mode
-     * @param resource|null $context the resource context
+     * @param  non-empty-string  $open_mode
+     * @param  resource|null  $context  the resource context
      *
      * @throws UnavailableStream
      */
-    #[Deprecated(message:'use League\Csv\AbstractCsv::from() instead', since:'league/csv:9.27.0')]
+    #[Deprecated(message: 'use League\Csv\AbstractCsv::from() instead', since: 'league/csv:9.27.0')]
     public static function createFromPath(string $path, string $open_mode = 'r+', $context = null): static
     {
         return new static(Stream::from($path, $open_mode, $context));

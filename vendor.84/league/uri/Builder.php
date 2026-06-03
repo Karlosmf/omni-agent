@@ -33,12 +33,19 @@ use function strpos;
 final class Builder implements Conditionable, Transformable
 {
     private ?string $scheme = null;
+
     private ?string $username = null;
+
     private ?string $password = null;
+
     private ?string $host = null;
+
     private ?int $port = null;
+
     private ?string $path = null;
+
     private ?string $query = null;
+
     private ?string $fragment = null;
 
     public function __construct(
@@ -100,7 +107,7 @@ final class Builder implements Conditionable, Transformable
     {
         $host = $this->filterString($host);
         if ($host !== $this->host) {
-            null === $host
+            $host === null
             || HostRecord::isValid($host)
             || throw new SyntaxError('The host `'.$host.'` is invalid.');
 
@@ -117,14 +124,14 @@ final class Builder implements Conditionable, Transformable
     public function port(BackedEnum|int|null $port): self
     {
         if ($port instanceof BackedEnum) {
-            1 === preg_match('/^\d+$/', (string) $port->value)
+            preg_match('/^\d+$/', (string) $port->value) === 1
             || throw new TypeError('The port must be a valid BackedEnum containing a number.');
 
             $port = (int) $port->value;
         }
 
         if ($port !== $this->port) {
-            null === $port
+            $port === null
             || ($port >= 0 && $port < 65535)
             || throw new SyntaxError('The port value must be null or an integer between 0 and 65535.');
 
@@ -154,7 +161,7 @@ final class Builder implements Conditionable, Transformable
     {
         $path = $this->filterString($path);
         if ($path !== $this->path) {
-            $this->path = null !== $path ? Encoder::encodePath($path) : null;
+            $this->path = $path !== null ? Encoder::encodePath($path) : null;
         }
 
         return $this;
@@ -207,7 +214,7 @@ final class Builder implements Conditionable, Transformable
      * Executes the given callback with the current instance
      * and returns the current instance.
      *
-     * @param callable(self): self $callback
+     * @param  callable(self): self  $callback
      */
     public function transform(callable $callback): static
     {
@@ -216,13 +223,13 @@ final class Builder implements Conditionable, Transformable
 
     public function when(callable|bool $condition, callable $onSuccess, ?callable $onFail = null): static
     {
-        if (!is_bool($condition)) {
+        if (! is_bool($condition)) {
             $condition = $condition($this);
         }
 
         return match (true) {
             $condition => $onSuccess($this),
-            null !== $onFail => $onFail($this),
+            $onFail !== null => $onFail($this),
             default => $this,
         } ?? $this;
     }
@@ -267,7 +274,7 @@ final class Builder implements Conditionable, Transformable
             Encoder::encodeQueryOrFragment($this->fragment)
         );
 
-        return Uri::new(null === $baseUri ? $uriString : UriString::resolve($uriString, match (true) {
+        return Uri::new($baseUri === null ? $uriString : UriString::resolve($uriString, match (true) {
             $baseUri instanceof Rfc3986Uri => $baseUri->toString(),
             $baseUri instanceof WhatWgUrl => $baseUri->toAsciiString(),
             default => $baseUri,
@@ -279,24 +286,24 @@ final class Builder implements Conditionable, Transformable
      */
     private function buildAuthority(): ?string
     {
-        if (null === $this->host) {
-            (null === $this->username && null === $this->password && null === $this->port)
+        if ($this->host === null) {
+            ($this->username === null && $this->password === null && $this->port === null)
             || throw new SyntaxError('The User Information and/or the Port component(s) are set without a Host component being present.');
 
             return null;
         }
 
         $authority = $this->host;
-        if (null !== $this->username || null !== $this->password) {
+        if ($this->username !== null || $this->password !== null) {
             $userInfo = Encoder::encodeUser($this->username);
-            if (null !== $this->password) {
+            if ($this->password !== null) {
                 $userInfo .= ':'.Encoder::encodePassword($this->password);
             }
 
             $authority = $userInfo.'@'.$authority;
         }
 
-        if (null !== $this->port) {
+        if ($this->port !== null) {
             return $authority.':'.$this->port;
         }
 
@@ -308,12 +315,12 @@ final class Builder implements Conditionable, Transformable
      */
     private function buildPath(?string $authority): ?string
     {
-        if (null === $this->path || '' === $this->path) {
+        if ($this->path === null || $this->path === '') {
             return $this->path;
         }
 
         $path = Encoder::encodePath($this->path);
-        if (null !== $authority) {
+        if ($authority !== null) {
             return str_starts_with($path, '/') ? $path : '/'.$path;
         }
 
@@ -322,9 +329,9 @@ final class Builder implements Conditionable, Transformable
         }
 
         $colonPos = strpos($path, ':');
-        if (false !== $colonPos && null === $this->scheme) {
+        if ($colonPos !== false && $this->scheme === null) {
             $slashPos = strpos($path, '/');
-            (false !== $slashPos && $colonPos > $slashPos) || throw new SyntaxError('In absence of the scheme and authority components, the first path segment cannot contain a colon (":") character.');
+            ($slashPos !== false && $colonPos > $slashPos) || throw new SyntaxError('In absence of the scheme and authority components, the first path segment cannot contain a colon (":") character.');
         }
 
         return $path;
@@ -341,11 +348,11 @@ final class Builder implements Conditionable, Transformable
             $str instanceof FragmentDirective => $str->toFragmentValue(),
             $str instanceof UriComponentInterface => $str->value(),
             $str instanceof BackedEnum => (string) $str->value,
-            null === $str => null,
+            $str === null => null,
             default => (string) $str,
         };
 
-        if (null === $str) {
+        if ($str === null) {
             return null;
         }
 

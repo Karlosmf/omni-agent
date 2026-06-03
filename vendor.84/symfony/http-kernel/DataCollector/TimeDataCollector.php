@@ -33,7 +33,7 @@ class TimeDataCollector extends DataCollector implements LateDataCollectorInterf
 
     public function collect(Request $request, Response $response, ?\Throwable $exception = null): void
     {
-        if (null !== $this->kernel) {
+        if ($this->kernel !== null) {
             $startTime = $this->kernel->getStartTime();
         } else {
             $startTime = $request->server->get('REQUEST_TIME_FLOAT');
@@ -56,14 +56,14 @@ class TimeDataCollector extends DataCollector implements LateDataCollectorInterf
 
     public function lateCollect(): void
     {
-        if (null !== $this->stopwatch && isset($this->data['token'])) {
+        if ($this->stopwatch !== null && isset($this->data['token'])) {
             $this->setEvents($this->stopwatch->getSectionEvents($this->data['token']));
         }
         unset($this->data['token']);
     }
 
     /**
-     * @param StopwatchEvent[] $events The request events
+     * @param  StopwatchEvent[]  $events  The request events
      */
     public function setEvents(array $events): void
     {
@@ -87,7 +87,7 @@ class TimeDataCollector extends DataCollector implements LateDataCollectorInterf
      */
     public function getDuration(): float
     {
-        if (!isset($this->data['events']['__section__'])) {
+        if (! isset($this->data['events']['__section__'])) {
             return 0;
         }
 
@@ -103,7 +103,7 @@ class TimeDataCollector extends DataCollector implements LateDataCollectorInterf
      */
     public function getInitTime(): float
     {
-        if (!isset($this->data['events']['__section__'])) {
+        if (! isset($this->data['events']['__section__'])) {
             return 0;
         }
 

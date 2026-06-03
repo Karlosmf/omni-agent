@@ -1,8 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace PhpParser\Node\Scalar;
 
-require __DIR__ . '/InterpolatedString.php';
+require __DIR__.'/InterpolatedString.php';
 
 if (false) {
     /**
@@ -10,6 +12,5 @@ if (false) {
      *
      * @deprecated use \PhpParser\Node\Scalar\InterpolatedString instead.
      */
-    class Encapsed extends InterpolatedString {
-    }
+    class Encapsed extends InterpolatedString {}
 }

@@ -22,14 +22,13 @@ use Psy\Exception\FatalErrorException;
 class AbstractClassPass extends CodeCleanerPass
 {
     private Class_ $class;
+
     private array $abstractMethods;
 
     /**
-     * @throws FatalErrorException if the node is an abstract function with a body
-     *
-     * @param Node $node
-     *
      * @return int|Node|null Replacement node (or special return value)
+     *
+     * @throws FatalErrorException if the node is an abstract function with a body
      */
     public function enterNode(Node $node)
     {
@@ -52,17 +51,15 @@ class AbstractClassPass extends CodeCleanerPass
     }
 
     /**
-     * @throws FatalErrorException if the node is a non-abstract class with abstract methods
-     *
-     * @param Node $node
-     *
      * @return int|Node|Node[]|null Replacement node (or special return value)
+     *
+     * @throws FatalErrorException if the node is a non-abstract class with abstract methods
      */
     public function leaveNode(Node $node)
     {
         if ($node instanceof Class_) {
             $count = \count($this->abstractMethods);
-            if ($count > 0 && !$node->isAbstract()) {
+            if ($count > 0 && ! $node->isAbstract()) {
                 $msg = \sprintf(
                     'Class %s contains %d abstract method%s must therefore be declared abstract or implement the remaining methods (%s)',
                     $node->name,

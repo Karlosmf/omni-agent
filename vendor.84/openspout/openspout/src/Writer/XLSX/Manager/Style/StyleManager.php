@@ -38,17 +38,17 @@ final class StyleManager extends CommonStyleManager
      */
     public function shouldApplyStyleOnEmptyCell(?int $styleId): bool
     {
-        if (null === $styleId) {
+        if ($styleId === null) {
             return false;
         }
         $associatedFillId = $this->styleRegistry->getFillIdForStyleId($styleId);
-        $hasStyleCustomFill = (null !== $associatedFillId && 0 !== $associatedFillId);
+        $hasStyleCustomFill = ($associatedFillId !== null && $associatedFillId !== 0);
 
         $associatedBorderId = $this->styleRegistry->getBorderIdForStyleId($styleId);
-        $hasStyleCustomBorders = (null !== $associatedBorderId && 0 !== $associatedBorderId);
+        $hasStyleCustomBorders = ($associatedBorderId !== null && $associatedBorderId !== 0);
 
         $associatedFormatId = $this->styleRegistry->getFormatIdForStyleId($styleId);
-        $hasStyleCustomFormats = (null !== $associatedFormatId && 0 !== $associatedFormatId);
+        $hasStyleCustomFormats = ($associatedFormatId !== null && $associatedFormatId !== 0);
 
         return $hasStyleCustomFill || $hasStyleCustomBorders || $hasStyleCustomFormats;
     }
@@ -192,7 +192,7 @@ final class StyleManager extends CommonStyleManager
         foreach ($registeredBorders as $styleId) {
             $style = $this->styleRegistry->getStyleFromStyleId($styleId);
             $border = $style->getBorder();
-            \assert(null !== $border);
+            \assert($border !== null);
             $content .= '<border>';
 
             // @see https://github.com/box/spout/issues/271
@@ -294,7 +294,7 @@ final class StyleManager extends CommonStyleManager
     {
         // For the default style (ID = 0), we don't want to override the fill.
         // Otherwise all cells of the spreadsheet will have a background color.
-        $isDefaultStyle = (0 === $styleId);
+        $isDefaultStyle = ($styleId === 0);
 
         return $isDefaultStyle ? 0 : ($this->styleRegistry->getFillIdForStyleId($styleId) ?? 0);
     }
@@ -307,7 +307,7 @@ final class StyleManager extends CommonStyleManager
     {
         // For the default style (ID = 0), we don't want to override the border.
         // Otherwise all cells of the spreadsheet will have a border.
-        $isDefaultStyle = (0 === $styleId);
+        $isDefaultStyle = ($styleId === 0);
 
         return $isDefaultStyle ? 0 : ($this->styleRegistry->getBorderIdForStyleId($styleId) ?? 0);
     }
@@ -320,7 +320,7 @@ final class StyleManager extends CommonStyleManager
     {
         // For the default style (ID = 0), we don't want to override the format.
         // Otherwise all cells of the spreadsheet will have a format.
-        $isDefaultStyle = (0 === $styleId);
+        $isDefaultStyle = ($styleId === 0);
 
         return $isDefaultStyle ? 0 : ($this->styleRegistry->getFormatIdForStyleId($styleId) ?? 0);
     }

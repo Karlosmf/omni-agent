@@ -121,7 +121,5 @@ final class RoundingMode
      *
      * @codeCoverageIgnore
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 }

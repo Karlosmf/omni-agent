@@ -19,12 +19,12 @@ class DependencyChecker
     /**
      * Check if all functions in a list are available (exist and not disabled).
      *
-     * @param string[] $functions List of function names to check
+     * @param  string[]  $functions  List of function names to check
      */
     public static function functionsAvailable(array $functions): bool
     {
         foreach ($functions as $func) {
-            if (!\function_exists($func)) {
+            if (! \function_exists($func)) {
                 return false;
             }
         }
@@ -35,8 +35,7 @@ class DependencyChecker
     /**
      * Check if any functions in a list are disabled.
      *
-     * @param string[] $functions List of function names to check
-     *
+     * @param  string[]  $functions  List of function names to check
      * @return string[] List of disabled functions
      */
     public static function functionsDisabled(array $functions): array

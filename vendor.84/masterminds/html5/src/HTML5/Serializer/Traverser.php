@@ -16,11 +16,11 @@ class Traverser
     /**
      * Namespaces that should be treated as "local" to HTML5.
      */
-    protected static $local_ns = array(
+    protected static $local_ns = [
         'http://www.w3.org/1999/xhtml' => 'html',
         'http://www.w3.org/1998/Math/MathML' => 'math',
         'http://www.w3.org/2000/svg' => 'svg',
-    );
+    ];
 
     protected $dom;
 
@@ -35,15 +35,15 @@ class Traverser
     /**
      * Create a traverser.
      *
-     * @param \DOMNode|\DOMNodeList $dom     The document or node to traverse.
-     * @param resource              $out     A stream that allows writing. The traverser will output into this
-     *                                       stream.
-     * @param array                 $options An array of options for the traverser as key/value pairs. These include:
-     *                                       - encode_entities: A bool to specify if full encding should happen for all named
-     *                                       charachter references. Defaults to false which escapes &'<>".
-     *                                       - output_rules: The path to the class handling the output rules.
+     * @param  \DOMNode|\DOMNodeList  $dom  The document or node to traverse.
+     * @param  resource  $out  A stream that allows writing. The traverser will output into this
+     *                         stream.
+     * @param  array  $options  An array of options for the traverser as key/value pairs. These include:
+     *                          - encode_entities: A bool to specify if full encding should happen for all named
+     *                          charachter references. Defaults to false which escapes &'<>".
+     *                          - output_rules: The path to the class handling the output rules.
      */
-    public function __construct($dom, $out, RulesInterface $rules, $options = array())
+    public function __construct($dom, $out, RulesInterface $rules, $options = [])
     {
         $this->dom = $dom;
         $this->out = $out;
@@ -83,7 +83,7 @@ class Traverser
     /**
      * Process a node in the DOM.
      *
-     * @param mixed $node A node implementing \DOMNode.
+     * @param  mixed  $node  A node implementing \DOMNode.
      */
     public function node($node)
     {
@@ -104,9 +104,9 @@ class Traverser
             case XML_COMMENT_NODE:
                 $this->rules->comment($node);
                 break;
-            // Currently we don't support embedding DTDs.
+                // Currently we don't support embedding DTDs.
             default:
-                //print '<!-- Skipped -->';
+                // print '<!-- Skipped -->';
                 break;
         }
     }
@@ -114,7 +114,7 @@ class Traverser
     /**
      * Walk through all the nodes on a node list.
      *
-     * @param \DOMNodeList $nl A list of child elements to walk through.
+     * @param  \DOMNodeList  $nl  A list of child elements to walk through.
      */
     public function children($nl)
     {
@@ -126,8 +126,7 @@ class Traverser
     /**
      * Is an element local?
      *
-     * @param mixed $ele An element that implement \DOMNode.
-     *
+     * @param  mixed  $ele  An element that implement \DOMNode.
      * @return bool true if local and false otherwise.
      */
     public function isLocalElement($ele)

@@ -9,9 +9,9 @@ class TimezoneManager
 {
     use EvaluatesClosures;
 
-    protected string | Closure | null $timezone = null;
+    protected string|Closure|null $timezone = null;
 
-    public function set(string | Closure | null $timezone = null): void
+    public function set(string|Closure|null $timezone = null): void
     {
         $this->timezone = $timezone;
     }

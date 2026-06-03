@@ -12,11 +12,12 @@ use LaravelLang\Locales\Facades\Locales;
 use LaravelLang\Models\Events\AllTranslationsHasBeenForgetEvent;
 use LaravelLang\Models\Events\TranslationHasBeenForgetEvent;
 use LaravelLang\Models\Events\TranslationHasBeenSetEvent;
+use LaravelLang\Models\HasTranslations;
 
 use function filled;
 
 /**
- * @property EloquentModel|\LaravelLang\Models\HasTranslations $model
+ * @property EloquentModel|HasTranslations $model
  */
 class Attribute
 {

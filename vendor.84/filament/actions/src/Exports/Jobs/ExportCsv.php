@@ -93,15 +93,15 @@ class ExportCsv implements ShouldQueue
             $processedRows++;
         }
 
-        $filePath = $this->export->getFileDirectory() . DIRECTORY_SEPARATOR . str_pad(strval($this->page), 16, '0', STR_PAD_LEFT) . '.csv';
+        $filePath = $this->export->getFileDirectory().DIRECTORY_SEPARATOR.str_pad(strval($this->page), 16, '0', STR_PAD_LEFT).'.csv';
 
         DB::transaction(function () use ($csv, $filePath, $processedRows, $successfulRows): void {
             $this->export::query()
                 ->whereKey($this->export->getKey())
                 ->lockForUpdate()
                 ->update([
-                    'processed_rows' => new Expression('processed_rows + ' . $processedRows),
-                    'successful_rows' => new Expression('successful_rows + ' . $successfulRows),
+                    'processed_rows' => new Expression('processed_rows + '.$processedRows),
+                    'successful_rows' => new Expression('successful_rows + '.$successfulRows),
                 ]);
 
             $this->export::query()
@@ -132,7 +132,7 @@ class ExportCsv implements ShouldQueue
     /**
      * @return int | array<int> | null
      */
-    public function backoff(): int | array | null
+    public function backoff(): int|array|null
     {
         return $this->exporter->getJobBackoff();
     }

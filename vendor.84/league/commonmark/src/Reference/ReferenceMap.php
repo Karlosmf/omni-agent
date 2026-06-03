@@ -35,7 +35,7 @@ final class ReferenceMap implements ReferenceMapInterface
 
     public function __construct()
     {
-        $this->normalizer = new TextNormalizer();
+        $this->normalizer = new TextNormalizer;
     }
 
     public function add(ReferenceInterface $reference): void

@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Core;
 
 /*
@@ -12,8 +13,8 @@ use Hamcrest\Description;
  */
 class IsNull extends BaseMatcher
 {
-
     private static $_INSTANCE;
+
     private static $_NOT_INSTANCE;
 
     public function matches($item)
@@ -33,8 +34,8 @@ class IsNull extends BaseMatcher
      */
     public static function nullValue()
     {
-        if (!self::$_INSTANCE) {
-            self::$_INSTANCE = new self();
+        if (! self::$_INSTANCE) {
+            self::$_INSTANCE = new self;
         }
 
         return self::$_INSTANCE;
@@ -47,7 +48,7 @@ class IsNull extends BaseMatcher
      */
     public static function notNullValue()
     {
-        if (!self::$_NOT_INSTANCE) {
+        if (! self::$_NOT_INSTANCE) {
             self::$_NOT_INSTANCE = IsNot::not(self::nullValue());
         }
 

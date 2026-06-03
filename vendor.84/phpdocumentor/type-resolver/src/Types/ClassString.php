@@ -37,7 +37,7 @@ final class ClassString extends String_ implements PseudoType
 
     public function underlyingType(): Type
     {
-        return new String_();
+        return new String_;
     }
 
     /**
@@ -57,6 +57,6 @@ final class ClassString extends String_ implements PseudoType
             return 'class-string';
         }
 
-        return 'class-string<' . (string) $this->fqsen . '>';
+        return 'class-string<'.(string) $this->fqsen.'>';
     }
 }

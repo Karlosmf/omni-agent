@@ -9,12 +9,12 @@ trait HasArguments
     /**
      * @var array<mixed> | Closure
      */
-    protected array | Closure $arguments = [];
+    protected array|Closure $arguments = [];
 
     /**
      * @param  array<mixed> | Closure  $arguments
      */
-    public function arguments(array | Closure $arguments): static
+    public function arguments(array|Closure $arguments): static
     {
         $this->arguments = $arguments;
 

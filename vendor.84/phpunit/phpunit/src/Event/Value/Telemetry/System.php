@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\Telemetry;
 
 /**
@@ -17,13 +20,15 @@ namespace PHPUnit\Event\Telemetry;
 final readonly class System
 {
     private StopWatch $stopWatch;
+
     private MemoryMeter $memoryMeter;
+
     private GarbageCollectorStatusProvider $garbageCollectorStatusProvider;
 
     public function __construct(StopWatch $stopWatch, MemoryMeter $memoryMeter, GarbageCollectorStatusProvider $garbageCollectorStatusProvider)
     {
-        $this->stopWatch                      = $stopWatch;
-        $this->memoryMeter                    = $memoryMeter;
+        $this->stopWatch = $stopWatch;
+        $this->memoryMeter = $memoryMeter;
         $this->garbageCollectorStatusProvider = $garbageCollectorStatusProvider;
     }
 

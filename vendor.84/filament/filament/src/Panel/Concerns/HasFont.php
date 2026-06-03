@@ -11,43 +11,43 @@ use Illuminate\Support\HtmlString;
 
 trait HasFont
 {
-    protected string | Closure | null $fontFamily = null;
+    protected string|Closure|null $fontFamily = null;
 
-    protected string | Closure | null $fontProvider = null;
+    protected string|Closure|null $fontProvider = null;
 
-    protected string | Closure | null $fontUrl = null;
-
-    /**
-     * @var array<string> | Closure | null
-     */
-    protected array | Closure | null $fontPreload = null;
-
-    protected string | Closure | null $monoFontFamily = null;
-
-    protected string | Closure | null $monoFontProvider = null;
-
-    protected string | Closure | null $monoFontUrl = null;
+    protected string|Closure|null $fontUrl = null;
 
     /**
      * @var array<string> | Closure | null
      */
-    protected array | Closure | null $monoFontPreload = null;
+    protected array|Closure|null $fontPreload = null;
 
-    protected string | Closure | null $serifFontFamily = null;
+    protected string|Closure|null $monoFontFamily = null;
 
-    protected string | Closure | null $serifFontProvider = null;
+    protected string|Closure|null $monoFontProvider = null;
 
-    protected string | Closure | null $serifFontUrl = null;
+    protected string|Closure|null $monoFontUrl = null;
 
     /**
      * @var array<string> | Closure | null
      */
-    protected array | Closure | null $serifFontPreload = null;
+    protected array|Closure|null $monoFontPreload = null;
+
+    protected string|Closure|null $serifFontFamily = null;
+
+    protected string|Closure|null $serifFontProvider = null;
+
+    protected string|Closure|null $serifFontUrl = null;
+
+    /**
+     * @var array<string> | Closure | null
+     */
+    protected array|Closure|null $serifFontPreload = null;
 
     /**
      * @param  array<string> | Closure | null  $preload
      */
-    public function font(string | Closure | null $family, string | Closure | null $url = null, string | Closure | null $provider = null, array | Closure | null $preload = null): static
+    public function font(string|Closure|null $family, string|Closure|null $url = null, string|Closure|null $provider = null, array|Closure|null $preload = null): static
     {
         $this->fontFamily = $family;
         $this->fontUrl = $url;
@@ -114,7 +114,7 @@ trait HasFont
     /**
      * @param  array<string> | Closure | null  $preload
      */
-    public function monoFont(string | Closure | null $family, string | Closure | null $url = null, string | Closure | null $provider = null, array | Closure | null $preload = null): static
+    public function monoFont(string|Closure|null $family, string|Closure|null $url = null, string|Closure|null $provider = null, array|Closure|null $preload = null): static
     {
         $this->monoFontFamily = $family;
         $this->monoFontUrl = $url;
@@ -171,7 +171,7 @@ trait HasFont
     /**
      * @param  array<string> | Closure | null  $preload
      */
-    public function serifFont(string | Closure | null $family, string | Closure | null $url = null, string | Closure | null $provider = null, array | Closure | null $preload = null): static
+    public function serifFont(string|Closure|null $family, string|Closure|null $url = null, string|Closure|null $provider = null, array|Closure|null $preload = null): static
     {
         $this->serifFontFamily = $family;
         $this->serifFontUrl = $url;
@@ -243,13 +243,13 @@ trait HasFont
                 return [];
             }
 
-            $files = glob($path . '/*-latin-wght-normal-*.woff2');
+            $files = glob($path.'/*-latin-wght-normal-*.woff2');
 
             if (($files === false) || ($files === [])) {
                 return [];
             }
 
-            return [asset($font->getRelativePublicPath() . '/' . basename($files[0]))];
+            return [asset($font->getRelativePublicPath().'/'.basename($files[0]))];
         }
 
         return [];

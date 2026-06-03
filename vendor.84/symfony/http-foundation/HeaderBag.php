@@ -18,15 +18,17 @@ namespace Symfony\Component\HttpFoundation;
  *
  * @implements \IteratorAggregate<string, list<string|null>>
  */
-class HeaderBag implements \IteratorAggregate, \Countable, \Stringable
+class HeaderBag implements \Countable, \IteratorAggregate, \Stringable
 {
     protected const UPPER = '_ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
     protected const LOWER = '-abcdefghijklmnopqrstuvwxyz';
 
     /**
      * @var array<string, list<string|null>>
      */
     protected array $headers = [];
+
     protected array $cacheControl = [];
 
     public function __construct(array $headers = [])
@@ -41,7 +43,7 @@ class HeaderBag implements \IteratorAggregate, \Countable, \Stringable
      */
     public function __toString(): string
     {
-        if (!$headers = $this->all()) {
+        if (! $headers = $this->all()) {
             return '';
         }
 
@@ -61,13 +63,12 @@ class HeaderBag implements \IteratorAggregate, \Countable, \Stringable
     /**
      * Returns the headers.
      *
-     * @param string|null $key The name of the headers to return or null to get them all
-     *
+     * @param  string|null  $key  The name of the headers to return or null to get them all
      * @return ($key is null ? array<string, list<string|null>> : list<string|null>)
      */
     public function all(?string $key = null): array
     {
-        if (null !== $key) {
+        if ($key !== null) {
             return $this->headers[strtr($key, self::UPPER, self::LOWER)] ?? [];
         }
 
@@ -110,11 +111,11 @@ class HeaderBag implements \IteratorAggregate, \Countable, \Stringable
     {
         $headers = $this->all($key);
 
-        if (!$headers) {
+        if (! $headers) {
             return $default;
         }
 
-        if (null === $headers[0]) {
+        if ($headers[0] === null) {
             return null;
         }
 
@@ -124,8 +125,8 @@ class HeaderBag implements \IteratorAggregate, \Countable, \Stringable
     /**
      * Sets a header by name.
      *
-     * @param string|string[]|null $values  The value or an array of values
-     * @param bool                 $replace Whether to replace the actual value or not (true by default)
+     * @param  string|string[]|null  $values  The value or an array of values
+     * @param  bool  $replace  Whether to replace the actual value or not (true by default)
      */
     public function set(string $key, string|array|null $values, bool $replace = true): void
     {
@@ -134,20 +135,20 @@ class HeaderBag implements \IteratorAggregate, \Countable, \Stringable
         if (\is_array($values)) {
             $values = array_values($values);
 
-            if (true === $replace || !isset($this->headers[$key])) {
+            if ($replace === true || ! isset($this->headers[$key])) {
                 $this->headers[$key] = $values;
             } else {
                 $this->headers[$key] = array_merge($this->headers[$key], $values);
             }
         } else {
-            if (true === $replace || !isset($this->headers[$key])) {
+            if ($replace === true || ! isset($this->headers[$key])) {
                 $this->headers[$key] = [$values];
             } else {
                 $this->headers[$key][] = $values;
             }
         }
 
-        if ('cache-control' === $key) {
+        if ($key === 'cache-control') {
             $this->cacheControl = $this->parseCacheControl(implode(', ', $this->headers[$key]));
         }
     }
@@ -177,7 +178,7 @@ class HeaderBag implements \IteratorAggregate, \Countable, \Stringable
 
         unset($this->headers[$key]);
 
-        if ('cache-control' === $key) {
+        if ($key === 'cache-control') {
             $this->cacheControl = [];
         }
     }
@@ -190,7 +191,7 @@ class HeaderBag implements \IteratorAggregate, \Countable, \Stringable
     public function getDate(string $key, ?\DateTimeInterface $default = null): ?\DateTimeImmutable
     {
         if (null === $value = $this->get($key)) {
-            return null !== $default ? \DateTimeImmutable::createFromInterface($default) : null;
+            return $default !== null ? \DateTimeImmutable::createFromInterface($default) : null;
         }
 
         if (false === $date = \DateTimeImmutable::createFromFormat(\DATE_RFC2822, $value)) {

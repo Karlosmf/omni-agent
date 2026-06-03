@@ -17,7 +17,7 @@ trait HasToolbarActions
     /**
      * @param  array<Action | ActionGroup> | ActionGroup  $actions
      */
-    public function toolbarActions(array | ActionGroup $actions): static
+    public function toolbarActions(array|ActionGroup $actions): static
     {
         // We must remove the existing cached toolbar actions before setting the new ones, as
         // the visibility of the checkboxes is determined by which bulk actions are visible.
@@ -46,7 +46,7 @@ trait HasToolbarActions
     /**
      * @param  array<Action | ActionGroup> | ActionGroup  $actions
      */
-    public function pushToolbarActions(array | ActionGroup $actions): static
+    public function pushToolbarActions(array|ActionGroup $actions): static
     {
         foreach (Arr::wrap($actions) as $action) {
             $action->table($this);
@@ -59,7 +59,7 @@ trait HasToolbarActions
             } elseif ($action instanceof Action) {
                 $this->cacheAction($action);
             } else {
-                throw new InvalidArgumentException('Table actions must be an instance of [' . Action::class . '] or [' . ActionGroup::class . '].');
+                throw new InvalidArgumentException('Table actions must be an instance of ['.Action::class.'] or ['.ActionGroup::class.'].');
             }
 
             $this->toolbarActions[] = $action;

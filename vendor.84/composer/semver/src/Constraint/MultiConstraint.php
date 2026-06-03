@@ -18,6 +18,7 @@ class MultiConstraint implements ConstraintInterface
 {
     /**
      * @var ConstraintInterface[]
+     *
      * @phpstan-var non-empty-array<ConstraintInterface>
      */
     protected $constraints;
@@ -38,8 +39,8 @@ class MultiConstraint implements ConstraintInterface
     protected $upperBound;
 
     /**
-     * @param ConstraintInterface[] $constraints A set of constraints
-     * @param bool                  $conjunctive Whether the constraints should be treated as conjunctive or disjunctive
+     * @param  ConstraintInterface[]  $constraints  A set of constraints
+     * @param  bool  $conjunctive  Whether the constraints should be treated as conjunctive or disjunctive
      *
      * @throws \InvalidArgumentException If less than 2 constraints are passed
      */
@@ -78,7 +79,7 @@ class MultiConstraint implements ConstraintInterface
      */
     public function isDisjunctive()
     {
-        return !$this->conjunctive;
+        return ! $this->conjunctive;
     }
 
     /**
@@ -86,11 +87,11 @@ class MultiConstraint implements ConstraintInterface
      */
     public function compile($otherOperator)
     {
-        $parts = array();
+        $parts = [];
         foreach ($this->constraints as $constraint) {
             $code = $constraint->compile($otherOperator);
             if ($code === 'true') {
-                if (!$this->conjunctive) {
+                if (! $this->conjunctive) {
                     return 'true';
                 }
             } elseif ($code === 'false') {
@@ -102,7 +103,7 @@ class MultiConstraint implements ConstraintInterface
             }
         }
 
-        if (!$parts) {
+        if (! $parts) {
             return $this->conjunctive ? 'true' : 'false';
         }
 
@@ -110,13 +111,11 @@ class MultiConstraint implements ConstraintInterface
     }
 
     /**
-     * @param ConstraintInterface $provider
-     *
      * @return bool
      */
     public function matches(ConstraintInterface $provider)
     {
-        if (false === $this->conjunctive) {
+        if ($this->conjunctive === false) {
             foreach ($this->constraints as $constraint) {
                 if ($provider->matches($constraint)) {
                     return true;
@@ -134,7 +133,7 @@ class MultiConstraint implements ConstraintInterface
         }
 
         foreach ($this->constraints as $constraint) {
-            if (!$provider->matches($constraint)) {
+            if (! $provider->matches($constraint)) {
                 return false;
             }
         }
@@ -171,12 +170,12 @@ class MultiConstraint implements ConstraintInterface
             return $this->string;
         }
 
-        $constraints = array();
+        $constraints = [];
         foreach ($this->constraints as $constraint) {
             $constraints[] = (string) $constraint;
         }
 
-        return $this->string = '[' . implode($this->conjunctive ? ' ' : ' || ', $constraints) . ']';
+        return $this->string = '['.implode($this->conjunctive ? ' ' : ' || ', $constraints).']';
     }
 
     /**
@@ -186,7 +185,7 @@ class MultiConstraint implements ConstraintInterface
     {
         $this->extractBounds();
 
-        if (null === $this->lowerBound) {
+        if ($this->lowerBound === null) {
             throw new \LogicException('extractBounds should have populated the lowerBound property');
         }
 
@@ -200,7 +199,7 @@ class MultiConstraint implements ConstraintInterface
     {
         $this->extractBounds();
 
-        if (null === $this->upperBound) {
+        if ($this->upperBound === null) {
             throw new \LogicException('extractBounds should have populated the upperBound property');
         }
 
@@ -213,24 +212,23 @@ class MultiConstraint implements ConstraintInterface
      * Does not necessarily return a MultiConstraint instance if
      * things can be reduced to a simple constraint
      *
-     * @param ConstraintInterface[] $constraints A set of constraints
-     * @param bool                  $conjunctive Whether the constraints should be treated as conjunctive or disjunctive
-     *
+     * @param  ConstraintInterface[]  $constraints  A set of constraints
+     * @param  bool  $conjunctive  Whether the constraints should be treated as conjunctive or disjunctive
      * @return ConstraintInterface
      */
     public static function create(array $constraints, $conjunctive = true)
     {
-        if (0 === \count($constraints)) {
-            return new MatchAllConstraint();
+        if (\count($constraints) === 0) {
+            return new MatchAllConstraint;
         }
 
-        if (1 === \count($constraints)) {
+        if (\count($constraints) === 1) {
             return $constraints[0];
         }
 
         $optimized = self::optimizeConstraints($constraints, $conjunctive);
         if ($optimized !== null) {
-            list($constraints, $conjunctive) = $optimized;
+            [$constraints, $conjunctive] = $optimized;
             if (\count($constraints) === 1) {
                 return $constraints[0];
             }
@@ -240,8 +238,8 @@ class MultiConstraint implements ConstraintInterface
     }
 
     /**
-     * @param  ConstraintInterface[] $constraints
-     * @param  bool                  $conjunctive
+     * @param  ConstraintInterface[]  $constraints
+     * @param  bool  $conjunctive
      * @return ?array
      *
      * @phpstan-return array{0: list<ConstraintInterface>, 1: bool}|null
@@ -251,9 +249,9 @@ class MultiConstraint implements ConstraintInterface
         // parse the two OR groups and if they are contiguous we collapse
         // them into one constraint
         // [>= 1 < 2] || [>= 2 < 3] || [>= 3 < 4] => [>= 1 < 4]
-        if (!$conjunctive) {
+        if (! $conjunctive) {
             $left = $constraints[0];
-            $mergedConstraints = array();
+            $mergedConstraints = [];
             $optimized = false;
             for ($i = 1, $l = \count($constraints); $i < $l; $i++) {
                 $right = $constraints[$i];
@@ -276,10 +274,10 @@ class MultiConstraint implements ConstraintInterface
                 ) {
                     $optimized = true;
                     $left = new MultiConstraint(
-                        array(
+                        [
                             $left->constraints[0],
                             $right->constraints[1],
-                        ),
+                        ],
                         true);
                 } else {
                     $mergedConstraints[] = $left;
@@ -288,7 +286,8 @@ class MultiConstraint implements ConstraintInterface
             }
             if ($optimized) {
                 $mergedConstraints[] = $left;
-                return array($mergedConstraints, false);
+
+                return [$mergedConstraints, false];
             }
         }
 
@@ -302,14 +301,15 @@ class MultiConstraint implements ConstraintInterface
      */
     private function extractBounds()
     {
-        if (null !== $this->lowerBound) {
+        if ($this->lowerBound !== null) {
             return;
         }
 
         foreach ($this->constraints as $constraint) {
-            if (null === $this->lowerBound || null === $this->upperBound) {
+            if ($this->lowerBound === null || $this->upperBound === null) {
                 $this->lowerBound = $constraint->getLowerBound();
                 $this->upperBound = $constraint->getUpperBound();
+
                 continue;
             }
 

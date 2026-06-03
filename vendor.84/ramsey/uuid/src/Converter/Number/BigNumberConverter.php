@@ -31,7 +31,7 @@ class BigNumberConverter implements NumberConverterInterface
 
     public function __construct()
     {
-        $this->converter = new GenericNumberConverter(new BrickMathCalculator());
+        $this->converter = new GenericNumberConverter(new BrickMathCalculator);
     }
 
     /**

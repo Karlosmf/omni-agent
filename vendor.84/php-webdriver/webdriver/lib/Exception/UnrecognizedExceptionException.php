@@ -2,6 +2,4 @@
 
 namespace Facebook\WebDriver\Exception;
 
-class UnrecognizedExceptionException extends WebDriverException
-{
-}
+class UnrecognizedExceptionException extends WebDriverException {}

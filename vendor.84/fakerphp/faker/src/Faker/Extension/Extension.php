@@ -9,6 +9,4 @@ namespace Faker\Extension;
  *
  * @experimental This interface is experimental and does not fall under our BC promise
  */
-interface Extension
-{
-}
+interface Extension {}

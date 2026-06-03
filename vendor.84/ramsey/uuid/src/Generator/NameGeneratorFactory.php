@@ -24,6 +24,6 @@ class NameGeneratorFactory
      */
     public function getGenerator(): NameGeneratorInterface
     {
-        return new DefaultNameGenerator();
+        return new DefaultNameGenerator;
     }
 }

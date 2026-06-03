@@ -8,6 +8,7 @@ use AllowDynamicProperties;
 class ComponentContext
 {
     public $effects = [];
+
     public $memo = [];
 
     public function __construct(
@@ -23,7 +24,9 @@ class ComponentContext
     public function addEffect($key, $value)
     {
         if (is_array($key)) {
-            foreach ($key as $iKey => $iValue) $this->addEffect($iKey, $iValue);
+            foreach ($key as $iKey => $iValue) {
+                $this->addEffect($iKey, $iValue);
+            }
 
             return;
         }
@@ -33,7 +36,9 @@ class ComponentContext
 
     public function pushEffect($key, $value, $iKey = null)
     {
-        if (! isset($this->effects[$key])) $this->effects[$key] = [];
+        if (! isset($this->effects[$key])) {
+            $this->effects[$key] = [];
+        }
 
         if ($iKey) {
             $this->effects[$key][$iKey] = $value;
@@ -49,7 +54,9 @@ class ComponentContext
 
     public function pushMemo($key, $value, $iKey = null)
     {
-        if (! isset($this->memo[$key])) $this->memo[$key] = [];
+        if (! isset($this->memo[$key])) {
+            $this->memo[$key] = [];
+        }
 
         if ($iKey) {
             $this->memo[$key][$iKey] = $value;

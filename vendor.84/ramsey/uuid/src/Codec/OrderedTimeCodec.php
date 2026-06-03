@@ -36,7 +36,6 @@ use function substr;
  * another codec can result in malformed UUIDs.
  *
  * @deprecated Please migrate to {@link https://uuid.ramsey.dev/en/stable/rfc4122/version6.html Version 6, reordered time-based UUIDs}.
- *
  * @link https://www.percona.com/blog/2014/12/19/store-uuid-optimized-way/ Storing UUID Values in MySQL
  *
  * @immutable
@@ -52,7 +51,7 @@ class OrderedTimeCodec extends StringCodec
     {
         if (
             /** @phpstan-ignore possiblyImpure.methodCall */
-            !($uuid->getFields() instanceof Rfc4122FieldsInterface)
+            ! ($uuid->getFields() instanceof Rfc4122FieldsInterface)
             /** @phpstan-ignore possiblyImpure.methodCall */
             || $uuid->getFields()->getVersion() !== Uuid::UUID_TYPE_TIME
         ) {
@@ -62,9 +61,9 @@ class OrderedTimeCodec extends StringCodec
         /** @phpstan-ignore possiblyImpure.methodCall */
         $bytes = $uuid->getFields()->getBytes();
 
-        return $bytes[6] . $bytes[7] . $bytes[4] . $bytes[5]
-            . $bytes[0] . $bytes[1] . $bytes[2] . $bytes[3]
-            . substr($bytes, 8);
+        return $bytes[6].$bytes[7].$bytes[4].$bytes[5]
+            .$bytes[0].$bytes[1].$bytes[2].$bytes[3]
+            .substr($bytes, 8);
     }
 
     /**
@@ -72,7 +71,7 @@ class OrderedTimeCodec extends StringCodec
      *
      * @throws InvalidArgumentException if $bytes is an invalid length
      *
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function decodeBytes(string $bytes): UuidInterface
     {
@@ -81,16 +80,16 @@ class OrderedTimeCodec extends StringCodec
         }
 
         // Rearrange the bytes to their original order.
-        $rearrangedBytes = $bytes[4] . $bytes[5] . $bytes[6] . $bytes[7]
-            . $bytes[2] . $bytes[3] . $bytes[0] . $bytes[1]
-            . substr($bytes, 8);
+        $rearrangedBytes = $bytes[4].$bytes[5].$bytes[6].$bytes[7]
+            .$bytes[2].$bytes[3].$bytes[0].$bytes[1]
+            .substr($bytes, 8);
 
         $uuid = parent::decodeBytes($rearrangedBytes);
 
         /** @phpstan-ignore possiblyImpure.methodCall */
         $fields = $uuid->getFields();
 
-        if (!$fields instanceof Rfc4122FieldsInterface || $fields->getVersion() !== Uuid::UUID_TYPE_TIME) {
+        if (! $fields instanceof Rfc4122FieldsInterface || $fields->getVersion() !== Uuid::UUID_TYPE_TIME) {
             throw new UnsupportedOperationException(
                 'Attempting to decode a non-time-based UUID using OrderedTimeCodec',
             );

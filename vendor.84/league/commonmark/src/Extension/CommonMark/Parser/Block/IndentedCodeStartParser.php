@@ -37,6 +37,6 @@ final class IndentedCodeStartParser implements BlockStartParserInterface
 
         $cursor->advanceBy(Cursor::INDENT_LEVEL, true);
 
-        return BlockStart::of(new IndentedCodeParser())->at($cursor);
+        return BlockStart::of(new IndentedCodeParser)->at($cursor);
     }
 }

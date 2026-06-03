@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,7 +9,16 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\Constraint;
+
+use Countable;
+use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\SelfDescribing;
+use PHPUnit\Util\Exporter;
+use ReflectionObject;
+use SebastianBergmann\Comparator\ComparisonFailure;
 
 use function assert;
 use function gettype;
@@ -18,13 +29,6 @@ use function str_replace;
 use function strpos;
 use function strtolower;
 use function substr;
-use Countable;
-use PHPUnit\Framework\Assert;
-use PHPUnit\Framework\ExpectationFailedException;
-use PHPUnit\Framework\SelfDescribing;
-use PHPUnit\Util\Exporter;
-use ReflectionObject;
-use SebastianBergmann\Comparator\ComparisonFailure;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -34,8 +38,7 @@ abstract class Constraint implements Countable, SelfDescribing
     /**
      * @template A
      *
-     * @param A $actual
-     *
+     * @param  A  $actual
      * @return A
      */
     final public function __invoke(mixed $actual): mixed
@@ -69,7 +72,7 @@ abstract class Constraint implements Countable, SelfDescribing
             return $success;
         }
 
-        if (!$success) {
+        if (! $success) {
             $this->fail($other, $description);
         }
 
@@ -110,11 +113,11 @@ abstract class Constraint implements Countable, SelfDescribing
         $additionalFailureDescription = $this->additionalFailureDescription($other);
 
         if ($additionalFailureDescription !== '') {
-            $failureDescription .= "\n" . $additionalFailureDescription;
+            $failureDescription .= "\n".$additionalFailureDescription;
         }
 
         if ($description !== '') {
-            $failureDescription = $description . "\n" . $failureDescription;
+            $failureDescription = $description."\n".$failureDescription;
         }
 
         throw new ExpectationFailedException(
@@ -145,7 +148,7 @@ abstract class Constraint implements Countable, SelfDescribing
      */
     protected function failureDescription(mixed $other): string
     {
-        return Exporter::export($other) . ' ' . $this->toString();
+        return Exporter::export($other).' '.$this->toString();
     }
 
     /**
@@ -185,7 +188,7 @@ abstract class Constraint implements Countable, SelfDescribing
             return '';
         }
 
-        return Exporter::export($other) . ' ' . $string;
+        return Exporter::export($other).' '.$string;
     }
 
     /**
@@ -270,10 +273,10 @@ abstract class Constraint implements Countable, SelfDescribing
 
                 $name = substr($name, 0, $length);
 
-                return 'an instance of anonymous class created at ' . $name . ' ';
+                return 'an instance of anonymous class created at '.$name.' ';
             }
 
-            return 'an instance of class ' . $reflector->getName() . ' ';
+            return 'an instance of class '.$reflector->getName().' ';
         }
 
         $type = strtolower(gettype($value));
@@ -287,10 +290,10 @@ abstract class Constraint implements Countable, SelfDescribing
         }
 
         return match ($type) {
-            'array', 'integer' => 'an ' . $type . ' ',
-            'boolean', 'closed resource', 'float', 'resource', 'string' => 'a ' . $type . ' ',
-            'null'  => 'null ',
-            default => 'a value of ' . $type . ' ',
+            'array', 'integer' => 'an '.$type.' ',
+            'boolean', 'closed resource', 'float', 'resource', 'string' => 'a '.$type.' ',
+            'null' => 'null ',
+            default => 'a value of '.$type.' ',
         };
     }
 }

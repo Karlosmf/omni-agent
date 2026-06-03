@@ -24,7 +24,7 @@ trait HasChildComponents
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Closure  $components
      */
-    public function components(array | Closure $components): static
+    public function components(array|Closure $components): static
     {
         $this->childComponents($components);
 
@@ -34,7 +34,7 @@ trait HasChildComponents
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null  $components
      */
-    public function childComponents(array | Schema | Component | Action | ActionGroup | string | Htmlable | Closure | null $components, string $key = 'default'): static
+    public function childComponents(array|Schema|Component|Action|ActionGroup|string|Htmlable|Closure|null $components, string $key = 'default'): static
     {
         $this->childComponents[$key] = $components;
 
@@ -44,7 +44,7 @@ trait HasChildComponents
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Closure  $components
      */
-    public function schema(array | Closure $components): static
+    public function schema(array|Closure $components): static
     {
         $this->childComponents($components);
 
@@ -62,7 +62,7 @@ trait HasChildComponents
     /**
      * @return array<Component | Action | ActionGroup | string | Htmlable> | Schema
      */
-    public function getDefaultChildComponents(): array | Schema
+    public function getDefaultChildComponents(): array|Schema
     {
         return $this->evaluate($this->childComponents['default'] ?? []) ?? [];
     }
@@ -185,7 +185,7 @@ trait HasChildComponents
         foreach ($this->childComponents as $key => $childComponents) {
             if (is_array($childComponents)) {
                 $this->childComponents[$key] = array_map(
-                    fn (Component | Action | ActionGroup | string | Htmlable $component): Component | Action | ActionGroup | string | Htmlable => match (true) {
+                    fn (Component|Action|ActionGroup|string|Htmlable $component): Component|Action|ActionGroup|string|Htmlable => match (true) {
                         $component instanceof Component, $component instanceof Action, $component instanceof ActionGroup => $component->getClone(),
                         default => $component,
                     },

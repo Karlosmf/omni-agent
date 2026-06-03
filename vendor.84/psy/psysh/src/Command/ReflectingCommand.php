@@ -32,17 +32,24 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * An abstract command with helpers for inspecting the current context.
  */
-abstract class ReflectingCommand extends Command implements ContextAware, CodeCleanerAware
+abstract class ReflectingCommand extends Command implements CodeCleanerAware, ContextAware
 {
     const CLASS_OR_FUNC = '/^[\\\\\w]+$/';
+
     const CLASS_MEMBER = '/^([\\\\\w]+)::(\w+)$/';
+
     const CLASS_STATIC = '/^([\\\\\w]+)::\$(\w+)$/';
+
     const INSTANCE_MEMBER = '/^(\$\w+)(::|->)(\w+)$/';
 
     protected Context $context;
+
     protected CodeCleaner $cleaner;
+
     private CodeArgumentParser $parser;
+
     private NodeTraverser $traverser;
+
     private Printer $printer;
 
     /**
@@ -50,21 +57,19 @@ abstract class ReflectingCommand extends Command implements ContextAware, CodeCl
      */
     public function __construct($name = null)
     {
-        $this->parser = new CodeArgumentParser();
+        $this->parser = new CodeArgumentParser;
 
         // @todo Pass visitor directly to once we drop support for PHP-Parser 4.x
-        $this->traverser = new NodeTraverser();
-        $this->traverser->addVisitor(new SudoVisitor());
+        $this->traverser = new NodeTraverser;
+        $this->traverser->addVisitor(new SudoVisitor);
 
-        $this->printer = new Printer();
+        $this->printer = new Printer;
 
         parent::__construct($name);
     }
 
     /**
      * ContextAware interface.
-     *
-     * @param Context $context
      */
     public function setContext(Context $context)
     {
@@ -82,11 +87,11 @@ abstract class ReflectingCommand extends Command implements ContextAware, CodeCl
     /**
      * Get the target for a value.
      *
-     * @throws \InvalidArgumentException when the value specified can't be resolved
      *
-     * @param string $valueName Function, class, variable, constant, method or property name
-     *
+     * @param  string  $valueName  Function, class, variable, constant, method or property name
      * @return array (class or instance name, member name, kind)
+     *
+     * @throws \InvalidArgumentException when the value specified can't be resolved
      */
     protected function getTarget(string $valueName): array
     {
@@ -119,10 +124,10 @@ abstract class ReflectingCommand extends Command implements ContextAware, CodeCl
     /**
      * Resolve a class or function name (with the current shell namespace).
      *
-     * @throws ErrorException when `self` or `static` is used in a non-class scope
      *
-     * @param string $name
-     * @param bool   $includeFunctions (default: false)
+     * @param  bool  $includeFunctions  (default: false)
+     *
+     * @throws ErrorException when `self` or `static` is used in a non-class scope
      */
     protected function resolveName(string $name, bool $includeFunctions = false): string
     {
@@ -180,14 +185,13 @@ abstract class ReflectingCommand extends Command implements ContextAware, CodeCl
     /**
      * Get a Reflector and documentation for a function, class or instance, constant, method or property.
      *
-     * @param string               $valueName Function, class, variable, constant, method or property name
-     * @param OutputInterface|null $output    Optional output for displaying cleaner messages
-     *
+     * @param  string  $valueName  Function, class, variable, constant, method or property name
+     * @param  OutputInterface|null  $output  Optional output for displaying cleaner messages
      * @return array (value, Reflector)
      */
     protected function getTargetAndReflector(string $valueName, ?OutputInterface $output = null): array
     {
-        list($value, $member, $kind) = $this->getTarget($valueName);
+        [$value, $member, $kind] = $this->getTarget($valueName);
 
         // Display any implicit use statements that were added during name resolution
         if ($output !== null) {
@@ -200,11 +204,11 @@ abstract class ReflectingCommand extends Command implements ContextAware, CodeCl
     /**
      * Resolve code to a value in the current scope.
      *
-     * @throws RuntimeException when the code does not return a value in the current scope
      *
-     * @param string $code
      *
      * @return mixed Variable value
+     *
+     * @throws RuntimeException when the code does not return a value in the current scope
      */
     protected function resolveCode(string $code)
     {
@@ -217,7 +221,7 @@ abstract class ReflectingCommand extends Command implements ContextAware, CodeCl
             // Swallow all exceptions?
         }
 
-        if (!isset($value) || $value instanceof NoReturnValue) {
+        if (! isset($value) || $value instanceof NoReturnValue) {
             throw new RuntimeException('Unknown target: '.$code);
         }
 
@@ -227,17 +231,17 @@ abstract class ReflectingCommand extends Command implements ContextAware, CodeCl
     /**
      * Resolve code to an object in the current scope.
      *
-     * @throws UnexpectedTargetException when the code resolves to a non-object value
      *
-     * @param string $code
      *
      * @return object Variable instance
+     *
+     * @throws UnexpectedTargetException when the code resolves to a non-object value
      */
     private function resolveObject(string $code)
     {
         $value = $this->resolveCode($code);
 
-        if (!\is_object($value)) {
+        if (! \is_object($value)) {
             throw new UnexpectedTargetException($value, 'Unable to inspect a non-object');
         }
 
@@ -247,7 +251,6 @@ abstract class ReflectingCommand extends Command implements ContextAware, CodeCl
     /**
      * Get a variable from the current shell scope.
      *
-     * @param string $name
      *
      * @return mixed
      */
@@ -258,8 +261,6 @@ abstract class ReflectingCommand extends Command implements ContextAware, CodeCl
 
     /**
      * Get all scope variables from the current shell scope.
-     *
-     * @return array
      */
     protected function getScopeVariables(): array
     {
@@ -270,8 +271,6 @@ abstract class ReflectingCommand extends Command implements ContextAware, CodeCl
      * Given a Reflector instance, set command-scope variables in the shell
      * execution context. This is used to inject magic $__class, $__method and
      * $__file variables (as well as a handful of others).
-     *
-     * @param \Reflector $reflector
      */
     protected function setCommandScopeVariables(\Reflector $reflector)
     {

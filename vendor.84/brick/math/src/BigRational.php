@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Brick\Math;
 
+use const E_USER_DEPRECATED;
+
 use Brick\Math\Exception\DivisionByZeroException;
 use Brick\Math\Exception\MathException;
 use Brick\Math\Exception\NumberFormatException;
@@ -18,8 +20,6 @@ use function min;
 use function strlen;
 use function substr;
 use function trigger_error;
-
-use const E_USER_DEPRECATED;
 
 /**
  * An arbitrarily large rational number.
@@ -44,9 +44,9 @@ final readonly class BigRational extends BigNumber
     /**
      * Protected constructor. Use a factory method to obtain an instance.
      *
-     * @param BigInteger $numerator        The numerator.
-     * @param BigInteger $denominator      The denominator.
-     * @param bool       $checkDenominator Whether to check the denominator for negative and zero.
+     * @param  BigInteger  $numerator  The numerator.
+     * @param  BigInteger  $denominator  The denominator.
+     * @param  bool  $checkDenominator  Whether to check the denominator for negative and zero.
      *
      * @throws DivisionByZeroException If the denominator is zero.
      *
@@ -77,12 +77,12 @@ final readonly class BigRational extends BigNumber
      *
      * @deprecated Use ofFraction() instead.
      *
-     * @param BigNumber|int|float|string $numerator   The numerator. Must be convertible to a BigInteger.
-     * @param BigNumber|int|float|string $denominator The denominator. Must be convertible to a BigInteger.
+     * @param  BigNumber|int|float|string  $numerator  The numerator. Must be convertible to a BigInteger.
+     * @param  BigNumber|int|float|string  $denominator  The denominator. Must be convertible to a BigInteger.
      *
-     * @throws NumberFormatException      If an argument does not represent a valid number.
+     * @throws NumberFormatException If an argument does not represent a valid number.
      * @throws RoundingNecessaryException If an argument represents a non-integer number.
-     * @throws DivisionByZeroException    If the denominator is zero.
+     * @throws DivisionByZeroException If the denominator is zero.
      */
     public static function nd(
         BigNumber|int|float|string $numerator,
@@ -102,12 +102,12 @@ final readonly class BigRational extends BigNumber
      * If the denominator is negative, the signs of both the numerator and the denominator
      * will be inverted to ensure that the denominator is always positive.
      *
-     * @param BigNumber|int|float|string $numerator   The numerator. Must be convertible to a BigInteger.
-     * @param BigNumber|int|float|string $denominator The denominator. Must be convertible to a BigInteger.
+     * @param  BigNumber|int|float|string  $numerator  The numerator. Must be convertible to a BigInteger.
+     * @param  BigNumber|int|float|string  $denominator  The denominator. Must be convertible to a BigInteger.
      *
-     * @throws NumberFormatException      If an argument does not represent a valid number.
+     * @throws NumberFormatException If an argument does not represent a valid number.
      * @throws RoundingNecessaryException If an argument represents a non-integer number.
-     * @throws DivisionByZeroException    If the denominator is zero.
+     * @throws DivisionByZeroException If the denominator is zero.
      *
      * @pure
      */
@@ -272,7 +272,7 @@ final readonly class BigRational extends BigNumber
     /**
      * Returns the sum of this number and the given one.
      *
-     * @param BigNumber|int|float|string $that The number to add.
+     * @param  BigNumber|int|float|string  $that  The number to add.
      *
      * @throws MathException If the number is not valid.
      *
@@ -292,7 +292,7 @@ final readonly class BigRational extends BigNumber
     /**
      * Returns the difference of this number and the given one.
      *
-     * @param BigNumber|int|float|string $that The number to subtract.
+     * @param  BigNumber|int|float|string  $that  The number to subtract.
      *
      * @throws MathException If the number is not valid.
      *
@@ -312,7 +312,7 @@ final readonly class BigRational extends BigNumber
     /**
      * Returns the product of this number and the given one.
      *
-     * @param BigNumber|int|float|string $that The multiplier.
+     * @param  BigNumber|int|float|string  $that  The multiplier.
      *
      * @throws MathException If the multiplier is not a valid number.
      *
@@ -331,7 +331,7 @@ final readonly class BigRational extends BigNumber
     /**
      * Returns the result of the division of this number by the given one.
      *
-     * @param BigNumber|int|float|string $that The divisor.
+     * @param  BigNumber|int|float|string  $that  The divisor.
      *
      * @throws MathException If the divisor is not a valid number, or is zero.
      *
@@ -384,10 +384,10 @@ final readonly class BigRational extends BigNumber
      * If the number is greater than $max, returns a copy of $max.
      * Otherwise, returns this number unchanged.
      *
-     * @param BigNumber|int|float|string $min The minimum. Must be convertible to a BigRational.
-     * @param BigNumber|int|float|string $max The maximum. Must be convertible to a BigRational.
+     * @param  BigNumber|int|float|string  $min  The minimum. Must be convertible to a BigRational.
+     * @param  BigNumber|int|float|string  $max  The maximum. Must be convertible to a BigRational.
      *
-     * @throws MathException            If min/max are not convertible to a BigRational.
+     * @throws MathException If min/max are not convertible to a BigRational.
      * @throws InvalidArgumentException If min is greater than max.
      *
      * @pure
@@ -548,7 +548,7 @@ final readonly class BigRational extends BigNumber
         $integralString = (string) $integral;
 
         if ($remainder->isZero()) {
-            return $sign . $integralString;
+            return $sign.$integralString;
         }
 
         $digits = '';
@@ -563,7 +563,7 @@ final readonly class BigRational extends BigNumber
                 $nonRepeating = substr($digits, 0, $repeatIndex);
                 $repeating = substr($digits, $repeatIndex);
 
-                return $sign . $integralString . '.' . $nonRepeating . '(' . $repeating . ')';
+                return $sign.$integralString.'.'.$nonRepeating.'('.$repeating.')';
             }
 
             $remainderPositions[$remainderString] = $index;
@@ -574,7 +574,7 @@ final readonly class BigRational extends BigNumber
             $index++;
         }
 
-        return $sign . $integralString . '.' . $digits;
+        return $sign.$integralString.'.'.$digits;
     }
 
     #[Override]
@@ -587,7 +587,7 @@ final readonly class BigRational extends BigNumber
             return $numerator;
         }
 
-        return $numerator . '/' . $denominator;
+        return $numerator.'/'.$denominator;
     }
 
     /**
@@ -607,7 +607,7 @@ final readonly class BigRational extends BigNumber
      *
      * @internal
      *
-     * @param array{numerator: BigInteger, denominator: BigInteger} $data
+     * @param  array{numerator: BigInteger, denominator: BigInteger}  $data
      *
      * @throws LogicException
      */

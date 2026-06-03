@@ -11,39 +11,39 @@ class Indicator extends Component
 {
     use HasColor;
 
-    protected bool | Closure $isRemovable = true;
+    protected bool|Closure $isRemovable = true;
 
-    protected string | Htmlable | Closure $label;
+    protected string|Htmlable|Closure $label;
 
-    protected string | Closure | null $removeField = null;
+    protected string|Closure|null $removeField = null;
 
-    protected string | Closure | null $removeLivewireClickHandler = null;
+    protected string|Closure|null $removeLivewireClickHandler = null;
 
     protected string $evaluationIdentifier = 'indicator';
 
-    final public function __construct(string | Htmlable | Closure $label)
+    final public function __construct(string|Htmlable|Closure $label)
     {
         $this->label($label);
     }
 
-    public static function make(string | Htmlable | Closure $label): static
+    public static function make(string|Htmlable|Closure $label): static
     {
         return app(static::class, ['label' => $label]);
     }
 
-    public function label(string | Htmlable | Closure $label): static
+    public function label(string|Htmlable|Closure $label): static
     {
         $this->label = $label;
 
         return $this;
     }
 
-    public function getLabel(): string | Htmlable
+    public function getLabel(): string|Htmlable
     {
         return $this->evaluate($this->label);
     }
 
-    public function removable(bool | Closure $condition = true): static
+    public function removable(bool|Closure $condition = true): static
     {
         $this->isRemovable = $condition;
 
@@ -55,7 +55,7 @@ class Indicator extends Component
         return (bool) $this->evaluate($this->isRemovable);
     }
 
-    public function removeField(string | Closure | null $name): static
+    public function removeField(string|Closure|null $name): static
     {
         $this->removeField = $name;
 
@@ -67,7 +67,7 @@ class Indicator extends Component
         return $this->evaluate($this->removeField);
     }
 
-    public function removeLivewireClickHandler(string | Closure | null $handler): static
+    public function removeLivewireClickHandler(string|Closure|null $handler): static
     {
         $this->removeLivewireClickHandler = $handler;
 

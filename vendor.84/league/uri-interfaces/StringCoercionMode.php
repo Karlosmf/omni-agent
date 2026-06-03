@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\Uri;
 
+use const JSON_PRESERVE_ZERO_FRACTION;
+
 use BackedEnum;
 use League\Uri\Contracts\UriComponentInterface;
 use Stringable;
@@ -33,8 +35,6 @@ use function is_object;
 use function is_resource;
 use function is_scalar;
 use function json_encode;
-
-use const JSON_PRESERVE_ZERO_FRACTION;
 
 enum StringCoercionMode
 {
@@ -75,15 +75,15 @@ enum StringCoercionMode
 
     public function isCoercible(mixed $value): bool
     {
-        return self::Ecmascript === $this
-            ? !is_resource($value)
+        return $this === self::Ecmascript
+            ? ! is_resource($value)
             : match (true) {
                 $value instanceof Rfc3986Uri,
-                    $value instanceof WhatWgUrl,
-                    $value instanceof BackedEnum,
-                    $value instanceof Stringable,
+                $value instanceof WhatWgUrl,
+                $value instanceof BackedEnum,
+                $value instanceof Stringable,
                 is_scalar($value),
-                    null === $value => true,
+                $value === null => true,
                 default => false,
             };
     }
@@ -106,12 +106,12 @@ enum StringCoercionMode
                     array_is_list($value) => implode(',', array_map($this->coerce(...), $value)),
                     default => '[object Object]',
                 },
-                true === $value => 'true',
-                false === $value => 'false',
-                null === $value => 'null',
+                $value === true => 'true',
+                $value === false => 'false',
+                $value === null => 'null',
                 is_float($value) => match (true) {
                     is_nan($value) => 'NaN',
-                    is_infinite($value) => 0 < $value ? 'Infinity' : '-Infinity',
+                    is_infinite($value) => $value > 0 ? 'Infinity' : '-Infinity',
                     default => (string) json_encode($value, JSON_PRESERVE_ZERO_FRACTION),
                 },
                 is_scalar($value) => (string) $value,
@@ -123,9 +123,9 @@ enum StringCoercionMode
                 $value instanceof Rfc3986Uri => $value->toString(),
                 $value instanceof BackedEnum => (string) $value->value,
                 $value instanceof Stringable => $value->__toString(),
-                false === $value => '0',
-                true === $value => '1',
-                null === $value => null,
+                $value === false => '0',
+                $value === true => '1',
+                $value === null => null,
                 is_scalar($value) => (string) $value,
                 default => throw new TypeError('Unable to coerce value of type "'.get_debug_type($value).'" with "'.$this->name.'" coercion.'),
             },
@@ -134,6 +134,7 @@ enum StringCoercionMode
 
     /**
      * Array recursion detection.
+     *
      * @see https://stackoverflow.com/questions/9042142/detecting-infinite-array-recursion-in-php
      */
     private static function hasCircularReference(array &$arr): bool
@@ -145,7 +146,7 @@ enum StringCoercionMode
         try {
             $arr[self::RECURSION_MARKER] = true;
             foreach ($arr as $key => &$value) {
-                if (self::RECURSION_MARKER !== $key && is_array($value) && self::hasCircularReference($value)) {
+                if ($key !== self::RECURSION_MARKER && is_array($value) && self::hasCircularReference($value)) {
                     return true;
                 }
             }

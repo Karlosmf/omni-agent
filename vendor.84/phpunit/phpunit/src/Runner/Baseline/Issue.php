@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,14 +9,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner\Baseline;
 
 use const FILE_IGNORE_NEW_LINES;
+
+use PHPUnit\Runner\FileDoesNotExistException;
+
 use function assert;
 use function file;
 use function is_file;
 use function sha1;
-use PHPUnit\Runner\FileDoesNotExistException;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -44,10 +49,10 @@ final readonly class Issue
     private string $description;
 
     /**
-     * @param non-empty-string  $file
-     * @param positive-int      $line
-     * @param ?non-empty-string $hash
-     * @param non-empty-string  $description
+     * @param  non-empty-string  $file
+     * @param  positive-int  $line
+     * @param  ?non-empty-string  $hash
+     * @param  non-empty-string  $description
      *
      * @throws FileDoesNotExistException
      * @throws FileDoesNotHaveLineException
@@ -62,16 +67,16 @@ final readonly class Issue
     }
 
     /**
-     * @param non-empty-string $file
-     * @param positive-int     $line
-     * @param non-empty-string $hash
-     * @param non-empty-string $description
+     * @param  non-empty-string  $file
+     * @param  positive-int  $line
+     * @param  non-empty-string  $hash
+     * @param  non-empty-string  $description
      */
     private function __construct(string $file, int $line, string $hash, string $description)
     {
-        $this->file        = $file;
-        $this->line        = $line;
-        $this->hash        = $hash;
+        $this->file = $file;
+        $this->line = $line;
+        $this->hash = $hash;
         $this->description = $description;
     }
 
@@ -116,25 +121,24 @@ final readonly class Issue
     }
 
     /**
-     * @param non-empty-string $file
-     * @param positive-int     $line
+     * @param  non-empty-string  $file
+     * @param  positive-int  $line
+     * @return non-empty-string
      *
      * @throws FileDoesNotExistException
      * @throws FileDoesNotHaveLineException
-     *
-     * @return non-empty-string
      */
     private static function calculateHash(string $file, int $line): string
     {
         $lines = @file($file, FILE_IGNORE_NEW_LINES);
 
-        if ($lines === false && !is_file($file)) {
+        if ($lines === false && ! is_file($file)) {
             throw new FileDoesNotExistException($file);
         }
 
         $key = $line - 1;
 
-        if (!isset($lines[$key])) {
+        if (! isset($lines[$key])) {
             throw new FileDoesNotHaveLineException($file, $line);
         }
 

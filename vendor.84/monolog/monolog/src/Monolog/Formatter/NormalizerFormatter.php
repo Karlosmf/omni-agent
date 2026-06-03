@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -12,9 +14,9 @@
 namespace Monolog\Formatter;
 
 use Monolog\JsonSerializableDateTimeImmutable;
+use Monolog\LogRecord;
 use Monolog\Utils;
 use Throwable;
-use Monolog\LogRecord;
 
 /**
  * Normalizes incoming records to remove objects/resources so it's easier to dump to various targets
@@ -26,7 +28,9 @@ class NormalizerFormatter implements FormatterInterface
     public const SIMPLE_DATE = "Y-m-d\TH:i:sP";
 
     protected string $dateFormat;
+
     protected int $maxNormalizeDepth = 9;
+
     protected int $maxNormalizeItemCount = 1000;
 
     private int $jsonEncodeOptions = Utils::DEFAULT_JSON_FLAGS;
@@ -34,15 +38,15 @@ class NormalizerFormatter implements FormatterInterface
     protected string $basePath = '';
 
     /**
-     * @param string|null $dateFormat The format of the timestamp: one supported by DateTime::format
+     * @param  string|null  $dateFormat  The format of the timestamp: one supported by DateTime::format
      */
     public function __construct(?string $dateFormat = null)
     {
-        $this->dateFormat = null === $dateFormat ? static::SIMPLE_DATE : $dateFormat;
+        $this->dateFormat = $dateFormat === null ? static::SIMPLE_DATE : $dateFormat;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function format(LogRecord $record)
     {
@@ -60,7 +64,7 @@ class NormalizerFormatter implements FormatterInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function formatBatch(array $records)
     {
@@ -140,12 +144,13 @@ class NormalizerFormatter implements FormatterInterface
 
     /**
      * Setting a base path will hide the base path from exception and stack trace file names to shorten them
+     *
      * @return $this
      */
     public function setBasePath(string $path = ''): self
     {
         if ($path !== '') {
-            $path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+            $path = rtrim($path, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
         }
 
         $this->basePath = $path;
@@ -175,13 +180,13 @@ class NormalizerFormatter implements FormatterInterface
     protected function normalize(mixed $data, int $depth = 0): mixed
     {
         if ($depth > $this->maxNormalizeDepth) {
-            return 'Over ' . $this->maxNormalizeDepth . ' levels deep, aborting normalization';
+            return 'Over '.$this->maxNormalizeDepth.' levels deep, aborting normalization';
         }
 
-        if (null === $data || \is_scalar($data)) {
+        if ($data === null || \is_scalar($data)) {
             if (\is_float($data)) {
                 if (is_infinite($data)) {
-                    return ($data > 0 ? '' : '-') . 'INF';
+                    return ($data > 0 ? '' : '-').'INF';
                 }
                 if (is_nan($data)) {
                     return 'NaN';
@@ -197,7 +202,7 @@ class NormalizerFormatter implements FormatterInterface
             $count = 1;
             foreach ($data as $key => $value) {
                 if ($count++ > $this->maxNormalizeItemCount) {
-                    $normalized['...'] = 'Over ' . $this->maxNormalizeItemCount . ' items ('.\count($data).' total), aborting normalization';
+                    $normalized['...'] = 'Over '.$this->maxNormalizeItemCount.' items ('.\count($data).' total), aborting normalization';
                     break;
                 }
 
@@ -226,7 +231,7 @@ class NormalizerFormatter implements FormatterInterface
                 try {
                     /** @var string $value */
                     $value = $data->__toString();
-                } catch (\Throwable) {
+                } catch (Throwable) {
                     // if the toString method is failing, use the default behavior
                     /** @var null|scalar|array<mixed[]|scalar|null> $value */
                     $value = json_decode($this->toJson($data, true), true);
@@ -253,7 +258,7 @@ class NormalizerFormatter implements FormatterInterface
     protected function normalizeException(Throwable $e, int $depth = 0)
     {
         if ($depth > $this->maxNormalizeDepth) {
-            return ['Over ' . $this->maxNormalizeDepth . ' levels deep, aborting normalization'];
+            return ['Over '.$this->maxNormalizeDepth.' levels deep, aborting normalization'];
         }
 
         if ($e instanceof \JsonSerializable) {
@@ -301,7 +306,7 @@ class NormalizerFormatter implements FormatterInterface
             }
         }
 
-        if (($previous = $e->getPrevious()) instanceof \Throwable) {
+        if (($previous = $e->getPrevious()) instanceof Throwable) {
             $data['previous'] = $this->normalizeException($previous, $depth + 1);
         }
 
@@ -311,9 +316,10 @@ class NormalizerFormatter implements FormatterInterface
     /**
      * Return the JSON representation of a value
      *
-     * @param  mixed             $data
+     * @param  mixed  $data
+     * @return string if encoding fails and ignoreErrors is true 'null' is returned
+     *
      * @throws \RuntimeException if encoding fails and errors are not ignored
-     * @return string            if encoding fails and ignoreErrors is true 'null' is returned
      */
     protected function toJson($data, bool $ignoreErrors = false): string
     {

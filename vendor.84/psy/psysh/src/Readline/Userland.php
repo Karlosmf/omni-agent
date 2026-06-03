@@ -26,9 +26,13 @@ use Psy\Readline\Hoa\Ustring as HoaUstring;
 class Userland implements Readline
 {
     private HoaReadline $hoaReadline;
+
     private ?string $lastPrompt = null;
+
     private HoaConsoleTput $tput;
+
     private HoaConsoleInput $input;
+
     private HoaConsoleOutput $output;
 
     public static function isSupported(): bool
@@ -53,20 +57,20 @@ class Userland implements Readline
     {
         static::bootstrapHoa(true);
 
-        $this->hoaReadline = new HoaReadline();
+        $this->hoaReadline = new HoaReadline;
         $this->hoaReadline->addMapping('\C-l', function () {
             $this->redisplay();
 
             return HoaReadline::STATE_NO_ECHO;
         });
 
-        $this->tput = new HoaConsoleTput();
+        $this->tput = new HoaConsoleTput;
         HoaConsole::setTput($this->tput);
 
-        $this->input = new HoaConsoleInput();
+        $this->input = new HoaConsoleInput;
         HoaConsole::setInput($this->input);
 
-        $this->output = new HoaConsoleOutput();
+        $this->output = new HoaConsoleOutput;
         HoaConsole::setOutput($this->output);
     }
 
@@ -130,9 +134,10 @@ class Userland implements Readline
     /**
      * {@inheritdoc}
      *
-     * @throws BreakException if user hits Ctrl+D
      *
      * @return string
+     *
+     * @throws BreakException if user hits Ctrl+D
      */
     public function readline(?string $prompt = null)
     {

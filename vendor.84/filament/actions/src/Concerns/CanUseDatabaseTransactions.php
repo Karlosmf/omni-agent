@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\DB;
 
 trait CanUseDatabaseTransactions
 {
-    protected bool | Closure $hasDatabaseTransactions = false;
+    protected bool|Closure $hasDatabaseTransactions = false;
 
-    public function databaseTransaction(bool | Closure $condition = true): static
+    public function databaseTransaction(bool|Closure $condition = true): static
     {
         $this->hasDatabaseTransactions = $condition;
 

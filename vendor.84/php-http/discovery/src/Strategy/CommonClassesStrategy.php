@@ -2,6 +2,8 @@
 
 namespace Http\Discovery\Strategy;
 
+use Buzz\Client\FileGetContents;
+use Buzz\Message\ResponseBuilder;
 use GuzzleHttp\Client as GuzzleHttp;
 use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Psr7\Request as GuzzleRequest;
@@ -90,7 +92,7 @@ final class CommonClassesStrategy implements DiscoveryStrategy
             ['class' => Artax::class, 'condition' => Artax::class],
             [
                 'class' => [self::class, 'buzzInstantiate'],
-                'condition' => [\Buzz\Client\FileGetContents::class, \Buzz\Message\ResponseBuilder::class],
+                'condition' => [FileGetContents::class, ResponseBuilder::class],
             ],
         ],
         Psr18Client::class => [
@@ -104,14 +106,14 @@ final class CommonClassesStrategy implements DiscoveryStrategy
             ],
             [
                 'class' => [self::class, 'buzzInstantiate'],
-                'condition' => [\Buzz\Client\FileGetContents::class, \Buzz\Message\ResponseBuilder::class],
+                'condition' => [FileGetContents::class, ResponseBuilder::class],
             ],
         ],
     ];
 
     public static function getCandidates($type)
     {
-        if (Psr18Client::class === $type) {
+        if ($type === Psr18Client::class) {
             return self::getPsr18Candidates();
         }
 
@@ -128,7 +130,7 @@ final class CommonClassesStrategy implements DiscoveryStrategy
 
         // HTTPlug 2.0 clients implements PSR18Client too.
         foreach (self::$classes[HttpClient::class] as $c) {
-            if (!is_string($c['class'])) {
+            if (! is_string($c['class'])) {
                 continue;
             }
             try {
@@ -145,7 +147,7 @@ final class CommonClassesStrategy implements DiscoveryStrategy
 
     public static function buzzInstantiate()
     {
-        return new \Buzz\Client\FileGetContents(Psr17FactoryDiscovery::findResponseFactory());
+        return new FileGetContents(Psr17FactoryDiscovery::findResponseFactory());
     }
 
     public static function symfonyPsr18Instantiate()

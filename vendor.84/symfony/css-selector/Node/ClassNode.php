@@ -26,8 +26,7 @@ class ClassNode extends AbstractNode
     public function __construct(
         private NodeInterface $selector,
         private string $name,
-    ) {
-    }
+    ) {}
 
     public function getSelector(): NodeInterface
     {

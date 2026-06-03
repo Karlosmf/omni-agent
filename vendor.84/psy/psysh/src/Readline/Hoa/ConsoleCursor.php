@@ -58,9 +58,9 @@ class ConsoleCursor
      */
     public static function move(string $steps, int $repeat = 1)
     {
-        if (1 > $repeat) {
+        if ($repeat < 1) {
             return;
-        } elseif (1 === $repeat) {
+        } elseif ($repeat === 1) {
             $handle = \explode(' ', $steps);
         } else {
             $handle = \explode(' ', $steps, 1);
@@ -156,14 +156,14 @@ class ConsoleCursor
      */
     public static function moveTo(?int $x = null, ?int $y = null)
     {
-        if (null === $x || null === $y) {
+        if ($x === null || $y === null) {
             $position = static::getPosition();
 
-            if (null === $x) {
+            if ($x === null) {
                 $x = $position['x'];
             }
 
-            if (null === $y) {
+            if ($y === null) {
                 $y = $position['y'];
             }
         }
@@ -185,7 +185,7 @@ class ConsoleCursor
         $tput = Console::getTput();
         $user7 = $tput->get('user7');
 
-        if (null === $user7) {
+        if ($user7 === null) {
             return [
                 'x' => 0,
                 'y' => 0,
@@ -361,7 +361,7 @@ class ConsoleCursor
     {
         static $_rgbTo256 = null;
 
-        if (null === $_rgbTo256) {
+        if ($_rgbTo256 === null) {
             $_rgbTo256 = [
                 '000000', '800000', '008000', '808000', '000080', '800080',
                 '008080', 'c0c0c0', '808080', 'ff0000', '00ff00', 'ffff00',
@@ -411,7 +411,7 @@ class ConsoleCursor
 
         $tput = Console::getTput();
 
-        if (1 >= $tput->count('max_colors')) {
+        if ($tput->count('max_colors') <= 1) {
             return;
         }
 
@@ -474,7 +474,7 @@ class ConsoleCursor
                     break;
 
                 default:
-                    if (0 === \preg_match('#^([^\(]+)\(([^\)]+)\)$#', $attribute, $m)) {
+                    if (\preg_match('#^([^\(]+)\(([^\)]+)\)$#', $attribute, $m) === 0) {
                         break;
                     }
 
@@ -549,8 +549,8 @@ class ConsoleCursor
                         default:
                             $_keyword = false;
 
-                            if (256 <= $tput->count('max_colors') &&
-                                '#' === $m[2][0]) {
+                            if ($tput->count('max_colors') >= 256 &&
+                                $m[2][0] === '#') {
                                 $rgb = \hexdec(\substr($m[2], 1));
                                 $r = ($rgb >> 16) & 255;
                                 $g = ($rgb >> 8) & 255;
@@ -569,7 +569,7 @@ class ConsoleCursor
                                       + ($_b - $b) ** 2
                                     );
 
-                                    if (null === $distance ||
+                                    if ($distance === null ||
                                         $d <= $distance) {
                                         $distance = $d;
                                         $_handle = $i;
@@ -580,7 +580,7 @@ class ConsoleCursor
                             }
                     }
 
-                    if (true === $_keyword) {
+                    if ($_keyword === true) {
                         $handle[] = $_handle + $shift;
                     } else {
                         $handle[] = (38 + $shift).';5;'.$_handle;
@@ -590,7 +590,6 @@ class ConsoleCursor
 
         Console::getOutput()->writeAll("\033[".\implode(';', $handle).'m');
 
-        return;
     }
 
     /**
@@ -600,7 +599,7 @@ class ConsoleCursor
     {
         $tput = Console::getTput();
 
-        if (true !== $tput->has('can_change')) {
+        if ($tput->has('can_change') !== true) {
             return;
         }
 
@@ -628,7 +627,6 @@ class ConsoleCursor
             )
         );
 
-        return;
     }
 
     /**
@@ -668,14 +666,13 @@ class ConsoleCursor
                 break;
         }
 
-        if (false === $blink) {
-            ++$_style;
+        if ($blink === false) {
+            $_style++;
         }
 
         // Not sure what tput entry we can use here…
         Console::getOutput()->writeAll("\033[".$_style.' q');
 
-        return;
     }
 
     /**

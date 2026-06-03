@@ -2,17 +2,16 @@
 
 namespace Egulias\EmailValidator;
 
-use Egulias\EmailValidator\Result\Result;
 use Egulias\EmailValidator\Parser\IDLeftPart;
 use Egulias\EmailValidator\Parser\IDRightPart;
-use Egulias\EmailValidator\Result\ValidEmail;
 use Egulias\EmailValidator\Result\InvalidEmail;
-use Egulias\EmailValidator\Warning\EmailTooLong;
 use Egulias\EmailValidator\Result\Reason\NoLocalPart;
+use Egulias\EmailValidator\Result\Result;
+use Egulias\EmailValidator\Result\ValidEmail;
+use Egulias\EmailValidator\Warning\EmailTooLong;
 
 class MessageIDParser extends Parser
 {
-
     public const EMAILID_MAX_LENGTH = 254;
 
     /**
@@ -36,10 +35,11 @@ class MessageIDParser extends Parser
 
     protected function preLeftParsing(): Result
     {
-        if (!$this->hasAtToken()) {
-            return new InvalidEmail(new NoLocalPart(), $this->lexer->current->value);
+        if (! $this->hasAtToken()) {
+            return new InvalidEmail(new NoLocalPart, $this->lexer->current->value);
         }
-        return new ValidEmail();
+
+        return new ValidEmail;
     }
 
     protected function parseLeftFromAt(): Result
@@ -84,8 +84,8 @@ class MessageIDParser extends Parser
 
     private function addLongEmailWarning(string $localPart, string $parsedDomainPart): void
     {
-        if (strlen($localPart . '@' . $parsedDomainPart) > self::EMAILID_MAX_LENGTH) {
-            $this->warnings[EmailTooLong::CODE] = new EmailTooLong();
+        if (strlen($localPart.'@'.$parsedDomainPart) > self::EMAILID_MAX_LENGTH) {
+            $this->warnings[EmailTooLong::CODE] = new EmailTooLong;
         }
     }
 }

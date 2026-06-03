@@ -18,7 +18,7 @@ class CsvDownloader implements Downloader
         }
 
         return response()->streamDownload(function () use ($disk, $directory): void {
-            echo $disk->get($directory . DIRECTORY_SEPARATOR . 'headers.csv');
+            echo $disk->get($directory.DIRECTORY_SEPARATOR.'headers.csv');
 
             flush();
 

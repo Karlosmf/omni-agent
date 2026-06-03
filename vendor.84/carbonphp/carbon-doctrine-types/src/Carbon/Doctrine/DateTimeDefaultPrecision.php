@@ -10,8 +10,6 @@ class DateTimeDefaultPrecision
 
     /**
      * Change the default Doctrine datetime and datetime_immutable precision.
-     *
-     * @param int $precision
      */
     public static function set(int $precision): void
     {
@@ -20,8 +18,6 @@ class DateTimeDefaultPrecision
 
     /**
      * Get the default Doctrine datetime and datetime_immutable precision.
-     *
-     * @return int
      */
     public static function get(): int
     {

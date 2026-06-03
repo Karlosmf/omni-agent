@@ -43,8 +43,7 @@ abstract class ClassDiscovery
     /**
      * Finds a class.
      *
-     * @param string $type
-     *
+     * @param  string  $type
      * @return string|\Closure
      *
      * @throws DiscoveryFailedException
@@ -68,7 +67,7 @@ abstract class ClassDiscovery
             try {
                 $candidates = $strategy::getCandidates($type);
             } catch (StrategyUnavailableException $e) {
-                if (!isset(self::$deprecatedStrategies[$strategy])) {
+                if (! isset(self::$deprecatedStrategies[$strategy])) {
                     $exceptions[] = $e;
                 }
 
@@ -77,7 +76,7 @@ abstract class ClassDiscovery
 
             foreach ($candidates as $candidate) {
                 if (isset($candidate['condition'])) {
-                    if (!self::evaluateCondition($candidate['condition'])) {
+                    if (! self::evaluateCondition($candidate['condition'])) {
                         continue;
                     }
                 }
@@ -97,19 +96,18 @@ abstract class ClassDiscovery
     /**
      * Get a value from cache.
      *
-     * @param string $type
-     *
+     * @param  string  $type
      * @return string|null
      */
     private static function getFromCache($type)
     {
-        if (!isset(self::$cache[$type])) {
+        if (! isset(self::$cache[$type])) {
             return;
         }
 
         $candidate = self::$cache[$type];
         if (isset($candidate['condition'])) {
-            if (!self::evaluateCondition($candidate['condition'])) {
+            if (! self::evaluateCondition($candidate['condition'])) {
                 return;
             }
         }
@@ -120,8 +118,8 @@ abstract class ClassDiscovery
     /**
      * Store a value in cache.
      *
-     * @param string $type
-     * @param string $class
+     * @param  string  $type
+     * @param  string  $class
      */
     private static function storeInCache($type, $class)
     {
@@ -131,7 +129,7 @@ abstract class ClassDiscovery
     /**
      * Set new strategies and clear the cache.
      *
-     * @param string[] $strategies list of fully qualified class names that implement DiscoveryStrategy
+     * @param  string[]  $strategies  list of fully qualified class names that implement DiscoveryStrategy
      */
     public static function setStrategies(array $strategies)
     {
@@ -152,7 +150,7 @@ abstract class ClassDiscovery
     /**
      * Append a strategy at the end of the strategy queue.
      *
-     * @param string $strategy Fully qualified class name of a DiscoveryStrategy
+     * @param  string  $strategy  Fully qualified class name of a DiscoveryStrategy
      */
     public static function appendStrategy($strategy)
     {
@@ -163,7 +161,7 @@ abstract class ClassDiscovery
     /**
      * Prepend a strategy at the beginning of the strategy queue.
      *
-     * @param string $strategy Fully qualified class name to a DiscoveryStrategy
+     * @param  string  $strategy  Fully qualified class name to a DiscoveryStrategy
      */
     public static function prependStrategy($strategy)
     {
@@ -195,7 +193,7 @@ abstract class ClassDiscovery
         }
         if (is_array($condition)) {
             foreach ($condition as $c) {
-                if (false === static::evaluateCondition($c)) {
+                if (static::evaluateCondition($c) === false) {
                     // Immediately stop execution if the condition is false
                     return false;
                 }
@@ -210,8 +208,7 @@ abstract class ClassDiscovery
     /**
      * Get an instance of the $class.
      *
-     * @param string|\Closure $class a FQCN of a class or a closure that instantiate the class
-     *
+     * @param  string|\Closure  $class  a FQCN of a class or a closure that instantiate the class
      * @return object
      *
      * @throws ClassInstantiationFailedException
@@ -220,7 +217,7 @@ abstract class ClassDiscovery
     {
         try {
             if (is_string($class)) {
-                return new $class();
+                return new $class;
             }
 
             if (is_callable($class)) {
@@ -240,8 +237,7 @@ abstract class ClassDiscovery
      *
      * This function catches all potential exceptions and makes sure to always return a boolean.
      *
-     * @param string $class
-     *
+     * @param  string  $class
      * @return bool
      */
     public static function safeClassExists($class)

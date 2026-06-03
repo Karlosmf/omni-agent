@@ -6,9 +6,9 @@ use Closure;
 
 trait HasFieldWrapper
 {
-    protected string | Closure | null $fieldWrapperView = null;
+    protected string|Closure|null $fieldWrapperView = null;
 
-    public function fieldWrapperView(string | Closure | null $view): static
+    public function fieldWrapperView(string|Closure|null $view): static
     {
         $this->fieldWrapperView = $view;
 

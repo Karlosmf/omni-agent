@@ -5,13 +5,16 @@ namespace Faker\Provider\ja_JP;
 class Text extends \Faker\Provider\Text
 {
     protected static $separator = '';
+
     protected static $separatorLen = 0;
 
     /**
      * All punctuation in $baseText: 、 。 「 」 『 』 ！ ？ ー ， ： ；
      */
     protected static $notEndPunct = ['、', '「', '『', 'ー', '，', '：', '；'];
+
     protected static $endPunct = ['。', '」', '』', '！', '？'];
+
     protected static $notBeginPunct = ['、', '。', '」', '』', '！', '？', 'ー', '，', '：', '；'];
 
     /**
@@ -616,7 +619,7 @@ EOT;
 
     protected static function validStart($word)
     {
-        return !in_array($word, static::$notBeginPunct, false);
+        return ! in_array($word, static::$notBeginPunct, false);
     }
 
     protected static function appendEnd($text)
@@ -635,6 +638,6 @@ EOT;
         }
 
         // if the last char is not a valid punctuation, append a default one.
-        return in_array($last, static::$endPunct, false) ? $text : $text . '。';
+        return in_array($last, static::$endPunct, false) ? $text : $text.'。';
     }
 }

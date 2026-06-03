@@ -28,7 +28,7 @@ class Count extends Summarizer
     /**
      * @return int | float | array<string, array<string, int>> | null
      */
-    public function summarize(Builder $query, string $attribute): int | float | array | null
+    public function summarize(Builder $query, string $attribute): int|float|array|null
     {
         if (! $this->hasIcons) {
             return $query->count();
@@ -76,7 +76,7 @@ class Count extends Summarizer
         ];
     }
 
-    public function getSelectedState(): int | float | null
+    public function getSelectedState(): int|float|null
     {
         if (! array_key_exists($this->selectAlias, $this->selectedState)) {
             return null;

@@ -1,8 +1,10 @@
 <?php
+
 /**
  * Class QRCodeException
  *
  * @created      27.11.2015
+ *
  * @author       Smiley <smiley@chillerlan.net>
  * @copyright    2015 Smiley
  * @license      MIT
@@ -15,6 +17,4 @@ use Exception;
 /**
  * An exception container
  */
-class QRCodeException extends Exception{
-
-}
+class QRCodeException extends Exception {}

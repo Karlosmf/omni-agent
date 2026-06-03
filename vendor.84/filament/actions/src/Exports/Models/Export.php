@@ -57,10 +57,10 @@ class Export extends Model
             return $this->belongsTo($authenticatable::class);
         }
 
-        $userClass = app()->getNamespace() . 'Models\\User';
+        $userClass = app()->getNamespace().'Models\\User';
 
         if (! class_exists($userClass)) {
-            throw new LogicException('No [' . $userClass . '] model found. Please bind an authenticatable model to the [Illuminate\\Contracts\\Auth\\Authenticatable] interface in a service provider\'s [register()] method.');
+            throw new LogicException('No ['.$userClass.'] model found. Please bind an authenticatable model to the [Illuminate\\Contracts\\Auth\\Authenticatable] interface in a service provider\'s [register()] method.');
         }
 
         /** @phpstan-ignore-next-line */
@@ -104,7 +104,7 @@ class Export extends Model
 
     public function getFileDirectory(): string
     {
-        return 'filament_exports' . DIRECTORY_SEPARATOR . $this->getKey();
+        return 'filament_exports'.DIRECTORY_SEPARATOR.$this->getKey();
     }
 
     public function deleteFileDirectory(): void

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,12 +9,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Data;
+
+use NoDiscard;
+use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
 
 use function array_merge;
 use function array_unique;
-use NoDiscard;
-use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -29,7 +33,7 @@ final class ProcessedPathCoverageData
     public array $hit;
 
     /**
-     * @param XdebugPathCoverageType $xdebugCoverageData
+     * @param  XdebugPathCoverageType  $xdebugCoverageData
      */
     public static function fromXdebugCoverage(array $xdebugCoverageData): self
     {
@@ -40,14 +44,14 @@ final class ProcessedPathCoverageData
     }
 
     /**
-     * @param array<int, int>  $path
-     * @param list<TestIdType> $hit
+     * @param  array<int, int>  $path
+     * @param  list<TestIdType>  $hit
      */
     public function __construct(
         array $path,
         array $hit,
     ) {
-        $this->hit  = $hit;
+        $this->hit = $hit;
         $this->path = $path;
     }
 
@@ -65,7 +69,7 @@ final class ProcessedPathCoverageData
     }
 
     /**
-     * @param TestIdType $testCaseId
+     * @param  TestIdType  $testCaseId
      */
     public function recordHit(string $testCaseId): void
     {

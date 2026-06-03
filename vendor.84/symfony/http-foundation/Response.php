@@ -22,67 +22,129 @@ class_exists(ResponseHeaderBag::class);
 class Response
 {
     public const HTTP_CONTINUE = 100;
+
     public const HTTP_SWITCHING_PROTOCOLS = 101;
+
     public const HTTP_PROCESSING = 102;            // RFC2518
+
     public const HTTP_EARLY_HINTS = 103;           // RFC8297
+
     public const HTTP_OK = 200;
+
     public const HTTP_CREATED = 201;
+
     public const HTTP_ACCEPTED = 202;
+
     public const HTTP_NON_AUTHORITATIVE_INFORMATION = 203;
+
     public const HTTP_NO_CONTENT = 204;
+
     public const HTTP_RESET_CONTENT = 205;
+
     public const HTTP_PARTIAL_CONTENT = 206;
+
     public const HTTP_MULTI_STATUS = 207;          // RFC4918
+
     public const HTTP_ALREADY_REPORTED = 208;      // RFC5842
+
     public const HTTP_IM_USED = 226;               // RFC3229
+
     public const HTTP_MULTIPLE_CHOICES = 300;
+
     public const HTTP_MOVED_PERMANENTLY = 301;
+
     public const HTTP_FOUND = 302;
+
     public const HTTP_SEE_OTHER = 303;
+
     public const HTTP_NOT_MODIFIED = 304;
+
     public const HTTP_USE_PROXY = 305;
+
     public const HTTP_RESERVED = 306;
+
     public const HTTP_TEMPORARY_REDIRECT = 307;
+
     public const HTTP_PERMANENTLY_REDIRECT = 308;  // RFC7238
+
     public const HTTP_BAD_REQUEST = 400;
+
     public const HTTP_UNAUTHORIZED = 401;
+
     public const HTTP_PAYMENT_REQUIRED = 402;
+
     public const HTTP_FORBIDDEN = 403;
+
     public const HTTP_NOT_FOUND = 404;
+
     public const HTTP_METHOD_NOT_ALLOWED = 405;
+
     public const HTTP_NOT_ACCEPTABLE = 406;
+
     public const HTTP_PROXY_AUTHENTICATION_REQUIRED = 407;
+
     public const HTTP_REQUEST_TIMEOUT = 408;
+
     public const HTTP_CONFLICT = 409;
+
     public const HTTP_GONE = 410;
+
     public const HTTP_LENGTH_REQUIRED = 411;
+
     public const HTTP_PRECONDITION_FAILED = 412;
+
     public const HTTP_REQUEST_ENTITY_TOO_LARGE = 413;
+
     public const HTTP_REQUEST_URI_TOO_LONG = 414;
+
     public const HTTP_UNSUPPORTED_MEDIA_TYPE = 415;
+
     public const HTTP_REQUESTED_RANGE_NOT_SATISFIABLE = 416;
+
     public const HTTP_EXPECTATION_FAILED = 417;
+
     public const HTTP_I_AM_A_TEAPOT = 418;                                               // RFC2324
+
     public const HTTP_MISDIRECTED_REQUEST = 421;                                         // RFC7540
+
     public const HTTP_UNPROCESSABLE_ENTITY = 422;                                        // RFC4918
+
     public const HTTP_LOCKED = 423;                                                      // RFC4918
+
     public const HTTP_FAILED_DEPENDENCY = 424;                                           // RFC4918
+
     public const HTTP_TOO_EARLY = 425;                                                   // RFC-ietf-httpbis-replay-04
+
     public const HTTP_UPGRADE_REQUIRED = 426;                                            // RFC2817
+
     public const HTTP_PRECONDITION_REQUIRED = 428;                                       // RFC6585
+
     public const HTTP_TOO_MANY_REQUESTS = 429;                                           // RFC6585
+
     public const HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE = 431;                             // RFC6585
+
     public const HTTP_UNAVAILABLE_FOR_LEGAL_REASONS = 451;                               // RFC7725
+
     public const HTTP_INTERNAL_SERVER_ERROR = 500;
+
     public const HTTP_NOT_IMPLEMENTED = 501;
+
     public const HTTP_BAD_GATEWAY = 502;
+
     public const HTTP_SERVICE_UNAVAILABLE = 503;
+
     public const HTTP_GATEWAY_TIMEOUT = 504;
+
     public const HTTP_VERSION_NOT_SUPPORTED = 505;
+
     public const HTTP_VARIANT_ALSO_NEGOTIATES_EXPERIMENTAL = 506;                        // RFC2295
+
     public const HTTP_INSUFFICIENT_STORAGE = 507;                                        // RFC4918
+
     public const HTTP_LOOP_DETECTED = 508;                                               // RFC5842
+
     public const HTTP_NOT_EXTENDED = 510;                                                // RFC2774
+
     public const HTTP_NETWORK_AUTHENTICATION_REQUIRED = 511;                             // RFC6585
 
     /**
@@ -108,9 +170,13 @@ class Response
     public ResponseHeaderBag $headers;
 
     protected string $content;
+
     protected string $version;
+
     protected int $statusCode;
+
     protected string $statusText;
+
     protected ?string $charset = null;
 
     /**
@@ -195,7 +261,7 @@ class Response
     private array $sentHeaders;
 
     /**
-     * @param int $status The HTTP status code (200 "OK" by default)
+     * @param  int  $status  The HTTP status code (200 "OK" by default)
      *
      * @throws \InvalidArgumentException When the HTTP status code is not valid
      */
@@ -253,18 +319,18 @@ class Response
             ini_set('default_mimetype', '');
         } else {
             // Content-type based on the Request
-            if (!$headers->has('Content-Type')) {
+            if (! $headers->has('Content-Type')) {
                 $format = $request->getRequestFormat(null);
-                if (null !== $format && $mimeType = $request->getMimeType($format)) {
+                if ($format !== null && $mimeType = $request->getMimeType($format)) {
                     $headers->set('Content-Type', $mimeType);
                 }
             }
 
             // Fix Content-Type
             $charset = $this->charset ?: 'utf-8';
-            if (!$headers->has('Content-Type')) {
+            if (! $headers->has('Content-Type')) {
                 $headers->set('Content-Type', 'text/html; charset='.$charset);
-            } elseif (0 === stripos($headers->get('Content-Type') ?? '', 'text/') && false === stripos($headers->get('Content-Type') ?? '', 'charset')) {
+            } elseif (stripos($headers->get('Content-Type') ?? '', 'text/') === 0 && stripos($headers->get('Content-Type') ?? '', 'charset') === false) {
                 // add the charset
                 $headers->set('Content-Type', $headers->get('Content-Type').'; charset='.$charset);
             }
@@ -285,12 +351,12 @@ class Response
         }
 
         // Fix protocol
-        if ('HTTP/1.0' != $request->server->get('SERVER_PROTOCOL')) {
+        if ($request->server->get('SERVER_PROTOCOL') != 'HTTP/1.0') {
             $this->setProtocolVersion('1.1');
         }
 
         // Check if we need to send extra expire info headers
-        if ('1.0' == $this->getProtocolVersion() && str_contains($headers->get('Cache-Control', ''), 'no-cache')) {
+        if ($this->getProtocolVersion() == '1.0' && str_contains($headers->get('Cache-Control', ''), 'no-cache')) {
             $headers->set('pragma', 'no-cache');
             $headers->set('expires', -1);
         }
@@ -309,15 +375,14 @@ class Response
     /**
      * Sends HTTP headers.
      *
-     * @param positive-int|null $statusCode The status code to use, override the statusCode property if set and not null
-     *
+     * @param  positive-int|null  $statusCode  The status code to use, override the statusCode property if set and not null
      * @return $this
      */
     public function sendHeaders(?int $statusCode = null): static
     {
         // headers have already been sent by the developer
         if (headers_sent()) {
-            if (!\in_array(\PHP_SAPI, ['cli', 'phpdbg', 'embed'], true)) {
+            if (! \in_array(\PHP_SAPI, ['cli', 'phpdbg', 'embed'], true)) {
                 $statusCode ??= $this->statusCode;
                 trigger_deprecation('symfony/http-foundation', '7.4', 'Trying to use "%s::sendHeaders()" after headers have already been sent is deprecated and will throw a PHP warning in 8.0. Use a "StreamedResponse" instead.', static::class);
                 // header(\sprintf('HTTP/%s %s %s', $this->version, $statusCode, $this->statusText), true, $statusCode);
@@ -327,7 +392,7 @@ class Response
         }
 
         $informationalResponse = $statusCode >= 100 && $statusCode < 200;
-        if ($informationalResponse && !\function_exists('headers_send')) {
+        if ($informationalResponse && ! \function_exists('headers_send')) {
             // skip informational responses if not supported by the SAPI
             return $this;
         }
@@ -341,14 +406,14 @@ class Response
                 continue;
             }
 
-            $replace = 0 === strcasecmp($name, 'Content-Type');
+            $replace = strcasecmp($name, 'Content-Type') === 0;
 
-            if (null !== $previousValues && array_diff($previousValues, $values)) {
+            if ($previousValues !== null && array_diff($previousValues, $values)) {
                 header_remove($name);
                 $previousValues = null;
             }
 
-            $newValues = null === $previousValues ? $values : array_diff($values, $previousValues);
+            $newValues = $previousValues === null ? $values : array_diff($values, $previousValues);
 
             foreach ($newValues as $value) {
                 header($name.': '.$value, $replace, $this->statusCode);
@@ -393,8 +458,7 @@ class Response
     /**
      * Sends HTTP headers and content.
      *
-     * @param bool $flush Whether output buffers should be flushed
-     *
+     * @param  bool  $flush  Whether output buffers should be flushed
      * @return $this
      */
     public function send(bool $flush = true): static
@@ -402,7 +466,7 @@ class Response
         $this->sendHeaders();
         $this->sendContent();
 
-        if (!$flush) {
+        if (! $flush) {
             return $this;
         }
 
@@ -410,7 +474,7 @@ class Response
             fastcgi_finish_request();
         } elseif (\function_exists('litespeed_finish_request')) {
             litespeed_finish_request();
-        } elseif (!\in_array(\PHP_SAPI, ['cli', 'phpdbg', 'embed'], true)) {
+        } elseif (! \in_array(\PHP_SAPI, ['cli', 'phpdbg', 'embed'], true)) {
             static::closeOutputBuffers(0, true);
             flush();
         }
@@ -481,7 +545,7 @@ class Response
             throw new \InvalidArgumentException(\sprintf('The HTTP status code "%s" is not valid.', $code));
         }
 
-        if (null === $text) {
+        if ($text === null) {
             $this->statusText = self::$statusTexts[$code] ?? 'unknown status';
 
             return $this;
@@ -545,7 +609,7 @@ class Response
      */
     public function isCacheable(): bool
     {
-        if (!\in_array($this->statusCode, [200, 203, 300, 301, 302, 404, 410], true)) {
+        if (! \in_array($this->statusCode, [200, 203, 300, 301, 302, 404, 410], true)) {
             return false;
         }
 
@@ -741,7 +805,7 @@ class Response
      */
     public function setExpires(?\DateTimeInterface $date): static
     {
-        if (null === $date) {
+        if ($date === null) {
             $this->headers->remove('Expires');
 
             return $this;
@@ -861,7 +925,7 @@ class Response
     {
         $maxAge = $this->getMaxAge();
 
-        return null !== $maxAge ? max($maxAge - $this->getAge(), 0) : null;
+        return $maxAge !== null ? max($maxAge - $this->getAge(), 0) : null;
     }
 
     /**
@@ -919,7 +983,7 @@ class Response
      */
     public function setLastModified(?\DateTimeInterface $date): static
     {
-        if (null === $date) {
+        if ($date === null) {
             $this->headers->remove('Last-Modified');
 
             return $this;
@@ -945,23 +1009,22 @@ class Response
     /**
      * Sets the ETag value.
      *
-     * @param string|null $etag The ETag unique identifier or null to remove the header
-     * @param bool        $weak Whether you want a weak ETag or not
-     *
+     * @param  string|null  $etag  The ETag unique identifier or null to remove the header
+     * @param  bool  $weak  Whether you want a weak ETag or not
      * @return $this
      *
      * @final
      */
     public function setEtag(?string $etag, bool $weak = false): static
     {
-        if (null === $etag) {
+        if ($etag === null) {
             $this->headers->remove('Etag');
         } else {
-            if (!str_starts_with($etag, '"')) {
+            if (! str_starts_with($etag, '"')) {
                 $etag = '"'.$etag.'"';
             }
 
-            $this->headers->set('ETag', (true === $weak ? 'W/' : '').$etag);
+            $this->headers->set('ETag', ($weak === true ? 'W/' : '').$etag);
         }
 
         return $this;
@@ -1009,7 +1072,7 @@ class Response
         }
 
         foreach (self::HTTP_RESPONSE_CACHE_CONTROL_DIRECTIVES as $directive => $hasValue) {
-            if (!$hasValue && isset($options[$directive])) {
+            if (! $hasValue && isset($options[$directive])) {
                 if ($options[$directive]) {
                     $this->headers->addCacheControlDirective(str_replace('_', '-', $directive));
                 } else {
@@ -1069,7 +1132,7 @@ class Response
      */
     public function hasVary(): bool
     {
-        return null !== $this->headers->get('Vary');
+        return $this->headers->get('Vary') !== null;
     }
 
     /**
@@ -1079,7 +1142,7 @@ class Response
      */
     public function getVary(): array
     {
-        if (!$vary = $this->headers->all('Vary')) {
+        if (! $vary = $this->headers->all('Vary')) {
             return [];
         }
 
@@ -1094,8 +1157,7 @@ class Response
     /**
      * Sets the Vary header.
      *
-     * @param bool $replace Whether to replace the actual value or not (true by default)
-     *
+     * @param  bool  $replace  Whether to replace the actual value or not (true by default)
      * @return $this
      *
      * @final
@@ -1118,7 +1180,7 @@ class Response
      */
     public function isNotModified(Request $request): bool
     {
-        if (!$request->isMethodCacheable()) {
+        if (! $request->isMethodCacheable()) {
             return false;
         }
 
@@ -1127,17 +1189,17 @@ class Response
         $modifiedSince = $request->headers->get('If-Modified-Since');
 
         if (($ifNoneMatchEtags = $request->getETags()) && (null !== $etag = $this->getEtag())) {
-            if (0 == strncmp($etag, 'W/', 2)) {
+            if (strncmp($etag, 'W/', 2) == 0) {
                 $etag = substr($etag, 2);
             }
 
             // Use weak comparison as per https://tools.ietf.org/html/rfc7232#section-3.2.
             foreach ($ifNoneMatchEtags as $ifNoneMatchEtag) {
-                if (0 == strncmp($ifNoneMatchEtag, 'W/', 2)) {
+                if (strncmp($ifNoneMatchEtag, 'W/', 2) == 0) {
                     $ifNoneMatchEtag = substr($ifNoneMatchEtag, 2);
                 }
 
-                if ($ifNoneMatchEtag === $etag || '*' === $ifNoneMatchEtag) {
+                if ($ifNoneMatchEtag === $etag || $ifNoneMatchEtag === '*') {
                     $notModified = true;
                     break;
                 }
@@ -1224,7 +1286,7 @@ class Response
      */
     public function isOk(): bool
     {
-        return 200 === $this->statusCode;
+        return $this->statusCode === 200;
     }
 
     /**
@@ -1234,7 +1296,7 @@ class Response
      */
     public function isForbidden(): bool
     {
-        return 403 === $this->statusCode;
+        return $this->statusCode === 403;
     }
 
     /**
@@ -1244,7 +1306,7 @@ class Response
      */
     public function isNotFound(): bool
     {
-        return 404 === $this->statusCode;
+        return $this->statusCode === 404;
     }
 
     /**
@@ -1254,7 +1316,7 @@ class Response
      */
     public function isRedirect(?string $location = null): bool
     {
-        return \in_array($this->statusCode, [201, 301, 302, 303, 307, 308], true) && (null === $location ?: $location == $this->headers->get('Location'));
+        return \in_array($this->statusCode, [201, 301, 302, 303, 307, 308], true) && ($location === null ?: $location == $this->headers->get('Location'));
     }
 
     /**
@@ -1280,7 +1342,7 @@ class Response
         $level = \count($status);
         $flags = \PHP_OUTPUT_HANDLER_REMOVABLE | ($flush ? \PHP_OUTPUT_HANDLER_FLUSHABLE : \PHP_OUTPUT_HANDLER_CLEANABLE);
 
-        while ($level-- > $targetLevel && ($s = $status[$level]) && (!isset($s['del']) ? !isset($s['flags']) || ($s['flags'] & $flags) === $flags : $s['del'])) {
+        while ($level-- > $targetLevel && ($s = $status[$level]) && (! isset($s['del']) ? ! isset($s['flags']) || ($s['flags'] & $flags) === $flags : $s['del'])) {
             if ($flush) {
                 ob_end_flush();
             } else {
@@ -1298,7 +1360,7 @@ class Response
     {
         if ($safe) {
             $this->headers->set('Preference-Applied', 'safe');
-        } elseif ('safe' === $this->headers->get('Preference-Applied')) {
+        } elseif ($this->headers->get('Preference-Applied') === 'safe') {
             $this->headers->remove('Preference-Applied');
         }
 
@@ -1314,7 +1376,7 @@ class Response
      */
     protected function ensureIEOverSSLCompatibility(Request $request): void
     {
-        if (false !== stripos($this->headers->get('Content-Disposition') ?? '', 'attachment') && 1 == preg_match('/MSIE (.*?);/i', $request->server->get('HTTP_USER_AGENT') ?? '', $match) && true === $request->isSecure()) {
+        if (stripos($this->headers->get('Content-Disposition') ?? '', 'attachment') !== false && preg_match('/MSIE (.*?);/i', $request->server->get('HTTP_USER_AGENT') ?? '', $match) == 1 && $request->isSecure() === true) {
             if ((int) preg_replace('/(MSIE )(.*?);/', '$2', $match[0]) < 9) {
                 $this->headers->remove('Cache-Control');
             }

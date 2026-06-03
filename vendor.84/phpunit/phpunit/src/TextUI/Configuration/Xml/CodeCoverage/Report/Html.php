@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\XmlConfiguration\CodeCoverage\Report;
 
 use PHPUnit\TextUI\Configuration\Directory;
@@ -22,26 +25,34 @@ use PHPUnit\TextUI\Configuration\NoCustomCssFileException;
 final readonly class Html
 {
     private Directory $target;
+
     private int $lowUpperBound;
+
     private int $highLowerBound;
+
     private string $colorSuccessLow;
+
     private string $colorSuccessMedium;
+
     private string $colorSuccessHigh;
+
     private string $colorWarning;
+
     private string $colorDanger;
+
     private ?string $customCssFile;
 
     public function __construct(Directory $target, int $lowUpperBound, int $highLowerBound, string $colorSuccessLow, string $colorSuccessMedium, string $colorSuccessHigh, string $colorWarning, string $colorDanger, ?string $customCssFile)
     {
-        $this->target             = $target;
-        $this->lowUpperBound      = $lowUpperBound;
-        $this->highLowerBound     = $highLowerBound;
-        $this->colorSuccessLow    = $colorSuccessLow;
+        $this->target = $target;
+        $this->lowUpperBound = $lowUpperBound;
+        $this->highLowerBound = $highLowerBound;
+        $this->colorSuccessLow = $colorSuccessLow;
         $this->colorSuccessMedium = $colorSuccessMedium;
-        $this->colorSuccessHigh   = $colorSuccessHigh;
-        $this->colorWarning       = $colorWarning;
-        $this->colorDanger        = $colorDanger;
-        $this->customCssFile      = $customCssFile;
+        $this->colorSuccessHigh = $colorSuccessHigh;
+        $this->colorWarning = $colorWarning;
+        $this->colorDanger = $colorDanger;
+        $this->customCssFile = $customCssFile;
     }
 
     public function target(): Directory
@@ -97,7 +108,7 @@ final readonly class Html
      */
     public function customCssFile(): string
     {
-        if (!$this->hasCustomCssFile()) {
+        if (! $this->hasCustomCssFile()) {
             throw new NoCustomCssFileException;
         }
 

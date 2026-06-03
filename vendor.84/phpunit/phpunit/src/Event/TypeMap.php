@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event;
 
 use function array_key_exists;
@@ -29,8 +32,8 @@ final class TypeMap
     private array $mapping = [];
 
     /**
-     * @param class-string $subscriberInterface
-     * @param class-string $eventClass
+     * @param  class-string  $subscriberInterface
+     * @param  class-string  $eventClass
      *
      * @throws EventAlreadyAssignedException
      * @throws InvalidEventException
@@ -68,9 +71,9 @@ final class TypeMap
     }
 
     /**
-     * @throws MapError
-     *
      * @return class-string
+     *
+     * @throws MapError
      */
     public function map(Subscriber $subscriber): string
     {
@@ -89,13 +92,13 @@ final class TypeMap
     }
 
     /**
-     * @param class-string $subscriberInterface
+     * @param  class-string  $subscriberInterface
      *
      * @throws UnknownSubscriberException
      */
     private function ensureSubscriberInterfaceExists(string $subscriberInterface): void
     {
-        if (!interface_exists($subscriberInterface)) {
+        if (! interface_exists($subscriberInterface)) {
             throw new UnknownSubscriberException(
                 sprintf(
                     'Subscriber "%s" does not exist or is not an interface',
@@ -106,13 +109,13 @@ final class TypeMap
     }
 
     /**
-     * @param class-string $eventClass
+     * @param  class-string  $eventClass
      *
      * @throws UnknownEventException
      */
     private function ensureEventClassExists(string $eventClass): void
     {
-        if (!class_exists($eventClass)) {
+        if (! class_exists($eventClass)) {
             throw new UnknownEventException(
                 sprintf(
                     'Event class "%s" does not exist',
@@ -123,13 +126,13 @@ final class TypeMap
     }
 
     /**
-     * @param class-string $subscriberInterface
+     * @param  class-string  $subscriberInterface
      *
      * @throws InvalidSubscriberException
      */
     private function ensureSubscriberInterfaceExtendsInterface(string $subscriberInterface): void
     {
-        if (!in_array(Subscriber::class, class_implements($subscriberInterface), true)) {
+        if (! in_array(Subscriber::class, class_implements($subscriberInterface), true)) {
             throw new InvalidSubscriberException(
                 sprintf(
                     'Subscriber "%s" does not extend Subscriber interface',
@@ -140,13 +143,13 @@ final class TypeMap
     }
 
     /**
-     * @param class-string $eventClass
+     * @param  class-string  $eventClass
      *
      * @throws InvalidEventException
      */
     private function ensureEventClassImplementsEventInterface(string $eventClass): void
     {
-        if (!in_array(Event::class, class_implements($eventClass), true)) {
+        if (! in_array(Event::class, class_implements($eventClass), true)) {
             throw new InvalidEventException(
                 sprintf(
                     'Event "%s" does not implement Event interface',
@@ -157,7 +160,7 @@ final class TypeMap
     }
 
     /**
-     * @param class-string $subscriberInterface
+     * @param  class-string  $subscriberInterface
      *
      * @throws SubscriberTypeAlreadyRegisteredException
      */
@@ -174,7 +177,7 @@ final class TypeMap
     }
 
     /**
-     * @param class-string $eventClass
+     * @param  class-string  $eventClass
      *
      * @throws EventAlreadyAssignedException
      */

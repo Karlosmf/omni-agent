@@ -34,7 +34,7 @@ final class TreeNode implements \Countable, \IteratorAggregate
 
     public static function fromValues(iterable $nodes, ?self $node = null): self
     {
-        $node ??= new self();
+        $node ??= new self;
         foreach ($nodes as $key => $value) {
             if (is_iterable($value)) {
                 $child = new self($key);
@@ -92,7 +92,7 @@ final class TreeNode implements \Countable, \IteratorAggregate
     {
         $count = 0;
         foreach ($this->getChildren() as $child) {
-            ++$count;
+            $count++;
         }
 
         return $count;

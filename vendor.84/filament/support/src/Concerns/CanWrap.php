@@ -6,9 +6,9 @@ use Closure;
 
 trait CanWrap
 {
-    protected bool | Closure | null $canWrap = null;
+    protected bool|Closure|null $canWrap = null;
 
-    public function wrap(bool | Closure | null $condition = true): static
+    public function wrap(bool|Closure|null $condition = true): static
     {
         $this->canWrap = $condition;
 

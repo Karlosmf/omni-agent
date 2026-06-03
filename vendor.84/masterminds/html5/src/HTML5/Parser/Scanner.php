@@ -10,7 +10,9 @@ use Masterminds\HTML5\Exception;
 class Scanner
 {
     const CHARS_HEX = 'abcdefABCDEF01234567890';
+
     const CHARS_ALNUM = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890';
+
     const CHARS_ALPHA = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
     /**
@@ -31,13 +33,13 @@ class Scanner
     /**
      * Parse errors.
      */
-    public $errors = array();
+    public $errors = [];
 
     /**
      * Create a new Scanner.
      *
-     * @param string $data     Data to parse.
-     * @param string $encoding The encoding to use for the data.
+     * @param  string  $data  Data to parse.
+     * @param  string  $encoding  The encoding to use for the data.
      *
      * @throws Exception If the given data cannot be encoded to UTF-8.
      */
@@ -75,16 +77,15 @@ class Scanner
      * see if the input stream is at the start of a
      * '</script>' string.
      *
-     * @param string $sequence
-     * @param bool   $caseSensitive
-     *
+     * @param  string  $sequence
+     * @param  bool  $caseSensitive
      * @return bool
      */
     public function sequenceMatches($sequence, $caseSensitive = true)
     {
         $portion = substr($this->data, $this->char, strlen($sequence));
 
-        return $caseSensitive ? $portion === $sequence : 0 === strcasecmp($portion, $sequence);
+        return $caseSensitive ? $portion === $sequence : strcasecmp($portion, $sequence) === 0;
     }
 
     /**
@@ -119,7 +120,7 @@ class Scanner
      */
     public function next()
     {
-        ++$this->char;
+        $this->char++;
 
         if ($this->char < $this->EOF) {
             return $this->data[$this->char];
@@ -146,7 +147,7 @@ class Scanner
     /**
      * Silently consume N chars.
      *
-     * @param int $count
+     * @param  int  $count
      */
     public function consume($count = 1)
     {
@@ -157,7 +158,7 @@ class Scanner
      * Unconsume some of the data.
      * This moves the data pointer backwards.
      *
-     * @param int $howMany The number of characters to move the pointer back.
+     * @param  int  $howMany  The number of characters to move the pointer back.
      */
     public function unconsume($howMany = 1)
     {
@@ -240,7 +241,7 @@ class Scanner
      */
     public function currentLine()
     {
-        if (empty($this->EOF) || 0 === $this->char) {
+        if (empty($this->EOF) || $this->char === 0) {
             return 1;
         }
 
@@ -252,8 +253,7 @@ class Scanner
     /**
      * Read chars until something in the mask is encountered.
      *
-     * @param string $mask
-     *
+     * @param  string  $mask
      * @return mixed
      */
     public function charsUntil($mask)
@@ -264,8 +264,7 @@ class Scanner
     /**
      * Read chars as long as the mask matches.
      *
-     * @param string $mask
-     *
+     * @param  string  $mask
      * @return int
      */
     public function charsWhile($mask)
@@ -283,7 +282,7 @@ class Scanner
     public function columnOffset()
     {
         // Short circuit for the first char.
-        if (0 === $this->char) {
+        if ($this->char === 0) {
             return 0;
         }
 
@@ -297,7 +296,7 @@ class Scanner
 
         // However, for here we want the length up until the next byte to be
         // processed, so add one to the current byte ($this->char).
-        if (false !== $lastLine) {
+        if ($lastLine !== false) {
             $findLengthOf = substr($this->data, $lastLine + 1, $this->char - 1 - $lastLine);
         } else {
             // After a newline.
@@ -329,7 +328,6 @@ class Scanner
     /**
      * Replace linefeed characters according to the spec.
      *
-     * @param $data
      *
      * @return string
      */
@@ -342,11 +340,11 @@ class Scanner
          * represented by LF characters, and there are never any CR characters in the input to the tokenization
          * stage.
          */
-        $crlfTable = array(
+        $crlfTable = [
             "\0" => "\xEF\xBF\xBD",
             "\r\n" => "\n",
             "\r" => "\n",
-        );
+        ];
 
         return strtr($data, $crlfTable);
     }
@@ -359,9 +357,8 @@ class Scanner
      * Matches as far as possible until we reach a certain set of bytes
      * and returns the matched substring.
      *
-     * @param string $bytes Bytes to match.
-     * @param int    $max   Maximum number of bytes to scan.
-     *
+     * @param  string  $bytes  Bytes to match.
+     * @param  int  $max  Maximum number of bytes to scan.
      * @return mixed Index or false if no match is found. You should use strong
      *               equality when checking the result, since index could be 0.
      */
@@ -371,7 +368,7 @@ class Scanner
             return false;
         }
 
-        if (0 === $max || $max) {
+        if ($max === 0 || $max) {
             $len = strcspn($this->data, $bytes, $this->char, $max);
         } else {
             $len = strcspn($this->data, $bytes, $this->char);
@@ -389,11 +386,10 @@ class Scanner
      * Matches as far as possible with a certain set of bytes
      * and returns the matched substring.
      *
-     * @param string $bytes A mask of bytes to match. If ANY byte in this mask matches the
-     *                      current char, the pointer advances and the char is part of the
-     *                      substring.
-     * @param int    $max   The max number of chars to read.
-     *
+     * @param  string  $bytes  A mask of bytes to match. If ANY byte in this mask matches the
+     *                         current char, the pointer advances and the char is part of the
+     *                         substring.
+     * @param  int  $max  The max number of chars to read.
      * @return string
      */
     private function doCharsWhile($bytes, $max = null)
@@ -402,7 +398,7 @@ class Scanner
             return false;
         }
 
-        if (0 === $max || $max) {
+        if ($max === 0 || $max) {
             $len = strspn($this->data, $bytes, $this->char, $max);
         } else {
             $len = strspn($this->data, $bytes, $this->char);

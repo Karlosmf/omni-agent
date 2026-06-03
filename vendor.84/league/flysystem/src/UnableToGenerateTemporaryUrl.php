@@ -16,11 +16,11 @@ final class UnableToGenerateTemporaryUrl extends RuntimeException implements Fil
 
     public static function dueToError(string $path, Throwable $exception): static
     {
-        return new static($exception->getMessage(), $path, $exception);
+        return new self($exception->getMessage(), $path, $exception);
     }
 
     public static function noGeneratorConfigured(string $path, string $extraReason = ''): static
     {
-        return new static('No generator was configured ' . $extraReason, $path);
+        return new static('No generator was configured '.$extraReason, $path);
     }
 }

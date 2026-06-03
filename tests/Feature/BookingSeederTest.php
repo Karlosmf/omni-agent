@@ -1,11 +1,13 @@
 <?php
 
+use App\Enums\UserRole;
 use App\Models\Booking;
+use App\Models\User;
 use Database\Seeders\BookingSeeder;
 
 test('booking seeder creates bookings for existing customers', function () {
     // Create some customers
-    $customers = \App\Models\User::factory(3)->create(['role' => \App\Enums\UserRole::Customer]);
+    $customers = User::factory(3)->create(['role' => UserRole::Customer]);
 
     // Ensure no bookings exist initially
     Booking::query()->delete();

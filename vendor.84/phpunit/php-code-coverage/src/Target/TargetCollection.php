@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,11 +9,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Test\Target;
 
-use function count;
 use Countable;
 use IteratorAggregate;
+
+use function count;
 
 /**
  * @template-implements IteratorAggregate<int, Target>
@@ -28,7 +32,7 @@ final readonly class TargetCollection implements Countable, IteratorAggregate
     private array $targets;
 
     /**
-     * @param list<Target> $targets
+     * @param  list<Target>  $targets
      */
     public static function fromArray(array $targets): self
     {

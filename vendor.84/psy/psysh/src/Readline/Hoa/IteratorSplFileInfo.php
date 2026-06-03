@@ -66,7 +66,6 @@ class IteratorSplFileInfo extends \SplFileInfo
 
         $this->_relativePath = $relativePath;
 
-        return;
     }
 
     /**

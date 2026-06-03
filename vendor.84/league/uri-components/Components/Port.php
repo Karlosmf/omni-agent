@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\Uri\Components;
 
+use const FILTER_VALIDATE_INT;
+
 use BackedEnum;
 use Deprecated;
 use League\Uri\Contracts\AuthorityInterface;
@@ -30,11 +32,10 @@ use Uri\WhatWg\Url as WhatWgUrl;
 use function filter_var;
 use function is_string;
 
-use const FILTER_VALIDATE_INT;
-
 final class Port extends Component implements PortInterface
 {
     private readonly ?int $port;
+
     private ?array $cachedDefaultSchemes = null;
 
     /**
@@ -89,12 +90,12 @@ final class Port extends Component implements PortInterface
     private function validate(BackedEnum|Stringable|int|string|null $port): ?int
     {
         $port = self::filterComponent($port);
-        if (null === $port) {
+        if ($port === null) {
             return null;
         }
 
         $fport = filter_var($port, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]);
-        if (false !== $fport) {
+        if ($fport !== false) {
             return $fport;
         }
 
@@ -111,13 +112,13 @@ final class Port extends Component implements PortInterface
 
     public function equals(mixed $value): bool
     {
-        if (!$value instanceof BackedEnum && !$value instanceof Stringable && !is_string($value) && null !== $value) {
+        if (! $value instanceof BackedEnum && ! $value instanceof Stringable && ! is_string($value) && $value !== null) {
             return false;
         }
 
-        if (!$value instanceof UriComponentInterface) {
+        if (! $value instanceof UriComponentInterface) {
             $value = self::tryNew($value);
-            if (null === $value) {
+            if ($value === null) {
                 return false;
             }
         }
@@ -164,7 +165,7 @@ final class Port extends Component implements PortInterface
      *
      * Create a new instance from a URI object.
      */
-    #[Deprecated(message:'use League\Uri\Components\Port::fromUri() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Port::fromUri() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromUri(Psr7UriInterface|UriInterface $uri): self
     {
         return self::fromUri($uri);
@@ -180,7 +181,7 @@ final class Port extends Component implements PortInterface
      *
      * Create a new instance from an Authority object.
      */
-    #[Deprecated(message:'use League\Uri\Components\Port::fromAuthority() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Port::fromAuthority() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromAuthority(AuthorityInterface|Stringable|string $authority): self
     {
         return self::fromAuthority($authority);
@@ -194,7 +195,7 @@ final class Port extends Component implements PortInterface
      *
      * @codeCoverageIgnore
      */
-    #[Deprecated(message:'use League\Uri\Components\Port::new() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Port::new() instead', since: 'league/uri-components:7.0.0')]
     public static function fromInt(int $port): self
     {
         return self::new($port);

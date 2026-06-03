@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,12 +9,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
 
-use function assert;
-use function implode;
-use function rtrim;
-use function trim;
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Identifier;
@@ -29,6 +28,11 @@ use PhpParser\Node\UnionType;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use SebastianBergmann\Complexity\CyclomaticComplexityCalculatingVisitor;
+
+use function assert;
+use function implode;
+use function rtrim;
+use function trim;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -61,7 +65,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
     private array $functions = [];
 
     /**
-     * @param non-empty-string $file
+     * @param  non-empty-string  $file
      */
     public function __construct(string $file)
     {
@@ -90,7 +94,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             $this->processTrait($node);
         }
 
-        if (!$node instanceof Function_) {
+        if (! $node instanceof Function_) {
             return null;
         }
 
@@ -105,7 +109,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             return null;
         }
 
-        if (!$node instanceof Class_ && !$node instanceof Trait_) {
+        if (! $node instanceof Class_ && ! $node instanceof Trait_) {
             return null;
         }
 
@@ -180,7 +184,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 
     private function signature(ClassMethod|Function_ $node): string
     {
-        $signature  = ($node->returnsByRef() ? '&' : '') . $node->name->toString() . '(';
+        $signature = ($node->returnsByRef() ? '&' : '').$node->name->toString().'(';
         $parameters = [];
 
         foreach ($node->getParams() as $parameter) {
@@ -189,22 +193,22 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
             $parameterAsString = '';
 
             if ($parameter->type !== null) {
-                $parameterAsString = $this->type($parameter->type) . ' ';
+                $parameterAsString = $this->type($parameter->type).' ';
             }
 
-            $parameterAsString .= '$' . $parameter->var->name;
+            $parameterAsString .= '$'.$parameter->var->name;
 
             /* @todo Handle default values */
 
             $parameters[] = $parameterAsString;
         }
 
-        $signature .= implode(', ', $parameters) . ')';
+        $signature .= implode(', ', $parameters).')';
 
         $returnType = $node->getReturnType();
 
         if ($returnType !== null) {
-            $signature .= ': ' . $this->type($returnType);
+            $signature .= ': '.$this->type($returnType);
         }
 
         return $signature;
@@ -213,7 +217,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
     private function type(ComplexType|Identifier|Name $type): string
     {
         if ($type instanceof NullableType) {
-            return '?' . $type->type;
+            return '?'.$type->type;
         }
 
         if ($type instanceof UnionType) {
@@ -242,8 +246,8 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 
     private function processInterface(Interface_ $node): void
     {
-        $name             = $node->name->toString();
-        $namespacedName   = $node->namespacedName->toString();
+        $name = $node->name->toString();
+        $namespacedName = $node->namespacedName->toString();
         $parentInterfaces = [];
 
         foreach ($node->extends as $parentInterface) {
@@ -262,12 +266,12 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 
     private function processClass(Class_|Enum_ $node): void
     {
-        $name           = $node->name->toString();
+        $name = $node->name->toString();
         $namespacedName = $node->namespacedName->toString();
-        $parentClass    = null;
-        $interfaces     = [];
+        $parentClass = null;
+        $interfaces = [];
 
-        if (!$node instanceof Enum_) {
+        if (! $node instanceof Enum_) {
             if ($node->extends instanceof Name) {
                 $parentClass = $node->extends->toString();
             }
@@ -293,7 +297,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 
     private function processTrait(Trait_ $node): void
     {
-        $name           = $node->name->toString();
+        $name = $node->name->toString();
         $namespacedName = $node->namespacedName->toString();
 
         $this->traits[$namespacedName] = new \SebastianBergmann\CodeCoverage\StaticAnalysis\Trait_(
@@ -309,8 +313,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
     }
 
     /**
-     * @param list<ClassMethod> $nodes
-     *
+     * @param  list<ClassMethod>  $nodes
      * @return array<non-empty-string, Method>
      */
     private function processMethods(array $nodes): array
@@ -337,7 +340,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         assert(isset($node->namespacedName));
         assert($node->namespacedName instanceof Name);
 
-        $name           = $node->name->toString();
+        $name = $node->name->toString();
         $namespacedName = $node->namespacedName->toString();
 
         $this->functions[$namespacedName] = new \SebastianBergmann\CodeCoverage\StaticAnalysis\Function_(
@@ -362,7 +365,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
 
         foreach ($node->types as $type) {
             if ($type instanceof IntersectionType) {
-                $types[] = '(' . $this->intersectionTypeAsString($type) . ')';
+                $types[] = '('.$this->intersectionTypeAsString($type).')';
 
                 continue;
             }
@@ -394,7 +397,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
     }
 
     /**
-     * @param list<non-empty-string> $traits
+     * @param  list<non-empty-string>  $traits
      */
     private function postProcessClassOrTrait(Class_|Trait_ $node, array $traits): void
     {

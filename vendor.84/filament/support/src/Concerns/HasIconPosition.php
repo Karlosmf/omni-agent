@@ -7,9 +7,9 @@ use Filament\Support\Enums\IconPosition;
 
 trait HasIconPosition
 {
-    protected IconPosition | string | Closure | null $iconPosition = null;
+    protected IconPosition|string|Closure|null $iconPosition = null;
 
-    public function iconPosition(IconPosition | string | Closure | null $position): static
+    public function iconPosition(IconPosition|string|Closure|null $position): static
     {
         $this->iconPosition = $position;
 

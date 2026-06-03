@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\Uri\UriTemplate;
 
+use const PREG_SET_ORDER;
+
 use BackedEnum;
 use Deprecated;
 use League\Uri\Exceptions\SyntaxError;
@@ -27,8 +29,6 @@ use function preg_replace;
 use function str_replace;
 use function strpbrk;
 
-use const PREG_SET_ORDER;
-
 /**
  * @internal The class exposes the internal representation of a Template and its usage
  */
@@ -41,6 +41,7 @@ final class Template implements Stringable
 
     /** @var array<Expression> */
     private readonly array $expressions;
+
     /** @var array<string> */
     public readonly array $variableNames;
 
@@ -70,13 +71,13 @@ final class Template implements Stringable
         $template = (string) $template;
         /** @var string $remainder */
         $remainder = preg_replace(self::REGEXP_EXPRESSION_DETECTOR, '', $template);
-        false === strpbrk($remainder, '{}') || throw new SyntaxError('The template "'.$template.'" contains invalid expressions.');
+        strpbrk($remainder, '{}') === false || throw new SyntaxError('The template "'.$template.'" contains invalid expressions.');
 
         preg_match_all(self::REGEXP_EXPRESSION_DETECTOR, $template, $founds, PREG_SET_ORDER);
 
         return new self($template, ...array_values(
             array_reduce($founds, function (array $carry, array $found): array {
-                if (!isset($carry[$found['expression']])) {
+                if (! isset($carry[$found['expression']])) {
                     $carry[$found['expression']] = Expression::new($found['expression']);
                 }
 
@@ -90,7 +91,7 @@ final class Template implements Stringable
      */
     public function expand(iterable $variables = []): string
     {
-        if (!$variables instanceof VariableBag) {
+        if (! $variables instanceof VariableBag) {
             $variables = new VariableBag($variables);
         }
 
@@ -102,12 +103,12 @@ final class Template implements Stringable
      */
     public function expandOrFail(iterable $variables = []): string
     {
-        if (!$variables instanceof VariableBag) {
+        if (! $variables instanceof VariableBag) {
             $variables = new VariableBag($variables);
         }
 
-        $missing = array_filter($this->variableNames, fn (string $name): bool => !isset($variables[$name]));
-        if ([] !== $missing) {
+        $missing = array_filter($this->variableNames, fn (string $name): bool => ! isset($variables[$name]));
+        if ($missing !== []) {
             throw TemplateCanNotBeExpanded::dueToMissingVariables(...$missing);
         }
 
@@ -133,14 +134,16 @@ final class Template implements Stringable
      *
      * @throws SyntaxError if the template contains invalid expressions
      * @throws SyntaxError if the template contains invalid variable specification
+     *
      * @deprecated Since version 7.0.0
+     *
      * @codeCoverageIgnore
+     *
      * @see Template::new()
      *
      * Create a new instance from a string.
-     *
      */
-    #[Deprecated(message:'use League\Uri\UriTemplate\Template::new() instead', since:'league/uri:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\UriTemplate\Template::new() instead', since: 'league/uri:7.0.0')]
     public static function createFromString(Stringable|string $template): self
     {
         return self::new($template);

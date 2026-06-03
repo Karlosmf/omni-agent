@@ -32,9 +32,6 @@ class VariableEnumerator extends Enumerator
      *
      * Unlike most other enumerators, the Variable Enumerator needs access to
      * the current scope variables, so we need to pass it a Context instance.
-     *
-     * @param Presenter $presenter
-     * @param Context   $context
      */
     public function __construct(Presenter $presenter, Context $context)
     {
@@ -53,7 +50,7 @@ class VariableEnumerator extends Enumerator
         }
 
         // only list variables if we are specifically asked
-        if (!$input->getOption('vars')) {
+        if (! $input->getOption('vars')) {
             return [];
         }
 
@@ -72,9 +69,7 @@ class VariableEnumerator extends Enumerator
     /**
      * Get scope variables.
      *
-     * @param bool $showAll Include special variables (e.g. $_)
-     *
-     * @return array
+     * @param  bool  $showAll  Include special variables (e.g. $_)
      */
     protected function getVariables(bool $showAll): array
     {
@@ -100,7 +95,7 @@ class VariableEnumerator extends Enumerator
 
         $ret = [];
         foreach ($scopeVars as $name => $val) {
-            if (!$showAll && \in_array($name, self::SPECIAL_NAMES)) {
+            if (! $showAll && \in_array($name, self::SPECIAL_NAMES)) {
                 continue;
             }
 
@@ -112,10 +107,6 @@ class VariableEnumerator extends Enumerator
 
     /**
      * Prepare formatted variable array.
-     *
-     * @param array $variables
-     *
-     * @return array
      */
     protected function prepareVariables(array $variables): array
     {
@@ -125,7 +116,7 @@ class VariableEnumerator extends Enumerator
             if ($this->showItem($name)) {
                 $fname = '$'.$name;
                 $ret[$fname] = [
-                    'name'  => $fname,
+                    'name' => $fname,
                     'style' => \in_array($name, self::SPECIAL_NAMES) ? self::IS_PRIVATE : self::IS_PUBLIC,
                     'value' => $this->presentRef($val),
                 ];

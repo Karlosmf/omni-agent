@@ -14,6 +14,6 @@ final readonly class PageSetup
         public ?int $fitToHeight = null,
         public ?int $fitToWidth = null,
     ) {
-        $this->fitToPage = null !== $fitToHeight || null !== $fitToWidth;
+        $this->fitToPage = $fitToHeight !== null || $fitToWidth !== null;
     }
 }

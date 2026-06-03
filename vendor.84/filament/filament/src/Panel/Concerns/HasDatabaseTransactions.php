@@ -6,9 +6,9 @@ use Closure;
 
 trait HasDatabaseTransactions
 {
-    protected bool | Closure $hasDatabaseTransactions = false;
+    protected bool|Closure $hasDatabaseTransactions = false;
 
-    public function databaseTransactions(bool | Closure $condition = true): static
+    public function databaseTransactions(bool|Closure $condition = true): static
     {
         $this->hasDatabaseTransactions = $condition;
 

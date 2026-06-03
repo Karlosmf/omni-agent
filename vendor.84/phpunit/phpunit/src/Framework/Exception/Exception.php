@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,14 +9,16 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework;
+
+use RuntimeException;
+use Throwable;
 
 use function array_keys;
 use function get_object_vars;
 use function is_int;
 use function sprintf;
-use RuntimeException;
-use Throwable;
 
 /**
  * Base class for all PHPUnit Framework exceptions.
@@ -52,7 +56,7 @@ class Exception extends RuntimeException implements \PHPUnit\Exception
         /**
          * @see https://github.com/sebastianbergmann/phpunit/issues/5965
          */
-        if (!is_int($code)) {
+        if (! is_int($code)) {
             $message .= sprintf(
                 ' (exception code: %s)',
                 $code,

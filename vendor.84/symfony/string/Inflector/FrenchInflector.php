@@ -119,7 +119,7 @@ final class FrenchInflector implements InflectorInterface
         foreach (self::SINGULARIZE_REGEXP as $rule) {
             [$regexp, $replace] = $rule;
 
-            if (1 === preg_match($regexp, $plural)) {
+            if (preg_match($regexp, $plural) === 1) {
                 return [preg_replace($regexp, $replace, $plural)];
             }
         }
@@ -136,7 +136,7 @@ final class FrenchInflector implements InflectorInterface
         foreach (self::PLURALIZE_REGEXP as $rule) {
             [$regexp, $replace] = $rule;
 
-            if (1 === preg_match($regexp, $singular)) {
+            if (preg_match($regexp, $singular) === 1) {
                 return [preg_replace($regexp, $replace, $singular)];
             }
         }
@@ -146,6 +146,6 @@ final class FrenchInflector implements InflectorInterface
 
     private function isInflectedWord(string $word): bool
     {
-        return 1 === preg_match(self::UNINFLECTED, $word);
+        return preg_match(self::UNINFLECTED, $word) === 1;
     }
 }

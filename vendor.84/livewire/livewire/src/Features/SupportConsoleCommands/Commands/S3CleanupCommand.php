@@ -3,11 +3,12 @@
 namespace Livewire\Features\SupportConsoleCommands\Commands;
 
 use Aws\S3\S3Client;
+use Illuminate\Console\Command;
+use Livewire\Features\SupportFileUploads\FileUploadConfiguration;
+use Symfony\Component\Console\Attribute\AsCommand;
+
 use function array_merge;
 use function Livewire\invade;
-use Livewire\Features\SupportFileUploads\FileUploadConfiguration;
-use Illuminate\Console\Command;
-use Symfony\Component\Console\Attribute\AsCommand;
 
 #[AsCommand(name: 'livewire:configure-s3-upload-cleanup')]
 class S3CleanupCommand extends Command
@@ -53,7 +54,7 @@ class S3CleanupCommand extends Command
             $client->putBucketLifecycleConfiguration([
                 'Bucket' => $bucket,
                 'LifecycleConfiguration' => [
-                    'Rules' => $rules
+                    'Rules' => $rules,
                 ],
             ]);
         } catch (\Exception $e) {
@@ -66,10 +67,11 @@ class S3CleanupCommand extends Command
         $this->info('Livewire temporary S3 upload directory ['.$prefix.'] set to automatically cleanup files older than 24hrs!');
     }
 
-    private function checkIfLivewireConfigurationIsAlreadySet(array $existingConfigurationRules, string $bucket, S3Client $client, string $prefix) {
+    private function checkIfLivewireConfigurationIsAlreadySet(array $existingConfigurationRules, string $bucket, S3Client $client, string $prefix)
+    {
         $existingConfigurationHasLivewire = collect($existingConfigurationRules)->contains('Filter.Prefix', $prefix);
 
-        if($existingConfigurationHasLivewire) {
+        if ($existingConfigurationHasLivewire) {
             $this->info('Livewire temporary S3 upload directory ['.$prefix.'] already set to automatically cleanup files older than 24hrs!');
             $this->info('No changes made to S3 bucket ['.$bucket.'] configuration.');
             exit;

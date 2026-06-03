@@ -5,9 +5,13 @@ namespace Faker\Provider\fa_IR;
 class Address extends \Faker\Provider\Address
 {
     protected static $cityPrefix = ['استان'];
+
     protected static $streetPrefix = ['خیابان'];
+
     protected static $buildingNamePrefix = ['ساختمان'];
+
     protected static $buildingNumberPrefix = ['پلاک', 'قطعه'];
+
     protected static $postcodePrefix = ['کد پستی'];
 
     protected static $cityName = [
@@ -22,22 +26,27 @@ class Address extends \Faker\Provider\Address
         '{{cityName}}',
         '{{cityPrefix}} {{cityName}}',
     ];
+
     protected static $streetNameFormats = [
         '{{streetPrefix}} {{lastName}}',
     ];
+
     protected static $streetAddressFormats = [
         '{{streetName}} {{building}}',
     ];
+
     protected static $addressFormats = [
         '{{city}} {{streetAddress}} {{postcodePrefix}} {{postcode}}',
         '{{city}} {{streetAddress}}',
     ];
+
     protected static $buildingFormat = [
         '{{buildingNamePrefix}} {{firstName}} {{buildingNumberPrefix}} {{buildingNumber}}',
         '{{buildingNamePrefix}} {{firstName}}',
     ];
 
     protected static $postcode = ['##########'];
+
     protected static $country = ['ایران'];
 
     /**

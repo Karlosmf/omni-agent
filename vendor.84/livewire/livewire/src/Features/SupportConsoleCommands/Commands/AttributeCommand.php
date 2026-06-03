@@ -41,7 +41,7 @@ class AttributeCommand extends GeneratorCommand
             return base_path('stubs/livewire.attribute.stub');
         }
 
-        return __DIR__ . DIRECTORY_SEPARATOR . 'livewire.attribute.stub';
+        return __DIR__.DIRECTORY_SEPARATOR.'livewire.attribute.stub';
     }
 
     /**
@@ -52,6 +52,6 @@ class AttributeCommand extends GeneratorCommand
      */
     public function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace . '\Livewire\Attributes';
+        return $rootNamespace.'\Livewire\Attributes';
     }
 }

@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace League\Uri\KeyValuePair;
 
+use const PHP_QUERY_RFC1738;
+use const PHP_QUERY_RFC3986;
+
 use BackedEnum;
 use League\Uri\Exceptions\SyntaxError;
 use League\Uri\StringCoercionMode;
@@ -25,30 +28,27 @@ use function is_string;
 use function preg_match;
 use function str_replace;
 
-use const PHP_QUERY_RFC1738;
-use const PHP_QUERY_RFC3986;
-
 final class Converter
 {
     private const REGEXP_INVALID_CHARS = '/[\x00-\x1f\x7f]/';
 
     /**
-     * @param non-empty-string $separator the query string separator
-     * @param array<string> $fromRfc3986 contains all the RFC3986 encoded characters to be converted
-     * @param array<string> $toEncoding contains all the expected encoded characters
+     * @param  non-empty-string  $separator  the query string separator
+     * @param  array<string>  $fromRfc3986  contains all the RFC3986 encoded characters to be converted
+     * @param  array<string>  $toEncoding  contains all the expected encoded characters
      */
     private function __construct(
         private readonly string $separator,
         private readonly array $fromRfc3986 = [],
         private readonly array $toEncoding = [],
     ) {
-        if ('' === $this->separator) {
+        if ($this->separator === '') {
             throw new SyntaxError('The separator character must be a non empty string.');
         }
     }
 
     /**
-     * @param non-empty-string $separator
+     * @param  non-empty-string  $separator
      */
     public static function new(string $separator): self
     {
@@ -56,7 +56,7 @@ final class Converter
     }
 
     /**
-     * @param non-empty-string $separator
+     * @param  non-empty-string  $separator
      */
     public static function fromRFC3986(string $separator = '&'): self
     {
@@ -64,7 +64,7 @@ final class Converter
     }
 
     /**
-     * @param non-empty-string $separator
+     * @param  non-empty-string  $separator
      */
     public static function fromRFC1738(string $separator = '&'): self
     {
@@ -73,7 +73,7 @@ final class Converter
     }
 
     /**
-     * @param non-empty-string $separator
+     * @param  non-empty-string  $separator
      *
      * @see https://url.spec.whatwg.org/#application/x-www-form-urlencoded
      */
@@ -114,7 +114,7 @@ final class Converter
     public function toPairs(BackedEnum|Stringable|string|int|float|bool|null $value): array
     {
         $value = StringCoercionMode::Native->coerce($value);
-        if (null === $value) {
+        if ($value === null) {
             return [];
         }
 
@@ -130,15 +130,15 @@ final class Converter
     }
 
     /**
-     * @param iterable<array{0:string|null, 1:BackedEnum|Stringable|string|bool|int|float|null}> $pairs
+     * @param  iterable<array{0:string|null, 1:BackedEnum|Stringable|string|bool|int|float|null}>  $pairs
      */
     public function toValue(iterable $pairs): ?string
     {
         $filteredPairs = [];
         foreach ($pairs as $pair) {
             $filteredPairs[] = match (true) {
-                !is_string($pair[0]) => throw new SyntaxError('the pair key MUST be a string;, `'.gettype($pair[0]).'` given.'),
-                null === $pair[1] => StringCoercionMode::Native->coerce($pair[0]),
+                ! is_string($pair[0]) => throw new SyntaxError('the pair key MUST be a string;, `'.gettype($pair[0]).'` given.'),
+                $pair[1] === null => StringCoercionMode::Native->coerce($pair[0]),
                 default => StringCoercionMode::Native->coerce($pair[0]).'='.StringCoercionMode::Native->coerce($pair[1]),
             };
         }
@@ -150,7 +150,7 @@ final class Converter
     }
 
     /**
-     * @param non-empty-string $separator
+     * @param  non-empty-string  $separator
      */
     public function withSeparator(string $separator): self
     {
@@ -172,7 +172,7 @@ final class Converter
         $toEncoding = [];
         foreach ($encodingMap as $from => $to) {
             [$fromRfc3986[], $toEncoding[]] = match (true) {
-                !is_string($from) => throw new SyntaxError('The encoding output must be a string; `'.gettype($from).'` given.'),
+                ! is_string($from) => throw new SyntaxError('The encoding output must be a string; `'.gettype($from).'` given.'),
                 $to instanceof Stringable,
                 is_string($to) => [$from, (string) $to],
                 default => throw new SyntaxError('The encoding output must be a string; `'.gettype($to).'` given.'),

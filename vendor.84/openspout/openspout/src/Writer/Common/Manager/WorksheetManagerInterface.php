@@ -17,10 +17,10 @@ interface WorksheetManagerInterface
     /**
      * Adds a row to the worksheet.
      *
-     * @param Worksheet $worksheet The worksheet to add the row to
-     * @param Row       $row       The row to be added
+     * @param  Worksheet  $worksheet  The worksheet to add the row to
+     * @param  Row  $row  The row to be added
      *
-     * @throws IOException              If the data cannot be written
+     * @throws IOException If the data cannot be written
      * @throws InvalidArgumentException If a cell value's type is not supported
      */
     public function addRow(Worksheet $worksheet, Row $row): void;
@@ -28,7 +28,7 @@ interface WorksheetManagerInterface
     /**
      * Prepares the worksheet to accept data.
      *
-     * @param Worksheet $worksheet The worksheet to start
+     * @param  Worksheet  $worksheet  The worksheet to start
      *
      * @throws IOException If the sheet data file cannot be opened for writing
      */

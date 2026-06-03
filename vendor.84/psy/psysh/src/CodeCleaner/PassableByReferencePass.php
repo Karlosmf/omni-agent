@@ -32,11 +32,9 @@ class PassableByReferencePass extends CodeCleanerPass
     const EXCEPTION_MESSAGE = 'Only variables can be passed by reference';
 
     /**
-     * @throws FatalErrorException if non-variables are passed by reference
-     *
-     * @param Node $node
-     *
      * @return int|Node|null Replacement node (or special return value)
+     *
+     * @throws FatalErrorException if non-variables are passed by reference
      */
     public function enterNode(Node $node)
     {
@@ -74,7 +72,7 @@ class PassableByReferencePass extends CodeCleanerPass
             foreach ($refl->getParameters() as $key => $param) {
                 if (\array_key_exists($key, $args) || \array_key_exists($param->name, $args)) {
                     $arg = $args[$param->name] ?? $args[$key];
-                    if ($param->isPassedByReference() && !$this->isPassableByReference($arg)) {
+                    if ($param->isPassedByReference() && ! $this->isPassableByReference($arg)) {
                         throw new FatalErrorException(self::EXCEPTION_MESSAGE, 0, \E_ERROR, null, $node->getStartLine());
                     }
                 }
@@ -86,7 +84,7 @@ class PassableByReferencePass extends CodeCleanerPass
 
     private function isPassableByReference(Node $arg): bool
     {
-        if (!\property_exists($arg, 'value')) {
+        if (! \property_exists($arg, 'value')) {
             return false;
         }
 
@@ -118,8 +116,6 @@ class PassableByReferencePass extends CodeCleanerPass
      * implement APIs that wouldn't be possible in userland code.
      *
      * @throws FatalErrorException for clearly invalid arguments
-     *
-     * @param Node $node
      */
     private function validateArrayMultisort(Node $node)
     {

@@ -1,12 +1,12 @@
 <?php
 
-use App\Models\User;
 use App\Enums\UserRole;
+use App\Models\User;
 use Filament\Panel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
-
-uses(Tests\TestCase::class, RefreshDatabase::class);
+uses(TestCase::class, RefreshDatabase::class);
 
 test('admin can access admin panel', function () {
     $user = User::factory()->create(['role' => UserRole::Admin]);

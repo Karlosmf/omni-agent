@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -22,6 +24,7 @@ use Monolog\LogRecord;
  * You'll need a Fleep.io account to use this handler.
  *
  * @see https://fleep.io/integrations/webhooks/ Fleep Webhooks Documentation
+ *
  * @author Ando Roots <ando@sqroot.eu>
  */
 class FleepHookHandler extends SocketHandler
@@ -41,7 +44,8 @@ class FleepHookHandler extends SocketHandler
      * For instructions on how to create a new web hook in your conversations
      * see https://fleep.io/integrations/webhooks/
      *
-     * @param  string                    $token Webhook token
+     * @param  string  $token  Webhook token
+     *
      * @throws MissingExtensionException if OpenSSL is missing
      */
     public function __construct(
@@ -54,13 +58,13 @@ class FleepHookHandler extends SocketHandler
         ?float $connectionTimeout = null,
         ?int $chunkSize = null
     ) {
-        if (!\extension_loaded('openssl')) {
+        if (! \extension_loaded('openssl')) {
             throw new MissingExtensionException('The OpenSSL PHP extension is required to use the FleepHookHandler');
         }
 
         $this->token = $token;
 
-        $connectionString = 'ssl://' . static::FLEEP_HOST . ':443';
+        $connectionString = 'ssl://'.static::FLEEP_HOST.':443';
         parent::__construct(
             $connectionString,
             $level,
@@ -95,13 +99,13 @@ class FleepHookHandler extends SocketHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function generateDataStream(LogRecord $record): string
     {
         $content = $this->buildContent($record);
 
-        return $this->buildHeader($content) . $content;
+        return $this->buildHeader($content).$content;
     }
 
     /**
@@ -109,10 +113,10 @@ class FleepHookHandler extends SocketHandler
      */
     private function buildHeader(string $content): string
     {
-        $header = "POST " . static::FLEEP_HOOK_URI . $this->token . " HTTP/1.1\r\n";
-        $header .= "Host: " . static::FLEEP_HOST . "\r\n";
+        $header = 'POST '.static::FLEEP_HOOK_URI.$this->token." HTTP/1.1\r\n";
+        $header .= 'Host: '.static::FLEEP_HOST."\r\n";
         $header .= "Content-Type: application/x-www-form-urlencoded\r\n";
-        $header .= "Content-Length: " . \strlen($content) . "\r\n";
+        $header .= 'Content-Length: '.\strlen($content)."\r\n";
         $header .= "\r\n";
 
         return $header;

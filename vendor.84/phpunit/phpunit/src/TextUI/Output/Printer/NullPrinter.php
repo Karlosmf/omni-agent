@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\Output;
 
 /**
@@ -16,11 +19,7 @@ namespace PHPUnit\TextUI\Output;
  */
 final readonly class NullPrinter implements Printer
 {
-    public function print(string $buffer): void
-    {
-    }
+    public function print(string $buffer): void {}
 
-    public function flush(): void
-    {
-    }
+    public function flush(): void {}
 }

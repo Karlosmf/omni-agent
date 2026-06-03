@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Core;
 
 /*
@@ -14,7 +15,6 @@ use Hamcrest\Util;
  */
 class IsNot extends BaseMatcher
 {
-
     private $_matcher;
 
     public function __construct(Matcher $matcher)
@@ -24,7 +24,7 @@ class IsNot extends BaseMatcher
 
     public function matches($arg)
     {
-        return !$this->_matcher->matches($arg);
+        return ! $this->_matcher->matches($arg);
     }
 
     public function describeTo(Description $description)

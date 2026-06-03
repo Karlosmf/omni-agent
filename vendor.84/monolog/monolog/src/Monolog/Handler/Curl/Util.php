@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -34,7 +36,7 @@ final class Util
     /**
      * Executes a CURL request with optional retries and exception on failure
      *
-     * @param  CurlHandle  $ch curl handler
+     * @param  CurlHandle  $ch  curl handler
      * @return bool|string @see curl_exec
      */
     public static function execute(CurlHandle $ch, int $retries = 5): bool|string
@@ -45,16 +47,18 @@ final class Util
             if ($curlResponse === false) {
                 $curlErrno = curl_errno($ch);
 
-                if (false === \in_array($curlErrno, self::$retriableErrorCodes, true) || $retries === 0) {
+                if (\in_array($curlErrno, self::$retriableErrorCodes, true) === false || $retries === 0) {
                     $curlError = curl_error($ch);
 
                     throw new \RuntimeException(sprintf('Curl error (code %d): %s', $curlErrno, $curlError));
                 }
+
                 continue;
             }
 
             return $curlResponse;
         }
+
         return false;
     }
 }

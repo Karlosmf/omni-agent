@@ -20,6 +20,7 @@ use Composer\Script\Event;
 use Composer\Script\ScriptEvents;
 use Composer\Util\Filesystem;
 use Http\Discovery\ClassDiscovery;
+use Phalcon\Http\Message\RequestFactory;
 
 /**
  * Auto-installs missing implementations.
@@ -36,7 +37,7 @@ use Http\Discovery\ClassDiscovery;
  *
  * @internal
  */
-class Plugin implements PluginInterface, EventSubscriberInterface
+class Plugin implements EventSubscriberInterface, PluginInterface
 {
     /**
      * Describes, for every supported virtual implementation, which packages
@@ -130,17 +131,11 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         ];
     }
 
-    public function activate(Composer $composer, IOInterface $io): void
-    {
-    }
+    public function activate(Composer $composer, IOInterface $io): void {}
 
-    public function deactivate(Composer $composer, IOInterface $io)
-    {
-    }
+    public function deactivate(Composer $composer, IOInterface $io) {}
 
-    public function uninstall(Composer $composer, IOInterface $io)
-    {
-    }
+    public function uninstall(Composer $composer, IOInterface $io) {}
 
     public function postUpdate(Event $event)
     {
@@ -154,21 +149,21 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $pinned = $composer->getPackage()->getExtra()['discovery'] ?? [];
         foreach (self::INTERFACE_MAP as $abstraction => $interfaces) {
             foreach (isset($pinned[$abstraction]) ? [] : $interfaces as $interface) {
-                if (!isset($pinned[$interface])) {
+                if (! isset($pinned[$interface])) {
                     continue 2;
                 }
             }
             $pinnedAbstractions[$abstraction] = true;
         }
 
-        $missingRequires = $this->getMissingRequires($repo, $requires, 'project' === $composer->getPackage()->getType(), $pinnedAbstractions);
+        $missingRequires = $this->getMissingRequires($repo, $requires, $composer->getPackage()->getType() === 'project', $pinnedAbstractions);
         $missingRequires = [
             'require' => array_fill_keys(array_merge([], ...array_values($missingRequires[0])), '*'),
             'require-dev' => array_fill_keys(array_merge([], ...array_values($missingRequires[1])), '*'),
             'remove' => array_fill_keys(array_merge([], ...array_values($missingRequires[2])), '*'),
         ];
 
-        if (!$missingRequires = array_filter($missingRequires)) {
+        if (! $missingRequires = array_filter($missingRequires)) {
             return;
         }
 
@@ -184,14 +179,14 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             }
         }
 
-        if (!$installer) {
+        if (! $installer) {
             return;
         }
 
         $event->stopPropagation();
 
         $dispatcher = $composer->getEventDispatcher();
-        $disableScripts = !method_exists($dispatcher, 'setRunScripts') || !((array) $dispatcher)["\0*\0runScripts"];
+        $disableScripts = ! method_exists($dispatcher, 'setRunScripts') || ! ((array) $dispatcher)["\0*\0runScripts"];
         $composer = Factory::create($event->getIO(), null, false, $disableScripts);
 
         /** @var Installer $installer */
@@ -215,18 +210,18 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             $installer->setPlatformRequirementFilter(((array) $trace['object'])["\0*\0platformRequirementFilter"]);
         }
 
-        if (0 !== $installer->run()) {
+        if ($installer->run() !== 0) {
             file_put_contents(Factory::getComposerFile(), $composerJsonContents);
 
             return;
         }
 
-        $versionSelector = new VersionSelector(ClassDiscovery::safeClassExists(RepositorySet::class) ? new RepositorySet() : new Pool());
+        $versionSelector = new VersionSelector(ClassDiscovery::safeClassExists(RepositorySet::class) ? new RepositorySet : new Pool);
         $updateComposerJson = false;
 
         foreach ($composer->getRepositoryManager()->getLocalRepository()->getPackages() as $package) {
             foreach (['require', 'require-dev'] as $key) {
-                if (!isset($missingRequires[$key][$package->getName()])) {
+                if (! isset($missingRequires[$key][$package->getName()])) {
                     continue;
                 }
                 $updateComposerJson = true;
@@ -247,14 +242,14 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
         // One must require "php-http/discovery"
         // to opt-in for auto-installation of virtual package implementations
-        if (!isset($requires[0]['php-http/discovery'])) {
+        if (! isset($requires[0]['php-http/discovery'])) {
             $requires = [[], []];
         }
 
         foreach ($repo->getPackages() as $package) {
             $allPackages[$package->getName()] = true;
 
-            if (1 < \count($names = $package->getNames(false))) {
+            if (\count($names = $package->getNames(false)) > 1) {
                 $allPackages += array_fill_keys($names, false);
 
                 if (isset($devPackages[$package->getName()])) {
@@ -268,9 +263,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         }
 
         $missingRequires = [[], [], []];
-        $versionParser = new VersionParser();
+        $versionParser = new VersionParser;
 
-        if (ClassDiscovery::safeClassExists(\Phalcon\Http\Message\RequestFactory::class, false)) {
+        if (ClassDiscovery::safeClassExists(RequestFactory::class, false)) {
             $missingRequires[0]['psr/http-factory-implementation'] = [];
             $missingRequires[1]['psr/http-factory-implementation'] = [];
         }
@@ -284,6 +279,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
                 if (isset($pinnedAbstractions[$abstraction])) {
                     unset($rules[$abstraction]);
+
                     continue;
                 }
 
@@ -292,13 +288,13 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 foreach (array_shift($rules) as $candidate => $deps) {
                     [$candidate, $version] = explode(':', $candidate, 2) + [1 => null];
 
-                    if (!isset($allPackages[$candidate])) {
+                    if (! isset($allPackages[$candidate])) {
                         continue;
                     }
-                    if (null !== $version && !$repo->findPackage($candidate, $versionParser->parseConstraints($version))) {
+                    if ($version !== null && ! $repo->findPackage($candidate, $versionParser->parseConstraints($version))) {
                         continue;
                     }
-                    if ($isProject && !$dev && isset($devPackages[$candidate])) {
+                    if ($isProject && ! $dev && isset($devPackages[$candidate])) {
                         $missingRequires[0][$abstraction] = [$candidate];
                         $missingRequires[2][$abstraction] = [$candidate];
                     } else {
@@ -308,9 +304,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                     foreach ($deps as $dep) {
                         if (isset(self::PROVIDE_RULES[$dep])) {
                             $rules[$dep] = self::PROVIDE_RULES[$dep];
-                        } elseif (!isset($allPackages[$dep])) {
+                        } elseif (! isset($allPackages[$dep])) {
                             $missingRequires[$dev][$abstraction][] = $dep;
-                        } elseif ($isProject && !$dev && isset($devPackages[$dep])) {
+                        } elseif ($isProject && ! $dev && isset($devPackages[$dep])) {
                             $missingRequires[0][$abstraction][] = $dep;
                             $missingRequires[2][$abstraction][] = $dep;
                         }
@@ -330,20 +326,20 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 foreach ($candidates as $candidate => $deps) {
                     [$candidate, $version] = explode(':', $candidate, 2) + [1 => null];
 
-                    if (null !== $version && !$repo->findPackage($candidate, $versionParser->parseConstraints($version))) {
+                    if ($version !== null && ! $repo->findPackage($candidate, $versionParser->parseConstraints($version))) {
                         continue;
                     }
-                    if (isset($allPackages[$candidate]) && (!$isProject || $dev || !isset($devPackages[$candidate]))) {
+                    if (isset($allPackages[$candidate]) && (! $isProject || $dev || ! isset($devPackages[$candidate]))) {
                         continue 2;
                     }
                 }
 
                 foreach (array_intersect_key(self::STICKYNESS_RULES, $candidates) as $candidate => $stickyRule) {
                     [$stickyName, $stickyVersion] = explode(':', $stickyRule, 2) + [1 => null];
-                    if (!isset($allPackages[$stickyName]) || ($isProject && !$dev && isset($devPackages[$stickyName]))) {
+                    if (! isset($allPackages[$stickyName]) || ($isProject && ! $dev && isset($devPackages[$stickyName]))) {
                         continue;
                     }
-                    if (null !== $stickyVersion && !$repo->findPackage($stickyName, $versionParser->parseConstraints($stickyVersion))) {
+                    if ($stickyVersion !== null && ! $repo->findPackage($stickyName, $versionParser->parseConstraints($stickyVersion))) {
                         continue;
                     }
 
@@ -355,7 +351,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 [$dep] = explode(':', $dep, 2);
                 $missingRequires[$dev][$abstraction] = [$dep];
 
-                if ($isProject && !$dev && isset($devPackages[$dep])) {
+                if ($isProject && ! $dev && isset($devPackages[$dep])) {
                     $missingRequires[2][$abstraction][] = $dep;
                 }
             }
@@ -368,7 +364,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
     public function preAutoloadDump(Event $event)
     {
-        $filesystem = new Filesystem();
+        $filesystem = new Filesystem;
         // Double realpath() on purpose, see https://bugs.php.net/72738
         $vendorDir = $filesystem->normalizePath(realpath(realpath($event->getComposer()->getConfig()->get('vendor-dir'))));
         $filesystem->ensureDirectoryExists($vendorDir.'/composer');
@@ -392,7 +388,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
         $file = $vendorDir.'/composer/GeneratedDiscoveryStrategy.php';
 
-        if (!$candidates) {
+        if (! $candidates) {
             if (file_exists($file)) {
                 unlink($file);
             }
@@ -417,10 +413,9 @@ class GeneratedDiscoveryStrategy implements DiscoveryStrategy
     }
 }
 
-EOPHP
-        ;
+EOPHP;
 
-        if (!file_exists($file) || $code !== file_get_contents($file)) {
+        if (! file_exists($file) || $code !== file_get_contents($file)) {
             file_put_contents($file, $code);
         }
 
@@ -439,7 +434,7 @@ EOPHP
 
         foreach ($missingRequires as $key => $packages) {
             foreach ($packages as $package => $constraint) {
-                if ('remove' === $key) {
+                if ($key === 'remove') {
                     $manipulator->removeSubNode('require-dev', $package);
                 } else {
                     $manipulator->addLink($key, $package, $constraint, $sortPackages);
@@ -452,7 +447,7 @@ EOPHP
 
     private function updateComposerLock(Composer $composer, IOInterface $io)
     {
-        if (false === $composer->getConfig()->get('lock')) {
+        if ($composer->getConfig()->get('lock') === false) {
             return;
         }
 
@@ -463,7 +458,7 @@ EOPHP
             ? new Locker($io, $lockFile, $composer->getInstallationManager(), $composerJson)
             : new Locker($io, $lockFile, $composer->getRepositoryManager(), $composer->getInstallationManager(), $composerJson);
 
-        if (!$locker->isLocked()) {
+        if (! $locker->isLocked()) {
             return;
         }
 

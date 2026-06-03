@@ -8,7 +8,7 @@ namespace Masterminds\HTML5;
  */
 class Entities
 {
-    public static $byName = array(
+    public static $byName = [
         'Aacute' => 'Á',
         'Aacut' => 'Á',
         'aacute' => 'á',
@@ -2232,5 +2232,5 @@ class Entities
         'zscr' => '𝓏',
         'zwj' => '‍',
         'zwnj' => '‌',
-    );
+    ];
 }

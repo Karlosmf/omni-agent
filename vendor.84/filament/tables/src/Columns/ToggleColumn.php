@@ -48,15 +48,15 @@ class ToggleColumn extends Column implements Editable, HasEmbeddedView
                 'x-load' => true,
                 'x-load-src' => FilamentAsset::getAlpineComponentSrc('columns/toggle', 'filament/tables'),
                 'x-data' => 'toggleTableColumn({
-                    name: ' . Js::from($this->getName()) . ',
-                    recordKey: ' . Js::from($this->getRecordKey()) . ',
-                    state: ' . Js::from($state) . ',
+                    name: '.Js::from($this->getName()).',
+                    recordKey: '.Js::from($this->getRecordKey()).',
+                    state: '.Js::from($state).',
                 })',
                 'x-tooltip' => filled($tooltip = $this->getTooltip($state))
                     ? '{
-                        content: ' . Js::from($tooltip) . ',
+                        content: '.Js::from($tooltip).',
                         theme: $store.theme,
-                        allowHTML: ' . Js::from($tooltip instanceof Htmlable) . ',
+                        allowHTML: '.Js::from($tooltip instanceof Htmlable).',
                     }'
                     : null,
             ], escape: false)

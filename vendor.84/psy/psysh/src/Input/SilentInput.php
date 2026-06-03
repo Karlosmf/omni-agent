@@ -24,8 +24,6 @@ class SilentInput
 
     /**
      * Constructor.
-     *
-     * @param string $inputString
      */
     public function __construct(string $inputString)
     {

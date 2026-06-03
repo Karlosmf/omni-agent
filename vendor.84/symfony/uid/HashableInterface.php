@@ -11,11 +11,13 @@
 
 namespace Symfony\Component\Uid;
 
-if (interface_exists(\Ds\Hashable::class)) {
+use Ds\Hashable;
+
+if (interface_exists(Hashable::class)) {
     /**
      * @internal
      */
-    interface HashableInterface extends \Ds\Hashable
+    interface HashableInterface extends Hashable
     {
         public function hash(): string;
     }

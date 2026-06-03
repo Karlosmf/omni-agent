@@ -6,6 +6,7 @@ use App\Enums\BookingStatus;
 use App\Filament\Admin\Resources\Bookings\Pages\CreateBooking;
 use App\Filament\Admin\Resources\Bookings\Pages\EditBooking;
 use App\Filament\Admin\Resources\Bookings\Pages\ListBookings;
+use App\Filament\Admin\Resources\Bookings\RelationManagers\TransactionsRelationManager;
 use App\Filament\Admin\Resources\Bookings\Schemas\BookingForm;
 use App\Filament\Admin\Resources\Bookings\Tables\BookingsTable;
 use App\Models\Booking;
@@ -68,7 +69,7 @@ class BookingResource extends Resource
     public static function getRelations(): array
     {
         return [
-            \App\Filament\Admin\Resources\Bookings\RelationManagers\TransactionsRelationManager::class,
+            TransactionsRelationManager::class,
         ];
     }
 

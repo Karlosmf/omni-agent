@@ -19,9 +19,9 @@ namespace Symfony\Component\Console\Question;
 class ConfirmationQuestion extends Question
 {
     /**
-     * @param string $question        The question to ask to the user
-     * @param bool   $default         The default answer to return, true or false
-     * @param string $trueAnswerRegex A regex to match the "yes" answer
+     * @param  string  $question  The question to ask to the user
+     * @param  bool  $default  The default answer to return, true or false
+     * @param  string  $trueAnswerRegex  A regex to match the "yes" answer
      */
     public function __construct(
         string $question,
@@ -47,11 +47,11 @@ class ConfirmationQuestion extends Question
             }
 
             $answerIsTrue = (bool) preg_match($regex, $answer);
-            if (false === $default) {
+            if ($default === false) {
                 return $answer && $answerIsTrue;
             }
 
-            return '' === $answer || $answerIsTrue;
+            return $answer === '' || $answerIsTrue;
         };
     }
 }

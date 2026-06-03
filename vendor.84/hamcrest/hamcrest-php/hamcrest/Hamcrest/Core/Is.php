@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Core;
 
 /*
@@ -18,7 +19,6 @@ use Hamcrest\Util;
  */
 class Is extends BaseMatcher
 {
-
     private $_matcher;
 
     public function __construct(Matcher $matcher)

@@ -32,6 +32,7 @@ class EntityPopulator
      * @var array
      */
     protected $columnFormatters = [];
+
     /**
      * @var array
      */
@@ -43,7 +44,7 @@ class EntityPopulator
     protected $useExistingData = false;
 
     /**
-     * @param bool $useExistingData
+     * @param  bool  $useExistingData
      */
     public function __construct(Mapper $mapper, Locator $locator, $useExistingData = false)
     {
@@ -138,7 +139,7 @@ class EntityPopulator
                 $locator = $this->locator;
 
                 $formatters[$fieldName] = function ($inserted) use ($required, $entityName, $locator, $generator) {
-                    if (!empty($inserted[$entityName])) {
+                    if (! empty($inserted[$entityName])) {
                         return $generator->randomElement($inserted[$entityName])->get('id');
                     }
 
@@ -183,7 +184,7 @@ class EntityPopulator
     private function fillColumns($obj, $insertedEntities): void
     {
         foreach ($this->columnFormatters as $field => $format) {
-            if (null !== $format) {
+            if ($format !== null) {
                 $value = is_callable($format) ? $format($insertedEntities, $obj) : $format;
                 $obj->set($field, $value);
             }

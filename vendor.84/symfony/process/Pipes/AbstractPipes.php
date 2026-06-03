@@ -23,13 +23,16 @@ abstract class AbstractPipes implements PipesInterface
     public array $pipes = [];
 
     private string $inputBuffer = '';
+
     /** @var resource|string|\Iterator */
     private $input;
+
     private bool $blocked = true;
+
     private ?string $lastError = null;
 
     /**
-     * @param resource|string|\Iterator $input
+     * @param  resource|string|\Iterator  $input
      */
     public function __construct($input)
     {
@@ -60,11 +63,11 @@ abstract class AbstractPipes implements PipesInterface
         $lastError = $this->lastError;
         $this->lastError = null;
 
-        if (null === $lastError) {
+        if ($lastError === null) {
             return false;
         }
 
-        if (false !== stripos($lastError, 'interrupted system call')) {
+        if (stripos($lastError, 'interrupted system call') !== false) {
             return true;
         }
 
@@ -79,7 +82,7 @@ abstract class AbstractPipes implements PipesInterface
      */
     protected function unblock(): void
     {
-        if (!$this->blocked) {
+        if (! $this->blocked) {
             return;
         }
 
@@ -100,19 +103,19 @@ abstract class AbstractPipes implements PipesInterface
      */
     protected function write(): ?array
     {
-        if (!isset($this->pipes[0])) {
+        if (! isset($this->pipes[0])) {
             return null;
         }
         $input = $this->input;
 
         if ($input instanceof \Iterator) {
-            if (!$input->valid()) {
+            if (! $input->valid()) {
                 $input = null;
             } elseif (\is_resource($input = $input->current())) {
                 stream_set_blocking($input, false);
-            } elseif (!isset($this->inputBuffer[0])) {
-                if (!\is_string($input)) {
-                    if (!\is_scalar($input)) {
+            } elseif (! isset($this->inputBuffer[0])) {
+                if (! \is_string($input)) {
+                    if (! \is_scalar($input)) {
                         throw new InvalidArgumentException(\sprintf('"%s" yielded a value of type "%s", but only scalars and stream resources are supported.', get_debug_type($this->input), get_debug_type($input)));
                     }
                     $input = (string) $input;
@@ -129,7 +132,7 @@ abstract class AbstractPipes implements PipesInterface
         $w = [$this->pipes[0]];
 
         // let's have a look if something changed in streams
-        if (false === @stream_select($r, $w, $e, 0, 0)) {
+        if (@stream_select($r, $w, $e, 0, 0) === false) {
             return null;
         }
 
@@ -147,7 +150,7 @@ abstract class AbstractPipes implements PipesInterface
             if ($input) {
                 while (true) {
                     $data = fread($input, self::CHUNK_SIZE);
-                    if (!isset($data[0])) {
+                    if (! isset($data[0])) {
                         break;
                     }
                     if (false === $written = @fwrite($stdin, $data)) {
@@ -171,11 +174,11 @@ abstract class AbstractPipes implements PipesInterface
         }
 
         // no input to read on resource, buffer is empty
-        if (!isset($this->inputBuffer[0]) && !($this->input instanceof \Iterator ? $this->input->valid() : $this->input)) {
+        if (! isset($this->inputBuffer[0]) && ! ($this->input instanceof \Iterator ? $this->input->valid() : $this->input)) {
             $this->input = null;
             fclose($this->pipes[0]);
             unset($this->pipes[0]);
-        } elseif (!$w) {
+        } elseif (! $w) {
             return [$this->pipes[0]];
         }
 

@@ -36,7 +36,7 @@ interface TagFactory extends Factory
      *
      * These parameters are injected at the last moment and will override any existing parameter with those names.
      *
-     * @param mixed $value
+     * @param  mixed  $value
      */
     public function addParameter(string $name, $value): void;
 
@@ -58,13 +58,13 @@ interface TagFactory extends Factory
      * to register the name of a tag with the FQCN of a 'Tag Handler'. The Tag handler should implement
      * the {@see Tag} interface (and thus the create method).
      *
-     * @param string                    $tagName Name of tag to register a handler for. When registering a namespaced
-     *                                   tag, the full name, along with a prefixing slash MUST be provided.
-     * @param class-string<Tag>|Factory $handler FQCN of handler.
+     * @param  string  $tagName  Name of tag to register a handler for. When registering a namespaced
+     *                           tag, the full name, along with a prefixing slash MUST be provided.
+     * @param  class-string<Tag>|Factory  $handler  FQCN of handler.
      *
      * @throws InvalidArgumentException If the tag name is not a string.
      * @throws InvalidArgumentException If the tag name is namespaced (contains backslashes) but
-     *                                   does not start with a backslash.
+     *                                  does not start with a backslash.
      * @throws InvalidArgumentException If the handler is not a string.
      * @throws InvalidArgumentException If the handler is not an existing class.
      * @throws InvalidArgumentException If the handler does not implement the {@see Tag} interface.

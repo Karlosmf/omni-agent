@@ -66,7 +66,7 @@ class MemoryDataCollector extends DataCollector implements LateDataCollectorInte
 
     private function convertToBytes(string $memoryLimit): int|float
     {
-        if ('-1' === $memoryLimit) {
+        if ($memoryLimit === '-1') {
             return -1;
         }
 

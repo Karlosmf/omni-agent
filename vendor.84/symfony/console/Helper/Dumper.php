@@ -33,13 +33,13 @@ final class Dumper
                 $dumper = $this->dumper ??= new CliDumper(null, null, CliDumper::DUMP_LIGHT_ARRAY | CliDumper::DUMP_COMMA_SEPARATOR);
                 $dumper->setColors($this->output->isDecorated());
 
-                return rtrim($dumper->dump(($this->cloner ??= new VarCloner())->cloneVar($var)->withRefHandles(false), true));
+                return rtrim($dumper->dump(($this->cloner ??= new VarCloner)->cloneVar($var)->withRefHandles(false), true));
             };
         } else {
             $this->handler = fn ($var): string => match (true) {
-                null === $var => 'null',
-                true === $var => 'true',
-                false === $var => 'false',
+                $var === null => 'null',
+                $var === true => 'true',
+                $var === false => 'false',
                 \is_string($var) => '"'.$var.'"',
                 default => rtrim(print_r($var, true)),
             };

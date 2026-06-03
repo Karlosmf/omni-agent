@@ -42,7 +42,7 @@ class TraceableEventDispatcher extends BaseTraceableEventDispatcher
                 break;
             case KernelEvents::TERMINATE:
                 $sectionId = $event->getRequest()->attributes->get('_stopwatch_token');
-                if (null === $sectionId) {
+                if ($sectionId === null) {
                     break;
                 }
                 // There is a very special case when using built-in AppCache class as kernel wrapper, in the case
@@ -69,7 +69,7 @@ class TraceableEventDispatcher extends BaseTraceableEventDispatcher
                 break;
             case KernelEvents::RESPONSE:
                 $sectionId = $event->getRequest()->attributes->get('_stopwatch_token');
-                if (null === $sectionId) {
+                if ($sectionId === null) {
                     break;
                 }
                 try {
@@ -82,7 +82,7 @@ class TraceableEventDispatcher extends BaseTraceableEventDispatcher
                 // In the special case described in the `preDispatch` method above, the `$token` section
                 // does not exist, then closing it throws an exception which must be caught.
                 $sectionId = $event->getRequest()->attributes->get('_stopwatch_token');
-                if (null === $sectionId) {
+                if ($sectionId === null) {
                     break;
                 }
                 try {

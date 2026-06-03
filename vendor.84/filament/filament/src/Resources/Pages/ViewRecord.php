@@ -38,7 +38,7 @@ class ViewRecord extends Page
      */
     public ?array $data = [];
 
-    public static function getNavigationIcon(): string | BackedEnum | Htmlable | null
+    public static function getNavigationIcon(): string|BackedEnum|Htmlable|null
     {
         return static::$navigationIcon
             ?? FilamentIcon::resolve(PanelsIconAlias::RESOURCES_PAGES_VIEW_RECORD_NAVIGATION_ITEM)
@@ -64,7 +64,7 @@ class ViewRecord extends Page
         return __('filament-panels::resources/pages/view-record.content.tab.label');
     }
 
-    public function mount(int | string $record): void
+    public function mount(int|string $record): void
     {
         $this->record = $this->resolveRecord($record);
 
@@ -139,7 +139,7 @@ class ViewRecord extends Page
         };
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         if (filled(static::$title)) {
             return static::$title;
@@ -229,7 +229,7 @@ class ViewRecord extends Page
     {
         return [
             'fi-resource-view-record-page',
-            'fi-resource-' . str_replace('/', '-', $this->getResource()::getSlug(Filament::getCurrentOrDefaultPanel())),
+            'fi-resource-'.str_replace('/', '-', $this->getResource()::getSlug(Filament::getCurrentOrDefaultPanel())),
             "fi-resource-record-{$this->getRecord()->getKey()}",
         ];
     }

@@ -20,9 +20,8 @@ final class XMLReader extends \XMLReader
     /**
      * Opens the XML Reader to read a file located inside a ZIP file.
      *
-     * @param string $zipFilePath       Path to the ZIP file
-     * @param string $fileInsideZipPath Relative or absolute path of the file inside the zip
-     *
+     * @param  string  $zipFilePath  Path to the ZIP file
+     * @param  string  $fileInsideZipPath  Relative or absolute path of the file inside the zip
      * @return bool TRUE on success or FALSE on failure
      */
     public function openFileInZip(string $zipFilePath, string $fileInsideZipPath): bool
@@ -43,9 +42,8 @@ final class XMLReader extends \XMLReader
      * Returns the real path for the given path components.
      * This is useful to avoid issues on some Windows setup.
      *
-     * @param string $zipFilePath       Path to the ZIP file
-     * @param string $fileInsideZipPath Relative or absolute path of the file inside the zip
-     *
+     * @param  string  $zipFilePath  Path to the ZIP file
+     * @param  string  $fileInsideZipPath  Relative or absolute path of the file inside the zip
      * @return string The real path URI
      */
     public function getRealPathURIForFileInZip(string $zipFilePath, string $fileInsideZipPath): string
@@ -54,7 +52,7 @@ final class XMLReader extends \XMLReader
         $fileInsideZipPathWithoutLeadingSlash = ltrim($fileInsideZipPath, '/');
 
         $realpath = realpath($zipFilePath);
-        if (false === $realpath) {
+        if ($realpath === false) {
             throw new IOException("Could not open {$zipFilePath} for reading! File does not exist.");
         }
 
@@ -82,8 +80,7 @@ final class XMLReader extends \XMLReader
     /**
      * Read until the element with the given name is found, or the end of the file.
      *
-     * @param string $nodeName Name of the node to find
-     *
+     * @param  string  $nodeName  Name of the node to find
      * @return bool TRUE on success or FALSE on failure
      *
      * @throws XMLProcessingException If an error/warning occurred
@@ -92,7 +89,7 @@ final class XMLReader extends \XMLReader
     {
         do {
             $wasReadSuccessful = $this->read();
-            $isNotPositionedOnStartingNode = !$this->isPositionedOnStartingNode($nodeName);
+            $isNotPositionedOnStartingNode = ! $this->isPositionedOnStartingNode($nodeName);
         } while ($wasReadSuccessful && $isNotPositionedOnStartingNode);
 
         return $wasReadSuccessful;
@@ -103,7 +100,7 @@ final class XMLReader extends \XMLReader
      *
      * @see \XMLReader::next
      *
-     * @param null|string $localName The name of the next node to move to
+     * @param  null|string  $localName  The name of the next node to move to
      *
      * @throws XMLProcessingException If an error/warning occurred
      */
@@ -145,8 +142,7 @@ final class XMLReader extends \XMLReader
     /**
      * Returns whether the file at the given location exists.
      *
-     * @param string $zipStreamURI URI of a zip stream, e.g. "zip://file.zip#path/inside.xml"
-     *
+     * @param  string  $zipStreamURI  URI of a zip stream, e.g. "zip://file.zip#path/inside.xml"
      * @return bool TRUE if the file exists, FALSE otherwise
      */
     private function fileExistsWithinZip(string $zipStreamURI): bool
@@ -154,13 +150,13 @@ final class XMLReader extends \XMLReader
         $doesFileExists = false;
 
         $pattern = '/zip:\/\/([^#]+)#(.*)/';
-        if (1 === preg_match($pattern, $zipStreamURI, $matches)) {
+        if (preg_match($pattern, $zipStreamURI, $matches) === 1) {
             $zipFilePath = $matches[1];
             $innerFilePath = $matches[2];
 
-            $zip = new ZipArchive();
-            if (true === $zip->open($zipFilePath)) {
-                $doesFileExists = (false !== $zip->locateName($innerFilePath));
+            $zip = new ZipArchive;
+            if ($zip->open($zipFilePath) === true) {
+                $doesFileExists = ($zip->locateName($innerFilePath) !== false);
                 $zip->close();
             }
         }

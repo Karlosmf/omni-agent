@@ -22,7 +22,7 @@ class TaskList extends Node
     {
         return [
             [
-                'tag' => 'ul[data-type="' . self::$name . '"]',
+                'tag' => 'ul[data-type="'.self::$name.'"]',
             ],
         ];
     }

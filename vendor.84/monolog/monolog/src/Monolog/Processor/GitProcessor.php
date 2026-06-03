@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -13,8 +15,8 @@ namespace Monolog\Processor;
 
 use Monolog\Level;
 use Monolog\Logger;
-use Psr\Log\LogLevel;
 use Monolog\LogRecord;
+use Psr\Log\LogLevel;
 
 /**
  * Injects Git branch and Git commit SHA in all records
@@ -25,11 +27,12 @@ use Monolog\LogRecord;
 class GitProcessor implements ProcessorInterface
 {
     private Level $level;
+
     /** @var array{branch: string, commit: string}|array<never>|null */
     private static $cache = null;
 
     /**
-     * @param int|string|Level|LogLevel::* $level The minimum logging level at which this Processor will be triggered
+     * @param  int|string|Level|LogLevel::*  $level  The minimum logging level at which this Processor will be triggered
      *
      * @phpstan-param value-of<Level::VALUES>|value-of<Level::NAMES>|Level|LogLevel::* $level
      */
@@ -39,7 +42,7 @@ class GitProcessor implements ProcessorInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __invoke(LogRecord $record): LogRecord
     {
@@ -63,7 +66,7 @@ class GitProcessor implements ProcessorInterface
         }
 
         $branches = shell_exec('git branch -v --no-abbrev');
-        if (\is_string($branches) && 1 === preg_match('{^\* (.+?)\s+([a-f0-9]{40})(?:\s|$)}m', $branches, $matches)) {
+        if (\is_string($branches) && preg_match('{^\* (.+?)\s+([a-f0-9]{40})(?:\s|$)}m', $branches, $matches) === 1) {
             return self::$cache = [
                 'branch' => $matches[1],
                 'commit' => $matches[2],

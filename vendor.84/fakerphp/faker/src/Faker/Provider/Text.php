@@ -5,10 +5,15 @@ namespace Faker\Provider;
 abstract class Text extends Base
 {
     protected static $baseText = '';
+
     protected static $separator = ' ';
+
     protected static $separatorLen = 1;
+
     protected $explodedText;
+
     protected $consecutiveWords = [];
+
     protected static $textStartsWithUppercase = true;
 
     /**
@@ -20,12 +25,11 @@ abstract class Text extends Base
      *
      * @example 'Alice, swallowing down her flamingo, and began by taking the little golden key'
      *
-     * @param int $maxNbChars Maximum number of characters the text should contain (minimum: 10)
-     * @param int $indexSize  Determines how many words are considered for the generation of the next word.
-     *                        The minimum is 1, and it produces a higher level of randomness, although the
-     *                        generated text usually doesn't make sense. Higher index sizes (up to 5)
-     *                        produce more correct text, at the price of less randomness.
-     *
+     * @param  int  $maxNbChars  Maximum number of characters the text should contain (minimum: 10)
+     * @param  int  $indexSize  Determines how many words are considered for the generation of the next word.
+     *                          The minimum is 1, and it produces a higher level of randomness, although the
+     *                          generated text usually doesn't make sense. Higher index sizes (up to 5)
+     *                          produce more correct text, at the price of less randomness.
      * @return string
      */
     public function realText($maxNbChars = 200, $indexSize = 2)
@@ -42,13 +46,12 @@ abstract class Text extends Base
      *
      * @example 'Alice, swallowing down her flamingo, and began by taking the little golden key'
      *
-     * @param int $minNbChars Minimum number of characters the text should contain (maximum: 8)
-     * @param int $maxNbChars Maximum number of characters the text should contain (minimum: 10)
-     * @param int $indexSize  Determines how many words are considered for the generation of the next word.
-     *                        The minimum is 1, and it produces a higher level of randomness, although the
-     *                        generated text usually doesn't make sense. Higher index sizes (up to 5)
-     *                        produce more correct text, at the price of less randomness.
-     *
+     * @param  int  $minNbChars  Minimum number of characters the text should contain (maximum: 8)
+     * @param  int  $maxNbChars  Maximum number of characters the text should contain (minimum: 10)
+     * @param  int  $indexSize  Determines how many words are considered for the generation of the next word.
+     *                          The minimum is 1, and it produces a higher level of randomness, although the
+     *                          generated text usually doesn't make sense. Higher index sizes (up to 5)
+     *                          produce more correct text, at the price of less randomness.
      * @return string
      */
     public function realTextBetween($minNbChars = 160, $maxNbChars = 200, $indexSize = 2)
@@ -77,7 +80,7 @@ abstract class Text extends Base
         $iterations = 0;
 
         do {
-            ++$iterations;
+            $iterations++;
 
             if ($iterations >= 100) {
                 throw new \OverflowException(sprintf('Maximum retries of %d reached without finding a valid real text', $iterations));
@@ -90,9 +93,8 @@ abstract class Text extends Base
     }
 
     /**
-     * @param int   $maxNbChars
-     * @param array $words
-     *
+     * @param  int  $maxNbChars
+     * @param  array  $words
      * @return string
      */
     protected function generateText($maxNbChars, $words)
@@ -113,7 +115,7 @@ abstract class Text extends Base
             $next = static::implode($currentWords);
 
             // ensure text starts with an uppercase letter
-            if ($resultLength == 0 && !static::validStart($word)) {
+            if ($resultLength == 0 && ! static::validStart($word)) {
                 continue;
             }
 
@@ -133,19 +135,19 @@ abstract class Text extends Base
 
     protected function getConsecutiveWords($indexSize)
     {
-        if (!isset($this->consecutiveWords[$indexSize])) {
+        if (! isset($this->consecutiveWords[$indexSize])) {
             $parts = $this->getExplodedText();
             $words = [];
             $index = [];
 
-            for ($i = 0; $i < $indexSize; ++$i) {
+            for ($i = 0; $i < $indexSize; $i++) {
                 $index[] = array_shift($parts);
             }
 
-            for ($i = 0, $count = count($parts); $i < $count; ++$i) {
+            for ($i = 0, $count = count($parts); $i < $count; $i++) {
                 $stringIndex = static::implode($index);
 
-                if (!isset($words[$stringIndex])) {
+                if (! isset($words[$stringIndex])) {
                     $words[$stringIndex] = [];
                 }
                 $word = $parts[$i];
@@ -197,6 +199,6 @@ abstract class Text extends Base
 
     protected static function appendEnd($text)
     {
-        return preg_replace("/([ ,-:;\x{2013}\x{2014}]+$)/us", '', $text) . '.';
+        return preg_replace("/([ ,-:;\x{2013}\x{2014}]+$)/us", '', $text).'.';
     }
 }

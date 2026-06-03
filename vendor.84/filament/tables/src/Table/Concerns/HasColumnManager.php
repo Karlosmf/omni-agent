@@ -13,44 +13,44 @@ use Filament\Tables\View\TablesIconAlias;
 
 trait HasColumnManager
 {
-    protected ColumnManagerResetActionPosition | Closure | null $columnManagerResetActionPosition = null;
+    protected ColumnManagerResetActionPosition|Closure|null $columnManagerResetActionPosition = null;
 
-    protected bool | Closure | null $hasColumnManager = null;
+    protected bool|Closure|null $hasColumnManager = null;
 
-    protected bool | Closure $hasReorderableColumns = false;
+    protected bool|Closure $hasReorderableColumns = false;
 
     /**
      * @var int | array<string, int | null> | Closure
      */
-    protected int | array | Closure $columnManagerColumns = 1;
+    protected int|array|Closure $columnManagerColumns = 1;
 
-    protected string | Closure | null $columnManagerMaxHeight = null;
+    protected string|Closure|null $columnManagerMaxHeight = null;
 
-    protected Width | string | Closure | null $columnManagerWidth = null;
+    protected Width|string|Closure|null $columnManagerWidth = null;
 
     protected ?Closure $modifyColumnManagerTriggerActionUsing = null;
 
-    protected bool | Closure $hasDeferredColumnManager = true;
+    protected bool|Closure $hasDeferredColumnManager = true;
 
     protected ?Closure $modifyColumnManagerApplyActionUsing = null;
 
-    protected bool | Closure $persistsColumnsInSession = true;
+    protected bool|Closure $persistsColumnsInSession = true;
 
-    public function columnManager(bool | Closure | null $condition = true): static
+    public function columnManager(bool|Closure|null $condition = true): static
     {
         $this->hasColumnManager = $condition;
 
         return $this;
     }
 
-    public function deferColumnManager(bool | Closure $condition = true): static
+    public function deferColumnManager(bool|Closure $condition = true): static
     {
         $this->hasDeferredColumnManager = $condition;
 
         return $this;
     }
 
-    public function reorderableColumns(bool | Closure $condition = true): static
+    public function reorderableColumns(bool|Closure $condition = true): static
     {
         $this->hasReorderableColumns = $condition;
 
@@ -85,14 +85,14 @@ trait HasColumnManager
         return $this;
     }
 
-    public function persistColumnsInSession(bool | Closure $condition = true): static
+    public function persistColumnsInSession(bool|Closure $condition = true): static
     {
         $this->persistsColumnsInSession = $condition;
 
         return $this;
     }
 
-    public function columnManagerResetActionPosition(ColumnManagerResetActionPosition | Closure | null $position): static
+    public function columnManagerResetActionPosition(ColumnManagerResetActionPosition|Closure|null $position): static
     {
         $this->columnManagerResetActionPosition = $position;
 
@@ -129,7 +129,7 @@ trait HasColumnManager
      *
      * @param  int | array<string, int | null> | Closure  $columns
      */
-    public function columnToggleFormColumns(int | array | Closure $columns): static
+    public function columnToggleFormColumns(int|array|Closure $columns): static
     {
         return $this->columnManagerColumns($columns);
     }
@@ -137,7 +137,7 @@ trait HasColumnManager
     /**
      * @param  int | array<string, int | null> | Closure  $columns
      */
-    public function columnManagerColumns(int | array | Closure $columns): static
+    public function columnManagerColumns(int|array|Closure $columns): static
     {
         $this->columnManagerColumns = $columns;
 
@@ -147,12 +147,12 @@ trait HasColumnManager
     /**
      * @deprecated Use `columnManagerMaxHeight()` instead.
      */
-    public function columnToggleFormMaxHeight(string | Closure | null $height): static
+    public function columnToggleFormMaxHeight(string|Closure|null $height): static
     {
         return $this->columnManagerMaxHeight($height);
     }
 
-    public function columnManagerMaxHeight(string | Closure | null $height): static
+    public function columnManagerMaxHeight(string|Closure|null $height): static
     {
         $this->columnManagerMaxHeight = $height;
 
@@ -162,12 +162,12 @@ trait HasColumnManager
     /**
      * @deprecated Use `columnManagerWidth()` instead.
      */
-    public function columnToggleFormWidth(Width | string | Closure | null $width): static
+    public function columnToggleFormWidth(Width|string|Closure|null $width): static
     {
         return $this->columnManagerWidth($width);
     }
 
-    public function columnManagerWidth(Width | string | Closure | null $width): static
+    public function columnManagerWidth(Width|string|Closure|null $width): static
     {
         $this->columnManagerWidth = $width;
 
@@ -179,7 +179,7 @@ trait HasColumnManager
      *
      * @return int | array<string, int | null>
      */
-    public function getColumnToggleFormColumns(): int | array
+    public function getColumnToggleFormColumns(): int|array
     {
         return $this->getColumnManagerColumns();
     }
@@ -187,7 +187,7 @@ trait HasColumnManager
     /**
      * @return int | array<string, int | null>
      */
-    public function getColumnManagerColumns(): int | array
+    public function getColumnManagerColumns(): int|array
     {
         return $this->evaluate($this->columnManagerColumns) ?? 1;
     }
@@ -213,7 +213,7 @@ trait HasColumnManager
         return $this->getColumnManagerWidth();
     }
 
-    public function getColumnManagerWidth(): Width | string | null
+    public function getColumnManagerWidth(): Width|string|null
     {
         return $this->evaluate($this->columnManagerWidth) ?? match ($this->getColumnManagerColumns()) {
             2 => Width::TwoExtraLarge,

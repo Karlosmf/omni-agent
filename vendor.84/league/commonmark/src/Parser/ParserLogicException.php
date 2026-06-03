@@ -15,6 +15,4 @@ namespace League\CommonMark\Parser;
 
 use League\CommonMark\Exception\CommonMarkException;
 
-class ParserLogicException extends \LogicException implements CommonMarkException
-{
-}
+class ParserLogicException extends \LogicException implements CommonMarkException {}

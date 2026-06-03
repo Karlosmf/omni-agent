@@ -20,7 +20,7 @@ class DeterministicBladeKeys
         $count = $this->counter();
 
         // $key = "lw-[hash of Blade view path]-[current @livewire directive count]"
-        return 'lw-' . $this->currentPathHash . '-' . $count;
+        return 'lw-'.$this->currentPathHash.'-'.$count;
     }
 
     public function counter()

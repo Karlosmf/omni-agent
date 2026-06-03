@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Core;
 
 /*
@@ -14,7 +15,6 @@ use Hamcrest\Util;
  */
 class AnyOf extends ShortcutCombination
 {
-
     public function __construct(array $matchers)
     {
         parent::__construct($matchers);

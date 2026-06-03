@@ -36,7 +36,7 @@ class StrictTypesPass extends CodeCleanerPass
     private bool $strictTypes;
 
     /**
-     * @param bool $strictTypes enforce strict types by default
+     * @param  bool  $strictTypes  enforce strict types by default
      */
     public function __construct(bool $strictTypes = false)
     {
@@ -49,11 +49,11 @@ class StrictTypesPass extends CodeCleanerPass
      * Otherwise, apply remembered strict types declaration to to the code until
      * a new declaration is encountered.
      *
-     * @throws FatalErrorException if an invalid `strict_types` declaration is found
      *
-     * @param array $nodes
      *
      * @return Node[]|null Array of nodes
+     *
+     * @throws FatalErrorException if an invalid `strict_types` declaration is found
      */
     public function beforeTraverse(array $nodes)
     {
@@ -65,7 +65,7 @@ class StrictTypesPass extends CodeCleanerPass
                     if ($declare->key->toString() === 'strict_types') {
                         $value = $declare->value;
                         // @todo Remove LNumber once we drop support for PHP-Parser 4.x
-                        if ((!$value instanceof LNumber && !$value instanceof Int_) || ($value->value !== 0 && $value->value !== 1)) {
+                        if ((! $value instanceof LNumber && ! $value instanceof Int_) || ($value->value !== 0 && $value->value !== 1)) {
                             throw new FatalErrorException(self::EXCEPTION_MESSAGE, 0, \E_ERROR, null, $node->getStartLine());
                         }
 
@@ -77,7 +77,7 @@ class StrictTypesPass extends CodeCleanerPass
 
         if ($prependStrictTypes) {
             $first = \reset($nodes);
-            if (!$first instanceof Declare_) {
+            if (! $first instanceof Declare_) {
                 // @todo Switch to PhpParser\Node\DeclareItem once we drop support for PHP-Parser 4.x
                 // @todo Remove LNumber once we drop support for PHP-Parser 4.x
                 $arg = \class_exists('PhpParser\Node\Scalar\Int_') ? new Int_(1) : new LNumber(1);

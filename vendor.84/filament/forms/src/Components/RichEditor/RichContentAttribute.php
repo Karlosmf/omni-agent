@@ -257,7 +257,7 @@ class RichContentAttribute implements Htmlable
 
         return Arr::mapWithKeys(
             $textColors,
-            fn (string | TextColor $color, string $name): array => [$name => ($color instanceof TextColor) ? $color : TextColor::make($color, $name)],
+            fn (string|TextColor $color, string $name): array => [$name => ($color instanceof TextColor) ? $color : TextColor::make($color, $name)],
         );
     }
 

@@ -243,8 +243,7 @@ class Person extends \Faker\Provider\Person
     /**
      * Return last name
      *
-     * @param string|null $gender male or female or null for any
-     *
+     * @param  string|null  $gender  male or female or null for any
      * @return string last name
      */
     public function lastName($gender = null)
@@ -296,9 +295,8 @@ class Person extends \Faker\Provider\Person
      *
      * @see https://en.wikipedia.org/wiki/National_identification_number#Indonesia
      *
-     * @param string|null    $gender
-     * @param \DateTime|null $birthDate
-     *
+     * @param  string|null  $gender
+     * @param  \DateTime|null  $birthDate
      * @return string
      */
     public function nik($gender = null, $birthDate = null)
@@ -307,11 +305,11 @@ class Person extends \Faker\Provider\Person
         $nik = $this->birthPlaceCode();
         $nik .= $this->generator->numerify('##');
 
-        if (!$birthDate) {
+        if (! $birthDate) {
             $birthDate = $this->generator->dateTimeBetween();
         }
 
-        if (!$gender) {
+        if (! $gender) {
             $gender = $this->generator->randomElement([self::GENDER_MALE, self::GENDER_FEMALE]);
         }
 

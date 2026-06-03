@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,7 +9,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\Constraint;
+
+use PHPUnit\Util\Exporter;
 
 use function is_string;
 use function mb_detect_encoding;
@@ -17,7 +22,6 @@ use function sprintf;
 use function str_contains;
 use function strlen;
 use function strtr;
-use PHPUnit\Util\Exporter;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -25,7 +29,9 @@ use PHPUnit\Util\Exporter;
 final class StringContains extends Constraint
 {
     private readonly string $needle;
+
     private readonly bool $ignoreCase;
+
     private readonly bool $ignoreLineEndings;
 
     public function __construct(string $needle, bool $ignoreCase = false, bool $ignoreLineEndings = false)
@@ -34,8 +40,8 @@ final class StringContains extends Constraint
             $needle = $this->normalizeLineEndings($needle);
         }
 
-        $this->needle            = $needle;
-        $this->ignoreCase        = $ignoreCase;
+        $this->needle = $needle;
+        $this->ignoreCase = $ignoreCase;
         $this->ignoreLineEndings = $ignoreLineEndings;
     }
 
@@ -61,8 +67,8 @@ final class StringContains extends Constraint
     public function failureDescription(mixed $other): string
     {
         $stringifiedHaystack = Exporter::export($other);
-        $haystackEncoding    = $this->detectedEncoding($other);
-        $haystackLength      = $this->haystackLength($other);
+        $haystackEncoding = $this->detectedEncoding($other);
+        $haystackLength = $this->haystackLength($other);
 
         $haystackInformation = sprintf(
             '%s [%s](length: %s) ',
@@ -73,7 +79,7 @@ final class StringContains extends Constraint
 
         $needleInformation = $this->toString();
 
-        return $haystackInformation . $needleInformation;
+        return $haystackInformation.$needleInformation;
     }
 
     /**
@@ -84,11 +90,11 @@ final class StringContains extends Constraint
     {
         $haystack = $other;
 
-        if ('' === $this->needle) {
+        if ($this->needle === '') {
             return true;
         }
 
-        if (!is_string($haystack)) {
+        if (! is_string($haystack)) {
             return false;
         }
 
@@ -121,7 +127,7 @@ final class StringContains extends Constraint
             return 'Encoding ignored';
         }
 
-        if (!is_string($other)) {
+        if (! is_string($other)) {
             return 'Encoding detection failed';
         }
 
@@ -136,7 +142,7 @@ final class StringContains extends Constraint
 
     private function haystackLength(mixed $haystack): int
     {
-        if (!is_string($haystack)) {
+        if (! is_string($haystack)) {
             return 0;
         }
 
@@ -153,7 +159,7 @@ final class StringContains extends Constraint
             $string,
             [
                 "\r\n" => "\n",
-                "\r"   => "\n",
+                "\r" => "\n",
             ],
         );
     }

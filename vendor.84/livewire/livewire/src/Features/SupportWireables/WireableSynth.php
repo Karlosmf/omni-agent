@@ -2,24 +2,24 @@
 
 namespace Livewire\Features\SupportWireables;
 
-use Livewire\Wireable;
 use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;
+use Livewire\Wireable;
 
 class WireableSynth extends Synth
 {
     public static $key = 'wrbl';
 
-    static function match($target)
+    public static function match($target)
     {
         return is_object($target) && $target instanceof Wireable;
     }
 
-    static function unwrapForValidation($target)
+    public static function unwrapForValidation($target)
     {
         return $target->toLivewire();
     }
 
-    function dehydrate($target, $dehydrateChild)
+    public function dehydrate($target, $dehydrateChild)
     {
         $data = $target->toLivewire();
 
@@ -33,7 +33,8 @@ class WireableSynth extends Synth
         ];
     }
 
-    function hydrate($value, $meta, $hydrateChild) {
+    public function hydrate($value, $meta, $hydrateChild)
+    {
         foreach ($value as $key => $child) {
             $value[$key] = $hydrateChild($key, $child);
         }
@@ -41,7 +42,8 @@ class WireableSynth extends Synth
         return $meta['class']::fromLivewire($value);
     }
 
-    function set(&$target, $key, $value) {
+    public function set(&$target, $key, $value)
+    {
         $target->{$key} = $value;
     }
 }

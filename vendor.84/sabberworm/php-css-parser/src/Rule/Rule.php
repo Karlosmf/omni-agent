@@ -43,9 +43,9 @@ class Rule implements Commentable, CSSElement, Positionable
     private $isImportant = false;
 
     /**
-     * @param non-empty-string $rule
-     * @param int<1, max>|null $lineNumber
-     * @param int<0, max>|null $columnNumber
+     * @param  non-empty-string  $rule
+     * @param  int<1, max>|null  $lineNumber
+     * @param  int<0, max>|null  $columnNumber
      */
     public function __construct(string $rule, ?int $lineNumber = null, ?int $columnNumber = null)
     {
@@ -54,7 +54,7 @@ class Rule implements Commentable, CSSElement, Positionable
     }
 
     /**
-     * @param list<Comment> $commentsBeforeRule
+     * @param  list<Comment>  $commentsBeforeRule
      *
      * @throws UnexpectedEOFException
      * @throws UnexpectedTokenException
@@ -65,7 +65,7 @@ class Rule implements Commentable, CSSElement, Positionable
     {
         $comments = \array_merge($commentsBeforeRule, $parserState->consumeWhiteSpace());
         $rule = new Rule(
-            $parserState->parseIdentifier(!$parserState->comes('--')),
+            $parserState->parseIdentifier(! $parserState->comes('--')),
             $parserState->currentLine(),
             $parserState->currentColumn()
         );
@@ -94,8 +94,7 @@ class Rule implements Commentable, CSSElement, Positionable
      * The first item is the innermost separator (or, put another way, the highest-precedence operator).
      * The sequence continues to the outermost separator (or lowest-precedence operator).
      *
-     * @param non-empty-string $rule
-     *
+     * @param  non-empty-string  $rule
      * @return list<non-empty-string>
      */
     private static function listDelimiterForRule(string $rule): array
@@ -113,7 +112,7 @@ class Rule implements Commentable, CSSElement, Positionable
     }
 
     /**
-     * @param non-empty-string $rule
+     * @param  non-empty-string  $rule
      */
     public function setRule(string $rule): void
     {
@@ -137,7 +136,7 @@ class Rule implements Commentable, CSSElement, Positionable
     }
 
     /**
-     * @param RuleValueList|string|null $value
+     * @param  RuleValueList|string|null  $value
      */
     public function setValue($value): void
     {
@@ -148,14 +147,14 @@ class Rule implements Commentable, CSSElement, Positionable
      * Adds a value to the existing value. Value will be appended if a `RuleValueList` exists of the given type.
      * Otherwise, the existing value will be wrapped by one.
      *
-     * @param RuleValueList|array<int, RuleValueList> $value
+     * @param  RuleValueList|array<int, RuleValueList>  $value
      */
     public function addValue($value, string $type = ' '): void
     {
-        if (!\is_array($value)) {
+        if (! \is_array($value)) {
             $value = [$value];
         }
-        if (!($this->value instanceof RuleValueList) || $this->value->getListSeparator() !== $type) {
+        if (! ($this->value instanceof RuleValueList) || $this->value->getListSeparator() !== $type) {
             $currentValue = $this->value;
             $this->value = new RuleValueList($type, $this->getLineNumber());
             if ($currentValue !== null && $currentValue !== '') {
@@ -193,6 +192,7 @@ class Rule implements Commentable, CSSElement, Positionable
             $result .= ' !important';
         }
         $result .= ';';
+
         return $result;
     }
 }

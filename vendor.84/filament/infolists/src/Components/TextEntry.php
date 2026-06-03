@@ -45,63 +45,63 @@ class TextEntry extends Entry implements HasAffixActions, HasEmbeddedView
     use HasLineClamp;
     use HasWeight;
 
-    protected bool | Closure $isBadge = false;
+    protected bool|Closure $isBadge = false;
 
-    protected bool | Closure $isBulleted = false;
+    protected bool|Closure $isBulleted = false;
 
-    protected bool | Closure $isProse = false;
+    protected bool|Closure $isProse = false;
 
-    protected bool | Closure $isListWithLineBreaks = false;
+    protected bool|Closure $isListWithLineBreaks = false;
 
-    protected int | Closure | null $listLimit = null;
+    protected int|Closure|null $listLimit = null;
 
-    protected TextSize | string | Closure | null $size = null;
+    protected TextSize|string|Closure|null $size = null;
 
-    protected bool | Closure $isLimitedListExpandable = false;
+    protected bool|Closure $isLimitedListExpandable = false;
 
-    public function badge(bool | Closure $condition = true): static
+    public function badge(bool|Closure $condition = true): static
     {
         $this->isBadge = $condition;
 
         return $this;
     }
 
-    public function bulleted(bool | Closure $condition = true): static
+    public function bulleted(bool|Closure $condition = true): static
     {
         $this->isBulleted = $condition;
 
         return $this;
     }
 
-    public function listWithLineBreaks(bool | Closure $condition = true): static
+    public function listWithLineBreaks(bool|Closure $condition = true): static
     {
         $this->isListWithLineBreaks = $condition;
 
         return $this;
     }
 
-    public function limitList(int | Closure | null $limit = 3): static
+    public function limitList(int|Closure|null $limit = 3): static
     {
         $this->listLimit = $limit;
 
         return $this;
     }
 
-    public function prose(bool | Closure $condition = true): static
+    public function prose(bool|Closure $condition = true): static
     {
         $this->isProse = $condition;
 
         return $this;
     }
 
-    public function size(TextSize | string | Closure | null $size): static
+    public function size(TextSize|string|Closure|null $size): static
     {
         $this->size = $size;
 
         return $this;
     }
 
-    public function getSize(mixed $state): TextSize | string
+    public function getSize(mixed $state): TextSize|string
     {
         $size = $this->evaluate($this->size, [
             'state' => $state,
@@ -157,7 +157,7 @@ class TextEntry extends Entry implements HasAffixActions, HasEmbeddedView
         return $this->evaluate($this->listLimit);
     }
 
-    public function expandableLimitedList(bool | Closure $condition = true): static
+    public function expandableLimitedList(bool|Closure $condition = true): static
     {
         $this->isLimitedListExpandable = $condition;
 
@@ -191,9 +191,9 @@ class TextEntry extends Entry implements HasAffixActions, HasEmbeddedView
                 ->merge([
                     'x-tooltip' => filled($tooltip = $this->getEmptyTooltip())
                         ? '{
-                            content: ' . Js::from($tooltip) . ',
+                            content: '.Js::from($tooltip).',
                             theme: $store.theme,
-                            allowHTML: ' . Js::from($tooltip instanceof Htmlable) . ',
+                            allowHTML: '.Js::from($tooltip instanceof Htmlable).',
                         }'
                         : null,
                 ], escape: false);
@@ -221,7 +221,7 @@ class TextEntry extends Entry implements HasAffixActions, HasEmbeddedView
             $item = '';
 
             if (filled($url)) {
-                $item .= '<a ' . generate_href_html($url, $shouldOpenUrlInNewTab)->toHtml() . '>';
+                $item .= '<a '.generate_href_html($url, $shouldOpenUrlInNewTab)->toHtml().'>';
             }
 
             $item .= e($this->formatState($stateItem));
@@ -336,9 +336,9 @@ class TextEntry extends Entry implements HasAffixActions, HasEmbeddedView
                                 : null,
                             'x-tooltip' => filled($tooltip)
                                 ? '{
-                                content: ' . Js::from($tooltip) . ',
+                                content: '.Js::from($tooltip).',
                                 theme: $store.theme,
-                                allowHTML: ' . Js::from($tooltip instanceof Htmlable) . ',
+                                allowHTML: '.Js::from($tooltip instanceof Htmlable).',
                             }'
                                 : null,
                         ], escape: false)
@@ -555,9 +555,9 @@ class TextEntry extends Entry implements HasAffixActions, HasEmbeddedView
     /**
      * @param  string | array<int | string, string | Closure> | Closure | null  $relationship
      */
-    public function avg(string | array | Closure | null $relationship, string | Expression | Closure | null $column): static
+    public function avg(string|array|Closure|null $relationship, string|Expression|Closure|null $column): static
     {
-        $this->state(function (TextEntry $entry, ?Model $record) use ($relationship, $column): int | float | null {
+        $this->state(function (TextEntry $entry, ?Model $record) use ($relationship, $column): int|float|null {
             if (blank($record)) {
                 return null;
             }
@@ -576,9 +576,9 @@ class TextEntry extends Entry implements HasAffixActions, HasEmbeddedView
     /**
      * @param  string | array<int | string, string | Closure> | Closure | null  $relationships
      */
-    public function counts(string | array | Closure | null $relationships): static
+    public function counts(string|array|Closure|null $relationships): static
     {
-        $this->state(function (TextEntry $entry, ?Model $record) use ($relationships): int | float | null {
+        $this->state(function (TextEntry $entry, ?Model $record) use ($relationships): int|float|null {
             if (blank($record)) {
                 return null;
             }
@@ -596,9 +596,9 @@ class TextEntry extends Entry implements HasAffixActions, HasEmbeddedView
     /**
      * @param  string | array<int | string, string | Closure> | Closure | null  $relationship
      */
-    public function max(string | array | Closure | null $relationship, string | Expression | Closure | null $column): static
+    public function max(string|array|Closure|null $relationship, string|Expression|Closure|null $column): static
     {
-        $this->state(function (TextEntry $entry, ?Model $record) use ($relationship, $column): int | float | null {
+        $this->state(function (TextEntry $entry, ?Model $record) use ($relationship, $column): int|float|null {
             if (blank($record)) {
                 return null;
             }
@@ -617,9 +617,9 @@ class TextEntry extends Entry implements HasAffixActions, HasEmbeddedView
     /**
      * @param  string | array<int | string, string | Closure> | Closure | null  $relationship
      */
-    public function min(string | array | Closure | null $relationship, string | Expression | Closure | null $column): static
+    public function min(string|array|Closure|null $relationship, string|Expression|Closure|null $column): static
     {
-        $this->state(function (TextEntry $entry, ?Model $record) use ($relationship, $column): int | float | null {
+        $this->state(function (TextEntry $entry, ?Model $record) use ($relationship, $column): int|float|null {
             if (blank($record)) {
                 return null;
             }
@@ -638,9 +638,9 @@ class TextEntry extends Entry implements HasAffixActions, HasEmbeddedView
     /**
      * @param  string | array<int | string, string | Closure> | Closure | null  $relationship
      */
-    public function sum(string | array | Closure | null $relationship, string | Expression | Closure | null $column): static
+    public function sum(string|array|Closure|null $relationship, string|Expression|Closure|null $column): static
     {
-        $this->state(function (TextEntry $entry, ?Model $record) use ($relationship, $column): int | float | null {
+        $this->state(function (TextEntry $entry, ?Model $record) use ($relationship, $column): int|float|null {
             if (blank($record)) {
                 return null;
             }

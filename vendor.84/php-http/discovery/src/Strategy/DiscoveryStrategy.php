@@ -12,8 +12,7 @@ interface DiscoveryStrategy
     /**
      * Find a resource of a specific type.
      *
-     * @param string $type
-     *
+     * @param  string  $type
      * @return array The return value is always an array with zero or more elements. Each
      *               element is an array with two keys ['class' => string, 'condition' => mixed].
      *

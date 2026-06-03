@@ -27,12 +27,12 @@ class ArrayKey extends AggregatedType implements PseudoType
 {
     public function __construct()
     {
-        parent::__construct([new String_(), new Integer()], '|');
+        parent::__construct([new String_, new Integer], '|');
     }
 
     public function underlyingType(): Type
     {
-        return new Compound([new String_(), new Integer()]);
+        return new Compound([new String_, new Integer]);
     }
 
     public function __toString(): string

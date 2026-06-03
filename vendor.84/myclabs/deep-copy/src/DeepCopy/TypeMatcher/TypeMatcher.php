@@ -10,7 +10,7 @@ class TypeMatcher
     private $type;
 
     /**
-     * @param string $type
+     * @param  string  $type
      */
     public function __construct($type)
     {
@@ -18,9 +18,8 @@ class TypeMatcher
     }
 
     /**
-     * @param mixed $element
-     *
-     * @return boolean
+     * @param  mixed  $element
+     * @return bool
      */
     public function matches($element)
     {

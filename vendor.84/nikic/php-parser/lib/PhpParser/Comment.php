@@ -1,23 +1,32 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace PhpParser;
 
-class Comment implements \JsonSerializable {
+class Comment implements \JsonSerializable
+{
     protected string $text;
+
     protected int $startLine;
+
     protected int $startFilePos;
+
     protected int $startTokenPos;
+
     protected int $endLine;
+
     protected int $endFilePos;
+
     protected int $endTokenPos;
 
     /**
      * Constructs a comment node.
      *
-     * @param string $text Comment text (including comment delimiters like /*)
-     * @param int $startLine Line number the comment started on
-     * @param int $startFilePos File offset the comment started on
-     * @param int $startTokenPos Token offset the comment started on
+     * @param  string  $text  Comment text (including comment delimiters like /*)
+     * @param  int  $startLine  Line number the comment started on
+     * @param  int  $startFilePos  File offset the comment started on
+     * @param  int  $startTokenPos  Token offset the comment started on
      */
     public function __construct(
         string $text,
@@ -38,7 +47,8 @@ class Comment implements \JsonSerializable {
      *
      * @return string The comment text (including comment delimiters like /*)
      */
-    public function getText(): string {
+    public function getText(): string
+    {
         return $this->text;
     }
 
@@ -46,9 +56,11 @@ class Comment implements \JsonSerializable {
      * Gets the line number the comment started on.
      *
      * @return int Line number (or -1 if not available)
+     *
      * @phpstan-return -1|positive-int
      */
-    public function getStartLine(): int {
+    public function getStartLine(): int
+    {
         return $this->startLine;
     }
 
@@ -57,7 +69,8 @@ class Comment implements \JsonSerializable {
      *
      * @return int File offset (or -1 if not available)
      */
-    public function getStartFilePos(): int {
+    public function getStartFilePos(): int
+    {
         return $this->startFilePos;
     }
 
@@ -66,7 +79,8 @@ class Comment implements \JsonSerializable {
      *
      * @return int Token offset (or -1 if not available)
      */
-    public function getStartTokenPos(): int {
+    public function getStartTokenPos(): int
+    {
         return $this->startTokenPos;
     }
 
@@ -74,9 +88,11 @@ class Comment implements \JsonSerializable {
      * Gets the line number the comment ends on.
      *
      * @return int Line number (or -1 if not available)
+     *
      * @phpstan-return -1|positive-int
      */
-    public function getEndLine(): int {
+    public function getEndLine(): int
+    {
         return $this->endLine;
     }
 
@@ -85,7 +101,8 @@ class Comment implements \JsonSerializable {
      *
      * @return int File offset (or -1 if not available)
      */
-    public function getEndFilePos(): int {
+    public function getEndFilePos(): int
+    {
         return $this->endFilePos;
     }
 
@@ -94,7 +111,8 @@ class Comment implements \JsonSerializable {
      *
      * @return int Token offset (or -1 if not available)
      */
-    public function getEndTokenPos(): int {
+    public function getEndTokenPos(): int
+    {
         return $this->endTokenPos;
     }
 
@@ -103,7 +121,8 @@ class Comment implements \JsonSerializable {
      *
      * @return string The comment text (including comment delimiters like /*)
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         return $this->text;
     }
 
@@ -117,10 +136,11 @@ class Comment implements \JsonSerializable {
      *
      * Additionally, this normalizes CRLF newlines to LF newlines.
      */
-    public function getReformattedText(): string {
+    public function getReformattedText(): string
+    {
         $text = str_replace("\r\n", "\n", $this->text);
         $newlinePos = strpos($text, "\n");
-        if (false === $newlinePos) {
+        if ($newlinePos === false) {
             // Single line comments don't need further processing
             return $text;
         }
@@ -146,7 +166,7 @@ class Comment implements \JsonSerializable {
             // is handled by removing the whitespace sequence on the line before the closing
             // */ on all lines. So if the last line is "    */", then "    " is removed at the
             // start of all lines.
-            return preg_replace('(^' . preg_quote($matches[1]) . ')m', '', $text);
+            return preg_replace('(^'.preg_quote($matches[1]).')m', '', $text);
         }
         if (preg_match('(^/\*\*?\s*(?!\s))', $text, $matches)) {
             // Multi line comment of the type
@@ -160,7 +180,8 @@ class Comment implements \JsonSerializable {
             // lines and the length of the "/* " opening sequence.
             $prefixLen = $this->getShortestWhitespacePrefixLen(substr($text, $newlinePos + 1));
             $removeLen = $prefixLen - strlen($matches[0]);
-            return preg_replace('(^\s{' . $removeLen . '})m', '', $text);
+
+            return preg_replace('(^\s{'.$removeLen.'})m', '', $text);
         }
 
         // No idea how to format this comment, so simply return as is
@@ -172,10 +193,11 @@ class Comment implements \JsonSerializable {
      *
      * If there is a line with no prefix whitespace, 0 is a valid return value.
      *
-     * @param string $str String to check
+     * @param  string  $str  String to check
      * @return int Length in characters. Tabs count as single characters.
      */
-    private function getShortestWhitespacePrefixLen(string $str): int {
+    private function getShortestWhitespacePrefixLen(string $str): int
+    {
         $lines = explode("\n", $str);
         $shortestPrefixLen = \PHP_INT_MAX;
         foreach ($lines as $line) {
@@ -185,15 +207,18 @@ class Comment implements \JsonSerializable {
                 $shortestPrefixLen = $prefixLen;
             }
         }
+
         return $shortestPrefixLen;
     }
 
     /**
      * @return array{nodeType:string, text:mixed, line:mixed, filePos:mixed}
      */
-    public function jsonSerialize(): array {
+    public function jsonSerialize(): array
+    {
         // Technically not a node, but we make it look like one anyway
         $type = $this instanceof Comment\Doc ? 'Comment_Doc' : 'Comment';
+
         return [
             'nodeType' => $type,
             'text' => $this->text,

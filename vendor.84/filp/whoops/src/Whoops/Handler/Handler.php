@@ -1,6 +1,8 @@
 <?php
+
 /**
  * Whoops - php errors for cool kids
+ *
  * @author Filipe Dobreira <http://github.com/filp>
  */
 
@@ -18,17 +20,19 @@ abstract class Handler implements HandlerInterface
      Return constants that can be returned from Handler::handle
      to message the handler walker.
      */
-    const DONE         = 0x10; // returning this is optional, only exists for
-                               // semantic purposes
+    const DONE = 0x10; // returning this is optional, only exists for
+
+    // semantic purposes
     /**
      * The Handler has handled the Throwable in some way, and wishes to skip any other Handler.
      * Execution will continue.
      */
     const LAST_HANDLER = 0x20;
+
     /**
      * The Handler has handled the Throwable in some way, and wishes to quit/stop execution
      */
-    const QUIT         = 0x30;
+    const QUIT = 0x30;
 
     /**
      * @var RunInterface
@@ -36,18 +40,15 @@ abstract class Handler implements HandlerInterface
     private $run;
 
     /**
-     * @var InspectorInterface $inspector
+     * @var InspectorInterface
      */
     private $inspector;
 
     /**
-     * @var \Throwable $exception
+     * @var \Throwable
      */
     private $exception;
 
-    /**
-     * @param RunInterface $run
-     */
     public function setRun(RunInterface $run)
     {
         $this->run = $run;
@@ -61,9 +62,6 @@ abstract class Handler implements HandlerInterface
         return $this->run;
     }
 
-    /**
-     * @param InspectorInterface $inspector
-     */
     public function setInspector(InspectorInterface $inspector)
     {
         $this->inspector = $inspector;
@@ -78,7 +76,7 @@ abstract class Handler implements HandlerInterface
     }
 
     /**
-     * @param \Throwable $exception
+     * @param  \Throwable  $exception
      */
     public function setException($exception)
     {

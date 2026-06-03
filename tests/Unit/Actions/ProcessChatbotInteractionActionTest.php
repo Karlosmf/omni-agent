@@ -4,8 +4,10 @@ use App\Actions\Leads\ProcessChatbotInteractionAction;
 use App\Models\Lead;
 use App\Services\AiConciergeService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Log;
+use Tests\TestCase;
 
-uses(Tests\TestCase::class, RefreshDatabase::class);
+uses(TestCase::class, RefreshDatabase::class);
 
 test('it processes chat and extracts data', function () {
     $lead = Lead::factory()->create([
@@ -29,7 +31,7 @@ test('it processes chat and extracts data', function () {
         ]);
 
     $action = new ProcessChatbotInteractionAction($mockAiService);
-    
+
     $reply = $action->execute('Hola quiero ir a paris', $lead, []);
 
     expect($reply)->toBe('¡Qué lindo destino!');
@@ -45,12 +47,12 @@ test('it handles exceptions gracefully', function () {
 
     $mockAiService = Mockery::mock(AiConciergeService::class);
     $mockAiService->shouldReceive('processMessage')
-        ->andThrow(new \Exception('Service Error'));
+        ->andThrow(new Exception('Service Error'));
 
-    \Illuminate\Support\Facades\Log::shouldReceive('error')->once();
+    Log::shouldReceive('error')->once();
 
     $action = new ProcessChatbotInteractionAction($mockAiService);
-    
+
     $reply = $action->execute('Hola', $lead, []);
 
     expect($reply)->toBe('Disculpá, tuve una pequeña desconexión. ¿Me lo repetís?');

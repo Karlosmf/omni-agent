@@ -6,9 +6,9 @@ use Closure;
 
 trait HasDate
 {
-    protected string | Closure | null $date = null;
+    protected string|Closure|null $date = null;
 
-    public function date(string | Closure | null $date): static
+    public function date(string|Closure|null $date): static
     {
         $this->date = $date;
 

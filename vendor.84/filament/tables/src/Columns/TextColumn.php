@@ -42,40 +42,40 @@ class TextColumn extends Column implements HasEmbeddedView
     use HasLineClamp;
     use HasWeight;
 
-    protected bool | Closure $isBadge = false;
+    protected bool|Closure $isBadge = false;
 
-    protected bool | Closure $isBulleted = false;
+    protected bool|Closure $isBulleted = false;
 
-    protected bool | Closure $isListWithLineBreaks = false;
+    protected bool|Closure $isListWithLineBreaks = false;
 
-    protected int | Closure | null $listLimit = null;
+    protected int|Closure|null $listLimit = null;
 
-    protected TextSize | string | Closure | null $size = null;
+    protected TextSize|string|Closure|null $size = null;
 
-    protected bool | Closure $isLimitedListExpandable = false;
+    protected bool|Closure $isLimitedListExpandable = false;
 
-    public function badge(bool | Closure $condition = true): static
+    public function badge(bool|Closure $condition = true): static
     {
         $this->isBadge = $condition;
 
         return $this;
     }
 
-    public function bulleted(bool | Closure $condition = true): static
+    public function bulleted(bool|Closure $condition = true): static
     {
         $this->isBulleted = $condition;
 
         return $this;
     }
 
-    public function listWithLineBreaks(bool | Closure $condition = true): static
+    public function listWithLineBreaks(bool|Closure $condition = true): static
     {
         $this->isListWithLineBreaks = $condition;
 
         return $this;
     }
 
-    public function limitList(int | Closure | null $limit = 3): static
+    public function limitList(int|Closure|null $limit = 3): static
     {
         $this->listLimit = $limit;
 
@@ -99,14 +99,14 @@ class TextColumn extends Column implements HasEmbeddedView
         return $this;
     }
 
-    public function size(TextSize | string | Closure | null $size): static
+    public function size(TextSize|string|Closure|null $size): static
     {
         $this->size = $size;
 
         return $this;
     }
 
-    public function getSize(mixed $state): TextSize | string
+    public function getSize(mixed $state): TextSize|string
     {
         $size = $this->evaluate($this->size, [
             'state' => $state,
@@ -147,7 +147,7 @@ class TextColumn extends Column implements HasEmbeddedView
         return $this->evaluate($this->listLimit);
     }
 
-    public function expandableLimitedList(bool | Closure $condition = true): static
+    public function expandableLimitedList(bool|Closure $condition = true): static
     {
         $this->isLimitedListExpandable = $condition;
 
@@ -189,9 +189,9 @@ class TextColumn extends Column implements HasEmbeddedView
                 ->merge([
                     'x-tooltip' => filled($tooltip = $this->getEmptyTooltip())
                         ? '{
-                            content: ' . Js::from($tooltip) . ',
+                            content: '.Js::from($tooltip).',
                             theme: $store.theme,
-                            allowHTML: ' . Js::from($tooltip instanceof Htmlable) . ',
+                            allowHTML: '.Js::from($tooltip instanceof Htmlable).',
                         }'
                         : null,
                 ], escape: false);
@@ -219,7 +219,7 @@ class TextColumn extends Column implements HasEmbeddedView
             $item = '';
 
             if (filled($url)) {
-                $item .= '<a ' . generate_href_html($url, $shouldOpenUrlInNewTab)->toHtml() . '>';
+                $item .= '<a '.generate_href_html($url, $shouldOpenUrlInNewTab)->toHtml().'>';
             }
 
             $item .= e($this->formatState($stateItem));
@@ -328,9 +328,9 @@ class TextColumn extends Column implements HasEmbeddedView
                                 : null,
                             'x-tooltip' => filled($tooltip)
                                 ? '{
-                                content: ' . Js::from($tooltip) . ',
+                                content: '.Js::from($tooltip).',
                                 theme: $store.theme,
-                                allowHTML: ' . Js::from($tooltip instanceof Htmlable) . ',
+                                allowHTML: '.Js::from($tooltip instanceof Htmlable).',
                             }'
                                 : null,
                         ], escape: false)

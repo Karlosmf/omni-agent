@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -15,7 +17,6 @@ use DateTimeInterface;
 use Monolog\Handler\SyslogUdp\UdpSocket;
 use Monolog\Level;
 use Monolog\LogRecord;
-use Monolog\Utils;
 
 /**
  * A Handler for logging to a remote syslogd server.
@@ -26,7 +27,9 @@ use Monolog\Utils;
 class SyslogUdpHandler extends AbstractSyslogHandler
 {
     const RFC3164 = 0;
+
     const RFC5424 = 1;
+
     const RFC5424e = 2;
 
     /** @var array<self::RFC*, string> */
@@ -37,24 +40,27 @@ class SyslogUdpHandler extends AbstractSyslogHandler
     ];
 
     protected UdpSocket $socket;
+
     protected string $ident;
+
     /** @var self::RFC* */
     protected int $rfc;
 
     /**
-     * @param  string                    $host     Either IP/hostname or a path to a unix socket (port must be 0 then)
-     * @param  int                       $port     Port number, or 0 if $host is a unix socket
-     * @param  string|int                $facility Either one of the names of the keys in $this->facilities, or a LOG_* facility constant
-     * @param  bool                      $bubble   Whether the messages that are handled can bubble up the stack or not
-     * @param  string                    $ident    Program name or tag for each log message.
-     * @param  int                       $rfc      RFC to format the message for.
-     * @throws MissingExtensionException when there is no socket extension
+     * @param  string  $host  Either IP/hostname or a path to a unix socket (port must be 0 then)
+     * @param  int  $port  Port number, or 0 if $host is a unix socket
+     * @param  string|int  $facility  Either one of the names of the keys in $this->facilities, or a LOG_* facility constant
+     * @param  bool  $bubble  Whether the messages that are handled can bubble up the stack or not
+     * @param  string  $ident  Program name or tag for each log message.
+     * @param  int  $rfc  RFC to format the message for.
      *
      * @phpstan-param self::RFC* $rfc
+     *
+     * @throws MissingExtensionException when there is no socket extension
      */
     public function __construct(string $host, int $port = 514, string|int $facility = LOG_USER, int|string|Level $level = Level::Debug, bool $bubble = true, string $ident = 'php', int $rfc = self::RFC5424)
     {
-        if (!\extension_loaded('sockets')) {
+        if (! \extension_loaded('sockets')) {
             throw new MissingExtensionException('The sockets extension is required to use the SyslogUdpHandler');
         }
 
@@ -83,7 +89,7 @@ class SyslogUdpHandler extends AbstractSyslogHandler
     }
 
     /**
-     * @param  string|string[] $message
+     * @param  string|string[]  $message
      * @return string[]
      */
     private function splitMessageIntoLines($message): array
@@ -93,10 +99,10 @@ class SyslogUdpHandler extends AbstractSyslogHandler
         }
 
         $lines = preg_split('/$\R?^/m', (string) $message, -1, PREG_SPLIT_NO_EMPTY);
-        if (false === $lines) {
+        if ($lines === false) {
             $pcreErrorCode = preg_last_error();
 
-            throw new \RuntimeException('Could not preg_split: ' . $pcreErrorCode . ' / ' . preg_last_error_msg());
+            throw new \RuntimeException('Could not preg_split: '.$pcreErrorCode.' / '.preg_last_error_msg());
         }
 
         return $lines;
@@ -110,12 +116,12 @@ class SyslogUdpHandler extends AbstractSyslogHandler
         $priority = $severity + $this->facility;
 
         $pid = getmypid();
-        if (false === $pid) {
+        if ($pid === false) {
             $pid = '-';
         }
 
         $hostname = gethostname();
-        if (false === $hostname) {
+        if ($hostname === false) {
             $hostname = '-';
         }
 
@@ -125,19 +131,19 @@ class SyslogUdpHandler extends AbstractSyslogHandler
             $dateNew = $datetime->setTimezone(new \DateTimeZone('UTC'));
             $date = $dateNew->format($this->dateFormats[$this->rfc]);
 
-            return "<$priority>" .
-                $date . " " .
-                $hostname . " " .
-                $this->ident . "[" . $pid . "]: ";
+            return "<$priority>".
+                $date.' '.
+                $hostname.' '.
+                $this->ident.'['.$pid.']: ';
         }
 
         $date = $datetime->format($this->dateFormats[$this->rfc]);
 
-        return "<$priority>1 " .
-            $date . " " .
-            $hostname . " " .
-            $this->ident . " " .
-            $pid . " - - ";
+        return "<$priority>1 ".
+            $date.' '.
+            $hostname.' '.
+            $this->ident.' '.
+            $pid.' - - ';
     }
 
     /**

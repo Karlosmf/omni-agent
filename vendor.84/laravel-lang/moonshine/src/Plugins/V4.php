@@ -15,9 +15,9 @@ class V4 extends Plugin
     public function files(): array
     {
         return [
-            'moonshine/4.x/auth.php'       => 'vendor/moonshine/{locale}/auth.php',
+            'moonshine/4.x/auth.php' => 'vendor/moonshine/{locale}/auth.php',
             'moonshine/4.x/pagination.php' => 'vendor/moonshine/{locale}/pagination.php',
-            'moonshine/4.x/ui.php'         => 'vendor/moonshine/{locale}/ui.php',
+            'moonshine/4.x/ui.php' => 'vendor/moonshine/{locale}/ui.php',
             'moonshine/4.x/validation.php' => 'vendor/moonshine/{locale}/validation.php',
         ];
     }

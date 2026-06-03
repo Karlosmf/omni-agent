@@ -103,7 +103,7 @@ class RelationManager extends Component implements HasActions, HasRenderHookScop
 
     protected static ?string $title = null;
 
-    protected static string | BackedEnum | null $icon = null;
+    protected static string|BackedEnum|null $icon = null;
 
     protected static IconPosition $iconPosition = IconPosition::Before;
 
@@ -111,7 +111,7 @@ class RelationManager extends Component implements HasActions, HasRenderHookScop
 
     protected static ?string $badgeColor = null;
 
-    protected static string | Htmlable | null $badgeTooltip = null;
+    protected static string|Htmlable|null $badgeTooltip = null;
 
     public function mount(): void
     {
@@ -160,7 +160,7 @@ class RelationManager extends Component implements HasActions, HasRenderHookScop
             ->iconPosition(static::class::getIconPosition($ownerRecord, $pageClass));
     }
 
-    public static function getIcon(Model $ownerRecord, string $pageClass): string | BackedEnum | Htmlable | null
+    public static function getIcon(Model $ownerRecord, string $pageClass): string|BackedEnum|Htmlable|null
     {
         return static::$icon;
     }
@@ -180,7 +180,7 @@ class RelationManager extends Component implements HasActions, HasRenderHookScop
         return static::$badgeColor;
     }
 
-    public static function getBadgeTooltip(Model $ownerRecord, string $pageClass): string | Htmlable | null
+    public static function getBadgeTooltip(Model $ownerRecord, string $pageClass): string|Htmlable|null
     {
         return static::$badgeTooltip;
     }

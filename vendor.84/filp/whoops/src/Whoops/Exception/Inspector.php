@@ -1,12 +1,15 @@
 <?php
+
 /**
  * Whoops - php errors for cool kids
+ *
  * @author Filipe Dobreira <http://github.com/filp>
  */
 
 namespace Whoops\Exception;
 
 use Whoops\Inspector\InspectorFactory;
+use Whoops\Inspector\InspectorFactoryInterface;
 use Whoops\Inspector\InspectorInterface;
 use Whoops\Util\Misc;
 
@@ -18,12 +21,12 @@ class Inspector implements InspectorInterface
     private $exception;
 
     /**
-     * @var \Whoops\Exception\FrameCollection
+     * @var FrameCollection
      */
     private $frames;
 
     /**
-     * @var \Whoops\Exception\Inspector
+     * @var Inspector
      */
     private $previousExceptionInspector;
 
@@ -33,18 +36,18 @@ class Inspector implements InspectorInterface
     private $previousExceptions;
 
     /**
-     * @var \Whoops\Inspector\InspectorFactoryInterface|null
+     * @var InspectorFactoryInterface|null
      */
     protected $inspectorFactory;
 
     /**
-     * @param \Throwable $exception The exception to inspect
-     * @param \Whoops\Inspector\InspectorFactoryInterface $factory
+     * @param  \Throwable  $exception  The exception to inspect
+     * @param  InspectorFactoryInterface  $factory
      */
     public function __construct($exception, $factory = null)
     {
         $this->exception = $exception;
-        $this->inspectorFactory = $factory ?: new InspectorFactory();
+        $this->inspectorFactory = $factory ?: new InspectorFactory;
     }
 
     /**
@@ -112,7 +115,7 @@ class Inspector implements InspectorInterface
 
         // php embbeds urls to the manual into the Exception message with the following ini-settings defined
         // http://php.net/manual/en/errorfunc.configuration.php#ini.docref-root
-        if (!ini_get('html_errors') || !ini_get('docref_root')) {
+        if (! ini_get('html_errors') || ! ini_get('docref_root')) {
             return $docref;
         }
 
@@ -128,6 +131,7 @@ class Inspector implements InspectorInterface
 
     /**
      * Does the wrapped Exception has a previous Exception?
+     *
      * @return bool
      */
     public function hasPreviousException()
@@ -137,7 +141,9 @@ class Inspector implements InspectorInterface
 
     /**
      * Returns an Inspector for a previous Exception, if any.
+     *
      * @todo   Clean this up a bit, cache stuff a bit better.
+     *
      * @return Inspector
      */
     public function getPreviousExceptionInspector()
@@ -153,9 +159,9 @@ class Inspector implements InspectorInterface
         return $this->previousExceptionInspector;
     }
 
-
     /**
      * Returns an array of all previous exceptions for this inspector's exception
+     *
      * @return \Throwable[]
      */
     public function getPreviousExceptions()
@@ -176,10 +182,9 @@ class Inspector implements InspectorInterface
     /**
      * Returns an iterator for the inspected exception's
      * frames.
-     * 
-     * @param array<callable> $frameFilters
-     * 
-     * @return \Whoops\Exception\FrameCollection
+     *
+     * @param  array<callable>  $frameFilters
+     * @return FrameCollection
      */
     public function getFrames(array $frameFilters = [])
     {
@@ -193,7 +198,7 @@ class Inspector implements InspectorInterface
                     $file = '[internal]';
                     $line = 0;
 
-                    $next_frame = !empty($frames[$k + 1]) ? $frames[$k + 1] : [];
+                    $next_frame = ! empty($frames[$k + 1]) ? $frames[$k + 1] : [];
 
                     if ($this->isValidNextFrame($next_frame)) {
                         $file = $next_frame['file'];
@@ -239,7 +244,7 @@ class Inspector implements InspectorInterface
             }
 
             // Apply frame filters callbacks on the frames stack
-            if (!empty($frameFilters)) {
+            if (! empty($frameFilters)) {
                 foreach ($frameFilters as $filterCallback) {
                     $this->frames->filter($filterCallback);
                 }
@@ -254,7 +259,7 @@ class Inspector implements InspectorInterface
      *
      * If xdebug is installed
      *
-     * @param \Throwable $e
+     * @param  \Throwable  $e
      * @return array
      */
     protected function getTrace($e)
@@ -262,15 +267,15 @@ class Inspector implements InspectorInterface
         $traces = $e->getTrace();
 
         // Get trace from xdebug if enabled, failure exceptions only trace to the shutdown handler by default
-        if (!$e instanceof \ErrorException) {
+        if (! $e instanceof \ErrorException) {
             return $traces;
         }
 
-        if (!Misc::isLevelFatal($e->getSeverity())) {
+        if (! Misc::isLevelFatal($e->getSeverity())) {
             return $traces;
         }
 
-        if (!extension_loaded('xdebug') || !function_exists('xdebug_is_enabled') || !xdebug_is_enabled()) {
+        if (! extension_loaded('xdebug') || ! function_exists('xdebug_is_enabled') || ! xdebug_is_enabled()) {
             return $traces;
         }
 
@@ -285,16 +290,17 @@ class Inspector implements InspectorInterface
     /**
      * Given an exception, generates an array in the format
      * generated by Exception::getTrace()
-     * @param  \Throwable $exception
+     *
+     * @param  \Throwable  $exception
      * @return array
      */
     protected function getFrameFromException($exception)
     {
         return [
-            'file'  => $exception->getFile(),
-            'line'  => $exception->getLine(),
+            'file' => $exception->getFile(),
+            'line' => $exception->getLine(),
             'class' => get_class($exception),
-            'args'  => [
+            'args' => [
                 $exception->getMessage(),
             ],
         ];
@@ -303,16 +309,16 @@ class Inspector implements InspectorInterface
     /**
      * Given an error, generates an array in the format
      * generated by ErrorException
-     * @param  ErrorException $exception
+     *
      * @return array
      */
     protected function getFrameFromError(ErrorException $exception)
     {
         return [
-            'file'  => $exception->getFile(),
-            'line'  => $exception->getLine(),
+            'file' => $exception->getFile(),
+            'line' => $exception->getLine(),
             'class' => null,
-            'args'  => [],
+            'args' => [],
         ];
     }
 
@@ -332,7 +338,7 @@ class Inspector implements InspectorInterface
             return false;
         }
 
-        if (empty($frame['function']) || !stristr($frame['function'], 'call_user_func')) {
+        if (empty($frame['function']) || ! stristr($frame['function'], 'call_user_func')) {
             return false;
         }
 

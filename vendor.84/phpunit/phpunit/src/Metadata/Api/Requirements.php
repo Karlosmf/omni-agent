@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,23 +9,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Metadata\Api;
 
 use const PHP_OS;
 use const PHP_OS_FAMILY;
 use const PHP_VERSION;
-use function addcslashes;
-use function array_column;
-use function array_key_exists;
-use function assert;
-use function extension_loaded;
-use function function_exists;
-use function in_array;
-use function ini_get;
-use function method_exists;
-use function phpversion;
-use function preg_match;
-use function sprintf;
+
 use PHPUnit\Metadata\Parser\Registry;
 use PHPUnit\Metadata\RequiresEnvironmentVariable;
 use PHPUnit\Metadata\RequiresFunction;
@@ -38,6 +30,19 @@ use PHPUnit\Metadata\RequiresSetting;
 use PHPUnit\Runner\Version;
 use PHPUnit\TextUI\Configuration\Registry as ConfigurationRegistry;
 
+use function addcslashes;
+use function array_column;
+use function array_key_exists;
+use function assert;
+use function extension_loaded;
+use function function_exists;
+use function in_array;
+use function ini_get;
+use function method_exists;
+use function phpversion;
+use function preg_match;
+use function sprintf;
+
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  *
@@ -46,9 +51,8 @@ use PHPUnit\TextUI\Configuration\Registry as ConfigurationRegistry;
 final readonly class Requirements
 {
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
-     *
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      * @return list<string>
      */
     public function requirementsNotSatisfiedFor(string $className, string $methodName): array
@@ -59,7 +63,7 @@ final readonly class Requirements
             if ($metadata->isRequiresPhp()) {
                 assert($metadata instanceof RequiresPhp);
 
-                if (!$metadata->versionRequirement()->isSatisfiedBy(PHP_VERSION)) {
+                if (! $metadata->versionRequirement()->isSatisfiedBy(PHP_VERSION)) {
                     $notSatisfied[] = sprintf(
                         'PHP %s is required.',
                         $metadata->versionRequirement()->asString(),
@@ -76,13 +80,13 @@ final readonly class Requirements
                     $extensionVersion = '';
                 }
 
-                if (!extension_loaded($metadata->extension()) ||
+                if (! extension_loaded($metadata->extension()) ||
                     ($metadata->hasVersionRequirement() &&
-                    !$metadata->versionRequirement()->isSatisfiedBy($extensionVersion))) {
+                    ! $metadata->versionRequirement()->isSatisfiedBy($extensionVersion))) {
                     $notSatisfied[] = sprintf(
                         'PHP extension %s%s is required.',
                         $metadata->extension(),
-                        $metadata->hasVersionRequirement() ? (' ' . $metadata->versionRequirement()->asString()) : '',
+                        $metadata->hasVersionRequirement() ? (' '.$metadata->versionRequirement()->asString()) : '',
                     );
                 }
             }
@@ -90,7 +94,7 @@ final readonly class Requirements
             if ($metadata->isRequiresPhpunit()) {
                 assert($metadata instanceof RequiresPhpunit);
 
-                if (!$metadata->versionRequirement()->isSatisfiedBy(Version::id())) {
+                if (! $metadata->versionRequirement()->isSatisfiedBy(Version::id())) {
                     $notSatisfied[] = sprintf(
                         'PHPUnit %s is required.',
                         $metadata->versionRequirement()->asString(),
@@ -105,7 +109,7 @@ final readonly class Requirements
 
                 $extensionBootstrappers = array_column($configuration->extensionBootstrappers(), 'className');
 
-                if ($configuration->noExtensions() || !in_array($metadata->extensionClass(), $extensionBootstrappers, true)) {
+                if ($configuration->noExtensions() || ! in_array($metadata->extensionClass(), $extensionBootstrappers, true)) {
                     $notSatisfied[] = sprintf(
                         'PHPUnit extension "%s" is required.',
                         $metadata->extensionClass(),
@@ -116,7 +120,7 @@ final readonly class Requirements
             if ($metadata->isRequiresEnvironmentVariable()) {
                 assert($metadata instanceof RequiresEnvironmentVariable);
 
-                if (!array_key_exists($metadata->environmentVariableName(), $_ENV) ||
+                if (! array_key_exists($metadata->environmentVariableName(), $_ENV) ||
                     $metadata->value() === null && $_ENV[$metadata->environmentVariableName()] === '') {
                     $notSatisfied[] = sprintf('Environment variable "%s" is required.', $metadata->environmentVariableName());
 
@@ -162,7 +166,7 @@ final readonly class Requirements
             if ($metadata->isRequiresFunction()) {
                 assert($metadata instanceof RequiresFunction);
 
-                if (!function_exists($metadata->functionName())) {
+                if (! function_exists($metadata->functionName())) {
                     $notSatisfied[] = sprintf(
                         'Function %s() is required.',
                         $metadata->functionName(),
@@ -173,7 +177,7 @@ final readonly class Requirements
             if ($metadata->isRequiresMethod()) {
                 assert($metadata instanceof RequiresMethod);
 
-                if (!method_exists($metadata->className(), $metadata->methodName())) {
+                if (! method_exists($metadata->className(), $metadata->methodName())) {
                     $notSatisfied[] = sprintf(
                         'Method %s::%s() is required.',
                         $metadata->className(),

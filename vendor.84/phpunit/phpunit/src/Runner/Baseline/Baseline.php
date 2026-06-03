@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner\Baseline;
 
 /**
@@ -25,11 +28,11 @@ final class Baseline
 
     public function add(Issue $issue): void
     {
-        if (!isset($this->issues[$issue->file()])) {
+        if (! isset($this->issues[$issue->file()])) {
             $this->issues[$issue->file()] = [];
         }
 
-        if (!isset($this->issues[$issue->file()][$issue->line()])) {
+        if (! isset($this->issues[$issue->file()][$issue->line()])) {
             $this->issues[$issue->file()][$issue->line()] = [];
         }
 
@@ -38,7 +41,7 @@ final class Baseline
 
     public function has(Issue $issue): bool
     {
-        if (!isset($this->issues[$issue->file()][$issue->line()])) {
+        if (! isset($this->issues[$issue->file()][$issue->line()])) {
             return false;
         }
 

@@ -55,7 +55,6 @@ class AutocompleterAggregate implements Autocompleter
     {
         $this->setAutocompleters($autocompleters);
 
-        return;
     }
 
     /**
@@ -71,7 +70,7 @@ class AutocompleterAggregate implements Autocompleter
                 $match
             );
 
-            if (0 === $preg) {
+            if ($preg === 0) {
                 continue;
             }
 

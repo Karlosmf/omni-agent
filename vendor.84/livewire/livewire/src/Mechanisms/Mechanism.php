@@ -4,12 +4,12 @@ namespace Livewire\Mechanisms;
 
 abstract class Mechanism
 {
-    function register()
+    public function register()
     {
         app()->instance(static::class, $this);
     }
 
-    function boot()
+    public function boot()
     {
         //
     }

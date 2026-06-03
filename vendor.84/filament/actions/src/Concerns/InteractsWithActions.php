@@ -564,7 +564,7 @@ trait InteractsWithActions
             $resolvedAction = $this->{$methodName}();
 
             if (! $resolvedAction instanceof Action) {
-                throw new ActionNotResolvableException('Actions must be an instance of ' . Action::class . ". The [{$methodName}] method on the Livewire component returned an instance of [" . get_class($resolvedAction) . '].');
+                throw new ActionNotResolvableException('Actions must be an instance of '.Action::class.". The [{$methodName}] method on the Livewire component returned an instance of [".get_class($resolvedAction).'].');
             }
 
             $this->cacheAction($resolvedAction);
@@ -580,7 +580,7 @@ trait InteractsWithActions
     protected function resolveTableAction(array $action, array $parentActions): Action
     {
         if (! ($this instanceof HasTable)) {
-            throw new ActionNotResolvableException('Failed to resolve table action for Livewire component without the [' . HasTable::class . '] trait.');
+            throw new ActionNotResolvableException('Failed to resolve table action for Livewire component without the ['.HasTable::class.'] trait.');
         }
 
         if ($action['context']['bulk'] ?? false) {
@@ -605,7 +605,7 @@ trait InteractsWithActions
     protected function resolveSchemaComponentAction(array $action, array $parentActions): Action
     {
         if (! $this instanceof HasSchemas) {
-            throw new ActionNotResolvableException('Failed to resolve action schema for Livewire component without the [' . InteractsWithSchemas::class . '] trait.');
+            throw new ActionNotResolvableException('Failed to resolve action schema for Livewire component without the ['.InteractsWithSchemas::class.'] trait.');
         }
 
         $key = $action['context']['schemaComponent'];
@@ -633,10 +633,10 @@ trait InteractsWithActions
     /**
      * @param  string | array<string>  $actions
      */
-    public function getAction(string | array $actions, bool $isMounting = true): ?Action
+    public function getAction(string|array $actions, bool $isMounting = true): ?Action
     {
         $actions = array_map(
-            fn (string | array $action): array => is_array($action) ? $action : ['name' => $action],
+            fn (string|array $action): array => is_array($action) ? $action : ['name' => $action],
             Arr::wrap($actions),
         );
 
@@ -649,7 +649,7 @@ trait InteractsWithActions
             return null;
         }
 
-        return 'mountedActionSchema' . array_key_last($this->mountedActions);
+        return 'mountedActionSchema'.array_key_last($this->mountedActions);
     }
 
     protected function getMountedActionSchema(?int $actionNestingIndex = null, ?Action $mountedAction = null): ?Schema
@@ -668,7 +668,7 @@ trait InteractsWithActions
 
         return $mountedAction->getSchema(
             $this->makeSchema()
-                ->model(function () use ($mountedAction): Model | array | string | null {
+                ->model(function () use ($mountedAction): Model|array|string|null {
                     $schemaComponent = $mountedAction->getSchemaComponent();
 
                     return $mountedAction->getRecord(withDefault: blank($schemaComponent)) ?? $mountedAction->getModel(withDefault: blank($schemaComponent)) ?? $schemaComponent?->getActionSchemaModel() ?? $this->getMountedActionSchemaModel();
@@ -696,7 +696,7 @@ trait InteractsWithActions
     /**
      * @return Model|class-string<Model>|null
      */
-    protected function getMountedActionSchemaModel(): Model | string | null
+    protected function getMountedActionSchemaModel(): Model|string|null
     {
         return null;
     }

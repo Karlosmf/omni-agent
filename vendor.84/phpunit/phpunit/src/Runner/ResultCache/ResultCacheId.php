@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner\ResultCache;
 
 use PHPUnit\Event\Code\Test;
@@ -24,7 +27,7 @@ final readonly class ResultCacheId
     public static function fromTest(Test $test): self
     {
         if ($test instanceof TestMethod) {
-            return new self($test->className() . '::' . $test->name());
+            return new self($test->className().'::'.$test->name());
         }
 
         return new self($test->id());
@@ -38,17 +41,16 @@ final readonly class ResultCacheId
     /**
      * For use in PHPUnit tests only!
      *
-     * @param class-string<TestCase> $class
+     * @param  class-string<TestCase>  $class
      */
     public static function fromTestClassAndMethodName(string $class, string $methodName): self
     {
-        return new self($class . '::' . $methodName);
+        return new self($class.'::'.$methodName);
     }
 
     private function __construct(
         private string $id,
-    ) {
-    }
+    ) {}
 
     public function asString(): string
     {

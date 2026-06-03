@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event;
 
 /**
@@ -17,13 +20,15 @@ namespace PHPUnit\Event;
 final class DeferringDispatcher implements SubscribableDispatcher
 {
     private readonly SubscribableDispatcher $dispatcher;
+
     private EventCollection $events;
+
     private bool $recording = true;
 
     public function __construct(SubscribableDispatcher $dispatcher)
     {
         $this->dispatcher = $dispatcher;
-        $this->events     = new EventCollection;
+        $this->events = new EventCollection;
     }
 
     public function registerTracer(Tracer\Tracer $tracer): void

@@ -44,8 +44,11 @@ class SymfonyStyle extends OutputStyle
     public const MAX_LINE_LENGTH = 120;
 
     private SymfonyQuestionHelper $questionHelper;
+
     private ProgressBar $progressBar;
+
     private int $lineLength;
+
     private TrimmedBufferOutput $bufferedOutput;
 
     public function __construct(
@@ -54,7 +57,7 @@ class SymfonyStyle extends OutputStyle
     ) {
         $this->bufferedOutput = new TrimmedBufferOutput(\DIRECTORY_SEPARATOR === '\\' ? 4 : 2, $output->getVerbosity(), false, clone $output->getFormatter());
         // Windows cmd wraps lines as soon as the terminal width is reached, whether there are following chars or not.
-        $width = (new Terminal())->getWidth() ?: self::MAX_LINE_LENGTH;
+        $width = (new Terminal)->getWidth() ?: self::MAX_LINE_LENGTH;
         $this->lineLength = min($width - (int) (\DIRECTORY_SEPARATOR === '\\'), self::MAX_LINE_LENGTH);
 
         parent::__construct($output);
@@ -157,8 +160,7 @@ class SymfonyStyle extends OutputStyle
         $this->createTable()
             ->setHeaders($headers)
             ->setRows($rows)
-            ->render()
-        ;
+            ->render();
 
         $this->newLine();
     }
@@ -172,8 +174,7 @@ class SymfonyStyle extends OutputStyle
             ->setHorizontal(true)
             ->setHeaders($headers)
             ->setRows($rows)
-            ->render()
-        ;
+            ->render();
 
         $this->newLine();
     }
@@ -194,14 +195,16 @@ class SymfonyStyle extends OutputStyle
             if ($value instanceof TableSeparator) {
                 $headers[] = $value;
                 $row[] = $value;
+
                 continue;
             }
             if (\is_string($value)) {
                 $headers[] = new TableCell($value, ['colspan' => 2]);
                 $row[] = null;
+
                 continue;
             }
-            if (!\is_array($value)) {
+            if (! \is_array($value)) {
                 throw new InvalidArgumentException('Value should be an array, string, or an instance of TableSeparator.');
             }
             $headers[] = key($value);
@@ -236,7 +239,7 @@ class SymfonyStyle extends OutputStyle
 
     public function choice(string $question, array $choices, mixed $default = null, bool $multiSelect = false): mixed
     {
-        if (null !== $default) {
+        if ($default !== null) {
             $values = array_flip($choices);
             $default = $values[$default] ?? $default;
         }
@@ -269,7 +272,7 @@ class SymfonyStyle extends OutputStyle
     {
         $progressBar = parent::createProgressBar($max);
 
-        if ('\\' !== \DIRECTORY_SEPARATOR || 'Hyper' === getenv('TERM_PROGRAM')) {
+        if ('\\' !== \DIRECTORY_SEPARATOR || getenv('TERM_PROGRAM') === 'Hyper') {
             $progressBar->setEmptyBarCharacter('░'); // light shade character \u2591
             $progressBar->setProgressCharacter('');
             $progressBar->setBarCharacter('▓'); // dark shade character \u2593
@@ -284,9 +287,8 @@ class SymfonyStyle extends OutputStyle
      * @template TKey
      * @template TValue
      *
-     * @param iterable<TKey, TValue> $iterable
-     * @param int|null               $max      Number of steps to complete the bar (0 if indeterminate), if null it will be inferred from $iterable
-     *
+     * @param  iterable<TKey, TValue>  $iterable
+     * @param  int|null  $max  Number of steps to complete the bar (0 if indeterminate), if null it will be inferred from $iterable
      * @return iterable<TKey, TValue>
      */
     public function progressIterate(iterable $iterable, ?int $max = null): iterable
@@ -302,7 +304,7 @@ class SymfonyStyle extends OutputStyle
             $this->autoPrependBlock();
         }
 
-        $this->questionHelper ??= new SymfonyQuestionHelper();
+        $this->questionHelper ??= new SymfonyQuestionHelper;
 
         $answer = $this->questionHelper->ask($this->input, $this, $question);
 
@@ -321,7 +323,7 @@ class SymfonyStyle extends OutputStyle
 
     public function writeln(string|iterable $messages, int $type = self::OUTPUT_NORMAL): void
     {
-        if (!is_iterable($messages)) {
+        if (! is_iterable($messages)) {
             $messages = [$messages];
         }
 
@@ -333,7 +335,7 @@ class SymfonyStyle extends OutputStyle
 
     public function write(string|iterable $messages, bool $newline = false, int $type = self::OUTPUT_NORMAL): void
     {
-        if (!is_iterable($messages)) {
+        if (! is_iterable($messages)) {
             $messages = [$messages];
         }
 
@@ -373,7 +375,7 @@ class SymfonyStyle extends OutputStyle
     }
 
     /**
-     * @param iterable<string, iterable|string|TreeNode> $nodes
+     * @param  iterable<string, iterable|string|TreeNode>  $nodes
      */
     public function tree(iterable $nodes, string $root = ''): void
     {
@@ -381,7 +383,7 @@ class SymfonyStyle extends OutputStyle
     }
 
     /**
-     * @param iterable<string, iterable|string|TreeNode> $nodes
+     * @param  iterable<string, iterable|string|TreeNode>  $nodes
      */
     public function createTree(iterable $nodes, string $root = ''): TreeHelper
     {
@@ -394,7 +396,7 @@ class SymfonyStyle extends OutputStyle
     {
         $chars = substr(str_replace(\PHP_EOL, "\n", $this->bufferedOutput->fetch()), -2);
 
-        if (!isset($chars[0])) {
+        if (! isset($chars[0])) {
             $this->newLine(); // empty history, so we should start with a new line.
 
             return;
@@ -407,7 +409,7 @@ class SymfonyStyle extends OutputStyle
     {
         $fetched = $this->bufferedOutput->fetch();
         // Prepend new line if last char isn't EOL:
-        if ($fetched && !str_ends_with($fetched, "\n")) {
+        if ($fetched && ! str_ends_with($fetched, "\n")) {
             $this->newLine();
         }
     }
@@ -424,14 +426,14 @@ class SymfonyStyle extends OutputStyle
         $prefixLength = Helper::width(Helper::removeDecoration($this->getFormatter(), $prefix));
         $lines = [];
 
-        if (null !== $type) {
+        if ($type !== null) {
             $type = \sprintf('[%s] ', $type);
             $indentLength = Helper::width($type);
             $lineIndentation = str_repeat(' ', $indentLength);
         }
 
         // wrap and add newlines for each element
-        $outputWrapper = new OutputWrapper();
+        $outputWrapper = new OutputWrapper;
         foreach ($messages as $key => $message) {
             if ($escape) {
                 $message = OutputFormatter::escape($message);
@@ -459,7 +461,7 @@ class SymfonyStyle extends OutputStyle
         }
 
         foreach ($lines as $i => &$line) {
-            if (null !== $type) {
+            if ($type !== null) {
                 $line = $firstLineIndex === $i ? $type.$line : $lineIndentation.$line;
             }
 

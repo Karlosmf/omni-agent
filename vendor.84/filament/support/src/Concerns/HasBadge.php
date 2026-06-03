@@ -6,14 +6,14 @@ use Closure;
 
 trait HasBadge
 {
-    protected string | int | float | Closure | null $badge = null;
+    protected string|int|float|Closure|null $badge = null;
 
     /**
      * @var string | array<string> | Closure | null
      */
-    protected string | array | Closure | null $badgeColor = null;
+    protected string|array|Closure|null $badgeColor = null;
 
-    public function badge(string | int | float | Closure | null $badge): static
+    public function badge(string|int|float|Closure|null $badge): static
     {
         $this->badge = $badge;
 
@@ -23,7 +23,7 @@ trait HasBadge
     /**
      * @deprecated Use `badge()` instead.
      */
-    public function indicator(string | int | float | Closure | null $indicator): static
+    public function indicator(string|int|float|Closure|null $indicator): static
     {
         return $this->badge($indicator);
     }
@@ -31,7 +31,7 @@ trait HasBadge
     /**
      * @param  string | array<string> | Closure | null  $color
      */
-    public function badgeColor(string | array | Closure | null $color): static
+    public function badgeColor(string|array|Closure|null $color): static
     {
         $this->badgeColor = $color;
 
@@ -41,12 +41,12 @@ trait HasBadge
     /**
      * @deprecated Use `badgeColor()` instead.
      */
-    public function indicatorColor(string | Closure | null $color): static
+    public function indicatorColor(string|Closure|null $color): static
     {
         return $this->badgeColor($color);
     }
 
-    public function getBadge(): string | int | float | null
+    public function getBadge(): string|int|float|null
     {
         return $this->evaluate($this->badge);
     }
@@ -54,7 +54,7 @@ trait HasBadge
     /**
      * @return string | array<string> | null
      */
-    public function getBadgeColor(): string | array | null
+    public function getBadgeColor(): string|array|null
     {
         return $this->evaluate($this->badgeColor);
     }

@@ -28,8 +28,8 @@ use Throwable;
  */
 trait Options
 {
-    use StaticOptions;
     use Localization;
+    use StaticOptions;
 
     /**
      * Indicates if months should be calculated with overflow.
@@ -98,7 +98,6 @@ trait Options
      *  - macros: array|null
      *  - genericMacros: array|null
      *
-     * @param array $settings
      *
      * @return $this|static
      */
@@ -117,7 +116,7 @@ trait Options
         if (isset($settings['locale'])) {
             $locales = $settings['locale'];
 
-            if (!\is_array($locales)) {
+            if (! \is_array($locales)) {
                 $locales = [$locales];
             }
 

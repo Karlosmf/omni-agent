@@ -21,8 +21,7 @@ class MessageHandler
 {
     public function __construct(
         private TransportInterface $transport,
-    ) {
-    }
+    ) {}
 
     public function __invoke(SendEmailMessage $message): ?SentMessage
     {

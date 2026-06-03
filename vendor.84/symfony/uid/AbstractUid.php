@@ -40,7 +40,7 @@ abstract class AbstractUid implements \JsonSerializable, \Stringable, HashableIn
      */
     public static function fromBinary(string $uid): static
     {
-        if (16 !== \strlen($uid)) {
+        if (\strlen($uid) !== 16) {
             throw new InvalidArgumentException('Invalid binary uid provided.');
         }
 
@@ -52,7 +52,7 @@ abstract class AbstractUid implements \JsonSerializable, \Stringable, HashableIn
      */
     public static function fromBase58(string $uid): static
     {
-        if (22 !== \strlen($uid)) {
+        if (\strlen($uid) !== 22) {
             throw new InvalidArgumentException('Invalid base-58 uid provided.');
         }
 
@@ -64,7 +64,7 @@ abstract class AbstractUid implements \JsonSerializable, \Stringable, HashableIn
      */
     public static function fromBase32(string $uid): static
     {
-        if (26 !== \strlen($uid)) {
+        if (\strlen($uid) !== 26) {
             throw new InvalidArgumentException('Invalid base-32 uid provided.');
         }
 
@@ -72,13 +72,13 @@ abstract class AbstractUid implements \JsonSerializable, \Stringable, HashableIn
     }
 
     /**
-     * @param string $uid A valid RFC 9562/4122 uid
+     * @param  string  $uid  A valid RFC 9562/4122 uid
      *
      * @throws InvalidArgumentException When the passed value is not valid
      */
     public static function fromRfc4122(string $uid): static
     {
-        if (36 !== \strlen($uid)) {
+        if (\strlen($uid) !== 36) {
             throw new InvalidArgumentException('Invalid RFC4122 uid provided.');
         }
 
@@ -166,7 +166,7 @@ abstract class AbstractUid implements \JsonSerializable, \Stringable, HashableIn
      */
     public function equals(mixed $other): bool
     {
-        if (!$other instanceof self) {
+        if (! $other instanceof self) {
             return false;
         }
 

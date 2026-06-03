@@ -39,7 +39,7 @@ class XliffUtils
 
             $namespace = $xliff->attributes->getNamedItem('xmlns');
             if ($namespace) {
-                if (0 !== substr_compare('urn:oasis:names:tc:xliff:document:', $namespace->nodeValue, 0, 34)) {
+                if (substr_compare('urn:oasis:names:tc:xliff:document:', $namespace->nodeValue, 0, 34) !== 0) {
                     throw new InvalidArgumentException(\sprintf('Not a valid XLIFF namespace "%s".', $namespace));
                 }
 
@@ -65,7 +65,7 @@ class XliffUtils
         }
         try {
             $isValid = @$dom->schemaValidateSource(self::getSchema($xliffVersion));
-            if (!$isValid) {
+            if (! $isValid) {
                 return self::getXmlErrors($internalErrors);
             }
         } finally {
@@ -85,8 +85,8 @@ class XliffUtils
     private static function shouldEnableEntityLoader(): bool
     {
         static $dom, $schema;
-        if (null === $dom) {
-            $dom = new \DOMDocument();
+        if ($dom === null) {
+            $dom = new \DOMDocument;
             $dom->loadXML('<?xml version="1.0"?><test/>');
 
             $tmpfile = tempnam(sys_get_temp_dir(), 'symfony');
@@ -104,7 +104,7 @@ class XliffUtils
 </xsd:schema>');
         }
 
-        return !@$dom->schemaValidateSource($schema);
+        return ! @$dom->schemaValidateSource($schema);
     }
 
     public static function getErrorsAsString(array $xmlErrors): string
@@ -113,7 +113,7 @@ class XliffUtils
 
         foreach ($xmlErrors as $error) {
             $errorsAsString .= \sprintf("[%s %s] %s (in %s - line %d, column %d)\n",
-                \LIBXML_ERR_WARNING === $error['level'] ? 'WARNING' : 'ERROR',
+                $error['level'] === \LIBXML_ERR_WARNING ? 'WARNING' : 'ERROR',
                 $error['code'],
                 $error['message'],
                 $error['file'],
@@ -127,10 +127,10 @@ class XliffUtils
 
     private static function getSchema(string $xliffVersion): string
     {
-        if ('1.2' === $xliffVersion) {
+        if ($xliffVersion === '1.2') {
             $schemaSource = file_get_contents(__DIR__.'/../Resources/schemas/xliff-core-1.2-transitional.xsd');
             $xmlUri = 'http://www.w3.org/2001/xml.xsd';
-        } elseif ('2.0' === $xliffVersion) {
+        } elseif ($xliffVersion === '2.0') {
             $schemaSource = file_get_contents(__DIR__.'/../Resources/schemas/xliff-core-2.0.xsd');
             $xmlUri = 'informativeCopiesOf3rdPartySchemas/w3c/xml.xsd';
         } else {
@@ -148,7 +148,7 @@ class XliffUtils
         $newPath = str_replace('\\', '/', __DIR__).'/../Resources/schemas/xml.xsd';
         $parts = explode('/', $newPath);
         $locationstart = 'file:///';
-        if (0 === stripos($newPath, 'phar://')) {
+        if (stripos($newPath, 'phar://') === 0) {
             $tmpfile = tempnam(sys_get_temp_dir(), 'symfony');
             if ($tmpfile) {
                 copy($newPath, $tmpfile);
@@ -173,7 +173,7 @@ class XliffUtils
         $errors = [];
         foreach (libxml_get_errors() as $error) {
             $errors[] = [
-                'level' => \LIBXML_ERR_WARNING == $error->level ? 'WARNING' : 'ERROR',
+                'level' => $error->level == \LIBXML_ERR_WARNING ? 'WARNING' : 'ERROR',
                 'code' => $error->code,
                 'message' => trim($error->message),
                 'file' => $error->file ?: 'n/a',

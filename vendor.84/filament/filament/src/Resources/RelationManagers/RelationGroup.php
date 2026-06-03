@@ -16,12 +16,12 @@ class RelationGroup extends Component
     use HasIcon;
     use HasIconPosition;
 
-    protected string | Closure | null $badge = null;
+    protected string|Closure|null $badge = null;
 
     /**
      * @var string | array<string> | Closure | null
      */
-    protected string | array | Closure | null $badgeColor = null;
+    protected string|array|Closure|null $badgeColor = null;
 
     protected ?Model $ownerRecord = null;
 
@@ -33,14 +33,14 @@ class RelationGroup extends Component
      * @param  array<class-string<RelationManager> | RelationManagerConfiguration>  $managers
      */
     public function __construct(
-        protected string | Closure $label,
-        protected array | Closure $managers,
+        protected string|Closure $label,
+        protected array|Closure $managers,
     ) {}
 
     /**
      * @param  array<class-string<RelationManager> | RelationManagerConfiguration>  $managers
      */
-    public static function make(string | Closure $label, array | Closure $managers): static
+    public static function make(string|Closure $label, array|Closure $managers): static
     {
         $static = app(static::class, ['label' => $label, 'managers' => $managers]);
         $static->configure();
@@ -62,7 +62,7 @@ class RelationGroup extends Component
         return $this;
     }
 
-    public function badge(string | Closure | null $badge): static
+    public function badge(string|Closure|null $badge): static
     {
         $this->badge = $badge;
 
@@ -72,7 +72,7 @@ class RelationGroup extends Component
     /**
      * @param  string | array<string> | Closure | null  $color
      */
-    public function badgeColor(string | array | Closure | null $color): static
+    public function badgeColor(string|array|Closure|null $color): static
     {
         $this->badgeColor = $color;
 
@@ -105,7 +105,7 @@ class RelationGroup extends Component
 
         return array_filter(
             $this->managers,
-            fn (string | RelationManagerConfiguration $manager): bool => $this->normalizeRelationManagerClass($manager)::canViewForRecord($ownerRecord, $pageClass),
+            fn (string|RelationManagerConfiguration $manager): bool => $this->normalizeRelationManagerClass($manager)::canViewForRecord($ownerRecord, $pageClass),
         );
     }
 
@@ -113,7 +113,7 @@ class RelationGroup extends Component
      * @param  class-string<RelationManager> | RelationManagerConfiguration  $manager
      * @return class-string<RelationManager>
      */
-    protected function normalizeRelationManagerClass(string | RelationManagerConfiguration $manager): string
+    protected function normalizeRelationManagerClass(string|RelationManagerConfiguration $manager): string
     {
         if ($manager instanceof RelationManagerConfiguration) {
             return $manager->relationManager;
@@ -130,7 +130,7 @@ class RelationGroup extends Component
     /**
      * @return string | array<string> | null
      */
-    public function getBadgeColor(): string | array | null
+    public function getBadgeColor(): string|array|null
     {
         return $this->evaluate($this->badgeColor);
     }

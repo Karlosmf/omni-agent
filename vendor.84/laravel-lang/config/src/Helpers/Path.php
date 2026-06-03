@@ -17,7 +17,7 @@ class Path
 
     public static function helpers(): string
     {
-        return static::vendor() . '/_laravel_lang';
+        return static::vendor().'/_laravel_lang';
     }
 
     public static function vendor(): string

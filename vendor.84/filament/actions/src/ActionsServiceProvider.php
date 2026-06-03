@@ -38,7 +38,7 @@ class ActionsServiceProvider extends PackageServiceProvider
     public function packageBooted(): void
     {
         FilamentAsset::register([
-            Js::make('actions', __DIR__ . '/../dist/index.js'),
+            Js::make('actions', __DIR__.'/../dist/index.js'),
         ], 'filament/actions');
 
         Testable::mixin(new TestsActions);

@@ -6,9 +6,9 @@ use Closure;
 
 trait HasUploadingMessage
 {
-    protected string | Closure | null $uploadingMessage = null;
+    protected string|Closure|null $uploadingMessage = null;
 
-    public function uploadingMessage(string | Closure | null $message): static
+    public function uploadingMessage(string|Closure|null $message): static
     {
         $this->uploadingMessage = $message;
 

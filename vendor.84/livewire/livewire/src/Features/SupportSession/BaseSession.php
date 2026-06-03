@@ -2,20 +2,22 @@
 
 namespace Livewire\Features\SupportSession;
 
-use Livewire\Features\SupportAttributes\Attribute as LivewireAttribute;
-use Illuminate\Support\Facades\Session;
 use Attribute;
+use Illuminate\Support\Facades\Session;
+use Livewire\Features\SupportAttributes\Attribute as LivewireAttribute;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class BaseSession extends LivewireAttribute
 {
-    function __construct(
+    public function __construct(
         protected $key = null,
     ) {}
 
     public function mount($params)
     {
-        if (! $this->exists()) return;
+        if (! $this->exists()) {
+            return;
+        }
 
         $fromSession = $this->read();
 
@@ -45,13 +47,13 @@ class BaseSession extends LivewireAttribute
     protected function key()
     {
         if (! $this->key) {
-            return (string) 'lw' . crc32($this->component->getName() . $this->getName());
+            return (string) 'lw'.crc32($this->component->getName().$this->getName());
         }
 
         return self::replaceDynamicPlaceholders($this->key, $this->component);
     }
 
-    static function replaceDynamicPlaceholders($key, $component)
+    public static function replaceDynamicPlaceholders($key, $component)
     {
         return preg_replace_callback('/\{(.*)\}/U', function ($matches) use ($component) {
             return data_get($component, $matches[1], function () use ($matches) {

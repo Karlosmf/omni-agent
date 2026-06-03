@@ -20,14 +20,15 @@ class ReflectionLanguageConstructParameter extends \ReflectionParameter
 {
     /** @var string|array|object */
     private $function;
+
     /** @var int|string */
     private $parameter;
+
     private array $opts;
 
     /**
-     * @param string|array|object $function
-     * @param int|string          $parameter
-     * @param array               $opts
+     * @param  string|array|object  $function
+     * @param  int|string  $parameter
      */
     public function __construct($function, $parameter, array $opts)
     {
@@ -46,8 +47,6 @@ class ReflectionLanguageConstructParameter extends \ReflectionParameter
 
     /**
      * Is the param an array?
-     *
-     * @return bool
      */
     public function isArray(): bool
     {
@@ -73,8 +72,6 @@ class ReflectionLanguageConstructParameter extends \ReflectionParameter
 
     /**
      * Get param name.
-     *
-     * @return string
      */
     public function getName(): string
     {
@@ -83,8 +80,6 @@ class ReflectionLanguageConstructParameter extends \ReflectionParameter
 
     /**
      * Is the param optional?
-     *
-     * @return bool
      */
     public function isOptional(): bool
     {
@@ -93,8 +88,6 @@ class ReflectionLanguageConstructParameter extends \ReflectionParameter
 
     /**
      * Does the param have a default value?
-     *
-     * @return bool
      */
     public function isDefaultValueAvailable(): bool
     {
@@ -105,8 +98,6 @@ class ReflectionLanguageConstructParameter extends \ReflectionParameter
      * Is the param passed by reference?
      *
      * (I don't think this is true for anything we need to fake a param for)
-     *
-     * @return bool
      */
     public function isPassedByReference(): bool
     {

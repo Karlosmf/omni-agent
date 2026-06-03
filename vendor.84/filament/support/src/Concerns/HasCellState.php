@@ -22,9 +22,9 @@ trait HasCellState
 
     protected mixed $getStateUsing = null;
 
-    protected string | Closure | null $separator = null;
+    protected string|Closure|null $separator = null;
 
-    protected bool | Closure $isDistinctList = false;
+    protected bool|Closure $isDistinctList = false;
 
     protected ?string $inverseRelationshipName = null;
 
@@ -44,7 +44,7 @@ trait HasCellState
         return $this;
     }
 
-    public function distinctList(bool | Closure $condition = true): static
+    public function distinctList(bool|Closure $condition = true): static
     {
         $this->isDistinctList = $condition;
 
@@ -168,7 +168,7 @@ trait HasCellState
         $this->cachedState = [];
     }
 
-    public function separator(string | Closure | null $separator = ','): static
+    public function separator(string|Closure|null $separator = ','): static
     {
         $this->separator = $separator;
 

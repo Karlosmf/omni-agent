@@ -17,6 +17,6 @@ class UlidFactory
 {
     public function create(?\DateTimeInterface $time = null): Ulid
     {
-        return new Ulid(null === $time ? null : Ulid::generate($time));
+        return new Ulid($time === null ? null : Ulid::generate($time));
     }
 }

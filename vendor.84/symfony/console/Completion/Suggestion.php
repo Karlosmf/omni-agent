@@ -21,8 +21,7 @@ class Suggestion implements \Stringable
     public function __construct(
         private readonly string $value,
         private readonly string $description = '',
-    ) {
-    }
+    ) {}
 
     public function getValue(): string
     {

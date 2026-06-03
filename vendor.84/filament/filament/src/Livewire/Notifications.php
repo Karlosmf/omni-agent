@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Notifications extends BaseComponent
 {
-    public function getUser(): Model | Authenticatable | null
+    public function getUser(): Model|Authenticatable|null
     {
         return Filament::auth()->user();
     }

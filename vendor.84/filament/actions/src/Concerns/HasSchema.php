@@ -14,23 +14,23 @@ trait HasSchema
     /**
      * @var array<Component | Action | ActionGroup> | Closure | null
      */
-    protected array | Closure | null $schema = null;
+    protected array|Closure|null $schema = null;
 
-    protected bool | Closure $isSchemaDisabled = false;
+    protected bool|Closure $isSchemaDisabled = false;
 
-    protected bool | Closure | null $hasFormWrapper = null;
+    protected bool|Closure|null $hasFormWrapper = null;
 
     /**
      * @param  array<Component | Action | ActionGroup> | Closure | null  $schema
      */
-    public function schema(array | Closure | null $schema): static
+    public function schema(array|Closure|null $schema): static
     {
         $this->schema = $schema;
 
         return $this;
     }
 
-    public function disabledSchema(bool | Closure $condition = true): static
+    public function disabledSchema(bool|Closure $condition = true): static
     {
         $this->isSchemaDisabled = $condition;
 
@@ -88,7 +88,7 @@ trait HasSchema
         return $modifiedSchema;
     }
 
-    public function formWrapper(bool | Closure | null $condition = true): static
+    public function formWrapper(bool|Closure|null $condition = true): static
     {
         $this->hasFormWrapper = $condition;
 
@@ -103,7 +103,7 @@ trait HasSchema
     /**
      * @deprecated Use `disabledSchema() instead.
      */
-    public function disableForm(bool | Closure $condition = true): static
+    public function disableForm(bool|Closure $condition = true): static
     {
         $this->disabledSchema($condition);
 
@@ -113,7 +113,7 @@ trait HasSchema
     /**
      * @deprecated Use `disabledSchema() instead.
      */
-    public function disabledForm(bool | Closure $condition = true): static
+    public function disabledForm(bool|Closure $condition = true): static
     {
         $this->disabledSchema($condition);
 
@@ -125,7 +125,7 @@ trait HasSchema
      *
      * @param  array<Component| Action> | Closure | null  $form
      */
-    public function form(array | Closure | null $form): static
+    public function form(array|Closure|null $form): static
     {
         $this->schema($form);
 

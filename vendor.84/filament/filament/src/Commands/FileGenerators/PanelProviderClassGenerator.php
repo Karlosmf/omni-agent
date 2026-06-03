@@ -109,8 +109,8 @@ class PanelProviderClassGenerator extends ClassGenerator
 
         $id = $this->getId();
 
-        $componentsDirectory = $isDefault ? '' : (Str::studly($id) . '/');
-        $componentsNamespace = $isDefault ? '' : (Str::studly($id) . '\\');
+        $componentsDirectory = $isDefault ? '' : (Str::studly($id).'/');
+        $componentsNamespace = $isDefault ? '' : (Str::studly($id).'\\');
 
         $rootNamespace = app()->getNamespace();
 

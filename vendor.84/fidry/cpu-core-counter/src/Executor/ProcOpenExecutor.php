@@ -24,7 +24,7 @@ final class ProcOpenExecutor implements ProcessExecutor
 {
     public function execute(string $command): ?array
     {
-        if (!function_exists('proc_open')) {
+        if (! function_exists('proc_open')) {
             return null;
         }
 
@@ -41,7 +41,7 @@ final class ProcOpenExecutor implements ProcessExecutor
         );
         // https://github.com/phpstan/phpstan/issues/13197
         /** @var array{resource, resource, resource} $pipes */
-        if (!is_resource($process)) {
+        if (! is_resource($process)) {
             return null;
         }
 

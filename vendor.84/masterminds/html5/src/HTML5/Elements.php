@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Provide general element functions.
  */
@@ -81,20 +82,20 @@ class Elements
      *
      * @var array<string, string[]>
      */
-    public static $optionalEndElementsParentsToClose = array(
-        'tr' => array('td', 'tr'),
-        'td' => array('td', 'th'),
-        'th' => array('td', 'th'),
-        'tfoot' => array('td', 'th', 'tr', 'tbody', 'thead'),
-        'tbody' => array('td', 'th', 'tr', 'thead'),
-    );
+    public static $optionalEndElementsParentsToClose = [
+        'tr' => ['td', 'tr'],
+        'td' => ['td', 'th'],
+        'th' => ['td', 'th'],
+        'tfoot' => ['td', 'th', 'tr', 'tbody', 'thead'],
+        'tbody' => ['td', 'th', 'tr', 'thead'],
+    ];
 
     /**
      * The HTML5 elements as defined in http://dev.w3.org/html5/markup/elements.html.
      *
      * @var array
      */
-    public static $html5 = array(
+    public static $html5 = [
         'a' => 1,
         'abbr' => 1,
         'address' => 65, // NORMAL | BLOCK_TAG
@@ -117,7 +118,7 @@ class Elements
         'col' => 9, // NORMAL | VOID_TAG
         'colgroup' => 1,
         'command' => 9, // NORMAL | VOID_TAG
-                        // "data" => 1, // This is highly experimental and only part of the whatwg spec (not w3c). See https://developer.mozilla.org/en-US/docs/HTML/Element/data
+        // "data" => 1, // This is highly experimental and only part of the whatwg spec (not w3c). See https://developer.mozilla.org/en-US/docs/HTML/Element/data
         'datalist' => 1,
         'dd' => 65, // NORMAL | BLOCK_TAG
         'del' => 1,
@@ -221,7 +222,7 @@ class Elements
         'isindex' => 8, // VOID_TAG
         'xmp' => 20, // AUTOCLOSE_P | VOID_TAG | RAW_TEXT
         'noembed' => 2, // RAW_TEXT
-        );
+    ];
 
     /**
      * The MathML elements.
@@ -232,7 +233,7 @@ class Elements
      *
      * @var array
      */
-    public static $mathml = array(
+    public static $mathml = [
         'maction' => 1,
         'maligngroup' => 1,
         'malignmark' => 1,
@@ -272,7 +273,7 @@ class Elements
         'mtr' => 1,
         'munder' => 1,
         'munderover' => 1,
-    );
+    ];
 
     /**
      * The svg elements.
@@ -286,7 +287,7 @@ class Elements
      *
      * @var array
      */
-    public static $svg = array(
+    public static $svg = [
         'a' => 1,
         'altGlyph' => 1,
         'altGlyphDef' => 1,
@@ -367,7 +368,7 @@ class Elements
         'use' => 1,
         'view' => 1,
         'vkern' => 1,
-    );
+    ];
 
     /**
      * Some attributes in SVG are case sensitive.
@@ -375,7 +376,7 @@ class Elements
      * This map contains key/value pairs with the key as the lowercase attribute
      * name and the value with the correct casing.
      */
-    public static $svgCaseSensitiveAttributeMap = array(
+    public static $svgCaseSensitiveAttributeMap = [
         'attributename' => 'attributeName',
         'attributetype' => 'attributeType',
         'basefrequency' => 'baseFrequency',
@@ -438,7 +439,7 @@ class Elements
         'xchannelselector' => 'xChannelSelector',
         'ychannelselector' => 'yChannelSelector',
         'zoomandpan' => 'zoomAndPan',
-    );
+    ];
 
     /**
      * Some SVG elements are case sensitive.
@@ -447,7 +448,7 @@ class Elements
      * The map contains key/value store of the name is lowercase as the keys and
      * the correct casing as the value.
      */
-    public static $svgCaseSensitiveElementMap = array(
+    public static $svgCaseSensitiveElementMap = [
         'altglyph' => 'altGlyph',
         'altglyphdef' => 'altGlyphDef',
         'altglyphitem' => 'altGlyphItem',
@@ -484,7 +485,7 @@ class Elements
         'lineargradient' => 'linearGradient',
         'radialgradient' => 'radialGradient',
         'textpath' => 'textPath',
-    );
+    ];
 
     /**
      * Check whether the given element meets the given criterion.
@@ -495,9 +496,8 @@ class Elements
      *
      * Elements::isA('script', Elements::TEXT_RCDATA); // Returns false.
      *
-     * @param string $name The element name.
-     * @param int    $mask One of the constants on this class.
-     *
+     * @param  string  $name  The element name.
+     * @param  int  $mask  One of the constants on this class.
      * @return bool true if the element matches the mask, false otherwise.
      */
     public static function isA($name, $mask)
@@ -508,8 +508,7 @@ class Elements
     /**
      * Test if an element is a valid html5 element.
      *
-     * @param string $name The name of the element.
-     *
+     * @param  string  $name  The name of the element.
      * @return bool true if a html5 element and false otherwise.
      */
     public static function isHtml5Element($name)
@@ -522,8 +521,7 @@ class Elements
     /**
      * Test if an element name is a valid MathML presentation element.
      *
-     * @param string $name The name of the element.
-     *
+     * @param  string  $name  The name of the element.
      * @return bool true if a MathML name and false otherwise.
      */
     public static function isMathMLElement($name)
@@ -535,8 +533,7 @@ class Elements
     /**
      * Test if an element is a valid SVG element.
      *
-     * @param string $name The name of the element.
-     *
+     * @param  string  $name  The name of the element.
      * @return bool true if a SVG element and false otherise.
      */
     public static function isSvgElement($name)
@@ -550,8 +547,7 @@ class Elements
      * This includes html5 elements along with other allowed embedded content
      * such as svg and mathml.
      *
-     * @param string $name The name of the element.
-     *
+     * @param  string  $name  The name of the element.
      * @return bool true if valid and false otherwise.
      */
     public static function isElement($name)
@@ -562,8 +558,7 @@ class Elements
     /**
      * Get the element mask for the given element name.
      *
-     * @param string $name The name of the element.
-     *
+     * @param  string  $name  The name of the element.
      * @return int the element mask.
      */
     public static function element($name)
@@ -584,8 +579,7 @@ class Elements
     /**
      * Normalize a SVG element name to its proper case and form.
      *
-     * @param string $name The name of the element.
-     *
+     * @param  string  $name  The name of the element.
      * @return string the normalized form of the element name.
      */
     public static function normalizeSvgElement($name)
@@ -601,8 +595,7 @@ class Elements
     /**
      * Normalize a SVG attribute name to its proper case and form.
      *
-     * @param string $name The name of the attribute.
-     *
+     * @param  string  $name  The name of the attribute.
      * @return string The normalized form of the attribute name.
      */
     public static function normalizeSvgAttribute($name)
@@ -619,8 +612,7 @@ class Elements
      * Normalize a MathML attribute name to its proper case and form.
      * Note, all MathML element names are lowercase.
      *
-     * @param string $name The name of the attribute.
-     *
+     * @param  string  $name  The name of the attribute.
      * @return string The normalized form of the attribute name.
      */
     public static function normalizeMathMlAttribute($name)
@@ -628,7 +620,7 @@ class Elements
         $name = strtolower($name);
 
         // Only one attribute has a mixed case form for MathML.
-        if ('definitionurl' === $name) {
+        if ($name === 'definitionurl') {
             $name = 'definitionURL';
         }
 

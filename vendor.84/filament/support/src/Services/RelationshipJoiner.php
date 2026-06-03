@@ -64,7 +64,7 @@ class RelationshipJoiner
 
             $relationshipQuery
                 ->distinct()
-                ->select($relationshipQuery->getModel()->getTable() . '.*');
+                ->select($relationshipQuery->getModel()->getTable().'.*');
 
             /** @phpstan-ignore-next-line */
             foreach (($relationshipQuery->getQuery()->orders ?? []) as $order) {

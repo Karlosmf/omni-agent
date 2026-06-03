@@ -7,11 +7,11 @@ use Filament\Schemas\Components\Component;
 
 trait CanLimitItemsLength
 {
-    protected int | Closure | null $maxItems = null;
+    protected int|Closure|null $maxItems = null;
 
-    protected int | Closure | null $minItems = null;
+    protected int|Closure|null $minItems = null;
 
-    public function maxItems(int | Closure | null $count): static
+    public function maxItems(int|Closure|null $count): static
     {
         $this->maxItems = $count;
 
@@ -36,7 +36,7 @@ trait CanLimitItemsLength
         return $this;
     }
 
-    public function minItems(int | Closure | null $count): static
+    public function minItems(int|Closure|null $count): static
     {
         $this->minItems = $count;
 

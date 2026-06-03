@@ -96,7 +96,7 @@ return [
     'calendar' => [
         'sameDay' => '[Сегодня, в] LT',
         'nextDay' => '[Завтра, в] LT',
-        'nextWeek' => static function (CarbonInterface $current, \Carbon\CarbonInterface $other) {
+        'nextWeek' => static function (CarbonInterface $current, CarbonInterface $other) {
             if ($current->week !== $other->week) {
                 switch ($current->dayOfWeek) {
                     case 0:
@@ -119,7 +119,7 @@ return [
             return '[В] dddd, [в] LT';
         },
         'lastDay' => '[Вчера, в] LT',
-        'lastWeek' => static function (CarbonInterface $current, \Carbon\CarbonInterface $other) {
+        'lastWeek' => static function (CarbonInterface $current, CarbonInterface $other) {
             if ($current->week !== $other->week) {
                 switch ($current->dayOfWeek) {
                     case 0:

@@ -22,7 +22,7 @@ class TestsForms
 {
     public function fillForm(): Closure
     {
-        return function (array | Closure $state = [], ?string $form = null): static {
+        return function (array|Closure $state = [], ?string $form = null): static {
             if ($this->instance() instanceof HasActions) {
                 $form ??= $this->instance()->getMountedActionSchemaName();
             }
@@ -74,7 +74,7 @@ class TestsForms
 
     public function assertFormSet(): Closure
     {
-        return function (array | Closure $state, string $form = 'form'): static {
+        return function (array|Closure $state, string $form = 'form'): static {
             $this->assertSchemaStateSet($state, $form);
 
             return $this;
@@ -162,7 +162,7 @@ class TestsForms
 
     public function assertFormComponentExists(): Closure
     {
-        return function (string $componentKey, string | Closure $form = 'form', ?Closure $checkComponentUsing = null): static {
+        return function (string $componentKey, string|Closure $form = 'form', ?Closure $checkComponentUsing = null): static {
             if ($form instanceof Closure) {
                 $checkComponentUsing = $form;
                 $form = 'form';
@@ -185,7 +185,7 @@ class TestsForms
 
     public function assertFormFieldExists(): Closure
     {
-        return function (string $key, string | Closure | null $form = null, ?Closure $checkFieldUsing = null): static {
+        return function (string $key, string|Closure|null $form = null, ?Closure $checkFieldUsing = null): static {
             if ($form instanceof Closure) {
                 $checkFieldUsing = $form;
                 $form = null;

@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace PHPUnit\Architecture\Asserts\Dependencies;
 
-use Throwable;
-use PhpParser\Node;
-use PHPUnit\Architecture\Asserts\Dependencies\Elements\ObjectUses;
-use PHPUnit\Architecture\Elements\ObjectDescriptionBase;
-use PHPUnit\Architecture\Services\ServiceContainer;
 use phpDocumentor\Reflection\Type;
 use phpDocumentor\Reflection\Types\AggregatedType;
 use phpDocumentor\Reflection\Types\Array_;
+use PhpParser\Node;
+use PHPUnit\Architecture\Asserts\Dependencies\Elements\ObjectUses;
 use PHPUnit\Architecture\Elements\ObjectDescription;
+use PHPUnit\Architecture\Elements\ObjectDescriptionBase;
+use PHPUnit\Architecture\Services\ServiceContainer;
+use Throwable;
 
 /**
  * Describe object dependencies
@@ -60,6 +60,7 @@ abstract class ObjectDependenciesDescription extends ObjectDescriptionBase
                     if ($name[0] !== '\\') {
                         return $name;
                     }
+
                     return substr($name, 1);
                 },
                 $names

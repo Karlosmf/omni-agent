@@ -52,11 +52,11 @@ class DayOfWeekField extends AbstractField
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function isSatisfiedBy(DateTimeInterface $date, $value, bool $invert): bool
     {
-        if ('?' === $value) {
+        if ($value === '?') {
             return true;
         }
 
@@ -74,21 +74,22 @@ class DayOfWeekField extends AbstractField
 
             $daysInMonth = (int) $date->format('t');
             $remainingDaysInMonth = $daysInMonth - (int) $date->format('d');
-            return (($weekday === (int) $date->format('w')) && ($remainingDaysInMonth < 7));
+
+            return ($weekday === (int) $date->format('w')) && ($remainingDaysInMonth < 7);
         }
 
         // Handle # hash tokens
         if (strpos($value, '#')) {
             [$weekday, $nth] = explode('#', $value);
 
-            if (!is_numeric($nth)) {
+            if (! is_numeric($nth)) {
                 throw new InvalidArgumentException("Hashed weekdays must be numeric, {$nth} given");
             } else {
                 $nth = (int) $nth;
             }
 
             // 0 and 7 are both Sunday, however 7 matches date('N') format ISO-8601
-            if ('0' === $weekday) {
+            if ($weekday === '0') {
                 $weekday = 7;
             }
 
@@ -99,7 +100,7 @@ class DayOfWeekField extends AbstractField
                 throw new InvalidArgumentException("Weekday must be a value between 0 and 7. {$weekday} given");
             }
 
-            if (!\in_array($nth, $this->nthRange, true)) {
+            if (! \in_array($nth, $this->nthRange, true)) {
                 throw new InvalidArgumentException("There are never more than 5 or less than 1 of a given weekday in a month, {$nth} given");
             }
 
@@ -125,11 +126,11 @@ class DayOfWeekField extends AbstractField
         }
 
         // Handle day of the week values
-        if (false !== strpos($value, '-')) {
+        if (strpos($value, '-') !== false) {
             $parts = explode('-', $value);
-            if ('7' === $parts[0]) {
+            if ($parts[0] === '7') {
                 $parts[0] = 0;
-            } elseif ('0' === $parts[1]) {
+            } elseif ($parts[1] === '0') {
                 $parts[1] = 7;
             }
             $value = implode('-', $parts);
@@ -145,7 +146,7 @@ class DayOfWeekField extends AbstractField
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function increment(DateTimeInterface &$date, $invert = false, $parts = null): FieldInterface
     {
@@ -167,13 +168,13 @@ class DayOfWeekField extends AbstractField
     {
         $basicChecks = parent::validate($value);
 
-        if (!$basicChecks) {
-            if ('?' === $value) {
+        if (! $basicChecks) {
+            if ($value === '?') {
                 return true;
             }
 
             // Handle the # value
-            if (false !== strpos($value, '#')) {
+            if (strpos($value, '#') !== false) {
                 $chunks = explode('#', $value);
                 $chunks[0] = $this->convertLiterals($chunks[0]);
 

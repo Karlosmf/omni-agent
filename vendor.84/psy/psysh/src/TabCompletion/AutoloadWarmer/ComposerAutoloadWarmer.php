@@ -11,6 +11,7 @@
 
 namespace Psy\TabCompletion\AutoloadWarmer;
 
+use Composer\ClassMapGenerator\ClassMapGenerator;
 use Psy\Shell;
 
 /**
@@ -61,12 +62,19 @@ use Psy\Shell;
 class ComposerAutoloadWarmer implements AutoloadWarmerInterface
 {
     private bool $includeVendor;
+
     private bool $includeTests;
+
     private array $includeNamespaces;
+
     private array $excludeNamespaces;
+
     private array $includeVendorNamespaces;
+
     private array $excludeVendorNamespaces;
+
     private ?string $vendorDir = null;
+
     private ?string $pharPrefix = null;
 
     private const KNOWN_BAD_NAMESPACES = [
@@ -83,8 +91,8 @@ class ComposerAutoloadWarmer implements AutoloadWarmerInterface
     private const PHAR_SCOPED_PREFIX_PATTERN = '/^_Psy[a-f0-9]+\\\\/';
 
     /**
-     * @param array       $config    Configuration options
-     * @param string|null $vendorDir Optional vendor directory path (auto-detected if not provided)
+     * @param  array  $config  Configuration options
+     * @param  string|null  $vendorDir  Optional vendor directory path (auto-detected if not provided)
      */
     public function __construct(array $config = [], ?string $vendorDir = null)
     {
@@ -205,12 +213,12 @@ class ComposerAutoloadWarmer implements AutoloadWarmerInterface
         }
 
         foreach (\spl_autoload_functions() as $autoloader) {
-            if (!\is_array($autoloader)) {
+            if (! \is_array($autoloader)) {
                 continue;
             }
 
             $loader = $autoloader[0] ?? null;
-            if (!\is_object($loader) || \get_class($loader) !== 'Composer\Autoload\ClassLoader') {
+            if (! \is_object($loader) || \get_class($loader) !== 'Composer\Autoload\ClassLoader') {
                 continue;
             }
 
@@ -240,7 +248,7 @@ class ComposerAutoloadWarmer implements AutoloadWarmerInterface
                     }
                 }
 
-                if (!$hasTargetPaths) {
+                if (! $hasTargetPaths) {
                     continue;
                 }
             }
@@ -262,27 +270,27 @@ class ComposerAutoloadWarmer implements AutoloadWarmerInterface
      */
     private function generateClassMap(): array
     {
-        if ($this->vendorDir === null || !\class_exists('Composer\\ClassMapGenerator\\ClassMapGenerator', true)) {
+        if ($this->vendorDir === null || ! \class_exists('Composer\\ClassMapGenerator\\ClassMapGenerator', true)) {
             return [];
         }
 
         // Get PSR-4 mappings from Composer
         $psr4File = $this->vendorDir.'/composer/autoload_psr4.php';
-        if (!\file_exists($psr4File)) {
+        if (! \file_exists($psr4File)) {
             return [];
         }
 
         try {
             $psr4Map = require $psr4File;
-            if (!\is_array($psr4Map)) {
+            if (! \is_array($psr4Map)) {
                 return [];
             }
 
-            $generator = new \Composer\ClassMapGenerator\ClassMapGenerator();
+            $generator = new ClassMapGenerator;
 
             foreach ($psr4Map as $prefix => $paths) {
                 foreach ($paths as $path) {
-                    if (!\is_dir($path) || $this->shouldSkipPath($path)) {
+                    if (! \is_dir($path) || $this->shouldSkipPath($path)) {
                         continue;
                     }
 
@@ -303,8 +311,6 @@ class ComposerAutoloadWarmer implements AutoloadWarmerInterface
     /**
      * Find the vendor directory by checking registered autoloaders, falling
      * back to filesystem search.
-     *
-     * @return string|null
      */
     private function findVendorDir(): ?string
     {
@@ -313,12 +319,12 @@ class ComposerAutoloadWarmer implements AutoloadWarmerInterface
         if ($this->pharPrefix !== null) {
             // Try to find from autoloader
             foreach (\spl_autoload_functions() as $autoloader) {
-                if (!\is_array($autoloader)) {
+                if (! \is_array($autoloader)) {
                     continue;
                 }
 
                 $loader = $autoloader[0] ?? null;
-                if (!\is_object($loader)) {
+                if (! \is_object($loader)) {
                     continue;
                 }
 
@@ -364,8 +370,7 @@ class ComposerAutoloadWarmer implements AutoloadWarmerInterface
      *
      * Removes leading backslash and ensures trailing backslash.
      *
-     * @param string[] $namespaces
-     *
+     * @param  string[]  $namespaces
      * @return string[]
      */
     private function normalizeNamespaces(array $namespaces): array
@@ -378,8 +383,7 @@ class ComposerAutoloadWarmer implements AutoloadWarmerInterface
     /**
      * Check if a path should be skipped based on configuration.
      *
-     * @param string $path File or directory path
-     *
+     * @param  string  $path  File or directory path
      * @return bool True if the path should be skipped
      */
     private function shouldSkipPath(string $path): bool
@@ -392,7 +396,7 @@ class ComposerAutoloadWarmer implements AutoloadWarmerInterface
         }
 
         // Check if path is under vendor directory
-        if (!$this->includeVendor && $this->vendorDir !== null) {
+        if (! $this->includeVendor && $this->vendorDir !== null) {
             // Resolve relative paths like "vendor/composer/../../src/Cache.php" before comparing
             $resolvedPath = \realpath($path);
             if ($resolvedPath === false) {
@@ -407,7 +411,7 @@ class ComposerAutoloadWarmer implements AutoloadWarmerInterface
         }
 
         // Check test paths
-        if (!$this->includeTests) {
+        if (! $this->includeTests) {
             $patterns = ['/test/', '/tests/', '/spec/', '/specs/'];
             foreach ($patterns as $pattern) {
                 if (\stripos($normalizedPath, $pattern) !== false) {
@@ -422,15 +426,14 @@ class ComposerAutoloadWarmer implements AutoloadWarmerInterface
     /**
      * Get classes from class map, filtered based on configured namespace rules and excluded paths.
      *
-     * @param array $classMap Map of class name => file path
-     *
+     * @param  array  $classMap  Map of class name => file path
      * @return string[]
      */
     private function classesFromClassMap(array $classMap): array
     {
         // First filter the map by path
         $classMap = \array_filter($classMap, function ($path) {
-            return !$this->shouldSkipPath($path);
+            return ! $this->shouldSkipPath($path);
         });
 
         $classes = \array_keys($classMap);
@@ -453,7 +456,7 @@ class ComposerAutoloadWarmer implements AutoloadWarmerInterface
                 $isVendorClass = $this->isVendorClass($class, $classMap);
 
                 // Apply vendor-specific exclude filters
-                if ($isVendorClass && !empty($this->excludeVendorNamespaces)) {
+                if ($isVendorClass && ! empty($this->excludeVendorNamespaces)) {
                     foreach ($this->excludeVendorNamespaces as $namespace) {
                         if (\stripos($class, $namespace) === 0) {
                             return false;
@@ -469,7 +472,7 @@ class ComposerAutoloadWarmer implements AutoloadWarmerInterface
                 }
 
                 // Apply vendor-specific include filters
-                if ($isVendorClass && !empty($this->includeVendorNamespaces)) {
+                if ($isVendorClass && ! empty($this->includeVendorNamespaces)) {
                     foreach ($this->includeVendorNamespaces as $namespace) {
                         if (\stripos($class, $namespace) === 0) {
                             return true;
@@ -480,7 +483,7 @@ class ComposerAutoloadWarmer implements AutoloadWarmerInterface
                 }
 
                 // Apply general include filters
-                if (!empty($this->includeNamespaces)) {
+                if (! empty($this->includeNamespaces)) {
                     foreach ($this->includeNamespaces as $namespace) {
                         if (\stripos($class, $namespace) === 0) {
                             return true;
@@ -499,14 +502,12 @@ class ComposerAutoloadWarmer implements AutoloadWarmerInterface
     /**
      * Check if a class is from the vendor directory.
      *
-     * @param string $class    Class name
-     * @param array  $classMap Map of class name => file path
-     *
-     * @return bool
+     * @param  string  $class  Class name
+     * @param  array  $classMap  Map of class name => file path
      */
     private function isVendorClass(string $class, array $classMap): bool
     {
-        if ($this->vendorDir === null || !isset($classMap[$class])) {
+        if ($this->vendorDir === null || ! isset($classMap[$class])) {
             return false;
         }
 
@@ -531,8 +532,7 @@ class ComposerAutoloadWarmer implements AutoloadWarmerInterface
     /**
      * Check if a path is from PsySH's own PHAR.
      *
-     * @param string $path File path to check
-     *
+     * @param  string  $path  File path to check
      * @return bool True if the path is from PsySH's PHAR
      */
     private function isPathFromPhar(string $path): bool

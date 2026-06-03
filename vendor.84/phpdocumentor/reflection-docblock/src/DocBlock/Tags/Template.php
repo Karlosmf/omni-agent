@@ -78,8 +78,8 @@ final class Template extends BaseTag
 
     public function __toString(): string
     {
-        $bound = $this->bound !== null ? ' of ' . $this->bound : '';
-        $default = $this->default !== null ? ' = ' . $this->default : '';
+        $bound = $this->bound !== null ? ' of '.$this->bound : '';
+        $default = $this->default !== null ? ' = '.$this->default : '';
 
         if ($this->description) {
             $description = $this->description->render();
@@ -87,6 +87,6 @@ final class Template extends BaseTag
             $description = '';
         }
 
-        return $this->templateName . $bound . $default . ($description !== '' ? ' ' . $description : '');
+        return $this->templateName.$bound.$default.($description !== '' ? ' '.$description : '');
     }
 }

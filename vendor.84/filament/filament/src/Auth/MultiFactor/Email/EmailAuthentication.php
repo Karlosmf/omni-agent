@@ -49,7 +49,7 @@ class EmailAuthentication implements HasBeforeChallengeHook, MultiFactorAuthenti
     public function isEnabled(Authenticatable $user): bool
     {
         if (! ($user instanceof HasEmailAuthentication)) {
-            throw new LogicException('The user model must implement the [' . HasEmailAuthentication::class . '] interface to use email authentication.');
+            throw new LogicException('The user model must implement the ['.HasEmailAuthentication::class.'] interface to use email authentication.');
         }
 
         return $user->hasEmailAuthentication();
@@ -58,7 +58,7 @@ class EmailAuthentication implements HasBeforeChallengeHook, MultiFactorAuthenti
     public function sendCode(HasEmailAuthentication $user): bool
     {
         if (! ($user instanceof Model)) {
-            throw new LogicException('The [' . $user::class . '] class must be an instance of [' . Model::class . '] to use email authentication.');
+            throw new LogicException('The ['.$user::class.'] class must be an instance of ['.Model::class.'] to use email authentication.');
         }
 
         if (! method_exists($user, 'notify')) {
@@ -180,7 +180,7 @@ class EmailAuthentication implements HasBeforeChallengeHook, MultiFactorAuthenti
     public function beforeChallenge(Authenticatable $user): void
     {
         if (! ($user instanceof HasEmailAuthentication)) {
-            throw new LogicException('The user model must implement the [' . HasEmailAuthentication::class . '] interface to use email authentication.');
+            throw new LogicException('The user model must implement the ['.HasEmailAuthentication::class.'] interface to use email authentication.');
         }
 
         $this->sendCode($user);

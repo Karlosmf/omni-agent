@@ -25,23 +25,23 @@ trait CanGenerateBadgeHtml
      */
     public function generateBadgeHtml(
         ComponentAttributeBag $attributes,
-        string | array | null $color = null,
+        string|array|null $color = null,
         ?string $form = null,
         ?string $formId = null,
         bool $hasLoadingIndicator = true,
         ?bool $hasSpaMode = null,
         ?string $href = null,
-        string | BackedEnum | Htmlable | null $icon = null,
+        string|BackedEnum|Htmlable|null $icon = null,
         ?string $iconAlias = null,
         ?IconPosition $iconPosition = IconPosition::Before,
-        IconSize | string | null $iconSize = null,
+        IconSize|string|null $iconSize = null,
         bool $isDisabled = false,
         ?array $keyBindings = null,
-        string | Htmlable | null $label = null,
-        Size | string | null $size = null,
+        string|Htmlable|null $label = null,
+        Size|string|null $size = null,
         string $tag = 'span',
         ?string $target = null,
-        string | Htmlable | null $tooltip = null,
+        string|Htmlable|null $tooltip = null,
         ?string $type = 'button',
     ): string {
         $color ??= 'primary';
@@ -101,18 +101,18 @@ trait CanGenerateBadgeHtml
             ->color(BadgeComponent::class, $color);
 
         $iconHtml = $icon ? generate_icon_html($icon, $iconAlias, (new ComponentAttributeBag([
-            'wire:loading.remove.delay.' . config('filament.livewire_loading_delay', 'default') => $hasLoadingIndicator,
+            'wire:loading.remove.delay.'.config('filament.livewire_loading_delay', 'default') => $hasLoadingIndicator,
             'wire:target' => $hasLoadingIndicator ? $loadingIndicatorTarget : false,
         ])), size: $iconSize ?? IconSize::Small)->toHtml() : '';
 
         $loadingIndicatorHtml = $hasLoadingIndicator ? generate_loading_indicator_html((new ComponentAttributeBag([
-            'wire:loading.delay.' . config('filament.livewire_loading_delay', 'default') => '',
+            'wire:loading.delay.'.config('filament.livewire_loading_delay', 'default') => '',
             'wire:target' => $loadingIndicatorTarget,
         ])), size: $iconSize ?? IconSize::Small)->toHtml() : '';
 
         ob_start(); ?>
 
-        <?= ($tag === 'form') ? ('<form ' . $formAttributes->toHtml() . '>' . csrf_field()) : '' ?>
+        <?= ($tag === 'form') ? ('<form '.$formAttributes->toHtml().'>'.csrf_field()) : '' ?>
 
         <<?= ($tag === 'form') ? 'button' : $tag ?>
             <?php if (($tag === 'a') && (! ($isDisabled && $hasTooltip))) { ?>

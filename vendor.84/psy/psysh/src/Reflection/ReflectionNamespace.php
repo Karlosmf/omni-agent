@@ -20,8 +20,6 @@ class ReflectionNamespace implements \Reflector
 
     /**
      * Construct a ReflectionNamespace object.
-     *
-     * @param string $name
      */
     public function __construct(string $name)
     {
@@ -30,8 +28,6 @@ class ReflectionNamespace implements \Reflector
 
     /**
      * Gets the constant name.
-     *
-     * @return string
      */
     public function getName(): string
     {
@@ -50,8 +46,6 @@ class ReflectionNamespace implements \Reflector
 
     /**
      * To string.
-     *
-     * @return string
      */
     public function __toString(): string
     {

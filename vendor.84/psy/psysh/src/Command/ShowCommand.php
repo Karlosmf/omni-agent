@@ -27,6 +27,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ShowCommand extends ReflectingCommand
 {
     private ?\Throwable $lastException = null;
+
     private ?int $lastExceptionIndex = null;
 
     /**
@@ -103,7 +104,7 @@ HELP
     private function writeCodeContext(InputInterface $input, OutputInterface $output)
     {
         try {
-            list($target, $reflector) = $this->getTargetAndReflector($input->getArgument('target'), $output);
+            [$target, $reflector] = $this->getTargetAndReflector($input->getArgument('target'), $output);
         } catch (UnexpectedTargetException $e) {
             // If we didn't get a target and Reflector, maybe we got a filename?
             $target = $e->getTarget();
@@ -112,7 +113,7 @@ HELP
                 if ($file !== $this->context->get('__file')) {
                     $this->context->setCommandScopeVariables([
                         '__file' => $file,
-                        '__dir'  => \dirname($file),
+                        '__dir' => \dirname($file),
                     ]);
                 }
 
@@ -204,15 +205,15 @@ HELP
 
     private function writeTraceCodeSnippet(OutputInterface $output, array $trace, $index)
     {
-        if (!isset($trace[$index]['file'])) {
+        if (! isset($trace[$index]['file'])) {
             return;
         }
 
         $file = $trace[$index]['file'];
         if ($fileAndLine = $this->extractEvalFileAndLine($file)) {
-            list($file, $line) = $fileAndLine;
+            [$file, $line] = $fileAndLine;
         } else {
-            if (!isset($trace[$index]['line'])) {
+            if (! isset($trace[$index]['line'])) {
                 return;
             }
 
@@ -267,7 +268,7 @@ HELP
         if (isset($context['file'])) {
             $file = $context['file'];
             if ($fileAndLine = $this->extractEvalFileAndLine($file)) {
-                list($file, $line) = $fileAndLine;
+                [$file, $line] = $fileAndLine;
             } elseif (isset($context['line'])) {
                 $line = $context['line'];
             }

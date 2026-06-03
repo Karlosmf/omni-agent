@@ -91,15 +91,14 @@ class Person extends \Faker\Provider\Person
      *
      * @see http://www.finlex.fi/fi/laki/ajantasa/2010/20100128
      *
-     * @param string $gender Person::GENDER_MALE || Person::GENDER_FEMALE
-     *
+     * @param  string  $gender  Person::GENDER_MALE || Person::GENDER_FEMALE
      * @return string on format DDMMYYCZZZQ, where DDMMYY is the date of birth, C the century sign, ZZZ the individual number and Q the control character (checksum)
      */
     public function personalIdentityNumber(?\DateTime $birthdate = null, $gender = null)
     {
         $checksumCharacters = '0123456789ABCDEFHJKLMNPRSTUVWXY';
 
-        if (!$birthdate) {
+        if (! $birthdate) {
             $birthdate = \Faker\Provider\DateTime::dateTimeThisCentury();
         }
         $datePart = $birthdate->format('dmy');
@@ -147,8 +146,8 @@ class Person extends \Faker\Provider\Person
         }
         $randomDigits = str_pad($randomDigits, 3, '0', STR_PAD_LEFT);
 
-        $checksum = $checksumCharacters[(int) ($datePart . $randomDigits) % strlen($checksumCharacters)];
+        $checksum = $checksumCharacters[(int) ($datePart.$randomDigits) % strlen($checksumCharacters)];
 
-        return $datePart . $centurySign . $randomDigits . $checksum;
+        return $datePart.$centurySign.$randomDigits.$checksum;
     }
 }

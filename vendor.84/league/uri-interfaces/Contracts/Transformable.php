@@ -21,7 +21,7 @@ interface Transformable
      * This method MUST retain the state of the current instance, and return
      * a new instance of the same type.
      *
-     * @param callable(static): static $callback
+     * @param  callable(static): static  $callback
      */
     public function transform(callable $callback): static;
 }

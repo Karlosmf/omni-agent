@@ -8,6 +8,7 @@ use Facebook\WebDriver\Remote\RemoteWebDriver;
 
 /**
  * @codeCoverageIgnore
+ *
  * @todo Break inheritance from RemoteWebDriver in next major version. (Composition over inheritance!)
  */
 abstract class LocalWebDriver extends RemoteWebDriver

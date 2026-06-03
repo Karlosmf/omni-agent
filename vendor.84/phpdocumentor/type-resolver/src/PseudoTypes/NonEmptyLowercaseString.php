@@ -26,7 +26,7 @@ final class NonEmptyLowercaseString extends String_ implements PseudoType
 {
     public function underlyingType(): Type
     {
-        return new String_();
+        return new String_;
     }
 
     /**

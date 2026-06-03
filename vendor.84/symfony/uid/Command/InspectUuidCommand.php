@@ -40,8 +40,7 @@ class InspectUuidCommand extends Command
                     <info>php %command.full_name% MfnmaUvvQ1h8B14vTwt6dX</info>
                     <info>php %command.full_name% 57C4Z0MPC627NTGR9BY1DFD7JJ</info>
                 EOF
-            )
-        ;
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -56,9 +55,9 @@ class InspectUuidCommand extends Command
             return 1;
         }
 
-        if (new NilUuid() == $uuid) {
+        if (new NilUuid == $uuid) {
             $version = 'nil';
-        } elseif (new MaxUuid() == $uuid) {
+        } elseif (new MaxUuid == $uuid) {
             $version = 'max';
         } else {
             $version = hexdec($uuid->toRfc4122()[14]);
@@ -73,7 +72,7 @@ class InspectUuidCommand extends Command
         ];
 
         if ($uuid instanceof TimeBasedUidInterface) {
-            $rows[] = new TableSeparator();
+            $rows[] = new TableSeparator;
             $rows[] = ['Time', $uuid->getDateTime()->format('Y-m-d H:i:s.u \U\T\C')];
         }
 

@@ -556,6 +556,7 @@ use Faker\Container\ContainerInterface;
 class Generator
 {
     protected $providers = [];
+
     protected $formatters = [];
 
     private $container;
@@ -573,15 +574,14 @@ class Generator
     /**
      * @template T of Extension\Extension
      *
-     * @param class-string<T> $id
+     * @param  class-string<T>  $id
+     * @return T
      *
      * @throws Extension\ExtensionNotFound
-     *
-     * @return T
      */
     public function ext(string $id): Extension\Extension
     {
-        if (!$this->container->has($id)) {
+        if (! $this->container->has($id)) {
             throw new Extension\ExtensionNotFound(sprintf(
                 'No Faker extension with id "%s" was loaded.',
                 $id,
@@ -618,13 +618,12 @@ class Generator
      * $faker->unique()->randomElement(array(1, 2, 3));
      * </code>
      *
-     * @param bool $reset      If set to true, resets the list of existing values
-     * @param int  $maxRetries Maximum number of retries to find a unique value,
-     *                         After which an OverflowException is thrown.
+     * @param  bool  $reset  If set to true, resets the list of existing values
+     * @param  int  $maxRetries  Maximum number of retries to find a unique value,
+     *                           After which an OverflowException is thrown.
+     * @return self A proxy class returning only non-existing values
      *
      * @throws \OverflowException When no unique value can be found by iterating $maxRetries times
-     *
-     * @return self A proxy class returning only non-existing values
      */
     public function unique($reset = false, $maxRetries = 10000)
     {
@@ -638,8 +637,7 @@ class Generator
     /**
      * Get a value only some percentage of the time.
      *
-     * @param float $weight A probability between 0 and 1, 0 means that we always get the default value.
-     *
+     * @param  float  $weight  A probability between 0 and 1, 0 means that we always get the default value.
      * @return self
      */
     public function optional(float $weight = 0.5, $default = null)
@@ -669,13 +667,12 @@ class Generator
      * print_r($values); // [0, 4, 8, 4, 2, 6, 0, 8, 8, 6]
      * </code>
      *
-     * @param ?\Closure $validator  A function returning true for valid values
-     * @param int       $maxRetries Maximum number of retries to find a valid value,
-     *                              After which an OverflowException is thrown.
+     * @param  ?\Closure  $validator  A function returning true for valid values
+     * @param  int  $maxRetries  Maximum number of retries to find a valid value,
+     *                           After which an OverflowException is thrown.
+     * @return self A proxy class returning only valid values
      *
      * @throws \OverflowException When no valid value can be found by iterating $maxRetries times
-     *
-     * @return self A proxy class returning only valid values
      */
     public function valid(?\Closure $validator = null, int $maxRetries = 10000)
     {
@@ -709,8 +706,7 @@ class Generator
     }
 
     /**
-     * @param string $format
-     *
+     * @param  string  $format
      * @return callable
      */
     public function getFormatter($format)
@@ -746,8 +742,7 @@ class Generator
     /**
      * Replaces tokens ('{{ tokenName }}') with the result from the token method call
      *
-     * @param string $string String that needs to bet parsed
-     *
+     * @param  string  $string  String that needs to bet parsed
      * @return string
      */
     public function parse($string)
@@ -914,8 +909,8 @@ class Generator
      *
      * The maximum value returned is mt_getrandmax()
      *
-     * @param int|null $nbDigits Defaults to a random number between 1 and 9
-     * @param bool     $strict   Whether the returned number should have exactly $nbDigits
+     * @param  int|null  $nbDigits  Defaults to a random number between 1 and 9
+     * @param  bool  $strict  Whether the returned number should have exactly $nbDigits
      *
      * @example 79907610
      */
@@ -930,8 +925,8 @@ class Generator
     /**
      * Get a version number in semantic versioning syntax 2.0.0. (https://semver.org/spec/v2.0.0.html)
      *
-     * @param bool $preRelease Pre release parts may be randomly included
-     * @param bool $build      Build parts may be randomly included
+     * @param  bool  $preRelease  Pre release parts may be randomly included
+     * @param  bool  $build  Build parts may be randomly included
      *
      * @example 1.0.0
      * @example 1.0.0-alpha.1
@@ -953,7 +948,7 @@ class Generator
     }
 
     /**
-     * @param string $attribute
+     * @param  string  $attribute
      *
      * @deprecated Use a method instead.
      */
@@ -965,8 +960,8 @@ class Generator
     }
 
     /**
-     * @param string $method
-     * @param array  $attributes
+     * @param  string  $method
+     * @param  array  $attributes
      */
     public function __call($method, $attributes)
     {

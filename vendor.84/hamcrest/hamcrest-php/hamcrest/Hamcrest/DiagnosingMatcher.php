@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest;
 
 /*
@@ -10,10 +11,9 @@ namespace Hamcrest;
  */
 abstract class DiagnosingMatcher extends BaseMatcher
 {
-
     final public function matches($item)
     {
-        return $this->matchesWithDiagnosticDescription($item, new NullDescription());
+        return $this->matchesWithDiagnosticDescription($item, new NullDescription);
     }
 
     public function describeMismatch($item, Description $mismatchDescription)

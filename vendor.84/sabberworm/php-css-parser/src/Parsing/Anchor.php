@@ -20,7 +20,7 @@ class Anchor
     private $parserState;
 
     /**
-     * @param int<0, max> $position
+     * @param  int<0, max>  $position
      */
     public function __construct(int $position, ParserState $parserState)
     {

@@ -73,7 +73,7 @@ class ListRecords extends Page implements Tables\Contracts\HasTable
         return $table;
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return static::$title ?? static::getResource()::getTitleCasePluralModelLabel();
     }
@@ -100,7 +100,7 @@ class ListRecords extends Page implements Tables\Contracts\HasTable
     /**
      * @return Model|class-string<Model>|null
      */
-    protected function getMountedActionSchemaModel(): Model | string | null
+    protected function getMountedActionSchemaModel(): Model|string|null
     {
         return $this->getModel();
     }
@@ -197,7 +197,7 @@ class ListRecords extends Page implements Tables\Contracts\HasTable
                         continue;
                     }
 
-                    if (! $resource::{'can' . ucfirst($action)}($record)) {
+                    if (! $resource::{'can'.ucfirst($action)}($record)) {
                         continue;
                     }
 
@@ -215,7 +215,7 @@ class ListRecords extends Page implements Tables\Contracts\HasTable
     /**
      * @deprecated Override the `table()` method to configure the table.
      */
-    protected function getTableQuery(): Builder | Relation | null
+    protected function getTableQuery(): Builder|Relation|null
     {
         return static::getResource()::getEloquentQuery();
     }
@@ -250,7 +250,7 @@ class ListRecords extends Page implements Tables\Contracts\HasTable
     {
         return [
             'fi-resource-list-records-page',
-            'fi-resource-' . str_replace('/', '-', $this->getResource()::getSlug(Filament::getCurrentOrDefaultPanel())),
+            'fi-resource-'.str_replace('/', '-', $this->getResource()::getSlug(Filament::getCurrentOrDefaultPanel())),
         ];
     }
 }

@@ -82,13 +82,14 @@ class PowerJoinClause extends JoinClause
      */
     public function withGlobalScopes(): self
     {
-        if (!$this->model) {
+        if (! $this->model) {
             return $this;
         }
 
         foreach ($this->model->getGlobalScopes() as $scope) {
             if ($scope instanceof Closure) {
                 $scope->call($this, $this);
+
                 continue;
             }
 
@@ -96,7 +97,7 @@ class PowerJoinClause extends JoinClause
                 continue;
             }
 
-            (new $scope())->apply($this, $this->model);
+            (new $scope)->apply($this, $this->model);
         }
 
         return $this;
@@ -107,7 +108,7 @@ class PowerJoinClause extends JoinClause
      */
     protected function useTableAliasInConditions(): self
     {
-        if (!$this->alias || !$this->model) {
+        if (! $this->alias || ! $this->model) {
             return $this;
         }
 
@@ -196,7 +197,7 @@ class PowerJoinClause extends JoinClause
     {
         if ($this->alias && is_string($column) && Str::contains($column, $this->tableName)) {
             $column = str_replace("{$this->tableName}.", "{$this->alias}.", $column);
-        } elseif ($this->alias && !is_callable($column)) {
+        } elseif ($this->alias && ! is_callable($column)) {
             $column = $this->alias.'.'.$column;
         }
 
@@ -215,7 +216,7 @@ class PowerJoinClause extends JoinClause
      */
     public function withTrashed(): self
     {
-        if (!$this->getModel() || !in_array(SoftDeletes::class, class_uses_recursive($this->getModel()), true)) {
+        if (! $this->getModel() || ! in_array(SoftDeletes::class, class_uses_recursive($this->getModel()), true)) {
             return $this;
         }
 
@@ -235,8 +236,8 @@ class PowerJoinClause extends JoinClause
      */
     public function onlyTrashed(): self
     {
-        if (!$this->getModel()
-            || !in_array(SoftDeletes::class, class_uses_recursive($this->getModel()), true)
+        if (! $this->getModel()
+            || ! in_array(SoftDeletes::class, class_uses_recursive($this->getModel()), true)
         ) {
             return $this;
         }
@@ -252,7 +253,7 @@ class PowerJoinClause extends JoinClause
             return $where;
         }, $this->wheres);
 
-        if (!$hasCondition) {
+        if (! $hasCondition) {
             $this->whereNotNull($this->getModel()->getQualifiedDeletedAtColumn());
         }
 
@@ -283,7 +284,7 @@ class PowerJoinClause extends JoinClause
 
     public function __call($name, $arguments)
     {
-        if (!$this->getModel()) {
+        if (! $this->getModel()) {
             return;
         }
 
@@ -316,13 +317,13 @@ class PowerJoinClause extends JoinClause
      */
     protected function hasLaravelScopeAttribute(string $methodName): bool
     {
-        if (!method_exists($this->getModel(), $methodName)) {
+        if (! method_exists($this->getModel(), $methodName)) {
             return false;
         }
 
         $reflection = new ReflectionClass($this->getModel());
 
-        if (!$reflection->hasMethod($methodName)) {
+        if (! $reflection->hasMethod($methodName)) {
             return false;
         }
 

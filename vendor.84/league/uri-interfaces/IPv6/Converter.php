@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace League\Uri\IPv6;
 
+use const FILTER_FLAG_IPV6;
+use const FILTER_VALIDATE_IP;
+
 use BackedEnum;
 use Stringable;
 use ValueError;
@@ -23,9 +26,6 @@ use function inet_pton;
 use function str_split;
 use function strtolower;
 use function unpack;
-
-use const FILTER_FLAG_IPV6;
-use const FILTER_VALIDATE_IP;
 
 final class Converter
 {
@@ -44,7 +44,7 @@ final class Converter
 
         return match (filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
             false => throw new ValueError('The submitted IP is not a valid IPv6 address.'),
-            default =>  strtolower((string) inet_ntop((string) inet_pton($ipAddress))),
+            default => strtolower((string) inet_ntop((string) inet_pton($ipAddress))),
         };
     }
 
@@ -54,7 +54,7 @@ final class Converter
             $ipAddress = (string) $ipAddress->value;
         }
 
-        if (false === filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+        if (filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
             throw new ValueError('The submitted IP is not a valid IPv6 address.');
         }
 
@@ -66,9 +66,9 @@ final class Converter
     public static function compress(BackedEnum|Stringable|string|null $host): ?string
     {
         $components = self::parse($host);
-        if (null === $components['ipAddress']) {
+        if ($components['ipAddress'] === null) {
             return match (true) {
-                null === $host => $host,
+                $host === null => $host,
                 $host instanceof BackedEnum => (string) $host->value,
                 default => (string) $host,
             };
@@ -82,7 +82,7 @@ final class Converter
     public static function expand(Stringable|string|null $host): ?string
     {
         $components = self::parse($host);
-        if (null === $components['ipAddress']) {
+        if ($components['ipAddress'] === null) {
             return match ($host) {
                 null => $host,
                 default => (string) $host,
@@ -99,7 +99,7 @@ final class Converter
         $components['ipAddress'] ??= null;
         $components['zoneIdentifier'] ??= null;
 
-        if (null === $components['ipAddress']) {
+        if ($components['ipAddress'] === null) {
             return '';
         }
 
@@ -114,7 +114,7 @@ final class Converter
      */
     private static function parse(BackedEnum|Stringable|string|null $host): array
     {
-        if (null === $host) {
+        if ($host === null) {
             return ['ipAddress' => null, 'zoneIdentifier' => null];
         }
 
@@ -123,26 +123,26 @@ final class Converter
         }
 
         $host = (string) $host;
-        if ('' === $host) {
+        if ($host === '') {
             return ['ipAddress' => null, 'zoneIdentifier' => null];
         }
 
-        if (!str_starts_with($host, '[')) {
+        if (! str_starts_with($host, '[')) {
             return ['ipAddress' => null, 'zoneIdentifier' => null];
         }
 
-        if (!str_ends_with($host, ']')) {
+        if (! str_ends_with($host, ']')) {
             return ['ipAddress' => null, 'zoneIdentifier' => null];
         }
 
         [$ipv6, $zoneIdentifier] = explode('%', substr($host, 1, -1), 2) + [1 => null];
-        if (false === filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+        if (filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
             return ['ipAddress' => null, 'zoneIdentifier' => null];
         }
 
         return match (true) {
-            null === $zoneIdentifier,
-            is_string($ipv6) && str_starts_with((string)inet_pton($ipv6), self::HOST_ADDRESS_BLOCK) =>  ['ipAddress' => $ipv6, 'zoneIdentifier' => $zoneIdentifier],
+            $zoneIdentifier === null,
+            is_string($ipv6) && str_starts_with((string) inet_pton($ipv6), self::HOST_ADDRESS_BLOCK) => ['ipAddress' => $ipv6, 'zoneIdentifier' => $zoneIdentifier],
             default => ['ipAddress' => null, 'zoneIdentifier' => null],
         };
     }
@@ -152,7 +152,7 @@ final class Converter
      */
     public static function isIpv6(BackedEnum|Stringable|string|null $host): bool
     {
-        return null !== self::parse($host)['ipAddress'];
+        return self::parse($host)['ipAddress'] !== null;
     }
 
     public static function normalize(BackedEnum|Stringable|string|null $host): ?string
@@ -161,13 +161,13 @@ final class Converter
             $host = $host->value;
         }
 
-        if (null === $host || '' === $host) {
+        if ($host === null || $host === '') {
             return $host;
         }
 
         $host = (string) $host;
         $components = self::parse($host);
-        if (null === $components['ipAddress']) {
+        if ($components['ipAddress'] === null) {
             return strtolower($host);
         }
 

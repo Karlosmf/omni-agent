@@ -273,13 +273,13 @@ class CreateRecord extends Page
             ->label(__('filament-panels::resources/pages/create-record.form.actions.cancel.label'))
             ->alpineClickHandler(
                 FilamentView::hasSpaMode($url)
-                    ? 'document.referrer ? window.history.back() : Livewire.navigate(' . Js::from($url) . ')'
-                    : 'document.referrer ? window.history.back() : (window.location.href = ' . Js::from($url) . ')',
+                    ? 'document.referrer ? window.history.back() : Livewire.navigate('.Js::from($url).')'
+                    : 'document.referrer ? window.history.back() : (window.location.href = '.Js::from($url).')',
             )
             ->color('gray');
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         if (filled(static::$title)) {
             return static::$title;
@@ -342,7 +342,7 @@ class CreateRecord extends Page
     /**
      * @return Model|class-string<Model>|null
      */
-    protected function getMountedActionSchemaModel(): Model | string | null
+    protected function getMountedActionSchemaModel(): Model|string|null
     {
         return $this->getModel();
     }
@@ -408,7 +408,7 @@ class CreateRecord extends Page
     {
         return [
             'fi-resource-create-record-page',
-            'fi-resource-' . str_replace('/', '-', $this->getResource()::getSlug(Filament::getCurrentOrDefaultPanel())),
+            'fi-resource-'.str_replace('/', '-', $this->getResource()::getSlug(Filament::getCurrentOrDefaultPanel())),
         ];
     }
 

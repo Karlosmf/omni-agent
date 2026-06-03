@@ -10,7 +10,9 @@ namespace OpenSpout\Reader\XLSX\Helper;
 final class DateFormatHelper
 {
     public const KEY_GENERAL = 'general';
+
     public const KEY_HOUR_12 = '12h';
+
     public const KEY_HOUR_24 = '24h';
 
     /**
@@ -54,8 +56,7 @@ final class DateFormatHelper
     /**
      * Converts the given Excel date format to a format understandable by the PHP date function.
      *
-     * @param string $excelDateFormat Excel date format
-     *
+     * @param  string  $excelDateFormat  Excel date format
      * @return string PHP date format (as defined here: http://php.net/manual/en/function.date.php)
      */
     public static function toPHPDateFormat(string $excelDateFormat): string
@@ -64,7 +65,7 @@ final class DateFormatHelper
         // and text portion of the format at the end of it (starting with ";")
         // See §18.8.31 of ECMA-376 for more detail.
         $dateFormat = preg_replace('/^(?:\[\$[^\]]+?\])?([^;]*).*/', '$1', $excelDateFormat);
-        \assert(null !== $dateFormat);
+        \assert($dateFormat !== null);
 
         // Double quotes are used to escape characters that must not be interpreted.
         // For instance, ["Day " dd] should result in "Day 13" and we should not try to interpret "D", "a", "y"
@@ -74,7 +75,7 @@ final class DateFormatHelper
 
         foreach ($dateFormatParts as $partIndex => $dateFormatPart) {
             // do not look at odd indexes
-            if (1 === $partIndex % 2) {
+            if ($partIndex % 2 === 1) {
                 continue;
             }
 
@@ -107,19 +108,18 @@ final class DateFormatHelper
         return preg_replace_callback('/"(.+?)"/', static function ($matches): string {
             $stringToEscape = $matches[1];
             $letters = preg_split('//u', $stringToEscape, -1, PREG_SPLIT_NO_EMPTY);
-            \assert(false !== $letters);
+            \assert($letters !== false);
 
             return '\\'.implode('\\', $letters);
         }, $phpDateFormat);
     }
 
     /**
-     * @param string $excelDateFormat Date format as defined by Excel
-     *
+     * @param  string  $excelDateFormat  Date format as defined by Excel
      * @return bool Whether the given date format has the 12-hour format marker
      */
     private static function has12HourFormatMarker(string $excelDateFormat): bool
     {
-        return false !== stripos($excelDateFormat, 'am/pm');
+        return stripos($excelDateFormat, 'am/pm') !== false;
     }
 }

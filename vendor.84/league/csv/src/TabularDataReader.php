@@ -23,6 +23,7 @@ use IteratorAggregate;
  * Represents a Tabular data.
  *
  * @template TValue of array
+ *
  * @template-extends IteratorAggregate<array-key, TValue>
  *
  * @method Iterator fetchColumnByName(string $name) returns a column from its name
@@ -43,7 +44,7 @@ use IteratorAggregate;
  * @method iterable<TabularDataReader> chunkBy(int $recordsCount) Chunk the TabulaDataReader into smaller TabularDataReader instances of the given size or less.
  * @method TabularDataReader mapHeader(array $headers) Returns a new TabulaDataReader with a new set of headers.
  */
-interface TabularDataReader extends TabularData, IteratorAggregate, Countable
+interface TabularDataReader extends Countable, IteratorAggregate, TabularData
 {
     /**
      * Returns the tabular data rows as an iterator object containing flat array.
@@ -74,8 +75,8 @@ interface TabularDataReader extends TabularData, IteratorAggregate, Countable
      * - the first column is used to provide the keys
      * - the second column is used to provide the value
      *
-     * @param string|int $offset_index The column index to serve as offset
-     * @param string|int $value_index The column index to serve as value
+     * @param  string|int  $offset_index  The column index to serve as offset
+     * @param  string|int  $value_index  The column index to serve as value
      *
      * @throws UnableToProcessCsv if the column index is invalid or not found
      */
@@ -90,10 +91,10 @@ interface TabularDataReader extends TabularData, IteratorAggregate, Countable
      *
      * By default, if no index is provided the first record of the tabular data is returned
      *
-     * @param int $nth_record the tabular data record offset
+     * @param  int  $nth_record  the tabular data record offset
      *
      * @throws UnableToProcessCsv if argument is less than 0
      */
-    #[Deprecated(message:'use League\Csv\TabularDataReader::nth() instead', since:'league/csv:9.9.0')]
+    #[Deprecated(message: 'use League\Csv\TabularDataReader::nth() instead', since: 'league/csv:9.9.0')]
     public function fetchOne(int $nth_record = 0): array;
 }

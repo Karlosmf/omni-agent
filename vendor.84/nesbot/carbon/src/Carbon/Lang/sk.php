@@ -39,10 +39,10 @@ use Carbon\CarbonInterface;
 
 $fromNow = function ($time) {
     return 'o '.strtr($time, [
-            'hodina' => 'hodinu',
-            'minúta' => 'minútu',
-            'sekunda' => 'sekundu',
-        ]);
+        'hodina' => 'hodinu',
+        'minúta' => 'minútu',
+        'sekunda' => 'sekundu',
+    ]);
 };
 
 $ago = function ($time) {
@@ -142,7 +142,7 @@ return [
                 case 2:
                 case 4:
                 case 5:
-                    return '[minulý] dddd [o] LT'; //pondelok/utorok/štvrtok/piatok
+                    return '[minulý] dddd [o] LT'; // pondelok/utorok/štvrtok/piatok
                 default:
                     return '[minulá] dddd [o] LT';
             }

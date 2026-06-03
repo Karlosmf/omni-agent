@@ -13,13 +13,13 @@ trait CanReorderRecords
 {
     use HasReorderAnimationDuration;
 
-    protected bool | Closure $isReorderable = true;
+    protected bool|Closure $isReorderable = true;
 
-    protected bool | Closure $isReorderAuthorized = true;
+    protected bool|Closure $isReorderAuthorized = true;
 
-    protected string | Closure | null $reorderColumn = null;
+    protected string|Closure|null $reorderColumn = null;
 
-    protected string | Closure | null $reorderDirection = null;
+    protected string|Closure|null $reorderDirection = null;
 
     protected ?Closure $modifyReorderRecordsTriggerActionUsing = null;
 
@@ -34,7 +34,7 @@ trait CanReorderRecords
         return $this;
     }
 
-    public function reorderable(string | Closure | null $column = null, bool | Closure | null $condition = null, string | Closure | null $direction = null): static
+    public function reorderable(string|Closure|null $column = null, bool|Closure|null $condition = null, string|Closure|null $direction = null): static
     {
         $this->reorderColumn = $column;
 
@@ -61,7 +61,7 @@ trait CanReorderRecords
         return $this;
     }
 
-    public function authorizeReorder(bool | Closure $condition = true): static
+    public function authorizeReorder(bool|Closure $condition = true): static
     {
         $this->isReorderAuthorized = $condition;
 

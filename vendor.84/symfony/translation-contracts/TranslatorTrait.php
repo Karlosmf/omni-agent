@@ -37,7 +37,7 @@ trait TranslatorTrait
 
     public function trans(?string $id, array $parameters = [], ?string $domain = null, ?string $locale = null): string
     {
-        if (null === $id || '' === $id) {
+        if ($id === null || $id === '') {
             return '';
         }
 
@@ -47,7 +47,7 @@ trait TranslatorTrait
             }
         }
 
-        if (!isset($parameters['%count%']) || !is_numeric($parameters['%count%'])) {
+        if (! isset($parameters['%count%']) || ! is_numeric($parameters['%count%'])) {
             return strtr($id, $parameters);
         }
 
@@ -92,11 +92,11 @@ EOF;
                         }
                     }
                 } else {
-                    $leftNumber = '-Inf' === $matches['left'] ? -\INF : (float) $matches['left'];
+                    $leftNumber = $matches['left'] === '-Inf' ? -\INF : (float) $matches['left'];
                     $rightNumber = is_numeric($matches['right']) ? (float) $matches['right'] : \INF;
 
-                    if (('[' === $matches['left_delimiter'] ? $number >= $leftNumber : $number > $leftNumber)
-                        && (']' === $matches['right_delimiter'] ? $number <= $rightNumber : $number < $rightNumber)
+                    if (($matches['left_delimiter'] === '[' ? $number >= $leftNumber : $number > $leftNumber)
+                        && ($matches['right_delimiter'] === ']' ? $number <= $rightNumber : $number < $rightNumber)
                     ) {
                         return strtr($matches['message'], $parameters);
                     }
@@ -110,10 +110,10 @@ EOF;
 
         $position = $this->getPluralizationRule($number, $locale);
 
-        if (!isset($standardRules[$position])) {
+        if (! isset($standardRules[$position])) {
             // when there's exactly one rule given, and that rule is a standard
             // rule, use this rule
-            if (1 === \count($parts) && isset($standardRules[0])) {
+            if (\count($parts) === 1 && isset($standardRules[0])) {
                 return strtr($standardRules[0], $parameters);
             }
 
@@ -140,7 +140,7 @@ EOF;
     {
         $number = abs($number);
 
-        return match ('pt_BR' !== $locale && 'en_US_POSIX' !== $locale && \strlen($locale) > 3 ? substr($locale, 0, strrpos($locale, '_')) : $locale) {
+        return match ($locale !== 'pt_BR' && $locale !== 'en_US_POSIX' && \strlen($locale) > 3 ? substr($locale, 0, strrpos($locale, '_')) : $locale) {
             'af',
             'bn',
             'bg',
@@ -192,7 +192,7 @@ EOF;
             'te',
             'tk',
             'ur',
-            'zu' => (1 == $number) ? 0 : 1,
+            'zu' => ($number == 1) ? 0 : 1,
             'am',
             'bh',
             'fil',
@@ -212,19 +212,19 @@ EOF;
             'ru',
             'sh',
             'sr',
-            'uk' => ((1 == $number % 10) && (11 != $number % 100)) ? 0 : ((($number % 10 >= 2) && ($number % 10 <= 4) && (($number % 100 < 10) || ($number % 100 >= 20))) ? 1 : 2),
+            'uk' => (($number % 10 == 1) && ($number % 100 != 11)) ? 0 : ((($number % 10 >= 2) && ($number % 10 <= 4) && (($number % 100 < 10) || ($number % 100 >= 20))) ? 1 : 2),
             'cs',
-            'sk' => (1 == $number) ? 0 : ((($number >= 2) && ($number <= 4)) ? 1 : 2),
-            'ga' => (1 == $number) ? 0 : ((2 == $number) ? 1 : 2),
-            'lt' => ((1 == $number % 10) && (11 != $number % 100)) ? 0 : ((($number % 10 >= 2) && (($number % 100 < 10) || ($number % 100 >= 20))) ? 1 : 2),
-            'sl' => (1 == $number % 100) ? 0 : ((2 == $number % 100) ? 1 : (((3 == $number % 100) || (4 == $number % 100)) ? 2 : 3)),
-            'mk' => (1 == $number % 10) ? 0 : 1,
-            'mt' => (1 == $number) ? 0 : (((0 == $number) || (($number % 100 > 1) && ($number % 100 < 11))) ? 1 : ((($number % 100 > 10) && ($number % 100 < 20)) ? 2 : 3)),
-            'lv' => (0 == $number) ? 0 : (((1 == $number % 10) && (11 != $number % 100)) ? 1 : 2),
-            'pl' => (1 == $number) ? 0 : ((($number % 10 >= 2) && ($number % 10 <= 4) && (($number % 100 < 12) || ($number % 100 > 14))) ? 1 : 2),
-            'cy' => (1 == $number) ? 0 : ((2 == $number) ? 1 : (((8 == $number) || (11 == $number)) ? 2 : 3)),
-            'ro' => (1 == $number) ? 0 : (((0 == $number) || (($number % 100 > 0) && ($number % 100 < 20))) ? 1 : 2),
-            'ar' => (0 == $number) ? 0 : ((1 == $number) ? 1 : ((2 == $number) ? 2 : ((($number % 100 >= 3) && ($number % 100 <= 10)) ? 3 : ((($number % 100 >= 11) && ($number % 100 <= 99)) ? 4 : 5)))),
+            'sk' => ($number == 1) ? 0 : ((($number >= 2) && ($number <= 4)) ? 1 : 2),
+            'ga' => ($number == 1) ? 0 : (($number == 2) ? 1 : 2),
+            'lt' => (($number % 10 == 1) && ($number % 100 != 11)) ? 0 : ((($number % 10 >= 2) && (($number % 100 < 10) || ($number % 100 >= 20))) ? 1 : 2),
+            'sl' => ($number % 100 == 1) ? 0 : (($number % 100 == 2) ? 1 : ((($number % 100 == 3) || ($number % 100 == 4)) ? 2 : 3)),
+            'mk' => ($number % 10 == 1) ? 0 : 1,
+            'mt' => ($number == 1) ? 0 : ((($number == 0) || (($number % 100 > 1) && ($number % 100 < 11))) ? 1 : ((($number % 100 > 10) && ($number % 100 < 20)) ? 2 : 3)),
+            'lv' => ($number == 0) ? 0 : ((($number % 10 == 1) && ($number % 100 != 11)) ? 1 : 2),
+            'pl' => ($number == 1) ? 0 : ((($number % 10 >= 2) && ($number % 10 <= 4) && (($number % 100 < 12) || ($number % 100 > 14))) ? 1 : 2),
+            'cy' => ($number == 1) ? 0 : (($number == 2) ? 1 : ((($number == 8) || ($number == 11)) ? 2 : 3)),
+            'ro' => ($number == 1) ? 0 : ((($number == 0) || (($number % 100 > 0) && ($number % 100 < 20))) ? 1 : 2),
+            'ar' => ($number == 0) ? 0 : (($number == 1) ? 1 : (($number == 2) ? 2 : ((($number % 100 >= 3) && ($number % 100 <= 10)) ? 3 : ((($number % 100 >= 11) && ($number % 100 <= 99)) ? 4 : 5)))),
             default => 0,
         };
     }

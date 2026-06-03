@@ -28,9 +28,8 @@ class BadFluentConstructorException extends BaseBadMethodCallException implement
     /**
      * Constructor.
      *
-     * @param string         $method
-     * @param int            $code
-     * @param Throwable|null $previous
+     * @param  string  $method
+     * @param  int  $code
      */
     public function __construct($method, $code = 0, ?Throwable $previous = null)
     {
@@ -41,8 +40,6 @@ class BadFluentConstructorException extends BaseBadMethodCallException implement
 
     /**
      * Get the method.
-     *
-     * @return string
      */
     public function getMethod(): string
     {

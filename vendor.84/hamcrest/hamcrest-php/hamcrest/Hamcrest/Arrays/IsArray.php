@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Arrays;
 
 /*
@@ -19,7 +20,6 @@ use Hamcrest\Util;
  */
 class IsArray extends TypeSafeMatcher
 {
-
     private $_elementMatchers;
 
     public function __construct(array $elementMatchers)
@@ -39,7 +39,7 @@ class IsArray extends TypeSafeMatcher
 
         /** @var $matcher \Hamcrest\Matcher */
         foreach ($this->_elementMatchers as $k => $matcher) {
-            if (!$matcher->matches($array[$k])) {
+            if (! $matcher->matches($array[$k])) {
                 return false;
             }
         }
@@ -50,25 +50,24 @@ class IsArray extends TypeSafeMatcher
     protected function describeMismatchSafely($actual, Description $mismatchDescription)
     {
         if (count($actual) != count($this->_elementMatchers)) {
-            $mismatchDescription->appendText('array length was ' . count($actual));
+            $mismatchDescription->appendText('array length was '.count($actual));
 
             return;
         } elseif (array_keys($actual) != array_keys($this->_elementMatchers)) {
             $mismatchDescription->appendText('array keys were ')
-                                                    ->appendValueList(
-                                                        $this->descriptionStart(),
-                                                        $this->descriptionSeparator(),
-                                                        $this->descriptionEnd(),
-                                                        array_keys($actual)
-                                                    )
-                                                    ;
+                ->appendValueList(
+                    $this->descriptionStart(),
+                    $this->descriptionSeparator(),
+                    $this->descriptionEnd(),
+                    array_keys($actual)
+                );
 
             return;
         }
 
         /** @var $matcher \Hamcrest\Matcher */
         foreach ($this->_elementMatchers as $k => $matcher) {
-            if (!$matcher->matches($actual[$k])) {
+            if (! $matcher->matches($actual[$k])) {
                 $mismatchDescription->appendText('element ')->appendValue($k)
                     ->appendText(' was ')->appendValue($actual[$k]);
 

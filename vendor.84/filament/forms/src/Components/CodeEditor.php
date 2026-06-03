@@ -17,9 +17,9 @@ class CodeEditor extends Field
      */
     protected string $view = 'filament-forms::components.code-editor';
 
-    protected Language | Closure | null $language = null;
+    protected Language|Closure|null $language = null;
 
-    public function language(Language | Closure | null $language): static
+    public function language(Language|Closure|null $language): static
     {
         $this->language = $language;
 

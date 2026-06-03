@@ -54,7 +54,7 @@ class TableCell extends Node
                     }
 
                     return [
-                        'data-colwidth' => join(',', $attributes->colwidth),
+                        'data-colwidth' => implode(',', $attributes->colwidth),
                     ];
                 },
             ],

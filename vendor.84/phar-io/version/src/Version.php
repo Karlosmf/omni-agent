@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PharIo\Version.
  *
@@ -7,9 +9,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PharIo\Version;
 
-class Version {
+class Version
+{
     /** @var string */
     private $originalVersionString;
 
@@ -28,7 +32,8 @@ class Version {
     /** @var null|BuildMetaData */
     private $buildMetadata;
 
-    public function __construct(string $versionString) {
+    public function __construct(string $versionString)
+    {
         $this->ensureVersionStringIsValid($versionString);
         $this->originalVersionString = $versionString;
     }
@@ -36,7 +41,8 @@ class Version {
     /**
      * @throws NoPreReleaseSuffixException
      */
-    public function getPreReleaseSuffix(): PreReleaseSuffix {
+    public function getPreReleaseSuffix(): PreReleaseSuffix
+    {
         if ($this->preReleaseSuffix === null) {
             throw new NoPreReleaseSuffixException('No pre-release suffix set');
         }
@@ -44,11 +50,13 @@ class Version {
         return $this->preReleaseSuffix;
     }
 
-    public function getOriginalString(): string {
+    public function getOriginalString(): string
+    {
         return $this->originalVersionString;
     }
 
-    public function getVersionString(): string {
+    public function getVersionString(): string
+    {
         $str = \sprintf(
             '%d.%d.%d',
             $this->getMajor()->getValue() ?? 0,
@@ -56,18 +64,20 @@ class Version {
             $this->getPatch()->getValue() ?? 0
         );
 
-        if (!$this->hasPreReleaseSuffix()) {
+        if (! $this->hasPreReleaseSuffix()) {
             return $str;
         }
 
-        return $str . '-' . $this->getPreReleaseSuffix()->asString();
+        return $str.'-'.$this->getPreReleaseSuffix()->asString();
     }
 
-    public function hasPreReleaseSuffix(): bool {
+    public function hasPreReleaseSuffix(): bool
+    {
         return $this->preReleaseSuffix !== null;
     }
 
-    public function equals(Version $other): bool {
+    public function equals(Version $other): bool
+    {
         if ($this->getVersionString() !== $other->getVersionString()) {
             return false;
         }
@@ -77,14 +87,15 @@ class Version {
         }
 
         if ($this->hasBuildMetaData() && $other->hasBuildMetaData() &&
-            !$this->getBuildMetaData()->equals($other->getBuildMetaData())) {
+            ! $this->getBuildMetaData()->equals($other->getBuildMetaData())) {
             return false;
         }
 
         return true;
     }
 
-    public function isGreaterThan(Version $version): bool {
+    public function isGreaterThan(Version $version): bool
+    {
         if ($version->getMajor()->getValue() > $this->getMajor()->getValue()) {
             return false;
         }
@@ -109,30 +120,33 @@ class Version {
             return true;
         }
 
-        if (!$version->hasPreReleaseSuffix() && !$this->hasPreReleaseSuffix()) {
+        if (! $version->hasPreReleaseSuffix() && ! $this->hasPreReleaseSuffix()) {
             return false;
         }
 
-        if ($version->hasPreReleaseSuffix() && !$this->hasPreReleaseSuffix()) {
+        if ($version->hasPreReleaseSuffix() && ! $this->hasPreReleaseSuffix()) {
             return true;
         }
 
-        if (!$version->hasPreReleaseSuffix() && $this->hasPreReleaseSuffix()) {
+        if (! $version->hasPreReleaseSuffix() && $this->hasPreReleaseSuffix()) {
             return false;
         }
 
         return $this->getPreReleaseSuffix()->isGreaterThan($version->getPreReleaseSuffix());
     }
 
-    public function getMajor(): VersionNumber {
+    public function getMajor(): VersionNumber
+    {
         return $this->major;
     }
 
-    public function getMinor(): VersionNumber {
+    public function getMinor(): VersionNumber
+    {
         return $this->minor;
     }
 
-    public function getPatch(): VersionNumber {
+    public function getPatch(): VersionNumber
+    {
         return $this->patch;
     }
 
@@ -140,15 +154,17 @@ class Version {
      * @psalm-assert-if-true BuildMetaData $this->buildMetadata
      * @psalm-assert-if-true BuildMetaData $this->getBuildMetaData()
      */
-    public function hasBuildMetaData(): bool {
+    public function hasBuildMetaData(): bool
+    {
         return $this->buildMetadata !== null;
     }
 
     /**
      * @throws NoBuildMetaDataException
      */
-    public function getBuildMetaData(): BuildMetaData {
-        if (!$this->hasBuildMetaData()) {
+    public function getBuildMetaData(): BuildMetaData
+    {
+        if (! $this->hasBuildMetaData()) {
             throw new NoBuildMetaDataException('No build metadata set');
         }
 
@@ -156,14 +172,15 @@ class Version {
     }
 
     /**
-     * @param string[] $matches
+     * @param  string[]  $matches
      *
      * @throws InvalidPreReleaseSuffixException
      */
-    private function parseVersion(array $matches): void {
-        $this->major = new VersionNumber((int)$matches['Major']);
-        $this->minor = new VersionNumber((int)$matches['Minor']);
-        $this->patch = isset($matches['Patch']) ? new VersionNumber((int)$matches['Patch']) : new VersionNumber(0);
+    private function parseVersion(array $matches): void
+    {
+        $this->major = new VersionNumber((int) $matches['Major']);
+        $this->minor = new VersionNumber((int) $matches['Minor']);
+        $this->patch = isset($matches['Patch']) ? new VersionNumber((int) $matches['Patch']) : new VersionNumber(0);
 
         if (isset($matches['PreReleaseSuffix']) && $matches['PreReleaseSuffix'] !== '') {
             $this->preReleaseSuffix = new PreReleaseSuffix($matches['PreReleaseSuffix']);
@@ -175,11 +192,12 @@ class Version {
     }
 
     /**
-     * @param string $version
+     * @param  string  $version
      *
      * @throws InvalidVersionException
      */
-    private function ensureVersionStringIsValid($version): void {
+    private function ensureVersionStringIsValid($version): void
+    {
         $regex = '/^v?
             (?P<Major>0|[1-9]\d*)
             \\.

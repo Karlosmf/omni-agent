@@ -33,10 +33,15 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 abstract class ProviderTestCase extends TestCase
 {
     protected HttpClientInterface $client;
+
     protected LoggerInterface|MockObject $logger;
+
     protected string $defaultLocale;
+
     protected LoaderInterface|MockObject $loader;
+
     protected XliffFileDumper|MockObject $xliffFileDumper;
+
     protected TranslatorBagInterface|MockObject $translatorBag;
 
     abstract public static function createProvider(HttpClientInterface $client, LoaderInterface $loader, LoggerInterface $logger, string $defaultLocale, string $endpoint): ProviderInterface;
@@ -50,24 +55,24 @@ abstract class ProviderTestCase extends TestCase
      * @dataProvider toStringProvider
      */
     #[DataProvider('toStringProvider')]
-    public function testToString(ProviderInterface $provider, string $expected)
+    public function test_to_string(ProviderInterface $provider, string $expected)
     {
         $this->assertSame($expected, (string) $provider);
     }
 
     protected function getClient(): MockHttpClient
     {
-        return $this->client ??= new MockHttpClient();
+        return $this->client ??= new MockHttpClient;
     }
 
     protected function getLoader(): LoaderInterface
     {
-        return $this->loader ??= new ArrayLoader();
+        return $this->loader ??= new ArrayLoader;
     }
 
     protected function getLogger(): LoggerInterface
     {
-        return $this->logger ??= new NullLogger();
+        return $this->logger ??= new NullLogger;
     }
 
     protected function getDefaultLocale(): string
@@ -77,11 +82,11 @@ abstract class ProviderTestCase extends TestCase
 
     protected function getXliffFileDumper(): XliffFileDumper
     {
-        return $this->xliffFileDumper ??= new XliffFileDumper();
+        return $this->xliffFileDumper ??= new XliffFileDumper;
     }
 
     protected function getTranslatorBag(): TranslatorBagInterface
     {
-        return $this->translatorBag ??= new TranslatorBag();
+        return $this->translatorBag ??= new TranslatorBag;
     }
 }

@@ -5,7 +5,9 @@ namespace Faker\Provider\vi_VN;
 class Address extends \Faker\Provider\Address
 {
     protected static $buildingNumber = ['%###', '%##', '%#', '%'];
+
     protected static $postcode = ['#####', '######', '#####-####'];
+
     protected static $province = [
         'An Giang', 'Bà Rịa - Vũng Tàu',
         'Bắc Giang', 'Bắc Kạn', 'Bạc Liêu',
@@ -28,9 +30,11 @@ class Address extends \Faker\Provider\Address
         'Tuyên Quang', 'Vĩnh Long', 'Vĩnh Phúc',
         'Yên Bái', 'Phú Yên',
     ];
+
     protected static $city = [
         'Cần Thơ', 'Đà Nẵng', 'Hải Phòng', 'Hà Nội', 'Hồ Chí Minh',
     ];
+
     protected static $streetNameFormats = [
         'Phố {{lastName}} {{middleName}} {{firstName}}',
         'Phố {{lastName}} {{middleName}} {{firstName}}',
@@ -38,9 +42,11 @@ class Address extends \Faker\Provider\Address
         'Phố {{firstName}}',
         'Phố {{lastName}}',
     ];
+
     protected static $streetAddressFormats = [
         '{{buildingNumber}} {{streetName}}',
     ];
+
     protected static $hamletNameFormats = [
         '{{hamletPrefix}} {{middleName}} {{firstName}}',
         '{{hamletPrefix}} {{lastName}} {{firstName}}',
@@ -52,9 +58,11 @@ class Address extends \Faker\Provider\Address
         '{{hamletPrefix}} ##',
         '{{hamletPrefix}} #',
     ];
+
     protected static $hamletPrefix = [
         'Thôn', 'Ấp',
     ];
+
     protected static $wardNameFormats = [
         '{{hamletPrefix}} {{middleName}} {{firstName}}',
         '{{hamletPrefix}} {{lastName}} {{firstName}}',
@@ -66,9 +74,11 @@ class Address extends \Faker\Provider\Address
         '{{wardPrefix}} ##',
         '{{wardPrefix}} #',
     ];
+
     protected static $wardPrefix = [
         'Phường', 'Xã',
     ];
+
     protected static $districtNameFormats = [
         '{{districtPrefix}} {{middleName}} {{firstName}}',
         '{{districtPrefix}} {{lastName}} {{firstName}}',
@@ -80,14 +90,17 @@ class Address extends \Faker\Provider\Address
         '{{districtPrefix}} ##',
         '{{districtPrefix}} #',
     ];
+
     protected static $districtPrefix = [
         'Quận', 'Huyện',
     ];
+
     protected static $addressFormats = [
         "{{streetAddress}}, {{wardName}}, {{districtName}}\n{{city}}",
         "{{streetAddress}}, {{wardName}}, {{districtName}}\n{{province}}",
         "{{buildingNumber}}, {{hamletName}}, {{wardName}}, {{districtName}}\n{{province}}",
     ];
+
     protected static $country = [
         'Afghanistan', 'Albania', 'Algeria', 'American Samoa', 'Andorra', 'Angola', 'Anguilla', 'Antarctica (the territory South of 60 deg S)', 'Antigua and Barbuda', 'Argentina', 'Armenia', 'Aruba', 'Australia', 'Austria', 'Azerbaijan',
         'Bahamas', 'Bahrain', 'Bangladesh', 'Barbados', 'Belarus', 'Belgium', 'Belize', 'Benin', 'Bermuda', 'Bhutan', 'Bolivia', 'Bosnia and Herzegovina', 'Botswana', 'Bouvet Island (Bouvetoya)', 'Brazil', 'British Indian Ocean Territory (Chagos Archipelago)', 'British Virgin Islands', 'Brunei Darussalam', 'Bulgaria', 'Burkina Faso', 'Burundi',

@@ -20,7 +20,7 @@ use Symfony\Contracts\Translation\TranslatorTrait;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class IdentityTranslator implements TranslatorInterface, LocaleAwareInterface
+class IdentityTranslator implements LocaleAwareInterface, TranslatorInterface
 {
     use TranslatorTrait;
 

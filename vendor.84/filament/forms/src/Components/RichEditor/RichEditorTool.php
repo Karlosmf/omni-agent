@@ -27,19 +27,19 @@ class RichEditorTool extends ViewComponent implements HasEmbeddedView
     /**
      * @var array<string, mixed> | Closure
      */
-    protected array | Closure $activeOptions = [];
+    protected array|Closure $activeOptions = [];
 
-    protected string | Closure | null $iconAlias = null;
+    protected string|Closure|null $iconAlias = null;
 
-    protected string | Closure | null $activeKey = null;
+    protected string|Closure|null $activeKey = null;
 
-    protected string | Closure | null $jsHandler = null;
+    protected string|Closure|null $jsHandler = null;
 
-    protected string | Closure | null $activeJsExpression = null;
+    protected string|Closure|null $activeJsExpression = null;
 
-    protected bool | Closure $isDisabledWhenNotActive = false;
+    protected bool|Closure $isDisabledWhenNotActive = false;
 
-    protected bool | Closure $hasActiveStyling = true;
+    protected bool|Closure $hasActiveStyling = true;
 
     protected RichEditor $editor;
 
@@ -78,7 +78,7 @@ class RichEditorTool extends ViewComponent implements HasEmbeddedView
     /**
      * @param  array<string, mixed> | Closure  $options
      */
-    public function activeOptions(array | Closure $options): static
+    public function activeOptions(array|Closure $options): static
     {
         $this->activeOptions = $options;
 
@@ -93,7 +93,7 @@ class RichEditorTool extends ViewComponent implements HasEmbeddedView
         return $this->evaluate($this->activeOptions);
     }
 
-    public function iconAlias(string | Closure | null $alias): static
+    public function iconAlias(string|Closure|null $alias): static
     {
         $this->iconAlias = $alias;
 
@@ -105,21 +105,21 @@ class RichEditorTool extends ViewComponent implements HasEmbeddedView
         return $this->evaluate($this->iconAlias);
     }
 
-    public function action(string | Closure | null $action = null, string | Closure | null $arguments = null): static
+    public function action(string|Closure|null $action = null, string|Closure|null $arguments = null): static
     {
-        $this->jsHandler(fn (RichEditorTool $tool): string => '$wire.mountAction(\'' . ($tool->evaluate($action) ?? $tool->getName()) . '\', { editorSelection, ...' . ($tool->evaluate($arguments) ?? '{}') . ' }, ' . Js::from(['schemaComponent' => $tool->getEditor()->getKey()]) . ')');
+        $this->jsHandler(fn (RichEditorTool $tool): string => '$wire.mountAction(\''.($tool->evaluate($action) ?? $tool->getName()).'\', { editorSelection, ...'.($tool->evaluate($arguments) ?? '{}').' }, '.Js::from(['schemaComponent' => $tool->getEditor()->getKey()]).')');
 
         return $this;
     }
 
-    public function jsHandler(string | Closure | null $handler): static
+    public function jsHandler(string|Closure|null $handler): static
     {
         $this->jsHandler = $handler;
 
         return $this;
     }
 
-    public function activeJsExpression(string | Closure | null $expression): static
+    public function activeJsExpression(string|Closure|null $expression): static
     {
         $this->activeJsExpression = $expression;
 
@@ -136,7 +136,7 @@ class RichEditorTool extends ViewComponent implements HasEmbeddedView
         return $this->evaluate($this->activeJsExpression);
     }
 
-    public function activeKey(string | Closure | null $key): static
+    public function activeKey(string|Closure|null $key): static
     {
         $this->activeKey = $key;
 
@@ -148,7 +148,7 @@ class RichEditorTool extends ViewComponent implements HasEmbeddedView
         return $this->evaluate($this->activeKey) ?? $this->getName();
     }
 
-    public function getLabel(): string | Htmlable | null
+    public function getLabel(): string|Htmlable|null
     {
         if (filled($label = $this->getBaseLabel())) {
             return $label;
@@ -163,7 +163,7 @@ class RichEditorTool extends ViewComponent implements HasEmbeddedView
         return $this->shouldTranslateLabel ? __($label) : $label;
     }
 
-    public function disabledWhenNotActive(bool | Closure $condition = true): static
+    public function disabledWhenNotActive(bool|Closure $condition = true): static
     {
         $this->isDisabledWhenNotActive = $condition;
 
@@ -175,7 +175,7 @@ class RichEditorTool extends ViewComponent implements HasEmbeddedView
         return (bool) $this->evaluate($this->isDisabledWhenNotActive);
     }
 
-    public function activeStyling(bool | Closure $condition = true): static
+    public function activeStyling(bool|Closure $condition = true): static
     {
         $this->hasActiveStyling = $condition;
 
@@ -194,7 +194,7 @@ class RichEditorTool extends ViewComponent implements HasEmbeddedView
         if (filled($activeJsExpression)) {
             $activeJsExpression = "editorUpdatedAt && ({$activeJsExpression})";
         } else {
-            $activeJsExpression = 'editorUpdatedAt && $getEditor()?.isActive(' . Js::from($this->getActiveKey())->toHtml() . ', ' . Js::from($this->getActiveOptions())->toHtml() . ')';
+            $activeJsExpression = 'editorUpdatedAt && $getEditor()?.isActive('.Js::from($this->getActiveKey())->toHtml().', '.Js::from($this->getActiveOptions())->toHtml().')';
         }
 
         $label = $this->getLabel();
@@ -205,11 +205,11 @@ class RichEditorTool extends ViewComponent implements HasEmbeddedView
                 'tabindex' => -1,
                 'type' => 'button',
                 'aria-label' => $label,
-                'x-bind:class' => '{ \'fi-active\': ' . ($this->hasActiveStyling() ? $activeJsExpression : 'false') . ' }',
-                'x-bind:disabled' => $this->isDisabledWhenNotActive() ? '!(' . $activeJsExpression . ')' : null,
+                'x-bind:class' => '{ \'fi-active\': '.($this->hasActiveStyling() ? $activeJsExpression : 'false').' }',
+                'x-bind:disabled' => $this->isDisabledWhenNotActive() ? '!('.$activeJsExpression.')' : null,
                 'x-on:click' => $this->getJsHandler(),
                 'x-tooltip' => (filled($label) && $isLabelHidden)
-                    ? '{ content: ' . Js::from($label) . ', theme: $store.theme }'
+                    ? '{ content: '.Js::from($label).', theme: $store.theme }'
                     : null,
             ], escape: false)
             ->class([
@@ -221,7 +221,7 @@ class RichEditorTool extends ViewComponent implements HasEmbeddedView
 
         <button <?= $attributes->toHtml() ?>>
             <?= generate_icon_html($this->getIcon(), alias: $this->getIconAlias())->toHtml() ?>
-            <?= $isLabelHidden ? null : '<span class="fi-fo-rich-editor-tool-label">' . $label . '</span>' ?>
+            <?= $isLabelHidden ? null : '<span class="fi-fo-rich-editor-tool-label">'.$label.'</span>' ?>
         </button>
 
         <?php return ob_get_clean();

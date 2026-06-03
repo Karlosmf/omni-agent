@@ -17,13 +17,16 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * This translator should only be used in a development environment.
  */
-final class PseudoLocalizationTranslator implements TranslatorInterface, TranslatorBagInterface
+final class PseudoLocalizationTranslator implements TranslatorBagInterface, TranslatorInterface
 {
     private const EXPANSION_CHARACTER = '~';
 
     private bool $accents;
+
     private float $expansionFactor;
+
     private bool $brackets;
+
     private bool $parseHTML;
 
     /**
@@ -78,7 +81,7 @@ final class PseudoLocalizationTranslator implements TranslatorInterface, Transla
         $this->brackets = $options['brackets'] ?? true;
 
         $this->parseHTML = $options['parse_html'] ?? false;
-        if ($this->parseHTML && !$this->accents && 1.0 === $this->expansionFactor) {
+        if ($this->parseHTML && ! $this->accents && $this->expansionFactor === 1.0) {
             $this->parseHTML = false;
         }
 
@@ -95,7 +98,7 @@ final class PseudoLocalizationTranslator implements TranslatorInterface, Transla
                 $visibleText .= $text;
             }
 
-            if (!$localizable) {
+            if (! $localizable) {
                 $trans .= $text;
 
                 continue;
@@ -118,7 +121,7 @@ final class PseudoLocalizationTranslator implements TranslatorInterface, Transla
 
     public function getCatalogue(?string $locale = null): MessageCatalogueInterface
     {
-        if (!$this->translator instanceof TranslatorBagInterface) {
+        if (! $this->translator instanceof TranslatorBagInterface) {
             throw new LogicException(\sprintf('The "%s()" method cannot be called as the wrapped translator class "%s" does not implement the "%s".', __METHOD__, $this->translator::class, TranslatorBagInterface::class));
         }
 
@@ -127,7 +130,7 @@ final class PseudoLocalizationTranslator implements TranslatorInterface, Transla
 
     public function getCatalogues(): array
     {
-        if (!$this->translator instanceof TranslatorBagInterface) {
+        if (! $this->translator instanceof TranslatorBagInterface) {
             throw new LogicException(\sprintf('The "%s()" method cannot be called as the wrapped translator class "%s" does not implement the "%s".', __METHOD__, $this->translator::class, TranslatorBagInterface::class));
         }
 
@@ -136,7 +139,7 @@ final class PseudoLocalizationTranslator implements TranslatorInterface, Transla
 
     private function getParts(string $originalTrans): array
     {
-        if (!$this->parseHTML) {
+        if (! $this->parseHTML) {
             return [[true, true, $originalTrans]];
         }
 
@@ -144,7 +147,7 @@ final class PseudoLocalizationTranslator implements TranslatorInterface, Transla
 
         $useInternalErrors = libxml_use_internal_errors(true);
 
-        $dom = new \DOMDocument();
+        $dom = new \DOMDocument;
         $dom->loadHTML('<trans>'.$html.'</trans>');
 
         libxml_clear_errors();
@@ -158,7 +161,7 @@ final class PseudoLocalizationTranslator implements TranslatorInterface, Transla
         $parts = [];
 
         foreach ($node->childNodes as $childNode) {
-            if (!$childNode instanceof \DOMElement) {
+            if (! $childNode instanceof \DOMElement) {
                 $parts[] = [true, true, $childNode->nodeValue];
 
                 continue;
@@ -171,11 +174,11 @@ final class PseudoLocalizationTranslator implements TranslatorInterface, Transla
 
                 $localizableAttribute = \in_array($attribute->nodeName, $this->localizableHTMLAttributes, true);
                 foreach (preg_split('/(&(?:amp|quot|#039|lt|gt);+)/', htmlspecialchars($attribute->nodeValue, \ENT_QUOTES, 'UTF-8'), -1, \PREG_SPLIT_DELIM_CAPTURE) as $i => $match) {
-                    if ('' === $match) {
+                    if ($match === '') {
                         continue;
                     }
 
-                    $parts[] = [false, $localizableAttribute && 0 === $i % 2, $match];
+                    $parts[] = [false, $localizableAttribute && $i % 2 === 0, $match];
                 }
 
                 $parts[] = [false, false, '"'];
@@ -294,7 +297,7 @@ final class PseudoLocalizationTranslator implements TranslatorInterface, Transla
 
     private function expand(string &$trans, string $visibleText): void
     {
-        if (1.0 >= $this->expansionFactor) {
+        if ($this->expansionFactor <= 1.0) {
             return;
         }
 
@@ -304,7 +307,7 @@ final class PseudoLocalizationTranslator implements TranslatorInterface, Transla
             $missingLength -= 2;
         }
 
-        if (0 >= $missingLength) {
+        if ($missingLength <= 0) {
             return;
         }
 
@@ -317,16 +320,16 @@ final class PseudoLocalizationTranslator implements TranslatorInterface, Transla
                 continue;
             }
 
-            if (!isset($words[$wordLength])) {
+            if (! isset($words[$wordLength])) {
                 $words[$wordLength] = 0;
             }
 
-            ++$words[$wordLength];
-            ++$wordsCount;
+            $words[$wordLength]++;
+            $wordsCount++;
         }
 
-        if (!$words) {
-            $trans .= 1 === $missingLength ? self::EXPANSION_CHARACTER : ' '.str_repeat(self::EXPANSION_CHARACTER, $missingLength - 1);
+        if (! $words) {
+            $trans .= $missingLength === 1 ? self::EXPANSION_CHARACTER : ' '.str_repeat(self::EXPANSION_CHARACTER, $missingLength - 1);
 
             return;
         }
@@ -349,7 +352,7 @@ final class PseudoLocalizationTranslator implements TranslatorInterface, Transla
 
             $missingLength -= $length + 1;
 
-            if (0 === $missingLength) {
+            if ($missingLength === 0) {
                 return;
             }
 
@@ -357,8 +360,8 @@ final class PseudoLocalizationTranslator implements TranslatorInterface, Transla
                 $wordsCount -= $words[$longestWordLength];
                 unset($words[$longestWordLength]);
 
-                if (!$words) {
-                    $trans .= 1 === $missingLength ? self::EXPANSION_CHARACTER : ' '.str_repeat(self::EXPANSION_CHARACTER, $missingLength - 1);
+                if (! $words) {
+                    $trans .= $missingLength === 1 ? self::EXPANSION_CHARACTER : ' '.str_repeat(self::EXPANSION_CHARACTER, $missingLength - 1);
 
                     return;
                 }
@@ -370,7 +373,7 @@ final class PseudoLocalizationTranslator implements TranslatorInterface, Transla
 
     private function addBrackets(string &$trans): void
     {
-        if (!$this->brackets) {
+        if (! $this->brackets) {
             return;
         }
 

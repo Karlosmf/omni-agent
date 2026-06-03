@@ -21,8 +21,11 @@ use Psy\Util\DependencyChecker;
 class SignalHandler extends AbstractListener
 {
     private bool $sigintHandlerInstalled = false;
+
     private bool $restoreStty = false;
+
     private bool $wasInterrupted = false;
+
     private ?string $originalStty = null;
 
     public const PCNTL_FUNCTIONS = [
@@ -103,7 +106,7 @@ class SignalHandler extends AbstractListener
         if ($this->wasInterrupted && \defined('STDIN') && \is_resource(\STDIN)) {
             // Check if the stream is still usable
             $meta = @\stream_get_meta_data(\STDIN);
-            if ($meta && !($meta['eof'] ?? false)) {
+            if ($meta && ! ($meta['eof'] ?? false)) {
                 // Drain any buffered input, suppressing I/O errors
                 @\stream_set_blocking(\STDIN, false);
                 while (@\fgetc(\STDIN) !== false) {

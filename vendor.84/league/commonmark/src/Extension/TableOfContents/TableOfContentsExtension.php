@@ -40,14 +40,14 @@ final class TableOfContentsExtension implements ConfigurableExtensionInterface
 
     public function register(EnvironmentBuilderInterface $environment): void
     {
-        $environment->addRenderer(TableOfContents::class, new TableOfContentsRenderer(new ListBlockRenderer()));
-        $environment->addEventListener(DocumentParsedEvent::class, [new TableOfContentsBuilder(), 'onDocumentParsed'], -150);
+        $environment->addRenderer(TableOfContents::class, new TableOfContentsRenderer(new ListBlockRenderer));
+        $environment->addEventListener(DocumentParsedEvent::class, [new TableOfContentsBuilder, 'onDocumentParsed'], -150);
 
         // phpcs:ignore SlevomatCodingStandard.ControlStructures.EarlyExit.EarlyExitNotUsed
         if ($environment->getConfiguration()->get('table_of_contents/position') === TableOfContentsBuilder::POSITION_PLACEHOLDER) {
             $environment->addBlockStartParser(TableOfContentsPlaceholderParser::blockStartParser(), 200);
             // If a placeholder cannot be replaced with a TOC element this renderer will ensure the parser won't error out
-            $environment->addRenderer(TableOfContentsPlaceholder::class, new TableOfContentsPlaceholderRenderer());
+            $environment->addRenderer(TableOfContentsPlaceholder::class, new TableOfContentsPlaceholderRenderer);
         }
     }
 }

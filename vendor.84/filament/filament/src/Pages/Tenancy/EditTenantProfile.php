@@ -56,7 +56,7 @@ abstract class EditTenantProfile extends Page
     {
         $panel ??= Filament::getCurrentOrDefaultPanel();
 
-        return $panel->generateRouteName('tenant.' . static::getRelativeRouteName($panel));
+        return $panel->generateRouteName('tenant.'.static::getRelativeRouteName($panel));
     }
 
     public static function isTenantSubscriptionRequired(Panel $panel): bool
@@ -207,7 +207,7 @@ abstract class EditTenantProfile extends Page
             ->keyBindings(['mod+s']);
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return static::getLabel();
     }

@@ -25,6 +25,7 @@ final class Headers
         'date', 'from', 'sender', 'reply-to', 'to', 'cc', 'bcc',
         'message-id', 'in-reply-to', 'references', 'subject',
     ];
+
     private const HEADER_CLASS_MAP = [
         'date' => DateHeader::class,
         'from' => MailboxListHeader::class,
@@ -43,6 +44,7 @@ final class Headers
      * @var HeaderInterface[][]
      */
     private array $headers = [];
+
     private int $lineLength = 76;
 
     public function __construct(HeaderInterface ...$headers)
@@ -75,8 +77,7 @@ final class Headers
     }
 
     /**
-     * @param array<Address|string> $addresses
-     *
+     * @param  array<Address|string>  $addresses
      * @return $this
      */
     public function addMailboxListHeader(string $name, array $addresses): static
@@ -143,11 +144,11 @@ final class Headers
         }
         $parts = explode('\\', $headerClass);
         $method = 'add'.ucfirst(array_pop($parts));
-        if ('addUnstructuredHeader' === $method) {
+        if ($method === 'addUnstructuredHeader') {
             $method = 'addTextHeader';
-        } elseif ('addIdentificationHeader' === $method) {
+        } elseif ($method === 'addIdentificationHeader') {
             $method = 'addIdHeader';
-        } elseif ('addMailboxListHeader' === $method && !\is_array($argument)) {
+        } elseif ($method === 'addMailboxListHeader' && ! \is_array($argument)) {
             $argument = [$argument];
         }
 
@@ -181,7 +182,7 @@ final class Headers
     public function get(string $name): ?HeaderInterface
     {
         $name = strtolower($name);
-        if (!isset($this->headers[$name])) {
+        if (! isset($this->headers[$name])) {
             return null;
         }
 
@@ -192,7 +193,7 @@ final class Headers
 
     public function all(?string $name = null): iterable
     {
-        if (null === $name) {
+        if ($name === null) {
             foreach ($this->headers as $name => $collection) {
                 foreach ($collection as $header) {
                     yield $name => $header;
@@ -227,11 +228,11 @@ final class Headers
     {
         $name = strtolower($header->getName());
         $headerClasses = self::HEADER_CLASS_MAP[$name] ?? [];
-        if (!\is_array($headerClasses)) {
+        if (! \is_array($headerClasses)) {
             $headerClasses = [$headerClasses];
         }
 
-        if (!$headerClasses) {
+        if (! $headerClasses) {
             return;
         }
 
@@ -258,7 +259,7 @@ final class Headers
     {
         $arr = [];
         foreach ($this->all() as $header) {
-            if ('' !== $header->getBodyAsString()) {
+            if ($header->getBodyAsString() !== '') {
                 $arr[] = $header->toString();
             }
         }
@@ -285,12 +286,12 @@ final class Headers
 
     public function getHeaderParameter(string $name, string $parameter): ?string
     {
-        if (!$this->has($name)) {
+        if (! $this->has($name)) {
             return null;
         }
 
         $header = $this->get($name);
-        if (!$header instanceof ParameterizedHeader) {
+        if (! $header instanceof ParameterizedHeader) {
             throw new LogicException(\sprintf('Unable to get parameter "%s" on header "%s" as the header is not of class "%s".', $parameter, $name, ParameterizedHeader::class));
         }
 
@@ -302,12 +303,12 @@ final class Headers
      */
     public function setHeaderParameter(string $name, string $parameter, ?string $value): void
     {
-        if (!$this->has($name)) {
+        if (! $this->has($name)) {
             throw new LogicException(\sprintf('Unable to set parameter "%s" on header "%s" as the header is not defined.', $parameter, $name));
         }
 
         $header = $this->get($name);
-        if (!$header instanceof ParameterizedHeader) {
+        if (! $header instanceof ParameterizedHeader) {
             throw new LogicException(\sprintf('Unable to set parameter "%s" on header "%s" as the header is not of class "%s".', $parameter, $name, ParameterizedHeader::class));
         }
 

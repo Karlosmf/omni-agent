@@ -57,7 +57,7 @@ class WebDriverAlert
     /**
      * Send keystrokes to javascript prompt() dialog
      *
-     * @param string $value
+     * @param  string  $value
      * @return WebDriverAlert
      */
     public function sendKeys($value)

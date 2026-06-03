@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -21,17 +23,17 @@ use Monolog\LogRecord;
  * @author Jordi Boggiano <j.boggiano@seld.be>
  * @author Christophe Coevoet <stof@notk.org>
  */
-abstract class AbstractProcessingHandler extends AbstractHandler implements ProcessableHandlerInterface, FormattableHandlerInterface
+abstract class AbstractProcessingHandler extends AbstractHandler implements FormattableHandlerInterface, ProcessableHandlerInterface
 {
-    use ProcessableHandlerTrait;
     use FormattableHandlerTrait;
+    use ProcessableHandlerTrait;
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function handle(LogRecord $record): bool
     {
-        if (!$this->isHandling($record)) {
+        if (! $this->isHandling($record)) {
             return false;
         }
 
@@ -43,7 +45,7 @@ abstract class AbstractProcessingHandler extends AbstractHandler implements Proc
 
         $this->write($record);
 
-        return false === $this->bubble;
+        return $this->bubble === false;
     }
 
     /**

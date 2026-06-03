@@ -36,26 +36,32 @@ final class TerminalInputHelper
 {
     /** @var resource */
     private $inputStream;
+
     private bool $isStdin;
+
     private string $initialState = '';
+
     private int $signalToKill = 0;
+
     private array $signalHandlers = [];
+
     private array $targetSignals = [];
+
     private bool $withStty;
 
     /**
-     * @param resource $inputStream
+     * @param  resource  $inputStream
      *
      * @throws \RuntimeException If unable to read terminal settings
      */
     public function __construct($inputStream, bool $withStty = true)
     {
         $this->inputStream = $inputStream;
-        $this->isStdin = 'php://stdin' === stream_get_meta_data($inputStream)['uri'];
+        $this->isStdin = stream_get_meta_data($inputStream)['uri'] === 'php://stdin';
         $this->withStty = $withStty;
 
         if ($withStty) {
-            if (!\is_string($state = shell_exec('stty -g'))) {
+            if (! \is_string($state = shell_exec('stty -g'))) {
                 throw new \RuntimeException('Unable to read the terminal settings.');
             }
 
@@ -75,7 +81,7 @@ final class TerminalInputHelper
             $w = [];
 
             // Allow signal handlers to run
-            while (0 === @stream_select($r, $w, $w, 0, 100)) {
+            while (@stream_select($r, $w, $w, 0, 100) === 0) {
                 $r = [$this->inputStream];
             }
         }
@@ -90,7 +96,7 @@ final class TerminalInputHelper
      */
     public function finish(): void
     {
-        if (!$this->withStty) {
+        if (! $this->withStty) {
             return;
         }
 
@@ -108,7 +114,7 @@ final class TerminalInputHelper
 
     private function createSignalHandlers(): void
     {
-        if (!\function_exists('pcntl_async_signals') || !\function_exists('pcntl_signal')) {
+        if (! \function_exists('pcntl_async_signals') || ! \function_exists('pcntl_signal')) {
             return;
         }
 
@@ -133,7 +139,7 @@ final class TerminalInputHelper
                 }
 
                 // Not a callable, so SIG_DFL or SIG_IGN
-                if (\SIG_DFL === $originalHandler) {
+                if ($originalHandler === \SIG_DFL) {
                     $this->signalToKill = $signal;
                 }
             });

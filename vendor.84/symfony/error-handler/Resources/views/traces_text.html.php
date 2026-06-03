@@ -1,7 +1,7 @@
 <table class="trace trace-as-text">
     <thead class="trace-head">
         <tr>
-            <th class="sf-toggle" data-toggle-selector="#trace-text-<?= $index; ?>" data-toggle-initial="<?= 1 === $index ? 'display' : ''; ?>">
+            <th class="sf-toggle" data-toggle-selector="#trace-text-<?= $index; ?>" data-toggle-initial="<?= $index === 1 ? 'display' : ''; ?>">
                 <div class="trace-class">
                     <?php if ($numExceptions > 1) { ?>
                         <span class="text-muted">[<?= $numExceptions - $index + 1; ?>/<?= $numExceptions; ?>]</span>
@@ -31,10 +31,10 @@
                             echo $this->escape('at '.$trace['class'].$trace['type'].$trace['function']).'('.(isset($trace['args']) ? $this->formatArgsAsText($trace['args']) : '').')';
                         }
                         if ($trace['file'] && $trace['line']) {
-                            echo($trace['function'] ? "\n     (" : 'at ').strtr(strip_tags($this->formatFile($trace['file'], $trace['line'])), [' at line '.$trace['line'] => '']).':'.$trace['line'].($trace['function'] ? ')' : '');
+                            echo ($trace['function'] ? "\n     (" : 'at ').strtr(strip_tags($this->formatFile($trace['file'], $trace['line'])), [' at line '.$trace['line'] => '']).':'.$trace['line'].($trace['function'] ? ')' : '');
                         }
                     }
-?>
+                    ?>
                 </pre>
                 <?php } ?>
             </td>

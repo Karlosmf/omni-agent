@@ -23,8 +23,7 @@ use function usort;
 final readonly class TestDoxResultsMerger
 {
     /**
-     * @param list<SplFileInfo> $testdoxFiles
-     *
+     * @param  list<SplFileInfo>  $testdoxFiles
      * @return array<string, TestResultCollection>
      */
     public function getResultsFromTestdoxFiles(array $testdoxFiles): array
@@ -45,7 +44,7 @@ final readonly class TestDoxResultsMerger
                 if (! isset($testMethodsGroupedByClass[$className])) {
                     $testMethodsGroupedByClass[$className] = $testResultCollection;
                 } else {
-                    $combinedTestResultCollection          = TestResultCollection::fromArray([
+                    $combinedTestResultCollection = TestResultCollection::fromArray([
                         ...$testMethodsGroupedByClass[$className]->asArray(),
                         ...$testResultCollection->asArray(),
                     ]);
@@ -58,8 +57,7 @@ final readonly class TestDoxResultsMerger
     }
 
     /**
-     * @param array<string, TestResultCollection> $testdoxResults
-     *
+     * @param  array<string, TestResultCollection>  $testdoxResults
      * @return array<string, TestResultCollection>
      */
     private function orderTestdoxResults(array $testdoxResults): array
@@ -96,8 +94,8 @@ final readonly class TestDoxResultsMerger
             uksort(
                 $testsByDeclaringClass,
                 /**
-                 * @param class-string $a
-                 * @param class-string $b
+                 * @param  class-string  $a
+                 * @param  class-string  $b
                  */
                 static function (string $a, string $b): int {
                     if (is_subclass_of($b, $a)) {

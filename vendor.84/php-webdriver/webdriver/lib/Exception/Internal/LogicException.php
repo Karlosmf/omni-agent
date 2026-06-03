@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Facebook\WebDriver\Exception\Internal;
 
@@ -18,7 +20,7 @@ class LogicException extends \LogicException implements PhpWebDriverExceptionInt
     {
         return new self(
             sprintf(
-                'The http method called for "%s" is "%s", but it has to be POST' .
+                'The http method called for "%s" is "%s", but it has to be POST'.
                 ' if you want to pass the JSON params %s',
                 $url,
                 $httpMethod,

@@ -21,13 +21,12 @@ class DocblockFormatter implements ReflectorFormatter
 {
     private const VECTOR_PARAM_TEMPLATES = [
         'type' => 'info',
-        'var'  => 'strong',
+        'var' => 'strong',
     ];
 
     /**
      * Format a docblock.
      *
-     * @param \Reflector $reflector
      *
      * @return string Formatted docblock
      */
@@ -36,13 +35,13 @@ class DocblockFormatter implements ReflectorFormatter
         $docblock = new Docblock($reflector);
         $chunks = [];
 
-        if (!empty($docblock->desc)) {
+        if (! empty($docblock->desc)) {
             $chunks[] = '<comment>Description:</comment>';
             $chunks[] = self::indent(OutputFormatter::escape($docblock->desc), '  ');
             $chunks[] = '';
         }
 
-        if (!empty($docblock->tags)) {
+        if (! empty($docblock->tags)) {
             foreach ($docblock::$vectors as $name => $vector) {
                 if (isset($docblock->tags[$name])) {
                     $chunks[] = \sprintf('<comment>%s:</comment>', self::inflect($name));
@@ -52,7 +51,7 @@ class DocblockFormatter implements ReflectorFormatter
             }
 
             $tags = self::formatTags(\array_keys($docblock::$vectors), $docblock->tags);
-            if (!empty($tags)) {
+            if (! empty($tags)) {
                 $chunks[] = $tags;
                 $chunks[] = '';
             }
@@ -64,10 +63,7 @@ class DocblockFormatter implements ReflectorFormatter
     /**
      * Format a docblock vector, for example, `@throws`, `@param`, or `@return`.
      *
-     * @see DocBlock::$vectors
-     *
-     * @param array $vector
-     * @param array $lines
+     * @see Docblock::$vectors
      */
     private static function formatVector(array $vector, array $lines): string
     {
@@ -102,9 +98,8 @@ class DocblockFormatter implements ReflectorFormatter
     /**
      * Format docblock tags.
      *
-     * @param array $skip Tags to exclude
-     * @param array $tags Tags to format
-     *
+     * @param  array  $skip  Tags to exclude
+     * @param  array  $tags  Tags to format
      * @return string formatted tags
      */
     private static function formatTags(array $skip, array $tags): string
@@ -129,12 +124,12 @@ class DocblockFormatter implements ReflectorFormatter
     /**
      * Get a docblock vector template.
      *
-     * @param string $type Vector type
-     * @param int    $max  Pad width
+     * @param  string  $type  Vector type
+     * @param  int  $max  Pad width
      */
     private static function getVectorParamTemplate(string $type, int $max): string
     {
-        if (!isset(self::VECTOR_PARAM_TEMPLATES[$type])) {
+        if (! isset(self::VECTOR_PARAM_TEMPLATES[$type])) {
             return \sprintf('%%-%ds', $max);
         }
 
@@ -144,8 +139,8 @@ class DocblockFormatter implements ReflectorFormatter
     /**
      * Indent a string.
      *
-     * @param string $text   String to indent
-     * @param string $indent (default: '  ')
+     * @param  string  $text  String to indent
+     * @param  string  $indent  (default: '  ')
      */
     private static function indent(string $text, string $indent = '  '): string
     {
@@ -154,8 +149,6 @@ class DocblockFormatter implements ReflectorFormatter
 
     /**
      * Convert underscored or whitespace separated words into sentence case.
-     *
-     * @param string $text
      */
     private static function inflect(string $text): string
     {

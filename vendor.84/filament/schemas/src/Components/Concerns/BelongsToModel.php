@@ -10,7 +10,7 @@ trait BelongsToModel
     /**
      * @var Model | array<string, mixed> | class-string<Model> | Closure | null
      */
-    protected Model | array | string | Closure | null $model = null;
+    protected Model|array|string|Closure|null $model = null;
 
     protected ?Closure $loadStateFromRelationshipsUsing = null;
 
@@ -18,14 +18,14 @@ trait BelongsToModel
 
     protected ?Closure $saveRelationshipsBeforeChildrenUsing = null;
 
-    protected bool | Closure $shouldSaveRelationshipsWhenDisabled = false;
+    protected bool|Closure $shouldSaveRelationshipsWhenDisabled = false;
 
-    protected bool | Closure $shouldSaveRelationshipsWhenHidden = false;
+    protected bool|Closure $shouldSaveRelationshipsWhenHidden = false;
 
     /**
      * @param  Model | array<string, mixed> | class-string<Model> | Closure | null  $model
      */
-    public function model(Model | array | string | Closure | null $model = null): static
+    public function model(Model|array|string|Closure|null $model = null): static
     {
         $this->model = $model;
 
@@ -155,7 +155,7 @@ trait BelongsToModel
         return $this;
     }
 
-    public function saveRelationshipsWhenDisabled(bool | Closure $condition = true): static
+    public function saveRelationshipsWhenDisabled(bool|Closure $condition = true): static
     {
         $this->shouldSaveRelationshipsWhenDisabled = $condition;
 
@@ -167,7 +167,7 @@ trait BelongsToModel
         return (bool) $this->evaluate($this->shouldSaveRelationshipsWhenDisabled);
     }
 
-    public function saveRelationshipsWhenHidden(bool | Closure $condition = true): static
+    public function saveRelationshipsWhenHidden(bool|Closure $condition = true): static
     {
         $this->shouldSaveRelationshipsWhenHidden = $condition;
 
@@ -211,7 +211,7 @@ trait BelongsToModel
     /**
      * @return Model | array<string, mixed> | null
      */
-    public function getRecord(bool $withContainerRecord = true): Model | array | null
+    public function getRecord(bool $withContainerRecord = true): Model|array|null
     {
         $model = $this->evaluate($this->model);
 

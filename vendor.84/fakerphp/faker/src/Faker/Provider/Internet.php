@@ -5,6 +5,7 @@ namespace Faker\Provider;
 class Internet extends Base
 {
     protected static $freeEmailDomain = ['gmail.com', 'yahoo.com', 'hotmail.com'];
+
     protected static $tld = ['com', 'com', 'com', 'com', 'com', 'com', 'biz', 'info', 'net', 'org'];
 
     protected static $userNameFormats = [
@@ -13,10 +14,12 @@ class Internet extends Base
         '{{firstName}}##',
         '?{{lastName}}',
     ];
+
     protected static $emailFormats = [
         '{{userName}}@{{domainName}}',
         '{{userName}}@{{freeEmailDomain}}',
     ];
+
     protected static $urlFormats = [
         'http://www.{{domainName}}/',
         'http://{{domainName}}/',
@@ -58,7 +61,7 @@ class Internet extends Base
      */
     final public function safeEmail()
     {
-        return preg_replace('/\s/u', '', $this->userName() . '@' . static::safeEmailDomain());
+        return preg_replace('/\s/u', '', $this->userName().'@'.static::safeEmailDomain());
     }
 
     /**
@@ -68,7 +71,7 @@ class Internet extends Base
      */
     public function freeEmail()
     {
-        return preg_replace('/\s/u', '', $this->userName() . '@' . static::freeEmailDomain());
+        return preg_replace('/\s/u', '', $this->userName().'@'.static::freeEmailDomain());
     }
 
     /**
@@ -78,7 +81,7 @@ class Internet extends Base
      */
     public function companyEmail()
     {
-        return preg_replace('/\s/u', '', $this->userName() . '@' . $this->domainName());
+        return preg_replace('/\s/u', '', $this->userName().'@'.$this->domainName());
     }
 
     /**
@@ -150,7 +153,7 @@ class Internet extends Base
      */
     public function domainName()
     {
-        return $this->domainWord() . '.' . $this->tld();
+        return $this->domainWord().'.'.$this->tld();
     }
 
     /**
@@ -235,7 +238,7 @@ class Internet extends Base
     {
         $res = [];
 
-        for ($i = 0; $i < 8; ++$i) {
+        for ($i = 0; $i < 8; $i++) {
             $res[] = dechex(self::numberBetween(0, 65535));
         }
 
@@ -263,8 +266,8 @@ class Internet extends Base
     {
         $mac = [];
 
-        for ($i = 0; $i < 6; ++$i) {
-            $mac[] = sprintf('%02X', self::numberBetween(0, 0xff));
+        for ($i = 0; $i < 6; $i++) {
+            $mac[] = sprintf('%02X', self::numberBetween(0, 0xFF));
         }
 
         return implode(':', $mac);
@@ -272,7 +275,7 @@ class Internet extends Base
 
     protected static function transliterate($string)
     {
-        if (0 === preg_match('/[^A-Za-z0-9_.]/', $string)) {
+        if (preg_match('/[^A-Za-z0-9_.]/', $string) === 0) {
             return $string;
         }
 

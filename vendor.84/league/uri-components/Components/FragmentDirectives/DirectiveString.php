@@ -37,7 +37,7 @@ final class DirectiveString
         $directive = (string) $directive;
 
         return match (true) {
-            1 === preg_match('/^text(?:=|$)/i', $directive) => TextDirective::fromString($directive),
+            preg_match('/^text(?:=|$)/i', $directive) === 1 => TextDirective::fromString($directive),
             default => GenericDirective::fromString($directive),
         };
     }

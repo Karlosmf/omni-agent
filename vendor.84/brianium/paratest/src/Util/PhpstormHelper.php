@@ -49,7 +49,7 @@ final readonly class PhpstormHelper
     /** @param  array<int, string> $argv */
     private static function getArgvKeyFor(array $argv, string $searchFor): int
     {
-        $searchForForwardSlash  = str_replace('\\', '/', $searchFor);
+        $searchForForwardSlash = str_replace('\\', '/', $searchFor);
         $searchForBackwardSlash = str_replace('/', '\\', $searchFor);
 
         foreach ($argv as $key => $arg) {
@@ -62,8 +62,7 @@ final readonly class PhpstormHelper
     }
 
     /**
-     * @param  array<int, string> $argv
-     *
+     * @param  array<int, string>  $argv
      * @return int|false
      */
     private static function getCoverageArgvKey(array $argv)

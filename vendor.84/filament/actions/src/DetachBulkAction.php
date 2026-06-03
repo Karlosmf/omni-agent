@@ -44,7 +44,7 @@ class DetachBulkAction extends BulkAction
         $this->modalIcon(FilamentIcon::resolve(ActionsIconAlias::DETACH_ACTION_MODAL) ?? Heroicon::OutlinedXMark);
 
         $this->action(function (): void {
-            $this->process(function (DetachBulkAction $action, EloquentCollection | Collection | LazyCollection $records, Table $table): void {
+            $this->process(function (DetachBulkAction $action, EloquentCollection|Collection|LazyCollection $records, Table $table): void {
                 /** @var BelongsToMany $relationship */
                 $relationship = $table->getRelationship();
 

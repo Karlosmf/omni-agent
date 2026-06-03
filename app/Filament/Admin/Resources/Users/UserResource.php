@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Users;
 
+use App\Enums\UserRole;
 use App\Filament\Admin\Resources\Users\Pages\CreateUser;
 use App\Filament\Admin\Resources\Users\Pages\EditUser;
 use App\Filament\Admin\Resources\Users\Pages\ListUsers;
@@ -12,6 +13,7 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
 
 class UserResource extends Resource
@@ -32,9 +34,9 @@ class UserResource extends Resource
 
     protected static ?string $slug = 'usuarios';
 
-    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('role', '!=', \App\Enums\UserRole::Customer);
+        return parent::getEloquentQuery()->where('role', '!=', UserRole::Customer);
     }
 
     public static function form(Schema $schema): Schema

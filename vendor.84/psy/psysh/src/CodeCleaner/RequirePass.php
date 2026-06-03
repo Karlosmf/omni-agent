@@ -34,7 +34,7 @@ class RequirePass extends CodeCleanerPass
      */
     public function enterNode(Node $origNode)
     {
-        if (!$this->isRequireNode($origNode)) {
+        if (! $this->isRequireNode($origNode)) {
             return null;
         }
 
@@ -72,13 +72,13 @@ class RequirePass extends CodeCleanerPass
      * If $file collides with a path in the currently running PsySH phar, it will be resolved
      * relative to the include path, to prevent PHP from grabbing the phar version of the file.
      *
-     * @throws FatalErrorException when unable to resolve include path for $file
-     * @throws ErrorException      if $file is empty and E_WARNING is included in error_reporting level
      *
-     * @param string $file
-     * @param int    $startLine Line number of the original require expression
-     *
+     * @param  string  $file
+     * @param  int  $startLine  Line number of the original require expression
      * @return string Exactly the same as $file, unless $file collides with a path in the currently running phar
+     *
+     * @throws FatalErrorException when unable to resolve include path for $file
+     * @throws ErrorException if $file is empty and E_WARNING is included in error_reporting level
      */
     public static function resolve($file, $startLine = null): string
     {
@@ -96,7 +96,7 @@ class RequirePass extends CodeCleanerPass
         }
 
         $resolvedPath = \stream_resolve_include_path($file);
-        if ($file === '' || !$resolvedPath) {
+        if ($file === '' || ! $resolvedPath) {
             $msg = \sprintf("Failed opening required '%s'", $file);
             throw new FatalErrorException($msg, 0, \E_ERROR, null, $startLine);
         }

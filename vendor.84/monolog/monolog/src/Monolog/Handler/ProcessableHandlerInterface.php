@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -11,8 +13,8 @@
 
 namespace Monolog\Handler;
 
-use Monolog\Processor\ProcessorInterface;
 use Monolog\LogRecord;
+use Monolog\Processor\ProcessorInterface;
 
 /**
  * Interface to describe loggers that have processors
@@ -24,20 +26,24 @@ interface ProcessableHandlerInterface
     /**
      * Adds a processor in the stack.
      *
+     *
+     * @param  ProcessorInterface|callable  $callback
+     *
      * @phpstan-param ProcessorInterface|(callable(LogRecord): LogRecord) $callback
      *
-     * @param  ProcessorInterface|callable $callback
-     * @return HandlerInterface            self
+     * @return HandlerInterface self
      */
     public function pushProcessor(callable $callback): HandlerInterface;
 
     /**
      * Removes the processor on top of the stack and returns it.
      *
+     *
+     * @return callable|ProcessorInterface
+     *
      * @phpstan-return ProcessorInterface|(callable(LogRecord): LogRecord) $callback
      *
-     * @throws \LogicException             In case the processor stack is empty
-     * @return callable|ProcessorInterface
+     * @throws \LogicException In case the processor stack is empty
      */
     public function popProcessor(): callable;
 }

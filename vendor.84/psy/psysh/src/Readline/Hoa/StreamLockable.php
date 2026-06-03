@@ -77,9 +77,7 @@ interface StreamLockable extends IStream
      * Portable advisory locking.
      * Should take a look at stream_supports_lock().
      *
-     * @param int $operation operation, use the self::LOCK_* constants
-     *
-     * @return bool
+     * @param  int  $operation  operation, use the self::LOCK_* constants
      */
     public function lock(int $operation): bool;
 }

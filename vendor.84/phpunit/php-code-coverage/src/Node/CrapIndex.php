@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Node;
 
 use function sprintf;
@@ -17,12 +20,13 @@ use function sprintf;
 final readonly class CrapIndex
 {
     private int $cyclomaticComplexity;
+
     private float $codeCoverage;
 
     public function __construct(int $cyclomaticComplexity, float $codeCoverage)
     {
         $this->cyclomaticComplexity = $cyclomaticComplexity;
-        $this->codeCoverage         = $codeCoverage;
+        $this->codeCoverage = $codeCoverage;
     }
 
     public function asString(): string

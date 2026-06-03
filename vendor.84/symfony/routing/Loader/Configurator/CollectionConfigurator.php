@@ -32,7 +32,7 @@ class CollectionConfigurator
         private ?array $parentPrefixes = null,
     ) {
         $this->name = $name;
-        $this->collection = new RouteCollection();
+        $this->collection = new RouteCollection;
         $this->route = new Route('');
     }
 
@@ -48,10 +48,10 @@ class CollectionConfigurator
 
     public function __destruct()
     {
-        if (null === $this->prefixes) {
+        if ($this->prefixes === null) {
             $this->collection->addPrefix($this->route->getPath());
         }
-        if (null !== $this->host) {
+        if ($this->host !== null) {
             $this->addHost($this->collection, $this->host);
         }
 
@@ -69,20 +69,19 @@ class CollectionConfigurator
     /**
      * Sets the prefix to add to the path of all child routes.
      *
-     * @param string|array $prefix the prefix, or the localized prefixes
-     *
+     * @param  string|array  $prefix  the prefix, or the localized prefixes
      * @return $this
      */
     final public function prefix(string|array $prefix): static
     {
         if (\is_array($prefix)) {
-            if (null === $this->parentPrefixes) {
+            if ($this->parentPrefixes === null) {
                 // no-op
             } elseif ($missing = array_diff_key($this->parentPrefixes, $prefix)) {
                 throw new \LogicException(\sprintf('Collection "%s" is missing prefixes for locale(s) "%s".', $this->name, implode('", "', array_keys($missing))));
             } else {
                 foreach ($prefix as $locale => $localePrefix) {
-                    if (!isset($this->parentPrefixes[$locale])) {
+                    if (! isset($this->parentPrefixes[$locale])) {
                         throw new \LogicException(\sprintf('Collection "%s" with locale "%s" is missing a corresponding prefix in its parent collection.', $this->name, $locale));
                     }
 
@@ -102,8 +101,7 @@ class CollectionConfigurator
     /**
      * Sets the host to use for all child routes.
      *
-     * @param string|array $host the host, or the localized hosts
-     *
+     * @param  string|array  $host  the host, or the localized hosts
      * @return $this
      */
     final public function host(string|array $host): static

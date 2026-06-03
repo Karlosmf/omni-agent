@@ -27,7 +27,7 @@ final class BlockQuoteParser extends AbstractBlockContinueParser
 
     public function __construct()
     {
-        $this->block = new BlockQuote();
+        $this->block = new BlockQuote;
     }
 
     public function getBlock(): BlockQuote

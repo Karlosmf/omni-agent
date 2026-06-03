@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -12,6 +13,7 @@ namespace Mockery\Generator\StringManipulation\Pass;
 
 use Mockery;
 use Mockery\Generator\MockConfiguration;
+
 use function array_reduce;
 use function interface_exists;
 use function ltrim;
@@ -20,7 +22,7 @@ use function str_replace;
 class InterfacePass implements Pass
 {
     /**
-     * @param  string $code
+     * @param  string  $code
      * @return string
      */
     public function apply($code, MockConfiguration $config)
@@ -33,9 +35,9 @@ class InterfacePass implements Pass
         }
 
         $interfaces = array_reduce($config->getTargetInterfaces(), static function ($code, $i) {
-            return $code . ', \\' . ltrim($i->getName(), '\\');
+            return $code.', \\'.ltrim($i->getName(), '\\');
         }, '');
 
-        return str_replace('implements MockInterface', 'implements MockInterface' . $interfaces, $code);
+        return str_replace('implements MockInterface', 'implements MockInterface'.$interfaces, $code);
     }
 }

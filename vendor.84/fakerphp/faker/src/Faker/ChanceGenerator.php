@@ -13,11 +13,13 @@ use Faker\Extension\Extension;
 class ChanceGenerator
 {
     private $generator;
+
     private $weight;
+
     protected $default;
 
     /**
-     * @param Extension|Generator $generator
+     * @param  Extension|Generator  $generator
      */
     public function __construct($generator, float $weight, $default = null)
     {
@@ -34,7 +36,7 @@ class ChanceGenerator
     /**
      * Catch and proxy all generator calls but return only valid values
      *
-     * @param string $attribute
+     * @param  string  $attribute
      *
      * @deprecated Use a method instead.
      */
@@ -46,8 +48,8 @@ class ChanceGenerator
     }
 
     /**
-     * @param string $name
-     * @param array  $arguments
+     * @param  string  $name
+     * @param  array  $arguments
      */
     public function __call($name, $arguments)
     {

@@ -23,17 +23,17 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class CacheWarmerAggregate implements CacheWarmerInterface
 {
     private bool $optionalsEnabled = false;
+
     private bool $onlyOptionalsEnabled = false;
 
     /**
-     * @param iterable<mixed, CacheWarmerInterface> $warmers
+     * @param  iterable<mixed, CacheWarmerInterface>  $warmers
      */
     public function __construct(
         private iterable $warmers = [],
         private bool $debug = false,
         private ?string $deprecationLogsFilepath = null,
-    ) {
-    }
+    ) {}
 
     public function enableOptionalWarmers(): void
     {
@@ -47,22 +47,22 @@ class CacheWarmerAggregate implements CacheWarmerInterface
 
     public function warmUp(string $cacheDir, ?string $buildDir = null, ?SymfonyStyle $io = null): array
     {
-        if ($collectDeprecations = $this->debug && !\defined('PHPUNIT_COMPOSER_INSTALL')) {
+        if ($collectDeprecations = $this->debug && ! \defined('PHPUNIT_COMPOSER_INSTALL')) {
             $collectedLogs = [];
             $previousHandler = set_error_handler(function ($type, $message, $file, $line) use (&$collectedLogs, &$previousHandler) {
-                if (\E_USER_DEPRECATED !== $type && \E_DEPRECATED !== $type) {
+                if ($type !== \E_USER_DEPRECATED && $type !== \E_DEPRECATED) {
                     return $previousHandler ? $previousHandler($type, $message, $file, $line) : false;
                 }
 
                 if (isset($collectedLogs[$message])) {
-                    ++$collectedLogs[$message]['count'];
+                    $collectedLogs[$message]['count']++;
 
                     return null;
                 }
 
                 $backtrace = debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS, 3);
                 // Clean the trace by removing first frames added by the error handler itself.
-                for ($i = 0; isset($backtrace[$i]); ++$i) {
+                for ($i = 0; isset($backtrace[$i]); $i++) {
                     if (isset($backtrace[$i]['file'], $backtrace[$i]['line']) && $backtrace[$i]['line'] === $line && $backtrace[$i]['file'] === $file) {
                         $backtrace = \array_slice($backtrace, 1 + $i);
                         break;
@@ -85,16 +85,16 @@ class CacheWarmerAggregate implements CacheWarmerInterface
         $preload = [];
         try {
             foreach ($this->warmers as $warmer) {
-                if (!$this->optionalsEnabled && $warmer->isOptional()) {
+                if (! $this->optionalsEnabled && $warmer->isOptional()) {
                     continue;
                 }
-                if ($this->onlyOptionalsEnabled && !$warmer->isOptional()) {
+                if ($this->onlyOptionalsEnabled && ! $warmer->isOptional()) {
                     continue;
                 }
 
                 $start = microtime(true);
                 foreach ($warmer->warmUp($cacheDir, $buildDir) as $item) {
-                    if (is_dir($item) || (str_starts_with($item, \dirname($cacheDir)) && !is_file($item)) || ($buildDir && str_starts_with($item, \dirname($buildDir)) && !is_file($item))) {
+                    if (is_dir($item) || (str_starts_with($item, \dirname($cacheDir)) && ! is_file($item)) || ($buildDir && str_starts_with($item, \dirname($buildDir)) && ! is_file($item))) {
                         throw new \LogicException(\sprintf('"%s::warmUp()" should return a list of files or classes but "%s" is none of them.', $warmer::class, $item));
                     }
                     $preload[] = $item;

@@ -26,8 +26,7 @@ class HashNode extends AbstractNode
     public function __construct(
         private NodeInterface $selector,
         private string $id,
-    ) {
-    }
+    ) {}
 
     public function getSelector(): NodeInterface
     {

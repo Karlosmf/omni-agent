@@ -21,6 +21,4 @@ namespace Symfony\Contracts\Service;
  * @extends ServiceProviderInterface<T>
  * @extends \IteratorAggregate<string, T>
  */
-interface ServiceCollectionInterface extends ServiceProviderInterface, \Countable, \IteratorAggregate
-{
-}
+interface ServiceCollectionInterface extends \Countable, \IteratorAggregate, ServiceProviderInterface {}

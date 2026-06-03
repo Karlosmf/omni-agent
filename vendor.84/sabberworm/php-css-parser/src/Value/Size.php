@@ -68,8 +68,8 @@ class Size extends PrimitiveValue
     private $isColorComponent;
 
     /**
-     * @param float|int|string $size
-     * @param int<1, max>|null $lineNumber
+     * @param  float|int|string  $size
+     * @param  int<1, max>|null  $lineNumber
      */
     public function __construct($size, ?string $unit = null, bool $isColorComponent = false, ?int $lineNumber = null)
     {
@@ -117,6 +117,7 @@ class Size extends PrimitiveValue
                 }
             }
         }
+
         return new Size((float) $size, $unit, $isColorComponent, $parserState->currentLine());
     }
 
@@ -125,12 +126,12 @@ class Size extends PrimitiveValue
      */
     private static function getSizeUnits(): array
     {
-        if (!\is_array(self::$SIZE_UNITS)) {
+        if (! \is_array(self::$SIZE_UNITS)) {
             self::$SIZE_UNITS = [];
             $sizeUnits = \array_merge(self::ABSOLUTE_SIZE_UNITS, self::RELATIVE_SIZE_UNITS, self::NON_SIZE_UNITS);
             foreach ($sizeUnits as $sizeUnit) {
                 $tokenLength = \strlen($sizeUnit);
-                if (!isset(self::$SIZE_UNITS[$tokenLength])) {
+                if (! isset(self::$SIZE_UNITS[$tokenLength])) {
                     self::$SIZE_UNITS[$tokenLength] = [];
                 }
                 self::$SIZE_UNITS[$tokenLength][\strtolower($sizeUnit)] = $sizeUnit;
@@ -153,7 +154,7 @@ class Size extends PrimitiveValue
     }
 
     /**
-     * @param float|int|string $size
+     * @param  float|int|string  $size
      */
     public function setSize($size): void
     {
@@ -181,7 +182,8 @@ class Size extends PrimitiveValue
         if (\in_array($this->unit, self::NON_SIZE_UNITS, true)) {
             return false;
         }
-        return !$this->isColorComponent();
+
+        return ! $this->isColorComponent();
     }
 
     public function isRelative(): bool
@@ -192,6 +194,7 @@ class Size extends PrimitiveValue
         if ($this->unit === null && $this->size !== 0.0) {
             return true;
         }
+
         return false;
     }
 
@@ -205,6 +208,6 @@ class Size extends PrimitiveValue
         $size = \preg_match('/[\\d\\.]+e[+-]?\\d+/i', (string) $this->size)
             ? \preg_replace("/$decimalPoint?0+$/", '', \sprintf('%f', $this->size)) : (string) $this->size;
 
-        return \preg_replace(["/$decimalPoint/", '/^(-?)0\\./'], ['.', '$1.'], $size) . ($this->unit ?? '');
+        return \preg_replace(["/$decimalPoint/", '/^(-?)0\\./'], ['.', '$1.'], $size).($this->unit ?? '');
     }
 }

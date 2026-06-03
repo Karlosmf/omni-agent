@@ -61,9 +61,8 @@ final readonly class CachingStrategyFactory implements CachingStrategyFactoryInt
      * Returns the best caching strategy, given the number of unique shared strings
      * and the amount of memory available.
      *
-     * @param null|int $sharedStringsUniqueCount Number of unique shared strings (NULL if unknown)
-     * @param string   $tempFolder               Temporary folder where the temporary files to store shared strings will be stored
-     *
+     * @param  null|int  $sharedStringsUniqueCount  Number of unique shared strings (NULL if unknown)
+     * @param  string  $tempFolder  Temporary folder where the temporary files to store shared strings will be stored
      * @return CachingStrategyInterface The best caching strategy
      */
     public function createBestCachingStrategy(?int $sharedStringsUniqueCount, string $tempFolder): CachingStrategyInterface
@@ -79,18 +78,18 @@ final readonly class CachingStrategyFactory implements CachingStrategyFactoryInt
      * Returns whether it is safe to use in-memory caching, given the number of unique shared strings
      * and the amount of memory available.
      *
-     * @param null|int $sharedStringsUniqueCount Number of unique shared strings (NULL if unknown)
+     * @param  null|int  $sharedStringsUniqueCount  Number of unique shared strings (NULL if unknown)
      */
     private function isInMemoryStrategyUsageSafe(?int $sharedStringsUniqueCount): bool
     {
         // if the number of shared strings in unknown, do not use "in memory" strategy
-        if (null === $sharedStringsUniqueCount) {
+        if ($sharedStringsUniqueCount === null) {
             return false;
         }
 
         $memoryAvailable = $this->memoryLimit->getMemoryLimitInKB();
 
-        if (-1 === (int) $memoryAvailable) {
+        if ((int) $memoryAvailable === -1) {
             // if cannot get memory limit or if memory limit set as unlimited, don't trust and play safe
             $isInMemoryStrategyUsageSafe = ($sharedStringsUniqueCount < self::MAX_NUM_STRINGS_PER_TEMP_FILE);
         } else {

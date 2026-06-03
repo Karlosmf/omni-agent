@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -82,7 +84,7 @@ enum Level: int
     case Emergency = 600;
 
     /**
-     * @param  value-of<self::NAMES>|LogLevel::*|'Debug'|'Info'|'Notice'|'Warning'|'Error'|'Critical'|'Alert'|'Emergency' $name
+     * @param  value-of<self::NAMES>|LogLevel::*|'Debug'|'Info'|'Notice'|'Warning'|'Error'|'Critical'|'Alert'|'Emergency'  $name
      * @return static
      */
     public static function fromName(string $name): self
@@ -100,7 +102,7 @@ enum Level: int
     }
 
     /**
-     * @param  value-of<self::VALUES> $value
+     * @param  value-of<self::VALUES>  $value
      * @return static
      */
     public static function fromValue(int $value): self
@@ -150,7 +152,7 @@ enum Level: int
     /**
      * Returns the PSR-3 level matching this instance
      *
-     * @phpstan-return \Psr\Log\LogLevel::*
+     * @phpstan-return LogLevel::*
      */
     public function toPsrLogLevel(): string
     {

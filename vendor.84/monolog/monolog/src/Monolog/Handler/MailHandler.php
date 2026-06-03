@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -23,7 +25,7 @@ use Monolog\LogRecord;
 abstract class MailHandler extends AbstractProcessingHandler
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function handleBatch(array $records): void
     {
@@ -46,15 +48,15 @@ abstract class MailHandler extends AbstractProcessingHandler
     /**
      * Send a mail with the given content
      *
-     * @param string $content formatted email body to be sent
-     * @param array  $records the array of log records that formed this content
+     * @param  string  $content  formatted email body to be sent
+     * @param  array  $records  the array of log records that formed this content
      *
      * @phpstan-param non-empty-array<LogRecord> $records
      */
     abstract protected function send(string $content, array $records): void;
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function write(LogRecord $record): void
     {
@@ -86,6 +88,6 @@ abstract class MailHandler extends AbstractProcessingHandler
      */
     protected function getDefaultFormatter(): FormatterInterface
     {
-        return new HtmlFormatter();
+        return new HtmlFormatter;
     }
 }

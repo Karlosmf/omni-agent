@@ -9,9 +9,7 @@ class PowerJoinsServiceProvider extends ServiceProvider
     /**
      * Bootstrap the application services.
      */
-    public function boot()
-    {
-    }
+    public function boot() {}
 
     /**
      * Register the application services.

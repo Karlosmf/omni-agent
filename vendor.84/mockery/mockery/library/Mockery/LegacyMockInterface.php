@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -43,9 +44,8 @@ interface LegacyMockInterface
      *
      * @template TMixed
      *
-     * @param string        $method
-     * @param array<TMixed> $args
-     *
+     * @param  string  $method
+     * @param  array<TMixed>  $args
      * @return null|Expectation
      */
     public function mockery_findExpectation($method, array $args);
@@ -74,8 +74,7 @@ interface LegacyMockInterface
     /**
      * Return the expectations director for the given method
      *
-     * @param string $method
-     *
+     * @param  string  $method
      * @return null|ExpectationDirector
      */
     public function mockery_getExpectationsFor($method);
@@ -107,8 +106,7 @@ interface LegacyMockInterface
     /**
      * Alternative setup method to constructor
      *
-     * @param object $partialObject
-     *
+     * @param  object  $partialObject
      * @return void
      */
     public function mockery_init(?Container $container = null, $partialObject = null);
@@ -121,8 +119,7 @@ interface LegacyMockInterface
     /**
      * Set current ordered number
      *
-     * @param int $order
-     *
+     * @param  int  $order
      * @return int
      */
     public function mockery_setCurrentOrder($order);
@@ -130,8 +127,7 @@ interface LegacyMockInterface
     /**
      * Return the expectations director for the given method
      *
-     * @param string $method
-     *
+     * @param  string  $method
      * @return null|ExpectationDirector
      */
     public function mockery_setExpectationsFor($method, ExpectationDirector $director);
@@ -139,9 +135,8 @@ interface LegacyMockInterface
     /**
      * Set ordering for a group
      *
-     * @param string $group
-     * @param int    $order
-     *
+     * @param  string  $group
+     * @param  int  $order
      * @return void
      */
     public function mockery_setGroup($group, $order);
@@ -156,28 +151,28 @@ interface LegacyMockInterface
     /**
      * Validate the current mock's ordering
      *
-     * @param string $method
-     * @param int    $order
+     * @param  string  $method
+     * @param  int  $order
+     * @return void
      *
      * @throws Exception
-     *
-     * @return void
      */
     public function mockery_validateOrder($method, $order);
 
     /**
      * Iterate across all expectation directors and validate each
      *
-     * @throws Throwable
      *
      * @return void
+     *
+     * @throws Throwable
      */
     public function mockery_verify();
 
     /**
      * Allows additional methods to be mocked that do not explicitly exist on mocked class
      *
-     * @param  string $method the method name to be mocked
+     * @param  string  $method  the method name to be mocked
      * @return self
      */
     public function shouldAllowMockingMethod($method);
@@ -203,9 +198,9 @@ interface LegacyMockInterface
 
     /**
      * @template TMixed
-     * @param string                     $method
-     * @param null|array<TMixed>|Closure $args
      *
+     * @param  string  $method
+     * @param  null|array<TMixed>|Closure  $args
      * @return self
      */
     public function shouldHaveReceived($method, $args = null);
@@ -215,25 +210,24 @@ interface LegacyMockInterface
      *
      * @template TReturnValue
      *
-     * @param null|TReturnValue $returnValue the default return value for calls to missing functions on this mock
-     *
+     * @param  null|TReturnValue  $returnValue  the default return value for calls to missing functions on this mock
      * @return self
      */
     public function shouldIgnoreMissing($returnValue = null);
 
     /**
      * @template TMixed
-     * @param null|array<TMixed> $args (optional)
      *
+     * @param  null|array<TMixed>  $args  (optional)
      * @return self
      */
     public function shouldNotHaveBeenCalled(?array $args = null);
 
     /**
      * @template TMixed
-     * @param string                     $method
-     * @param null|array<TMixed>|Closure $args
      *
+     * @param  string  $method
+     * @param  null|array<TMixed>|Closure  $args
      * @return self
      */
     public function shouldNotHaveReceived($method, $args = null);
@@ -241,8 +235,7 @@ interface LegacyMockInterface
     /**
      * Shortcut method for setting an expectation that a method should not be called.
      *
-     * @param string ...$methodNames one or many methods that are expected not to be called in this mock
-     *
+     * @param  string  ...$methodNames  one or many methods that are expected not to be called in this mock
      * @return Expectation|ExpectationInterface|HigherOrderMessage
      */
     public function shouldNotReceive(...$methodNames);
@@ -250,8 +243,7 @@ interface LegacyMockInterface
     /**
      * Set expected method calls
      *
-     * @param string ...$methodNames one or many methods that are expected to be called in this mock
-     *
+     * @param  string  ...$methodNames  one or many methods that are expected to be called in this mock
      * @return Expectation|ExpectationInterface|HigherOrderMessage
      */
     public function shouldReceive(...$methodNames);

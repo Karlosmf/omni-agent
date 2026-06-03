@@ -22,7 +22,7 @@ final class ReaderFactory
     /**
      * Creates a reader by file extension.
      *
-     * @param string $path The path to the spreadsheet file. Supported extensions are .csv,.ods and .xlsx
+     * @param  string  $path  The path to the spreadsheet file. Supported extensions are .csv,.ods and .xlsx
      *
      * @throws UnsupportedTypeException
      */
@@ -31,9 +31,9 @@ final class ReaderFactory
         $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
         return match ($extension) {
-            'csv' => new CSVReader(),
-            'xlsx' => new XLSXReader(),
-            'ods' => new ODSReader(),
+            'csv' => new CSVReader,
+            'xlsx' => new XLSXReader,
+            'ods' => new ODSReader,
             default => throw new UnsupportedTypeException('No readers supporting the given type: '.$extension),
         };
     }
@@ -41,23 +41,23 @@ final class ReaderFactory
     /**
      * Creates a reader by mime type.
      *
-     * @param string $path the path to the spreadsheet file
+     * @param  string  $path  the path to the spreadsheet file
      *
      * @throws UnsupportedTypeException
      * @throws IOException
      */
     public static function createFromFileByMimeType(string $path): ReaderInterface
     {
-        if (!file_exists($path)) {
+        if (! file_exists($path)) {
             throw new IOException("Could not open {$path} for reading! File does not exist.");
         }
 
         $mime_type = mime_content_type($path);
 
         return match ($mime_type) {
-            'application/csv', 'text/csv', 'text/plain' => new CSVReader(),
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => new XLSXReader(),
-            'application/vnd.oasis.opendocument.spreadsheet' => new ODSReader(),
+            'application/csv', 'text/csv', 'text/plain' => new CSVReader,
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => new XLSXReader,
+            'application/vnd.oasis.opendocument.spreadsheet' => new ODSReader,
             default => throw new UnsupportedTypeException('No readers supporting the given type: '.$mime_type),
         };
     }

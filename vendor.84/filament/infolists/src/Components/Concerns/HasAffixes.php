@@ -29,7 +29,7 @@ trait HasAffixes
      */
     protected array $prefixActions = [];
 
-    public function prefixAction(Action | Closure $action): static
+    public function prefixAction(Action|Closure $action): static
     {
         $this->prefixActions([$action]);
 
@@ -49,7 +49,7 @@ trait HasAffixes
         return $this;
     }
 
-    public function suffixAction(Action | Closure $action): static
+    public function suffixAction(Action|Closure $action): static
     {
         $this->suffixActions([$action]);
 

@@ -6,9 +6,9 @@ use Closure;
 
 trait HasWidth
 {
-    protected int | string | Closure | null $width = null;
+    protected int|string|Closure|null $width = null;
 
-    public function width(int | string | Closure | null $width): static
+    public function width(int|string|Closure|null $width): static
     {
         $this->width = $width;
 

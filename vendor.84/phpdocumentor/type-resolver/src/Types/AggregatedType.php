@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of phpDocumentor.
  *
@@ -26,12 +27,14 @@ use function implode;
  * using separator.
  *
  * @psalm-immutable
+ *
  * @template-implements IteratorAggregate<int, Type>
  */
-abstract class AggregatedType implements Type, IteratorAggregate
+abstract class AggregatedType implements IteratorAggregate, Type
 {
     /**
      * @psalm-allow-private-mutation
+     *
      * @var array<int, Type>
      */
     private $types = [];
@@ -40,7 +43,7 @@ abstract class AggregatedType implements Type, IteratorAggregate
     private $token;
 
     /**
-     * @param array<Type> $types
+     * @param  array<Type>  $types
      */
     public function __construct(array $types, string $token)
     {
@@ -56,7 +59,7 @@ abstract class AggregatedType implements Type, IteratorAggregate
      */
     public function get(int $index): ?Type
     {
-        if (!$this->has($index)) {
+        if (! $this->has($index)) {
             return null;
         }
 

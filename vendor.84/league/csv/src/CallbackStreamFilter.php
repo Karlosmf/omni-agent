@@ -13,6 +13,10 @@ declare(strict_types=1);
 
 namespace League\Csv;
 
+use const PSFS_ERR_FATAL;
+use const PSFS_FEED_ME;
+use const PSFS_PASS_ON;
+
 use Closure;
 use LogicException;
 use OutOfBoundsException;
@@ -30,10 +34,6 @@ use function stream_bucket_make_writeable;
 use function stream_bucket_new;
 use function stream_filter_register;
 use function stream_get_filters;
-
-use const PSFS_ERR_FATAL;
-use const PSFS_FEED_ME;
-use const PSFS_PASS_ON;
 
 final class CallbackStreamFilter extends php_user_filter
 {
@@ -63,7 +63,7 @@ final class CallbackStreamFilter extends php_user_filter
             $consumed += $bucket->datalen;
         }
 
-        if (null === $this->callback) {
+        if ($this->callback === null) {
             return PSFS_FEED_ME;
         }
 
@@ -86,7 +86,7 @@ final class CallbackStreamFilter extends php_user_filter
     /**
      * Static method to register the class as a stream filter.
      *
-     * @param callable(string, mixed): string $callback
+     * @param  callable(string, mixed): string  $callback
      */
     public static function register(string $filtername, callable $callback): void
     {
@@ -95,7 +95,7 @@ final class CallbackStreamFilter extends php_user_filter
         }
 
         $callback = self::normalizeCallback($callback);
-        if (!stream_filter_register($filtername, self::class)) {
+        if (! stream_filter_register($filtername, self::class)) {
             throw new RuntimeException('The stream filter "'.$filtername.'" could not be registered.');
         }
 
@@ -103,24 +103,23 @@ final class CallbackStreamFilter extends php_user_filter
     }
 
     /**
-     * @param callable(string, mixed): string $callback
+     * @param  callable(string, mixed): string  $callback
+     * @return Closure(string, mixed): string
      *
      * @throws ReflectionException|ValueError
-     *
-     * @return Closure(string, mixed): string
      */
     private static function normalizeCallback(callable $callback): Closure
     {
-        if (!$callback instanceof Closure) {
+        if (! $callback instanceof Closure) {
             $callback = $callback(...);
         }
 
         $reflection = new ReflectionFunction($callback);
-        if (!$reflection->isInternal()) {
+        if (! $reflection->isInternal()) {
             return $callback;
         }
 
-        if (1 !== $reflection->getNumberOfParameters()) {
+        if ($reflection->getNumberOfParameters() !== 1) {
             throw new ValueError('The PHP function "'.$reflection->getName().'" can not be used directly; wrap it in a callback.');
         }
 
@@ -148,9 +147,10 @@ final class CallbackStreamFilter extends php_user_filter
     /**
      * Returns the closure attached to the filtername.
      *
-     * @throws OutOfBoundsException if no callback is attached to the filter name
      *
      * @return Closure(string, mixed): string
+     *
+     * @throws OutOfBoundsException if no callback is attached to the filter name
      */
     public static function callback(string $filtername): Closure
     {

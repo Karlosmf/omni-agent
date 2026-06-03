@@ -37,6 +37,7 @@ class Escaper
         "\x7f",
         "\xc2\x85", "\xc2\xa0", "\xe2\x80\xa8", "\xe2\x80\xa9",
     ];
+
     private const ESCAPED = [
         '\\\\', '\\"', '\\\\', '\\"',
         '\\0',   '\\x01', '\\x02', '\\x03', '\\x04', '\\x05', '\\x06', '\\a',
@@ -50,17 +51,17 @@ class Escaper
     /**
      * Determines if a PHP value would require double quoting in YAML.
      *
-     * @param string $value A PHP value
+     * @param  string  $value  A PHP value
      */
     public static function requiresDoubleQuoting(string $value): bool
     {
-        return 0 < preg_match('/'.self::REGEX_CHARACTER_TO_ESCAPE.'/u', $value);
+        return preg_match('/'.self::REGEX_CHARACTER_TO_ESCAPE.'/u', $value) > 0;
     }
 
     /**
      * Escapes and surrounds a PHP value with double quotes.
      *
-     * @param string $value A PHP value
+     * @param  string  $value  A PHP value
      */
     public static function escapeWithDoubleQuotes(string $value): string
     {
@@ -70,7 +71,7 @@ class Escaper
     /**
      * Determines if a PHP value would require single quoting in YAML.
      *
-     * @param string $value A PHP value
+     * @param  string  $value  A PHP value
      */
     public static function requiresSingleQuoting(string $value): bool
     {
@@ -82,13 +83,13 @@ class Escaper
 
         // Determines if the PHP value contains any single characters that would
         // cause it to require single quoting in YAML.
-        return 0 < preg_match('/[\s\'"\:\{\}\[\],&\*\#\?] | \A[\-?|<>=!%@`\p{Zs}]/xu', $value);
+        return preg_match('/[\s\'"\:\{\}\[\],&\*\#\?] | \A[\-?|<>=!%@`\p{Zs}]/xu', $value) > 0;
     }
 
     /**
      * Escapes and surrounds a PHP value with single quotes.
      *
-     * @param string $value A PHP value
+     * @param  string  $value  A PHP value
      */
     public static function escapeWithSingleQuotes(string $value): string
     {

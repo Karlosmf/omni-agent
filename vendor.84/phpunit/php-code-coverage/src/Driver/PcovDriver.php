@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,9 +9,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Driver;
 
 use const pcov\inclusive;
+
+use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
+use SebastianBergmann\CodeCoverage\Filter;
+
 use function array_intersect;
 use function extension_loaded;
 use function pcov\clear;
@@ -18,8 +25,6 @@ use function pcov\start;
 use function pcov\stop;
 use function pcov\waiting;
 use function phpversion;
-use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
-use SebastianBergmann\CodeCoverage\Filter;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -52,10 +57,10 @@ final class PcovDriver extends Driver
 
         // @codeCoverageIgnoreStart
         $filesToCollectCoverageFor = waiting();
-        $collected                 = [];
+        $collected = [];
 
         if ($filesToCollectCoverageFor !== []) {
-            if (!$this->filter->isEmpty()) {
+            if (! $this->filter->isEmpty()) {
                 $filesToCollectCoverageFor = array_intersect($filesToCollectCoverageFor, $this->filter->files());
             }
 
@@ -70,7 +75,7 @@ final class PcovDriver extends Driver
 
     public function nameAndVersion(): string
     {
-        return 'PCOV ' . phpversion('pcov');
+        return 'PCOV '.phpversion('pcov');
     }
 
     public function isPcov(): true
@@ -83,7 +88,7 @@ final class PcovDriver extends Driver
      */
     private function ensurePcovIsAvailable(): void
     {
-        if (!extension_loaded('pcov')) {
+        if (! extension_loaded('pcov')) {
             throw new PcovNotAvailableException;
         }
     }

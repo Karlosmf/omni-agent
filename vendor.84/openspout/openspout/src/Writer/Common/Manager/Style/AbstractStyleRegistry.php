@@ -27,15 +27,14 @@ abstract class AbstractStyleRegistry
      * Registers the given style as a used style.
      * Duplicate styles won't be registered more than once.
      *
-     * @param Style $style The style to be registered
-     *
+     * @param  Style  $style  The style to be registered
      * @return Style the registered style, updated with an internal ID
      */
     public function registerStyle(Style $style): Style
     {
         $serializedStyle = $this->serialize($style);
 
-        if (!$this->hasSerializedStyleAlreadyBeenRegistered($serializedStyle)) {
+        if (! $this->hasSerializedStyleAlreadyBeenRegistered($serializedStyle)) {
             $nextStyleId = \count($this->serializedStyleToStyleIdMappingTable);
             $style->markAsRegistered($nextStyleId);
 
@@ -74,7 +73,7 @@ abstract class AbstractStyleRegistry
     /**
      * Returns whether the serialized style has already been registered.
      *
-     * @param string $serializedStyle The serialized style
+     * @param  string  $serializedStyle  The serialized style
      */
     private function hasSerializedStyleAlreadyBeenRegistered(string $serializedStyle): bool
     {
@@ -85,7 +84,7 @@ abstract class AbstractStyleRegistry
     /**
      * Returns the registered style associated to the given serialization.
      *
-     * @param string $serializedStyle The serialized style from which the actual style should be fetched from
+     * @param  string  $serializedStyle  The serialized style from which the actual style should be fetched from
      */
     private function getStyleFromSerializedStyle(string $serializedStyle): Style
     {

@@ -51,9 +51,9 @@ class MoFileLoader extends FileLoader
         $magic = unpack('V1', fread($stream, 4));
         $magic = hexdec(substr(dechex(current($magic)), -8));
 
-        if (self::MO_LITTLE_ENDIAN_MAGIC == $magic) {
+        if ($magic == self::MO_LITTLE_ENDIAN_MAGIC) {
             $isBigEndian = false;
-        } elseif (self::MO_BIG_ENDIAN_MAGIC == $magic) {
+        } elseif ($magic == self::MO_BIG_ENDIAN_MAGIC) {
             $isBigEndian = true;
         } else {
             throw new InvalidResourceException('MO stream content has an invalid format.');
@@ -71,7 +71,7 @@ class MoFileLoader extends FileLoader
 
         $messages = [];
 
-        for ($i = 0; $i < $count; ++$i) {
+        for ($i = 0; $i < $count; $i++) {
             $pluralId = null;
             $translated = null;
 
@@ -109,7 +109,7 @@ class MoFileLoader extends FileLoader
             $ids = ['singular' => $singularId, 'plural' => $pluralId];
             $item = compact('ids', 'translated');
 
-            if (!empty($item['ids']['singular'])) {
+            if (! empty($item['ids']['singular'])) {
                 $id = $item['ids']['singular'];
                 if (isset($item['ids']['plural'])) {
                     $id .= '|'.$item['ids']['plural'];
@@ -126,7 +126,7 @@ class MoFileLoader extends FileLoader
     /**
      * Reads an unsigned long from stream respecting endianness.
      *
-     * @param resource $stream
+     * @param  resource  $stream
      */
     private function readLong($stream, bool $isBigEndian): int
     {

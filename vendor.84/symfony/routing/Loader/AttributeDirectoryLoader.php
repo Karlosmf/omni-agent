@@ -28,23 +28,23 @@ class AttributeDirectoryLoader extends AttributeFileLoader
      */
     public function load(mixed $path, ?string $type = null): ?RouteCollection
     {
-        if (!is_dir($dir = $this->locator->locate($path))) {
-            return parent::supports($path, $type) ? parent::load($path, $type) : new RouteCollection();
+        if (! is_dir($dir = $this->locator->locate($path))) {
+            return parent::supports($path, $type) ? parent::load($path, $type) : new RouteCollection;
         }
 
-        $collection = new RouteCollection();
+        $collection = new RouteCollection;
         $collection->addResource(new GlobResource($dir, '/*.php', true));
         $files = iterator_to_array(new \RecursiveIteratorIterator(
             new \RecursiveCallbackFilterIterator(
                 new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::FOLLOW_SYMLINKS),
-                fn (\SplFileInfo $current) => !str_starts_with($current->getBasename(), '.')
+                fn (\SplFileInfo $current) => ! str_starts_with($current->getBasename(), '.')
             ),
             \RecursiveIteratorIterator::LEAVES_ONLY
         ));
         usort($files, fn (\SplFileInfo $a, \SplFileInfo $b) => (string) $a > (string) $b ? 1 : -1);
 
         foreach ($files as $file) {
-            if (!$file->isFile() || !str_ends_with($file->getFilename(), '.php')) {
+            if (! $file->isFile() || ! str_ends_with($file->getFilename(), '.php')) {
                 continue;
             }
 
@@ -63,11 +63,11 @@ class AttributeDirectoryLoader extends AttributeFileLoader
 
     public function supports(mixed $resource, ?string $type = null): bool
     {
-        if (!\is_string($resource)) {
+        if (! \is_string($resource)) {
             return false;
         }
 
-        if ('attribute' === $type) {
+        if ($type === 'attribute') {
             return true;
         }
 

@@ -81,8 +81,7 @@ class Person extends \Faker\Provider\Person
      *
      *  @see https://nl.wikipedia.org/wiki/Rijksregisternummer
      *
-     * @param string|null $gender 'male', 'female' or null for any
-     *
+     * @param  string|null  $gender  'male', 'female' or null for any
      * @return string
      */
     public static function rrn($gender = null)
@@ -100,9 +99,9 @@ class Person extends \Faker\Provider\Person
         $dob = sprintf('%06d', $date->format('ymd'));
         $help = $date->format('Y') >= 2000 ? 2 : null;
 
-        $check = (int) ($help . $dob . $middle);
+        $check = (int) ($help.$dob.$middle);
         $rest = sprintf('%02d', 97 - ($check % 97));
 
-        return $dob . $middle . $rest;
+        return $dob.$middle.$rest;
     }
 }

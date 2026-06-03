@@ -17,7 +17,7 @@ trait HasComponents
     /**
      * @var array<Component | Action | ActionGroup | string | Htmlable> | Component | Action | ActionGroup | string | Htmlable | Closure
      */
-    protected array | Component | Action | ActionGroup | string | Htmlable | Closure $components = [];
+    protected array|Component|Action|ActionGroup|string|Htmlable|Closure $components = [];
 
     /**
      * @var array<array<array<array<array<string, Component| Action | ActionGroup>>>>>
@@ -37,7 +37,7 @@ trait HasComponents
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Component | Action | ActionGroup | string | Htmlable | Closure  $components
      */
-    public function components(array | Component | Action | ActionGroup | string | Htmlable | Closure $components): static
+    public function components(array|Component|Action|ActionGroup|string|Htmlable|Closure $components): static
     {
         $this->components = $components;
         $this->cachedComponents = null;
@@ -50,7 +50,7 @@ trait HasComponents
     /**
      * @param  array<Component | Action | ActionGroup | string | Htmlable> | Component | Action | ActionGroup | string | Htmlable | Closure  $components
      */
-    public function schema(array | Component | Action | ActionGroup | string | Htmlable | Closure $components): static
+    public function schema(array|Component|Action|ActionGroup|string|Htmlable|Closure $components): static
     {
         $this->components($components);
 
@@ -143,7 +143,7 @@ trait HasComponents
     /**
      * @param  array<Component>  $skipComponentsChildContainersWhileSearching
      */
-    public function getComponent(string | Closure $findComponentUsing, bool $withActions = true, bool $withHidden = false, bool $isAbsoluteKey = false, array $skipComponentsChildContainersWhileSearching = []): Component | Action | ActionGroup | null
+    public function getComponent(string|Closure $findComponentUsing, bool $withActions = true, bool $withHidden = false, bool $isAbsoluteKey = false, array $skipComponentsChildContainersWhileSearching = []): Component|Action|ActionGroup|null
     {
         if (is_string($findComponentUsing) && (! $isAbsoluteKey) && filled($key = $this->getKey())) {
             $findComponentUsing = "{$key}.$findComponentUsing";
@@ -264,7 +264,7 @@ trait HasComponents
 
         return $this->cachedFlatComponents[$withActions][$withHidden][$withAbsoluteKeys][$containerKey] ??= array_reduce(
             $this->getComponents($withActions, $withHidden),
-            function (array $carry, Component | Action | ActionGroup $component) use ($containerKey, $withActions, $withHidden, $withAbsoluteKeys): array {
+            function (array $carry, Component|Action|ActionGroup $component) use ($containerKey, $withActions, $withHidden, $withAbsoluteKeys): array {
                 if (($component instanceof Action) || ($component instanceof ActionGroup)) {
                     $carry[] = $component;
 
@@ -335,7 +335,7 @@ trait HasComponents
 
         $components = array_filter(
             $allComponents,
-            function (Component | Action | ActionGroup $component) use ($withActions, $withHidden): bool {
+            function (Component|Action|ActionGroup $component) use ($withActions, $withHidden): bool {
                 if ((($component instanceof Action) || ($component instanceof ActionGroup)) && (! $withActions)) {
                     return false;
                 }
@@ -355,7 +355,7 @@ trait HasComponents
     {
         if (! ($this->components instanceof Closure)) {
             $this->components = array_map(
-                fn (Component | Action | ActionGroup | string | Htmlable $component): Component | Action | ActionGroup | string | Htmlable => match (true) {
+                fn (Component|Action|ActionGroup|string|Htmlable $component): Component|Action|ActionGroup|string|Htmlable => match (true) {
                     $component instanceof Action, $component instanceof ActionGroup => (clone $component)
                         ->schemaContainer($this),
                     $component instanceof Component => $component

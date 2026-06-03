@@ -25,8 +25,7 @@ final class Clock implements ClockInterface
     public function __construct(
         private readonly ?PsrClockInterface $clock = null,
         private ?\DateTimeZone $timezone = null,
-    ) {
-    }
+    ) {}
 
     /**
      * Returns the current global clock.
@@ -36,7 +35,7 @@ final class Clock implements ClockInterface
      */
     public static function get(): ClockInterface
     {
-        return self::$globalClock ??= new NativeClock();
+        return self::$globalClock ??= new NativeClock;
     }
 
     public static function set(PsrClockInterface $clock): void
@@ -48,7 +47,7 @@ final class Clock implements ClockInterface
     {
         $now = ($this->clock ?? self::get())->now();
 
-        if (!$now instanceof DatePoint) {
+        if (! $now instanceof DatePoint) {
             $now = DatePoint::createFromInterface($now);
         }
 
@@ -62,7 +61,7 @@ final class Clock implements ClockInterface
         if ($clock instanceof ClockInterface) {
             $clock->sleep($seconds);
         } else {
-            (new NativeClock())->sleep($seconds);
+            (new NativeClock)->sleep($seconds);
         }
     }
 

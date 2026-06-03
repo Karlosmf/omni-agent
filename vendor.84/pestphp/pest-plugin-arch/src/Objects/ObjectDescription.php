@@ -22,7 +22,7 @@ final class ObjectDescription extends \PHPUnit\Architecture\Elements\ObjectDescr
         /** @var ObjectDescription|null $description */
         $description = parent::make($path);
 
-        if (! $description instanceof \Pest\Arch\Objects\ObjectDescription) {
+        if (! $description instanceof ObjectDescription) {
             return null;
         }
 

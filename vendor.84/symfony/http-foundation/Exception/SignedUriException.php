@@ -17,6 +17,4 @@ use Symfony\Component\HttpKernel\Attribute\WithHttpStatus;
  * @author Kevin Bond <kevinbond@gmail.com>
  */
 #[WithHttpStatus(404)]
-abstract class SignedUriException extends \RuntimeException implements ExceptionInterface
-{
-}
+abstract class SignedUriException extends \RuntimeException implements ExceptionInterface {}

@@ -21,16 +21,12 @@ abstract class AbstractListener implements Listener
     /**
      * {@inheritdoc}
      */
-    public function beforeRun(Shell $shell)
-    {
-    }
+    public function beforeRun(Shell $shell) {}
 
     /**
      * {@inheritdoc}
      */
-    public function beforeLoop(Shell $shell)
-    {
-    }
+    public function beforeLoop(Shell $shell) {}
 
     /**
      * {@inheritdoc}
@@ -51,14 +47,10 @@ abstract class AbstractListener implements Listener
     /**
      * {@inheritdoc}
      */
-    public function afterLoop(Shell $shell)
-    {
-    }
+    public function afterLoop(Shell $shell) {}
 
     /**
      * {@inheritdoc}
      */
-    public function afterRun(Shell $shell, int $exitCode = 0)
-    {
-    }
+    public function afterRun(Shell $shell, int $exitCode = 0) {}
 }

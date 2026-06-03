@@ -14,7 +14,7 @@ use Psr\Http\Message\StreamInterface;
 trait StreamDecoratorTrait
 {
     /**
-     * @param StreamInterface $stream Stream to decorate
+     * @param  StreamInterface  $stream  Stream to decorate
      */
     public function __construct(StreamInterface $stream)
     {

@@ -31,12 +31,12 @@ class MethodEnumerator extends Enumerator
         }
 
         // We can only list methods on actual class (or object) reflectors.
-        if (!$reflector instanceof \ReflectionClass) {
+        if (! $reflector instanceof \ReflectionClass) {
             return [];
         }
 
         // only list methods if we are specifically asked
-        if (!$input->getOption('methods')) {
+        if (! $input->getOption('methods')) {
             return [];
         }
 
@@ -57,10 +57,8 @@ class MethodEnumerator extends Enumerator
     /**
      * Get defined methods for the given class or object Reflector.
      *
-     * @param bool             $showAll   Include private and protected methods
-     * @param \ReflectionClass $reflector
-     * @param bool             $noInherit Exclude inherited methods
-     *
+     * @param  bool  $showAll  Include private and protected methods
+     * @param  bool  $noInherit  Exclude inherited methods
      * @return \ReflectionMethod[]
      */
     protected function getMethods(bool $showAll, \ReflectionClass $reflector, bool $noInherit = false): array
@@ -87,7 +85,7 @@ class MethodEnumerator extends Enumerator
             }
 
             // Skip if a real method with this name already exists
-            if (!isset($methods[$method->getName()])) {
+            if (! isset($methods[$method->getName()])) {
                 $methods[$method->getName()] = $method;
             }
         }
@@ -100,9 +98,7 @@ class MethodEnumerator extends Enumerator
     /**
      * Prepare formatted method array.
      *
-     * @param \ReflectionMethod[] $methods
-     *
-     * @return array
+     * @param  \ReflectionMethod[]  $methods
      */
     protected function prepareMethods(array $methods): array
     {
@@ -112,7 +108,7 @@ class MethodEnumerator extends Enumerator
         foreach ($methods as $name => $method) {
             if ($this->showItem($name)) {
                 $ret[$name] = [
-                    'name'  => $name,
+                    'name' => $name,
                     'style' => $this->getVisibilityStyle($method),
                     'value' => $this->presentSignature($method),
                 ];
@@ -124,8 +120,6 @@ class MethodEnumerator extends Enumerator
 
     /**
      * Get a label for the particular kind of "class" represented.
-     *
-     * @param \ReflectionClass $reflector
      */
     protected function getKindLabel(\ReflectionClass $reflector): string
     {
@@ -141,7 +135,7 @@ class MethodEnumerator extends Enumerator
     /**
      * Get output style for the given method's visibility.
      *
-     * @param \ReflectionMethod|ReflectionMagicMethod $method
+     * @param  \ReflectionMethod|ReflectionMagicMethod  $method
      */
     private function getVisibilityStyle(\Reflector $method): string
     {

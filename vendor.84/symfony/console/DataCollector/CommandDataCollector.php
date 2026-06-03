@@ -29,7 +29,7 @@ final class CommandDataCollector extends DataCollector
 {
     public function collect(Request $request, Response $response, ?\Throwable $exception = null): void
     {
-        if (!$request instanceof CliRequest) {
+        if (! $request instanceof CliRequest) {
             return;
         }
 
@@ -51,9 +51,9 @@ final class CommandDataCollector extends DataCollector
                 OutputInterface::VERBOSITY_DEBUG => 'debug',
             },
             'interactive' => $command->isInteractive,
-            'validate_input' => !$command->ignoreValidation,
+            'validate_input' => ! $command->ignoreValidation,
             'enabled' => $command->isEnabled(),
-            'visible' => !$command->isHidden(),
+            'visible' => ! $command->isHidden(),
             'input' => $this->cloneVar($command->input),
             'output' => $this->cloneVar($command->output),
             'interactive_inputs' => array_map($this->cloneVar(...), $command->interactiveInputs),
@@ -103,7 +103,7 @@ final class CommandDataCollector extends DataCollector
         $class = $this->data['command']->getType();
         $r = new \ReflectionMethod($class, 'execute');
 
-        if (Command::class !== $r->getDeclaringClass()) {
+        if ($r->getDeclaringClass() !== Command::class) {
             return [
                 'executor' => $class.'::'.$r->name,
                 'file' => $r->getFileName(),

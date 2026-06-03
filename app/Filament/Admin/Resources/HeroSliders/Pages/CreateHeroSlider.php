@@ -18,11 +18,11 @@ class CreateHeroSlider extends CreateRecord
                 $data['image_path'] = $data['image_path_url'];
             }
         }
-        
+
         unset($data['image_type']);
         unset($data['image_path_predefined']);
         unset($data['image_path_url']);
-        
+
         return $data;
     }
 }

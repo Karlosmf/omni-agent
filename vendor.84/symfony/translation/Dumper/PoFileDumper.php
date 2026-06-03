@@ -50,7 +50,7 @@ class PoFileDumper extends FileDumper
 
             $sourceRules = $this->getStandardRules($source);
             $targetRules = $this->getStandardRules($target);
-            if (2 == \count($sourceRules) && [] !== $targetRules) {
+            if (\count($sourceRules) == 2 && $targetRules !== []) {
                 $output .= \sprintf('msgid "%s"'."\n", $this->escape($sourceRules[0]));
                 $output .= \sprintf('msgid_plural "%s"'."\n", $this->escape($sourceRules[1]));
                 foreach ($targetRules as $i => $targetRule) {

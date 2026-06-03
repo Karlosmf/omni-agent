@@ -1,10 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace PhpParser\Internal;
 
 if (\PHP_VERSION_ID >= 80000) {
-    class TokenPolyfill extends \PhpToken {
-    }
+    class TokenPolyfill extends \PhpToken {}
+
     return;
 }
 
@@ -15,13 +17,17 @@ if (\PHP_VERSION_ID >= 80000) {
  *
  * @internal
  */
-class TokenPolyfill {
+class TokenPolyfill
+{
     /** @var int The ID of the token. Either a T_* constant of a character code < 256. */
     public int $id;
+
     /** @var string The textual content of the token. */
     public string $text;
+
     /** @var int The 1-based starting line of the token (or -1 if unknown). */
     public int $line;
+
     /** @var int The 0-based starting position of the token (or -1 if unknown). */
     public int $pos;
 
@@ -39,7 +45,8 @@ class TokenPolyfill {
     /**
      * Create a Token with the given ID and text, as well optional line and position information.
      */
-    final public function __construct(int $id, string $text, int $line = -1, int $pos = -1) {
+    final public function __construct(int $id, string $text, int $line = -1, int $pos = -1)
+    {
         $this->id = $id;
         $this->text = $text;
         $this->line = $line;
@@ -50,12 +57,14 @@ class TokenPolyfill {
      * Get the name of the token. For single-char tokens this will be the token character.
      * Otherwise it will be a T_* style name, or null if the token ID is unknown.
      */
-    public function getTokenName(): ?string {
+    public function getTokenName(): ?string
+    {
         if ($this->id < 256) {
             return \chr($this->id);
         }
 
         $name = token_name($this->id);
+
         return $name === 'UNKNOWN' ? null : $name;
     }
 
@@ -64,9 +73,10 @@ class TokenPolyfill {
      * the token ID, a string that matches the token text, or an array of integers/strings. In the
      * latter case, the function returns true if any of the kinds in the array match.
      *
-     * @param int|string|(int|string)[] $kind
+     * @param  int|string|(int|string)[]  $kind
      */
-    public function is($kind): bool {
+    public function is($kind): bool
+    {
         if (\is_int($kind)) {
             return $this->id === $kind;
         }
@@ -85,28 +95,31 @@ class TokenPolyfill {
                     }
                 } else {
                     throw new \TypeError(
-                        'Argument #1 ($kind) must only have elements of type string|int, ' .
-                        gettype($entry) . ' given');
+                        'Argument #1 ($kind) must only have elements of type string|int, '.
+                        gettype($entry).' given');
                 }
             }
+
             return false;
         }
         throw new \TypeError(
-            'Argument #1 ($kind) must be of type string|int|array, ' .gettype($kind) . ' given');
+            'Argument #1 ($kind) must be of type string|int|array, '.gettype($kind).' given');
     }
 
     /**
      * Check whether this token would be ignored by the PHP parser. Returns true for T_WHITESPACE,
      * T_COMMENT, T_DOC_COMMENT and T_OPEN_TAG, and false for everything else.
      */
-    public function isIgnorable(): bool {
+    public function isIgnorable(): bool
+    {
         return isset(self::IGNORABLE_TOKENS[$this->id]);
     }
 
     /**
      * Return the textual content of the token.
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         return $this->text;
     }
 
@@ -121,7 +134,8 @@ class TokenPolyfill {
      *
      * @return static[]
      */
-    public static function tokenize(string $code, int $flags = 0): array {
+    public static function tokenize(string $code, int $flags = 0): array
+    {
         self::init();
 
         $tokens = [];
@@ -156,7 +170,7 @@ class TokenPolyfill {
 
                     if ($i + 1 < $numTokens && $origTokens[$i + 1][0] === \T_WHITESPACE) {
                         // Move trailing newline into following T_WHITESPACE token, if it already exists.
-                        $origTokens[$i + 1][1] = $trailingNewline . $origTokens[$i + 1][1];
+                        $origTokens[$i + 1][1] = $trailingNewline.$origTokens[$i + 1][1];
                         $origTokens[$i + 1][2]--;
                     } else {
                         // Otherwise, we need to create a new T_WHITESPACE token.
@@ -164,6 +178,7 @@ class TokenPolyfill {
                         $line++;
                         $pos += \strlen($trailingNewline);
                     }
+
                     continue;
                 }
 
@@ -174,7 +189,7 @@ class TokenPolyfill {
                     $lastWasSeparator = $id === \T_NS_SEPARATOR;
                     for ($j = $i + 1; $j < $numTokens; $j++) {
                         if ($lastWasSeparator) {
-                            if (!isset(self::$identifierTokens[$origTokens[$j][0]])) {
+                            if (! isset(self::$identifierTokens[$origTokens[$j][0]])) {
                                 break;
                             }
                             $lastWasSeparator = false;
@@ -202,6 +217,7 @@ class TokenPolyfill {
                         $tokens[] = new static($id, $newText, $line, $pos);
                         $pos += \strlen($newText);
                         $i = $j - 1;
+
                         continue;
                     }
                 }
@@ -211,11 +227,13 @@ class TokenPolyfill {
                 $pos += \strlen($text);
             }
         }
+
         return $tokens;
     }
 
     /** Initialize private static state needed by tokenize(). */
-    private static function init(): void {
+    private static function init(): void
+    {
         if (isset(self::$identifierTokens)) {
             return;
         }

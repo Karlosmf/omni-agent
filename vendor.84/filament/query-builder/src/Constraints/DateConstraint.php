@@ -17,9 +17,9 @@ class DateConstraint extends Constraint
 {
     use Concerns\CanBeNullable;
 
-    protected bool | Closure $hasTime = false;
+    protected bool|Closure $hasTime = false;
 
-    public function time(bool | Closure $condition = true): static
+    public function time(bool|Closure $condition = true): static
     {
         $this->hasTime = $condition;
 

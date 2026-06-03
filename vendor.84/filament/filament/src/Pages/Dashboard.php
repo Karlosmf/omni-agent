@@ -29,7 +29,7 @@ class Dashboard extends Page
             __('filament-panels::pages/dashboard.title');
     }
 
-    public static function getNavigationIcon(): string | BackedEnum | Htmlable | null
+    public static function getNavigationIcon(): string|BackedEnum|Htmlable|null
     {
         return static::$navigationIcon
             ?? FilamentIcon::resolve(PanelsIconAlias::PAGES_DASHBOARD_NAVIGATION_ITEM)
@@ -62,12 +62,12 @@ class Dashboard extends Page
     /**
      * @return int | array<string, ?int>
      */
-    public function getColumns(): int | array
+    public function getColumns(): int|array
     {
         return 2;
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return static::$title ?? __('filament-panels::pages/dashboard.title');
     }

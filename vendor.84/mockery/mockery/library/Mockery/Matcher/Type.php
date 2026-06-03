@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -26,7 +27,7 @@ class Type extends MatcherAbstract
      */
     public function __toString()
     {
-        return '<' . ucfirst($this->_expected) . '>';
+        return '<'.ucfirst($this->_expected).'>';
     }
 
     /**
@@ -34,13 +35,12 @@ class Type extends MatcherAbstract
      *
      * @template TMixed
      *
-     * @param TMixed $actual
-     *
+     * @param  TMixed  $actual
      * @return bool
      */
     public function match(&$actual)
     {
-        $function = $this->_expected === 'real' ? 'is_float' : 'is_' . strtolower($this->_expected);
+        $function = $this->_expected === 'real' ? 'is_float' : 'is_'.strtolower($this->_expected);
 
         if (function_exists($function)) {
             return $function($actual);

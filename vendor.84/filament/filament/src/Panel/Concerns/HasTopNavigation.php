@@ -6,9 +6,9 @@ use Closure;
 
 trait HasTopNavigation
 {
-    protected bool | Closure $hasTopNavigation = false;
+    protected bool|Closure $hasTopNavigation = false;
 
-    public function topNavigation(bool | Closure $condition = true): static
+    public function topNavigation(bool|Closure $condition = true): static
     {
         $this->hasTopNavigation = $condition;
 

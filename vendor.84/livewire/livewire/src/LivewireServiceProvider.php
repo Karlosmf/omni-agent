@@ -1,10 +1,12 @@
 <?php
 
 namespace Livewire;
+
 use Composer\InstalledVersions;
 use Illuminate\Foundation\Console\AboutCommand;
+use Illuminate\Support\ServiceProvider;
 
-class LivewireServiceProvider extends \Illuminate\Support\ServiceProvider
+class LivewireServiceProvider extends ServiceProvider
 {
     public function register()
     {
@@ -80,7 +82,7 @@ class LivewireServiceProvider extends \Illuminate\Support\ServiceProvider
 
     protected function bootFeatures()
     {
-        foreach([
+        foreach ([
             Features\SupportWireModelingNestedComponents\SupportWireModelingNestedComponents::class,
             Features\SupportMultipleRootElementDetection\SupportMultipleRootElementDetection::class,
             Features\SupportMorphAwareBladeCompilation\SupportMorphAwareBladeCompilation::class,

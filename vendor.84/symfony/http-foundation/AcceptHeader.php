@@ -32,7 +32,7 @@ class AcceptHeader
     private bool $sorted = true;
 
     /**
-     * @param AcceptHeaderItem[] $items
+     * @param  AcceptHeaderItem[]  $items
      */
     public function __construct(array $items)
     {
@@ -88,7 +88,7 @@ class AcceptHeader
         }
 
         // Collect and filter matching candidates
-        if (!$candidates = array_filter($this->items, fn (AcceptHeaderItem $item) => $this->matches($item, $queryItem))) {
+        if (! $candidates = array_filter($this->items, fn (AcceptHeaderItem $item) => $this->matches($item, $queryItem))) {
             return null;
         }
 
@@ -150,7 +150,7 @@ class AcceptHeader
      */
     private function sort(): void
     {
-        if (!$this->sorted) {
+        if (! $this->sorted) {
             uasort($this->items, static fn ($a, $b) => $b->getQuality() <=> $a->getQuality() ?: $a->getIndex() <=> $b->getIndex());
 
             $this->sorted = true;
@@ -169,8 +169,9 @@ class AcceptHeader
         ksort($attributes);
 
         foreach ($attributes as $name => $value) {
-            if (null === $value) {
+            if ($value === null) {
                 $parts[] = $name; // Flag parameter (e.g., "flowed")
+
                 continue;
             }
 
@@ -187,8 +188,8 @@ class AcceptHeader
     /**
      * Checks if a given header item (range) matches a queried item (value).
      *
-     * @param AcceptHeaderItem $rangeItem The item from the Accept header (e.g., text/*;format=flowed)
-     * @param AcceptHeaderItem $queryItem The item being queried (e.g., text/plain;format=flowed;charset=utf-8)
+     * @param  AcceptHeaderItem  $rangeItem  The item from the Accept header (e.g., text/*;format=flowed)
+     * @param  AcceptHeaderItem  $queryItem  The item being queried (e.g., text/plain;format=flowed;charset=utf-8)
      */
     private function matches(AcceptHeaderItem $rangeItem, AcceptHeaderItem $queryItem): bool
     {
@@ -196,12 +197,12 @@ class AcceptHeader
         $queryValue = strtolower($queryItem->getValue());
 
         // Handle universal wildcard ranges
-        if ('*' === $rangeValue || '*/*' === $rangeValue) {
+        if ($rangeValue === '*' || $rangeValue === '*/*') {
             return $this->rangeParametersMatch($rangeItem, $queryItem);
         }
 
         // Queries for '*' only match wildcard ranges (handled above)
-        if ('*' === $queryValue) {
+        if ($queryValue === '*') {
             return false;
         }
 
@@ -214,7 +215,7 @@ class AcceptHeader
         }
 
         // Non-media: exact match only (wildcards handled above)
-        if (!$isQueryMedia) {
+        if (! $isQueryMedia) {
             return $rangeValue === $queryValue && $this->rangeParametersMatch($rangeItem, $queryItem);
         }
 
@@ -222,11 +223,11 @@ class AcceptHeader
         [$queryType, $querySubtype] = explode('/', $queryValue, 2);
         [$rangeType, $rangeSubtype] = explode('/', $rangeValue, 2) + [1 => '*'];
 
-        if ('*' !== $rangeType && $rangeType !== $queryType) {
+        if ($rangeType !== '*' && $rangeType !== $queryType) {
             return false;
         }
 
-        if ('*' !== $rangeSubtype && $rangeSubtype !== $querySubtype) {
+        if ($rangeSubtype !== '*' && $rangeSubtype !== $querySubtype) {
             return false;
         }
 
@@ -245,17 +246,17 @@ class AcceptHeader
         $rangeAttributes = $this->getMediaParams($rangeItem);
 
         foreach ($rangeAttributes as $name => $rangeValue) {
-            if (!\array_key_exists($name, $queryAttributes)) {
+            if (! \array_key_exists($name, $queryAttributes)) {
                 return false; // Missing required param
             }
 
             $queryValue = $queryAttributes[$name];
 
-            if (null === $rangeValue) {
-                return null === $queryValue; // Both flags or neither
+            if ($rangeValue === null) {
+                return $queryValue === null; // Both flags or neither
             }
 
-            if (null === $queryValue || strtolower($queryValue) !== strtolower($rangeValue)) {
+            if ($queryValue === null || strtolower($queryValue) !== strtolower($rangeValue)) {
                 return false;
             }
         }
@@ -276,15 +277,15 @@ class AcceptHeader
         $isQueryMedia = str_contains($queryValue, '/');
         $isRangeMedia = str_contains($rangeValue, '/');
 
-        if (!$isQueryMedia && !$isRangeMedia) {
-            return ('*' !== $rangeValue ? 2000 : 1000) + $paramCount;
+        if (! $isQueryMedia && ! $isRangeMedia) {
+            return ($rangeValue !== '*' ? 2000 : 1000) + $paramCount;
         }
 
         [$rangeType, $rangeSubtype] = explode('/', $rangeValue, 2) + [1 => '*'];
 
         $specificity = match (true) {
-            '*' !== $rangeSubtype => 3000, // Exact subtype (text/plain)
-            '*' !== $rangeType => 2000,    // Type wildcard (text/*)
+            $rangeSubtype !== '*' => 3000, // Exact subtype (text/plain)
+            $rangeType !== '*' => 2000,    // Type wildcard (text/*)
             default => 1000,               // Full wildcard (*/* or *)
         };
 

@@ -6,7 +6,7 @@ use Closure;
 
 trait HasKey
 {
-    protected string | Closure | null $key = null;
+    protected string|Closure|null $key = null;
 
     protected bool $isKeyInheritable = true;
 
@@ -18,7 +18,7 @@ trait HasKey
 
     protected bool $hasCachedAbsoluteInheritanceKey = false;
 
-    public function key(string | Closure | null $key, bool $isInheritable = true): static
+    public function key(string|Closure|null $key, bool $isInheritable = true): static
     {
         $this->key = $key;
         $this->isKeyInheritable = $isInheritable;

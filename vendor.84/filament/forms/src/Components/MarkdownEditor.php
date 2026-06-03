@@ -53,7 +53,7 @@ class MarkdownEditor extends Field implements Contracts\CanBeLengthConstrained
         return ($defaultName === 'local') ? 'public' : $defaultName;
     }
 
-    public function fileAttachmentsVisibility(string | Closure | null $visibility): static
+    public function fileAttachmentsVisibility(string|Closure|null $visibility): static
     {
         throw new LogicException('The visibility of file attachments for markdown content is always `public`, since generating temporary file upload URLs is not supported in static content.');
     }

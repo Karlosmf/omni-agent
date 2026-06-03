@@ -31,7 +31,9 @@ abstract class TransportFactoryTestCase extends AbstractTransportFactoryTestCase
     use IncompleteDsnTestTrait;
 
     protected EventDispatcherInterface $dispatcher;
+
     protected HttpClientInterface $client;
+
     protected LoggerInterface $logger;
 
     /**
@@ -52,16 +54,16 @@ abstract class TransportFactoryTestCase extends AbstractTransportFactoryTestCase
 
     protected function getDispatcher(): EventDispatcherInterface
     {
-        return $this->dispatcher ??= new EventDispatcher();
+        return $this->dispatcher ??= new EventDispatcher;
     }
 
     protected function getClient(): HttpClientInterface
     {
-        return $this->client ??= new MockHttpClient();
+        return $this->client ??= new MockHttpClient;
     }
 
     protected function getLogger(): LoggerInterface
     {
-        return $this->logger ??= new NullLogger();
+        return $this->logger ??= new NullLogger;
     }
 }

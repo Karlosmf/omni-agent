@@ -1,13 +1,17 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace PhpParser;
 
-interface Node {
+interface Node
+{
     /**
      * Gets the type of the node.
      *
-     * @psalm-return non-empty-string
      * @return string Type of the node
+     *
+     * @psalm-return non-empty-string
      */
     public function getType(): string;
 
@@ -22,6 +26,7 @@ interface Node {
      * Gets line the node started in (alias of getStartLine).
      *
      * @return int Start line (or -1 if not available)
+     *
      * @phpstan-return -1|positive-int
      *
      * @deprecated Use getStartLine() instead
@@ -34,6 +39,7 @@ interface Node {
      * Requires the 'startLine' attribute to be enabled in the lexer (enabled by default).
      *
      * @return int Start line (or -1 if not available)
+     *
      * @phpstan-return -1|positive-int
      */
     public function getStartLine(): int;
@@ -44,6 +50,7 @@ interface Node {
      * Requires the 'endLine' attribute to be enabled in the lexer (enabled by default).
      *
      * @return int End line (or -1 if not available)
+     *
      * @phpstan-return -1|positive-int
      */
     public function getEndLine(): int;
@@ -109,14 +116,14 @@ interface Node {
      *
      * This will either replace an existing doc comment or add it to the comments array.
      *
-     * @param Comment\Doc $docComment Doc comment to set
+     * @param  Comment\Doc  $docComment  Doc comment to set
      */
     public function setDocComment(Comment\Doc $docComment): void;
 
     /**
      * Sets an attribute on a node.
      *
-     * @param mixed $value
+     * @param  mixed  $value
      */
     public function setAttribute(string $key, $value): void;
 
@@ -128,8 +135,7 @@ interface Node {
     /**
      * Returns the value of an attribute.
      *
-     * @param mixed $default
-     *
+     * @param  mixed  $default
      * @return mixed
      */
     public function getAttribute(string $key, $default = null);
@@ -144,7 +150,7 @@ interface Node {
     /**
      * Replaces all the attributes of this node.
      *
-     * @param array<string, mixed> $attributes
+     * @param  array<string, mixed>  $attributes
      */
     public function setAttributes(array $attributes): void;
 }

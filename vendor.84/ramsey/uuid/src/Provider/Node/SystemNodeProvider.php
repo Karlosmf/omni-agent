@@ -14,6 +14,9 @@ declare(strict_types=1);
 
 namespace Ramsey\Uuid\Provider\Node;
 
+use const GLOB_NOSORT;
+use const PREG_PATTERN_ORDER;
+
 use Ramsey\Uuid\Exception\NodeException;
 use Ramsey\Uuid\Provider\NodeProviderInterface;
 use Ramsey\Uuid\Type\Hexadecimal;
@@ -32,9 +35,6 @@ use function str_replace;
 use function strtolower;
 use function strtoupper;
 use function substr;
-
-use const GLOB_NOSORT;
-use const PREG_PATTERN_ORDER;
 
 /**
  * SystemNodeProvider retrieves the system node ID, if possible

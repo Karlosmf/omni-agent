@@ -3,12 +3,13 @@
 namespace Database\Factories;
 
 use App\Models\Booking;
+use App\Models\BookingItem;
 use App\Models\ServiceType;
 use App\Models\Supplier;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\BookingItem>
+ * @extends Factory<BookingItem>
  */
 class BookingItemFactory extends Factory
 {

@@ -19,6 +19,4 @@ namespace Symfony\Component\HttpKernel\Attribute;
  * to other conventional dependency injection strategies.
  */
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_FUNCTION)]
-class AsController
-{
-}
+class AsController {}

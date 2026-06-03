@@ -20,7 +20,7 @@ trait EntanglesStateWithSingularRelationship
 
     protected ?string $relationship = null;
 
-    protected string | Closure | null $relatedModel = null;
+    protected string|Closure|null $relatedModel = null;
 
     protected ?Closure $mutateRelationshipDataBeforeCreateUsing = null;
 
@@ -28,16 +28,16 @@ trait EntanglesStateWithSingularRelationship
 
     protected ?Closure $mutateRelationshipDataBeforeSaveUsing = null;
 
-    protected bool | Closure $hasRelationship = false;
+    protected bool|Closure $hasRelationship = false;
 
-    public function relationship(string $name, bool | Closure $condition = true, string | Closure | null $relatedModel = null): static
+    public function relationship(string $name, bool|Closure $condition = true, string|Closure|null $relatedModel = null): static
     {
         $this->relationship = $name;
         $this->hasRelationship = $condition;
         $this->relatedModel = $relatedModel;
         $this->statePath($name);
 
-        $this->loadStateFromRelationshipsUsing(static function (Component | CanEntangleWithSingularRelationships $component): void {
+        $this->loadStateFromRelationshipsUsing(static function (Component|CanEntangleWithSingularRelationships $component): void {
             $component->clearCachedExistingRecord();
 
             $findFirstComponentWithThisRelationship = function (Schema $schema) use ($component, &$findFirstComponentWithThisRelationship): ?CanEntangleWithSingularRelationships {
@@ -81,7 +81,7 @@ trait EntanglesStateWithSingularRelationship
             }
         });
 
-        $this->saveRelationshipsBeforeChildrenUsing(static function (Component | CanEntangleWithSingularRelationships $component, LivewireComponent & HasSchemas $livewire): void {
+        $this->saveRelationshipsBeforeChildrenUsing(static function (Component|CanEntangleWithSingularRelationships $component, LivewireComponent&HasSchemas $livewire): void {
             // All layout components using this relationship should be saved together in this function.
             $componentsWithThisRelationship = [];
 
@@ -232,7 +232,7 @@ trait EntanglesStateWithSingularRelationship
         return $container->model($this->getCachedExistingRecord() ?? $this->getRelatedModel());
     }
 
-    public function getRelationship(): BelongsTo | HasOne | MorphOne | null
+    public function getRelationship(): BelongsTo|HasOne|MorphOne|null
     {
         $name = $this->getRelationshipName();
 

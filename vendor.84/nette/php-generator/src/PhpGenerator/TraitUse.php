@@ -11,39 +11,36 @@ namespace Nette\PhpGenerator;
 
 use Nette;
 
-
 /**
  * Definition of a trait use statement.
  */
 final class TraitUse
 {
-	use Traits\NameAware;
-	use Traits\CommentAware;
+    use Traits\CommentAware;
+    use Traits\NameAware;
 
-	/** @var string[] */
-	private array $resolutions = [];
+    /** @var string[] */
+    private array $resolutions = [];
 
+    public function __construct(string $name)
+    {
+        if (! Helpers::isNamespaceIdentifier($name, allowLeadingSlash: true)) {
+            throw new Nette\InvalidArgumentException("Value '$name' is not valid trait name.");
+        }
 
-	public function __construct(string $name)
-	{
-		if (!Nette\PhpGenerator\Helpers::isNamespaceIdentifier($name, allowLeadingSlash: true)) {
-			throw new Nette\InvalidArgumentException("Value '$name' is not valid trait name.");
-		}
+        $this->name = $name;
+    }
 
-		$this->name = $name;
-	}
+    public function addResolution(string $resolution): static
+    {
+        $this->resolutions[] = $resolution;
 
+        return $this;
+    }
 
-	public function addResolution(string $resolution): static
-	{
-		$this->resolutions[] = $resolution;
-		return $this;
-	}
-
-
-	/** @return string[] */
-	public function getResolutions(): array
-	{
-		return $this->resolutions;
-	}
+    /** @return string[] */
+    public function getResolutions(): array
+    {
+        return $this->resolutions;
+    }
 }

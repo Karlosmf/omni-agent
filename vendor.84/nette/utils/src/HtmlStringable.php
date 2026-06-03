@@ -9,17 +9,15 @@ declare(strict_types=1);
 
 namespace Nette;
 
-
 /**
  * Represents object convertible to HTML string.
  */
 interface HtmlStringable
 {
-	/**
-	 * Returns string in HTML format.
-	 */
-	function __toString(): string;
+    /**
+     * Returns string in HTML format.
+     */
+    public function __toString(): string;
 }
-
 
 interface_exists(Utils\IHtmlString::class);

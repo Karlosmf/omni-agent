@@ -29,7 +29,7 @@ class AttributeFileLoader extends FileLoader
         FileLocatorInterface $locator,
         protected AttributeClassLoader $loader,
     ) {
-        if (!\function_exists('token_get_all')) {
+        if (! \function_exists('token_get_all')) {
             throw new \LogicException('The Tokenizer extension is required for the routing attribute loader.');
         }
 
@@ -45,7 +45,7 @@ class AttributeFileLoader extends FileLoader
     {
         $path = $this->locator->locate($file);
 
-        $collection = new RouteCollection();
+        $collection = new RouteCollection;
         if ($class = $this->findClass($path)) {
             $refl = new \ReflectionClass($class);
             if ($refl->isAbstract()) {
@@ -63,7 +63,7 @@ class AttributeFileLoader extends FileLoader
 
     public function supports(mixed $resource, ?string $type = null): bool
     {
-        return \is_string($resource) && 'php' === pathinfo($resource, \PATHINFO_EXTENSION) && (!$type || 'attribute' === $type);
+        return \is_string($resource) && pathinfo($resource, \PATHINFO_EXTENSION) === 'php' && (! $type || $type === 'attribute');
     }
 
     /**
@@ -75,22 +75,22 @@ class AttributeFileLoader extends FileLoader
         $namespace = false;
         $tokens = token_get_all(file_get_contents($file));
 
-        if (1 === \count($tokens) && \T_INLINE_HTML === $tokens[0][0]) {
+        if (\count($tokens) === 1 && $tokens[0][0] === \T_INLINE_HTML) {
             throw new \InvalidArgumentException(\sprintf('The file "%s" does not contain PHP code. Did you forget to add the "<?php" start tag at the beginning of the file?', $file));
         }
 
         $nsTokens = [\T_NS_SEPARATOR => true, \T_STRING => true, \T_NAME_QUALIFIED => true];
-        for ($i = 0; isset($tokens[$i]); ++$i) {
+        for ($i = 0; isset($tokens[$i]); $i++) {
             $token = $tokens[$i];
-            if (!isset($token[1])) {
+            if (! isset($token[1])) {
                 continue;
             }
 
-            if (true === $class && \T_STRING === $token[0]) {
+            if ($class === true && $token[0] === \T_STRING) {
                 return $namespace.'\\'.$token[1];
             }
 
-            if (true === $namespace && isset($nsTokens[$token[0]])) {
+            if ($namespace === true && isset($nsTokens[$token[0]])) {
                 $namespace = $token[1];
                 while (isset($tokens[++$i][1], $nsTokens[$tokens[$i][0]])) {
                     $namespace .= $tokens[$i][1];
@@ -98,31 +98,31 @@ class AttributeFileLoader extends FileLoader
                 $token = $tokens[$i];
             }
 
-            if (\T_CLASS === $token[0]) {
+            if ($token[0] === \T_CLASS) {
                 // Skip usage of ::class constant and anonymous classes
                 $skipClassToken = false;
-                for ($j = $i - 1; $j > 0; --$j) {
-                    if (!isset($tokens[$j][1])) {
-                        if ('(' === $tokens[$j] || ',' === $tokens[$j]) {
+                for ($j = $i - 1; $j > 0; $j--) {
+                    if (! isset($tokens[$j][1])) {
+                        if ($tokens[$j] === '(' || $tokens[$j] === ',') {
                             $skipClassToken = true;
                         }
                         break;
                     }
 
-                    if (\T_DOUBLE_COLON === $tokens[$j][0] || \T_NEW === $tokens[$j][0]) {
+                    if ($tokens[$j][0] === \T_DOUBLE_COLON || $tokens[$j][0] === \T_NEW) {
                         $skipClassToken = true;
                         break;
-                    } elseif (!\in_array($tokens[$j][0], [\T_WHITESPACE, \T_DOC_COMMENT, \T_COMMENT], true)) {
+                    } elseif (! \in_array($tokens[$j][0], [\T_WHITESPACE, \T_DOC_COMMENT, \T_COMMENT], true)) {
                         break;
                     }
                 }
 
-                if (!$skipClassToken) {
+                if (! $skipClassToken) {
                     $class = true;
                 }
             }
 
-            if (\T_NAMESPACE === $token[0]) {
+            if ($token[0] === \T_NAMESPACE) {
                 $namespace = true;
             }
         }

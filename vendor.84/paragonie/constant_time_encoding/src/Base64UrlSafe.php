@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace ParagonIE\ConstantTime;
 
 use Override;
@@ -30,12 +32,9 @@ use Override;
 /**
  * Class Base64UrlSafe
  * [A-Z][a-z][0-9]\-_
- *
- * @package ParagonIE\ConstantTime
  */
 abstract class Base64UrlSafe extends Base64
 {
-
     /**
      * Uses bitwise operators instead of table-lookups to turn 6-bit integers
      * into 8-bit integers.
@@ -43,9 +42,6 @@ abstract class Base64UrlSafe extends Base64
      * Base64 character set:
      * [A-Z]      [a-z]      [0-9]      -     _
      * 0x41-0x5a, 0x61-0x7a, 0x30-0x39, 0x2d, 0x5f
-     *
-     * @param int $src
-     * @return int
      */
     #[Override]
     protected static function decode6Bits(int $src): int
@@ -53,19 +49,19 @@ abstract class Base64UrlSafe extends Base64
         $ret = -1;
 
         // if ($src > 0x40 && $src < 0x5b) $ret += $src - 0x41 + 1; // -64
-        $ret += (((0x40 - $src) & ($src - 0x5b)) >> 8) & ($src - 64);
+        $ret += (((0x40 - $src) & ($src - 0x5B)) >> 8) & ($src - 64);
 
         // if ($src > 0x60 && $src < 0x7b) $ret += $src - 0x61 + 26 + 1; // -70
-        $ret += (((0x60 - $src) & ($src - 0x7b)) >> 8) & ($src - 70);
+        $ret += (((0x60 - $src) & ($src - 0x7B)) >> 8) & ($src - 70);
 
         // if ($src > 0x2f && $src < 0x3a) $ret += $src - 0x30 + 52 + 1; // 5
-        $ret += (((0x2f - $src) & ($src - 0x3a)) >> 8) & ($src + 5);
+        $ret += (((0x2F - $src) & ($src - 0x3A)) >> 8) & ($src + 5);
 
         // if ($src == 0x2c) $ret += 62 + 1;
-        $ret += (((0x2c - $src) & ($src - 0x2e)) >> 8) & 63;
+        $ret += (((0x2C - $src) & ($src - 0x2E)) >> 8) & 63;
 
         // if ($src == 0x5f) ret += 63 + 1;
-        $ret += (((0x5e - $src) & ($src - 0x60)) >> 8) & 64;
+        $ret += (((0x5E - $src) & ($src - 0x60)) >> 8) & 64;
 
         return $ret;
     }
@@ -73,9 +69,6 @@ abstract class Base64UrlSafe extends Base64
     /**
      * Uses bitwise operators instead of table-lookups to turn 8-bit integers
      * into 6-bit integers.
-     *
-     * @param int $src
-     * @return string
      */
     #[Override]
     protected static function encode6Bits(int $src): string

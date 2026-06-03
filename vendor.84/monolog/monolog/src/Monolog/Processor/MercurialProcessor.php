@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -13,8 +15,8 @@ namespace Monolog\Processor;
 
 use Monolog\Level;
 use Monolog\Logger;
-use Psr\Log\LogLevel;
 use Monolog\LogRecord;
+use Psr\Log\LogLevel;
 
 /**
  * Injects Hg branch and Hg revision number in all records
@@ -24,11 +26,12 @@ use Monolog\LogRecord;
 class MercurialProcessor implements ProcessorInterface
 {
     private Level $level;
+
     /** @var array{branch: string, revision: string}|array<never>|null */
     private static $cache = null;
 
     /**
-     * @param int|string|Level $level The minimum logging level at which this Processor will be triggered
+     * @param  int|string|Level  $level  The minimum logging level at which this Processor will be triggered
      *
      * @phpstan-param value-of<Level::VALUES>|value-of<Level::NAMES>|Level|LogLevel::* $level
      */
@@ -38,7 +41,7 @@ class MercurialProcessor implements ProcessorInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __invoke(LogRecord $record): LogRecord
     {

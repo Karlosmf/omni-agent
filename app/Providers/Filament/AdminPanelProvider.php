@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Models\AgencySetting;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -16,18 +17,17 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
-
-use App\Models\AgencySetting;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\HtmlString;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         $agencySettings = null;
-        
+
         if (! app()->runningInConsole() || app()->runningUnitTests()) {
             try {
                 if (Schema::hasTable('agency_settings')) {
@@ -69,11 +69,14 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotifications()
             ->navigationGroups([
                 NavigationGroup::make()
-                    ->label('Ventas'),
+                    ->label('Ventas')
+                    ->collapsed(),
                 NavigationGroup::make()
-                    ->label('Catálogo'),
+                    ->label('Catálogo')
+                    ->collapsed(),
                 NavigationGroup::make()
-                    ->label('Sistema'),
+                    ->label('Sistema')
+                    ->collapsed(),
             ])
 
             ->darkMode()
@@ -93,7 +96,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->renderHook(
                 'panels::body.start',
-                fn () => new \Illuminate\Support\HtmlString('
+                fn () => new HtmlString('
                     <style>
                         .fi-simple-layout {
                             background-color: #f0f2f5 !important;
@@ -102,6 +105,42 @@ class AdminPanelProvider extends PanelProvider
                             background-size: 400px !important;
                         }
                     </style>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", () => {
+                            document.body.addEventListener("click", (e) => {
+                                let btn = e.target.closest(".fi-sidebar-group-btn");
+                                if (!btn) return;
+                                
+                                // Damos un pequeño respiro para que AlpineJS termine de abrir o cerrar el menú actual
+                                setTimeout(() => {
+                                    if (!window.Alpine) return;
+                                    let sidebar = Alpine.store("sidebar");
+                                    if (!sidebar) return;
+                                    
+                                    let li = btn.closest(".fi-sidebar-group");
+                                    if (!li) return;
+                                    
+                                    let clickedLabel = li.getAttribute("data-group-label");
+                                    
+                                    // Comprobamos si el grupo que acabamos de clickear quedó ABIERTO
+                                    // (Si NO está en el array de grupos colapsados, significa que está abierto)
+                                    let isOpen = !sidebar.collapsedGroups.includes(clickedLabel);
+                                    
+                                    if (isOpen) {
+                                        // Si lo abrimos, cerramos todos los demás automáticamente
+                                        document.querySelectorAll(".fi-sidebar-group").forEach((groupEl) => {
+                                            let otherLabel = groupEl.getAttribute("data-group-label");
+                                            if (otherLabel && otherLabel !== clickedLabel) {
+                                                if (!sidebar.collapsedGroups.includes(otherLabel)) {
+                                                    sidebar.collapsedGroups.push(otherLabel);
+                                                }
+                                            }
+                                        });
+                                    }
+                                }, 50);
+                            });
+                        });
+                    </script>
                 '),
             );
     }

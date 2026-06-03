@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,11 +9,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\TestRunner;
 
-use function sprintf;
 use PHPUnit\Event\Event;
 use PHPUnit\Event\Telemetry;
+
+use function sprintf;
 
 /**
  * @immutable
@@ -33,14 +37,14 @@ final readonly class StaticAnalysisForCodeCoverageFinished implements Event
     private int $cacheMisses;
 
     /**
-     * @param non-negative-int $cacheHits
-     * @param non-negative-int $cacheMisses
+     * @param  non-negative-int  $cacheHits
+     * @param  non-negative-int  $cacheMisses
      */
     public function __construct(Telemetry\Info $telemetryInfo, int $cacheHits, int $cacheMisses)
     {
         $this->telemetryInfo = $telemetryInfo;
-        $this->cacheHits     = $cacheHits;
-        $this->cacheMisses   = $cacheMisses;
+        $this->cacheHits = $cacheHits;
+        $this->cacheMisses = $cacheMisses;
     }
 
     public function telemetryInfo(): Telemetry\Info

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\Constraint;
 
 use PHPUnit\Framework\ExpectationFailedException;
@@ -18,6 +21,7 @@ use PHPUnit\Framework\NativeType;
 final class TraversableContainsOnly extends Constraint
 {
     private readonly Constraint $constraint;
+
     private readonly string $type;
 
     public static function forNativeType(NativeType $type): self
@@ -26,7 +30,7 @@ final class TraversableContainsOnly extends Constraint
     }
 
     /**
-     * @param class-string $type
+     * @param  class-string  $type
      */
     public static function forClassOrInterface(string $type): self
     {
@@ -36,7 +40,7 @@ final class TraversableContainsOnly extends Constraint
     private function __construct(IsInstanceOf|IsType $constraint, string $type)
     {
         $this->constraint = $constraint;
-        $this->type       = $type;
+        $this->type = $type;
     }
 
     /**
@@ -56,14 +60,14 @@ final class TraversableContainsOnly extends Constraint
         $success = true;
 
         foreach ($other as $item) {
-            if (!$this->constraint->evaluate($item, '', true)) {
+            if (! $this->constraint->evaluate($item, '', true)) {
                 $success = false;
 
                 break;
             }
         }
 
-        if (!$success && !$returnResult) {
+        if (! $success && ! $returnResult) {
             $this->fail($other, $description);
         }
 
@@ -75,6 +79,6 @@ final class TraversableContainsOnly extends Constraint
      */
     public function toString(): string
     {
-        return 'contains only values of type "' . $this->type . '"';
+        return 'contains only values of type "'.$this->type.'"';
     }
 }

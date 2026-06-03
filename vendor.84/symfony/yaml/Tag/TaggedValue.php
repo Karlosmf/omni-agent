@@ -20,8 +20,7 @@ final class TaggedValue
     public function __construct(
         private string $tag,
         private mixed $value,
-    ) {
-    }
+    ) {}
 
     public function getTag(): string
     {

@@ -26,7 +26,7 @@ interface DelimiterProcessorCollectionInterface extends \Countable
     /**
      * Add the given delim processor to the collection
      *
-     * @param DelimiterProcessorInterface $processor The delim processor to add
+     * @param  DelimiterProcessorInterface  $processor  The delim processor to add
      *
      * @throws InvalidArgumentException Exception will be thrown if attempting to add multiple processors for the same character
      */

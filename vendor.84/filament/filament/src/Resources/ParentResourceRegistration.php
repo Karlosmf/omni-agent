@@ -63,12 +63,12 @@ class ParentResourceRegistration
         return $this->childResource;
     }
 
-    public function getRelationship(Model $parentRecord): HasOneOrMany | BelongsToMany
+    public function getRelationship(Model $parentRecord): HasOneOrMany|BelongsToMany
     {
         return $parentRecord->{$this->getRelationshipName()}();
     }
 
-    public function getInverseRelationship(Model $parentRecord): BelongsTo | BelongsToMany
+    public function getInverseRelationship(Model $parentRecord): BelongsTo|BelongsToMany
     {
         return $parentRecord->{$this->getInverseRelationshipName()}();
     }

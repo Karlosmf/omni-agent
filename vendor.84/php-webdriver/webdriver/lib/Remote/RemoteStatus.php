@@ -11,14 +11,16 @@ class RemoteStatus
 {
     /** @var bool */
     protected $isReady;
+
     /** @var string */
     protected $message;
+
     /** @var array */
     protected $meta = [];
 
     /**
-     * @param bool $isReady
-     * @param string $message
+     * @param  bool  $isReady
+     * @param  string  $message
      */
     protected function __construct($isReady, $message, array $meta = [])
     {

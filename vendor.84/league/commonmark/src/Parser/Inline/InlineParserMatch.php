@@ -23,7 +23,7 @@ final class InlineParserMatch
 
     private function __construct(string $regex, bool $caseSensitive = false)
     {
-        $this->regex         = $regex;
+        $this->regex = $regex;
         $this->caseSensitive = $caseSensitive;
     }
 
@@ -41,7 +41,7 @@ final class InlineParserMatch
      */
     public function getRegex(): string
     {
-        return '/' . $this->regex . '/' . ($this->caseSensitive ? '' : 'i');
+        return '/'.$this->regex.'/'.($this->caseSensitive ? '' : 'i');
     }
 
     /**
@@ -70,10 +70,10 @@ final class InlineParserMatch
 
     public static function join(self ...$definitions): self
     {
-        $regex         = '';
+        $regex = '';
         $caseSensitive = null;
         foreach ($definitions as $definition) {
-            $regex .= '(' . $definition->regex . ')';
+            $regex .= '('.$definition->regex.')';
 
             if ($caseSensitive === null) {
                 $caseSensitive = $definition->caseSensitive;

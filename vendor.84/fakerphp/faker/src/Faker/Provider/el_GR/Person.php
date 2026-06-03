@@ -143,10 +143,11 @@ class Person extends \Faker\Provider\Person
     ];
 
     protected static $titleMale = ['κος.', 'κ.'];
+
     protected static $titleFemale = ['δις.', 'δνις.', 'κα.'];
 
     /**
-     * @param string|null $gender 'male', 'female' or null for any
+     * @param  string|null  $gender  'male', 'female' or null for any
      *
      * @example 'Αγγελόπουλος'
      */

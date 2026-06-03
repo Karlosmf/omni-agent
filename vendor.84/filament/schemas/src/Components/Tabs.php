@@ -23,9 +23,9 @@ class Tabs extends Component
      */
     protected string $view = 'filament-schemas::components.tabs';
 
-    protected int | Closure $activeTab = 1;
+    protected int|Closure $activeTab = 1;
 
-    protected string | Closure | null $tabQueryStringKey = null;
+    protected string|Closure|null $tabQueryStringKey = null;
 
     /**
      * @var array<string>
@@ -37,18 +37,18 @@ class Tabs extends Component
      */
     protected array $endRenderHooks = [];
 
-    protected string | Closure | null $livewireProperty = null;
+    protected string|Closure|null $livewireProperty = null;
 
-    protected bool | Closure $isScrollable = true;
+    protected bool|Closure $isScrollable = true;
 
-    protected bool | Closure $isVertical = false;
+    protected bool|Closure $isVertical = false;
 
-    final public function __construct(string | Htmlable | Closure | null $label = null)
+    final public function __construct(string|Htmlable|Closure|null $label = null)
     {
         $this->label($label);
     }
 
-    public static function make(string | Htmlable | Closure | null $label = null): static
+    public static function make(string|Htmlable|Closure|null $label = null): static
     {
         $static = app(static::class, ['label' => $label]);
         $static->configure();
@@ -69,28 +69,28 @@ class Tabs extends Component
 
             $statePath = $component->getStatePath();
 
-            return Str::slug(Str::transliterate($label, strict: true)) . '::' . (filled($statePath) ? "{$statePath}::tabs" : 'tabs');
+            return Str::slug(Str::transliterate($label, strict: true)).'::'.(filled($statePath) ? "{$statePath}::tabs" : 'tabs');
         }, isInheritable: false);
     }
 
     /**
      * @param  array<Tab> | Closure  $tabs
      */
-    public function tabs(array | Closure $tabs): static
+    public function tabs(array|Closure $tabs): static
     {
         $this->components($tabs);
 
         return $this;
     }
 
-    public function activeTab(int | Closure $activeTab): static
+    public function activeTab(int|Closure $activeTab): static
     {
         $this->activeTab = $activeTab;
 
         return $this;
     }
 
-    public function persistTabInQueryString(string | Closure | null $key = 'tab'): static
+    public function persistTabInQueryString(string|Closure|null $key = 'tab'): static
     {
         $this->tabQueryStringKey = $key;
 
@@ -174,7 +174,7 @@ class Tabs extends Component
         return $livewire->getRenderHookScopes();
     }
 
-    public function livewireProperty(string | Closure | null $property): static
+    public function livewireProperty(string|Closure|null $property): static
     {
         $this->livewireProperty = $property;
 
@@ -186,7 +186,7 @@ class Tabs extends Component
         return $this->evaluate($this->livewireProperty);
     }
 
-    public function scrollable(bool | Closure $condition = true): static
+    public function scrollable(bool|Closure $condition = true): static
     {
         $this->isScrollable = $condition;
 
@@ -198,7 +198,7 @@ class Tabs extends Component
         return (bool) $this->evaluate($this->isScrollable);
     }
 
-    public function vertical(bool | Closure $condition = true): static
+    public function vertical(bool|Closure $condition = true): static
     {
         $this->isVertical = $condition;
 

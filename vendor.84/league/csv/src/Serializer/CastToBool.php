@@ -24,8 +24,11 @@ use function filter_var;
 final class CastToBool implements TypeCasting
 {
     private readonly bool $isNullable;
+
     private readonly Type $type;
+
     private readonly TypeCastingInfo $info;
+
     private ?bool $default = null;
 
     public function __construct(ReflectionProperty|ReflectionParameter $reflectionProperty)
@@ -53,16 +56,16 @@ final class CastToBool implements TypeCasting
     {
         $returnValue = match (true) {
             is_bool($value) => $value,
-            null !== $value => filter_var($value, Type::Bool->filterFlag()),
+            $value !== null => filter_var($value, Type::Bool->filterFlag()),
             $this->isNullable => $this->default,
             default => throw TypeCastingFailed::dueToNotNullableType('boolean', info: $this->info),
         };
 
         return match (true) {
-            Type::True->equals($this->type) && true !== $returnValue && !$this->isNullable,
-            Type::False->equals($this->type) && false !== $returnValue && !$this->isNullable => throw TypeCastingFailed::dueToInvalidValue(match (true) {
-                null === $value => 'null',
-                '' === $value => 'empty string',
+            Type::True->equals($this->type) && $returnValue !== true && ! $this->isNullable,
+            Type::False->equals($this->type) && $returnValue !== false && ! $this->isNullable => throw TypeCastingFailed::dueToInvalidValue(match (true) {
+                $value === null => 'null',
+                $value === '' => 'empty string',
                 default => $value,
             }, $this->type->value, info: $this->info),
             default => $returnValue,
@@ -74,23 +77,23 @@ final class CastToBool implements TypeCasting
      */
     private function init(ReflectionProperty|ReflectionParameter $reflectionProperty): array
     {
-        if (null === $reflectionProperty->getType()) {
+        if ($reflectionProperty->getType() === null) {
             return [Type::Mixed, true];
         }
 
         $type = null;
         $isNullable = false;
         foreach (Type::list($reflectionProperty) as $found) {
-            if (!$isNullable && $found[1]->allowsNull()) {
+            if (! $isNullable && $found[1]->allowsNull()) {
                 $isNullable = true;
             }
 
-            if (null === $type && $found[0]->isOneOf(Type::Mixed, Type::Bool, Type::True, Type::False)) {
+            if ($type === null && $found[0]->isOneOf(Type::Mixed, Type::Bool, Type::True, Type::False)) {
                 $type = $found;
             }
         }
 
-        if (null === $type) {
+        if ($type === null) {
             throw MappingFailed::dueToTypeCastingUnsupportedType($reflectionProperty, $this, 'bool', 'mixed');
         }
 

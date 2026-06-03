@@ -24,8 +24,7 @@ final class UrlHelper
     public function __construct(
         private RequestStack $requestStack,
         private RequestContextAwareInterface|RequestContext|null $requestContext = null,
-    ) {
-    }
+    ) {}
 
     public function getAbsoluteUrl(string $path): string
     {
@@ -37,13 +36,13 @@ final class UrlHelper
             return $this->getAbsoluteUrlFromContext($path);
         }
 
-        if ('#' === $path[0]) {
+        if ($path[0] === '#') {
             $path = $request->getRequestUri().$path;
-        } elseif ('?' === $path[0]) {
+        } elseif ($path[0] === '?') {
             $path = $request->getPathInfo().$path;
         }
 
-        if (!$path || '/' !== $path[0]) {
+        if (! $path || $path[0] !== '/') {
             $prefix = $request->getPathInfo();
             $last = \strlen($prefix) - 1;
             if ($last !== $pos = strrpos($prefix, '/')) {
@@ -86,20 +85,20 @@ final class UrlHelper
         $scheme = $context->getScheme();
         $port = '';
 
-        if ('http' === $scheme && 80 !== $context->getHttpPort()) {
+        if ($scheme === 'http' && $context->getHttpPort() !== 80) {
             $port = ':'.$context->getHttpPort();
-        } elseif ('https' === $scheme && 443 !== $context->getHttpsPort()) {
+        } elseif ($scheme === 'https' && $context->getHttpsPort() !== 443) {
             $port = ':'.$context->getHttpsPort();
         }
 
-        if ('#' === $path[0]) {
+        if ($path[0] === '#') {
             $queryString = $context->getQueryString();
             $path = $context->getPathInfo().($queryString ? '?'.$queryString : '').$path;
-        } elseif ('?' === $path[0]) {
+        } elseif ($path[0] === '?') {
             $path = $context->getPathInfo().$path;
         }
 
-        if ('/' !== $path[0]) {
+        if ($path[0] !== '/') {
             $path = rtrim($context->getBaseUrl(), '/').'/'.$path;
         }
 

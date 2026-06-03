@@ -11,6 +11,7 @@
 
 namespace Psy\Command;
 
+use PhpParser\Error;
 use PhpParser\Node;
 use PhpParser\Parser;
 use Psy\Context;
@@ -30,7 +31,9 @@ use Symfony\Component\VarDumper\Caster\Caster;
 class ParseCommand extends Command implements ContextAware, PresenterAware
 {
     protected Context $context;
+
     private Presenter $presenter;
+
     private Parser $parser;
 
     /**
@@ -38,15 +41,13 @@ class ParseCommand extends Command implements ContextAware, PresenterAware
      */
     public function __construct($name = null)
     {
-        $this->parser = (new ParserFactory())->createParser();
+        $this->parser = (new ParserFactory)->createParser();
 
         parent::__construct($name);
     }
 
     /**
      * ContextAware interface.
-     *
-     * @param Context $context
      */
     public function setContext(Context $context)
     {
@@ -55,8 +56,6 @@ class ParseCommand extends Command implements ContextAware, PresenterAware
 
     /**
      * PresenterAware interface.
-     *
-     * @param Presenter $presenter
      */
     public function setPresenter(Presenter $presenter)
     {
@@ -64,7 +63,7 @@ class ParseCommand extends Command implements ContextAware, PresenterAware
         $this->presenter->addCasters([
             Node::class => function (Node $node, array $a) {
                 $a = [
-                    Caster::PREFIX_VIRTUAL.'type'       => $node->getType(),
+                    Caster::PREFIX_VIRTUAL.'type' => $node->getType(),
                     Caster::PREFIX_VIRTUAL.'attributes' => $node->getAttributes(),
                 ];
 
@@ -111,13 +110,13 @@ HELP
         $code = $input->getArgument('code');
         $depth = $input->getOption('depth');
 
-        if (!\preg_match('/^\s*<\\?/', $code)) {
+        if (! \preg_match('/^\s*<\\?/', $code)) {
             $code = '<?php '.$code;
         }
 
         try {
             $nodes = $this->parser->parse($code);
-        } catch (\PhpParser\Error $e) {
+        } catch (Error $e) {
             if ($this->parseErrorIsEOF($e)) {
                 $nodes = $this->parser->parse($code.';');
             } else {
@@ -132,7 +131,7 @@ HELP
         return 0;
     }
 
-    private function parseErrorIsEOF(\PhpParser\Error $e): bool
+    private function parseErrorIsEOF(Error $e): bool
     {
         $msg = $e->getRawMessage();
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest;
 
 /*
@@ -10,7 +11,6 @@ namespace Hamcrest;
  */
 class StringDescription extends BaseDescription
 {
-
     private $_out;
 
     public function __construct($out = '')
@@ -27,15 +27,14 @@ class StringDescription extends BaseDescription
      * Return the description of a {@link Hamcrest\SelfDescribing} object as a
      * String.
      *
-     * @param \Hamcrest\SelfDescribing $selfDescribing
-     *   The object to be described.
-     *
+     * @param  SelfDescribing  $selfDescribing
+     *                                          The object to be described.
      * @return string
-     *   The description of the object.
+     *                The description of the object.
      */
     public static function toString(SelfDescribing $selfDescribing)
     {
-        $self = new self();
+        $self = new self;
 
         return (string) $self->appendDescriptionOf($selfDescribing);
     }

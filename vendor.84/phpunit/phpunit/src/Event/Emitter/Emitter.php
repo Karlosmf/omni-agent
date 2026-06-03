@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event;
 
 use PHPUnit\Event\Code\ClassMethod;
@@ -33,20 +36,20 @@ interface Emitter
     public function testRunnerConfigured(Configuration $configuration): void;
 
     /**
-     * @param non-empty-string $filename
+     * @param  non-empty-string  $filename
      */
     public function testRunnerBootstrapFinished(string $filename): void;
 
     /**
-     * @param non-empty-string $filename
-     * @param non-empty-string $name
-     * @param non-empty-string $version
+     * @param  non-empty-string  $filename
+     * @param  non-empty-string  $name
+     * @param  non-empty-string  $version
      */
     public function testRunnerLoadedExtensionFromPhar(string $filename, string $name, string $version): void;
 
     /**
-     * @param class-string          $className
-     * @param array<string, string> $parameters
+     * @param  class-string  $className
+     * @param  array<string, string>  $parameters
      */
     public function testRunnerBootstrappedExtension(string $className, array $parameters): void;
 
@@ -69,7 +72,7 @@ interface Emitter
     public function testRunnerTriggeredGarbageCollection(): void;
 
     /**
-     * @param non-empty-string $message
+     * @param  non-empty-string  $message
      */
     public function testSuiteSkipped(TestSuite $testSuite, string $message): void;
 
@@ -82,22 +85,22 @@ interface Emitter
     public function testPreparationFailed(Code\Test $test, Throwable $throwable): void;
 
     /**
-     * @param class-string<TestCase> $testClassName
+     * @param  class-string<TestCase>  $testClassName
      */
     public function beforeFirstTestMethodCalled(string $testClassName, ClassMethod $calledMethod): void;
 
     /**
-     * @param class-string<TestCase> $testClassName
+     * @param  class-string<TestCase>  $testClassName
      */
     public function beforeFirstTestMethodErrored(string $testClassName, ClassMethod $calledMethod, Throwable $throwable): void;
 
     /**
-     * @param class-string<TestCase> $testClassName
+     * @param  class-string<TestCase>  $testClassName
      */
     public function beforeFirstTestMethodFailed(string $testClassName, ClassMethod $calledMethod, Throwable $throwable): void;
 
     /**
-     * @param class-string<TestCase> $testClassName
+     * @param  class-string<TestCase>  $testClassName
      */
     public function beforeFirstTestMethodFinished(string $testClassName, ClassMethod ...$calledMethods): void;
 
@@ -120,32 +123,32 @@ interface Emitter
     public function testPrepared(Code\Test $test): void;
 
     /**
-     * @param class-string<Comparator> $className
+     * @param  class-string<Comparator>  $className
      */
     public function testRegisteredComparator(string $className): void;
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      */
     public function testCreatedMockObject(string $className): void;
 
     /**
-     * @param list<class-string> $interfaces
+     * @param  list<class-string>  $interfaces
      */
     public function testCreatedMockObjectForIntersectionOfInterfaces(array $interfaces): void;
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      */
     public function testCreatedPartialMockObject(string $className, string ...$methodNames): void;
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      */
     public function testCreatedStub(string $className): void;
 
     /**
-     * @param list<class-string> $interfaces
+     * @param  list<class-string>  $interfaces
      */
     public function testCreatedStubForIntersectionOfInterfaces(array $interfaces): void;
 
@@ -156,99 +159,99 @@ interface Emitter
     public function testPassed(Code\Test $test): void;
 
     /**
-     * @param non-empty-string $message
+     * @param  non-empty-string  $message
      */
     public function testConsideredRisky(Code\Test $test, string $message): void;
 
     public function testMarkedAsIncomplete(Code\Test $test, Throwable $throwable): void;
 
     /**
-     * @param non-empty-string $message
+     * @param  non-empty-string  $message
      */
     public function testSkipped(Code\Test $test, string $message): void;
 
     /**
-     * @param non-empty-string $message
+     * @param  non-empty-string  $message
      */
     public function testTriggeredPhpunitDeprecation(?Code\Test $test, string $message): void;
 
     /**
-     * @param non-empty-string $message
+     * @param  non-empty-string  $message
      */
     public function testTriggeredPhpunitNotice(Code\Test $test, string $message): void;
 
     /**
-     * @param non-empty-string $message
-     * @param non-empty-string $file
-     * @param positive-int     $line
+     * @param  non-empty-string  $message
+     * @param  non-empty-string  $file
+     * @param  positive-int  $line
      */
     public function testTriggeredPhpDeprecation(Code\Test $test, string $message, string $file, int $line, bool $suppressed, bool $ignoredByBaseline, bool $ignoredByTest, IssueTrigger $trigger): void;
 
     /**
-     * @param non-empty-string $message
-     * @param non-empty-string $file
-     * @param positive-int     $line
-     * @param non-empty-string $stackTrace
+     * @param  non-empty-string  $message
+     * @param  non-empty-string  $file
+     * @param  positive-int  $line
+     * @param  non-empty-string  $stackTrace
      */
     public function testTriggeredDeprecation(Code\Test $test, string $message, string $file, int $line, bool $suppressed, bool $ignoredByBaseline, bool $ignoredByTest, IssueTrigger $trigger, string $stackTrace): void;
 
     /**
-     * @param non-empty-string $message
-     * @param non-empty-string $file
-     * @param positive-int     $line
+     * @param  non-empty-string  $message
+     * @param  non-empty-string  $file
+     * @param  positive-int  $line
      */
     public function testTriggeredError(Code\Test $test, string $message, string $file, int $line, bool $suppressed): void;
 
     /**
-     * @param non-empty-string $message
-     * @param non-empty-string $file
-     * @param positive-int     $line
+     * @param  non-empty-string  $message
+     * @param  non-empty-string  $file
+     * @param  positive-int  $line
      */
     public function testTriggeredNotice(Code\Test $test, string $message, string $file, int $line, bool $suppressed, bool $ignoredByBaseline): void;
 
     /**
-     * @param non-empty-string $message
-     * @param non-empty-string $file
-     * @param positive-int     $line
+     * @param  non-empty-string  $message
+     * @param  non-empty-string  $file
+     * @param  positive-int  $line
      */
     public function testTriggeredPhpNotice(Code\Test $test, string $message, string $file, int $line, bool $suppressed, bool $ignoredByBaseline): void;
 
     /**
-     * @param non-empty-string $message
-     * @param non-empty-string $file
-     * @param positive-int     $line
+     * @param  non-empty-string  $message
+     * @param  non-empty-string  $file
+     * @param  positive-int  $line
      */
     public function testTriggeredWarning(Code\Test $test, string $message, string $file, int $line, bool $suppressed, bool $ignoredByBaseline): void;
 
     /**
-     * @param non-empty-string $message
-     * @param non-empty-string $file
-     * @param positive-int     $line
+     * @param  non-empty-string  $message
+     * @param  non-empty-string  $file
+     * @param  positive-int  $line
      */
     public function testTriggeredPhpWarning(Code\Test $test, string $message, string $file, int $line, bool $suppressed, bool $ignoredByBaseline): void;
 
     /**
-     * @param non-empty-string $message
+     * @param  non-empty-string  $message
      */
     public function testTriggeredPhpunitError(Code\Test $test, string $message): void;
 
     /**
-     * @param non-empty-string $message
+     * @param  non-empty-string  $message
      */
     public function testTriggeredPhpunitWarning(Code\Test $test, string $message): void;
 
     /**
-     * @param non-empty-string $output
+     * @param  non-empty-string  $output
      */
     public function testPrintedUnexpectedOutput(string $output): void;
 
     /**
-     * @param non-empty-string $additionalInformation
+     * @param  non-empty-string  $additionalInformation
      */
     public function testProvidedAdditionalInformation(TestMethod $test, string $additionalInformation): void;
 
     /**
-     * @param non-negative-int $numberOfAssertionsPerformed
+     * @param  non-negative-int  $numberOfAssertionsPerformed
      */
     public function testFinished(Code\Test $test, int $numberOfAssertionsPerformed): void;
 
@@ -269,22 +272,22 @@ interface Emitter
     public function afterTestMethodFinished(TestMethod $test, ClassMethod ...$calledMethods): void;
 
     /**
-     * @param class-string<TestCase> $testClassName
+     * @param  class-string<TestCase>  $testClassName
      */
     public function afterLastTestMethodCalled(string $testClassName, ClassMethod $calledMethod): void;
 
     /**
-     * @param class-string<TestCase> $testClassName
+     * @param  class-string<TestCase>  $testClassName
      */
     public function afterLastTestMethodErrored(string $testClassName, ClassMethod $calledMethod, Throwable $throwable): void;
 
     /**
-     * @param class-string<TestCase> $testClassName
+     * @param  class-string<TestCase>  $testClassName
      */
     public function afterLastTestMethodFailed(string $testClassName, ClassMethod $calledMethod, Throwable $throwable): void;
 
     /**
-     * @param class-string<TestCase> $testClassName
+     * @param  class-string<TestCase>  $testClassName
      */
     public function afterLastTestMethodFinished(string $testClassName, ClassMethod ...$calledMethods): void;
 
@@ -299,23 +302,23 @@ interface Emitter
     public function testRunnerStartedStaticAnalysisForCodeCoverage(): void;
 
     /**
-     * @param non-negative-int $cacheHits
-     * @param non-negative-int $cacheMisses
+     * @param  non-negative-int  $cacheHits
+     * @param  non-negative-int  $cacheMisses
      */
     public function testRunnerFinishedStaticAnalysisForCodeCoverage(int $cacheHits, int $cacheMisses): void;
 
     /**
-     * @param non-empty-string $message
+     * @param  non-empty-string  $message
      */
     public function testRunnerTriggeredPhpunitDeprecation(string $message): void;
 
     /**
-     * @param non-empty-string $message
+     * @param  non-empty-string  $message
      */
     public function testRunnerTriggeredPhpunitNotice(string $message): void;
 
     /**
-     * @param non-empty-string $message
+     * @param  non-empty-string  $message
      */
     public function testRunnerTriggeredPhpunitWarning(string $message): void;
 

@@ -21,8 +21,11 @@ use Facebook\WebDriver\WebDriverHasInputDevices;
 class WebDriverActions
 {
     protected $driver;
+
     protected $keyboard;
+
     protected $mouse;
+
     protected $action;
 
     public function __construct(WebDriverHasInputDevices $driver)
@@ -30,7 +33,7 @@ class WebDriverActions
         $this->driver = $driver;
         $this->keyboard = $driver->getKeyboard();
         $this->mouse = $driver->getMouse();
-        $this->action = new WebDriverCompositeAction();
+        $this->action = new WebDriverCompositeAction;
     }
 
     /**
@@ -124,8 +127,8 @@ class WebDriverActions
     /**
      * Drag $source and drop by offset ($x_offset, $y_offset).
      *
-     * @param int $x_offset
-     * @param int $y_offset
+     * @param  int  $x_offset
+     * @param  int  $y_offset
      * @return WebDriverActions
      */
     public function dragAndDropBy(WebDriverElement $source, $x_offset, $y_offset)
@@ -146,8 +149,8 @@ class WebDriverActions
     /**
      * Mouse move by offset.
      *
-     * @param int $x_offset
-     * @param int $y_offset
+     * @param  int  $x_offset
+     * @param  int  $y_offset
      * @return WebDriverActions
      */
     public function moveByOffset($x_offset, $y_offset)
@@ -164,8 +167,8 @@ class WebDriverActions
      * Extra shift, calculated from the top-left corner of the element, can be set by passing $x_offset and $y_offset
      * parameters.
      *
-     * @param int $x_offset
-     * @param int $y_offset
+     * @param  int  $x_offset
+     * @param  int  $y_offset
      * @return WebDriverActions
      */
     public function moveToElement(WebDriverElement $element, $x_offset = null, $y_offset = null)
@@ -200,7 +203,8 @@ class WebDriverActions
      * If $element is provided, focus on that element first.
      *
      * @see WebDriverKeys for special keys like CONTROL, ALT, etc.
-     * @param string $key
+     *
+     * @param  string  $key
      * @return WebDriverActions
      */
     public function keyDown(?WebDriverElement $element = null, $key = null)
@@ -217,7 +221,8 @@ class WebDriverActions
      * If $element is provided, focus on that element first.
      *
      * @see WebDriverKeys for special keys like CONTROL, ALT, etc.
-     * @param string $key
+     *
+     * @param  string  $key
      * @return WebDriverActions
      */
     public function keyUp(?WebDriverElement $element = null, $key = null)
@@ -234,7 +239,8 @@ class WebDriverActions
      * If $element is provided, focus on that element first (using single mouse click).
      *
      * @see WebDriverKeys for special keys like CONTROL, ALT, etc.
-     * @param string $keys
+     *
+     * @param  string  $keys
      * @return WebDriverActions
      */
     public function sendKeys(?WebDriverElement $element = null, $keys = null)

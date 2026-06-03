@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Text;
 
 /*
@@ -12,7 +13,6 @@ use Hamcrest\TypeSafeMatcher;
  */
 class IsEqualIgnoringCase extends TypeSafeMatcher
 {
-
     private $_string;
 
     public function __construct($string)
@@ -35,9 +35,8 @@ class IsEqualIgnoringCase extends TypeSafeMatcher
     public function describeTo(Description $description)
     {
         $description->appendText('equalToIgnoringCase(')
-                                ->appendValue($this->_string)
-                                ->appendText(')')
-                                ;
+            ->appendValue($this->_string)
+            ->appendText(')');
     }
 
     /**

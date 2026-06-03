@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,11 +9,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\Constraint;
 
-use function assert;
-use function count;
-use function is_object;
 use PHPUnit\Framework\ActualValueIsNotAnObjectException;
 use PHPUnit\Framework\ComparisonMethodDoesNotAcceptParameterTypeException;
 use PHPUnit\Framework\ComparisonMethodDoesNotDeclareBoolReturnTypeException;
@@ -21,18 +21,23 @@ use PHPUnit\Framework\ComparisonMethodDoesNotExistException;
 use ReflectionNamedType;
 use ReflectionObject;
 
+use function assert;
+use function count;
+use function is_object;
+
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  */
 final class ObjectEquals extends Constraint
 {
     private readonly object $expected;
+
     private readonly string $method;
 
     public function __construct(object $object, string $method = 'equals')
     {
         $this->expected = $object;
-        $this->method   = $method;
+        $this->method = $method;
     }
 
     public function toString(): string
@@ -50,13 +55,13 @@ final class ObjectEquals extends Constraint
      */
     protected function matches(mixed $other): bool
     {
-        if (!is_object($other)) {
+        if (! is_object($other)) {
             throw new ActualValueIsNotAnObjectException;
         }
 
         $object = new ReflectionObject($other);
 
-        if (!$object->hasMethod($this->method)) {
+        if (! $object->hasMethod($this->method)) {
             throw new ComparisonMethodDoesNotExistException(
                 $other::class,
                 $this->method,
@@ -65,7 +70,7 @@ final class ObjectEquals extends Constraint
 
         $method = $object->getMethod($this->method);
 
-        if (!$method->hasReturnType()) {
+        if (! $method->hasReturnType()) {
             throw new ComparisonMethodDoesNotDeclareBoolReturnTypeException(
                 $other::class,
                 $this->method,
@@ -74,7 +79,7 @@ final class ObjectEquals extends Constraint
 
         $returnType = $method->getReturnType();
 
-        if (!$returnType instanceof ReflectionNamedType) {
+        if (! $returnType instanceof ReflectionNamedType) {
             throw new ComparisonMethodDoesNotDeclareBoolReturnTypeException(
                 $other::class,
                 $this->method,
@@ -105,7 +110,7 @@ final class ObjectEquals extends Constraint
         assert(count($method->getParameters()) > 0);
         $parameter = $method->getParameters()[0];
 
-        if (!$parameter->hasType()) {
+        if (! $parameter->hasType()) {
             throw new ComparisonMethodDoesNotDeclareParameterTypeException(
                 $other::class,
                 $this->method,
@@ -114,7 +119,7 @@ final class ObjectEquals extends Constraint
 
         $type = $parameter->getType();
 
-        if (!$type instanceof ReflectionNamedType) {
+        if (! $type instanceof ReflectionNamedType) {
             throw new ComparisonMethodDoesNotDeclareParameterTypeException(
                 $other::class,
                 $this->method,
@@ -127,7 +132,7 @@ final class ObjectEquals extends Constraint
             $typeName = $other::class;
         }
 
-        if (!$this->expected instanceof $typeName) {
+        if (! $this->expected instanceof $typeName) {
             throw new ComparisonMethodDoesNotAcceptParameterTypeException(
                 $other::class,
                 $this->method,

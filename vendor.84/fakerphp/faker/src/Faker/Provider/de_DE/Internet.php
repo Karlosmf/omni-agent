@@ -22,5 +22,6 @@ class Internet extends \Faker\Provider\Internet
         'live.de',
         't-online.de',
     ];
+
     protected static $tld = ['com', 'com', 'com', 'net', 'org', 'de', 'de', 'de'];
 }

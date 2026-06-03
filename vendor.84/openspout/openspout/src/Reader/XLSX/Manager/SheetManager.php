@@ -24,32 +24,44 @@ final class SheetManager
      * Paths of XML files relative to the XLSX file root.
      */
     public const WORKBOOK_XML_RELS_FILE_PATH = 'xl/_rels/workbook.xml.rels';
+
     public const WORKBOOK_XML_FILE_PATH = 'xl/workbook.xml';
 
     /**
      * Definition of XML node names used to parse data.
      */
     public const XML_NODE_WORKBOOK_PROPERTIES = 'workbookPr';
+
     public const XML_NODE_WORKBOOK_VIEW = 'workbookView';
+
     public const XML_NODE_SHEET = 'sheet';
+
     public const XML_NODE_SHEETS = 'sheets';
+
     public const XML_NODE_RELATIONSHIP = 'Relationship';
 
     /**
      * Definition of XML attributes used to parse data.
      */
     public const XML_ATTRIBUTE_DATE_1904 = 'date1904';
+
     public const XML_ATTRIBUTE_ACTIVE_TAB = 'activeTab';
+
     public const XML_ATTRIBUTE_R_ID = 'r:id';
+
     public const XML_ATTRIBUTE_NAME = 'name';
+
     public const XML_ATTRIBUTE_STATE = 'state';
+
     public const XML_ATTRIBUTE_ID = 'Id';
+
     public const XML_ATTRIBUTE_TARGET = 'Target';
 
     /**
      * State value to represent a hidden sheet.
      */
     public const SHEET_STATE_HIDDEN = 'hidden';
+
     public const SHEET_STATE_VERY_HIDDEN = 'veryHidden';
 
     /** @var string Path of the XLSX file being read */
@@ -96,7 +108,7 @@ final class SheetManager
         $this->currentSheetIndex = 0;
         $this->activeSheetIndex = 0; // By default, the first sheet is active
 
-        $xmlReader = new XMLReader();
+        $xmlReader = new XMLReader;
         $xmlProcessor = new XMLProcessor($xmlReader);
 
         $xmlProcessor->registerCallback(self::XML_NODE_WORKBOOK_PROPERTIES, XMLProcessor::NODE_TYPE_START, [$this, 'processWorkbookPropertiesStartingNode']);
@@ -113,8 +125,7 @@ final class SheetManager
     }
 
     /**
-     * @param XMLReader $xmlReader XMLReader object, positioned on a "<workbookPr>" starting node
-     *
+     * @param  XMLReader  $xmlReader  XMLReader object, positioned on a "<workbookPr>" starting node
      * @return int A return code that indicates what action should the processor take next
      */
     private function processWorkbookPropertiesStartingNode(XMLReader $xmlReader): int
@@ -128,8 +139,7 @@ final class SheetManager
     }
 
     /**
-     * @param XMLReader $xmlReader XMLReader object, positioned on a "<workbookView>" starting node
-     *
+     * @param  XMLReader  $xmlReader  XMLReader object, positioned on a "<workbookView>" starting node
      * @return int A return code that indicates what action should the processor take next
      */
     private function processWorkbookViewStartingNode(XMLReader $xmlReader): int
@@ -142,15 +152,14 @@ final class SheetManager
     }
 
     /**
-     * @param XMLReader $xmlReader XMLReader object, positioned on a "<sheet>" starting node
-     *
+     * @param  XMLReader  $xmlReader  XMLReader object, positioned on a "<sheet>" starting node
      * @return int A return code that indicates what action should the processor take next
      */
     private function processSheetStartingNode(XMLReader $xmlReader): int
     {
         $isSheetActive = ($this->currentSheetIndex === $this->activeSheetIndex);
         $this->sheets[] = $this->getSheetFromSheetXMLNode($xmlReader, $this->currentSheetIndex, $isSheetActive);
-        ++$this->currentSheetIndex;
+        $this->currentSheetIndex++;
 
         return XMLProcessor::PROCESSING_CONTINUE;
     }
@@ -168,22 +177,21 @@ final class SheetManager
      * We can find the XML file path describing the sheet inside "workbook.xml.res", by mapping with the sheet ID
      * ("r:id" in "workbook.xml", "Id" in "workbook.xml.res").
      *
-     * @param XMLReader $xmlReaderOnSheetNode XML Reader instance, pointing on the node describing the sheet, as defined in "workbook.xml"
-     * @param int       $sheetIndexZeroBased  Index of the sheet, based on order of appearance in the workbook (zero-based)
-     * @param bool      $isSheetActive        Whether this sheet was defined as active
-     *
+     * @param  XMLReader  $xmlReaderOnSheetNode  XML Reader instance, pointing on the node describing the sheet, as defined in "workbook.xml"
+     * @param  int  $sheetIndexZeroBased  Index of the sheet, based on order of appearance in the workbook (zero-based)
+     * @param  bool  $isSheetActive  Whether this sheet was defined as active
      * @return Sheet Sheet instance
      */
     private function getSheetFromSheetXMLNode(XMLReader $xmlReaderOnSheetNode, int $sheetIndexZeroBased, bool $isSheetActive): Sheet
     {
         $sheetId = $xmlReaderOnSheetNode->getAttribute(self::XML_ATTRIBUTE_R_ID);
-        \assert(null !== $sheetId);
+        \assert($sheetId !== null);
 
         $sheetState = $xmlReaderOnSheetNode->getAttribute(self::XML_ATTRIBUTE_STATE);
-        $isSheetVisible = (self::SHEET_STATE_HIDDEN !== $sheetState && self::SHEET_STATE_VERY_HIDDEN !== $sheetState);
+        $isSheetVisible = ($sheetState !== self::SHEET_STATE_HIDDEN && $sheetState !== self::SHEET_STATE_VERY_HIDDEN);
 
         $escapedSheetName = $xmlReaderOnSheetNode->getAttribute(self::XML_ATTRIBUTE_NAME);
-        \assert(null !== $escapedSheetName);
+        \assert($escapedSheetName !== null);
         $sheetName = $this->escaper->unescape($escapedSheetName);
 
         $sheetDataXMLFilePath = $this->getSheetDataXMLFilePathForSheetId($sheetId);
@@ -193,7 +201,7 @@ final class SheetManager
             $mergeCells = (new SheetMergeCellsReader(
                 $this->filePath,
                 $sheetDataXMLFilePath,
-                $xmlReader = new XMLReader(),
+                $xmlReader = new XMLReader,
                 new XMLProcessor($xmlReader)
             ))->getMergeCells();
         }
@@ -210,8 +218,7 @@ final class SheetManager
     }
 
     /**
-     * @param string $sheetId The sheet ID, as defined in "workbook.xml"
-     *
+     * @param  string  $sheetId  The sheet ID, as defined in "workbook.xml"
      * @return string The XML file path describing the sheet inside "workbook.xml.res", for the given sheet ID
      */
     private function getSheetDataXMLFilePathForSheetId(string $sheetId): string
@@ -219,7 +226,7 @@ final class SheetManager
         $sheetDataXMLFilePath = '';
 
         // find the file path of the sheet, by looking at the "workbook.xml.res" file
-        $xmlReader = new XMLReader();
+        $xmlReader = new XMLReader;
         if ($xmlReader->openFileInZip($this->filePath, self::WORKBOOK_XML_RELS_FILE_PATH)) {
             while ($xmlReader->read()) {
                 if ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_RELATIONSHIP)) {
@@ -229,10 +236,10 @@ final class SheetManager
                         // In workbook.xml.rels, it is only "worksheets/sheet1.xml"
                         // In [Content_Types].xml, the path is "/xl/worksheets/sheet1.xml"
                         $sheetDataXMLFilePath = $xmlReader->getAttribute(self::XML_ATTRIBUTE_TARGET);
-                        \assert(null !== $sheetDataXMLFilePath);
+                        \assert($sheetDataXMLFilePath !== null);
 
                         // sometimes, the sheet data file path already contains "/xl/"...
-                        if (!str_starts_with($sheetDataXMLFilePath, '/xl/')) {
+                        if (! str_starts_with($sheetDataXMLFilePath, '/xl/')) {
                             $sheetDataXMLFilePath = '/xl/'.$sheetDataXMLFilePath;
 
                             break;
@@ -266,17 +273,17 @@ final class SheetManager
             $styleManager,
             $options->SHOULD_FORMAT_DATES,
             $options->SHOULD_USE_1904_DATES,
-            new XLSX()
+            new XLSX
         );
 
         return new RowIterator(
             $filePath,
             $sheetDataXMLFilePath,
             $options->SHOULD_PRESERVE_EMPTY_ROWS,
-            $xmlReader = new XMLReader(),
+            $xmlReader = new XMLReader,
             new XMLProcessor($xmlReader),
             $cellValueFormatter,
-            new RowManager()
+            new RowManager
         );
     }
 
@@ -284,7 +291,7 @@ final class SheetManager
         string $filePath,
         string $sheetDataXMLFilePath
     ): SheetHeaderReader {
-        $xmlReader = new XMLReader();
+        $xmlReader = new XMLReader;
 
         return new SheetHeaderReader(
             $filePath,

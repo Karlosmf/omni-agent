@@ -43,6 +43,4 @@ namespace Ramsey\Uuid\Codec;
  *
  * @immutable
  */
-class TimestampLastCombCodec extends StringCodec
-{
-}
+class TimestampLastCombCodec extends StringCodec {}

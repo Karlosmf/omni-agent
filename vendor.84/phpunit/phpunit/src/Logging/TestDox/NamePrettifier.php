@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,9 +9,25 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Logging\TestDox;
 
 use const PHP_EOL;
+
+use PHPUnit\Event\Code\TestMethodBuilder;
+use PHPUnit\Event\Facade as EventFacade;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Metadata\Parser\Registry as MetadataRegistry;
+use PHPUnit\Metadata\TestDox;
+use PHPUnit\Metadata\TestDoxFormatter;
+use PHPUnit\Util\Color;
+use PHPUnit\Util\Exporter;
+use PHPUnit\Util\Filter;
+use ReflectionEnum;
+use ReflectionMethod;
+use ReflectionObject;
+use Throwable;
+
 use function array_key_exists;
 use function array_keys;
 use function array_map;
@@ -40,19 +58,6 @@ use function strtolower;
 use function substr;
 use function trim;
 use function ucfirst;
-use PHPUnit\Event\Code\TestMethodBuilder;
-use PHPUnit\Event\Facade as EventFacade;
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Metadata\Parser\Registry as MetadataRegistry;
-use PHPUnit\Metadata\TestDox;
-use PHPUnit\Metadata\TestDoxFormatter;
-use PHPUnit\Util\Color;
-use PHPUnit\Util\Exporter;
-use PHPUnit\Util\Filter;
-use ReflectionEnum;
-use ReflectionMethod;
-use ReflectionObject;
-use Throwable;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -77,7 +82,7 @@ final class NamePrettifier
     private array $erroredFormatters = [];
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      */
     public function prettifyTestClassName(string $className): string
     {
@@ -93,7 +98,7 @@ final class NamePrettifier
             }
         }
 
-        $parts     = explode('\\', $className);
+        $parts = explode('\\', $className);
         $className = array_pop($parts);
 
         if (str_ends_with($className, 'Test')) {
@@ -111,7 +116,7 @@ final class NamePrettifier
         }
 
         if ($parts !== []) {
-            $parts[]            = $className;
+            $parts[] = $className;
             $fullyQualifiedName = implode('\\', $parts);
         } else {
             $fullyQualifiedName = $className;
@@ -120,7 +125,7 @@ final class NamePrettifier
         $result = preg_replace('/(?<=[[:lower:]])(?=[[:upper:]])/u', ' ', $className);
 
         if ($fullyQualifiedName !== $className) {
-            return $result . ' (' . $fullyQualifiedName . ')';
+            return $result.' ('.$fullyQualifiedName.')';
         }
 
         return $result;
@@ -161,8 +166,8 @@ final class NamePrettifier
 
         $buffer = preg_replace_callback_array(
             [
-                '/(?!^)([A-Z])/' => static fn (array $matches) => ' ' . strtolower($matches[1]),
-                '/(\d+)/'        => static fn (array $matches) => ' ' . $matches[1],
+                '/(?!^)([A-Z])/' => static fn (array $matches) => ' '.strtolower($matches[1]),
+                '/(\d+)/' => static fn (array $matches) => ' '.$matches[1],
             ],
             $name,
         );
@@ -172,10 +177,10 @@ final class NamePrettifier
 
     public function prettifyTestCase(TestCase $test, bool $colorize): string
     {
-        $key = $test::class . '#' . $test->name();
+        $key = $test::class.'#'.$test->name();
 
         if ($test->usesDataProvider()) {
-            $key .= '#' . $test->dataName();
+            $key .= '#'.$test->dataName();
         }
 
         if ($colorize) {
@@ -187,9 +192,9 @@ final class NamePrettifier
         }
 
         $metadataCollection = MetadataRegistry::parser()->forMethod($test::class, $test->name());
-        $testDox            = $metadataCollection->isTestDox()->isMethodLevel();
-        $callback           = $metadataCollection->isTestDoxFormatter();
-        $isCustomized       = false;
+        $testDox = $metadataCollection->isTestDox()->isMethodLevel();
+        $callback = $metadataCollection->isTestDoxFormatter();
+        $isCustomized = false;
 
         if ($testDox->isNotEmpty()) {
             $testDox = $testDox->asArray()[0];
@@ -207,7 +212,7 @@ final class NamePrettifier
             $result = $this->prettifyTestMethodName($test->name());
         }
 
-        if (!$isCustomized && $test->usesDataProvider()) {
+        if (! $isCustomized && $test->usesDataProvider()) {
             $result .= $this->prettifyDataSet($test, $colorize);
         }
 
@@ -218,15 +223,15 @@ final class NamePrettifier
 
     public function prettifyDataSet(TestCase $test, bool $colorize): string
     {
-        if (!$colorize) {
+        if (! $colorize) {
             return $test->dataSetAsString();
         }
 
         if (is_int($test->dataName())) {
-            return Color::dim(' with data set ') . Color::colorize('fg-cyan', (string) $test->dataName());
+            return Color::dim(' with data set ').Color::colorize('fg-cyan', (string) $test->dataName());
         }
 
-        return Color::dim(' with ') . Color::colorize('fg-cyan', Color::visualizeWhitespace($test->dataName()));
+        return Color::dim(' with ').Color::colorize('fg-cyan', Color::visualizeWhitespace($test->dataName()));
     }
 
     /**
@@ -239,14 +244,14 @@ final class NamePrettifier
         /** @noinspection PhpUnhandledExceptionInspection */
         $reflector = new ReflectionMethod($test::class, $test->name());
 
-        $providedData       = [];
+        $providedData = [];
         $providedDataValues = array_values($test->providedData());
-        $i                  = 0;
+        $i = 0;
 
         $providedData['$_dataName'] = $test->dataName();
 
         foreach ($reflector->getParameters() as $parameter) {
-            if (!array_key_exists($i, $providedDataValues) && $parameter->isDefaultValueAvailable()) {
+            if (! array_key_exists($i, $providedDataValues) && $parameter->isDefaultValueAvailable()) {
                 $providedDataValues[$i] = $parameter->getDefaultValue();
             }
 
@@ -256,7 +261,7 @@ final class NamePrettifier
                 $value = $this->objectToString($value);
             }
 
-            if (!is_scalar($value)) {
+            if (! is_scalar($value)) {
                 $value = gettype($value);
 
                 if ($value === 'NULL') {
@@ -276,7 +281,7 @@ final class NamePrettifier
                 }
             }
 
-            $providedData['$' . $parameter->getName()] = str_replace('$', '\\$', $value);
+            $providedData['$'.$parameter->getName()] = str_replace('$', '\\$', $value);
         }
 
         if ($colorize) {
@@ -323,7 +328,7 @@ final class NamePrettifier
         $result = $testDox->text();
 
         if (str_contains($result, '$')) {
-            $annotation   = $result;
+            $annotation = $result;
             $providedData = $this->mapTestMethodParameterNamesToProvidedDataValues($test, $colorize);
 
             $variables = array_map(
@@ -347,15 +352,15 @@ final class NamePrettifier
      */
     private function processTestDoxFormatter(TestCase $test, TestDoxFormatter $formatter): array
     {
-        $className           = $formatter->className();
-        $methodName          = $formatter->methodName();
-        $formatterIdentifier = $className . '::' . $methodName;
+        $className = $formatter->className();
+        $methodName = $formatter->methodName();
+        $formatterIdentifier = $className.'::'.$methodName;
 
         if (isset($this->erroredFormatters[$formatterIdentifier])) {
             return [$this->prettifyTestMethodName($test->name()), false];
         }
 
-        if (!method_exists($className, $methodName)) {
+        if (! method_exists($className, $methodName)) {
             EventFacade::emitter()->testTriggeredPhpunitError(
                 TestMethodBuilder::fromTestCase($test, false),
                 sprintf(
@@ -372,7 +377,7 @@ final class NamePrettifier
 
         $reflector = new ReflectionMethod($className, $methodName);
 
-        if (!$reflector->isPublic()) {
+        if (! $reflector->isPublic()) {
             EventFacade::emitter()->testTriggeredPhpunitError(
                 TestMethodBuilder::fromTestCase($test, false),
                 sprintf(
@@ -387,7 +392,7 @@ final class NamePrettifier
             return [$this->prettifyTestMethodName($test->name()), false];
         }
 
-        if (!$reflector->isStatic()) {
+        if (! $reflector->isStatic()) {
             EventFacade::emitter()->testTriggeredPhpunitError(
                 TestMethodBuilder::fromTestCase($test, false),
                 sprintf(

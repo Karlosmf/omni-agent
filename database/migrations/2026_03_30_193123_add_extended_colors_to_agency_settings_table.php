@@ -32,7 +32,7 @@ return new class extends Migration
         Schema::table('agency_settings', function (Blueprint $table) {
             $table->dropColumn([
                 'accent_color', 'neutral_color', 'base_100_color', 'base_200_color',
-                'info_color', 'success_color', 'warning_color', 'error_color', 'base_content_color'
+                'info_color', 'success_color', 'warning_color', 'error_color', 'base_content_color',
             ]);
         });
     }

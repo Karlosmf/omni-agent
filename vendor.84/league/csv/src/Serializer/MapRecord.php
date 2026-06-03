@@ -47,7 +47,7 @@ final class MapRecord
                 throw new MappingFailed('The method `'.$method.'` is not defined on the `'.$class->getName().'` class.', 0, $exception);
             }
 
-            0 === $accessor->getNumberOfRequiredParameters() || throw new MappingFailed('The method `'.$class->getName().'::'.$accessor->getName().'` has too many required parameters.');
+            $accessor->getNumberOfRequiredParameters() === 0 || throw new MappingFailed('The method `'.$class->getName().'::'.$accessor->getName().'` has too many required parameters.');
             $methods[] = $accessor;
         }
 

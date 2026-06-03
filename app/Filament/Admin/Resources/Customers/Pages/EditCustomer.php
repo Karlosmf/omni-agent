@@ -2,19 +2,27 @@
 
 namespace App\Filament\Admin\Resources\Customers\Pages;
 
+use App\Filament\Admin\Resources\Bookings\BookingResource;
 use App\Filament\Admin\Resources\Customers\CustomerResource;
+use App\Models\TravelPackage;
+use App\Models\User;
+use App\Services\BudgetGenerationService;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Support\Enums\Width;
 
 class EditCustomer extends EditRecord
 {
     protected static string $resource = CustomerResource::class;
 
-    public function getMaxWidth(): \Filament\Support\Enums\Width|string|null
+    public function getMaxWidth(): Width|string|null
     {
-        return \Filament\Support\Enums\Width::Full;
+        return Width::Full;
     }
 
     protected function getHeaderActions(): array
@@ -23,7 +31,7 @@ class EditCustomer extends EditRecord
             Action::make('create_blank_budget')
                 ->label('Crear Presupuesto en Blanco')
                 ->icon('heroicon-o-document-plus')
-                ->url(fn (\App\Models\User $record) => \App\Filament\Admin\Resources\Bookings\BookingResource::getUrl('create', ['customer_id' => $record->id])),
+                ->url(fn (User $record) => BookingResource::getUrl('create', ['customer_id' => $record->id])),
 
             Action::make('create_from_package')
                 ->label('Crear desde Idea de Viaje')
@@ -32,23 +40,23 @@ class EditCustomer extends EditRecord
                 ->form([
                     Select::make('travel_package_id')
                         ->label('Seleccionar Idea de Viaje')
-                        ->options(\App\Models\TravelPackage::pluck('title', 'id'))
+                        ->options(TravelPackage::pluck('title', 'id'))
                         ->searchable()
                         ->preload()
                         ->required(),
-                    \Filament\Forms\Components\DatePicker::make('travel_date')
+                    DatePicker::make('travel_date')
                         ->label('Fecha Estimada de Viaje')
                         ->default(now()->addMonths(3))
                         ->required(),
-                    \Filament\Forms\Components\TextInput::make('passengers')
+                    TextInput::make('passengers')
                         ->label('Cantidad de Pasajeros')
                         ->numeric()
                         ->default(2)
                         ->required(),
                 ])
-                ->action(function (array $data, \App\Models\User $record) {
-                    $package = \App\Models\TravelPackage::find($data['travel_package_id']);
-                    $service = app(\App\Services\BudgetGenerationService::class);
+                ->action(function (array $data, User $record) {
+                    $package = TravelPackage::find($data['travel_package_id']);
+                    $service = app(BudgetGenerationService::class);
                     $newBooking = $service->clonePackageToBudget(
                         $package,
                         $record,
@@ -56,13 +64,13 @@ class EditCustomer extends EditRecord
                         passengers: $data['passengers']
                     );
 
-                    \Filament\Notifications\Notification::make()
+                    Notification::make()
                         ->title('Presupuesto Creado')
                         ->body('Se importaron los datos de la Idea de Viaje.')
                         ->success()
                         ->send();
 
-                    return redirect(\App\Filament\Admin\Resources\Bookings\BookingResource::getUrl('edit', ['record' => $newBooking]));
+                    return redirect(BookingResource::getUrl('edit', ['record' => $newBooking]));
                 }),
 
             DeleteAction::make()
@@ -71,14 +79,14 @@ class EditCustomer extends EditRecord
         ];
     }
 
-    protected function getSaveFormAction(): \Filament\Actions\Action
+    protected function getSaveFormAction(): Action
     {
         return parent::getSaveFormAction()
             ->label('Guardar cambios')
             ->icon('heroicon-o-check');
     }
 
-    protected function getCancelFormAction(): \Filament\Actions\Action
+    protected function getCancelFormAction(): Action
     {
         return parent::getCancelFormAction()
             ->label('Cancelar')

@@ -42,7 +42,7 @@ class Settings
 
     public static function create(): self
     {
-        return new Settings();
+        return new Settings;
     }
 
     /**
@@ -63,8 +63,7 @@ class Settings
     /**
      * Sets the charset to be used if the CSS does not contain an `@charset` declaration.
      *
-     * @param non-empty-string $defaultCharset
-     *
+     * @param  non-empty-string  $defaultCharset
      * @return $this fluent interface
      */
     public function withDefaultCharset(string $defaultCharset): self

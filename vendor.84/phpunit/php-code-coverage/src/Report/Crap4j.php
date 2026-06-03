@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,18 +9,20 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Report;
 
-use function date;
-use function htmlspecialchars;
-use function is_string;
-use function round;
 use DOMDocument;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Node\File;
 use SebastianBergmann\CodeCoverage\Util\Filesystem;
 use SebastianBergmann\CodeCoverage\Util\Xml;
 use SebastianBergmann\CodeCoverage\WriteOperationFailedException;
+
+use function date;
+use function htmlspecialchars;
+use function is_string;
+use function round;
 
 final readonly class Crap4j
 {
@@ -30,8 +34,8 @@ final readonly class Crap4j
     }
 
     /**
-     * @param null|non-empty-string $target
-     * @param null|non-empty-string $name
+     * @param  null|non-empty-string  $target
+     * @param  null|non-empty-string  $name
      *
      * @throws WriteOperationFailedException
      */
@@ -46,21 +50,21 @@ final readonly class Crap4j
         $root->appendChild($project);
         $root->appendChild($document->createElement('timestamp', date('Y-m-d H:i:s')));
 
-        $stats       = $document->createElement('stats');
+        $stats = $document->createElement('stats');
         $methodsNode = $document->createElement('methods');
 
         $report = $coverage->getReport();
         unset($coverage);
 
-        $fullMethodCount     = 0;
+        $fullMethodCount = 0;
         $fullCrapMethodCount = 0;
-        $fullCrapLoad        = 0;
-        $fullCrap            = 0;
+        $fullCrapLoad = 0;
+        $fullCrap = 0;
 
         foreach ($report as $item) {
             $namespace = 'global';
 
-            if (!$item instanceof File) {
+            if (! $item instanceof File) {
                 continue;
             }
 
@@ -73,7 +77,7 @@ final readonly class Crap4j
                 foreach ($class->methods as $methodName => $method) {
                     $crapLoad = $this->crapLoad((float) $method->crap, $method->ccn, $method->coverage);
 
-                    $fullCrap     += $method->crap;
+                    $fullCrap += $method->crap;
                     $fullCrapLoad += $crapLoad;
                     $fullMethodCount++;
 

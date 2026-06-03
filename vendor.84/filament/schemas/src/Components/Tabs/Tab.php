@@ -27,23 +27,23 @@ class Tab extends Component implements CanConcealComponents
 
     protected ?Closure $modifyQueryUsing = null;
 
-    protected bool | Closure $shouldExcludeQueryWhenResolvingRecord = false;
+    protected bool|Closure $shouldExcludeQueryWhenResolvingRecord = false;
 
-    protected string | BackedEnum | Htmlable | Closure | null $badgeIcon = null;
+    protected string|BackedEnum|Htmlable|Closure|null $badgeIcon = null;
 
-    protected IconPosition | string | Closure | null $badgeIconPosition = null;
+    protected IconPosition|string|Closure|null $badgeIconPosition = null;
 
     /**
      * @var view-string
      */
     protected string $view = 'filament-schemas::components.tabs.tab';
 
-    final public function __construct(string | Htmlable | Closure | null $label = null)
+    final public function __construct(string|Htmlable|Closure|null $label = null)
     {
         $this->label($label);
     }
 
-    public static function make(string | Htmlable | Closure | null $label = null): static
+    public static function make(string|Htmlable|Closure|null $label = null): static
     {
         $static = app(static::class, ['label' => $label]);
         $static->configure();
@@ -59,7 +59,7 @@ class Tab extends Component implements CanConcealComponents
             $label = $component->getLabel();
             $statePath = $component->getStatePath();
 
-            return Str::slug(Str::transliterate($label, strict: true)) . '::' . (filled($statePath) ? "{$statePath}::tab" : 'tab');
+            return Str::slug(Str::transliterate($label, strict: true)).'::'.(filled($statePath) ? "{$statePath}::tab" : 'tab');
         }, isInheritable: false);
     }
 
@@ -107,31 +107,31 @@ class Tab extends Component implements CanConcealComponents
         ]) ?? $query;
     }
 
-    public function badgeIcon(string | BackedEnum | Htmlable | Closure | null $icon): static
+    public function badgeIcon(string|BackedEnum|Htmlable|Closure|null $icon): static
     {
         $this->badgeIcon = $icon;
 
         return $this;
     }
 
-    public function badgeIconPosition(IconPosition | string | Closure | null $position): static
+    public function badgeIconPosition(IconPosition|string|Closure|null $position): static
     {
         $this->badgeIconPosition = $position;
 
         return $this;
     }
 
-    public function getBadgeIcon(): string | BackedEnum | Htmlable | null
+    public function getBadgeIcon(): string|BackedEnum|Htmlable|null
     {
         return $this->evaluate($this->badgeIcon);
     }
 
-    public function getBadgeIconPosition(): IconPosition | string
+    public function getBadgeIconPosition(): IconPosition|string
     {
         return $this->evaluate($this->badgeIconPosition) ?? IconPosition::Before;
     }
 
-    public function excludeQueryWhenResolvingRecord(bool | Closure $condition = true): static
+    public function excludeQueryWhenResolvingRecord(bool|Closure $condition = true): static
     {
         $this->shouldExcludeQueryWhenResolvingRecord = $condition;
 

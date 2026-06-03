@@ -18,7 +18,7 @@ abstract class ViewComponent extends Component implements Htmlable
     /**
      * @var view-string | Closure | null
      */
-    protected string | Closure | null $defaultView = null;
+    protected string|Closure|null $defaultView = null;
 
     /**
      * @var array<array<string, mixed> | Closure>
@@ -33,7 +33,7 @@ abstract class ViewComponent extends Component implements Htmlable
      * @param  view-string | null  $view
      * @param  array<string, mixed> | Closure  $viewData
      */
-    public function view(?string $view, array | Closure $viewData = []): static
+    public function view(?string $view, array|Closure $viewData = []): static
     {
         if ($view === null) {
             return $this;
@@ -51,7 +51,7 @@ abstract class ViewComponent extends Component implements Htmlable
     /**
      * @param  view-string | Closure | null  $view
      */
-    public function defaultView(string | Closure | null $view): static
+    public function defaultView(string|Closure|null $view): static
     {
         $this->defaultView = $view;
 
@@ -69,7 +69,7 @@ abstract class ViewComponent extends Component implements Htmlable
     /**
      * @param  array<string, mixed> | Closure  $data
      */
-    public function viewData(array | Closure $data): static
+    public function viewData(array|Closure $data): static
     {
         $this->viewData[] = $data;
 
@@ -89,7 +89,7 @@ abstract class ViewComponent extends Component implements Htmlable
             return $defaultView;
         }
 
-        throw new LogicException('Class [' . static::class . '] extends [' . ViewComponent::class . '] but does not have a [$view] property defined.');
+        throw new LogicException('Class ['.static::class.'] extends ['.ViewComponent::class.'] but does not have a [$view] property defined.');
     }
 
     public function hasView(): bool

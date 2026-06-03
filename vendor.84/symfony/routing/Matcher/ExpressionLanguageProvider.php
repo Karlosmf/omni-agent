@@ -24,8 +24,7 @@ class ExpressionLanguageProvider implements ExpressionFunctionProviderInterface
 {
     public function __construct(
         private ServiceProviderInterface $functions,
-    ) {
-    }
+    ) {}
 
     public function getFunctions(): array
     {

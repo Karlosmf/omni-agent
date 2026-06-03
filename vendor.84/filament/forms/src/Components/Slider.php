@@ -25,65 +25,65 @@ class Slider extends Field implements Contracts\HasNestedRecursiveValidationRule
      */
     protected string $view = 'filament-forms::components.slider';
 
-    protected int | float | Closure $minValue = 0;
+    protected int|float|Closure $minValue = 0;
 
-    protected int | float | Closure $maxValue = 100;
+    protected int|float|Closure $maxValue = 100;
 
-    protected int | Closure | null $minDifference = null;
+    protected int|Closure|null $minDifference = null;
 
-    protected int | Closure | null $maxDifference = null;
+    protected int|Closure|null $maxDifference = null;
 
     /**
      * @var int | array<int> | Closure | null
      */
-    protected int | array | Closure | null $rangePadding = null;
+    protected int|array|Closure|null $rangePadding = null;
 
     /**
      * @var array<bool> | Closure | null
      */
-    protected array | Closure | null $fillTrack = null;
+    protected array|Closure|null $fillTrack = null;
 
-    protected bool | Closure $isVertical = false;
+    protected bool|Closure $isVertical = false;
 
-    protected bool | Closure | null $isRtl = null;
+    protected bool|Closure|null $isRtl = null;
 
     /**
      * @var Behavior | array<Behavior> | Closure | null
      */
-    protected Behavior | array | Closure | null $behavior = Behavior::Tap;
+    protected Behavior|array|Closure|null $behavior = Behavior::Tap;
 
     /**
      * @var bool | RawJs | array<bool | RawJs> | Closure
      */
-    protected bool | RawJs | array | Closure $tooltips = false;
+    protected bool|RawJs|array|Closure $tooltips = false;
 
-    protected PipsMode | Closure | null $pipsMode = null;
+    protected PipsMode|Closure|null $pipsMode = null;
 
-    protected int | Closure | null $pipsDensity = null;
+    protected int|Closure|null $pipsDensity = null;
 
-    protected RawJs | Closure | null $pipsFormatter = null;
+    protected RawJs|Closure|null $pipsFormatter = null;
 
     /**
      * @var int | float | array<int | float> | Closure | null
      */
-    protected int | float | array | Closure | null $pipsValues = null;
+    protected int|float|array|Closure|null $pipsValues = null;
 
-    protected bool | Closure $arePipsStepped = false;
+    protected bool|Closure $arePipsStepped = false;
 
-    protected RawJs | Closure | null $pipsFilter = null;
+    protected RawJs|Closure|null $pipsFilter = null;
 
     /**
      * @var array<string, int | float | array<int | float>> | Closure | null
      */
-    protected array | Closure | null $nonLinearPoints = null;
+    protected array|Closure|null $nonLinearPoints = null;
 
-    protected int | Closure | null $decimalPlaces = null;
+    protected int|Closure|null $decimalPlaces = null;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->default(static fn (Slider $component): float | int => $component->getMinValue());
+        $this->default(static fn (Slider $component): float|int => $component->getMinValue());
 
         $this->required();
 
@@ -138,7 +138,7 @@ class Slider extends Field implements Contracts\HasNestedRecursiveValidationRule
         }, static fn (Slider $component): bool => $component->isMultiple() && filled($component->getStep()));
     }
 
-    public function range(int | float | Closure $minValue, int | float | Closure $maxValue): static
+    public function range(int|float|Closure $minValue, int|float|Closure $maxValue): static
     {
         $this->minValue($minValue);
         $this->maxValue($maxValue);
@@ -149,35 +149,35 @@ class Slider extends Field implements Contracts\HasNestedRecursiveValidationRule
     /**
      * @param  array<string, int | float | array<int | float>> | Closure | null  $points
      */
-    public function nonLinearPoints(array | Closure | null $points): static
+    public function nonLinearPoints(array|Closure|null $points): static
     {
         $this->nonLinearPoints = $points;
 
         return $this;
     }
 
-    public function minValue(int | float | Closure $minValue): static
+    public function minValue(int|float|Closure $minValue): static
     {
         $this->minValue = $minValue;
 
         return $this;
     }
 
-    public function maxValue(int | float | Closure $maxValue): static
+    public function maxValue(int|float|Closure $maxValue): static
     {
         $this->maxValue = $maxValue;
 
         return $this;
     }
 
-    public function minDifference(int | Closure | null $minDifference = null): static
+    public function minDifference(int|Closure|null $minDifference = null): static
     {
         $this->minDifference = $minDifference;
 
         return $this;
     }
 
-    public function maxDifference(int | Closure | null $difference = null): static
+    public function maxDifference(int|Closure|null $difference = null): static
     {
         $this->maxDifference = $difference;
 
@@ -187,7 +187,7 @@ class Slider extends Field implements Contracts\HasNestedRecursiveValidationRule
     /**
      * @param  int | array<int> | Closure | null  $padding
      */
-    public function rangePadding(int | array | Closure | null $padding = null): static
+    public function rangePadding(int|array|Closure|null $padding = null): static
     {
         $this->rangePadding = $padding;
 
@@ -197,21 +197,21 @@ class Slider extends Field implements Contracts\HasNestedRecursiveValidationRule
     /**
      * @param  array<bool> | Closure | null  $fill
      */
-    public function fillTrack(array | Closure | null $fill = [true, false]): static
+    public function fillTrack(array|Closure|null $fill = [true, false]): static
     {
         $this->fillTrack = $fill;
 
         return $this;
     }
 
-    public function vertical(bool | Closure $condition = true): static
+    public function vertical(bool|Closure $condition = true): static
     {
         $this->isVertical = $condition;
 
         return $this;
     }
 
-    public function rtl(bool | Closure | null $condition = true): static
+    public function rtl(bool|Closure|null $condition = true): static
     {
         $this->isRtl = $condition;
 
@@ -221,7 +221,7 @@ class Slider extends Field implements Contracts\HasNestedRecursiveValidationRule
     /**
      * @param  Behavior | array<Behavior> | Closure | null  $behavior
      */
-    public function behavior(Behavior | array | Closure | null $behavior = null): static
+    public function behavior(Behavior|array|Closure|null $behavior = null): static
     {
         $this->behavior = $behavior;
 
@@ -231,14 +231,14 @@ class Slider extends Field implements Contracts\HasNestedRecursiveValidationRule
     /**
      * @param  bool | RawJs | array<bool | RawJs> | Closure  $tooltips
      */
-    public function tooltips(bool | RawJs | array | Closure $tooltips = true): static
+    public function tooltips(bool|RawJs|array|Closure $tooltips = true): static
     {
         $this->tooltips = $tooltips;
 
         return $this;
     }
 
-    public function pips(PipsMode | Closure | null $mode = PipsMode::Range, int | Closure | null $density = null): static
+    public function pips(PipsMode|Closure|null $mode = PipsMode::Range, int|Closure|null $density = null): static
     {
         $this->pipsMode($mode);
         $this->pipsDensity($density);
@@ -246,21 +246,21 @@ class Slider extends Field implements Contracts\HasNestedRecursiveValidationRule
         return $this;
     }
 
-    public function pipsMode(PipsMode | Closure | null $mode): static
+    public function pipsMode(PipsMode|Closure|null $mode): static
     {
         $this->pipsMode = $mode;
 
         return $this;
     }
 
-    public function pipsDensity(int | Closure | null $density): static
+    public function pipsDensity(int|Closure|null $density): static
     {
         $this->pipsDensity = $density;
 
         return $this;
     }
 
-    public function pipsFormatter(RawJs | Closure | null $formatter): static
+    public function pipsFormatter(RawJs|Closure|null $formatter): static
     {
         $this->pipsFormatter = $formatter;
 
@@ -270,38 +270,38 @@ class Slider extends Field implements Contracts\HasNestedRecursiveValidationRule
     /**
      * @param  int | float | array<int | float> | Closure | null  $values
      */
-    public function pipsValues(int | float | array | Closure | null $values): static
+    public function pipsValues(int|float|array|Closure|null $values): static
     {
         $this->pipsValues = $values;
 
         return $this;
     }
 
-    public function steppedPips(bool | Closure $condition = true): static
+    public function steppedPips(bool|Closure $condition = true): static
     {
         $this->arePipsStepped = $condition;
 
         return $this;
     }
 
-    public function pipsFilter(RawJs | Closure | null $filter): static
+    public function pipsFilter(RawJs|Closure|null $filter): static
     {
         $this->pipsFilter = $filter;
 
         return $this;
     }
 
-    public function getMinValue(): int | float
+    public function getMinValue(): int|float
     {
         return $this->evaluate($this->minValue) ?? 0;
     }
 
-    public function getMaxValue(): int | float
+    public function getMaxValue(): int|float
     {
         return $this->evaluate($this->maxValue) ?? 100;
     }
 
-    public function getMinValueWithPadding(): int | float
+    public function getMinValueWithPadding(): int|float
     {
         $minValue = $this->getMinValue();
         $padding = $this->getRangePadding();
@@ -317,7 +317,7 @@ class Slider extends Field implements Contracts\HasNestedRecursiveValidationRule
         return $minValue;
     }
 
-    public function getMaxValueWithPadding(): int | float
+    public function getMaxValueWithPadding(): int|float
     {
         $maxValue = $this->getMaxValue();
         $padding = $this->getRangePadding();
@@ -346,7 +346,7 @@ class Slider extends Field implements Contracts\HasNestedRecursiveValidationRule
     /**
      * @return int | array<int> | null
      */
-    public function getRangePadding(): int | array | null
+    public function getRangePadding(): int|array|null
     {
         return $this->evaluate($this->rangePadding);
     }
@@ -372,7 +372,7 @@ class Slider extends Field implements Contracts\HasNestedRecursiveValidationRule
     /**
      * @return Behavior | array<Behavior> | null
      */
-    public function getBehavior(): Behavior | array | null
+    public function getBehavior(): Behavior|array|null
     {
         return $this->evaluate($this->behavior);
     }
@@ -391,7 +391,7 @@ class Slider extends Field implements Contracts\HasNestedRecursiveValidationRule
     /**
      * @return bool | RawJs | array<bool | RawJs>
      */
-    public function getTooltips(): bool | RawJs | array
+    public function getTooltips(): bool|RawJs|array
     {
         return $this->evaluate($this->tooltips);
     }
@@ -399,7 +399,7 @@ class Slider extends Field implements Contracts\HasNestedRecursiveValidationRule
     /**
      * @return bool | RawJs | array<bool | RawJs>
      */
-    public function getTooltipsForJs(): bool | RawJs | array
+    public function getTooltipsForJs(): bool|RawJs|array
     {
         return $this->convertRawJsExpressionsToFormatterObjects($this->getTooltips());
     }
@@ -411,7 +411,7 @@ class Slider extends Field implements Contracts\HasNestedRecursiveValidationRule
         }
 
         if (is_array($value)) {
-            return RawJs::make('[' . implode(', ', array_map(
+            return RawJs::make('['.implode(', ', array_map(
                 function (mixed $value): string {
                     $value = $this->convertRawJsExpressionsToFormatterObjects($value);
 
@@ -422,7 +422,7 @@ class Slider extends Field implements Contracts\HasNestedRecursiveValidationRule
                     return Js::from($value)->toHtml();
                 },
                 $value,
-            )) . ']');
+            )).']');
         }
 
         return $value;
@@ -468,7 +468,7 @@ class Slider extends Field implements Contracts\HasNestedRecursiveValidationRule
     /**
      * @return int | float | array<int | float> | null
      */
-    public function getPipsValues(): int | float | array | null
+    public function getPipsValues(): int|float|array|null
     {
         return $this->evaluate($this->pipsValues);
     }
@@ -502,7 +502,7 @@ class Slider extends Field implements Contracts\HasNestedRecursiveValidationRule
         return $this->evaluate($this->nonLinearPoints);
     }
 
-    public function decimalPlaces(int | Closure | null $decimalPlaces): static
+    public function decimalPlaces(int|Closure|null $decimalPlaces): static
     {
         $this->decimalPlaces = $decimalPlaces;
 

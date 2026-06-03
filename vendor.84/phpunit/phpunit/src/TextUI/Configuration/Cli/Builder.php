@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,9 +9,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\CliArguments;
 
 use const DIRECTORY_SEPARATOR;
+
+use PHPUnit\Event\Facade as EventFacade;
+use PHPUnit\Runner\TestSuiteSorter;
+use PHPUnit\Util\Filesystem;
+use SebastianBergmann\CliParser\Exception as CliParserException;
+use SebastianBergmann\CliParser\Parser as CliParser;
+
 use function assert;
 use function basename;
 use function explode;
@@ -18,11 +28,6 @@ use function is_file;
 use function is_numeric;
 use function sprintf;
 use function strtolower;
-use PHPUnit\Event\Facade as EventFacade;
-use PHPUnit\Runner\TestSuiteSorter;
-use PHPUnit\Util\Filesystem;
-use SebastianBergmann\CliParser\Exception as CliParserException;
-use SebastianBergmann\CliParser\Parser as CliParser;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -172,7 +177,7 @@ final class Builder
     private array $processed = [];
 
     /**
-     * @param list<string> $parameters
+     * @param  list<string>  $parameters
      *
      * @throws Exception
      */
@@ -192,131 +197,131 @@ final class Builder
             );
         }
 
-        $all                               = null;
-        $atLeastVersion                    = null;
-        $backupGlobals                     = null;
-        $backupStaticProperties            = null;
+        $all = null;
+        $atLeastVersion = null;
+        $backupGlobals = null;
+        $backupStaticProperties = null;
         $beStrictAboutChangesToGlobalState = null;
-        $bootstrap                         = null;
-        $cacheDirectory                    = null;
-        $cacheResult                       = null;
-        $checkPhpConfiguration             = false;
-        $checkVersion                      = false;
-        $colors                            = null;
-        $columns                           = null;
-        $configuration                     = null;
-        $warmCoverageCache                 = false;
-        $coverageFilter                    = null;
-        $coverageClover                    = null;
-        $coverageCobertura                 = null;
-        $coverageCrap4J                    = null;
-        $coverageHtml                      = null;
-        $coverageOpenClover                = null;
-        $coveragePhp                       = null;
-        $coverageText                      = null;
-        $coverageTextShowUncoveredFiles    = null;
-        $coverageTextShowOnlySummary       = null;
-        $coverageXml                       = null;
-        $excludeSourceFromXmlCoverage      = null;
-        $pathCoverage                      = null;
-        $defaultTimeLimit                  = null;
-        $disableCodeCoverageIgnore         = null;
-        $disallowTestOutput                = null;
-        $displayAllIssues                  = null;
-        $displayIncomplete                 = null;
-        $displaySkipped                    = null;
-        $displayDeprecations               = null;
-        $displayPhpunitDeprecations        = null;
-        $displayPhpunitNotices             = null;
-        $displayErrors                     = null;
-        $displayNotices                    = null;
-        $displayWarnings                   = null;
-        $enforceTimeLimit                  = null;
-        $excludeGroups                     = null;
-        $executionOrder                    = null;
-        $executionOrderDefects             = null;
-        $failOnAllIssues                   = null;
-        $failOnDeprecation                 = null;
-        $failOnPhpunitDeprecation          = null;
-        $failOnPhpunitNotice               = null;
-        $failOnPhpunitWarning              = null;
-        $failOnEmptyTestSuite              = null;
-        $failOnIncomplete                  = null;
-        $failOnNotice                      = null;
-        $failOnRisky                       = null;
-        $failOnSkipped                     = null;
-        $failOnWarning                     = null;
-        $doNotFailOnDeprecation            = null;
-        $doNotFailOnPhpunitDeprecation     = null;
-        $doNotFailOnPhpunitNotice          = null;
-        $doNotFailOnPhpunitWarning         = null;
-        $doNotFailOnEmptyTestSuite         = null;
-        $doNotFailOnIncomplete             = null;
-        $doNotFailOnNotice                 = null;
-        $doNotFailOnRisky                  = null;
-        $doNotFailOnSkipped                = null;
-        $doNotFailOnWarning                = null;
-        $stopOnDefect                      = null;
-        $stopOnDeprecation                 = null;
-        $specificDeprecationToStopOn       = null;
-        $stopOnError                       = null;
-        $stopOnFailure                     = null;
-        $stopOnIncomplete                  = null;
-        $stopOnNotice                      = null;
-        $stopOnRisky                       = null;
-        $stopOnSkipped                     = null;
-        $stopOnWarning                     = null;
-        $filter                            = null;
-        $excludeFilter                     = null;
-        $generateBaseline                  = null;
-        $useBaseline                       = null;
-        $ignoreBaseline                    = false;
-        $generateConfiguration             = false;
-        $migrateConfiguration              = false;
-        $groups                            = null;
-        $testsCovering                     = null;
-        $testsUsing                        = null;
-        $testsRequiringPhpExtension        = null;
-        $help                              = false;
-        $includePath                       = null;
-        $iniSettings                       = [];
-        $junitLogfile                      = null;
-        $otrLogfile                        = null;
-        $includeGitInformation             = null;
-        $listGroups                        = false;
-        $listSuites                        = false;
-        $listTestFiles                     = false;
-        $listTests                         = false;
-        $listTestsXml                      = null;
-        $noCoverage                        = null;
-        $noExtensions                      = null;
-        $noOutput                          = null;
-        $noProgress                        = null;
-        $noResults                         = null;
-        $noLogging                         = null;
-        $processIsolation                  = null;
-        $randomOrderSeed                   = null;
-        $reportUselessTests                = null;
-        $resolveDependencies               = null;
-        $reverseList                       = null;
-        $stderr                            = null;
-        $strictCoverage                    = null;
-        $teamcityLogfile                   = null;
-        $testdoxHtmlFile                   = null;
-        $testdoxTextFile                   = null;
-        $testSuffixes                      = null;
-        $testSuite                         = null;
-        $excludeTestSuite                  = null;
-        $useDefaultConfiguration           = true;
-        $version                           = false;
-        $logEventsText                     = null;
-        $logEventsVerboseText              = null;
-        $printerTeamCity                   = null;
-        $printerTestDox                    = null;
-        $printerTestDoxSummary             = null;
-        $debug                             = false;
-        $withTelemetry                     = false;
-        $extensions                        = [];
+        $bootstrap = null;
+        $cacheDirectory = null;
+        $cacheResult = null;
+        $checkPhpConfiguration = false;
+        $checkVersion = false;
+        $colors = null;
+        $columns = null;
+        $configuration = null;
+        $warmCoverageCache = false;
+        $coverageFilter = null;
+        $coverageClover = null;
+        $coverageCobertura = null;
+        $coverageCrap4J = null;
+        $coverageHtml = null;
+        $coverageOpenClover = null;
+        $coveragePhp = null;
+        $coverageText = null;
+        $coverageTextShowUncoveredFiles = null;
+        $coverageTextShowOnlySummary = null;
+        $coverageXml = null;
+        $excludeSourceFromXmlCoverage = null;
+        $pathCoverage = null;
+        $defaultTimeLimit = null;
+        $disableCodeCoverageIgnore = null;
+        $disallowTestOutput = null;
+        $displayAllIssues = null;
+        $displayIncomplete = null;
+        $displaySkipped = null;
+        $displayDeprecations = null;
+        $displayPhpunitDeprecations = null;
+        $displayPhpunitNotices = null;
+        $displayErrors = null;
+        $displayNotices = null;
+        $displayWarnings = null;
+        $enforceTimeLimit = null;
+        $excludeGroups = null;
+        $executionOrder = null;
+        $executionOrderDefects = null;
+        $failOnAllIssues = null;
+        $failOnDeprecation = null;
+        $failOnPhpunitDeprecation = null;
+        $failOnPhpunitNotice = null;
+        $failOnPhpunitWarning = null;
+        $failOnEmptyTestSuite = null;
+        $failOnIncomplete = null;
+        $failOnNotice = null;
+        $failOnRisky = null;
+        $failOnSkipped = null;
+        $failOnWarning = null;
+        $doNotFailOnDeprecation = null;
+        $doNotFailOnPhpunitDeprecation = null;
+        $doNotFailOnPhpunitNotice = null;
+        $doNotFailOnPhpunitWarning = null;
+        $doNotFailOnEmptyTestSuite = null;
+        $doNotFailOnIncomplete = null;
+        $doNotFailOnNotice = null;
+        $doNotFailOnRisky = null;
+        $doNotFailOnSkipped = null;
+        $doNotFailOnWarning = null;
+        $stopOnDefect = null;
+        $stopOnDeprecation = null;
+        $specificDeprecationToStopOn = null;
+        $stopOnError = null;
+        $stopOnFailure = null;
+        $stopOnIncomplete = null;
+        $stopOnNotice = null;
+        $stopOnRisky = null;
+        $stopOnSkipped = null;
+        $stopOnWarning = null;
+        $filter = null;
+        $excludeFilter = null;
+        $generateBaseline = null;
+        $useBaseline = null;
+        $ignoreBaseline = false;
+        $generateConfiguration = false;
+        $migrateConfiguration = false;
+        $groups = null;
+        $testsCovering = null;
+        $testsUsing = null;
+        $testsRequiringPhpExtension = null;
+        $help = false;
+        $includePath = null;
+        $iniSettings = [];
+        $junitLogfile = null;
+        $otrLogfile = null;
+        $includeGitInformation = null;
+        $listGroups = false;
+        $listSuites = false;
+        $listTestFiles = false;
+        $listTests = false;
+        $listTestsXml = null;
+        $noCoverage = null;
+        $noExtensions = null;
+        $noOutput = null;
+        $noProgress = null;
+        $noResults = null;
+        $noLogging = null;
+        $processIsolation = null;
+        $randomOrderSeed = null;
+        $reportUselessTests = null;
+        $resolveDependencies = null;
+        $reverseList = null;
+        $stderr = null;
+        $strictCoverage = null;
+        $teamcityLogfile = null;
+        $testdoxHtmlFile = null;
+        $testdoxTextFile = null;
+        $testSuffixes = null;
+        $testSuite = null;
+        $excludeTestSuite = null;
+        $useDefaultConfiguration = true;
+        $version = false;
+        $logEventsText = null;
+        $logEventsVerboseText = null;
+        $printerTeamCity = null;
+        $printerTestDox = null;
+        $printerTestDoxSummary = null;
+        $debug = false;
+        $withTelemetry = false;
+        $extensions = [];
 
         foreach ($options[0] as $option) {
             $optionAllowedMultipleTimes = false;
@@ -489,7 +494,7 @@ final class Builder
                     $generateBaseline = $option[1];
 
                     if (basename($generateBaseline) === $generateBaseline) {
-                        $generateBaseline = getcwd() . DIRECTORY_SEPARATOR . $generateBaseline;
+                        $generateBaseline = getcwd().DIRECTORY_SEPARATOR.$generateBaseline;
                     }
 
                     break;
@@ -497,8 +502,8 @@ final class Builder
                 case '--use-baseline':
                     $useBaseline = $option[1];
 
-                    if (basename($useBaseline) === $useBaseline && !is_file($useBaseline)) {
-                        $useBaseline = getcwd() . DIRECTORY_SEPARATOR . $useBaseline;
+                    if (basename($useBaseline) === $useBaseline && ! is_file($useBaseline)) {
+                        $useBaseline = getcwd().DIRECTORY_SEPARATOR.$useBaseline;
                     }
 
                     break;
@@ -638,9 +643,9 @@ final class Builder
                     foreach (explode(',', $option[1]) as $order) {
                         switch ($order) {
                             case 'default':
-                                $executionOrder        = TestSuiteSorter::ORDER_DEFAULT;
+                                $executionOrder = TestSuiteSorter::ORDER_DEFAULT;
                                 $executionOrderDefects = TestSuiteSorter::ORDER_DEFAULT;
-                                $resolveDependencies   = true;
+                                $resolveDependencies = true;
 
                                 break;
 
@@ -1241,7 +1246,7 @@ final class Builder
                     break;
             }
 
-            if (!$optionAllowedMultipleTimes) {
+            if (! $optionAllowedMultipleTimes) {
                 $this->markProcessed($option[0]);
             }
         }
@@ -1385,11 +1390,11 @@ final class Builder
     }
 
     /**
-     * @param non-empty-string $option
+     * @param  non-empty-string  $option
      */
     private function markProcessed(string $option): void
     {
-        if (!isset($this->processed[$option])) {
+        if (! isset($this->processed[$option])) {
             $this->processed[$option] = 1;
 
             return;
@@ -1408,7 +1413,7 @@ final class Builder
     }
 
     /**
-     * @param non-empty-string $option
+     * @param  non-empty-string  $option
      */
     private function warnWhenOptionsConflict(?bool $current, string $option, string $opposite): void
     {

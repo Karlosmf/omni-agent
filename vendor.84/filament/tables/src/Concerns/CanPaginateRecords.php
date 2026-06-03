@@ -15,7 +15,7 @@ trait CanPaginateRecords
      */
     public $tableRecordsPerPage = null;
 
-    protected int | string | null $defaultTableRecordsPerPageSelectOption = null;
+    protected int|string|null $defaultTableRecordsPerPageSelectOption = null;
 
     public function updatedTableRecordsPerPage(): void
     {
@@ -26,7 +26,7 @@ trait CanPaginateRecords
         $this->resetPage();
     }
 
-    protected function paginateTableQuery(Builder $query): Paginator | CursorPaginator
+    protected function paginateTableQuery(Builder $query): Paginator|CursorPaginator
     {
         $perPage = $this->getTableRecordsPerPage();
 
@@ -58,17 +58,17 @@ trait CanPaginateRecords
         return $records->onEachSide(0);
     }
 
-    public function getTableRecordsPerPage(): int | string | null
+    public function getTableRecordsPerPage(): int|string|null
     {
         return $this->tableRecordsPerPage;
     }
 
-    public function getTablePage(): int | string
+    public function getTablePage(): int|string
     {
         return $this->getPage($this->getTablePaginationPageName());
     }
 
-    public function getDefaultTableRecordsPerPageSelectOption(): int | string
+    public function getDefaultTableRecordsPerPageSelectOption(): int|string
     {
         $option = session()->get(
             $this->getTablePerPageSessionKey(),

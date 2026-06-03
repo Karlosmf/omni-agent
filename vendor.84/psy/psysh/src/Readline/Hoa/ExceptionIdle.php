@@ -86,7 +86,6 @@ class ExceptionIdle extends \Exception
         $this->_rawMessage = $message;
         $this->message = @\vsprintf($message, $this->getArguments());
 
-        return;
     }
 
     /**
@@ -96,7 +95,7 @@ class ExceptionIdle extends \Exception
      */
     public function getBacktrace()
     {
-        if (null === $this->_trace) {
+        if ($this->_trace === null) {
             $this->_trace = $this->getTrace();
         }
 
@@ -110,7 +109,7 @@ class ExceptionIdle extends \Exception
      */
     public function getPreviousThrow()
     {
-        if (null === $this->_previous) {
+        if ($this->_previous === null) {
             $this->_previous = $this->getPrevious();
         }
 
@@ -122,15 +121,15 @@ class ExceptionIdle extends \Exception
      */
     public function getArguments()
     {
-        if (null === $this->_arguments) {
+        if ($this->_arguments === null) {
             $arguments = $this->_tmpArguments;
 
-            if (!\is_array($arguments)) {
+            if (! \is_array($arguments)) {
                 $arguments = [$arguments];
             }
 
             foreach ($arguments as &$value) {
-                if (null === $value) {
+                if ($value === null) {
                     $value = '(null)';
                 }
             }
@@ -166,7 +165,7 @@ class ExceptionIdle extends \Exception
         $trace = $this->getBacktrace();
         $from = '{main}';
 
-        if (!empty($trace)) {
+        if (! empty($trace)) {
             $t = $trace[0];
             $from = '';
 
@@ -193,7 +192,7 @@ class ExceptionIdle extends \Exception
         $line = -1;
         $pre = $this->getFrom();
 
-        if (!empty($trace)) {
+        if (! empty($trace)) {
             $file = $trace['file'] ?? null;
             $line = $trace['line'] ?? null;
         }
@@ -211,7 +210,7 @@ class ExceptionIdle extends \Exception
                 'in '.$file.' around line '.$line.'.';
         }
 
-        if (true === $includePrevious &&
+        if ($includePrevious === true &&
             null !== $previous = $this->getPreviousThrow()) {
             $out .=
                 "\n\n".'    ⬇'."\n\n".
@@ -229,11 +228,11 @@ class ExceptionIdle extends \Exception
      */
     public static function uncaught(\Throwable $exception)
     {
-        if (!($exception instanceof self)) {
+        if (! ($exception instanceof self)) {
             throw $exception;
         }
 
-        while (0 < \ob_get_level()) {
+        while (\ob_get_level() > 0) {
             \ob_end_flush();
         }
 
@@ -256,7 +255,7 @@ class ExceptionIdle extends \Exception
      */
     public static function enableUncaughtHandler(bool $enable = true)
     {
-        if (false === $enable) {
+        if ($enable === false) {
             return \restore_exception_handler();
         }
 

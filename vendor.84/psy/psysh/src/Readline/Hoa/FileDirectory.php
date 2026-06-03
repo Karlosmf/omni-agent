@@ -72,7 +72,6 @@ class FileDirectory extends FileGeneric
         $this->setMode($mode);
         parent::__construct($streamName, $context, $wait);
 
-        return;
     }
 
     /**
@@ -80,14 +79,14 @@ class FileDirectory extends FileGeneric
      */
     protected function &_open(string $streamName, ?StreamContext $context = null)
     {
-        if (false === \is_dir($streamName)) {
+        if (\is_dir($streamName) === false) {
             if ($this->getMode() === self::MODE_READ) {
                 throw new FileDoesNotExistException('Directory %s does not exist.', 0, $streamName);
             } else {
                 self::create(
                     $streamName,
                     $this->getMode(),
-                    null !== $context
+                    $context !== null
                         ? $context->getContext()
                         : null
                 );
@@ -118,7 +117,7 @@ class FileDirectory extends FileGeneric
 
         $from = $this->getStreamName();
         $fromLength = \strlen($from) + 1;
-        $finder = new FileFinder();
+        $finder = new FileFinder;
         $finder->in($from);
 
         self::create($to, self::MODE_CREATE_RECURSIVE);
@@ -127,7 +126,7 @@ class FileDirectory extends FileGeneric
             $relative = \substr($file->getPathname(), $fromLength);
             $_to = $to.\DIRECTORY_SEPARATOR.$relative;
 
-            if (true === $file->isDir()) {
+            if ($file->isDir() === true) {
                 self::create($_to, self::MODE_CREATE);
 
                 continue;
@@ -140,15 +139,15 @@ class FileDirectory extends FileGeneric
             // only mode.
             $handle = null;
 
-            if (true === $file->isFile()) {
+            if ($file->isFile() === true) {
                 $handle = new FileRead($file->getPathname());
-            } elseif (true === $file->isDir()) {
+            } elseif ($file->isDir() === true) {
                 $handle = new self($file->getPathName());
-            } elseif (true === $file->isLink()) {
+            } elseif ($file->isLink() === true) {
                 $handle = new FileLinkRead($file->getPathName());
             }
 
-            if (null !== $handle) {
+            if ($handle !== null) {
                 $handle->copy($_to, $force);
                 $handle->close();
             }
@@ -163,16 +162,16 @@ class FileDirectory extends FileGeneric
     public function delete(): bool
     {
         $from = $this->getStreamName();
-        $finder = new FileFinder();
+        $finder = new FileFinder;
         $finder->in($from)
-               ->childFirst();
+            ->childFirst();
 
         foreach ($finder as $file) {
             $file->open()->delete();
             $file->close();
         }
 
-        if (null === $this->getStreamContext()) {
+        if ($this->getStreamContext() === null) {
             return @\rmdir($from);
         }
 
@@ -187,7 +186,7 @@ class FileDirectory extends FileGeneric
         string $mode = self::MODE_CREATE_RECURSIVE,
         ?string $context = null
     ): bool {
-        if (true === \is_dir($name)) {
+        if (\is_dir($name) === true) {
             return true;
         }
 
@@ -195,26 +194,26 @@ class FileDirectory extends FileGeneric
             return false;
         }
 
-        if (null !== $context) {
-            if (false === StreamContext::contextExists($context)) {
+        if ($context !== null) {
+            if (StreamContext::contextExists($context) === false) {
                 throw new FileException('Context %s was not previously declared, cannot retrieve '.'this context.', 2, $context);
             } else {
                 $context = StreamContext::getInstance($context);
             }
         }
 
-        if (null === $context) {
+        if ($context === null) {
             return @\mkdir(
                 $name,
                 0755,
-                self::MODE_CREATE_RECURSIVE === $mode
+                $mode === self::MODE_CREATE_RECURSIVE
             );
         }
 
         return @\mkdir(
             $name,
             0755,
-            self::MODE_CREATE_RECURSIVE === $mode,
+            $mode === self::MODE_CREATE_RECURSIVE,
             $context->getContext()
         );
     }

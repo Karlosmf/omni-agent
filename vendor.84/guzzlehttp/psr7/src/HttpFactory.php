@@ -49,7 +49,7 @@ final class HttpFactory implements RequestFactoryInterface, ResponseFactoryInter
         try {
             $resource = Utils::tryFopen($file, $mode);
         } catch (\RuntimeException $e) {
-            if ('' === $mode || false === \in_array($mode[0], ['r', 'w', 'a', 'x', 'c'], true)) {
+            if ($mode === '' || \in_array($mode[0], ['r', 'w', 'a', 'x', 'c'], true) === false) {
                 throw new \InvalidArgumentException(sprintf('Invalid file opening mode "%s"', $mode), 0, $e);
             }
 
@@ -67,7 +67,7 @@ final class HttpFactory implements RequestFactoryInterface, ResponseFactoryInter
     public function createServerRequest(string $method, $uri, array $serverParams = []): ServerRequestInterface
     {
         if (empty($method)) {
-            if (!empty($serverParams['REQUEST_METHOD'])) {
+            if (! empty($serverParams['REQUEST_METHOD'])) {
                 $method = $serverParams['REQUEST_METHOD'];
             } else {
                 throw new \InvalidArgumentException('Cannot determine HTTP method');

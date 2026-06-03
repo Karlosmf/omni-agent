@@ -26,7 +26,7 @@ class AlignFormatter implements Formatter
     protected int $maxLen = 0;
 
     /**
-     * @param Tag[] $tags All tags that should later be aligned with the formatter.
+     * @param  Tag[]  $tags  All tags that should later be aligned with the formatter.
      */
     public function __construct(array $tags)
     {
@@ -40,11 +40,11 @@ class AlignFormatter implements Formatter
      */
     public function format(Tag $tag): string
     {
-        return '@' . $tag->getName() .
+        return '@'.$tag->getName().
             str_repeat(
                 ' ',
                 $this->maxLen - strlen($tag->getName()) + 1
-            ) .
+            ).
             $tag;
     }
 }

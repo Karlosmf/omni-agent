@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,18 +9,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Metadata\Parser;
 
 use const JSON_THROW_ON_ERROR;
-use function assert;
-use function class_exists;
-use function is_numeric;
-use function json_decode;
-use function method_exists;
-use function sprintf;
-use function str_starts_with;
-use function strtolower;
-use function trim;
+
 use Error;
 use PHPUnit\Event\Facade as EventFacade;
 use PHPUnit\Framework\Attributes\After;
@@ -97,6 +92,16 @@ use PHPUnit\Metadata\Version\Requirement;
 use ReflectionClass;
 use ReflectionMethod;
 
+use function assert;
+use function class_exists;
+use function is_numeric;
+use function json_decode;
+use function method_exists;
+use function sprintf;
+use function str_starts_with;
+use function strtolower;
+use function trim;
+
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  *
@@ -105,25 +110,25 @@ use ReflectionMethod;
 final readonly class AttributeParser implements Parser
 {
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      */
     public function forClass(string $className): MetadataCollection
     {
         assert(class_exists($className));
 
         $reflector = new ReflectionClass($className);
-        $result    = [];
+        $result = [];
 
-        $small  = false;
+        $small = false;
         $medium = false;
-        $large  = false;
+        $large = false;
 
         foreach ($reflector->getAttributes() as $attribute) {
-            if (!str_starts_with($attribute->getName(), 'PHPUnit\\Framework\\Attributes\\')) {
+            if (! str_starts_with($attribute->getName(), 'PHPUnit\\Framework\\Attributes\\')) {
                 continue;
             }
 
-            if (!class_exists($attribute->getName())) {
+            if (! class_exists($attribute->getName())) {
                 continue;
             }
 
@@ -132,7 +137,7 @@ final readonly class AttributeParser implements Parser
             } catch (Error $e) {
                 throw new InvalidAttributeException(
                     $attribute->getName(),
-                    'class ' . $className,
+                    'class '.$className,
                     $reflector->getFileName(),
                     $reflector->getStartLine(),
                     $e->getMessage(),
@@ -248,14 +253,14 @@ final readonly class AttributeParser implements Parser
                 case Group::class:
                     assert($attributeInstance instanceof Group);
 
-                    if (!$this->isSizeGroup($attributeInstance->name(), $className)) {
+                    if (! $this->isSizeGroup($attributeInstance->name(), $className)) {
                         $result[] = Metadata::groupOnClass($attributeInstance->name());
                     }
 
                     break;
 
                 case Small::class:
-                    if (!$medium && !$large) {
+                    if (! $medium && ! $large) {
                         $result[] = Metadata::groupOnClass('small');
 
                         $small = true;
@@ -271,7 +276,7 @@ final readonly class AttributeParser implements Parser
                     break;
 
                 case Medium::class:
-                    if (!$small && !$large) {
+                    if (! $small && ! $large) {
                         $result[] = Metadata::groupOnClass('medium');
 
                         $medium = true;
@@ -287,7 +292,7 @@ final readonly class AttributeParser implements Parser
                     break;
 
                 case Large::class:
-                    if (!$small && !$medium) {
+                    if (! $small && ! $medium) {
                         $result[] = Metadata::groupOnClass('large');
 
                         $large = true;
@@ -369,7 +374,7 @@ final readonly class AttributeParser implements Parser
                 case RequiresPhpExtension::class:
                     assert($attributeInstance instanceof RequiresPhpExtension);
 
-                    $versionConstraint  = null;
+                    $versionConstraint = null;
                     $versionRequirement = $attributeInstance->versionRequirement();
 
                     if ($versionRequirement !== null) {
@@ -519,8 +524,8 @@ final readonly class AttributeParser implements Parser
     }
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      */
     public function forMethod(string $className, string $methodName): MetadataCollection
     {
@@ -528,14 +533,14 @@ final readonly class AttributeParser implements Parser
         assert(method_exists($className, $methodName));
 
         $reflector = new ReflectionMethod($className, $methodName);
-        $result    = [];
+        $result = [];
 
         foreach ($reflector->getAttributes() as $attribute) {
-            if (!str_starts_with($attribute->getName(), 'PHPUnit\\Framework\\Attributes\\')) {
+            if (! str_starts_with($attribute->getName(), 'PHPUnit\\Framework\\Attributes\\')) {
                 continue;
             }
 
-            if (!class_exists($attribute->getName())) {
+            if (! class_exists($attribute->getName())) {
                 continue;
             }
 
@@ -544,7 +549,7 @@ final readonly class AttributeParser implements Parser
             } catch (Error $e) {
                 throw new InvalidAttributeException(
                     $attribute->getName(),
-                    'method ' . $className . '::' . $methodName . '()',
+                    'method '.$className.'::'.$methodName.'()',
                     $reflector->getFileName(),
                     $reflector->getStartLine(),
                     $e->getMessage(),
@@ -710,7 +715,7 @@ final readonly class AttributeParser implements Parser
                 case Group::class:
                     assert($attributeInstance instanceof Group);
 
-                    if (!$this->isSizeGroup($attributeInstance->name(), $className, $methodName)) {
+                    if (! $this->isSizeGroup($attributeInstance->name(), $className, $methodName)) {
                         $result[] = Metadata::groupOnMethod($attributeInstance->name());
                     }
 
@@ -798,7 +803,7 @@ final readonly class AttributeParser implements Parser
                 case RequiresPhpExtension::class:
                     assert($attributeInstance instanceof RequiresPhpExtension);
 
-                    $versionConstraint  = null;
+                    $versionConstraint = null;
                     $versionRequirement = $attributeInstance->versionRequirement();
 
                     if ($versionRequirement !== null) {
@@ -943,8 +948,8 @@ final readonly class AttributeParser implements Parser
     }
 
     /**
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      */
     public function forClassAndMethod(string $className, string $methodName): MetadataCollection
     {
@@ -954,9 +959,9 @@ final readonly class AttributeParser implements Parser
     }
 
     /**
-     * @param non-empty-string  $groupName
-     * @param class-string      $testClassName
-     * @param ?non-empty-string $testMethodName
+     * @param  non-empty-string  $groupName
+     * @param  class-string  $testClassName
+     * @param  ?non-empty-string  $testMethodName
      */
     private function isSizeGroup(string $groupName, string $testClassName, ?string $testMethodName = null): bool
     {
@@ -978,9 +983,9 @@ final readonly class AttributeParser implements Parser
     }
 
     /**
-     * @param non-empty-string  $versionRequirement
-     * @param class-string      $testClassName
-     * @param ?non-empty-string $testMethodName
+     * @param  non-empty-string  $versionRequirement
+     * @param  class-string  $testClassName
+     * @param  ?non-empty-string  $testMethodName
      */
     private function requirement(string $versionRequirement, string $testClassName, ?string $testMethodName = null): Requirement
     {
@@ -998,9 +1003,8 @@ final readonly class AttributeParser implements Parser
     }
 
     /**
-     * @param class-string      $testClassName
-     * @param ?non-empty-string $testMethodName
-     *
+     * @param  class-string  $testClassName
+     * @param  ?non-empty-string  $testMethodName
      * @return non-empty-string
      */
     private function testAsString(string $testClassName, ?string $testMethodName = null): string

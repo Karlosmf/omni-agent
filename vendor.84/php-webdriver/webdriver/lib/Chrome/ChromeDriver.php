@@ -19,6 +19,7 @@ class ChromeDriver extends LocalWebDriver
      * this instance to startUsingDriverService() method.
      *
      * @todo Remove $service parameter. Use `ChromeDriver::startUsingDriverService` to pass custom $service instance.
+     *
      * @return static
      */
     public static function start(
@@ -38,6 +39,7 @@ class ChromeDriver extends LocalWebDriver
      * and want to reuse the already started chromedriver, which will lower the overhead associated with spinning up
      * a new process.
 
+     *
      * @return static
      */
     public static function startUsingDriverService(
@@ -69,8 +71,11 @@ class ChromeDriver extends LocalWebDriver
 
     /**
      * @todo Remove in next major version. The class is internally no longer used and is kept only to keep BC.
+     *
      * @deprecated Use start or startUsingDriverService method instead.
+     *
      * @codeCoverageIgnore
+     *
      * @internal
      */
     public function startSession(DesiredCapabilities $desired_capabilities)
@@ -86,7 +91,7 @@ class ChromeDriver extends LocalWebDriver
         $response = $this->executor->execute($command);
         $value = $response->getValue();
 
-        if (!$this->isW3cCompliant = isset($value['capabilities'])) {
+        if (! $this->isW3cCompliant = isset($value['capabilities'])) {
             $this->executor->disableW3cCompliance();
         }
 

@@ -13,12 +13,12 @@ trait HasRoutes
     /**
      * @var string | array<string>
      */
-    protected static string | array $routeMiddleware = [];
+    protected static string|array $routeMiddleware = [];
 
     /**
      * @var string | array<string>
      */
-    protected static string | array $withoutRouteMiddleware = [];
+    protected static string|array $withoutRouteMiddleware = [];
 
     public static function registerRoutes(Panel $panel): void
     {
@@ -35,7 +35,7 @@ trait HasRoutes
 
     public static function getRoutePath(Panel $panel): string
     {
-        return '/' . static::getSlug($panel);
+        return '/'.static::getSlug($panel);
     }
 
     public static function getRelativeRouteName(Panel $panel): string
@@ -57,7 +57,7 @@ trait HasRoutes
     /**
      * @return string | array<string>
      */
-    public static function getRouteMiddleware(Panel $panel): string | array
+    public static function getRouteMiddleware(Panel $panel): string|array
     {
         return [
             ...(static::isEmailVerificationRequired($panel) ? [static::getEmailVerifiedMiddleware($panel)] : []),
@@ -70,7 +70,7 @@ trait HasRoutes
     /**
      * @return string | array<string>
      */
-    public static function getWithoutRouteMiddleware(Panel $panel): string | array
+    public static function getWithoutRouteMiddleware(Panel $panel): string|array
     {
         return static::$withoutRouteMiddleware;
     }

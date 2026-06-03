@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\MockObject\Generator;
 
 use function sprintf;
@@ -19,8 +22,8 @@ use function sprintf;
 final class HookedPropertyGenerator
 {
     /**
-     * @param class-string         $className
-     * @param list<HookedProperty> $properties
+     * @param  class-string  $className
+     * @param  list<HookedProperty>  $properties
      */
     public function generate(string $className, array $properties): string
     {

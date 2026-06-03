@@ -42,10 +42,9 @@ class ParseErrorException extends BaseInvalidArgumentException implements Invali
     /**
      * Constructor.
      *
-     * @param string         $expected
-     * @param string         $actual
-     * @param int            $code
-     * @param Throwable|null $previous
+     * @param  string  $expected
+     * @param  string  $actual
+     * @param  int  $code
      */
     public function __construct($expected, $actual, $help = '', $code = 0, ?Throwable $previous = null)
     {
@@ -60,8 +59,6 @@ class ParseErrorException extends BaseInvalidArgumentException implements Invali
 
     /**
      * Get the expected.
-     *
-     * @return string
      */
     public function getExpected(): string
     {
@@ -70,8 +67,6 @@ class ParseErrorException extends BaseInvalidArgumentException implements Invali
 
     /**
      * Get the actual.
-     *
-     * @return string
      */
     public function getActual(): string
     {
@@ -80,8 +75,6 @@ class ParseErrorException extends BaseInvalidArgumentException implements Invali
 
     /**
      * Get the help message.
-     *
-     * @return string
      */
     public function getHelp(): string
     {

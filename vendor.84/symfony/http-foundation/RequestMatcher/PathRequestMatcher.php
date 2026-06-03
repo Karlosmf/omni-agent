@@ -21,9 +21,7 @@ use Symfony\Component\HttpFoundation\RequestMatcherInterface;
  */
 class PathRequestMatcher implements RequestMatcherInterface
 {
-    public function __construct(private string $regexp)
-    {
-    }
+    public function __construct(private string $regexp) {}
 
     public function matches(Request $request): bool
     {

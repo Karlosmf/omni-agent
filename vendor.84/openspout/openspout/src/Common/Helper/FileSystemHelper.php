@@ -17,12 +17,12 @@ final readonly class FileSystemHelper implements FileSystemHelperInterface
     private string $baseFolderRealPath;
 
     /**
-     * @param string $baseFolderPath The path of the base folder where all the I/O can occur
+     * @param  string  $baseFolderPath  The path of the base folder where all the I/O can occur
      */
     public function __construct(string $baseFolderPath)
     {
         $realpath = realpath($baseFolderPath);
-        \assert(false !== $realpath);
+        \assert($realpath !== false);
         $this->baseFolderRealPath = $realpath;
     }
 
@@ -34,9 +34,8 @@ final readonly class FileSystemHelper implements FileSystemHelperInterface
     /**
      * Creates an empty folder with the given name under the given parent folder.
      *
-     * @param string $parentFolderPath The parent folder path under which the folder is going to be created
-     * @param string $folderName       The name of the folder to create
-     *
+     * @param  string  $parentFolderPath  The parent folder path under which the folder is going to be created
+     * @param  string  $folderName  The name of the folder to create
      * @return string Path of the created folder
      *
      * @throws IOException If unable to create the folder or if the folder path is not inside of the base folder
@@ -56,7 +55,7 @@ final readonly class FileSystemHelper implements FileSystemHelperInterface
         $wasCreationSuccessful = mkdir($folderPath, 0o777, true);
         restore_error_handler();
 
-        if (!$wasCreationSuccessful) {
+        if (! $wasCreationSuccessful) {
             throw new IOException("Unable to create folder: {$folderPath} - {$errorMessage}");
         }
 
@@ -67,10 +66,9 @@ final readonly class FileSystemHelper implements FileSystemHelperInterface
      * Creates a file with the given name and content in the given folder.
      * The parent folder must exist.
      *
-     * @param string $parentFolderPath The parent folder path where the file is going to be created
-     * @param string $fileName         The name of the file to create
-     * @param string $fileContents     The contents of the file to create
-     *
+     * @param  string  $parentFolderPath  The parent folder path where the file is going to be created
+     * @param  string  $fileName  The name of the file to create
+     * @param  string  $fileContents  The contents of the file to create
      * @return string Path of the created file
      *
      * @throws IOException If unable to create the file or if the file path is not inside of the base folder
@@ -90,7 +88,7 @@ final readonly class FileSystemHelper implements FileSystemHelperInterface
         $wasCreationSuccessful = file_put_contents($filePath, $fileContents);
         restore_error_handler();
 
-        if (false === $wasCreationSuccessful) {
+        if ($wasCreationSuccessful === false) {
             throw new IOException("Unable to create file: {$filePath} - {$errorMessage}");
         }
 
@@ -100,7 +98,7 @@ final readonly class FileSystemHelper implements FileSystemHelperInterface
     /**
      * Delete the file at the given path.
      *
-     * @param string $filePath Path of the file to delete
+     * @param  string  $filePath  Path of the file to delete
      *
      * @throws IOException If the file path is not inside of the base folder
      */
@@ -116,7 +114,7 @@ final readonly class FileSystemHelper implements FileSystemHelperInterface
     /**
      * Delete the folder at the given path as well as all its contents.
      *
-     * @param string $folderPath Path of the folder to delete
+     * @param  string  $folderPath  Path of the folder to delete
      *
      * @throws IOException If the folder path is not inside of the base folder
      */
@@ -145,7 +143,7 @@ final readonly class FileSystemHelper implements FileSystemHelperInterface
      * This function will throw an exception if the folder where the I/O operation
      * should occur is not inside the base folder.
      *
-     * @param string $operationFolderPath The path of the folder where the I/O operation should occur
+     * @param  string  $operationFolderPath  The path of the folder where the I/O operation should occur
      *
      * @throws IOException If the folder where the I/O operation should occur
      *                     is not inside the base folder or the base folder does not exist
@@ -153,11 +151,11 @@ final readonly class FileSystemHelper implements FileSystemHelperInterface
     private function throwIfOperationNotInBaseFolder(string $operationFolderPath): void
     {
         $operationFolderRealPath = realpath($operationFolderPath);
-        if (false === $operationFolderRealPath) {
+        if ($operationFolderRealPath === false) {
             throw new IOException("Folder not found: {$operationFolderRealPath}");
         }
         $isInBaseFolder = str_starts_with($operationFolderRealPath, $this->baseFolderRealPath);
-        if (!$isInBaseFolder) {
+        if (! $isInBaseFolder) {
             throw new IOException("Cannot perform I/O operation outside of the base folder: {$this->baseFolderRealPath}");
         }
     }

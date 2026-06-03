@@ -23,37 +23,44 @@ use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 interface OutputInterface
 {
     public const VERBOSITY_SILENT = 8;
+
     public const VERBOSITY_QUIET = 16;
+
     public const VERBOSITY_NORMAL = 32;
+
     public const VERBOSITY_VERBOSE = 64;
+
     public const VERBOSITY_VERY_VERBOSE = 128;
+
     public const VERBOSITY_DEBUG = 256;
 
     public const OUTPUT_NORMAL = 1;
+
     public const OUTPUT_RAW = 2;
+
     public const OUTPUT_PLAIN = 4;
 
     /**
      * Writes a message to the output.
      *
-     * @param bool $newline Whether to add a newline
-     * @param int  $options A bitmask of options (one of the OUTPUT or VERBOSITY constants),
-     *                      0 is considered the same as self::OUTPUT_NORMAL | self::VERBOSITY_NORMAL
+     * @param  bool  $newline  Whether to add a newline
+     * @param  int  $options  A bitmask of options (one of the OUTPUT or VERBOSITY constants),
+     *                        0 is considered the same as self::OUTPUT_NORMAL | self::VERBOSITY_NORMAL
      */
     public function write(string|iterable $messages, bool $newline = false, int $options = 0): void;
 
     /**
      * Writes a message to the output and adds a newline at the end.
      *
-     * @param int $options A bitmask of options (one of the OUTPUT or VERBOSITY constants),
-     *                     0 is considered the same as self::OUTPUT_NORMAL | self::VERBOSITY_NORMAL
+     * @param  int  $options  A bitmask of options (one of the OUTPUT or VERBOSITY constants),
+     *                        0 is considered the same as self::OUTPUT_NORMAL | self::VERBOSITY_NORMAL
      */
     public function writeln(string|iterable $messages, int $options = 0): void;
 
     /**
      * Sets the verbosity of the output.
      *
-     * @param self::VERBOSITY_* $level
+     * @param  self::VERBOSITY_*  $level
      */
     public function setVerbosity(int $level): void;
 

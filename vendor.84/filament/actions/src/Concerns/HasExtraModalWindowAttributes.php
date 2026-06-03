@@ -15,7 +15,7 @@ trait HasExtraModalWindowAttributes
     /**
      * @param  array<mixed> | Closure  $attributes
      */
-    public function extraModalWindowAttributes(array | Closure $attributes, bool $merge = false): static
+    public function extraModalWindowAttributes(array|Closure $attributes, bool $merge = false): static
     {
         if ($merge) {
             $this->extraModalWindowAttributes[] = $attributes;

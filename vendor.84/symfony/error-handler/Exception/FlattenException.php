@@ -29,17 +29,29 @@ use Symfony\Component\VarDumper\Cloner\VarCloner;
 class FlattenException
 {
     private string $message;
+
     private string|int $code;
+
     private ?self $previous = null;
+
     private array $trace;
+
     private string $traceAsString;
+
     private string $class;
+
     private int $statusCode;
+
     private string $statusText;
+
     private array $headers;
+
     private string $file;
+
     private int $line;
+
     private ?string $asString = null;
+
     private Data $dataRepresentation;
 
     public static function create(\Exception $exception, ?int $statusCode = null, array $headers = []): static
@@ -49,7 +61,7 @@ class FlattenException
 
     public static function createFromThrowable(\Throwable $exception, ?int $statusCode = null, array $headers = []): static
     {
-        $e = new static();
+        $e = new static;
         $e->setMessage($exception->getMessage());
         $e->setCode($exception->getCode());
 
@@ -91,11 +103,11 @@ class FlattenException
 
         static $defaultCloner;
 
-        if (!$cloner ??= $defaultCloner) {
-            $cloner = $defaultCloner = new VarCloner();
+        if (! $cloner ??= $defaultCloner) {
+            $cloner = $defaultCloner = new VarCloner;
             $cloner->addCasters([
                 \Throwable::class => function (\Throwable $e, array $a, Stub $s, bool $isNested): array {
-                    if (!$isNested) {
+                    if (! $isNested) {
                         unset($a[Caster::PREFIX_PROTECTED.'message']);
                         unset($a[Caster::PREFIX_PROTECTED.'code']);
                         unset($a[Caster::PREFIX_PROTECTED.'file']);
@@ -370,7 +382,7 @@ class FlattenException
                 } else {
                     $result[$key] = ['array', $this->flattenArgs($value, $level + 1, $count)];
                 }
-            } elseif (null === $value) {
+            } elseif ($value === null) {
                 $result[$key] = ['null', null];
             } elseif (\is_bool($value)) {
                 $result[$key] = ['boolean', $value];
@@ -412,7 +424,7 @@ class FlattenException
 
     public function getAsString(): string
     {
-        if (null !== $this->asString) {
+        if ($this->asString !== null) {
             return $this->asString;
         }
 
@@ -427,7 +439,7 @@ class FlattenException
             }
             $message .= $exception->getClass();
 
-            if ('' != $exception->getMessage()) {
+            if ($exception->getMessage() != '') {
                 $message .= ': '.$exception->getMessage();
             }
 

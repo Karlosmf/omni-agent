@@ -14,11 +14,12 @@ namespace Psy\ManualUpdater;
 class Installer
 {
     private string $dataDir;
+
     private string $format;
 
     /**
-     * @param string $dataDir Data directory where manual will be installed
-     * @param string $format  Format type ('php' or 'sqlite')
+     * @param  string  $dataDir  Data directory where manual will be installed
+     * @param  string  $format  Format type ('php' or 'sqlite')
      */
     public function __construct(string $dataDir, string $format)
     {
@@ -37,19 +38,18 @@ class Installer
     /**
      * Extract and install the manual from a downloaded tarball.
      *
-     * @param string $tarballPath Path to the downloaded .tar.gz file
-     *
+     * @param  string  $tarballPath  Path to the downloaded .tar.gz file
      * @return bool True on success
      */
     public function install(string $tarballPath): bool
     {
-        if (!\file_exists($tarballPath)) {
+        if (! \file_exists($tarballPath)) {
             return false;
         }
 
         // Create temp directory for extraction
         $tempDir = \sys_get_temp_dir().'/psysh-manual-'.\uniqid();
-        if (!\mkdir($tempDir)) {
+        if (! \mkdir($tempDir)) {
             return false;
         }
 
@@ -62,7 +62,7 @@ class Installer
             $manualFilename = $this->format === 'php' ? 'php_manual.php' : 'php_manual.sqlite';
             $extractedFile = $tempDir.'/'.$manualFilename;
 
-            if (!\file_exists($extractedFile)) {
+            if (! \file_exists($extractedFile)) {
                 return false;
             }
 
@@ -91,7 +91,7 @@ class Installer
      */
     private function removeDirectory(string $dir)
     {
-        if (!\is_dir($dir)) {
+        if (! \is_dir($dir)) {
             return;
         }
 

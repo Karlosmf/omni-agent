@@ -23,12 +23,12 @@ use League\CommonMark\Xml\XmlNodeRendererInterface;
 use League\Config\ConfigurationAwareInterface;
 use League\Config\ConfigurationInterface;
 
-final class FootnoteContainerRenderer implements NodeRendererInterface, XmlNodeRendererInterface, ConfigurationAwareInterface
+final class FootnoteContainerRenderer implements ConfigurationAwareInterface, NodeRendererInterface, XmlNodeRendererInterface
 {
     private ConfigurationInterface $config;
 
     /**
-     * @param FootnoteContainer $node
+     * @param  FootnoteContainer  $node
      *
      * {@inheritDoc}
      *

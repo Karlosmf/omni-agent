@@ -62,8 +62,6 @@ HELP
 
     /**
      * Obtains the correct stack frame in the full backtrace.
-     *
-     * @return array
      */
     protected function trace(): array
     {
@@ -87,8 +85,6 @@ HELP
 
     /**
      * Determine the file and line based on the specific backtrace.
-     *
-     * @return array
      */
     protected function fileInfo(): array
     {

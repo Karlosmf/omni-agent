@@ -17,8 +17,8 @@ class FileUploadConfiguration
             rescue(
                 // If the storage disk is not found (meaning it's the first time),
                 // this will throw an error and trip the second callback.
-                fn() => Storage::disk($disk),
-                fn() => Storage::fake($disk),
+                fn () => Storage::disk($disk),
+                fn () => Storage::fake($disk),
                 // swallows the error that is thrown on the first try
                 report: false
             );
@@ -67,11 +67,15 @@ class FileUploadConfiguration
 
     protected static function s3Root()
     {
-        if (! static::isUsingS3()) return '';
+        if (! static::isUsingS3()) {
+            return '';
+        }
 
         $diskConfig = static::diskConfig();
 
-        if (! is_array($diskConfig)) return '';
+        if (! is_array($diskConfig)) {
+            return '';
+        }
 
         $root = $diskConfig['root'] ?? null;
 
@@ -113,9 +117,13 @@ class FileUploadConfiguration
     {
         $rules = config('livewire.temporary_file_upload.rules');
 
-        if (is_null($rules)) return ['required', 'file', 'max:12288'];
+        if (is_null($rules)) {
+            return ['required', 'file', 'max:12288'];
+        }
 
-        if (is_array($rules)) return $rules;
+        if (is_array($rules)) {
+            return $rules;
+        }
 
         return explode('|', $rules);
     }

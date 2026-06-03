@@ -14,9 +14,9 @@ use function Livewire\invade;
 
 trait HasQuery
 {
-    protected Builder | Closure | null $query = null;
+    protected Builder|Closure|null $query = null;
 
-    protected string | Closure | null $inverseRelationship = null;
+    protected string|Closure|null $inverseRelationship = null;
 
     protected ?Closure $getRelationshipUsing = null;
 
@@ -25,7 +25,7 @@ trait HasQuery
      */
     protected array $queryScopes = [];
 
-    public function query(Builder | Closure | null $query): static
+    public function query(Builder|Closure|null $query): static
     {
         $this->query = $query;
 
@@ -46,7 +46,7 @@ trait HasQuery
         return $this;
     }
 
-    public function inverseRelationship(string | Closure | null $name): static
+    public function inverseRelationship(string|Closure|null $name): static
     {
         $this->inverseRelationship = $name;
 
@@ -65,7 +65,7 @@ trait HasQuery
         return $query;
     }
 
-    public function getQuery(bool $isResolvingRecord = false): Builder | Relation | null
+    public function getQuery(bool $isResolvingRecord = false): Builder|Relation|null
     {
         if ($query = $this->evaluate($this->query)) {
             return $this->applyQueryScopes($query->clone(), $isResolvingRecord);
@@ -90,7 +90,7 @@ trait HasQuery
 
         if ($relationship instanceof HasOneOrManyThrough) {
             // https://github.com/laravel/framework/issues/4962
-            $query->select($query->getModel()->getTable() . '.*');
+            $query->select($query->getModel()->getTable().'.*');
 
             return $query;
         }
@@ -110,14 +110,14 @@ trait HasQuery
         return $query;
     }
 
-    public function selectPivotDataInQuery(Builder | Relation $query): Builder | Relation
+    public function selectPivotDataInQuery(Builder|Relation $query): Builder|Relation
     {
         /** @var BelongsToMany $relationship */
         $relationship = $this->getRelationship();
 
         $columns = [
-            $relationship->getTable() . '.*',
-            $query->getModel()->getTable() . '.*',
+            $relationship->getTable().'.*',
+            $query->getModel()->getTable().'.*',
         ];
 
         if (! $this->allowsDuplicates()) {
@@ -132,7 +132,7 @@ trait HasQuery
         return $query;
     }
 
-    public function getRelationship(): Relation | Builder | null
+    public function getRelationship(): Relation|Builder|null
     {
         return $this->evaluate($this->getRelationshipUsing);
     }
@@ -160,7 +160,7 @@ trait HasQuery
         return (string) $parentModelClass->plural()->camel();
     }
 
-    public function getInverseRelationshipFor(Model $record): Relation | Builder
+    public function getInverseRelationshipFor(Model $record): Relation|Builder
     {
         return $record->{$this->getInverseRelationship()}();
     }

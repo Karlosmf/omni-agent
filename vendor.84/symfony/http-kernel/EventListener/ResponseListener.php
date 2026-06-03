@@ -27,25 +27,24 @@ class ResponseListener implements EventSubscriberInterface
     public function __construct(
         private string $charset,
         private bool $addContentLanguageHeader = false,
-    ) {
-    }
+    ) {}
 
     /**
      * Filters the Response.
      */
     public function onKernelResponse(ResponseEvent $event): void
     {
-        if (!$event->isMainRequest()) {
+        if (! $event->isMainRequest()) {
             return;
         }
 
         $response = $event->getResponse();
 
-        if (null === $response->getCharset()) {
+        if ($response->getCharset() === null) {
             $response->setCharset($this->charset);
         }
 
-        if ($this->addContentLanguageHeader && !$response->isInformational() && !$response->isEmpty() && !$response->headers->has('Content-Language')) {
+        if ($this->addContentLanguageHeader && ! $response->isInformational() && ! $response->isEmpty() && ! $response->headers->has('Content-Language')) {
             $response->headers->set('Content-Language', $event->getRequest()->getLocale());
         }
 

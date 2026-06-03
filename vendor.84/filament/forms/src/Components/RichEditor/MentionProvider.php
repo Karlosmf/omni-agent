@@ -12,12 +12,12 @@ class MentionProvider
     /**
      * @var array<string> | Closure
      */
-    protected array | Closure $items = [];
+    protected array|Closure $items = [];
 
     /**
      * @var array<string, mixed>|Closure|null
      */
-    protected array | Closure | null $extraAttributes = null;
+    protected array|Closure|null $extraAttributes = null;
 
     protected ?Closure $getLabelsUsing = null;
 
@@ -50,7 +50,7 @@ class MentionProvider
     /**
      * @param  array<string> | Closure  $items
      */
-    public function items(array | Closure $items): static
+    public function items(array|Closure $items): static
     {
         $this->items = $items;
 
@@ -80,7 +80,7 @@ class MentionProvider
     /**
      * @param  array<string, mixed>|Closure(): array<string, mixed>  $attributes
      */
-    public function extraAttributes(array | Closure $attributes): static
+    public function extraAttributes(array|Closure $attributes): static
     {
         $this->extraAttributes = $attributes;
 

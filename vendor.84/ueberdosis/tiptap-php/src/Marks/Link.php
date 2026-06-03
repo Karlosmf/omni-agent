@@ -35,8 +35,8 @@ class Link extends Mark
 
         $sanitised = preg_replace(self::ATTR_WHITESPACE, '', $uri);
 
-        $pattern = '/^(?:(?:' . implode('|', array_map('preg_quote', $this->options['allowedProtocols']))
-        . '):|[^a-z]|[a-z0-9+.\-]+(?:[^a-z+.\-:]|$))/i';
+        $pattern = '/^(?:(?:'.implode('|', array_map('preg_quote', $this->options['allowedProtocols']))
+        .'):|[^a-z]|[a-z0-9+.\-]+(?:[^a-z+.\-:]|$))/i';
 
         return (bool) preg_match($pattern, $sanitised);
     }

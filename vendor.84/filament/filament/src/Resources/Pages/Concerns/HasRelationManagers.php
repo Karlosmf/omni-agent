@@ -42,7 +42,7 @@ trait HasRelationManagers
 
         return array_filter(
             $managers,
-            function (string | RelationGroup | RelationManagerConfiguration $manager): bool {
+            function (string|RelationGroup|RelationManagerConfiguration $manager): bool {
                 if ($manager instanceof RelationGroup) {
                     return (bool) count($manager->ownerRecord($this->getRecord())->pageClass(static::class)->getManagers());
                 }
@@ -56,7 +56,7 @@ trait HasRelationManagers
      * @param  class-string<RelationManager> | RelationManagerConfiguration  $manager
      * @return class-string<RelationManager>
      */
-    protected function normalizeRelationManagerClass(string | RelationManagerConfiguration $manager): string
+    protected function normalizeRelationManagerClass(string|RelationManagerConfiguration $manager): string
     {
         if ($manager instanceof RelationManagerConfiguration) {
             return $manager->relationManager;
@@ -96,7 +96,7 @@ trait HasRelationManagers
         return null;
     }
 
-    public function getContentTabIcon(): string | BackedEnum | Htmlable | null
+    public function getContentTabIcon(): string|BackedEnum|Htmlable|null
     {
         return null;
     }
@@ -129,7 +129,7 @@ trait HasRelationManagers
             }
 
             $tabs = collect($tabs)
-                ->map(function ($manager, string | int $tabKey) use ($hasCombinedRelationManagerTabsWithContent, $managerLivewireData, $ownerRecord): Tab {
+                ->map(function ($manager, string|int $tabKey) use ($hasCombinedRelationManagerTabsWithContent, $managerLivewireData, $ownerRecord): Tab {
                     $tabKey = strval($tabKey);
 
                     if (blank($tabKey) && $hasCombinedRelationManagerTabsWithContent) {

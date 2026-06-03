@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LaravelLang\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
@@ -21,8 +22,8 @@ use function in_array;
 use function is_iterable;
 
 /**
- * @mixin \Illuminate\Database\Eloquent\Concerns\HasAttributes
- * @mixin \Illuminate\Database\Eloquent\Model
+ * @mixin HasAttributes
+ * @mixin Model
  */
 trait HasTranslations
 {
@@ -111,7 +112,7 @@ trait HasTranslations
     {
         $this->relations[$relation] = match ($relation) {
             'translations' => $value->keyBy('locale'),
-            default        => $value
+            default => $value
         };
 
         return $this;
@@ -119,7 +120,7 @@ trait HasTranslations
 
     public function fill(array $attributes): static
     {
-        $basic        = Arr::except($attributes, $this->translatable());
+        $basic = Arr::except($attributes, $this->translatable());
         $translatable = Arr::only($attributes, $this->translatable());
 
         parent::fill($basic);

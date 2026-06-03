@@ -32,7 +32,7 @@ class NavigationManager
         $this->panel = Filament::getCurrentOrDefaultPanel();
 
         $this->navigationGroups = array_map(
-            fn (NavigationGroup | string $group): NavigationGroup | string => $group instanceof NavigationGroup ? (clone $group) : $group,
+            fn (NavigationGroup|string $group): NavigationGroup|string => $group instanceof NavigationGroup ? (clone $group) : $group,
             $this->panel->getNavigationGroups(),
         );
         $this->navigationItems = array_map(
@@ -94,7 +94,7 @@ class NavigationManager
                 }
 
                 $registeredGroup = $groups
-                    ->first(function (NavigationGroup | string $registeredGroup, string | int $registeredGroupIndex) use ($groupName) {
+                    ->first(function (NavigationGroup|string $registeredGroup, string|int $registeredGroupIndex) use ($groupName) {
                         if ($registeredGroupIndex === $groupName) {
                             return true;
                         }
@@ -186,7 +186,7 @@ class NavigationManager
     /**
      * @param  array<string | int, NavigationGroup | string> | class-string<UnitEnum>  $groups
      */
-    public function navigationGroups(array | string $groups): static
+    public function navigationGroups(array|string $groups): static
     {
         if (is_string($groups)) {
             throw_unless(enum_exists($groups), new LogicException("Enum class [{$groups}] does not exist for navigation groups."));

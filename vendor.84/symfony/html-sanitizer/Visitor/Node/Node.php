@@ -38,13 +38,13 @@ final class Node implements NodeInterface
     ];
 
     private array $attributes = [];
+
     private array $children = [];
 
     public function __construct(
         private NodeInterface $parent,
         private string $tagName,
-    ) {
-    }
+    ) {}
 
     public function getParent(): ?NodeInterface
     {
@@ -59,7 +59,7 @@ final class Node implements NodeInterface
     public function setAttribute(string $name, ?string $value, bool $override = false): void
     {
         // Always use only the first declaration (ease sanitization)
-        if ($override || !\array_key_exists($name, $this->attributes)) {
+        if ($override || ! \array_key_exists($name, $this->attributes)) {
             $this->attributes[$name] = $value;
         }
     }
@@ -87,14 +87,14 @@ final class Node implements NodeInterface
     {
         $rendered = [];
         foreach ($this->attributes as $name => $value) {
-            if (null === $value) {
+            if ($value === null) {
                 // Tag should be removed as a sanitizer found suspect data inside
                 continue;
             }
 
             $attr = StringSanitizer::encodeHtmlEntities($name);
 
-            if ('' !== $value) {
+            if ($value !== '') {
                 // In quirks mode, IE8 does a poor job producing innerHTML values.
                 // If JavaScript does:
                 //      nodeA.innerHTML = nodeB.innerHTML;

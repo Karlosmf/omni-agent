@@ -21,11 +21,11 @@ class DirectoryLoader extends FileLoader
     {
         $path = $this->locator->locate($file);
 
-        $collection = new RouteCollection();
+        $collection = new RouteCollection;
         $collection->addResource(new DirectoryResource($path));
 
         foreach (scandir($path) as $dir) {
-            if ('.' !== $dir[0]) {
+            if ($dir[0] !== '.') {
                 $this->setCurrentDir($path);
                 $subPath = $path.'/'.$dir;
                 $subType = null;
@@ -47,6 +47,6 @@ class DirectoryLoader extends FileLoader
     {
         // only when type is forced to directory, not to conflict with AttributeLoader
 
-        return 'directory' === $type;
+        return $type === 'directory';
     }
 }

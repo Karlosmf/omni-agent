@@ -32,7 +32,7 @@ class TranslationReader implements TranslationReaderInterface
     /**
      * Adds a loader to the translation extractor.
      *
-     * @param string $format The format of the loader
+     * @param  string  $format  The format of the loader
      */
     public function addLoader(string $format, LoaderInterface $loader): void
     {
@@ -41,13 +41,13 @@ class TranslationReader implements TranslationReaderInterface
 
     public function read(string $directory, MessageCatalogue $catalogue): void
     {
-        if (!is_dir($directory)) {
+        if (! is_dir($directory)) {
             return;
         }
 
         foreach ($this->loaders as $format => $loader) {
             // load any existing translation files
-            $finder = new Finder();
+            $finder = new Finder;
             $extension = $catalogue->getLocale().'.'.$format;
             $files = $finder->files()->name('*.'.$extension)->in($directory);
             foreach ($files as $file) {

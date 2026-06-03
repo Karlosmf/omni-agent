@@ -60,9 +60,9 @@ class JsonDescriptor extends Descriptor
         }
 
         $data = [];
-        if ('UNKNOWN' !== $application->getName()) {
+        if ($application->getName() !== 'UNKNOWN') {
             $data['application']['name'] = $application->getName();
-            if ('UNKNOWN' !== $application->getVersion()) {
+            if ($application->getVersion() !== 'UNKNOWN') {
                 $data['application']['version'] = $application->getVersion();
             }
         }
@@ -95,7 +95,7 @@ class JsonDescriptor extends Descriptor
             'is_required' => $argument->isRequired(),
             'is_array' => $argument->isArray(),
             'description' => preg_replace('/\s*[\r\n]\s*/', ' ', $argument->getDescription()),
-            'default' => \INF === $argument->getDefault() ? 'INF' : $argument->getDefault(),
+            'default' => $argument->getDefault() === \INF ? 'INF' : $argument->getDefault(),
         ];
     }
 
@@ -108,7 +108,7 @@ class JsonDescriptor extends Descriptor
             'is_value_required' => false,
             'is_multiple' => false,
             'description' => 'Negate the "--'.$option->getName().'" option',
-            'default' => null === $option->getDefault() ? null : !$option->getDefault(),
+            'default' => $option->getDefault() === null ? null : ! $option->getDefault(),
         ] : [
             'name' => '--'.$option->getName(),
             'shortcut' => $option->getShortcut() ? '-'.str_replace('|', '|-', $option->getShortcut()) : '',
@@ -116,7 +116,7 @@ class JsonDescriptor extends Descriptor
             'is_value_required' => $option->isValueRequired(),
             'is_multiple' => $option->isArray(),
             'description' => preg_replace('/\s*[\r\n]\s*/', ' ', $option->getDescription()),
-            'default' => \INF === $option->getDefault() ? 'INF' : $option->getDefault(),
+            'default' => $option->getDefault() === \INF ? 'INF' : $option->getDefault(),
         ];
     }
 

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -11,14 +13,14 @@
 
 namespace Monolog\Handler;
 
-use Monolog\Formatter\LineFormatter;
 use Monolog\Formatter\FormatterInterface;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Level;
+use Monolog\LogRecord;
 use Monolog\Utils;
 use PhpConsole\Connector;
 use PhpConsole\Handler as VendorPhpConsoleHandler;
 use PhpConsole\Helper;
-use Monolog\LogRecord;
 use PhpConsole\Storage;
 
 /**
@@ -39,6 +41,7 @@ use PhpConsole\Storage;
  *      PC::debug($_SERVER); // PHP Console debugger for any type of vars
  *
  * @author Sergey Barbushin https://www.linkedin.com/in/barbushin
+ *
  * @phpstan-type Options array{
  *     enabled: bool,
  *     classesPartialsTraceIgnore: string[],
@@ -117,14 +120,16 @@ class PHPConsoleHandler extends AbstractProcessingHandler
     private Connector $connector;
 
     /**
-     * @param  array<string, mixed> $options   See \Monolog\Handler\PHPConsoleHandler::$options for more details
-     * @param  Connector|null       $connector Instance of \PhpConsole\Connector class (optional)
-     * @throws \RuntimeException
+     * @param  array<string, mixed>  $options  See \Monolog\Handler\PHPConsoleHandler::$options for more details
+     * @param  Connector|null  $connector  Instance of \PhpConsole\Connector class (optional)
+     *
      * @phpstan-param InputOptions $options
+     *
+     * @throws \RuntimeException
      */
     public function __construct(array $options = [], ?Connector $connector = null, int|string|Level $level = Level::Debug, bool $bubble = true)
     {
-        if (!class_exists('PhpConsole\Connector')) {
+        if (! class_exists('PhpConsole\Connector')) {
             throw new \RuntimeException('PHP Console library not found. See https://github.com/barbushin/php-console#installation');
         }
         parent::__construct($level, $bubble);
@@ -133,17 +138,19 @@ class PHPConsoleHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @param  array<string, mixed> $options
-     * @return array<string, mixed>
+     * @param  array<string, mixed>  $options
      *
      * @phpstan-param InputOptions $options
+     *
+     * @return array<string, mixed>
+     *
      * @phpstan-return Options
      */
     private function initOptions(array $options): array
     {
         $wrongOptions = array_diff(array_keys($options), array_keys($this->options));
         if (\count($wrongOptions) > 0) {
-            throw new \RuntimeException('Unknown options: ' . implode(', ', $wrongOptions));
+            throw new \RuntimeException('Unknown options: '.implode(', ', $wrongOptions));
         }
 
         return array_replace($this->options, $options);
@@ -151,14 +158,14 @@ class PHPConsoleHandler extends AbstractProcessingHandler
 
     private function initConnector(?Connector $connector = null): Connector
     {
-        if (null === $connector) {
+        if ($connector === null) {
             if ($this->options['dataStorage'] instanceof Storage) {
                 Connector::setPostponeStorage($this->options['dataStorage']);
             }
             $connector = Connector::getInstance();
         }
 
-        if ($this->options['registerHelper'] && !Helper::isRegistered()) {
+        if ($this->options['registerHelper'] && ! Helper::isRegistered()) {
             Helper::register();
         }
 
@@ -169,13 +176,13 @@ class PHPConsoleHandler extends AbstractProcessingHandler
                 $handler->setHandleExceptions($this->options['useOwnExceptionsHandler']);
                 $handler->start();
             }
-            if (null !== $this->options['sourcesBasePath']) {
+            if ($this->options['sourcesBasePath'] !== null) {
                 $connector->setSourcesBasePath($this->options['sourcesBasePath']);
             }
-            if (null !== $this->options['serverEncoding']) {
+            if ($this->options['serverEncoding'] !== null) {
                 $connector->setServerEncoding($this->options['serverEncoding']);
             }
-            if (null !== $this->options['password']) {
+            if ($this->options['password'] !== null) {
                 $connector->setPassword($this->options['password']);
             }
             if ($this->options['enableSslOnlyMode']) {
@@ -184,7 +191,7 @@ class PHPConsoleHandler extends AbstractProcessingHandler
             if (\count($this->options['ipMasks']) > 0) {
                 $connector->setAllowedIpMasks($this->options['ipMasks']);
             }
-            if (null !== $this->options['headersLimit'] && $this->options['headersLimit'] > 0) {
+            if ($this->options['headersLimit'] !== null && $this->options['headersLimit'] > 0) {
                 $connector->setHeadersLimit($this->options['headersLimit']);
             }
             if ($this->options['detectDumpTraceAndSource']) {
@@ -223,7 +230,7 @@ class PHPConsoleHandler extends AbstractProcessingHandler
             return parent::handle($record);
         }
 
-        return !$this->bubble;
+        return ! $this->bubble;
     }
 
     /**
@@ -245,7 +252,7 @@ class PHPConsoleHandler extends AbstractProcessingHandler
         [$tags, $filteredContext] = $this->getRecordTags($record);
         $message = $record->message;
         if (\count($filteredContext) > 0) {
-            $message .= ' ' . Utils::jsonEncode($this->connector->getDumper()->dump(array_filter($filteredContext)), null, true);
+            $message .= ' '.Utils::jsonEncode($this->connector->getDumper()->dump(array_filter($filteredContext)), null, true);
         }
         $this->connector->getDebugDispatcher()->dispatchDebug($message, $tags, $this->options['classesPartialsTraceIgnore']);
     }
@@ -294,7 +301,7 @@ class PHPConsoleHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function getDefaultFormatter(): FormatterInterface
     {

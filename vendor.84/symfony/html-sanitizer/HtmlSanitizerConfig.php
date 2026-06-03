@@ -104,7 +104,7 @@ class HtmlSanitizerConfig
     public function __construct()
     {
         $this->attributeSanitizers = [
-            new Visitor\AttributeSanitizer\UrlAttributeSanitizer(),
+            new Visitor\AttributeSanitizer\UrlAttributeSanitizer,
         ];
     }
 
@@ -178,7 +178,7 @@ class HtmlSanitizerConfig
      *
      * All other schemes will be dropped.
      *
-     * @param list<string> $allowLinkSchemes
+     * @param  list<string>  $allowLinkSchemes
      */
     public function allowLinkSchemes(array $allowLinkSchemes): static
     {
@@ -194,7 +194,7 @@ class HtmlSanitizerConfig
      * All other hosts will be dropped. By default all hosts are allowed
      * ($allowedLinkHosts = null).
      *
-     * @param list<string>|null $allowLinkHosts
+     * @param  list<string>|null  $allowLinkHosts
      */
     public function allowLinkHosts(?array $allowLinkHosts): static
     {
@@ -220,7 +220,7 @@ class HtmlSanitizerConfig
      *
      * All other schemes will be dropped.
      *
-     * @param list<string> $allowMediaSchemes
+     * @param  list<string>  $allowMediaSchemes
      */
     public function allowMediaSchemes(array $allowMediaSchemes): static
     {
@@ -236,7 +236,7 @@ class HtmlSanitizerConfig
      * All other hosts will be dropped. By default all hosts are allowed
      * ($allowMediaHosts = null).
      *
-     * @param list<string>|null $allowMediaHosts
+     * @param  list<string>|null  $allowMediaHosts
      */
     public function allowMediaHosts(?array $allowMediaHosts): static
     {
@@ -277,7 +277,7 @@ class HtmlSanitizerConfig
      * Passing "*" will allow all standard attributes on this element. By default, no
      * attributes are allowed on the element.
      *
-     * @param list<string>|string $allowedAttributes
+     * @param  list<string>|string  $allowedAttributes
      */
     public function allowElement(string $element, array|string $allowedAttributes = []): static
     {
@@ -288,7 +288,7 @@ class HtmlSanitizerConfig
 
         $clone->allowedElements[$element] = [];
 
-        $attrs = ('*' === $allowedAttributes) ? array_keys(W3CReference::ATTRIBUTES) : (array) $allowedAttributes;
+        $attrs = ($allowedAttributes === '*') ? array_keys(W3CReference::ATTRIBUTES) : (array) $allowedAttributes;
         foreach ($attrs as $allowedAttr) {
             $clone->allowedElements[$element][$allowedAttr] = true;
         }
@@ -342,12 +342,12 @@ class HtmlSanitizerConfig
      * A list of allowed elements for this attribute can be passed as a second argument.
      * Passing "*" will allow all currently allowed elements to use this attribute.
      *
-     * @param list<string>|string $allowedElements
+     * @param  list<string>|string  $allowedElements
      */
     public function allowAttribute(string $attribute, array|string $allowedElements): static
     {
         $clone = clone $this;
-        $allowedElements = ('*' === $allowedElements) ? array_keys($clone->allowedElements) : (array) $allowedElements;
+        $allowedElements = ($allowedElements === '*') ? array_keys($clone->allowedElements) : (array) $allowedElements;
 
         // For each configured element ...
         foreach ($clone->allowedElements as $element => $attrs) {
@@ -375,12 +375,12 @@ class HtmlSanitizerConfig
      * automatically. This method let you drop attributes that were allowed earlier
      * in the configuration.
      *
-     * @param list<string>|string $droppedElements
+     * @param  list<string>|string  $droppedElements
      */
     public function dropAttribute(string $attribute, array|string $droppedElements): static
     {
         $clone = clone $this;
-        $droppedElements = ('*' === $droppedElements) ? array_keys($clone->allowedElements) : (array) $droppedElements;
+        $droppedElements = ($droppedElements === '*') ? array_keys($clone->allowedElements) : (array) $droppedElements;
 
         foreach ($droppedElements as $element) {
             if (isset($clone->allowedElements[$element][$attribute])) {
@@ -430,8 +430,8 @@ class HtmlSanitizerConfig
     }
 
     /**
-     * @param int $maxInputLength The maximum length of the input string in bytes
-     *                            -1 means no limit
+     * @param  int  $maxInputLength  The maximum length of the input string in bytes
+     *                               -1 means no limit
      */
     public function withMaxInputLength(int $maxInputLength): static
     {

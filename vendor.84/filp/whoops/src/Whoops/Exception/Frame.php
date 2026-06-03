@@ -1,6 +1,8 @@
 <?php
+
 /**
  * Whoops - php errors for cool kids
+ *
  * @author Filipe Dobreira <http://github.com/filp>
  */
 
@@ -37,7 +39,7 @@ class Frame implements Serializable
     }
 
     /**
-     * @param  bool        $shortened
+     * @param  bool  $shortened
      * @return string|null
      */
     public function getFile($shortened = false)
@@ -61,9 +63,9 @@ class Frame implements Serializable
             // Replace the part of the path that all frames have in common, and add 'soft hyphens' for smoother line-breaks.
             $dirname = dirname(dirname(dirname(dirname(dirname(dirname(__DIR__))))));
             if ($dirname !== '/') {
-                $file = str_replace($dirname, "&hellip;", $file);
+                $file = str_replace($dirname, '&hellip;', $file);
             }
-            $file = str_replace("/", "/&shy;", $file);
+            $file = str_replace('/', '/&shy;', $file);
         }
 
         return $file;
@@ -104,6 +106,7 @@ class Frame implements Serializable
     /**
      * Returns the full contents of the file for this frame,
      * if it's known.
+     *
      * @return string|null
      */
     public function getFileContents()
@@ -112,7 +115,7 @@ class Frame implements Serializable
             // Leave the stage early when 'Unknown' or '[internal]' is passed
             // this would otherwise raise an exception when
             // open_basedir is enabled.
-            if ($filePath === "Unknown" || $filePath === '[internal]') {
+            if ($filePath === 'Unknown' || $filePath === '[internal]') {
                 return null;
             }
 
@@ -134,8 +137,8 @@ class Frame implements Serializable
      * An interesting use for this would be, for example, code analysis
      * & annotations.
      *
-     * @param string $comment
-     * @param string $context Optional string identifying the origin of the comment
+     * @param  string  $comment
+     * @param  string  $context  Optional string identifying the origin of the comment
      */
     public function addComment($comment, $context = 'global')
     {
@@ -190,10 +193,11 @@ class Frame implements Serializable
      *     Get one line for this file, starting at line 10 (zero-indexed, remember!)
      *     $frame->getFileLines(9, 1); // array( 9 => '...' )
      *
-     * @throws InvalidArgumentException if $length is less than or equal to 0
-     * @param  int                      $start
-     * @param  int                      $length
+     * @param  int  $start
+     * @param  int  $length
      * @return string[]|null
+     *
+     * @throws InvalidArgumentException if $length is less than or equal to 0
      */
     public function getFileLines($start = 0, $length = null)
     {
@@ -202,7 +206,7 @@ class Frame implements Serializable
 
             // Get a subset of lines from $start to $end
             if ($length !== null) {
-                $start  = (int) $start;
+                $start = (int) $start;
                 $length = (int) $length;
                 if ($start < 0) {
                     $start = 0;
@@ -226,12 +230,13 @@ class Frame implements Serializable
      * steps to also save the existing comments.
      *
      * @see Serializable::serialize
+     *
      * @return string
      */
     public function serialize()
     {
         $frame = $this->frame;
-        if (!empty($this->comments)) {
+        if (! empty($this->comments)) {
             $frame['_comments'] = $this->comments;
         }
 
@@ -241,9 +246,10 @@ class Frame implements Serializable
     public function __serialize()
     {
         $frame = $this->frame;
-        if (!empty($this->comments)) {
+        if (! empty($this->comments)) {
             $frame['_comments'] = $this->comments;
         }
+
         return $frame;
     }
 
@@ -252,13 +258,14 @@ class Frame implements Serializable
      * any existing comment data.
      *
      * @see Serializable::unserialize
-     * @param string $serializedFrame
+     *
+     * @param  string  $serializedFrame
      */
     public function unserialize($serializedFrame)
     {
         $frame = unserialize($serializedFrame);
 
-        if (!empty($frame['_comments'])) {
+        if (! empty($frame['_comments'])) {
             $this->comments = $frame['_comments'];
             unset($frame['_comments']);
         }
@@ -268,7 +275,7 @@ class Frame implements Serializable
 
     public function __unserialize($frame)
     {
-        if (!empty($frame['_comments'])) {
+        if (! empty($frame['_comments'])) {
             $this->comments = $frame['_comments'];
             unset($frame['_comments']);
         }
@@ -278,21 +285,22 @@ class Frame implements Serializable
 
     /**
      * Compares Frame against one another
-     * @param  Frame $frame
+     *
      * @return bool
      */
     public function equals(Frame $frame)
     {
-        if (!$this->getFile() || $this->getFile() === 'Unknown' || !$this->getLine()) {
+        if (! $this->getFile() || $this->getFile() === 'Unknown' || ! $this->getLine()) {
             return false;
         }
+
         return $frame->getFile() === $this->getFile() && $frame->getLine() === $this->getLine();
     }
 
     /**
      * Returns whether this frame belongs to the application or not.
      *
-     * @return boolean
+     * @return bool
      */
     public function isApplication()
     {
@@ -302,7 +310,7 @@ class Frame implements Serializable
     /**
      * Mark as an frame belonging to the application.
      *
-     * @param boolean $application
+     * @param  bool  $application
      */
     public function setApplication($application)
     {

@@ -21,23 +21,28 @@ use ReflectionClassConstant;
  */
 final class Option
 {
-    private const DEFAULT                    = 0;
-    private const ALLOW_UNASSIGNED           = 1;
-    private const USE_STD3_RULES             = 2;
-    private const CHECK_BIDI                 = 4;
-    private const CHECK_CONTEXTJ             = 8;
-    private const NONTRANSITIONAL_TO_ASCII   = 0x10;
-    private const NONTRANSITIONAL_TO_UNICODE = 0x20;
-    private const CHECK_CONTEXTO             = 0x40;
+    private const DEFAULT = 0;
 
-    private function __construct(private readonly int $value)
-    {
-    }
+    private const ALLOW_UNASSIGNED = 1;
+
+    private const USE_STD3_RULES = 2;
+
+    private const CHECK_BIDI = 4;
+
+    private const CHECK_CONTEXTJ = 8;
+
+    private const NONTRANSITIONAL_TO_ASCII = 0x10;
+
+    private const NONTRANSITIONAL_TO_UNICODE = 0x20;
+
+    private const CHECK_CONTEXTO = 0x40;
+
+    private function __construct(private readonly int $value) {}
 
     private static function cases(): array
     {
         static $assoc;
-        if (null === $assoc) {
+        if ($assoc === null) {
             $assoc = [];
             $fooClass = new ReflectionClass(self::class);
             foreach ($fooClass->getConstants(ReflectionClassConstant::IS_PRIVATE) as $name => $value) {
@@ -162,7 +167,7 @@ final class Option
     public function add(Option|int|null $option = null): self
     {
         return match (true) {
-            null === $option => $this,
+            $option === null => $this,
             $option instanceof self => self::new($this->value | $option->value),
             default => self::new($this->value | $option),
         };
@@ -171,7 +176,7 @@ final class Option
     public function remove(Option|int|null $option = null): self
     {
         return match (true) {
-            null === $option => $this,
+            $option === null => $this,
             $option instanceof self => self::new($this->value & ~$option->value),
             default => self::new($this->value & ~$option),
         };

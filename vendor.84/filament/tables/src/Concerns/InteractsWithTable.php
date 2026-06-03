@@ -177,7 +177,7 @@ trait InteractsWithTable
     protected function makeTable(): Table
     {
         return Table::make($this)
-            ->query(fn (): Builder | Relation | null => $this->getTableQuery())
+            ->query(fn (): Builder|Relation|null => $this->getTableQuery())
             ->when($this->getTableActions(), fn (Table $table, array $actions): Table => $table->actions($actions))
             ->when($this->getTableActionsColumnLabel(), fn (Table $table, string $actionsColumnLabel): Table => $table->actionsColumnLabel($actionsColumnLabel))
             ->when($this->getTableColumns(), fn (Table $table, array $columns): Table => $table->columns($columns))
@@ -189,7 +189,7 @@ trait InteractsWithTable
             ->when($this->getTableContentGrid(), fn (Table $table, array $contentGrid): Table => $table->contentGrid($contentGrid))
             ->when($this->getDefaultTableSortColumn(), fn (Table $table, string $defaultSortColumn): Table => $table->defaultSort($defaultSortColumn, $this->getDefaultTableSortDirection()))
             ->when($this->isTableLoadingDeferred(), fn (Table $table): Table => $table->deferLoading())
-            ->when($this->getTableDescription(), fn (Table $table, string | Htmlable $description): Table => $table->description($description))
+            ->when($this->getTableDescription(), fn (Table $table, string|Htmlable $description): Table => $table->description($description))
             ->when(! $this->shouldDeselectAllRecordsWhenTableFiltered(), fn (Table $table): Table => $table->deselectAllRecordsWhenFiltered(false))
             ->when($this->getTableEmptyState(), fn (Table $table, View $emptyState): Table => $table->emptyState($emptyState))
             ->when($this->getTableEmptyStateActions(), fn (Table $table, array $emptyStateActions): Table => $table->emptyStateActions($emptyStateActions))
@@ -200,7 +200,7 @@ trait InteractsWithTable
             ->when($this->getTableFiltersFormMaxHeight(), fn (Table $table, string $filtersFormMaxHeight): Table => $table->filtersFormMaxHeight($filtersFormMaxHeight))
             ->when($this->getTableFiltersFormWidth(), fn (Table $table, string $filtersFormWidth): Table => $table->filtersFormWidth($filtersFormWidth))
             ->when($this->getTableBulkActions(), fn (Table $table, array $groupedBulkActions): Table => $table->groupedBulkActions($groupedBulkActions))
-            ->when($this->getTableHeader(), fn (Table $table, View | Htmlable $header): Table => $table->header($header))
+            ->when($this->getTableHeader(), fn (Table $table, View|Htmlable $header): Table => $table->header($header))
             ->when($this->getTableHeaderActions(), fn (Table $table, array $headerActions): Table => $table->headerActions($headerActions))
             ->when($this->getTableModelLabel(), fn (Table $table, string $modelLabel): Table => $table->modelLabel($modelLabel))
             ->when(! $this->isTablePaginationEnabled(), fn (Table $table): Table => $table->paginated(false))
@@ -227,7 +227,7 @@ trait InteractsWithTable
     public function getIdentifiedTableQueryStringPropertyNameFor(string $property): string
     {
         if (filled($identifier = $this->getTable()->getQueryStringIdentifier())) {
-            return $identifier . ucfirst($property);
+            return $identifier.ucfirst($property);
         }
 
         return $property;
@@ -243,7 +243,7 @@ trait InteractsWithTable
         $this->resetLivewirePage($pageName ?? $this->getTablePaginationPageName());
     }
 
-    public function setPage(int | string $page, ?string $pageName = null): void
+    public function setPage(int|string $page, ?string $pageName = null): void
     {
         $defaultPageName = $this->getTablePaginationPageName();
 
@@ -259,7 +259,7 @@ trait InteractsWithTable
     /**
      * @deprecated Override the `table()` method to configure the table.
      */
-    protected function getTableQuery(): Builder | Relation | null
+    protected function getTableQuery(): Builder|Relation|null
     {
         return null;
     }

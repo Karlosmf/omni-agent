@@ -9,32 +9,32 @@ declare(strict_types=1);
 
 namespace Nette\Utils;
 
-use function explode, is_string, str_contains;
-
+use function explode;
+use function is_string;
+use function str_contains;
 
 /**
  * ReflectionMethod preserving the original class name.
+ *
  * @internal
  */
 final class ReflectionMethod extends \ReflectionMethod
 {
-	/** @var \ReflectionClass<object> */
-	private readonly \ReflectionClass $originalClass;
+    /** @var \ReflectionClass<object> */
+    private readonly \ReflectionClass $originalClass;
 
+    public function __construct(object|string $objectOrMethod, ?string $method = null)
+    {
+        if (is_string($objectOrMethod) && str_contains($objectOrMethod, '::')) {
+            [$objectOrMethod, $method] = explode('::', $objectOrMethod, 2);
+        }
+        parent::__construct($objectOrMethod, $method);
+        $this->originalClass = new \ReflectionClass($objectOrMethod);
+    }
 
-	public function __construct(object|string $objectOrMethod, ?string $method = null)
-	{
-		if (is_string($objectOrMethod) && str_contains($objectOrMethod, '::')) {
-			[$objectOrMethod, $method] = explode('::', $objectOrMethod, 2);
-		}
-		parent::__construct($objectOrMethod, $method);
-		$this->originalClass = new \ReflectionClass($objectOrMethod);
-	}
-
-
-	/** @return \ReflectionClass<object> */
-	public function getOriginalClass(): \ReflectionClass
-	{
-		return $this->originalClass;
-	}
+    /** @return \ReflectionClass<object> */
+    public function getOriginalClass(): \ReflectionClass
+    {
+        return $this->originalClass;
+    }
 }

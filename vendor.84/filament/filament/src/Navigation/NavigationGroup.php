@@ -19,25 +19,25 @@ class NavigationGroup extends Component
     use HasExtraSidebarAttributes;
     use HasExtraTopbarAttributes;
 
-    protected bool | Closure $isCollapsed = false;
+    protected bool|Closure $isCollapsed = false;
 
-    protected bool | Closure | null $isCollapsible = null;
+    protected bool|Closure|null $isCollapsible = null;
 
-    protected string | BackedEnum | Htmlable | Closure | null $icon = null;
+    protected string|BackedEnum|Htmlable|Closure|null $icon = null;
 
     /**
      * @var array<NavigationItem> | Arrayable
      */
-    protected array | Arrayable $items = [];
+    protected array|Arrayable $items = [];
 
-    protected string | Closure | null $label = null;
+    protected string|Closure|null $label = null;
 
-    final public function __construct(string | Closure | null $label = null)
+    final public function __construct(string|Closure|null $label = null)
     {
         $this->label($label);
     }
 
-    public static function make(string | Closure | null $label = null): static
+    public static function make(string|Closure|null $label = null): static
     {
         $static = app(static::class, ['label' => $label]);
         $static->configure();
@@ -45,7 +45,7 @@ class NavigationGroup extends Component
         return $static;
     }
 
-    public function collapsed(bool | Closure $condition = true): static
+    public function collapsed(bool|Closure $condition = true): static
     {
         $this->isCollapsed = $condition;
 
@@ -54,14 +54,14 @@ class NavigationGroup extends Component
         return $this;
     }
 
-    public function collapsible(bool | Closure | null $condition = true): static
+    public function collapsible(bool|Closure|null $condition = true): static
     {
         $this->isCollapsible = $condition;
 
         return $this;
     }
 
-    public function icon(string | BackedEnum | Htmlable | Closure | null $icon): static
+    public function icon(string|BackedEnum|Htmlable|Closure|null $icon): static
     {
         $this->icon = $icon;
 
@@ -71,21 +71,21 @@ class NavigationGroup extends Component
     /**
      * @param  array<NavigationItem> | Arrayable  $items
      */
-    public function items(array | Arrayable $items): static
+    public function items(array|Arrayable $items): static
     {
         $this->items = $items;
 
         return $this;
     }
 
-    public function label(string | Closure | null $label): static
+    public function label(string|Closure|null $label): static
     {
         $this->label = $label;
 
         return $this;
     }
 
-    public function getIcon(): string | BackedEnum | Htmlable | null
+    public function getIcon(): string|BackedEnum|Htmlable|null
     {
         return $this->evaluate($this->icon);
     }
@@ -93,7 +93,7 @@ class NavigationGroup extends Component
     /**
      * @return array<NavigationItem> | Arrayable
      */
-    public function getItems(): array | Arrayable
+    public function getItems(): array|Arrayable
     {
         return $this->items;
     }

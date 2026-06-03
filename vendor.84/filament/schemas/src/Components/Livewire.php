@@ -11,19 +11,19 @@ class Livewire extends Component
      */
     protected string $view = 'filament-schemas::components.livewire';
 
-    protected bool | Closure $isLazy = false;
+    protected bool|Closure $isLazy = false;
 
     /**
      * @var array<string, mixed> | Closure
      */
-    protected array | Closure $data = [];
+    protected array|Closure $data = [];
 
-    protected string | Closure $component;
+    protected string|Closure $component;
 
     /**
      * @param  array<string, mixed> | Closure  $data
      */
-    final public function __construct(string | Closure $component, array | Closure $data = [])
+    final public function __construct(string|Closure $component, array|Closure $data = [])
     {
         $this->component($component);
         $this->data($data);
@@ -32,7 +32,7 @@ class Livewire extends Component
     /**
      * @param  array<string, mixed> | Closure  $data
      */
-    public static function make(string | Closure $component, array | Closure $data = []): static
+    public static function make(string|Closure $component, array|Closure $data = []): static
     {
         $static = app(static::class, [
             'component' => $component,
@@ -43,7 +43,7 @@ class Livewire extends Component
         return $static;
     }
 
-    public function component(string | Closure $component): static
+    public function component(string|Closure $component): static
     {
         $this->component = $component;
 
@@ -55,7 +55,7 @@ class Livewire extends Component
         return $this->evaluate($this->component);
     }
 
-    public function lazy(bool | Closure $condition = true): static
+    public function lazy(bool|Closure $condition = true): static
     {
         $this->isLazy = $condition;
 
@@ -70,7 +70,7 @@ class Livewire extends Component
     /**
      * @param  array<string, mixed> | Closure  $data
      */
-    public function data(array | Closure $data): static
+    public function data(array|Closure $data): static
     {
         $this->data = $data;
 

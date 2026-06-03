@@ -31,7 +31,7 @@ trait ProcessConfigs
         }
 
         foreach ($this->package->configFileNames as $configFileName) {
-            $vendorConfig ;
+
             if (
                 ! is_file($vendorConfig = $this->package->basePath("/../config/{$configFileName}.php"))
                 &&

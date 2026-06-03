@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\BookingItem;
 use App\Models\Lead;
 use App\Models\Transaction;
+use App\Models\TravelPackage;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -23,7 +24,7 @@ class LeadSeeder extends Seeder
             return;
         }
 
-        $travelPackages = \App\Models\TravelPackage::all();
+        $travelPackages = TravelPackage::all();
 
         // Create leads with bookings for existing customers
         foreach ($customers->random(20) as $customer) {

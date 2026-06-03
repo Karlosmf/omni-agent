@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -13,10 +15,10 @@ namespace Monolog\Handler;
 
 use Monolog\Formatter\ChromePHPFormatter;
 use Monolog\Formatter\FormatterInterface;
-use Monolog\Level;
-use Monolog\Utils;
-use Monolog\LogRecord;
 use Monolog\JsonSerializableDateTimeImmutable;
+use Monolog\Level;
+use Monolog\LogRecord;
+use Monolog\Utils;
 
 /**
  * Handler sending logs to the ChromePHP extension (http://www.chromephp.com/)
@@ -68,11 +70,11 @@ class ChromePHPHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function handleBatch(array $records): void
     {
-        if (!$this->isWebRequest()) {
+        if (! $this->isWebRequest()) {
             return;
         }
 
@@ -95,11 +97,11 @@ class ChromePHPHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function getDefaultFormatter(): FormatterInterface
     {
-        return new ChromePHPFormatter();
+        return new ChromePHPFormatter;
     }
 
     /**
@@ -110,7 +112,7 @@ class ChromePHPHandler extends AbstractProcessingHandler
      */
     protected function write(LogRecord $record): void
     {
-        if (!$this->isWebRequest()) {
+        if (! $this->isWebRequest()) {
             return;
         }
 
@@ -126,15 +128,15 @@ class ChromePHPHandler extends AbstractProcessingHandler
      */
     protected function send(): void
     {
-        if (self::$overflowed || !self::$sendHeaders) {
+        if (self::$overflowed || ! self::$sendHeaders) {
             return;
         }
 
-        if (!self::$initialized) {
+        if (! self::$initialized) {
             self::$initialized = true;
 
             self::$sendHeaders = $this->headersAccepted();
-            if (!self::$sendHeaders) {
+            if (! self::$sendHeaders) {
                 return;
             }
 
@@ -167,7 +169,7 @@ class ChromePHPHandler extends AbstractProcessingHandler
      */
     protected function sendHeader(string $header, string $content): void
     {
-        if (!headers_sent() && self::$sendHeaders) {
+        if (! headers_sent() && self::$sendHeaders) {
             header(sprintf('%s: %s', $header, $content));
         }
     }
@@ -177,7 +179,7 @@ class ChromePHPHandler extends AbstractProcessingHandler
      */
     protected function headersAccepted(): bool
     {
-        if (!isset($_SERVER['HTTP_USER_AGENT'])) {
+        if (! isset($_SERVER['HTTP_USER_AGENT'])) {
             return false;
         }
 

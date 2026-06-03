@@ -65,7 +65,7 @@ abstract class Provider extends BaseServiceProvider
             ->toString();
 
         if ($name = $this->package_name ?: $vendor) {
-            if (! is_dir($name) && ! is_dir(realpath('/' . $name) ?: '')) {
+            if (! is_dir($name) && ! is_dir(realpath('/'.$name) ?: '')) {
                 $this->config->setPackage($this->basePath(), static::class, $name);
             }
         }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner;
 
 use const DEBUG_BACKTRACE_IGNORE_ARGS;
@@ -24,16 +27,7 @@ use const E_USER_ERROR;
 use const E_USER_NOTICE;
 use const E_USER_WARNING;
 use const E_WARNING;
-use function array_keys;
-use function array_values;
-use function assert;
-use function debug_backtrace;
-use function defined;
-use function error_reporting;
-use function preg_match;
-use function restore_error_handler;
-use function set_error_handler;
-use function sprintf;
+
 use PHPUnit\Event;
 use PHPUnit\Event\Code\IssueTrigger\IssueTrigger;
 use PHPUnit\Event\Code\NoTestCaseObjectOnCallStackException;
@@ -47,6 +41,17 @@ use PHPUnit\TextUI\Configuration\Source;
 use PHPUnit\TextUI\Configuration\SourceFilter;
 use PHPUnit\Util\ExcludeList;
 
+use function array_keys;
+use function array_values;
+use function assert;
+use function debug_backtrace;
+use function defined;
+use function error_reporting;
+use function preg_match;
+use function restore_error_handler;
+use function set_error_handler;
+use function sprintf;
+
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  *
@@ -54,12 +59,18 @@ use PHPUnit\Util\ExcludeList;
  */
 final class ErrorHandler
 {
-    private const int UNHANDLEABLE_LEVELS     = E_ERROR | E_PARSE | E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_COMPILE_WARNING;
-    private const int INSUPPRESSIBLE_LEVELS   = E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR;
-    private static ?self $instance            = null;
-    private ?Baseline $baseline               = null;
-    private bool $enabled                     = false;
+    private const int UNHANDLEABLE_LEVELS = E_ERROR | E_PARSE | E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_COMPILE_WARNING;
+
+    private const int INSUPPRESSIBLE_LEVELS = E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR;
+
+    private static ?self $instance = null;
+
+    private ?Baseline $baseline = null;
+
+    private bool $enabled = false;
+
     private ?int $originalErrorReportingLevel = null;
+
     private readonly Source $source;
 
     /**
@@ -71,7 +82,8 @@ final class ErrorHandler
      * @var array<string, list<array{int, string, string, int}>>
      */
     private array $testCaseContextDeprecations = [];
-    private ?string $testCaseContext           = null;
+
+    private ?string $testCaseContext = null;
 
     /**
      * @var ?array{functions: list<non-empty-string>, methods: list<array{className: class-string, methodName: non-empty-string}>}
@@ -112,12 +124,12 @@ final class ErrorHandler
 
         if ($errorNumber === E_USER_DEPRECATED) {
             $deprecationFrame = $this->guessDeprecationFrame();
-            $errorFile        = $deprecationFrame['file'] ?? $errorFile;
-            $errorLine        = $deprecationFrame['line'] ?? $errorLine;
+            $errorFile = $deprecationFrame['file'] ?? $errorFile;
+            $errorLine = $deprecationFrame['line'] ?? $errorLine;
         }
 
         $ignoredByBaseline = $this->ignoredByBaseline($errorFile, $errorLine, $errorString);
-        $ignoredByTest     = $this->deprecationIgnoredByTest($test, $errorString);
+        $ignoredByTest = $this->deprecationIgnoredByTest($test, $errorString);
 
         switch ($errorNumber) {
             case E_NOTICE:
@@ -207,7 +219,6 @@ final class ErrorHandler
                 );
 
                 throw new ErrorException('E_USER_ERROR was triggered');
-
             default:
                 return false;
         }
@@ -250,7 +261,7 @@ final class ErrorHandler
             return;
         }
 
-        $this->enabled                     = true;
+        $this->enabled = true;
         $this->originalErrorReportingLevel = error_reporting();
 
         $this->triggerGlobalDeprecations($test);
@@ -260,7 +271,7 @@ final class ErrorHandler
 
     public function disable(): void
     {
-        if (!$this->enabled) {
+        if (! $this->enabled) {
             return;
         }
 
@@ -268,7 +279,7 @@ final class ErrorHandler
 
         error_reporting(error_reporting() | $this->originalErrorReportingLevel);
 
-        $this->enabled                     = false;
+        $this->enabled = false;
         $this->originalErrorReportingLevel = null;
     }
 
@@ -278,7 +289,7 @@ final class ErrorHandler
     }
 
     /**
-     * @param array{functions: list<non-empty-string>, methods: list<array{className: class-string, methodName: non-empty-string}>} $deprecationTriggers
+     * @param  array{functions: list<non-empty-string>, methods: list<array{className: class-string, methodName: non-empty-string}>}  $deprecationTriggers
      */
     public function useDeprecationTriggers(array $deprecationTriggers): void
     {
@@ -296,9 +307,9 @@ final class ErrorHandler
     }
 
     /**
-     * @param non-empty-string $file
-     * @param positive-int     $line
-     * @param non-empty-string $description
+     * @param  non-empty-string  $file
+     * @param  positive-int  $line
+     * @param  non-empty-string  $description
      */
     private function ignoredByBaseline(string $file, int $line, string $description): bool
     {
@@ -311,13 +322,13 @@ final class ErrorHandler
 
     private function trigger(TestMethod $test, bool $filterTrigger): IssueTrigger
     {
-        if (!$this->source->notEmpty()) {
+        if (! $this->source->notEmpty()) {
             return IssueTrigger::unknown();
         }
 
         $trace = $this->filteredStackTrace($filterTrigger);
 
-        $triggeredInFirstPartyCode       = false;
+        $triggeredInFirstPartyCode = false;
         $triggerCalledFromFirstPartyCode = false;
 
         if (isset($trace[0]['file'])) {
@@ -354,7 +365,7 @@ final class ErrorHandler
     {
         $trace = $this->errorStackTrace();
 
-        if ($this->deprecationTriggers === null || !$filterDeprecationTriggers) {
+        if ($this->deprecationTriggers === null || ! $filterDeprecationTriggers) {
             return array_values($trace);
         }
 
@@ -424,17 +435,17 @@ final class ErrorHandler
     }
 
     /**
-     * @param array{class? : class-string, function?: non-empty-string} $frame
-     * @param non-empty-string                                          $function
+     * @param  array{class? : class-string, function?: non-empty-string}  $frame
+     * @param  non-empty-string  $function
      */
     private function frameIsFunction(array $frame, string $function): bool
     {
-        return !isset($frame['class']) && isset($frame['function']) && $frame['function'] === $function;
+        return ! isset($frame['class']) && isset($frame['function']) && $frame['function'] === $function;
     }
 
     /**
-     * @param array{class? : class-string, function?: non-empty-string}    $frame
-     * @param array{className: class-string, methodName: non-empty-string} $method
+     * @param  array{class? : class-string, function?: non-empty-string}  $frame
+     * @param  array{className: class-string, methodName: non-empty-string}  $method
      */
     private function frameIsMethod(array $frame, array $method): bool
     {
@@ -449,14 +460,14 @@ final class ErrorHandler
      */
     private function stackTrace(): string
     {
-        $buffer      = '';
+        $buffer = '';
         $excludeList = new ExcludeList(true);
 
         foreach ($this->errorStackTrace() as $frame) {
             /**
              * @see https://github.com/sebastianbergmann/phpunit/issues/6043
              */
-            if (!isset($frame['file'])) {
+            if (! isset($frame['file'])) {
                 continue;
             }
 
@@ -502,7 +513,7 @@ final class ErrorHandler
             $ignoreDeprecationMessagePattern = $metadatum->messagePattern();
 
             if ($ignoreDeprecationMessagePattern === null ||
-                (bool) preg_match('{' . $ignoreDeprecationMessagePattern . '}', $message)) {
+                (bool) preg_match('{'.$ignoreDeprecationMessagePattern.'}', $message)) {
                 return true;
             }
         }

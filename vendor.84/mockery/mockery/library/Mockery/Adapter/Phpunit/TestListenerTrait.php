@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -15,6 +16,7 @@ use Mockery;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\Test;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestResult;
 use PHPUnit\Runner\BaseTestRunner;
 use PHPUnit\Util\Blacklist;
 use ReflectionClass;
@@ -29,8 +31,7 @@ class TestListenerTrait
      * endTest is called after each test and checks if \Mockery::close() has
      * been called, and will let the test fail if it hasn't.
      *
-     * @param Test  $test
-     * @param float $time
+     * @param  float  $time
      */
     public function endTest(Test $test, $time)
     {
@@ -64,7 +65,7 @@ class TestListenerTrait
             )
         );
 
-        /** @var \PHPUnit\Framework\TestResult $result */
+        /** @var TestResult $result */
         $result = $test->getTestResultObject();
 
         if ($result !== null) {
@@ -75,7 +76,7 @@ class TestListenerTrait
     public function startTestSuite()
     {
         if (method_exists(Blacklist::class, 'addDirectory')) {
-            (new Blacklist())->getBlacklistedDirectories();
+            (new Blacklist)->getBlacklistedDirectories();
             Blacklist::addDirectory(dirname((new ReflectionClass(Mockery::class))->getFileName()));
         } else {
             Blacklist::$blacklistedClassNames[Mockery::class] = 1;

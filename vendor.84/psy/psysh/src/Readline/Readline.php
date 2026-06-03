@@ -17,9 +17,9 @@ namespace Psy\Readline;
 interface Readline
 {
     /**
-     * @param string|false $historyFile
-     * @param int|null     $historySize
-     * @param bool|null    $eraseDups
+     * @param  string|false  $historyFile
+     * @param  int|null  $historySize
+     * @param  bool|null  $eraseDups
      */
     public function __construct($historyFile = null, $historySize = 0, $eraseDups = false);
 
@@ -36,7 +36,6 @@ interface Readline
     /**
      * Add a line to the command history.
      *
-     * @param string $line
      *
      * @return bool Success
      */
@@ -66,7 +65,6 @@ interface Readline
     /**
      * Read a single line of input from the user.
      *
-     * @param string|null $prompt
      *
      * @return false|string
      */

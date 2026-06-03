@@ -14,7 +14,7 @@ trait CanReorderRecords
     /**
      * @param  array<int | string>  $order
      */
-    public function reorderTable(array $order, int | string | null $draggedRecordKey = null): void
+    public function reorderTable(array $order, int|string|null $draggedRecordKey = null): void
     {
         if (! $this->getTable()->isReorderable()) {
             return;
@@ -47,10 +47,10 @@ trait CanReorderRecords
                 ->whereIn($modelKeyName, array_values($order))
                 ->update([
                     $orderColumn => new Expression(
-                        'case ' . collect($order)
+                        'case '.collect($order)
                             ->when($this->getTable()->getReorderDirection() === 'desc', fn (Collection $order) => $order->reverse()->values())
-                            ->map(fn ($recordKey, int $recordIndex): string => 'when ' . $wrappedModelKeyName . ' = ' . DB::getPdo()->quote($recordKey) . ' then ' . ($recordIndex + 1))
-                            ->implode(' ') . ' end'
+                            ->map(fn ($recordKey, int $recordIndex): string => 'when '.$wrappedModelKeyName.' = '.DB::getPdo()->quote($recordKey).' then '.($recordIndex + 1))
+                            ->implode(' ').' end'
                     ),
                 ]);
         });

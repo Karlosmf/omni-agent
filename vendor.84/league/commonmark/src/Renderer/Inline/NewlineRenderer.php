@@ -24,7 +24,7 @@ use League\CommonMark\Xml\XmlNodeRendererInterface;
 use League\Config\ConfigurationAwareInterface;
 use League\Config\ConfigurationInterface;
 
-final class NewlineRenderer implements NodeRendererInterface, XmlNodeRendererInterface, ConfigurationAwareInterface
+final class NewlineRenderer implements ConfigurationAwareInterface, NodeRendererInterface, XmlNodeRendererInterface
 {
     /** @psalm-readonly-allow-private-mutation */
     private ConfigurationInterface $config;
@@ -35,7 +35,7 @@ final class NewlineRenderer implements NodeRendererInterface, XmlNodeRendererInt
     }
 
     /**
-     * @param Newline $node
+     * @param  Newline  $node
      *
      * {@inheritDoc}
      *
@@ -53,7 +53,7 @@ final class NewlineRenderer implements NodeRendererInterface, XmlNodeRendererInt
     }
 
     /**
-     * @param Newline $node
+     * @param  Newline  $node
      *
      * {@inheritDoc}
      *

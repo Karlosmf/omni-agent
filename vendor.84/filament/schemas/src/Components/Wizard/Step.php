@@ -18,13 +18,13 @@ class Step extends Component implements CanConcealComponents
 
     protected ?Closure $beforeValidation = null;
 
-    protected string | Closure | null $description = null;
+    protected string|Closure|null $description = null;
 
-    protected string | BackedEnum | Htmlable | Closure | null $icon = null;
+    protected string|BackedEnum|Htmlable|Closure|null $icon = null;
 
-    protected string | BackedEnum | Htmlable | Closure | null $completedIcon = null;
+    protected string|BackedEnum|Htmlable|Closure|null $completedIcon = null;
 
-    protected bool | Closure $hasFormWrapper = true;
+    protected bool|Closure $hasFormWrapper = true;
 
     /**
      * @var view-string
@@ -52,7 +52,7 @@ class Step extends Component implements CanConcealComponents
             $label = $component->getLabel();
             $statePath = $component->getStatePath();
 
-            return Str::slug(Str::transliterate($label, strict: true)) . '::' . (filled($statePath) ? "{$statePath}::wizard-step" : 'wizard-step');
+            return Str::slug(Str::transliterate($label, strict: true)).'::'.(filled($statePath) ? "{$statePath}::wizard-step" : 'wizard-step');
         }, isInheritable: false);
     }
 
@@ -80,21 +80,21 @@ class Step extends Component implements CanConcealComponents
         return $this;
     }
 
-    public function description(string | Closure | null $description): static
+    public function description(string|Closure|null $description): static
     {
         $this->description = $description;
 
         return $this;
     }
 
-    public function icon(string | BackedEnum | Htmlable | Closure | null $icon): static
+    public function icon(string|BackedEnum|Htmlable|Closure|null $icon): static
     {
         $this->icon = $icon;
 
         return $this;
     }
 
-    public function completedIcon(string | BackedEnum | Htmlable | Closure | null $icon): static
+    public function completedIcon(string|BackedEnum|Htmlable|Closure|null $icon): static
     {
         $this->completedIcon = $icon;
 
@@ -116,12 +116,12 @@ class Step extends Component implements CanConcealComponents
         return $this->evaluate($this->description);
     }
 
-    public function getIcon(): string | BackedEnum | Htmlable | null
+    public function getIcon(): string|BackedEnum|Htmlable|null
     {
         return $this->evaluate($this->icon);
     }
 
-    public function getCompletedIcon(): string | BackedEnum | Htmlable | null
+    public function getCompletedIcon(): string|BackedEnum|Htmlable|null
     {
         return $this->evaluate($this->completedIcon);
     }
@@ -143,7 +143,7 @@ class Step extends Component implements CanConcealComponents
         return true;
     }
 
-    public function formWrapper(bool | Closure $condition = true): static
+    public function formWrapper(bool|Closure $condition = true): static
     {
         $this->hasFormWrapper = $condition;
 

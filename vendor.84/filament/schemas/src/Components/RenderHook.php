@@ -10,17 +10,17 @@ use Illuminate\Support\Arr;
 
 class RenderHook extends Component implements HasEmbeddedView
 {
-    protected string | Closure $name;
+    protected string|Closure $name;
 
     /**
      * @var string | array<string> | Closure | null
      */
-    protected string | array | Closure | null $scopes = null;
+    protected string|array|Closure|null $scopes = null;
 
     /**
      * @param  string | array<string> | Closure | null  $scopes
      */
-    final public function __construct(string | Closure $name, string | array | Closure | null $scopes = null)
+    final public function __construct(string|Closure $name, string|array|Closure|null $scopes = null)
     {
         $this->name($name);
         $this->scopes($scopes);
@@ -29,7 +29,7 @@ class RenderHook extends Component implements HasEmbeddedView
     /**
      * @param  string | array<string> | null  $scopes
      */
-    public static function make(string $name, string | array | null $scopes = null): static
+    public static function make(string $name, string|array|null $scopes = null): static
     {
         $static = app(static::class, ['name' => $name, 'scopes' => $scopes]);
         $static->configure();
@@ -44,7 +44,7 @@ class RenderHook extends Component implements HasEmbeddedView
         $this->liberatedFromContainerGrid();
     }
 
-    public function name(string | Closure $name): static
+    public function name(string|Closure $name): static
     {
         $this->name = $name;
 
@@ -59,7 +59,7 @@ class RenderHook extends Component implements HasEmbeddedView
     /**
      * @param  string | array<string> | Closure | null  $scopes
      */
-    public function scopes(string | array | Closure | null $scopes): static
+    public function scopes(string|array|Closure|null $scopes): static
     {
         $this->scopes = $scopes;
 

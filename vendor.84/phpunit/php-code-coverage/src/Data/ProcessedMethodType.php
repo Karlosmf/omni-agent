@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Data;
 
 /**
@@ -15,19 +18,33 @@ namespace SebastianBergmann\CodeCoverage\Data;
 final class ProcessedMethodType
 {
     public readonly string $methodName;
+
     public readonly string $visibility;
+
     public readonly string $signature;
+
     public readonly int $startLine;
+
     public readonly int $endLine;
+
     public int $executableLines;
+
     public int $executedLines;
+
     public int $executableBranches;
+
     public int $executedBranches;
+
     public int $executablePaths;
+
     public int $executedPaths;
+
     public int $ccn;
+
     public float|int $coverage;
+
     public int|string $crap;
+
     public readonly string $link;
 
     public function __construct(
@@ -47,20 +64,20 @@ final class ProcessedMethodType
         int|string $crap,
         string $link,
     ) {
-        $this->link               = $link;
-        $this->crap               = $crap;
-        $this->coverage           = $coverage;
-        $this->ccn                = $ccn;
-        $this->executedPaths      = $executedPaths;
-        $this->executablePaths    = $executablePaths;
-        $this->executedBranches   = $executedBranches;
+        $this->link = $link;
+        $this->crap = $crap;
+        $this->coverage = $coverage;
+        $this->ccn = $ccn;
+        $this->executedPaths = $executedPaths;
+        $this->executablePaths = $executablePaths;
+        $this->executedBranches = $executedBranches;
         $this->executableBranches = $executableBranches;
-        $this->executedLines      = $executedLines;
-        $this->executableLines    = $executableLines;
-        $this->endLine            = $endLine;
-        $this->startLine          = $startLine;
-        $this->signature          = $signature;
-        $this->visibility         = $visibility;
-        $this->methodName         = $methodName;
+        $this->executedLines = $executedLines;
+        $this->executableLines = $executableLines;
+        $this->endLine = $endLine;
+        $this->startLine = $startLine;
+        $this->signature = $signature;
+        $this->visibility = $visibility;
+        $this->methodName = $methodName;
     }
 }

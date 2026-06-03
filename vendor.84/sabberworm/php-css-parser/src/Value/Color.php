@@ -16,8 +16,8 @@ use Sabberworm\CSS\Parsing\UnexpectedTokenException;
 class Color extends CSSFunction
 {
     /**
-     * @param array<non-empty-string, Value|string> $colorValues
-     * @param int<1, max>|null $lineNumber
+     * @param  array<non-empty-string, Value|string>  $colorValues
+     * @param  int<1, max>|null  $lineNumber
      */
     public function __construct(array $colorValues, ?int $lineNumber = null)
     {
@@ -46,19 +46,19 @@ class Color extends CSSFunction
         $parserState->consume('#');
         $hexValue = $parserState->parseIdentifier(false);
         if ($parserState->strlen($hexValue) === 3) {
-            $hexValue = $hexValue[0] . $hexValue[0] . $hexValue[1] . $hexValue[1] . $hexValue[2] . $hexValue[2];
+            $hexValue = $hexValue[0].$hexValue[0].$hexValue[1].$hexValue[1].$hexValue[2].$hexValue[2];
         } elseif ($parserState->strlen($hexValue) === 4) {
-            $hexValue = $hexValue[0] . $hexValue[0] . $hexValue[1] . $hexValue[1] . $hexValue[2] . $hexValue[2]
-                . $hexValue[3] . $hexValue[3];
+            $hexValue = $hexValue[0].$hexValue[0].$hexValue[1].$hexValue[1].$hexValue[2].$hexValue[2]
+                .$hexValue[3].$hexValue[3];
         }
 
         if ($parserState->strlen($hexValue) === 8) {
             $colorValues = [
-                'r' => new Size(\intval($hexValue[0] . $hexValue[1], 16), null, true, $parserState->currentLine()),
-                'g' => new Size(\intval($hexValue[2] . $hexValue[3], 16), null, true, $parserState->currentLine()),
-                'b' => new Size(\intval($hexValue[4] . $hexValue[5], 16), null, true, $parserState->currentLine()),
+                'r' => new Size(\intval($hexValue[0].$hexValue[1], 16), null, true, $parserState->currentLine()),
+                'g' => new Size(\intval($hexValue[2].$hexValue[3], 16), null, true, $parserState->currentLine()),
+                'b' => new Size(\intval($hexValue[4].$hexValue[5], 16), null, true, $parserState->currentLine()),
                 'a' => new Size(
-                    \round(self::mapRange(\intval($hexValue[6] . $hexValue[7], 16), 0, 255, 0, 1), 2),
+                    \round(self::mapRange(\intval($hexValue[6].$hexValue[7], 16), 0, 255, 0, 1), 2),
                     null,
                     true,
                     $parserState->currentLine()
@@ -66,9 +66,9 @@ class Color extends CSSFunction
             ];
         } elseif ($parserState->strlen($hexValue) === 6) {
             $colorValues = [
-                'r' => new Size(\intval($hexValue[0] . $hexValue[1], 16), null, true, $parserState->currentLine()),
-                'g' => new Size(\intval($hexValue[2] . $hexValue[3], 16), null, true, $parserState->currentLine()),
-                'b' => new Size(\intval($hexValue[4] . $hexValue[5], 16), null, true, $parserState->currentLine()),
+                'r' => new Size(\intval($hexValue[0].$hexValue[1], 16), null, true, $parserState->currentLine()),
+                'g' => new Size(\intval($hexValue[2].$hexValue[3], 16), null, true, $parserState->currentLine()),
+                'b' => new Size(\intval($hexValue[4].$hexValue[5], 16), null, true, $parserState->currentLine()),
             ];
         } else {
             throw new UnexpectedTokenException(
@@ -120,13 +120,13 @@ class Color extends CSSFunction
         $containsNone = false;
         $isLegacySyntax = false;
         $expectedArgumentCount = $parserState->strlen($colorModeForParsing);
-        for ($argumentIndex = 0; $argumentIndex < $expectedArgumentCount; ++$argumentIndex) {
+        for ($argumentIndex = 0; $argumentIndex < $expectedArgumentCount; $argumentIndex++) {
             $parserState->consumeWhiteSpace();
             $valueKey = $colorModeForParsing[$argumentIndex];
             if ($parserState->comes('var')) {
                 $colorValues[$valueKey] = CSSFunction::parseIdentifierOrFunction($parserState);
                 $containsVar = true;
-            } elseif (!$isLegacySyntax && $parserState->comes('none')) {
+            } elseif (! $isLegacySyntax && $parserState->comes('none')) {
                 $colorValues[$valueKey] = $parserState->parseIdentifier();
                 $containsNone = true;
             } else {
@@ -148,7 +148,7 @@ class Color extends CSSFunction
             // "Legacy" syntax is comma-delimited, and does not allow the `none` keyword.
             // "Modern" syntax is space-delimited, with `/` as alpha delimiter.
             // They cannot be mixed.
-            if ($argumentIndex === 0 && !$containsNone) {
+            if ($argumentIndex === 0 && ! $containsNone) {
                 // An immediate closing parenthesis is not valid.
                 if ($parserState->comes(')')) {
                     throw new UnexpectedTokenException(
@@ -166,7 +166,7 @@ class Color extends CSSFunction
             }
 
             // In the "modern" syntax, the alpha value must be delimited with `/`.
-            if (!$isLegacySyntax) {
+            if (! $isLegacySyntax) {
                 if ($containsVar) {
                     // If the `var` substitution encompasses more than one argument,
                     // the alpha deliminator may come at any time.
@@ -207,7 +207,7 @@ class Color extends CSSFunction
     }
 
     /**
-     * @param array<non-empty-string, Value|string> $colorValues
+     * @param  array<non-empty-string, Value|string>  $colorValues
      */
     public function setColor(array $colorValues): void
     {
@@ -264,7 +264,7 @@ class Color extends CSSFunction
     private function allComponentsAreNumbers(): bool
     {
         foreach ($this->components as $component) {
-            if (!($component instanceof Size) || $component->getUnit() !== null) {
+            if (! ($component instanceof Size) || $component->getUnit() !== null) {
                 return false;
             }
         }
@@ -291,7 +291,7 @@ class Color extends CSSFunction
         );
         $canUseShortVariant = ($result[0] === $result[1]) && ($result[2] === $result[3]) && ($result[4] === $result[5]);
 
-        return '#' . ($canUseShortVariant ? $result[0] . $result[2] . $result[4] : $result);
+        return '#'.($canUseShortVariant ? $result[0].$result[2].$result[4] : $result);
     }
 
     /**
@@ -300,14 +300,12 @@ class Color extends CSSFunction
      *
      * The "legacy" and "modern" monikers are part of the formal W3C syntax.
      * See the following for more information:
-     * - {@link
-     *     https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/rgb#formal_syntax
+     * - {@link *     https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/rgb#formal_syntax
      *     Description of the formal syntax for `rgb()` on MDN
-     *   };
-     * - {@link
-     *     https://www.w3.org/TR/css-color-4/#rgb-functions
+     *};
+     * - {@link *     https://www.w3.org/TR/css-color-4/#rgb-functions
      *     The same in the CSS Color Module Level 4 W3C Candidate Recommendation Draft
-     *   } (as of 13 February 2024, at time of writing).
+     *} (as of 13 February 2024, at time of writing).
      */
     private function shouldRenderInModernSyntax(): bool
     {
@@ -315,7 +313,7 @@ class Color extends CSSFunction
             return true;
         }
 
-        if (!$this->colorFunctionMayHaveMixedValueTypes($this->getRealName())) {
+        if (! $this->colorFunctionMayHaveMixedValueTypes($this->getRealName())) {
             return false;
         }
 
@@ -327,7 +325,7 @@ class Color extends CSSFunction
                 // So it is not necessary to check it.  It's also always last, hence `break` rather than `continue`.
                 break;
             }
-            if (!($value instanceof Size)) {
+            if (! ($value instanceof Size)) {
                 // Unexpected, unknown, or modified via the API
                 return false;
             }
@@ -381,10 +379,10 @@ class Color extends CSSFunction
         $arguments = $formatter->implode(' ', $componentsWithoutAlpha);
         if (isset($alpha)) {
             $separator = $formatter->spaceBeforeListArgumentSeparator('/')
-                . '/' . $formatter->spaceAfterListArgumentSeparator('/');
+                .'/'.$formatter->spaceAfterListArgumentSeparator('/');
             $arguments = $formatter->implode($separator, [$arguments, $alpha]);
         }
 
-        return $this->getName() . '(' . $arguments . ')';
+        return $this->getName().'('.$arguments.')';
     }
 }

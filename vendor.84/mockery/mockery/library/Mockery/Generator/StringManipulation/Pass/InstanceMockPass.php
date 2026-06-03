@@ -5,12 +5,14 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
 namespace Mockery\Generator\StringManipulation\Pass;
 
 use Mockery\Generator\MockConfiguration;
+
 use function strrpos;
 use function substr;
 
@@ -58,7 +60,7 @@ class InstanceMockPass implements Pass
 MOCK;
 
     /**
-     * @param  string $code
+     * @param  string  $code
      * @return string
      */
     public function apply($code, MockConfiguration $config)
@@ -73,6 +75,7 @@ MOCK;
     protected function appendToClass($class, $code)
     {
         $lastBrace = strrpos($class, '}');
-        return substr($class, 0, $lastBrace) . $code . "\n    }\n";
+
+        return substr($class, 0, $lastBrace).$code."\n    }\n";
     }
 }

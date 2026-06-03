@@ -35,8 +35,9 @@ interface WebDriverNavigationInterface
     /**
      * Navigate to the given URL
      *
-     * @param string $url
+     * @param  string  $url
      * @return self
+     *
      * @see WebDriver::get()
      */
     public function to($url);

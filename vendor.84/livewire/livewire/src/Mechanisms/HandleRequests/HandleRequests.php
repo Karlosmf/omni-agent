@@ -2,9 +2,10 @@
 
 namespace Livewire\Mechanisms\HandleRequests;
 
+use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
+use Illuminate\Foundation\Http\Middleware\TrimStrings;
 use Illuminate\Support\Facades\Route;
 use Livewire\Features\SupportScriptsAndAssets\SupportScriptsAndAssets;
-
 use Livewire\Mechanisms\Mechanism;
 
 use function Livewire\trigger;
@@ -13,7 +14,7 @@ class HandleRequests extends Mechanism
 {
     protected $updateRoute;
 
-    function boot()
+    public function boot()
     {
         // Register the default route immediately (before routes files load)
         // so it's positioned before any catch-all routes.
@@ -33,7 +34,7 @@ class HandleRequests extends Mechanism
         return $this->findUpdateRoute() !== null;
     }
 
-    function getUpdateUri()
+    public function getUpdateUri()
     {
         // When routes are cached, $this->updateRoute may be null because
         // setUpdateRoute() was never called (the route already existed).
@@ -58,6 +59,7 @@ class HandleRequests extends Mechanism
                 // If it's the default route, save it but keep looking for a custom one
                 if ($route->getName() === 'default.livewire.update') {
                     $defaultRoute = $route;
+
                     continue;
                 }
 
@@ -69,18 +71,18 @@ class HandleRequests extends Mechanism
         return $defaultRoute;
     }
 
-    function skipRequestPayloadTamperingMiddleware()
+    public function skipRequestPayloadTamperingMiddleware()
     {
-        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::skipWhen(function () {
+        ConvertEmptyStringsToNull::skipWhen(function () {
             return $this->isLivewireRequest();
         });
 
-        \Illuminate\Foundation\Http\Middleware\TrimStrings::skipWhen(function () {
+        TrimStrings::skipWhen(function () {
             return $this->isLivewireRequest();
         });
     }
 
-    function setUpdateRoute($callback)
+    public function setUpdateRoute($callback)
     {
         $route = $callback([self::class, 'handleUpdate']);
 
@@ -92,17 +94,19 @@ class HandleRequests extends Mechanism
         $this->updateRoute = $route;
     }
 
-    function isLivewireRequest()
+    public function isLivewireRequest()
     {
         return request()->hasHeader('X-Livewire');
     }
 
-    function isLivewireRoute()
+    public function isLivewireRoute()
     {
         // @todo: Rename this back to `isLivewireRequest` once the need for it in tests has been fixed.
         $route = request()->route();
 
-        if (! $route) return false;
+        if (! $route) {
+            return false;
+        }
 
         /*
          * Check to see if route name ends with `livewire.update`, as if
@@ -113,7 +117,7 @@ class HandleRequests extends Mechanism
         return $route->named('*livewire.update');
     }
 
-    function handleUpdate()
+    public function handleUpdate()
     {
         $requestPayload = request(key: 'components', default: []);
 
@@ -128,7 +132,7 @@ class HandleRequests extends Mechanism
             $updates = $componentPayload['updates'];
             $calls = $componentPayload['calls'];
 
-            [ $snapshot, $effects ] = app('livewire')->update($snapshot, $updates, $calls);
+            [$snapshot, $effects] = app('livewire')->update($snapshot, $updates, $calls);
 
             $componentResponses[] = [
                 'snapshot' => json_encode($snapshot),

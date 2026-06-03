@@ -27,12 +27,12 @@ final class CommonMarkConverter extends MarkdownConverter
     /**
      * Create a new Markdown converter pre-configured for CommonMark
      *
-     * @param array<string, mixed> $config
+     * @param  array<string, mixed>  $config
      */
     public function __construct(array $config = [])
     {
         $environment = new Environment($config);
-        $environment->addExtension(new CommonMarkCoreExtension());
+        $environment->addExtension(new CommonMarkCoreExtension);
 
         parent::__construct($environment);
     }

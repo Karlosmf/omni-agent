@@ -2,14 +2,16 @@
 
 namespace Livewire\Features\SupportRedirects;
 
-use Livewire\Mechanisms\HandleRequests\HandleRequests;
-use Livewire\ComponentHook;
 use Livewire\Component;
+use Livewire\ComponentHook;
+use Livewire\Mechanisms\HandleRequests\HandleRequests;
+
 use function Livewire\on;
 
 class SupportRedirects extends ComponentHook
 {
     public static $redirectorCacheStack = [];
+
     public static $atLeastOneMountedComponentHasRedirected = false;
 
     public static function provide()
@@ -59,7 +61,9 @@ class SupportRedirects extends ComponentHook
             abort(redirect($to));
         }
 
-        if (! $to) return;
+        if (! $to) {
+            return;
+        }
 
         $context->addEffect('redirect', $to);
         $usingNavigate && $context->addEffect('redirectUsingNavigate', true);

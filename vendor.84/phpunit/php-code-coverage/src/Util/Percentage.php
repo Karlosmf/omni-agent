@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Util;
 
 use function sprintf;
@@ -17,6 +20,7 @@ use function sprintf;
 final readonly class Percentage
 {
     private float $fraction;
+
     private float $total;
 
     public static function fromFractionAndTotal(float $fraction, float $total): self
@@ -27,7 +31,7 @@ final readonly class Percentage
     private function __construct(float $fraction, float $total)
     {
         $this->fraction = $fraction;
-        $this->total    = $total;
+        $this->total = $total;
     }
 
     public function asFloat(): float

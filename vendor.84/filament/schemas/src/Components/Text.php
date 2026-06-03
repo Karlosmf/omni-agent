@@ -27,20 +27,20 @@ class Text extends Component
     use HasTooltip;
     use HasWeight;
 
-    protected string | Htmlable | Closure | null $content;
+    protected string|Htmlable|Closure|null $content;
 
-    protected bool | Closure $isBadge = false;
+    protected bool|Closure $isBadge = false;
 
-    protected TextSize | Size | string | Closure | null $size = null;
+    protected TextSize|Size|string|Closure|null $size = null;
 
     protected string $view = 'filament-schemas::components.text';
 
-    final public function __construct(string | Htmlable | Closure | null $content)
+    final public function __construct(string|Htmlable|Closure|null $content)
     {
         $this->content($content);
     }
 
-    public static function make(string | Htmlable | Closure | null $content): static
+    public static function make(string|Htmlable|Closure|null $content): static
     {
         $static = app(static::class, ['content' => $content]);
         $static->configure();
@@ -55,14 +55,14 @@ class Text extends Component
         $this->defaultColor('gray');
     }
 
-    public function content(string | Htmlable | Closure | null $content): static
+    public function content(string|Htmlable|Closure|null $content): static
     {
         $this->content = $content;
 
         return $this;
     }
 
-    public function badge(bool | Closure $condition = true): static
+    public function badge(bool|Closure $condition = true): static
     {
         $this->isBadge = $condition;
 
@@ -81,19 +81,19 @@ class Text extends Component
         return $this;
     }
 
-    public function getContent(): string | Htmlable | null
+    public function getContent(): string|Htmlable|null
     {
         return $this->evaluate($this->content);
     }
 
-    public function size(TextSize | Size | string | Closure | null $size): static
+    public function size(TextSize|Size|string|Closure|null $size): static
     {
         $this->size = $size;
 
         return $this;
     }
 
-    public function getSize(): TextSize | Size | string | null
+    public function getSize(): TextSize|Size|string|null
     {
         $size = $this->evaluate($this->size);
 

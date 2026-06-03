@@ -36,9 +36,9 @@ class CheckboxColumn extends Column implements Editable, HasEmbeddedView
                 'x-load' => true,
                 'x-load-src' => FilamentAsset::getAlpineComponentSrc('columns/checkbox', 'filament/tables'),
                 'x-data' => 'checkboxTableColumn({
-                    name: ' . Js::from($this->getName()) . ',
-                    recordKey: ' . Js::from($this->getRecordKey()) . ',
-                    state: ' . Js::from($state) . ',
+                    name: '.Js::from($this->getName()).',
+                    recordKey: '.Js::from($this->getRecordKey()).',
+                    state: '.Js::from($state).',
                 })',
             ], escape: false)
             ->class([
@@ -55,9 +55,9 @@ class CheckboxColumn extends Column implements Editable, HasEmbeddedView
                 'x-bind:disabled' => $isDisabled ? null : 'isLoading',
                 'x-tooltip' => filled($tooltip = $this->getTooltip($state))
                     ? '{
-                        content: ' . Js::from($tooltip) . ',
+                        content: '.Js::from($tooltip).',
                         theme: $store.theme,
-                        allowHTML: ' . Js::from($tooltip instanceof Htmlable) . ',
+                        allowHTML: '.Js::from($tooltip instanceof Htmlable).',
                     }'
                     : null,
             ], escape: false)

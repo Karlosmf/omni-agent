@@ -31,7 +31,7 @@ class DefaultNameGenerator implements NameGeneratorInterface
     public function generate(UuidInterface $ns, string $name, string $hashAlgorithm): string
     {
         try {
-            return hash($hashAlgorithm, $ns->getBytes() . $name, true);
+            return hash($hashAlgorithm, $ns->getBytes().$name, true);
         } catch (ValueError $e) {
             throw new NameException(
                 message: sprintf('Unable to hash namespace and name with algorithm \'%s\'', $hashAlgorithm),

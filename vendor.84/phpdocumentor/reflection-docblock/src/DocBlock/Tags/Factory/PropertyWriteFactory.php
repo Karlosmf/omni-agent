@@ -22,6 +22,7 @@ use function trim;
 final class PropertyWriteFactory implements PHPStanFactory
 {
     private DescriptionFactory $descriptionFactory;
+
     private TypeResolver $typeResolver;
 
     public function __construct(TypeResolver $typeResolver, DescriptionFactory $descriptionFactory)

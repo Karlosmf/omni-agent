@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\Csv;
 
+use const ARRAY_FILTER_USE_KEY;
+
 use CallbackFilterIterator;
 use Closure;
 use Iterator;
@@ -47,35 +49,39 @@ use function in_array;
 use function is_int;
 use function sort;
 
-use const ARRAY_FILTER_USE_KEY;
-
 final class Buffer implements TabularData
 {
     public const INCLUDE_HEADER = 1;
+
     public const EXCLUDE_HEADER = 2;
 
     /** @var list<string>|array{} */
     private readonly array $header;
+
     /** @var list<string>|array{} */
     private readonly array $sortedHeader;
+
     /** @var array<string, null> */
     private readonly array $nullRecord;
+
     /** @var array<int, list<mixed>> */
     private array $rows = [];
+
     /** @var array<Closure(array): bool> callable collection to validate the record before insertion. */
     private array $validators = [];
+
     /** @var array<Closure(array): array> collection of Closure to format the record before reading. */
     private array $formatters = [];
 
     /**
-     * @param list<string>|array{} $header
+     * @param  list<string>|array{}  $header
      *
      * @throws SyntaxError
      */
     public function __construct(array $header = [])
     {
         $this->header = match (true) {
-            !array_is_list($header) => throw new SyntaxError('The header must be a list of unique column names.'),
+            ! array_is_list($header) => throw new SyntaxError('The header must be a list of unique column names.'),
             $header !== array_filter($header, is_string(...)) => throw SyntaxError::dueToInvalidHeaderColumnNames(),
             $header !== array_unique($header) => throw SyntaxError::dueToDuplicateHeaderColumnNames($header),
             default => $header,
@@ -99,7 +105,7 @@ final class Buffer implements TabularData
         /** @var Iterator<int, array> $rows */
         $rows = $dataStorage instanceof TabularData ? $dataStorage->getRecords() : RdbmsResult::rows($dataStorage);
         $instance = new self(match (true) {
-            self::EXCLUDE_HEADER === $options => [],
+            $options === self::EXCLUDE_HEADER => [],
             $dataStorage instanceof TabularData => $dataStorage->getHeader(),
             default => RdbmsResult::columnNames($dataStorage),
         });
@@ -123,7 +129,7 @@ final class Buffer implements TabularData
     {
         $bytes = 0;
         $header = $this->getHeader();
-        if (self::INCLUDE_HEADER === $options && [] !== $header) {
+        if ($options === self::INCLUDE_HEADER && $header !== []) {
             $bytes += $dataStorage->insertOne($header);
         }
 
@@ -132,12 +138,12 @@ final class Buffer implements TabularData
 
     public function isEmpty(): bool
     {
-        return [] === $this->rows;
+        return $this->rows === [];
     }
 
     public function hasHeader(): bool
     {
-        return [] !== $this->header;
+        return $this->header !== [];
     }
 
     public function recordCount(): int
@@ -154,14 +160,14 @@ final class Buffer implements TabularData
     }
 
     /**
-     * @throws SyntaxError
-     *
      * @return Iterator<int, array>
+     *
+     * @throws SyntaxError
      */
     public function getRecords(array $header = []): Iterator
     {
         $header = match (true) {
-            [] === $header => $this->header,
+            $header === [] => $this->header,
             $header !== array_filter($header, is_int(...), ARRAY_FILTER_USE_KEY) => throw new SyntaxError('The header must be a list of unique column names.'),
             $header !== array_filter($header, is_string(...)) => throw SyntaxError::dueToInvalidHeaderColumnNames(),
             $header !== array_unique($header) => throw SyntaxError::dueToDuplicateHeaderColumnNames($header),
@@ -173,18 +179,18 @@ final class Buffer implements TabularData
 
     /**
      * @template T of object
-     * @param class-string<T> $className
-     * @param array<string> $header
+     *
+     * @param  class-string<T>  $className
+     * @param  array<string>  $header
+     * @return Iterator<T>
      *
      * @throws Exception
      * @throws MappingFailed
      * @throws TypeCastingFailed
-     *
-     * @return iterator<T>
      */
     public function getRecordsAsObject(string $className, array $header = []): Iterator
     {
-        return Denormalizer::assignAll($className, $this->getRecords($header), [] === $header ? $this->header : $header);
+        return Denormalizer::assignAll($className, $this->getRecords($header), $header === [] ? $this->header : $header);
     }
 
     /**
@@ -192,11 +198,10 @@ final class Buffer implements TabularData
      *
      * @template TMap
      *
-     * @param callable(array, int): TMap $callback
+     * @param  callable(array, int): TMap  $callback
+     * @return Iterator<TMap>
      *
      * @throws SyntaxError
-     *
-     * @return Iterator<TMap>
      */
     public function map(callable $callback): Iterator
     {
@@ -204,7 +209,7 @@ final class Buffer implements TabularData
     }
 
     /**
-     * @param non-negative-int $nth
+     * @param  non-negative-int  $nth
      *
      * @throws InvalidArgument
      */
@@ -220,9 +225,9 @@ final class Buffer implements TabularData
     /**
      * @template T of object
      *
-     * @param non-negative-int $nth
-     * @param class-string<T> $className
-     * @param array<string> $header
+     * @param  non-negative-int  $nth
+     * @param  class-string<T>  $className
+     * @param  array<string>  $header
      *
      * @throws InvalidArgument
      * @throws ReflectionException
@@ -233,7 +238,7 @@ final class Buffer implements TabularData
             return null;
         }
 
-        return Denormalizer::assign($className, $this->rowToRecord($row, [] !== $header ? $header : $this->header));
+        return Denormalizer::assign($className, $this->rowToRecord($row, $header !== [] ? $header : $this->header));
     }
 
     public function firstOffset(): ?int
@@ -247,8 +252,8 @@ final class Buffer implements TabularData
     }
 
     /**
-     * @param class-string $className
-     * @param array<string> $header
+     * @param  class-string  $className
+     * @param  array<string>  $header
      *
      * @throws ReflectionException
      */
@@ -258,7 +263,7 @@ final class Buffer implements TabularData
             return null;
         }
 
-        return Denormalizer::assign($className, $this->rowToRecord($row, [] !== $header ? $header : $this->header));
+        return Denormalizer::assign($className, $this->rowToRecord($row, $header !== [] ? $header : $this->header));
     }
 
     public function lastOffset(): ?int
@@ -272,8 +277,8 @@ final class Buffer implements TabularData
     }
 
     /**
-     * @param class-string $className
-     * @param array<string> $header
+     * @param  class-string  $className
+     * @param  array<string>  $header
      *
      * @throws ReflectionException
      */
@@ -283,7 +288,7 @@ final class Buffer implements TabularData
             return null;
         }
 
-        return Denormalizer::assign($className, $this->rowToRecord($row, [] !== $header ? $header : $this->header));
+        return Denormalizer::assign($className, $this->rowToRecord($row, $header !== [] ? $header : $this->header));
     }
 
     /**
@@ -291,13 +296,13 @@ final class Buffer implements TabularData
      */
     private function nthRow(int $nth, string $method): array
     {
-        -1 < $nth || throw InvalidArgument::dueToInvalidRecordOffset($nth, $method);
+        $nth > -1 || throw InvalidArgument::dueToInvalidRecordOffset($nth, $method);
         if (null === ($first = $this->firstOffset())) {
             return [];
         }
 
         $offset = $first + $nth;
-        if (!array_key_exists($offset, $this->rows)) {
+        if (! array_key_exists($offset, $this->rows)) {
             return [];
         }
 
@@ -308,15 +313,13 @@ final class Buffer implements TabularData
     {
         if (is_int($index)) {
             $index > -1 || throw InvalidArgument::dueToInvalidColumnIndex($index, 'offset', __METHOD__);
-            [] === $this->header || array_key_exists($index, $this->header) || throw InvalidArgument::dueToInvalidColumnIndex($index, 'name', __METHOD__);
+            $this->header === [] || array_key_exists($index, $this->header) || throw InvalidArgument::dueToInvalidColumnIndex($index, 'name', __METHOD__);
 
             $iterator = new MapIterator($this->getRecords(), fn (array $row) => array_values($row));
             $iterator = new CallbackFilterIterator($iterator, fn (array $row) => array_key_exists($index, $row));
 
             return new MapIterator($iterator, fn (array $row) => $row[$index]);
-        }
-
-        [] !== $this->header || throw InvalidArgument::dueToInvalidColumnIndex($index, 'name', __METHOD__);
+        }[] !== $this->header || throw InvalidArgument::dueToInvalidColumnIndex($index, 'name', __METHOD__);
         in_array($index, $this->header, true) || throw InvalidArgument::dueToInvalidColumnIndex($index, 'name', __METHOD__);
 
         $iterator = new CallbackFilterIterator($this->getRecords(), fn (array $row) => array_key_exists($index, $row));
@@ -327,11 +330,11 @@ final class Buffer implements TabularData
     /**
      * Adds a record validator.
      *
-     * @param callable(array): bool $validator
+     * @param  callable(array): bool  $validator
      */
     public function addValidator(callable $validator, string $name): self
     {
-        $this->validators[$name] = !$validator instanceof Closure ? $validator(...) : $validator;
+        $this->validators[$name] = ! $validator instanceof Closure ? $validator(...) : $validator;
 
         return $this;
     }
@@ -339,11 +342,11 @@ final class Buffer implements TabularData
     /**
      * Adds a record formatter.
      *
-     * @param callable(array): array $formatter
+     * @param  callable(array): array  $formatter
      */
     public function addFormatter(callable $formatter): self
     {
-        $this->formatters[] = !$formatter instanceof Closure ? $formatter(...) : $formatter;
+        $this->formatters[] = ! $formatter instanceof Closure ? $formatter(...) : $formatter;
 
         return $this;
     }
@@ -353,7 +356,7 @@ final class Buffer implements TabularData
      */
     public function insert(array ...$records): int
     {
-        [] !== $records || throw CannotInsertRecord::triggerOnValidation('@buffer_record_validation_on_insert', $records);
+        $records !== [] || throw CannotInsertRecord::triggerOnValidation('@buffer_record_validation_on_insert', $records);
 
         array_push($this->rows, ...array_map($this->formatInsertRecord(...), $records));
 
@@ -413,7 +416,7 @@ final class Buffer implements TabularData
         $this->filterInsertRecord($record) || throw CannotInsertRecord::triggerOnValidation('@buffer_record_validation_on_insert', $record);
 
         return $this->validateRecord(match (true) {
-            [] === $this->header => !array_is_list($record) ? array_values($record) : $record,
+            $this->header === [] => ! array_is_list($record) ? array_values($record) : $record,
             array_is_list($record) => array_combine($this->header, $record),
             default => [...$this->nullRecord, ...$record],
         });
@@ -421,7 +424,7 @@ final class Buffer implements TabularData
 
     private function filterInsertRecord(array $record): bool
     {
-        if ([] === $this->header) {
+        if ($this->header === []) {
             return true;
         }
 
@@ -440,7 +443,7 @@ final class Buffer implements TabularData
      */
     private function filterUpdateRecord(array $record): array
     {
-        [] !== $record || throw CannotInsertRecord::triggerOnValidation('@buffer_record_validation_on_update', $record);
+        $record !== [] || throw CannotInsertRecord::triggerOnValidation('@buffer_record_validation_on_update', $record);
         if (array_is_list($record)) {
             return $this->rowToRecord($record, $this->header);
         }
@@ -450,7 +453,7 @@ final class Buffer implements TabularData
         return match (true) {
             $keys === array_filter($keys, is_int(...)) => $record,
             $keys !== array_filter($keys, is_string(...)),
-            [] !== array_diff($keys, $this->header) => throw CannotInsertRecord::triggerOnValidation('@buffer_record_validation_on_update', $record),
+            array_diff($keys, $this->header) !== [] => throw CannotInsertRecord::triggerOnValidation('@buffer_record_validation_on_update', $record),
             default => $record,
         };
     }
@@ -464,20 +467,20 @@ final class Buffer implements TabularData
     {
         $record = array_reduce($this->formatters, fn (array $record, callable $formatter): array => $formatter($record), $record);
         foreach ($this->validators as $name => $validator) {
-            true === $validator($record) || throw CannotInsertRecord::triggerOnValidation($name, $record);
+            $validator($record) === true || throw CannotInsertRecord::triggerOnValidation($name, $record);
         }
 
-        return !array_is_list($record) ? array_values($record) : $record;
+        return ! array_is_list($record) ? array_values($record) : $record;
     }
 
     private function filterPredicate(Predicate|Closure|callable $predicate): Predicate
     {
-        return !$predicate instanceof Predicate ? Criteria::all($predicate) : $predicate;
+        return ! $predicate instanceof Predicate ? Criteria::all($predicate) : $predicate;
     }
 
     private function rowToRecord(array $row, array $header): array
     {
-        if ([] === $header) {
+        if ($header === []) {
             return $row;
         }
 

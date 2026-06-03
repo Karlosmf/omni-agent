@@ -29,8 +29,6 @@ class WtfCommand extends TraceCommand implements ContextAware
 
     /**
      * ContextAware interface.
-     *
-     * @param Context $context
      */
     public function setContext(Context $context)
     {
@@ -42,7 +40,7 @@ class WtfCommand extends TraceCommand implements ContextAware
      */
     protected function configure(): void
     {
-        list($grep, $insensitive, $invert) = FilterOptions::getOptions();
+        [$grep, $insensitive, $invert] = FilterOptions::getOptions();
 
         $this
             ->setName('wtf')

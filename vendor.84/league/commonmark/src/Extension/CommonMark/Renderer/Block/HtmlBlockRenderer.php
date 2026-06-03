@@ -25,13 +25,13 @@ use League\CommonMark\Xml\XmlNodeRendererInterface;
 use League\Config\ConfigurationAwareInterface;
 use League\Config\ConfigurationInterface;
 
-final class HtmlBlockRenderer implements NodeRendererInterface, XmlNodeRendererInterface, ConfigurationAwareInterface
+final class HtmlBlockRenderer implements ConfigurationAwareInterface, NodeRendererInterface, XmlNodeRendererInterface
 {
     /** @psalm-readonly-allow-private-mutation */
     private ConfigurationInterface $config;
 
     /**
-     * @param HtmlBlock $node
+     * @param  HtmlBlock  $node
      *
      * {@inheritDoc}
      *

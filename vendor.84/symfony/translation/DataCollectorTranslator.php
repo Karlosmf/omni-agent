@@ -19,18 +19,19 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * @author Abdellatif Ait boudad <a.aitboudad@gmail.com>
  */
-final class DataCollectorTranslator implements TranslatorInterface, TranslatorBagInterface, LocaleAwareInterface, WarmableInterface, ResetInterface
+final class DataCollectorTranslator implements LocaleAwareInterface, ResetInterface, TranslatorBagInterface, TranslatorInterface, WarmableInterface
 {
     public const MESSAGE_DEFINED = 0;
+
     public const MESSAGE_MISSING = 1;
+
     public const MESSAGE_EQUALS_FALLBACK = 2;
 
     private array $messages = [];
 
     public function __construct(
         private TranslatorInterface&TranslatorBagInterface&LocaleAwareInterface $translator,
-    ) {
-    }
+    ) {}
 
     public function reset(): void
     {

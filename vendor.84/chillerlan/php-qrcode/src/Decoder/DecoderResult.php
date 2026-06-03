@@ -1,8 +1,10 @@
 <?php
+
 /**
  * Class DecoderResult
  *
  * @created      17.01.2021
+ *
  * @author       ZXing Authors
  * @author       Smiley <smiley@chillerlan.net>
  * @copyright    2021 Smiley
@@ -11,8 +13,13 @@
 
 namespace chillerlan\QRCode\Decoder;
 
-use chillerlan\QRCode\Common\{BitBuffer, EccLevel, MaskPattern, Version};
+use chillerlan\QRCode\Common\BitBuffer;
+use chillerlan\QRCode\Common\EccLevel;
+use chillerlan\QRCode\Common\MaskPattern;
+use chillerlan\QRCode\Common\Version;
 use chillerlan\QRCode\Data\QRMatrix;
+use chillerlan\QRCode\Detector\FinderPattern;
+
 use function property_exists;
 
 /**
@@ -20,83 +27,87 @@ use function property_exists;
  * applies to 2D barcode formats. For now, it contains the raw bytes obtained
  * as well as a String interpretation of those bytes, if applicable.
  *
- * @property \chillerlan\QRCode\Common\BitBuffer         $rawBytes
- * @property string                                      $data
- * @property \chillerlan\QRCode\Common\Version           $version
- * @property \chillerlan\QRCode\Common\EccLevel          $eccLevel
- * @property \chillerlan\QRCode\Common\MaskPattern       $maskPattern
- * @property int                                         $structuredAppendParity
- * @property int                                         $structuredAppendSequence
- * @property \chillerlan\QRCode\Detector\FinderPattern[] $finderPatterns
+ * @property BitBuffer $rawBytes
+ * @property string $data
+ * @property Version $version
+ * @property EccLevel $eccLevel
+ * @property MaskPattern $maskPattern
+ * @property int $structuredAppendParity
+ * @property int $structuredAppendSequence
+ * @property FinderPattern[] $finderPatterns
  */
-final class DecoderResult{
+final class DecoderResult
+{
+    private BitBuffer $rawBytes;
 
-	private BitBuffer   $rawBytes;
-	private Version     $version;
-	private EccLevel    $eccLevel;
-	private MaskPattern $maskPattern;
-	private string      $data = '';
-	private int         $structuredAppendParity = -1;
-	private int         $structuredAppendSequence = -1;
-	/** @var \chillerlan\QRCode\Detector\FinderPattern[] */
-	private array       $finderPatterns = [];
+    private Version $version;
 
-	/**
-	 * DecoderResult constructor.
-	 */
-	public function __construct(?iterable $properties = null){
+    private EccLevel $eccLevel;
 
-		if($properties !== null){
+    private MaskPattern $maskPattern;
 
-			foreach($properties as $property => $value){
+    private string $data = '';
 
-				if(!property_exists($this, $property)){
-					continue;
-				}
+    private int $structuredAppendParity = -1;
 
-				$this->{$property} = $value;
-			}
+    private int $structuredAppendSequence = -1;
 
-		}
+    /** @var FinderPattern[] */
+    private array $finderPatterns = [];
 
-	}
+    /**
+     * DecoderResult constructor.
+     */
+    public function __construct(?iterable $properties = null)
+    {
 
-	/**
-	 * @return mixed|null
-	 */
-	public function __get(string $property){
+        if ($properties !== null) {
 
-		if(property_exists($this, $property)){
-			return $this->{$property};
-		}
+            foreach ($properties as $property => $value) {
 
-		return null;
-	}
+                if (! property_exists($this, $property)) {
+                    continue;
+                }
 
-	/**
-	 *
-	 */
-	public function __toString():string{
-		return $this->data;
-	}
+                $this->{$property} = $value;
+            }
 
-	/**
-	 *
-	 */
-	public function hasStructuredAppend():bool{
-		return $this->structuredAppendParity >= 0 && $this->structuredAppendSequence >= 0;
-	}
+        }
 
-	/**
-	 * Returns a QRMatrix instance with the settings and data of the reader result
-	 */
-	public function getQRMatrix():QRMatrix{
-		return (new QRMatrix($this->version, $this->eccLevel))
-			->initFunctionalPatterns()
-			->writeCodewords($this->rawBytes)
-			->setFormatInfo($this->maskPattern)
-			->mask($this->maskPattern)
-		;
-	}
+    }
 
+    /**
+     * @return mixed|null
+     */
+    public function __get(string $property)
+    {
+
+        if (property_exists($this, $property)) {
+            return $this->{$property};
+        }
+
+        return null;
+    }
+
+    public function __toString(): string
+    {
+        return $this->data;
+    }
+
+    public function hasStructuredAppend(): bool
+    {
+        return $this->structuredAppendParity >= 0 && $this->structuredAppendSequence >= 0;
+    }
+
+    /**
+     * Returns a QRMatrix instance with the settings and data of the reader result
+     */
+    public function getQRMatrix(): QRMatrix
+    {
+        return (new QRMatrix($this->version, $this->eccLevel))
+            ->initFunctionalPatterns()
+            ->writeCodewords($this->rawBytes)
+            ->setFormatInfo($this->maskPattern)
+            ->mask($this->maskPattern);
+    }
 }

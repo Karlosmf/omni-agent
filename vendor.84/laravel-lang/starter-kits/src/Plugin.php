@@ -13,7 +13,7 @@ class Plugin extends Provider
 {
     protected ?string $package_name = 'laravel-lang/starter-kits';
 
-    protected string $base_path = __DIR__ . '/../';
+    protected string $base_path = __DIR__.'/../';
 
     protected array $plugins = [
         Livewire::class,

@@ -4,8 +4,8 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 
 class ExportSqliteToMysql extends Command
 {
@@ -32,7 +32,7 @@ class ExportSqliteToMysql extends Command
     {
         $outputFile = $this->argument('output');
         $includeCreate = $this->option('create');
-        
+
         $this->info("Exportando datos de SQLite a {$outputFile}...");
 
         $tables = Schema::connection('sqlite')->getTables();
@@ -41,13 +41,13 @@ class ExportSqliteToMysql extends Command
 
         foreach ($tables as $tableInfo) {
             $tableName = $tableInfo['name'];
-            
+
             if (str_starts_with($tableName, 'sqlite_')) {
                 continue;
             }
 
             $this->comment("Procesando tabla: {$tableName}");
-            
+
             if ($includeCreate) {
                 $sql .= "-- Estructura para la tabla: {$tableName}\n";
                 $sql .= $this->generateCreateTableSql($tableName);
@@ -57,7 +57,7 @@ class ExportSqliteToMysql extends Command
             $sql .= "-- Datos para la tabla: {$tableName}\n";
 
             $columns = Schema::connection('sqlite')->getColumnListing($tableName);
-            $quotedColumns = array_map(fn($col) => "`$col`", $columns);
+            $quotedColumns = array_map(fn ($col) => "`$col`", $columns);
             $columnsStr = implode(', ', $quotedColumns);
 
             $orderColumn = in_array('id', $columns) ? 'id' : ($columns[0] ?? null);
@@ -114,7 +114,7 @@ class ExportSqliteToMysql extends Command
             $default = '';
 
             if ($column['default'] !== null) {
-                $default = "DEFAULT " . $column['default'];
+                $default = 'DEFAULT '.$column['default'];
             }
 
             // Mapeo de tipos asegurando BIGINT UNSIGNED para todos los enteros
@@ -148,21 +148,21 @@ class ExportSqliteToMysql extends Command
             }
         }
 
-        if (!empty($primaryKeys)) {
-            $lines[] = "    PRIMARY KEY (" . implode(', ', $primaryKeys) . ")";
+        if (! empty($primaryKeys)) {
+            $lines[] = '    PRIMARY KEY ('.implode(', ', $primaryKeys).')';
         }
 
         $foreignKeys = Schema::connection('sqlite')->getForeignKeys($tableName);
         foreach ($foreignKeys as $fk) {
             $localCols = implode('`, `', $fk['columns']);
             $foreignCols = implode('`, `', $fk['foreign_columns']);
-            $onDelete = $fk['on_delete'] ? "ON DELETE {$fk['on_delete']}" : "";
-            $onUpdate = $fk['on_update'] ? "ON UPDATE {$fk['on_update']}" : "";
-            
+            $onDelete = $fk['on_delete'] ? "ON DELETE {$fk['on_delete']}" : '';
+            $onUpdate = $fk['on_update'] ? "ON UPDATE {$fk['on_update']}" : '';
+
             $lines[] = "    FOREIGN KEY (`$localCols`) REFERENCES `{$fk['foreign_table']}` (`$foreignCols`) $onDelete $onUpdate";
         }
 
-        return "CREATE TABLE IF NOT EXISTS `{$tableName}` (\n" . implode(",\n", $lines) . "\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
+        return "CREATE TABLE IF NOT EXISTS `{$tableName}` (\n".implode(",\n", $lines)."\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
     }
 
     /**
@@ -173,21 +173,21 @@ class ExportSqliteToMysql extends Command
         if (is_null($value)) {
             return 'NULL';
         }
-        
-        if (is_numeric($value) && !is_string($value)) {
-            return (string)$value;
+
+        if (is_numeric($value) && ! is_string($value)) {
+            return (string) $value;
         }
-        
+
         if (is_bool($value)) {
             return $value ? '1' : '0';
         }
 
         $escaped = str_replace(
-            ["\\", "'", "\0", "\n", "\r", "\x1a"],
-            ["\\\\", "''", "\\0", "\\n", "\\r", "\\Z"],
-            (string)$value
+            ['\\', "'", "\0", "\n", "\r", "\x1a"],
+            ['\\\\', "''", '\\0', '\\n', '\\r', '\\Z'],
+            (string) $value
         );
-        
-        return "'" . $escaped . "'";
+
+        return "'".$escaped."'";
     }
 }

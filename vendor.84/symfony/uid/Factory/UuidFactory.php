@@ -21,19 +21,24 @@ use Symfony\Component\Uid\UuidV7;
 class UuidFactory
 {
     private string $defaultClass;
+
     private string $timeBasedClass;
+
     private string $nameBasedClass;
+
     private string $randomBasedClass;
+
     private ?Uuid $timeBasedNode;
+
     private ?Uuid $nameBasedNamespace;
 
     public function __construct(string|int $defaultClass = UuidV7::class, string|int $timeBasedClass = UuidV7::class, string|int $nameBasedClass = UuidV5::class, string|int $randomBasedClass = UuidV4::class, Uuid|string|null $timeBasedNode = null, Uuid|string|null $nameBasedNamespace = null)
     {
-        if (null !== $timeBasedNode && !$timeBasedNode instanceof Uuid) {
+        if ($timeBasedNode !== null && ! $timeBasedNode instanceof Uuid) {
             $timeBasedNode = Uuid::fromString($timeBasedNode);
         }
 
-        if (null !== $nameBasedNamespace) {
+        if ($nameBasedNamespace !== null) {
             $nameBasedNamespace = $this->getNamespace($nameBasedNamespace);
         }
 
@@ -49,7 +54,7 @@ class UuidFactory
     {
         $class = $this->defaultClass;
 
-        return new $class();
+        return new $class;
     }
 
     public function randomBased(): RandomBasedUuidFactory
@@ -61,7 +66,7 @@ class UuidFactory
     {
         $node ??= $this->timeBasedNode;
 
-        if (null !== $node && !$node instanceof Uuid) {
+        if ($node !== null && ! $node instanceof Uuid) {
             $node = Uuid::fromString($node);
         }
 
@@ -75,7 +80,7 @@ class UuidFactory
     {
         $namespace ??= $this->nameBasedNamespace;
 
-        if (null === $namespace) {
+        if ($namespace === null) {
             throw new LogicException(\sprintf('A namespace should be defined when using "%s()".', __METHOD__));
         }
 

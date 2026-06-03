@@ -27,28 +27,31 @@ class RemoteWebElement implements WebDriverElement, WebDriverLocatable
      * @var RemoteExecuteMethod
      */
     protected $executor;
+
     /**
      * @var string
      */
     protected $id;
+
     /**
      * @var FileDetector
      */
     protected $fileDetector;
+
     /**
      * @var bool
      */
     protected $isW3cCompliant;
 
     /**
-     * @param string $id
-     * @param bool $isW3cCompliant
+     * @param  string  $id
+     * @param  bool  $isW3cCompliant
      */
     public function __construct(RemoteExecuteMethod $executor, $id, $isW3cCompliant = false)
     {
         $this->executor = $executor;
         $this->id = $id;
-        $this->fileDetector = new UselessFileDetector();
+        $this->fileDetector = new UselessFileDetector;
         $this->isW3cCompliant = $isW3cCompliant;
     }
 
@@ -97,6 +100,7 @@ class RemoteWebElement implements WebDriverElement, WebDriverLocatable
      * Use ".//" to limit your search to the children of this element.
      *
      * @return static NoSuchElementException is thrown in HttpCommandExecutor if no element is found.
+     *
      * @see WebDriverBy
      */
     public function findElement(WebDriverBy $by)
@@ -120,7 +124,8 @@ class RemoteWebElement implements WebDriverElement, WebDriverLocatable
      * Use ".//" to limit your search to the children of this element.
      *
      * @return static[] A list of all WebDriverElements, or an empty
-     *    array if nothing matches
+     *                  array if nothing matches
+     *
      * @see WebDriverBy
      */
     public function findElements(WebDriverBy $by)
@@ -132,7 +137,7 @@ class RemoteWebElement implements WebDriverElement, WebDriverLocatable
             $params
         );
 
-        if (!is_array($raw_elements)) {
+        if (! is_array($raw_elements)) {
             throw UnexpectedResponseException::forError('Server response to findChildElements command is not an array');
         }
 
@@ -149,9 +154,9 @@ class RemoteWebElement implements WebDriverElement, WebDriverLocatable
      * Attribute is meant what is declared in the HTML markup of the element.
      * To read a value of a IDL "JavaScript" property (like `innerHTML`), use `getDomProperty()` method.
      *
-     * @param string $attribute_name The name of the attribute.
+     * @param  string  $attribute_name  The name of the attribute.
      * @return string|true|null The value of the attribute. If this is boolean attribute, return true if the element
-     *      has it, otherwise return null.
+     *                          has it, otherwise return null.
      */
     public function getAttribute($attribute_name)
     {
@@ -184,12 +189,13 @@ class RemoteWebElement implements WebDriverElement, WebDriverLocatable
      *
      * @see https://developer.mozilla.org/en-US/docs/Glossary/IDL
      * @see https://developer.mozilla.org/en-US/docs/Web/API/Element#properties
-     * @param string $propertyName
+     *
+     * @param  string  $propertyName
      * @return mixed|null The property's current value or null if the value is not set or the property does not exist.
      */
     public function getDomProperty($propertyName)
     {
-        if (!$this->isW3cCompliant) {
+        if (! $this->isW3cCompliant) {
             throw new UnsupportedOperationException('This method is only supported in W3C mode');
         }
 
@@ -204,7 +210,7 @@ class RemoteWebElement implements WebDriverElement, WebDriverLocatable
     /**
      * Get the value of a given CSS property.
      *
-     * @param string $css_property_name The name of the CSS property.
+     * @param  string  $css_property_name  The name of the CSS property.
      * @return string The value of the CSS property.
      */
     public function getCSSValue($css_property_name)
@@ -244,7 +250,7 @@ class RemoteWebElement implements WebDriverElement, WebDriverLocatable
     public function getLocationOnScreenOnceScrolledIntoView()
     {
         if ($this->isW3cCompliant) {
-            $script = <<<JS
+            $script = <<<'JS'
                 var e = arguments[0];
                 e.scrollIntoView({ behavior: 'instant', block: 'end', inline: 'nearest' });
                 var rect = e.getBoundingClientRect();
@@ -380,7 +386,7 @@ class RemoteWebElement implements WebDriverElement, WebDriverLocatable
     /**
      * Simulate typing into an element, which may set its value.
      *
-     * @param mixed $value The data to be typed.
+     * @param  mixed  $value  The data to be typed.
      * @return static The current instance.
      */
     public function sendKeys($value)
@@ -444,6 +450,7 @@ class RemoteWebElement implements WebDriverElement, WebDriverLocatable
      *   eg. `$element->setFileDetector(new LocalFileDetector);`
      *
      * @return $this
+     *
      * @see FileDetector
      * @see LocalFileDetector
      * @see UselessFileDetector
@@ -465,7 +472,7 @@ class RemoteWebElement implements WebDriverElement, WebDriverLocatable
         if ($this->isW3cCompliant) {
             // Submit method cannot be called directly in case an input of this form is named "submit".
             // We use this polyfill to trigger 'submit' event using form.dispatchEvent().
-            $submitPolyfill = <<<HTXT
+            $submitPolyfill = <<<'HTXT'
                 var form = arguments[0];
                 while (form.nodeName !== "FORM" && form.parentNode) { // find the parent form of this element
                     form = form.parentNode;
@@ -507,7 +514,7 @@ class RemoteWebElement implements WebDriverElement, WebDriverLocatable
     /**
      * Take a screenshot of a specific element.
      *
-     * @param string $save_as The path of the screenshot to be saved.
+     * @param  string  $save_as  The path of the screenshot to be saved.
      * @return string The screenshot in PNG format.
      */
     public function takeElementScreenshot($save_as = null)
@@ -539,7 +546,7 @@ class RemoteWebElement implements WebDriverElement, WebDriverLocatable
      */
     public function getShadowRoot()
     {
-        if (!$this->isW3cCompliant) {
+        if (! $this->isW3cCompliant) {
             throw new UnsupportedOperationException('This method is only supported in W3C mode');
         }
 
@@ -562,7 +569,8 @@ class RemoteWebElement implements WebDriverElement, WebDriverLocatable
      * The workaround provided here attempts to click on a child node of the element.
      * In case the first child is hidden, other elements are processed until we run out of elements.
      *
-     * @param ElementNotInteractableException $originalException The exception to throw if unable to click on any child
+     * @param  ElementNotInteractableException  $originalException  The exception to throw if unable to click on any child
+     *
      * @see https://github.com/mozilla/geckodriver/issues/653
      * @see https://bugzilla.mozilla.org/show_bug.cgi?id=1374283
      */
@@ -590,8 +598,7 @@ class RemoteWebElement implements WebDriverElement, WebDriverLocatable
     /**
      * Return the WebDriverElement with $id
      *
-     * @param string $id
-     *
+     * @param  string  $id
      * @return static
      */
     protected function newElement($id)
@@ -602,15 +609,15 @@ class RemoteWebElement implements WebDriverElement, WebDriverLocatable
     /**
      * Upload a local file to the server
      *
-     * @param string $local_file
+     * @param  string  $local_file
+     * @return string The remote path of the file.
      *
      * @throws LogicException
-     * @return string The remote path of the file.
      */
     protected function upload($local_file)
     {
-        if (!is_file($local_file)) {
-            throw LogicException::forError('You may only upload files: ' . $local_file);
+        if (! is_file($local_file)) {
+            throw LogicException::forError('You may only upload files: '.$local_file);
         }
 
         $temp_zip_path = $this->createTemporaryZipArchive($local_file);
@@ -626,16 +633,16 @@ class RemoteWebElement implements WebDriverElement, WebDriverLocatable
     }
 
     /**
-     * @param string $fileToZip
+     * @param  string  $fileToZip
      * @return string
      */
     protected function createTemporaryZipArchive($fileToZip)
     {
         // Create a temporary file in the system temp directory.
         // Intentionally do not use `tempnam()`, as it creates empty file which zip extension may not handle.
-        $tempZipPath = sys_get_temp_dir() . '/' . uniqid('WebDriverZip', false);
+        $tempZipPath = sys_get_temp_dir().'/'.uniqid('WebDriverZip', false);
 
-        $zip = new ZipArchive();
+        $zip = new ZipArchive;
         if (($errorCode = $zip->open($tempZipPath, ZipArchive::CREATE)) !== true) {
             throw IOException::forFileError(sprintf('Error creating zip archive: %s', $errorCode), $tempZipPath);
         }

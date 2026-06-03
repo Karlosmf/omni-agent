@@ -2,12 +2,12 @@
 
 namespace Livewire\Features\SupportAttributes;
 
-use Livewire\Features\SupportAttributes\Attribute as LivewireAttribute;
 use Livewire\ComponentHook;
+use Livewire\Features\SupportAttributes\Attribute as LivewireAttribute;
 
 class SupportAttributes extends ComponentHook
 {
-    function boot(...$params)
+    public function boot(...$params)
     {
         $this->component
             ->getAttributes()
@@ -19,7 +19,7 @@ class SupportAttributes extends ComponentHook
             });
     }
 
-    function mount(...$params)
+    public function mount(...$params)
     {
         $this->component
             ->getAttributes()
@@ -31,7 +31,7 @@ class SupportAttributes extends ComponentHook
             });
     }
 
-    function hydrate(...$params)
+    public function hydrate(...$params)
     {
         $this->component
             ->getAttributes()
@@ -43,14 +43,14 @@ class SupportAttributes extends ComponentHook
             });
     }
 
-    function update($propertyName, $fullPath, $newValue)
+    public function update($propertyName, $fullPath, $newValue)
     {
         $callbacks = $this->component
             ->getAttributes()
             ->whereInstanceOf(LivewireAttribute::class)
             ->filter(fn ($attr) => $attr->getLevel() === AttributeLevel::PROPERTY)
             // Call "update" on the root property attribute even if it's a deep update...
-            ->filter(fn ($attr) => str($fullPath)->startsWith($attr->getName() . '.') || $fullPath === $attr->getName())
+            ->filter(fn ($attr) => str($fullPath)->startsWith($attr->getName().'.') || $fullPath === $attr->getName())
             ->map(function ($attribute) use ($fullPath, $newValue) {
                 if (method_exists($attribute, 'update')) {
                     return $attribute->update($fullPath, $newValue);
@@ -59,12 +59,14 @@ class SupportAttributes extends ComponentHook
 
         return function (...$params) use ($callbacks) {
             foreach ($callbacks as $callback) {
-                if (is_callable($callback)) $callback(...$params);
+                if (is_callable($callback)) {
+                    $callback(...$params);
+                }
             }
         };
     }
 
-    function call($method, $params, $returnEarly)
+    public function call($method, $params, $returnEarly)
     {
         $callbacks = $this->component
             ->getAttributes()
@@ -79,12 +81,14 @@ class SupportAttributes extends ComponentHook
 
         return function (...$params) use ($callbacks) {
             foreach ($callbacks as $callback) {
-                if (is_callable($callback)) $callback(...$params);
+                if (is_callable($callback)) {
+                    $callback(...$params);
+                }
             }
         };
     }
 
-    function render(...$params)
+    public function render(...$params)
     {
         $callbacks = $this->component
             ->getAttributes()
@@ -104,7 +108,7 @@ class SupportAttributes extends ComponentHook
         };
     }
 
-    function dehydrate(...$params)
+    public function dehydrate(...$params)
     {
         $this->component
             ->getAttributes()
@@ -116,7 +120,7 @@ class SupportAttributes extends ComponentHook
             });
     }
 
-    function destroy(...$params)
+    public function destroy(...$params)
     {
         $this->component
             ->getAttributes()
@@ -128,7 +132,7 @@ class SupportAttributes extends ComponentHook
             });
     }
 
-    function exception(...$params)
+    public function exception(...$params)
     {
         $this->component
             ->getAttributes()
@@ -139,5 +143,4 @@ class SupportAttributes extends ComponentHook
                 }
             });
     }
-
 }

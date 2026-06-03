@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\TestRunner;
 
 use PHPUnit\Event\Event;
@@ -20,14 +23,16 @@ use PHPUnit\Event\Telemetry;
 final readonly class ChildProcessFinished implements Event
 {
     private Telemetry\Info $telemetryInfo;
+
     private string $stdout;
+
     private string $stderr;
 
     public function __construct(Telemetry\Info $telemetryInfo, string $stdout, string $stderr)
     {
         $this->telemetryInfo = $telemetryInfo;
-        $this->stdout        = $stdout;
-        $this->stderr        = $stderr;
+        $this->stdout = $stdout;
+        $this->stderr = $stderr;
     }
 
     public function telemetryInfo(): Telemetry\Info

@@ -24,6 +24,6 @@ class RandomGeneratorFactory
      */
     public function getGenerator(): RandomGeneratorInterface
     {
-        return new RandomBytesGenerator();
+        return new RandomBytesGenerator;
     }
 }

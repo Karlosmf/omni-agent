@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,10 +9,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner\Extension;
 
-use function array_key_exists;
 use PHPUnit\Runner\ParameterDoesNotExistException;
+
+use function array_key_exists;
 
 /**
  * @immutable
@@ -25,7 +29,7 @@ final readonly class ParameterCollection
     private array $parameters;
 
     /**
-     * @param array<string, string> $parameters
+     * @param  array<string, string>  $parameters
      */
     public static function fromArray(array $parameters): self
     {
@@ -33,7 +37,7 @@ final readonly class ParameterCollection
     }
 
     /**
-     * @param array<string, string> $parameters
+     * @param  array<string, string>  $parameters
      */
     private function __construct(array $parameters)
     {
@@ -50,7 +54,7 @@ final readonly class ParameterCollection
      */
     public function get(string $name): string
     {
-        if (!$this->has($name)) {
+        if (! $this->has($name)) {
             throw new ParameterDoesNotExistException($name);
         }
 

@@ -70,11 +70,11 @@ class Php extends Base
     protected function expandValidation(array $values): array
     {
         $attributes = [];
-        $items      = [];
+        $items = [];
 
         foreach ($values as $key => $value) {
             if (Str::startsWith($key, 'attributes.')) {
-                $attributeKey              = explode('.', $key, 2)[1];
+                $attributeKey = explode('.', $key, 2)[1];
                 $attributes[$attributeKey] = $value;
 
                 continue;

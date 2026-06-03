@@ -2,31 +2,25 @@
 
 namespace PragmaRX\Google2FAQRCode;
 
-use BaconQrCode\Writer;
-use BaconQrCode\Renderer\Image\Png;
-use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\Image\ImageBackEndInterface;
+use BaconQrCode\Renderer\Image\RendererInterface;
+use PragmaRX\Google2FA\Google2FA as Google2FAPackage;
+use PragmaRX\Google2FAQRCode\Exceptions\MissingQrCodeServiceException;
 use PragmaRX\Google2FAQRCode\QRCode\Bacon;
 use PragmaRX\Google2FAQRCode\QRCode\Chillerlan;
-use BaconQrCode\Renderer\Image\RendererInterface;
-use BaconQrCode\Writer as BaconQrCodeWriter;
-use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
-use PragmaRX\Google2FA\Google2FA as Google2FAPackage;
-use BaconQrCode\Renderer\RendererStyle\RendererStyle;
-use BaconQrCode\Renderer\Image\ImageBackEndInterface;
-use PragmaRX\Google2FAQRCode\Exceptions\MissingQrCodeServiceException;
 
 class Google2FA extends Google2FAPackage
 {
     /**
-     * @var ImageBackEndInterface|RendererInterface|null $imageBackEnd
+     * @var ImageBackEndInterface|RendererInterface|null
      */
     protected $qrCodeService;
 
     /**
      * Google2FA constructor.
      *
-     * @param QRCodeServiceContract|null $qrCodeService
-     * @param ImageBackEndInterface|RendererInterface|null $imageBackEnd
+     * @param  QRCodeServiceContract|null  $qrCodeService
+     * @param  ImageBackEndInterface|RendererInterface|null  $imageBackEnd
      */
     public function __construct($qrCodeService = null, $imageBackEnd = null)
     {
@@ -40,12 +34,11 @@ class Google2FA extends Google2FAPackage
     /**
      * Generates a QR code data url to display inline.
      *
-     * @param string $company
-     * @param string $holder
-     * @param string $secret
-     * @param int    $size
-     * @param string $encoding Default to UTF-8
-     *
+     * @param  string  $company
+     * @param  string  $holder
+     * @param  string  $secret
+     * @param  int  $size
+     * @param  string  $encoding  Default to UTF-8
      * @return string
      */
     public function getQRCodeInline(
@@ -71,7 +64,7 @@ class Google2FA extends Google2FAPackage
     /**
      * Service setter
      *
-     * @return \PragmaRX\Google2FAQRCode\QRCode\QRCodeServiceContract
+     * @return QRCode\QRCodeServiceContract
      */
     public function getQrCodeService()
     {
@@ -93,7 +86,7 @@ class Google2FA extends Google2FAPackage
     /**
      * Create the QR Code service instance
      *
-     * @return \PragmaRX\Google2FAQRCode\QRCode\QRCodeServiceContract
+     * @return QRCode\QRCodeServiceContract
      */
     public function qrCodeServiceFactory($imageBackEnd = null)
     {
@@ -105,7 +98,7 @@ class Google2FA extends Google2FAPackage
         }
 
         if (class_exists('chillerlan\QRCode\QRCode')) {
-            return new Chillerlan();
+            return new Chillerlan;
         }
 
         return null;

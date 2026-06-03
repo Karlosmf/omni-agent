@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,17 +9,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Node;
 
-use function array_merge;
-use function assert;
-use function count;
 use IteratorAggregate;
 use RecursiveIteratorIterator;
 use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
+
+use function array_merge;
+use function assert;
+use function count;
 
 /**
  * @template-implements IteratorAggregate<int, AbstractNode>
@@ -54,23 +58,39 @@ final class Directory extends AbstractNode implements IteratorAggregate
     /**
      * @var ?array<string, ProcessedFunctionType>
      */
-    private ?array $functions          = null;
-    private ?LinesOfCode $linesOfCode  = null;
-    private int $numFiles              = -1;
-    private int $numExecutableLines    = -1;
-    private int $numExecutedLines      = -1;
+    private ?array $functions = null;
+
+    private ?LinesOfCode $linesOfCode = null;
+
+    private int $numFiles = -1;
+
+    private int $numExecutableLines = -1;
+
+    private int $numExecutedLines = -1;
+
     private int $numExecutableBranches = -1;
-    private int $numExecutedBranches   = -1;
-    private int $numExecutablePaths    = -1;
-    private int $numExecutedPaths      = -1;
-    private int $numClasses            = -1;
-    private int $numTestedClasses      = -1;
-    private int $numTraits             = -1;
-    private int $numTestedTraits       = -1;
-    private int $numMethods            = -1;
-    private int $numTestedMethods      = -1;
-    private int $numFunctions          = -1;
-    private int $numTestedFunctions    = -1;
+
+    private int $numExecutedBranches = -1;
+
+    private int $numExecutablePaths = -1;
+
+    private int $numExecutedPaths = -1;
+
+    private int $numClasses = -1;
+
+    private int $numTestedClasses = -1;
+
+    private int $numTraits = -1;
+
+    private int $numTestedTraits = -1;
+
+    private int $numMethods = -1;
+
+    private int $numTestedMethods = -1;
+
+    private int $numFunctions = -1;
+
+    private int $numTestedFunctions = -1;
 
     public function count(): int
     {
@@ -102,7 +122,7 @@ final class Directory extends AbstractNode implements IteratorAggregate
 
         assert($directory instanceof self);
 
-        $this->children[]    = $directory;
+        $this->children[] = $directory;
         $this->directories[] = &$this->children[count($this->children) - 1];
 
         return $directory;
@@ -111,10 +131,10 @@ final class Directory extends AbstractNode implements IteratorAggregate
     public function addFile(File $file): void
     {
         $this->children[] = $file;
-        $this->files[]    = &$this->children[count($this->children) - 1];
+        $this->files[] = &$this->children[count($this->children) - 1];
 
         $this->numExecutableLines = -1;
-        $this->numExecutedLines   = -1;
+        $this->numExecutedLines = -1;
     }
 
     /**
@@ -201,15 +221,15 @@ final class Directory extends AbstractNode implements IteratorAggregate
     public function linesOfCode(): LinesOfCode
     {
         if ($this->linesOfCode === null) {
-            $linesOfCode           = 0;
-            $commentLinesOfCode    = 0;
+            $linesOfCode = 0;
+            $commentLinesOfCode = 0;
             $nonCommentLinesOfCode = 0;
 
             foreach ($this->children as $child) {
                 $childLinesOfCode = $child->linesOfCode();
 
-                $linesOfCode           += $childLinesOfCode->linesOfCode();
-                $commentLinesOfCode    += $childLinesOfCode->commentLinesOfCode();
+                $linesOfCode += $childLinesOfCode->linesOfCode();
+                $commentLinesOfCode += $childLinesOfCode->commentLinesOfCode();
                 $nonCommentLinesOfCode += $childLinesOfCode->nonCommentLinesOfCode();
             }
 

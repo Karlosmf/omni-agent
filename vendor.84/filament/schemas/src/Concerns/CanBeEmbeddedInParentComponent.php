@@ -6,9 +6,9 @@ use Closure;
 
 trait CanBeEmbeddedInParentComponent
 {
-    protected bool | Closure $isEmbeddedInParentComponent = false;
+    protected bool|Closure $isEmbeddedInParentComponent = false;
 
-    public function embeddedInParentComponent(bool | Closure $condition = true): static
+    public function embeddedInParentComponent(bool|Closure $condition = true): static
     {
         $this->isEmbeddedInParentComponent = $condition;
 

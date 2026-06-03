@@ -31,42 +31,42 @@ final class UrlSanitizer
      */
     public static function sanitize(?string $input, ?array $allowedSchemes = null, bool $forceHttps = false, ?array $allowedHosts = null, bool $allowRelative = false): ?string
     {
-        if (!$input) {
+        if (! $input) {
             return null;
         }
 
         $url = self::parse($input);
 
         // Malformed URL
-        if (!$url || !\is_array($url)) {
+        if (! $url || ! \is_array($url)) {
             return null;
         }
 
         // No scheme and relative not allowed
-        if (!$allowRelative && !$url['scheme']) {
+        if (! $allowRelative && ! $url['scheme']) {
             return null;
         }
 
         // Forbidden scheme
-        if ($url['scheme'] && null !== $allowedSchemes && !\in_array($url['scheme'], $allowedSchemes, true)) {
+        if ($url['scheme'] && $allowedSchemes !== null && ! \in_array($url['scheme'], $allowedSchemes, true)) {
             return null;
         }
 
         // If the scheme used is not supposed to have a host, do not check the host
-        if (!self::isHostlessScheme($url['scheme'])) {
+        if (! self::isHostlessScheme($url['scheme'])) {
             // No host and relative not allowed
-            if (!$allowRelative && !$url['host']) {
+            if (! $allowRelative && ! $url['host']) {
                 return null;
             }
 
             // Forbidden host
-            if ($url['host'] && null !== $allowedHosts && !self::isAllowedHost($url['host'], $allowedHosts)) {
+            if ($url['host'] && $allowedHosts !== null && ! self::isAllowedHost($url['host'], $allowedHosts)) {
                 return null;
             }
         }
 
         // Force HTTPS
-        if ($forceHttps && 'http' === $url['scheme']) {
+        if ($forceHttps && $url['scheme'] === 'http') {
             $url['scheme'] = 'https';
         }
 
@@ -89,7 +89,7 @@ final class UrlSanitizer
      */
     public static function parse(string $url): ?array
     {
-        if (!$url) {
+        if (! $url) {
             return null;
         }
 
@@ -117,7 +117,7 @@ final class UrlSanitizer
 
     private static function isAllowedHost(?string $host, array $allowedHosts): bool
     {
-        if (null === $host) {
+        if ($host === null) {
             return \in_array(null, $allowedHosts, true);
         }
 
@@ -136,7 +136,7 @@ final class UrlSanitizer
     {
         // Check each chunk of the domain is valid
         foreach ($trustedParts as $key => $trustedPart) {
-            if (!\array_key_exists($key, $uriParts) || $uriParts[$key] !== $trustedPart) {
+            if (! \array_key_exists($key, $uriParts) || $uriParts[$key] !== $trustedPart) {
                 return false;
             }
         }

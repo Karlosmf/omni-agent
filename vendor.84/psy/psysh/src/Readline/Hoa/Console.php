@@ -118,7 +118,7 @@ class Console
      */
     public static function advancedInteraction(bool $force = false): bool
     {
-        if (null !== self::$_advanced) {
+        if (self::$_advanced !== null) {
             return self::$_advanced;
         }
 
@@ -126,9 +126,9 @@ class Console
             return self::$_advanced = false;
         }
 
-        if (false === $force &&
-            true === \defined('STDIN') &&
-            false === self::isDirect(\STDIN)) {
+        if ($force === false &&
+            \defined('STDIN') === true &&
+            self::isDirect(\STDIN) === false) {
             return self::$_advanced = false;
         }
 
@@ -143,13 +143,12 @@ class Console
      */
     public static function restoreInteraction()
     {
-        if (null === self::$_old) {
+        if (self::$_old === null) {
             return;
         }
 
         ConsoleProcessus::execute('stty '.self::$_old.' < /dev/tty', false);
 
-        return;
     }
 
     /**
@@ -173,43 +172,43 @@ class Console
 
                 break;
 
-            // character special.
+                // character special.
             case 0020000:
                 $mode = self::IS_CHARACTER;
 
                 break;
 
-            // directory.
+                // directory.
             case 0040000:
                 $mode = self::IS_DIRECTORY;
 
                 break;
 
-            // block special.
+                // block special.
             case 0060000:
                 $mode = self::IS_BLOCK;
 
                 break;
 
-            // regular.
+                // regular.
             case 0100000:
                 $mode = self::IS_REGULAR;
 
                 break;
 
-            // symbolic link.
+                // symbolic link.
             case 0120000:
                 $mode = self::IS_LINK;
 
-                 break;
+                break;
 
-            // socket.
+                // socket.
             case 0140000:
                 $mode = self::IS_SOCKET;
 
                 break;
 
-            // whiteout.
+                // whiteout.
             case 0160000:
                 $mode = self::IS_WHITEOUT;
 
@@ -231,7 +230,7 @@ class Console
      */
     public static function isDirect($pipe): bool
     {
-        return self::IS_CHARACTER === self::getMode($pipe);
+        return self::getMode($pipe) === self::IS_CHARACTER;
     }
 
     /**
@@ -242,7 +241,7 @@ class Console
      */
     public static function isPipe($pipe): bool
     {
-        return self::IS_FIFO === self::getMode($pipe);
+        return self::getMode($pipe) === self::IS_FIFO;
     }
 
     /**
@@ -256,11 +255,11 @@ class Console
         $mode = self::getMode($pipe);
 
         return
-            self::IS_REGULAR === $mode ||
-            self::IS_DIRECTORY === $mode ||
-            self::IS_LINK === $mode ||
-            self::IS_SOCKET === $mode ||
-            self::IS_BLOCK === $mode;
+            $mode === self::IS_REGULAR ||
+            $mode === self::IS_DIRECTORY ||
+            $mode === self::IS_LINK ||
+            $mode === self::IS_SOCKET ||
+            $mode === self::IS_BLOCK;
     }
 
     /**
@@ -279,8 +278,8 @@ class Console
      */
     public static function getInput(): ConsoleInput
     {
-        if (null === static::$_input) {
-            static::$_input = new ConsoleInput();
+        if (static::$_input === null) {
+            static::$_input = new ConsoleInput;
         }
 
         return static::$_input;
@@ -302,8 +301,8 @@ class Console
      */
     public static function getOutput(): ConsoleOutput
     {
-        if (null === static::$_output) {
-            static::$_output = new ConsoleOutput();
+        if (static::$_output === null) {
+            static::$_output = new ConsoleOutput;
         }
 
         return static::$_output;
@@ -325,8 +324,8 @@ class Console
      */
     public static function getTput(): ConsoleTput
     {
-        if (null === static::$_tput) {
-            static::$_tput = new ConsoleTput();
+        if (static::$_tput === null) {
+            static::$_tput = new ConsoleTput;
         }
 
         return static::$_tput;

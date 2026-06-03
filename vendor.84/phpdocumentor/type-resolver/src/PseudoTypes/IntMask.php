@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of phpDocumentor.
  *
@@ -44,11 +45,11 @@ final class IntMask extends Integer implements PseudoType
 
     public function underlyingType(): Type
     {
-        return new Integer();
+        return new Integer;
     }
 
     public function __toString(): string
     {
-        return 'int-mask<' . implode(', ', $this->types) . '>';
+        return 'int-mask<'.implode(', ', $this->types).'>';
     }
 }

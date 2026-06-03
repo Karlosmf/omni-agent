@@ -1,6 +1,8 @@
 <?php
+
 /**
  * Whoops - php errors for cool kids
+ *
  * @author Filipe Dobreira <http://github.com/filp>
  */
 
@@ -20,18 +22,19 @@ class Misc
      */
     public static function canSendHeaders()
     {
-        return isset($_SERVER["REQUEST_URI"]) && !headers_sent();
+        return isset($_SERVER['REQUEST_URI']) && ! headers_sent();
     }
 
     public static function isAjaxRequest()
     {
-        return (
-            !empty($_SERVER['HTTP_X_REQUESTED_WITH'])
-            && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
+        return
+            ! empty($_SERVER['HTTP_X_REQUESTED_WITH'])
+            && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
     }
 
     /**
      * Check, if possible, that this execution was triggered by a command line.
+     *
      * @return bool
      */
     public static function isCommandLine()
@@ -42,7 +45,7 @@ class Misc
     /**
      * Translate ErrorException code into the represented constant.
      *
-     * @param int $error_code
+     * @param  int  $error_code
      * @return string
      */
     public static function translateErrorCode($error_code)
@@ -55,13 +58,14 @@ class Misc
                 }
             }
         }
-        return "E_UNKNOWN";
+
+        return 'E_UNKNOWN';
     }
-    
+
     /**
      * Determine if an error level is fatal (halts execution)
      *
-     * @param int $level
+     * @param  int  $level
      * @return bool
      */
     public static function isLevelFatal($level)
@@ -72,6 +76,7 @@ class Misc
         $errors |= E_CORE_WARNING;
         $errors |= E_COMPILE_ERROR;
         $errors |= E_COMPILE_WARNING;
+
         return ($level & $errors) > 0;
     }
 }

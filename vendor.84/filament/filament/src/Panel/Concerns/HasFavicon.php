@@ -6,9 +6,9 @@ use Closure;
 
 trait HasFavicon
 {
-    protected string | Closure | null $favicon = null;
+    protected string|Closure|null $favicon = null;
 
-    public function favicon(string | Closure | null $url): static
+    public function favicon(string|Closure|null $url): static
     {
         $this->favicon = $url;
 

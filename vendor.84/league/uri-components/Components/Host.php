@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace League\Uri\Components;
 
+use const FILTER_FLAG_IPV6;
+use const FILTER_VALIDATE_IP;
+
 use BackedEnum;
 use Deprecated;
 use League\Uri\Contracts\AuthorityInterface;
@@ -44,12 +47,10 @@ use function strtolower;
 use function strtoupper;
 use function substr;
 
-use const FILTER_FLAG_IPV6;
-use const FILTER_VALIDATE_IP;
-
 final class Host extends Component implements IpHostInterface
 {
     private readonly ?string $value;
+
     private readonly HostRecord $host;
 
     private function __construct(BackedEnum|Stringable|string|null $host)
@@ -87,12 +88,12 @@ final class Host extends Component implements IpHostInterface
             $ip = $ip->value;
         }
 
-        if ('' !== $version) {
+        if ($version !== '') {
             return new self('[v'.$version.'.'.$ip.']');
         }
 
         $ip = (string) $ip;
-        if (false !== filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) {
             return new self('['.$ip.']');
         }
 
@@ -103,7 +104,7 @@ final class Host extends Component implements IpHostInterface
         }
 
         $host = IPv4Converter::fromEnvironment()->toDecimal($ip);
-        if (null === $host) {
+        if ($host === null) {
             throw new SyntaxError(sprintf('`%s` is an invalid IP Host.', $ip));
         }
 
@@ -143,13 +144,13 @@ final class Host extends Component implements IpHostInterface
 
     public function equals(mixed $value): bool
     {
-        if (!$value instanceof BackedEnum && !$value instanceof Stringable && !is_string($value) && null !== $value) {
+        if (! $value instanceof BackedEnum && ! $value instanceof Stringable && ! is_string($value) && $value !== null) {
             return false;
         }
 
-        if (!$value instanceof UriComponentInterface) {
+        if (! $value instanceof UriComponentInterface) {
             $value = self::tryNew($value);
-            if (null === $value) {
+            if ($value === null) {
                 return false;
             }
         }
@@ -169,7 +170,7 @@ final class Host extends Component implements IpHostInterface
 
     public function encoded(): ?string
     {
-        if (null === $this->value || '' === $this->value || HostType::RegisteredName !== $this->host->type) {
+        if ($this->value === null || $this->value === '' || $this->host->type !== HostType::RegisteredName) {
             return $this->value;
         }
 
@@ -192,7 +193,7 @@ final class Host extends Component implements IpHostInterface
 
     public function isRegisteredName(): bool
     {
-        return HostType::RegisteredName === $this->host->type;
+        return $this->host->type === HostType::RegisteredName;
     }
 
     public function isDomain(): bool
@@ -202,22 +203,22 @@ final class Host extends Component implements IpHostInterface
 
     public function isIp(): bool
     {
-        return HostType::RegisteredName !== $this->host->type;
+        return $this->host->type !== HostType::RegisteredName;
     }
 
     public function isIpv4(): bool
     {
-        return HostType::Ipv4 === $this->host->type;
+        return $this->host->type === HostType::Ipv4;
     }
 
     public function isIpv6(): bool
     {
-        return HostType::Ipv6 === $this->host->type;
+        return $this->host->type === HostType::Ipv6;
     }
 
     public function isIpFuture(): bool
     {
-        return HostType::IpvFuture === $this->host->type;
+        return $this->host->type === HostType::IpvFuture;
     }
 
     public function hasZoneIdentifier(): bool
@@ -227,7 +228,7 @@ final class Host extends Component implements IpHostInterface
 
     public function withoutZoneIdentifier(): IpHostInterface
     {
-        if (!$this->host->hasZoneIdentifier()) {
+        if (! $this->host->hasZoneIdentifier()) {
             return $this;
         }
 
@@ -244,7 +245,7 @@ final class Host extends Component implements IpHostInterface
      *
      * @codeCoverageIgnore
      */
-    #[Deprecated(message:'use League\Uri\Components\Host::new() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Host::new() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromString(Stringable|string|null $host): self
     {
         return self::new($host);
@@ -260,7 +261,7 @@ final class Host extends Component implements IpHostInterface
      *
      * Returns a new instance from null.
      */
-    #[Deprecated(message:'use League\Uri\Components\Host::new() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Host::new() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromNull(): self
     {
         return self::new();
@@ -271,15 +272,15 @@ final class Host extends Component implements IpHostInterface
      *
      * @throws MissingFeature If detecting IPv4 is not possible
      * @throws SyntaxError If the $ip cannot be converted into a Host
+     *
      * @deprecated Since version 7.0.0
      * @see Host::fromIp()
      *
      * @codeCoverageIgnore
      *
      * Returns a host from an IP address.
-     *
      */
-    #[Deprecated(message:'use League\Uri\Components\Host::fromIp() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Host::fromIp() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromIp(string $ip, string $version = '', ?IPv4Normalizer $normalizer = null): self
     {
         return self::fromIp($ip, $version);
@@ -295,7 +296,7 @@ final class Host extends Component implements IpHostInterface
      *
      * Create a new instance from a URI object.
      */
-    #[Deprecated(message:'use League\Uri\Components\Host::fromUri() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Host::fromUri() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromUri(Psr7UriInterface|UriInterface $uri): self
     {
         return self::fromUri($uri);
@@ -311,7 +312,7 @@ final class Host extends Component implements IpHostInterface
      *
      * Create a new instance from an Authority object.
      */
-    #[Deprecated(message:'use League\Uri\Components\Host::fromAuthority() instead', since:'league/uri-components:7.0.0')]
+    #[Deprecated(message: 'use League\Uri\Components\Host::fromAuthority() instead', since: 'league/uri-components:7.0.0')]
     public static function createFromAuthority(Stringable|string $authority): self
     {
         return self::fromAuthority($authority);

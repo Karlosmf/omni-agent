@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -11,10 +13,10 @@
 
 namespace Monolog\Handler;
 
-use Monolog\Level;
-use Psr\Log\LoggerInterface;
 use Monolog\Formatter\FormatterInterface;
+use Monolog\Level;
 use Monolog\LogRecord;
+use Psr\Log\LoggerInterface;
 
 /**
  * Proxies log messages to an existing PSR-3 compliant logger.
@@ -32,11 +34,12 @@ class PsrHandler extends AbstractHandler implements FormattableHandlerInterface
      */
     protected LoggerInterface $logger;
 
-    protected FormatterInterface|null $formatter = null;
+    protected ?FormatterInterface $formatter = null;
+
     private bool $includeExtra;
 
     /**
-     * @param LoggerInterface $logger The underlying PSR-3 compliant logger to which messages will be proxied
+     * @param  LoggerInterface  $logger  The underlying PSR-3 compliant logger to which messages will be proxied
      */
     public function __construct(LoggerInterface $logger, int|string|Level $level = Level::Debug, bool $bubble = true, bool $includeExtra = false)
     {
@@ -47,11 +50,11 @@ class PsrHandler extends AbstractHandler implements FormattableHandlerInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function handle(LogRecord $record): bool
     {
-        if (!$this->isHandling($record)) {
+        if (! $this->isHandling($record)) {
             return false;
         }
 
@@ -65,7 +68,7 @@ class PsrHandler extends AbstractHandler implements FormattableHandlerInterface
 
         $this->logger->log($record->level->toPsrLogLevel(), $message, $context);
 
-        return false === $this->bubble;
+        return $this->bubble === false;
     }
 
     /**

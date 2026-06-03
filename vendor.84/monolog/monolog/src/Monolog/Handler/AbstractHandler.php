@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -13,9 +15,9 @@ namespace Monolog\Handler;
 
 use Monolog\Level;
 use Monolog\Logger;
+use Monolog\LogRecord;
 use Monolog\ResettableInterface;
 use Psr\Log\LogLevel;
-use Monolog\LogRecord;
 
 /**
  * Base Handler class providing basic level/bubble support
@@ -25,11 +27,12 @@ use Monolog\LogRecord;
 abstract class AbstractHandler extends Handler implements ResettableInterface
 {
     protected Level $level = Level::Debug;
+
     protected bool $bubble = true;
 
     /**
-     * @param int|string|Level|LogLevel::* $level  The minimum logging level at which this handler will be triggered
-     * @param bool                         $bubble Whether the messages that are handled can bubble up the stack or not
+     * @param  int|string|Level|LogLevel::*  $level  The minimum logging level at which this handler will be triggered
+     * @param  bool  $bubble  Whether the messages that are handled can bubble up the stack or not
      *
      * @phpstan-param value-of<Level::VALUES>|value-of<Level::NAMES>|Level|LogLevel::* $level
      */
@@ -40,7 +43,7 @@ abstract class AbstractHandler extends Handler implements ResettableInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function isHandling(LogRecord $record): bool
     {
@@ -50,10 +53,11 @@ abstract class AbstractHandler extends Handler implements ResettableInterface
     /**
      * Sets minimum logging level at which this handler will be triggered.
      *
-     * @param  Level|LogLevel::* $level Level or level name
-     * @return $this
+     * @param  Level|LogLevel::*  $level  Level or level name
      *
      * @phpstan-param value-of<Level::VALUES>|value-of<Level::NAMES>|Level|LogLevel::* $level
+     *
+     * @return $this
      */
     public function setLevel(int|string|Level $level): self
     {
@@ -73,8 +77,8 @@ abstract class AbstractHandler extends Handler implements ResettableInterface
     /**
      * Sets the bubbling behavior.
      *
-     * @param  bool  $bubble true means that this handler allows bubbling.
-     *                       false means that bubbling is not permitted.
+     * @param  bool  $bubble  true means that this handler allows bubbling.
+     *                        false means that bubbling is not permitted.
      * @return $this
      */
     public function setBubble(bool $bubble): self
@@ -96,9 +100,7 @@ abstract class AbstractHandler extends Handler implements ResettableInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function reset(): void
-    {
-    }
+    public function reset(): void {}
 }

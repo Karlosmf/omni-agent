@@ -23,15 +23,17 @@ class DataPart extends TextPart
     protected array $_parent;
 
     private ?string $filename = null;
+
     private string $mediaType;
+
     private ?string $cid = null;
 
     /**
-     * @param resource|string|File $body Use a File instance to defer loading the file until rendering
+     * @param  resource|string|File  $body  Use a File instance to defer loading the file until rendering
      */
     public function __construct($body, ?string $filename = null, ?string $contentType = null, ?string $encoding = null)
     {
-        if ($body instanceof File && !$filename) {
+        if ($body instanceof File && ! $filename) {
             $filename = $body->getFilename();
         }
 
@@ -40,7 +42,7 @@ class DataPart extends TextPart
 
         parent::__construct($body, null, $subtype, $encoding);
 
-        if (null !== $filename) {
+        if ($filename !== null) {
             $this->filename = $filename;
             $this->setName($filename);
         }
@@ -65,7 +67,7 @@ class DataPart extends TextPart
      */
     public function setContentId(string $cid): static
     {
-        if (!str_contains($cid, '@')) {
+        if (! str_contains($cid, '@')) {
             throw new InvalidArgumentException(\sprintf('The "%s" CID is invalid as it doesn\'t contain an "@".', $cid));
         }
 
@@ -81,7 +83,7 @@ class DataPart extends TextPart
 
     public function hasContentId(): bool
     {
-        return null !== $this->cid;
+        return $this->cid !== null;
     }
 
     public function getMediaType(): string
@@ -93,11 +95,11 @@ class DataPart extends TextPart
     {
         $headers = parent::getPreparedHeaders();
 
-        if (null !== $this->cid) {
+        if ($this->cid !== null) {
             $headers->setHeaderBody('Id', 'Content-ID', $this->cid);
         }
 
-        if (null !== $this->filename) {
+        if ($this->filename !== null) {
             $headers->setHeaderParameter('Content-Disposition', 'filename', $this->filename);
         }
 
@@ -107,7 +109,7 @@ class DataPart extends TextPart
     public function asDebugString(): string
     {
         $str = parent::asDebugString();
-        if (null !== $this->filename) {
+        if ($this->filename !== null) {
             $str .= ' filename: '.$this->filename;
         }
 
@@ -131,7 +133,7 @@ class DataPart extends TextPart
 
     public function __serialize(): array
     {
-        if (self::class === (new \ReflectionMethod($this, '__sleep'))->class || self::class !== (new \ReflectionMethod($this, '__serialize'))->class) {
+        if ((new \ReflectionMethod($this, '__sleep'))->class === self::class || (new \ReflectionMethod($this, '__serialize'))->class !== self::class) {
             $parent = parent::__serialize();
             $headers = $parent['_headers'];
             unset($parent['_headers']);
@@ -162,7 +164,7 @@ class DataPart extends TextPart
 
     public function __unserialize(array $data): void
     {
-        if ($wakeup = self::class !== (new \ReflectionMethod($this, '__wakeup'))->class && self::class === (new \ReflectionMethod($this, '__unserialize'))->class) {
+        if ($wakeup = (new \ReflectionMethod($this, '__wakeup'))->class !== self::class && (new \ReflectionMethod($this, '__unserialize'))->class === self::class) {
             trigger_deprecation('symfony/mime', '7.4', 'Implementing "%s::__wakeup()" is deprecated, use "__unserialize()" instead.', get_debug_type($this));
         }
 
@@ -194,7 +196,7 @@ class DataPart extends TextPart
 
         \Closure::bind(function ($data) use ($wakeup) {
             foreach ($data as $key => $value) {
-                $this->{("\0" === $key[0] ?? '') ? substr($key, 1 + strrpos($key, "\0")) : $key} = $value;
+                $this->{($key[0] === "\0" ?? '') ? substr($key, 1 + strrpos($key, "\0")) : $key} = $value;
             }
 
             if ($wakeup) {
@@ -231,11 +233,11 @@ class DataPart extends TextPart
         $r->setValue($this, $this->_headers);
         unset($this->_headers);
 
-        if (!\is_array($this->_parent)) {
+        if (! \is_array($this->_parent)) {
             throw new \BadMethodCallException('Cannot unserialize '.__CLASS__);
         }
         foreach (['body', 'charset', 'subtype', 'disposition', 'name', 'encoding'] as $name) {
-            if (null !== $this->_parent[$name] && !\is_string($this->_parent[$name]) && !$this->_parent[$name] instanceof File) {
+            if ($this->_parent[$name] !== null && ! \is_string($this->_parent[$name]) && ! $this->_parent[$name] instanceof File) {
                 throw new \BadMethodCallException('Cannot unserialize '.__CLASS__);
             }
             $r = new \ReflectionProperty(TextPart::class, $name);

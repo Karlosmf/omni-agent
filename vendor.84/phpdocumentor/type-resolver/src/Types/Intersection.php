@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of phpDocumentor.
  *
@@ -28,7 +29,7 @@ final class Intersection extends AggregatedType
     /**
      * Initializes a intersection type (i.e. `\A&\B`) and tests if the provided types all implement the Type interface.
      *
-     * @param array<Type> $types
+     * @param  array<Type>  $types
      */
     public function __construct(array $types)
     {

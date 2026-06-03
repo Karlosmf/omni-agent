@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,18 +9,21 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\Constraint;
 
 use const DIRECTORY_SEPARATOR;
 use const PHP_EOL;
+
+use SebastianBergmann\Diff\Differ;
+use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
+
 use function explode;
 use function implode;
 use function preg_match;
 use function preg_quote;
 use function preg_replace;
 use function strtr;
-use SebastianBergmann\Diff\Differ;
-use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -34,7 +39,7 @@ final class StringMatchesFormatDescription extends Constraint
 
     public function toString(): string
     {
-        return 'matches format description:' . PHP_EOL . $this->formatDescription;
+        return 'matches format description:'.PHP_EOL.$this->formatDescription;
     }
 
     /**
@@ -78,7 +83,7 @@ final class StringMatchesFormatDescription extends Constraint
     protected function additionalFailureDescription(mixed $other): string
     {
         $from = explode("\n", $this->formatDescription);
-        $to   = explode("\n", $this->convertNewlines($other));
+        $to = explode("\n", $this->convertNewlines($other));
 
         foreach ($from as $index => $line) {
             // is the expected output line different from the actual output line
@@ -94,7 +99,7 @@ final class StringMatchesFormatDescription extends Constraint
         }
 
         $from = implode("\n", $from);
-        $to   = implode("\n", $to);
+        $to = implode("\n", $to);
 
         return $this->differ()->diff($from, $to);
     }
@@ -120,7 +125,7 @@ final class StringMatchesFormatDescription extends Constraint
             ],
         );
 
-        return '/^' . $string . '$/s';
+        return '/^'.$string.'$/s';
     }
 
     private function convertNewlines(string $text): string

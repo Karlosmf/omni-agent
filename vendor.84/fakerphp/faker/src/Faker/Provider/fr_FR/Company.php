@@ -119,7 +119,7 @@ class Company extends \Faker\Provider\Company
         $siret .= Luhn::computeCheckDigit($siret);
 
         if ($formatted) {
-            $siret = substr($siret, 0, 3) . ' ' . substr($siret, 3, 3) . ' ' . substr($siret, 6, 3) . ' ' . substr($siret, 9, 5);
+            $siret = substr($siret, 0, 3).' '.substr($siret, 3, 3).' '.substr($siret, 6, 3).' '.substr($siret, 9, 5);
         }
 
         return $siret;
@@ -138,7 +138,7 @@ class Company extends \Faker\Provider\Company
         $siren .= Luhn::computeCheckDigit($siren);
 
         if ($formatted) {
-            $siren = substr($siren, 0, 3) . ' ' . substr($siren, 3, 3) . ' ' . substr($siren, 6, 3);
+            $siren = substr($siren, 0, 3).' '.substr($siren, 3, 3).' '.substr($siren, 6, 3);
         }
 
         return $siren;
@@ -152,8 +152,7 @@ class Company extends \Faker\Provider\Company
     /**
      * Validates a french catch phrase.
      *
-     * @param string $catchPhrase The catch phrase to validate.
-     *
+     * @param  string  $catchPhrase  The catch phrase to validate.
      * @return bool (true if valid, false otherwise)
      */
     protected static function isCatchPhraseValid($catchPhrase)

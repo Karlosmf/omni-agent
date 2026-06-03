@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,13 +9,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\Test;
 
-use function sprintf;
 use PHPUnit\Event\Code;
 use PHPUnit\Event\Event;
 use PHPUnit\Event\Telemetry;
 use PHPUnit\Framework\TestCase;
+
+use function sprintf;
 
 /**
  * @immutable
@@ -28,16 +32,17 @@ final readonly class AfterLastTestMethodCalled implements Event
      * @var class-string<TestCase>
      */
     private string $testClassName;
+
     private Code\ClassMethod $calledMethod;
 
     /**
-     * @param class-string<TestCase> $testClassName
+     * @param  class-string<TestCase>  $testClassName
      */
     public function __construct(Telemetry\Info $telemetryInfo, string $testClassName, Code\ClassMethod $calledMethod)
     {
         $this->telemetryInfo = $telemetryInfo;
         $this->testClassName = $testClassName;
-        $this->calledMethod  = $calledMethod;
+        $this->calledMethod = $calledMethod;
     }
 
     public function telemetryInfo(): Telemetry\Info

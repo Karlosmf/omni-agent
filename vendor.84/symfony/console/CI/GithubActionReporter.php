@@ -42,12 +42,11 @@ class GithubActionReporter
 
     public function __construct(
         private OutputInterface $output,
-    ) {
-    }
+    ) {}
 
     public static function isGithubActionEnvironment(): bool
     {
-        return false !== getenv('GITHUB_ACTIONS');
+        return getenv('GITHUB_ACTIONS') !== false;
     }
 
     /**
@@ -85,7 +84,7 @@ class GithubActionReporter
         // Some values must be encoded.
         $message = strtr($message, self::ESCAPED_DATA);
 
-        if (!$file) {
+        if (! $file) {
             // No file provided, output the message solely:
             $this->output->writeln(\sprintf('::%s::%s', $type, $message));
 

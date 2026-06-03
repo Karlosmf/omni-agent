@@ -2,9 +2,10 @@
 
 namespace Livewire\Features\SupportNestedComponentListeners;
 
-use function Livewire\store;
-use Livewire\Drawer\Utils;
 use Livewire\ComponentHook;
+use Livewire\Drawer\Utils;
+
+use function Livewire\store;
 
 class SupportNestedComponentListeners extends ComponentHook
 {
@@ -23,7 +24,7 @@ class SupportNestedComponentListeners extends ComponentHook
                 // so we need to convert back to kebab to ensure events are valid in html
                 $fullEvent = str($key)->after('@')->kebab();
                 $attributeKey = 'x-on:'.$fullEvent;
-                $attributeValue = "\$wire.\$parent.".$value;
+                $attributeValue = '$wire.$parent.'.$value;
 
                 store($this->component)->push('attributes', $attributeValue, $attributeKey);
             }
@@ -35,7 +36,9 @@ class SupportNestedComponentListeners extends ComponentHook
         return function ($html, $replaceHtml) {
             $attributes = store($this->component)->get('attributes', false);
 
-            if (! $attributes) return;
+            if (! $attributes) {
+                return;
+            }
 
             $replaceHtml(Utils::insertAttributesIntoHtmlRoot($html, $attributes));
         };
@@ -45,14 +48,18 @@ class SupportNestedComponentListeners extends ComponentHook
     {
         $attributes = store($this->component)->get('attributes', false);
 
-        if (! $attributes) return;
+        if (! $attributes) {
+            return;
+        }
 
         $attributes && $context->addMemo('attributes', $attributes);
     }
 
     public function hydrate($memo)
     {
-        if (! isset($memo['attributes'])) return;
+        if (! isset($memo['attributes'])) {
+            return;
+        }
 
         $attributes = $memo['attributes'];
 

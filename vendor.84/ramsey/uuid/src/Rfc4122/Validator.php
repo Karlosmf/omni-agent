@@ -28,7 +28,7 @@ use function str_replace;
 final class Validator implements ValidatorInterface
 {
     private const VALID_PATTERN = '\A[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-'
-        . '[1-8][0-9A-Fa-f]{3}-[ABab89][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}\z';
+        .'[1-8][0-9A-Fa-f]{3}-[ABab89][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}\z';
 
     /**
      * @return non-empty-string
@@ -44,6 +44,6 @@ final class Validator implements ValidatorInterface
         $uuid = strtolower(str_replace(['urn:', 'uuid:', 'URN:', 'UUID:', '{', '}'], '', $uuid));
 
         /** @phpstan-ignore possiblyImpure.functionCall */
-        return $uuid === Uuid::NIL || $uuid === Uuid::MAX || preg_match('/' . self::VALID_PATTERN . '/Dms', $uuid);
+        return $uuid === Uuid::NIL || $uuid === Uuid::MAX || preg_match('/'.self::VALID_PATTERN.'/Dms', $uuid);
     }
 }

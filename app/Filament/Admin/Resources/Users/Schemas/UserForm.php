@@ -3,8 +3,9 @@
 namespace App\Filament\Admin\Resources\Users\Schemas;
 
 use App\Enums\UserRole;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\Select; // Updated
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\DateTimePicker; // Updated
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -44,7 +45,7 @@ class UserForm
                 Section::make('Permisos')
                     ->description('Selecciona los permisos para este usuario')
                     ->schema([
-                        \Filament\Forms\Components\CheckboxList::make('permissions')
+                        CheckboxList::make('permissions')
                             ->label('Accesos Permitidos')
                             ->options([
                                 'manage_leads' => 'Gestionar Consultas',

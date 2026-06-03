@@ -84,7 +84,7 @@ class FactoryMethod
 
     public function extractFactoryNamesFromComment()
     {
-        $this->calls = array();
+        $this->calls = [];
         for ($i = 0; $i < count($this->comment); $i++) {
             if ($this->extractFactoryNamesFromLine($this->comment[$i])) {
                 unset($this->comment[$i]);
@@ -101,8 +101,10 @@ class FactoryMethod
                     isset($match[2]) ? trim($match[2]) : null
                 )
             );
+
             return true;
         }
+
         return false;
     }
 
@@ -110,16 +112,17 @@ class FactoryMethod
     {
         $primaryName = $this->reflector->getName();
         if (empty($value)) {
-            return array($primaryName);
+            return [$primaryName];
         }
         preg_match_all('/(\.{3}|-|[a-zA-Z_][a-zA-Z_0-9]*)/', $value, $match);
         $names = $match[0];
         if (in_array('...', $names)) {
             $this->isVarArgs = true;
         }
-        if (!in_array('-', $names) && !in_array($primaryName, $names)) {
+        if (! in_array('-', $names) && ! in_array($primaryName, $names)) {
             array_unshift($names, $primaryName);
         }
+
         return $names;
     }
 
@@ -135,8 +138,8 @@ class FactoryMethod
 
     public function extractParameters()
     {
-        $this->parameters = array();
-        if (!$this->isVarArgs) {
+        $this->parameters = [];
+        if (! $this->isVarArgs) {
             foreach ($this->reflector->getParameters() as $parameter) {
                 $this->parameters[] = new FactoryParameter($this, $parameter);
             }
@@ -145,14 +148,15 @@ class FactoryMethod
 
     public function getParameterDeclarations()
     {
-        if ($this->isVarArgs || !$this->hasParameters()) {
+        if ($this->isVarArgs || ! $this->hasParameters()) {
             return '';
         }
-        $params = array();
+        $params = [];
         foreach ($this->parameters as /** @var $parameter FactoryParameter */
                  $parameter) {
             $params[] = $parameter->getDeclaration();
         }
+
         return implode(', ', $params);
     }
 
@@ -161,13 +165,13 @@ class FactoryMethod
         if ($this->isVarArgs) {
             return '';
         }
-        $params = array();
+        $params = [];
         foreach ($this->parameters as $parameter) {
             $params[] = $parameter->getInvocation();
         }
+
         return implode(', ', $params);
     }
-
 
     public function getClass()
     {
@@ -201,7 +205,7 @@ class FactoryMethod
 
     public function hasParameters()
     {
-        return !empty($this->parameters);
+        return ! empty($this->parameters);
     }
 
     public function getParameters()
@@ -211,7 +215,7 @@ class FactoryMethod
 
     public function getFullName()
     {
-        return $this->getClassName() . '::' . $this->getName();
+        return $this->getClassName().'::'.$this->getName();
     }
 
     public function getCommentText()
@@ -221,11 +225,12 @@ class FactoryMethod
 
     public function getComment($indent = '')
     {
-        $comment = $indent . '/**';
+        $comment = $indent.'/**';
         foreach ($this->comment as $line) {
-            $comment .= "\n" . rtrim($indent . ' * ' . $line);
+            $comment .= "\n".rtrim($indent.' * '.$line);
         }
-        $comment .= "\n" . $indent . ' */';
+        $comment .= "\n".$indent.' */';
+
         return $comment;
     }
 }

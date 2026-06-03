@@ -49,6 +49,7 @@ use function substr;
 final readonly class SuiteLoader
 {
     public int $testCount;
+
     /** @var list<non-empty-string> */
     public array $tests;
 
@@ -57,7 +58,7 @@ final readonly class SuiteLoader
         OutputInterface $output,
         CodeCoverageFilterRegistry $codeCoverageFilterRegistry,
     ) {
-        (new PhpHandler())->handle($this->options->configuration->php());
+        (new PhpHandler)->handle($this->options->configuration->php());
 
         if ($this->options->configuration->hasBootstrap()) {
             $bootstrapFilename = $this->options->configuration->bootstrap();
@@ -67,12 +68,12 @@ final readonly class SuiteLoader
 
         if (! $this->options->configuration->noExtensions()) {
             if ($this->options->configuration->hasPharExtensionDirectory()) {
-                (new PharLoader())->loadPharExtensionsInDirectory(
+                (new PharLoader)->loadPharExtensionsInDirectory(
                     $this->options->configuration->pharExtensionDirectory(),
                 );
             }
 
-            $extensionFacade       = new ExtensionFacade();
+            $extensionFacade = new ExtensionFacade;
             $extensionBootstrapper = new ExtensionBootstrapper(
                 $this->options->configuration,
                 $extensionFacade,
@@ -89,7 +90,7 @@ final readonly class SuiteLoader
         TestResultFacade::init();
         EventFacade::instance()->seal();
 
-        $testSuite = (new TestSuiteBuilder())->build($this->options->configuration);
+        $testSuite = (new TestSuiteBuilder)->build($this->options->configuration);
 
         if ($this->options->hasShard()) {
             $this->shardTests($testSuite);
@@ -104,7 +105,7 @@ final readonly class SuiteLoader
             $this->options->configuration->executionOrderDefects() !== TestSuiteSorter::ORDER_DEFAULT ||
             $this->options->configuration->resolveDependencies()
         ) {
-            $resultCache = new NullResultCache();
+            $resultCache = new NullResultCache;
             if ($this->options->configuration->cacheResult()) {
                 $resultCache = new DefaultResultCache($this->options->configuration->testResultCacheFile());
                 $resultCache->load();
@@ -118,7 +119,7 @@ final readonly class SuiteLoader
             );
         }
 
-        (new TestSuiteFilterProcessor())->process($this->options->configuration, $testSuite);
+        (new TestSuiteFilterProcessor)->process($this->options->configuration, $testSuite);
 
         $this->testCount = count($testSuite);
 
@@ -137,9 +138,9 @@ final readonly class SuiteLoader
                         $name = sprintf('/%s%s$/', preg_quote($name, '/'), preg_quote($test->dataSetAsString(), '/'));
                     } else {
                         if (is_int($dataName)) {
-                            $name .= '#' . $dataName;
+                            $name .= '#'.$dataName;
                         } else {
-                            $name .= '@' . $dataName;
+                            $name .= '@'.$dataName;
                         }
                     }
                 } else {
@@ -159,7 +160,7 @@ final readonly class SuiteLoader
         }
 
         ob_start();
-        $result       = (new WarmCodeCoverageCacheCommand(
+        $result = (new WarmCodeCoverageCacheCommand(
             $this->options->configuration,
             $codeCoverageFilterRegistry,
         ))->execute();
@@ -184,7 +185,7 @@ final readonly class SuiteLoader
 
             if ($test instanceof PhptTestCase) {
                 $refProperty = new ReflectionProperty(PhptTestCase::class, 'filename');
-                $filename    = $refProperty->getValue($test);
+                $filename = $refProperty->getValue($test);
                 assert(is_string($filename) && $filename !== '');
                 $filename = $this->stripCwd($filename);
 
@@ -207,8 +208,7 @@ final readonly class SuiteLoader
     }
 
     /**
-     * @param non-empty-string $filename
-     *
+     * @param  non-empty-string  $filename
      * @return non-empty-string
      */
     private function stripCwd(string $filename): string
@@ -227,11 +227,11 @@ final readonly class SuiteLoader
     {
         $tests = $this->extractTestsInSuite($suite);
 
-        $shards        = $this->options->totalShards;
-        $current       = $this->options->currentShard - 1; // 0 indexed. Shard 1 is in reality shard 0
-        $total         = count($tests);
+        $shards = $this->options->totalShards;
+        $current = $this->options->currentShard - 1; // 0 indexed. Shard 1 is in reality shard 0
+        $total = count($tests);
         $testsPerShard = (int) ceil($total / $shards);
-        $offset        = $testsPerShard * $current;
+        $offset = $testsPerShard * $current;
 
         $suite->setTests(array_slice($tests, $offset, $testsPerShard));
     }
@@ -240,7 +240,7 @@ final readonly class SuiteLoader
     private function extractTestsInSuite(TestSuite $suite): array
     {
         $extractedTests = [];
-        $suiteItems     = $suite->tests();
+        $suiteItems = $suite->tests();
 
         foreach ($suiteItems as $item) {
             if ($item instanceof TestSuite) {

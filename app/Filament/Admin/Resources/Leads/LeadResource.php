@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Leads;
 
+use App\Enums\LeadStatus;
 use App\Filament\Admin\Resources\Leads\Pages\CreateLead;
 use App\Filament\Admin\Resources\Leads\Pages\EditLead;
 use App\Filament\Admin\Resources\Leads\Pages\ListLeads;
@@ -34,7 +35,7 @@ class LeadResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $count = Lead::where('status', \App\Enums\LeadStatus::New)->count();
+        $count = Lead::where('status', LeadStatus::New)->count();
 
         return $count > 0 ? (string) $count : null;
     }

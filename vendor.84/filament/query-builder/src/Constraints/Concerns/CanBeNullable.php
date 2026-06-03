@@ -6,9 +6,9 @@ use Closure;
 
 trait CanBeNullable
 {
-    protected bool | Closure $isNullable = false;
+    protected bool|Closure $isNullable = false;
 
-    public function nullable(bool | Closure $condition = true): static
+    public function nullable(bool|Closure $condition = true): static
     {
         $this->isNullable = $condition;
 

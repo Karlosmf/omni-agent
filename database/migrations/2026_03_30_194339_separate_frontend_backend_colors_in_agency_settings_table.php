@@ -54,8 +54,8 @@ return new class extends Migration
             $table->renameColumn('fe_base_content_color', 'base_content_color');
 
             $table->dropColumn([
-                'be_primary_color', 'be_success_color', 'be_warning_color', 
-                'be_danger_color', 'be_info_color', 'be_gray_color'
+                'be_primary_color', 'be_success_color', 'be_warning_color',
+                'be_danger_color', 'be_info_color', 'be_gray_color',
             ]);
         });
     }

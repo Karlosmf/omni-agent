@@ -21,7 +21,7 @@ final class ObjectMethods implements IteratorAggregate
     protected array $methods;
 
     /**
-     * @param MethodDescription[] $methods
+     * @param  MethodDescription[]  $methods
      */
     public function __construct(array $methods)
     {

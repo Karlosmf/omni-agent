@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -20,6 +22,7 @@ use Monolog\LogRecord;
  * CouchDB handler
  *
  * @author Markus Bachmann <markus.bachmann@bachi.biz>
+ *
  * @phpstan-type Options array{
  *     host: string,
  *     port: int,
@@ -39,21 +42,22 @@ class CouchDBHandler extends AbstractProcessingHandler
 {
     /**
      * @var mixed[]
+     *
      * @phpstan-var Options
      */
     private array $options;
 
     /**
-     * @param mixed[] $options
+     * @param  mixed[]  $options
      *
      * @phpstan-param InputOptions $options
      */
     public function __construct(array $options = [], int|string|Level $level = Level::Debug, bool $bubble = true)
     {
         $this->options = array_merge([
-            'host'     => 'localhost',
-            'port'     => 5984,
-            'dbname'   => 'logger',
+            'host' => 'localhost',
+            'port' => 5984,
+            'dbname' => 'logger',
             'username' => null,
             'password' => null,
         ], $options);
@@ -62,33 +66,33 @@ class CouchDBHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function write(LogRecord $record): void
     {
         $basicAuth = null;
-        if (null !== $this->options['username'] && null !== $this->options['password']) {
+        if ($this->options['username'] !== null && $this->options['password'] !== null) {
             $basicAuth = sprintf('%s:%s@', $this->options['username'], $this->options['password']);
         }
 
         $url = 'http://'.$basicAuth.$this->options['host'].':'.$this->options['port'].'/'.$this->options['dbname'];
         $context = stream_context_create([
             'http' => [
-                'method'        => 'POST',
-                'content'       => $record->formatted,
+                'method' => 'POST',
+                'content' => $record->formatted,
                 'ignore_errors' => true,
                 'max_redirects' => 0,
-                'header'        => 'Content-type: application/json',
+                'header' => 'Content-type: application/json',
             ],
         ]);
 
-        if (false === @file_get_contents($url, false, $context)) {
+        if (@file_get_contents($url, false, $context) === false) {
             throw new \RuntimeException(sprintf('Could not connect to %s', $url));
         }
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function getDefaultFormatter(): FormatterInterface
     {

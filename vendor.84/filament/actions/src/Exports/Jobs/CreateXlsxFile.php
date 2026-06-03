@@ -65,7 +65,7 @@ class CreateXlsxFile implements ShouldQueue
         $cellStyle = $this->exporter->getXlsxCellStyle();
 
         $writeRowsFromFile(
-            $this->export->getFileDirectory() . DIRECTORY_SEPARATOR . 'headers.csv',
+            $this->export->getFileDirectory().DIRECTORY_SEPARATOR.'headers.csv',
             $this->exporter->getXlsxHeaderCellStyle() ?? $cellStyle,
             $this->exporter->makeXlsxHeaderRow(...),
         );

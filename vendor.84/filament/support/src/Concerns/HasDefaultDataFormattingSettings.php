@@ -6,72 +6,72 @@ use Closure;
 
 trait HasDefaultDataFormattingSettings
 {
-    protected string | Closure $defaultCurrency = 'usd';
+    protected string|Closure $defaultCurrency = 'usd';
 
-    protected string | Closure $defaultDateDisplayFormat = 'M j, Y';
+    protected string|Closure $defaultDateDisplayFormat = 'M j, Y';
 
-    protected string | Closure $defaultIsoDateDisplayFormat = 'L';
+    protected string|Closure $defaultIsoDateDisplayFormat = 'L';
 
-    protected string | Closure $defaultDateTimeDisplayFormat = 'M j, Y H:i:s';
+    protected string|Closure $defaultDateTimeDisplayFormat = 'M j, Y H:i:s';
 
-    protected string | Closure $defaultIsoDateTimeDisplayFormat = 'LLL';
+    protected string|Closure $defaultIsoDateTimeDisplayFormat = 'LLL';
 
-    protected string | Closure | null $defaultNumberLocale = null;
+    protected string|Closure|null $defaultNumberLocale = null;
 
-    protected string | Closure $defaultTimeDisplayFormat = 'H:i:s';
+    protected string|Closure $defaultTimeDisplayFormat = 'H:i:s';
 
-    protected string | Closure $defaultIsoTimeDisplayFormat = 'LT';
+    protected string|Closure $defaultIsoTimeDisplayFormat = 'LT';
 
-    public function defaultDateDisplayFormat(string | Closure $format): static
+    public function defaultDateDisplayFormat(string|Closure $format): static
     {
         $this->defaultDateDisplayFormat = $format;
 
         return $this;
     }
 
-    public function defaultDateTimeDisplayFormat(string | Closure $format): static
+    public function defaultDateTimeDisplayFormat(string|Closure $format): static
     {
         $this->defaultDateTimeDisplayFormat = $format;
 
         return $this;
     }
 
-    public function defaultTimeDisplayFormat(string | Closure $format): static
+    public function defaultTimeDisplayFormat(string|Closure $format): static
     {
         $this->defaultTimeDisplayFormat = $format;
 
         return $this;
     }
 
-    public function defaultIsoDateDisplayFormat(string | Closure $format): static
+    public function defaultIsoDateDisplayFormat(string|Closure $format): static
     {
         $this->defaultIsoDateDisplayFormat = $format;
 
         return $this;
     }
 
-    public function defaultIsoDateTimeDisplayFormat(string | Closure $format): static
+    public function defaultIsoDateTimeDisplayFormat(string|Closure $format): static
     {
         $this->defaultIsoDateTimeDisplayFormat = $format;
 
         return $this;
     }
 
-    public function defaultIsoTimeDisplayFormat(string | Closure $format): static
+    public function defaultIsoTimeDisplayFormat(string|Closure $format): static
     {
         $this->defaultIsoTimeDisplayFormat = $format;
 
         return $this;
     }
 
-    public function defaultNumberLocale(string | Closure | null $locale): static
+    public function defaultNumberLocale(string|Closure|null $locale): static
     {
         $this->defaultNumberLocale = $locale;
 
         return $this;
     }
 
-    public function defaultCurrency(string | Closure $currency): static
+    public function defaultCurrency(string|Closure $currency): static
     {
         $this->defaultCurrency = $currency;
 

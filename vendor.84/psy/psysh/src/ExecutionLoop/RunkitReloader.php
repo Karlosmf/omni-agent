@@ -28,7 +28,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 class RunkitReloader extends AbstractListener implements OutputAware
 {
     private Parser $parser;
+
     private ?OutputInterface $output = null;
+
     private array $timestamps = [];
 
     /**
@@ -45,7 +47,7 @@ class RunkitReloader extends AbstractListener implements OutputAware
      */
     public function __construct()
     {
-        $this->parser = (new ParserFactory())->createParser();
+        $this->parser = (new ParserFactory)->createParser();
     }
 
     /**
@@ -77,8 +79,9 @@ class RunkitReloader extends AbstractListener implements OutputAware
         foreach (\get_included_files() as $file) {
             $timestamp = \filemtime($file);
 
-            if (!isset($this->timestamps[$file])) {
+            if (! isset($this->timestamps[$file])) {
                 $this->timestamps[$file] = $timestamp;
+
                 continue;
             }
 
@@ -86,9 +89,10 @@ class RunkitReloader extends AbstractListener implements OutputAware
                 continue;
             }
 
-            if (!$this->lintFile($file)) {
+            if (! $this->lintFile($file)) {
                 $msg = \sprintf('Modified file "%s" could not be reloaded', $file);
                 $shell->writeException(new ParseErrorException($msg));
+
                 continue;
             }
 

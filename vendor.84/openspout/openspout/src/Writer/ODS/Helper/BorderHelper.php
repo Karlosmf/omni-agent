@@ -46,7 +46,7 @@ final class BorderHelper
     {
         $definition = 'fo:border-%s="%s"';
 
-        if (Border::STYLE_NONE === $borderPart->getStyle()) {
+        if ($borderPart->getStyle() === Border::STYLE_NONE) {
             $borderPartDefinition = \sprintf($definition, $borderPart->getName(), 'none');
         } else {
             $attributes = [

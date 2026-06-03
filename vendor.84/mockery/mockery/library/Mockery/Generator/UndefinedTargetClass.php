@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -23,7 +24,7 @@ class UndefinedTargetClass implements TargetClassInterface
     private $name;
 
     /**
-     * @param class-string $name
+     * @param  class-string  $name
      */
     public function __construct($name)
     {
@@ -39,7 +40,7 @@ class UndefinedTargetClass implements TargetClassInterface
     }
 
     /**
-     * @param  class-string $name
+     * @param  class-string  $name
      * @return self
      */
     public static function factory($name)
@@ -86,6 +87,7 @@ class UndefinedTargetClass implements TargetClassInterface
     {
         $parts = explode('\\', ltrim($this->getName(), '\\'));
         array_pop($parts);
+
         return implode('\\', $parts);
     }
 
@@ -95,6 +97,7 @@ class UndefinedTargetClass implements TargetClassInterface
     public function getShortName()
     {
         $parts = explode('\\', $this->getName());
+
         return array_pop($parts);
     }
 
@@ -107,7 +110,7 @@ class UndefinedTargetClass implements TargetClassInterface
     }
 
     /**
-     * @param  class-string $interface
+     * @param  class-string  $interface
      * @return bool
      */
     public function implementsInterface($interface)

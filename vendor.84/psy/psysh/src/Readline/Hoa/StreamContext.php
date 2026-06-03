@@ -66,7 +66,6 @@ class StreamContext
         $this->_id = $id;
         $this->_context = \stream_context_create();
 
-        return;
     }
 
     /**
@@ -74,7 +73,7 @@ class StreamContext
      */
     public static function getInstance(string $id): self
     {
-        if (false === static::contextExists($id)) {
+        if (static::contextExists($id) === false) {
             static::$_instances[$id] = new self($id);
         }
 

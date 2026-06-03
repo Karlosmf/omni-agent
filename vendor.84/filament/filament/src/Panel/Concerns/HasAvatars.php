@@ -7,9 +7,9 @@ use Filament\AvatarProviders\UiAvatarsProvider;
 
 trait HasAvatars
 {
-    protected string | Closure $defaultAvatarProvider = UiAvatarsProvider::class;
+    protected string|Closure $defaultAvatarProvider = UiAvatarsProvider::class;
 
-    public function defaultAvatarProvider(string | Closure $provider): static
+    public function defaultAvatarProvider(string|Closure $provider): static
     {
         $this->defaultAvatarProvider = $provider;
 

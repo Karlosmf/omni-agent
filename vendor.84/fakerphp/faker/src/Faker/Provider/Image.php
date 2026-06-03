@@ -13,7 +13,9 @@ class Image extends Base
     public const BASE_URL = 'https://via.placeholder.com';
 
     public const FORMAT_JPG = 'jpg';
+
     public const FORMAT_JPEG = 'jpeg';
+
     public const FORMAT_PNG = 'png';
 
     /**
@@ -33,14 +35,13 @@ class Image extends Base
      *
      * @example 'http://via.placeholder.com/640x480.png/CCCCCC?text=well+hi+there'
      *
-     * @param int         $width
-     * @param int         $height
-     * @param string|null $category
-     * @param bool        $randomize
-     * @param string|null $word
-     * @param bool        $gray
-     * @param string      $format
-     *
+     * @param  int  $width
+     * @param  int  $height
+     * @param  string|null  $category
+     * @param  bool  $randomize
+     * @param  string|null  $word
+     * @param  bool  $gray
+     * @param  string  $format
      * @return string
      */
     public static function imageUrl(
@@ -61,7 +62,7 @@ class Image extends Base
         // Validate image format
         $imageFormats = static::getFormats();
 
-        if (!in_array(strtolower($format), $imageFormats, true)) {
+        if (! in_array(strtolower($format), $imageFormats, true)) {
             throw new \InvalidArgumentException(sprintf(
                 'Invalid image format "%s". Allowable formats are: %s',
                 $format,
@@ -92,7 +93,7 @@ class Image extends Base
             self::BASE_URL,
             $size,
             $backgroundColor,
-            count($imageParts) > 0 ? '?text=' . urlencode(implode(' ', $imageParts)) : '',
+            count($imageParts) > 0 ? '?text='.urlencode(implode(' ', $imageParts)) : '',
         );
     }
 
@@ -122,10 +123,10 @@ class Image extends Base
             'Provider is deprecated and will no longer be available in Faker 2. Please use a custom provider instead',
         );
 
-        $dir = null === $dir ? sys_get_temp_dir() : $dir; // GNU/Linux / OS X / Windows compatible
+        $dir = $dir === null ? sys_get_temp_dir() : $dir; // GNU/Linux / OS X / Windows compatible
 
         // Validate directory path
-        if (!is_dir($dir) || !is_writable($dir)) {
+        if (! is_dir($dir) || ! is_writable($dir)) {
             throw new \InvalidArgumentException(sprintf('Cannot write to directory "%s"', $dir));
         }
 
@@ -133,7 +134,7 @@ class Image extends Base
         // generated at the same time on a different server won't have a collision.
         $name = md5(uniqid(empty($_SERVER['SERVER_ADDR']) ? '' : $_SERVER['SERVER_ADDR'], true));
         $filename = sprintf('%s.%s', $name, $format);
-        $filepath = $dir . DIRECTORY_SEPARATOR . $filename;
+        $filepath = $dir.DIRECTORY_SEPARATOR.$filename;
 
         $url = static::imageUrl($width, $height, $category, $randomize, $word, $gray, $format);
 
@@ -147,7 +148,7 @@ class Image extends Base
             fclose($fp);
             curl_close($ch);
 
-            if (!$success) {
+            if (! $success) {
                 unlink($filepath);
 
                 // could not contact the distant URL or HTTP error - fail silently.
@@ -157,7 +158,7 @@ class Image extends Base
             // use remote fopen() via copy()
             $success = copy($url, $filepath);
 
-            if (!$success) {
+            if (! $success) {
                 // could not contact the distant URL or HTTP error - fail silently.
                 return false;
             }

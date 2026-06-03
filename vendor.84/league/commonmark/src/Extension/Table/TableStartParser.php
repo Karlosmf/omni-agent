@@ -43,7 +43,7 @@ final class TableStartParser implements BlockStartParserInterface
         }
 
         $lastLineBreak = \strrpos($paragraph, "\n");
-        $lastLine      = $lastLineBreak === false ? $paragraph : \substr($paragraph, $lastLineBreak + 1);
+        $lastLine = $lastLineBreak === false ? $paragraph : \substr($paragraph, $lastLineBreak + 1);
 
         $headerCells = TableParser::split($lastLine);
         if (\count($headerCells) > \count($columns)) {
@@ -55,7 +55,7 @@ final class TableStartParser implements BlockStartParserInterface
         $parsers = [];
 
         if ($lastLineBreak !== false) {
-            $p = new ParagraphParser();
+            $p = new ParagraphParser;
             $p->addLine(\substr($paragraph, 0, $lastLineBreak));
             $parsers[] = $p;
         }
@@ -70,15 +70,15 @@ final class TableStartParser implements BlockStartParserInterface
     /**
      * @return array<int, string|null>
      *
-     * @psalm-return array<int, TableCell::ALIGN_*|null>
-     *
      * @phpstan-return array<int, TableCell::ALIGN_*|null>
+     *
+     * @psalm-return array<int, TableCell::ALIGN_*|null>
      */
     private static function parseSeparator(Cursor $cursor): array
     {
         $columns = [];
-        $pipes   = 0;
-        $valid   = false;
+        $pipes = 0;
+        $valid = false;
 
         while (! $cursor->isAtEnd()) {
             switch ($c = $cursor->getCurrentCharacter()) {
@@ -100,7 +100,7 @@ final class TableStartParser implements BlockStartParserInterface
                         return [];
                     }
 
-                    $left  = false;
+                    $left = false;
                     $right = false;
                     if ($c === ':') {
                         $left = true;
@@ -140,9 +140,9 @@ final class TableStartParser implements BlockStartParserInterface
     }
 
     /**
-     * @psalm-return TableCell::ALIGN_*|null
-     *
      * @phpstan-return TableCell::ALIGN_*|null
+     *
+     * @psalm-return TableCell::ALIGN_*|null
      *
      * @psalm-pure
      */

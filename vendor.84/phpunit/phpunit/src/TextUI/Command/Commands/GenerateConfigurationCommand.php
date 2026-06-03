@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,10 +9,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI\Command;
 
 use const PHP_EOL;
 use const STDIN;
+
+use PHPUnit\Runner\Version;
+use PHPUnit\TextUI\XmlConfiguration\Generator;
+
 use function assert;
 use function defined;
 use function fgets;
@@ -19,8 +26,6 @@ use function getcwd;
 use function is_file;
 use function sprintf;
 use function trim;
-use PHPUnit\Runner\Version;
-use PHPUnit\TextUI\XmlConfiguration\Generator;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -33,20 +38,20 @@ final readonly class GenerateConfigurationCommand implements Command
     {
         $directory = getcwd();
 
-        print 'Generating phpunit.xml in ' . $directory . PHP_EOL . PHP_EOL;
-        print 'Bootstrap script (relative to path shown above; default: vendor/autoload.php): ';
+        echo 'Generating phpunit.xml in '.$directory.PHP_EOL.PHP_EOL;
+        echo 'Bootstrap script (relative to path shown above; default: vendor/autoload.php): ';
 
         $bootstrapScript = $this->read();
 
-        print 'Tests directory (relative to path shown above; default: tests): ';
+        echo 'Tests directory (relative to path shown above; default: tests): ';
 
         $testsDirectory = $this->read();
 
-        print 'Source directory (relative to path shown above; default: src): ';
+        echo 'Source directory (relative to path shown above; default: src): ';
 
         $src = $this->read();
 
-        print 'Cache directory (relative to path shown above; default: .phpunit.cache): ';
+        echo 'Cache directory (relative to path shown above; default: .phpunit.cache): ';
 
         $cacheDirectory = $this->read();
 
@@ -67,7 +72,7 @@ final readonly class GenerateConfigurationCommand implements Command
         }
 
         if (defined('PHPUNIT_COMPOSER_INSTALL') &&
-            is_file($directory . '/vendor/phpunit/phpunit/phpunit.xsd')) {
+            is_file($directory.'/vendor/phpunit/phpunit/phpunit.xsd')) {
             $schemaLocation = 'vendor/phpunit/phpunit/phpunit.xsd';
         } else {
             $schemaLocation = sprintf(
@@ -79,7 +84,7 @@ final readonly class GenerateConfigurationCommand implements Command
         $generator = new Generator;
 
         $result = @file_put_contents(
-            $directory . '/phpunit.xml',
+            $directory.'/phpunit.xml',
             $generator->generateDefaultConfiguration(
                 $schemaLocation,
                 $bootstrapScript,
@@ -92,8 +97,8 @@ final readonly class GenerateConfigurationCommand implements Command
         if ($result !== false) {
             return Result::from(
                 sprintf(
-                    PHP_EOL . 'Generated phpunit.xml in %s.' . PHP_EOL .
-                    'Make sure to exclude the %s directory from version control.' . PHP_EOL,
+                    PHP_EOL.'Generated phpunit.xml in %s.'.PHP_EOL.
+                    'Make sure to exclude the %s directory from version control.'.PHP_EOL,
                     $directory,
                     $cacheDirectory,
                 ),
@@ -103,7 +108,7 @@ final readonly class GenerateConfigurationCommand implements Command
         // @codeCoverageIgnoreStart
         return Result::from(
             sprintf(
-                PHP_EOL . 'Could not write phpunit.xml in %s.' . PHP_EOL,
+                PHP_EOL.'Could not write phpunit.xml in %s.'.PHP_EOL,
                 $directory,
             ),
             Result::EXCEPTION,

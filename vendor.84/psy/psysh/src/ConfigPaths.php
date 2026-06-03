@@ -17,8 +17,11 @@ namespace Psy;
 class ConfigPaths
 {
     private ?string $configDir = null;
+
     private ?string $dataDir = null;
+
     private ?string $runtimeDir = null;
+
     private EnvInterface $env;
 
     /**
@@ -28,14 +31,13 @@ class ConfigPaths
      *
      * @see self::overrideDirs
      *
-     * @param string[]          $overrides Directory overrides
-     * @param EnvInterface|null $env
+     * @param  string[]  $overrides  Directory overrides
      */
     public function __construct(array $overrides = [], ?EnvInterface $env = null)
     {
         $this->overrideDirs($overrides);
 
-        $this->env = $env ?: (\PHP_SAPI === 'cli-server' ? new SystemEnv() : new SuperglobalsEnv());
+        $this->env = $env ?: (\PHP_SAPI === 'cli-server' ? new SystemEnv : new SuperglobalsEnv);
     }
 
     /**
@@ -44,7 +46,7 @@ class ConfigPaths
      * If a key is set but empty, the override will be removed. If it is not set
      * at all, any existing override will persist.
      *
-     * @param string[] $overrides Directory overrides
+     * @param  string[]  $overrides  Directory overrides
      */
     public function overrideDirs(array $overrides)
     {
@@ -151,8 +153,7 @@ class ConfigPaths
     /**
      * Find real config files in config directories.
      *
-     * @param string[] $names Config file names
-     *
+     * @param  string[]  $names  Config file names
      * @return string[]
      */
     public function configFiles(array $names): array
@@ -276,8 +277,7 @@ class ConfigPaths
     /**
      * Find real data files in config directories.
      *
-     * @param string[] $names Config file names
-     *
+     * @param  string[]  $names  Config file names
      * @return string[]
      */
     public function dataFiles(array $names): array
@@ -320,11 +320,11 @@ class ConfigPaths
      * Behaves like 'command -v COMMAND' or 'which COMMAND'.
      * If $PATH is unset/empty it defaults to '/usr/sbin:/usr/bin:/sbin:/bin'.
      *
-     * @param string $command the executable to locate
+     * @param  string  $command  the executable to locate
      */
     public function which($command): ?string
     {
-        if (!\is_string($command) || $command === '') {
+        if (! \is_string($command) || $command === '') {
             return null;
         }
 
@@ -345,8 +345,7 @@ class ConfigPaths
      * `psysh` will be added to each of $baseDirs, and we'll throw in `~/.psysh`
      * and a couple of Windows-friendly paths as well.
      *
-     * @param string[] $baseDirs base directory paths
-     *
+     * @param  string[]  $baseDirs  base directory paths
      * @return string[]
      */
     private function allDirNames(array $baseDirs): array
@@ -370,7 +369,7 @@ class ConfigPaths
 
             if ($windowsHomeDir = $this->windowsHomeDir()) {
                 $dir = \strtr($windowsHomeDir, '\\', '/').'/.psysh';
-                if (!\in_array($dir, $dirs)) {
+                if (! \in_array($dir, $dirs)) {
                     $dirs[] = $dir;
                 }
             }
@@ -403,15 +402,14 @@ class ConfigPaths
     /**
      * Make a path prettier by replacing cwd with . or home directory with ~.
      *
-     * @param string|mixed $path       Path to prettify
-     * @param string|null  $relativeTo Directory to make path relative to (defaults to cwd)
-     * @param string|null  $homeDir    Home directory to replace with ~ (defaults to actual home)
-     *
+     * @param  string|mixed  $path  Path to prettify
+     * @param  string|null  $relativeTo  Directory to make path relative to (defaults to cwd)
+     * @param  string|null  $homeDir  Home directory to replace with ~ (defaults to actual home)
      * @return string|mixed Pretty path, or original value if not a string
      */
     public static function prettyPath($path, ?string $relativeTo = null, ?string $homeDir = null)
     {
-        if (!\is_string($path)) {
+        if (! \is_string($path)) {
             return $path;
         }
 
@@ -427,7 +425,7 @@ class ConfigPaths
         }
 
         // Fall back to replacing home directory
-        $homeDir = $homeDir ?: (new self())->homeDir();
+        $homeDir = $homeDir ?: (new self)->homeDir();
         if ($homeDir && $homeDir !== '/') {
             $homeDir = \rtrim(\strtr($homeDir, '\\', '/'), '/').'/';
             if (\strpos($path, $homeDir) === 0) {
@@ -443,18 +441,17 @@ class ConfigPaths
      *
      * Generates E_USER_NOTICE error if the directory is not writable or creatable.
      *
-     * @param string $dir
      *
      * @return bool False if directory exists but is not writeable, or cannot be created
      */
     public static function ensureDir(string $dir): bool
     {
-        if (!\is_dir($dir)) {
+        if (! \is_dir($dir)) {
             // Just try making it and see if it works
             @\mkdir($dir, 0700, true);
         }
 
-        if (!\is_dir($dir) || !\is_writable($dir)) {
+        if (! \is_dir($dir) || ! \is_writable($dir)) {
             \trigger_error(\sprintf('Writing to directory %s is not allowed.', $dir), \E_USER_NOTICE);
 
             return false;
@@ -468,7 +465,6 @@ class ConfigPaths
      *
      * Generates E_USER_NOTICE error if either $file or its directory is not writable.
      *
-     * @param string $file
      *
      * @return string|false Full path to $file, or false if file is not writable
      */
@@ -484,7 +480,7 @@ class ConfigPaths
             return false;
         }
 
-        if (!self::ensureDir(\dirname($file))) {
+        if (! self::ensureDir(\dirname($file))) {
             return false;
         }
 

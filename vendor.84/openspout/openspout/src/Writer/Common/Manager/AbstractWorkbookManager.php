@@ -93,14 +93,14 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
      * Sets the given sheet as the current one. New data will be written to this sheet.
      * The writing will resume where it stopped (i.e. data won't be truncated).
      *
-     * @param Sheet $sheet The "external" sheet to set as current
+     * @param  Sheet  $sheet  The "external" sheet to set as current
      *
      * @throws SheetNotFoundException If the given sheet does not exist in the workbook
      */
     final public function setCurrentSheet(Sheet $sheet): void
     {
         $worksheet = $this->getWorksheetFromExternalSheet($sheet);
-        if (null !== $worksheet) {
+        if ($worksheet !== null) {
             $this->currentWorksheet = $worksheet;
         } else {
             throw new SheetNotFoundException('The given sheet does not exist in the workbook.');
@@ -112,16 +112,16 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
      * If shouldCreateNewSheetsAutomatically option is set to true, it will handle pagination
      * with the creation of new worksheets if one worksheet has reached its maximum capicity.
      *
-     * @param Row $row The row to be added
+     * @param  Row  $row  The row to be added
      *
-     * @throws IOException              If trying to create a new sheet and unable to open the sheet for writing
+     * @throws IOException If trying to create a new sheet and unable to open the sheet for writing
      * @throws InvalidArgumentException
      */
     final public function addRowToCurrentWorksheet(Row $row): void
     {
         $currentWorksheet = $this->getCurrentWorksheet();
         if ($this->hasCurrentWorksheetReachedMaxRows()) {
-            if (!$this->options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY) {
+            if (! $this->options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY) {
                 return;
             }
 
@@ -137,7 +137,7 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
      * All the necessary files are written to disk and zipped together to create the final file.
      * All the temporary files are then deleted.
      *
-     * @param resource $finalFilePointer Pointer to the spreadsheet that will be created
+     * @param  resource  $finalFilePointer  Pointer to the spreadsheet that will be created
      */
     final public function close($finalFilePointer): void
     {
@@ -163,7 +163,7 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
     /**
      * Writes all the necessary files to disk and zip them together to create the final file.
      *
-     * @param resource $finalFilePointer Pointer to the spreadsheet that will be created
+     * @param  resource  $finalFilePointer  Pointer to the spreadsheet that will be created
      */
     abstract protected function writeAllFilesToDiskAndZipThem($finalFilePointer): void;
 
@@ -250,8 +250,8 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
     /**
      * Adds a row to the given sheet.
      *
-     * @param Worksheet $worksheet Worksheet to write the row to
-     * @param Row       $row       The row to be added
+     * @param  Worksheet  $worksheet  Worksheet to write the row to
+     * @param  Row  $row  The row to be added
      *
      * @throws IOException
      * @throws InvalidArgumentException

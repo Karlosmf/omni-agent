@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,7 +9,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner;
+
+use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 use function array_diff;
 use function basename;
@@ -17,8 +23,6 @@ use function str_ends_with;
 use function strpos;
 use function strtolower;
 use function substr;
-use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -38,15 +42,15 @@ final class TestSuiteLoader
     private static array $fileToClassesMap = [];
 
     /**
-     * @throws Exception
-     *
      * @return ReflectionClass<TestCase>
+     *
+     * @throws Exception
      */
     public function load(string $suiteClassFile): ReflectionClass
     {
         $suiteClassFile = realpath($suiteClassFile);
         $suiteClassName = $this->classNameFromFileName($suiteClassFile);
-        $loadedClasses  = $this->loadSuiteClassFile($suiteClassFile);
+        $loadedClasses = $this->loadSuiteClassFile($suiteClassFile);
 
         foreach ($loadedClasses as $className) {
             /** @noinspection PhpUnhandledExceptionInspection */
@@ -60,15 +64,15 @@ final class TestSuiteLoader
                 continue;
             }
 
-            if (!$class->isSubclassOf(TestCase::class)) {
+            if (! $class->isSubclassOf(TestCase::class)) {
                 continue;
             }
 
-            if (!str_ends_with(strtolower($class->getShortName()), strtolower($suiteClassName))) {
+            if (! str_ends_with(strtolower($class->getShortName()), strtolower($suiteClassName))) {
                 continue;
             }
 
-            if (!$class->isAbstract()) {
+            if (! $class->isAbstract()) {
                 return $class;
             }
 
@@ -91,7 +95,7 @@ final class TestSuiteLoader
     private function classNameFromFileName(string $suiteClassFile): string
     {
         $className = basename($suiteClassFile, '.php');
-        $dotPos    = strpos($className, '.');
+        $dotPos = strpos($className, '.');
 
         if ($dotPos !== false) {
             $className = substr($className, 0, $dotPos);
@@ -124,7 +128,7 @@ final class TestSuiteLoader
             /** @noinspection PhpUnhandledExceptionInspection */
             $class = new ReflectionClass($loadedClass);
 
-            if (!isset(self::$fileToClassesMap[$class->getFileName()])) {
+            if (! isset(self::$fileToClassesMap[$class->getFileName()])) {
                 self::$fileToClassesMap[$class->getFileName()] = [];
             }
 

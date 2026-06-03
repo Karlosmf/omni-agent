@@ -23,7 +23,7 @@ final readonly class WorkbookProtection
     private function getSheetViewAttributes(): string
     {
         return $this->generateAttributes([
-            'workbookPassword' => null !== $this->password ? PasswordHashHelper::make($this->password) : '',
+            'workbookPassword' => $this->password !== null ? PasswordHashHelper::make($this->password) : '',
             'lockStructure' => $this->lockStructure,
             'lockWindows' => $this->lockWindows,
             'lockRevisions' => $this->lockRevisions,
@@ -31,7 +31,7 @@ final readonly class WorkbookProtection
     }
 
     /**
-     * @param array<string, bool|string> $data with key containing the attribute name and value containing the attribute value
+     * @param  array<string, bool|string>  $data  with key containing the attribute name and value containing the attribute value
      */
     private function generateAttributes(array $data): string
     {

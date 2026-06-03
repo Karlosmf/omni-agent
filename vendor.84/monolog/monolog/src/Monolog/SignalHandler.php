@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Monolog package.
@@ -26,8 +28,10 @@ class SignalHandler
 
     /** @var array<int, callable|string|int> SIG_DFL, SIG_IGN or previous callable */
     private array $previousSignalHandler = [];
-    /** @var array<int, \Psr\Log\LogLevel::*> */
+
+    /** @var array<int, LogLevel::*> */
     private array $signalLevelMap = [];
+
     /** @var array<int, bool> */
     private array $signalRestartSyscalls = [];
 
@@ -37,14 +41,15 @@ class SignalHandler
     }
 
     /**
-     * @param  int|string|Level $level Level or level name
-     * @return $this
+     * @param  int|string|Level  $level  Level or level name
      *
      * @phpstan-param value-of<Level::VALUES>|value-of<Level::NAMES>|Level|LogLevel::* $level
+     *
+     * @return $this
      */
     public function registerSignalHandler(int $signo, int|string|Level $level = LogLevel::CRITICAL, bool $callPrevious = true, bool $restartSyscalls = true, ?bool $async = true): self
     {
-        if (!\extension_loaded('pcntl') || !\function_exists('pcntl_signal')) {
+        if (! \extension_loaded('pcntl') || ! \function_exists('pcntl_signal')) {
             return $this;
         }
 
@@ -69,7 +74,7 @@ class SignalHandler
     }
 
     /**
-     * @param mixed $siginfo
+     * @param  mixed  $siginfo
      */
     public function handleSignal(int $signo, $siginfo = null): void
     {
@@ -90,7 +95,7 @@ class SignalHandler
         $context = $siginfo ?? [];
         $this->logger->log($level, sprintf('Program received signal %s', $signal), $context);
 
-        if (!isset($this->previousSignalHandler[$signo])) {
+        if (! isset($this->previousSignalHandler[$signo])) {
             return;
         }
 

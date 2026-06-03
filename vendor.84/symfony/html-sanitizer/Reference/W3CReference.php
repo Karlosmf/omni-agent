@@ -29,7 +29,9 @@ final class W3CReference
      * When doing so, depending on the given context, different elements will be allowed.
      */
     public const CONTEXT_HEAD = 'head';
+
     public const CONTEXT_BODY = 'body';
+
     public const CONTEXT_TEXT = 'text';
 
     // Which context to apply depending on the passed parent element name

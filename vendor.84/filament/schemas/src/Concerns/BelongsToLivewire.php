@@ -22,7 +22,7 @@ trait BelongsToLivewire
         return $this;
     }
 
-    public function getLivewire(): Component & HasSchemas
+    public function getLivewire(): Component&HasSchemas
     {
         return $this->livewire;
     }

@@ -55,8 +55,8 @@ final class FileBasedStrategy implements CachingStrategyInterface
     private array $inMemoryTempFileContents;
 
     /**
-     * @param string $tempFolder               Temporary folder where the temporary files to store shared strings will be stored
-     * @param int    $maxNumStringsPerTempFile Maximum number of strings that can be stored in one temp file
+     * @param  string  $tempFolder  Temporary folder where the temporary files to store shared strings will be stored
+     * @param  int  $maxNumStringsPerTempFile  Maximum number of strings that can be stored in one temp file
      */
     public function __construct(string $tempFolder, int $maxNumStringsPerTempFile)
     {
@@ -69,19 +69,19 @@ final class FileBasedStrategy implements CachingStrategyInterface
     /**
      * Adds the given string to the cache.
      *
-     * @param string $sharedString      The string to be added to the cache
-     * @param int    $sharedStringIndex Index of the shared string in the sharedStrings.xml file
+     * @param  string  $sharedString  The string to be added to the cache
+     * @param  int  $sharedStringIndex  Index of the shared string in the sharedStrings.xml file
      */
     public function addStringForIndex(string $sharedString, int $sharedStringIndex): void
     {
         $tempFilePath = $this->getSharedStringTempFilePath($sharedStringIndex);
 
         if ($this->writeMemoryTempFilePath !== $tempFilePath) {
-            if (null !== $this->tempFilePointer) {
+            if ($this->tempFilePointer !== null) {
                 fclose($this->tempFilePointer);
             }
             $resource = fopen($tempFilePath, 'w');
-            \assert(false !== $resource);
+            \assert($resource !== false);
             $this->tempFilePointer = $resource;
             $this->writeMemoryTempFilePath = $tempFilePath;
         }
@@ -100,7 +100,7 @@ final class FileBasedStrategy implements CachingStrategyInterface
     public function closeCache(): void
     {
         // close pointer to the last temp file that was written
-        if (null !== $this->tempFilePointer) {
+        if ($this->tempFilePointer !== null) {
             $this->writeMemoryTempFilePath = '';
             fclose($this->tempFilePointer);
         }
@@ -109,8 +109,7 @@ final class FileBasedStrategy implements CachingStrategyInterface
     /**
      * Returns the string located at the given index from the cache.
      *
-     * @param int $sharedStringIndex Index of the shared string in the sharedStrings.xml file
-     *
+     * @param  int  $sharedStringIndex  Index of the shared string in the sharedStrings.xml file
      * @return string The shared string at the given index
      *
      * @throws SharedStringNotFoundException If no shared string found for the given index
@@ -122,7 +121,7 @@ final class FileBasedStrategy implements CachingStrategyInterface
 
         if ($this->readMemoryTempFilePath !== $tempFilePath) {
             $contents = @file_get_contents($tempFilePath);
-            if (false === $contents) {
+            if ($contents === false) {
                 throw new SharedStringNotFoundException("Shared string temp file could not be read: {$tempFilePath} ; for index: {$sharedStringIndex}");
             }
             $this->inMemoryTempFileContents = explode(PHP_EOL, $contents);
@@ -137,7 +136,7 @@ final class FileBasedStrategy implements CachingStrategyInterface
             $sharedString = $this->unescapeLineFeed($escapedSharedString);
         }
 
-        if (null === $sharedString) {
+        if ($sharedString === null) {
             throw new SharedStringNotFoundException("Shared string not found for index: {$sharedStringIndex}");
         }
 
@@ -155,8 +154,7 @@ final class FileBasedStrategy implements CachingStrategyInterface
     /**
      * Returns the path for the temp file that should contain the string for the given index.
      *
-     * @param int $sharedStringIndex Index of the shared string in the sharedStrings.xml file
-     *
+     * @param  int  $sharedStringIndex  Index of the shared string in the sharedStrings.xml file
      * @return string The temp file path for the given index
      */
     private function getSharedStringTempFilePath(int $sharedStringIndex): string

@@ -38,7 +38,7 @@ trait InteractsWithPageTable /** @phpstan-ignore trait.unused */
     public ?array $tableFilters = null;
 
     #[Reactive]
-    public int | string | null $tableRecordsPerPage = null;
+    public int|string|null $tableRecordsPerPage = null;
 
     /**
      * @var ?string
@@ -106,7 +106,7 @@ trait InteractsWithPageTable /** @phpstan-ignore trait.unused */
         return $this->getTablePageInstance()->getFilteredSortedTableQuery();
     }
 
-    protected function getPageTableRecords(): Collection | Paginator
+    protected function getPageTableRecords(): Collection|Paginator
     {
         return $this->getTablePageInstance()->getTableRecords();
     }

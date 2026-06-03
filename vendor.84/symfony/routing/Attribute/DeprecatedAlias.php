@@ -21,8 +21,7 @@ class DeprecatedAlias
         public readonly string $package,
         public readonly string $version,
         public readonly string $message = '',
-    ) {
-    }
+    ) {}
 
     #[\Deprecated('Use the "message" property instead', 'symfony/routing:7.4')]
     public function getMessage(): string

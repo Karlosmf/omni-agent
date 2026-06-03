@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,9 +9,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\Code;
 
 use const PHP_EOL;
+
 use PHPUnit\Event\NoPreviousThrowableException;
 
 /**
@@ -23,21 +27,25 @@ final readonly class Throwable
      * @var class-string
      */
     private string $className;
+
     private string $message;
+
     private string $description;
+
     private string $stackTrace;
+
     private ?Throwable $previous;
 
     /**
-     * @param class-string $className
+     * @param  class-string  $className
      */
     public function __construct(string $className, string $message, string $description, string $stackTrace, ?self $previous)
     {
-        $this->className   = $className;
-        $this->message     = $message;
+        $this->className = $className;
+        $this->message = $message;
         $this->description = $description;
-        $this->stackTrace  = $stackTrace;
-        $this->previous    = $previous;
+        $this->stackTrace = $stackTrace;
+        $this->previous = $previous;
     }
 
     /**
@@ -48,11 +56,11 @@ final readonly class Throwable
         $buffer = $this->description();
 
         if ($this->stackTrace() !== '') {
-            $buffer .= PHP_EOL . $this->stackTrace();
+            $buffer .= PHP_EOL.$this->stackTrace();
         }
 
         if ($this->hasPrevious()) {
-            $buffer .= PHP_EOL . 'Caused by' . PHP_EOL . $this->previous()->asString();
+            $buffer .= PHP_EOL.'Caused by'.PHP_EOL.$this->previous()->asString();
         }
 
         return $buffer;

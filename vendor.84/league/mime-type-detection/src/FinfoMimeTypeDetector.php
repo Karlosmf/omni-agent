@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace League\MimeTypeDetection;
 
 use const FILEINFO_MIME_TYPE;
-
 use const PATHINFO_EXTENSION;
+
 use finfo;
 
-class FinfoMimeTypeDetector implements MimeTypeDetector, ExtensionLookup
+class FinfoMimeTypeDetector implements ExtensionLookup, MimeTypeDetector
 {
     private const INCONCLUSIVE_MIME_TYPES = [
         'application/x-empty',
@@ -46,7 +46,7 @@ class FinfoMimeTypeDetector implements MimeTypeDetector, ExtensionLookup
         array $inconclusiveMimetypes = self::INCONCLUSIVE_MIME_TYPES
     ) {
         $this->finfo = new finfo(FILEINFO_MIME_TYPE, $magicFile);
-        $this->extensionMap = $extensionMap ?: new GeneratedExtensionToMimeTypeMap();
+        $this->extensionMap = $extensionMap ?: new GeneratedExtensionToMimeTypeMap;
         $this->bufferSampleSize = $bufferSampleSize;
         $this->inconclusiveMimetypes = $inconclusiveMimetypes;
     }

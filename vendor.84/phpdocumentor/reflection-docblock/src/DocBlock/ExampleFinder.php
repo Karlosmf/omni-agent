@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace phpDocumentor\Reflection\DocBlock;
 
+use const DIRECTORY_SEPARATOR;
+
 use phpDocumentor\Reflection\DocBlock\Tags\Example;
 
 use function array_slice;
@@ -23,8 +25,6 @@ use function is_readable;
 use function rtrim;
 use function sprintf;
 use function trim;
-
-use const DIRECTORY_SEPARATOR;
 
 /**
  * Class used to find an example file's location based on a given ExampleDescriptor.
@@ -70,7 +70,7 @@ class ExampleFinder
     /**
      * Registers a series of directories that may contain examples.
      *
-     * @param string[] $directories
+     * @param  string[]  $directories
      */
     public function setExampleDirectories(array $directories): void
     {
@@ -132,7 +132,7 @@ class ExampleFinder
      */
     private function getExamplePathFromExampleDirectory(string $file): string
     {
-        return getcwd() . DIRECTORY_SEPARATOR . 'examples' . DIRECTORY_SEPARATOR . $file;
+        return getcwd().DIRECTORY_SEPARATOR.'examples'.DIRECTORY_SEPARATOR.$file;
     }
 
     /**
@@ -140,7 +140,7 @@ class ExampleFinder
      */
     private function constructExamplePath(string $directory, string $file): string
     {
-        return rtrim($directory, '\\/') . DIRECTORY_SEPARATOR . $file;
+        return rtrim($directory, '\\/').DIRECTORY_SEPARATOR.$file;
     }
 
     /**

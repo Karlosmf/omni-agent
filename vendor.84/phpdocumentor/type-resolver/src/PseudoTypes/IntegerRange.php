@@ -38,7 +38,7 @@ final class IntegerRange extends Integer implements PseudoType
 
     public function underlyingType(): Type
     {
-        return new Integer();
+        return new Integer;
     }
 
     public function getMinValue(): string
@@ -56,6 +56,6 @@ final class IntegerRange extends Integer implements PseudoType
      */
     public function __toString(): string
     {
-        return 'int<' . $this->minValue . ', ' . $this->maxValue . '>';
+        return 'int<'.$this->minValue.', '.$this->maxValue.'>';
     }
 }

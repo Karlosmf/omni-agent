@@ -574,13 +574,12 @@ class ConsoleTput
      */
     public function __construct($terminfo = null)
     {
-        if (null === $terminfo) {
+        if ($terminfo === null) {
             $terminfo = static::getTerminfo();
         }
 
         $this->parse($terminfo);
 
-        return;
     }
 
     /**
@@ -588,7 +587,7 @@ class ConsoleTput
      */
     protected function parse(string $terminfo): array
     {
-        if (!\file_exists($terminfo)) {
+        if (! \file_exists($terminfo)) {
             throw new ConsoleException('Terminfo file %s does not exist.', 0, $terminfo);
         }
 
@@ -597,13 +596,13 @@ class ConsoleTput
         $out = ['file' => $terminfo];
 
         $headers = [
-            'data_size'         => $length,
-            'header_size'       => 12,
-            'magic_number'      => (\ord($data[1]) << 8) | \ord($data[0]),
-            'names_size'        => (\ord($data[3]) << 8) | \ord($data[2]),
-            'bool_count'        => (\ord($data[5]) << 8) | \ord($data[4]),
-            'number_count'      => (\ord($data[7]) << 8) | \ord($data[6]),
-            'string_count'      => (\ord($data[9]) << 8) | \ord($data[8]),
+            'data_size' => $length,
+            'header_size' => 12,
+            'magic_number' => (\ord($data[1]) << 8) | \ord($data[0]),
+            'names_size' => (\ord($data[3]) << 8) | \ord($data[2]),
+            'bool_count' => (\ord($data[5]) << 8) | \ord($data[4]),
+            'number_count' => (\ord($data[7]) << 8) | \ord($data[6]),
+            'string_count' => (\ord($data[9]) << 8) | \ord($data[8]),
             'string_table_size' => (\ord($data[11]) << 8) | \ord($data[10]),
         ];
         $out['headers'] = $headers;
@@ -624,14 +623,14 @@ class ConsoleTput
             $i < $max;
             ++$e, ++$i
         ) {
-            $booleans[$booleanNames[$e]] = 1 === \ord($data[$i]);
+            $booleans[$booleanNames[$e]] = \ord($data[$i]) === 1;
         }
 
         $out['booleans'] = $booleans;
 
         // Numbers.
         if (1 === ($i % 2)) {
-            ++$i;
+            $i++;
         }
 
         $numbers = [];
@@ -676,7 +675,7 @@ class ConsoleTput
             $a = ($data_i1 << 8) | $data_i0;
             $strings[$name] = $a;
 
-            if (65534 === $a) {
+            if ($a === 65534) {
                 continue;
             }
 
@@ -688,7 +687,7 @@ class ConsoleTput
             }
 
             $value = \substr($data, $b, $c - $b);
-            $strings[$name] = false !== $value ? $value : null;
+            $strings[$name] = $value !== false ? $value : null;
         }
 
         $out['strings'] = $strings;
@@ -709,7 +708,7 @@ class ConsoleTput
      */
     public function has(string $boolean): bool
     {
-        if (!isset($this->_informations['booleans'][$boolean])) {
+        if (! isset($this->_informations['booleans'][$boolean])) {
             return false;
         }
 
@@ -721,7 +720,7 @@ class ConsoleTput
      */
     public function count(string $number): int
     {
-        if (!isset($this->_informations['numbers'][$number])) {
+        if (! isset($this->_informations['numbers'][$number])) {
             return 0;
         }
 
@@ -733,7 +732,7 @@ class ConsoleTput
      */
     public function get(string $string)
     {
-        if (!isset($this->_informations['strings'][$string])) {
+        if (! isset($this->_informations['strings'][$string])) {
             return null;
         }
 
@@ -746,7 +745,7 @@ class ConsoleTput
     public static function getTerm(): string
     {
         return
-            isset($_SERVER['TERM']) && !empty($_SERVER['TERM'])
+            isset($_SERVER['TERM']) && ! empty($_SERVER['TERM'])
                 ? $_SERVER['TERM']
                 : (\defined('PHP_WINDOWS_VERSION_PLATFORM') ? 'windows-ansi' : 'xterm');
     }
@@ -796,7 +795,7 @@ class ConsoleTput
             }
         }
 
-        if (null === $pathname && 'xterm' !== $term) {
+        if ($pathname === null && $term !== 'xterm') {
             return static::getTerminfo('xterm');
         }
 
@@ -828,7 +827,7 @@ class ConsoleTput
             'user7',
         ];
 
-        $tput = new self();
+        $tput = new self;
 
         foreach ($requiredVars as $var) {
             if ($tput->get($var) === null) {

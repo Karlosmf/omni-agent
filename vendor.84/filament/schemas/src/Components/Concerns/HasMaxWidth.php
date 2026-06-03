@@ -7,16 +7,16 @@ use Filament\Support\Enums\Width;
 
 trait HasMaxWidth
 {
-    protected Width | string | Closure | null $maxWidth = null;
+    protected Width|string|Closure|null $maxWidth = null;
 
-    public function maxWidth(Width | string | Closure | null $width): static
+    public function maxWidth(Width|string|Closure|null $width): static
     {
         $this->maxWidth = $width;
 
         return $this;
     }
 
-    public function getMaxWidth(): Width | string | null
+    public function getMaxWidth(): Width|string|null
     {
         $width = $this->evaluate($this->maxWidth);
 

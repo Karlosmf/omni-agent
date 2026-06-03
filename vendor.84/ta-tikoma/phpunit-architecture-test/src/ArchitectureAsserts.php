@@ -15,9 +15,9 @@ use PHPUnit\Architecture\Builders\BuildFromTest;
  */
 trait ArchitectureAsserts
 {
-    use IteratorAsserts;
     use BuildFromTest;
     use DependenciesAsserts;
+    use IteratorAsserts;
     use MethodsAsserts;
     use PropertiesAsserts;
 }

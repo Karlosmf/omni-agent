@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of phpDocumentor.
  *
@@ -40,7 +41,9 @@ use function rtrim;
 class AbstractPHPStanFactory implements Factory
 {
     private PhpDocParser $parser;
+
     private Lexer $lexer;
+
     /** @var PHPStanFactory[] */
     private array $factories;
 
@@ -73,12 +76,12 @@ class AbstractPHPStanFactory implements Factory
 
     public function create(string $tagLine, ?TypeContext $context = null): Tag
     {
-        $tokens = $this->tokenizeLine($tagLine . "\n");
+        $tokens = $this->tokenizeLine($tagLine."\n");
         $ast = $this->parser->parseTag($tokens);
         if (property_exists($ast->value, 'description') === true) {
             $ast->value->setAttribute(
                 'description',
-                rtrim($ast->value->description . $tokens->joinUntil(Lexer::TOKEN_END), "\n")
+                rtrim($ast->value->description.$tokens->joinUntil(Lexer::TOKEN_END), "\n")
             );
         }
 
@@ -125,6 +128,7 @@ class AbstractPHPStanFactory implements Factory
                     Lexer::TOKEN_HORIZONTAL_WS,
                     ($token[2] ?? 0) + 1,
                 ];
+
                 continue;
             }
 

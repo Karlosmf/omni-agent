@@ -9,7 +9,7 @@ trait CanIndentStrings /** @phpstan-ignore trait.unused */
         return implode(
             PHP_EOL,
             array_map(
-                fn (string $line) => ($line !== '') ? (str_repeat('    ', $level) . "{$line}") : '',
+                fn (string $line) => ($line !== '') ? (str_repeat('    ', $level)."{$line}") : '',
                 explode(PHP_EOL, $string),
             ),
         );

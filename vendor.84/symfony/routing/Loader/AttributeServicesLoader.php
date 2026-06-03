@@ -22,16 +22,15 @@ use Symfony\Component\Routing\RouteCollection;
 final class AttributeServicesLoader extends Loader
 {
     /**
-     * @param class-string[] $taggedClasses
+     * @param  class-string[]  $taggedClasses
      */
     public function __construct(
         private array $taggedClasses = [],
-    ) {
-    }
+    ) {}
 
     public function load(mixed $resource, ?string $type = null): RouteCollection
     {
-        $collection = new RouteCollection();
+        $collection = new RouteCollection;
 
         foreach ($this->taggedClasses as $class) {
             $collection->addCollection($this->import($class, 'attribute'));
@@ -42,6 +41,6 @@ final class AttributeServicesLoader extends Loader
 
     public function supports(mixed $resource, ?string $type = null): bool
     {
-        return 'routing.controllers' === $resource;
+        return $resource === 'routing.controllers';
     }
 }

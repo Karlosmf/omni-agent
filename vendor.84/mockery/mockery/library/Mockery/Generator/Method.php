@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -35,9 +36,8 @@ class Method
      * @template TArgs
      * @template TMixed
      *
-     * @param string       $method
-     * @param array<TArgs> $args
-     *
+     * @param  string  $method
+     * @param  array<TArgs>  $args
      * @return TMixed
      */
     public function __call($method, $args)

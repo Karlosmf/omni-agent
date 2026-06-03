@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,15 +9,18 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\Test;
 
 use const PHP_EOL;
-use function implode;
-use function sprintf;
+
 use PHPUnit\Event\Code\IssueTrigger\IssueTrigger;
 use PHPUnit\Event\Code\Test;
 use PHPUnit\Event\Event;
 use PHPUnit\Event\Telemetry;
+
+use function implode;
+use function sprintf;
 
 /**
  * @immutable
@@ -25,6 +30,7 @@ use PHPUnit\Event\Telemetry;
 final readonly class PhpDeprecationTriggered implements Event
 {
     private Telemetry\Info $telemetryInfo;
+
     private Test $test;
 
     /**
@@ -41,27 +47,31 @@ final readonly class PhpDeprecationTriggered implements Event
      * @var positive-int
      */
     private int $line;
+
     private bool $suppressed;
+
     private bool $ignoredByBaseline;
+
     private bool $ignoredByTest;
+
     private IssueTrigger $trigger;
 
     /**
-     * @param non-empty-string $message
-     * @param non-empty-string $file
-     * @param positive-int     $line
+     * @param  non-empty-string  $message
+     * @param  non-empty-string  $file
+     * @param  positive-int  $line
      */
     public function __construct(Telemetry\Info $telemetryInfo, Test $test, string $message, string $file, int $line, bool $suppressed, bool $ignoredByBaseline, bool $ignoredByTest, IssueTrigger $trigger)
     {
-        $this->telemetryInfo     = $telemetryInfo;
-        $this->test              = $test;
-        $this->message           = $message;
-        $this->file              = $file;
-        $this->line              = $line;
-        $this->suppressed        = $suppressed;
+        $this->telemetryInfo = $telemetryInfo;
+        $this->test = $test;
+        $this->message = $message;
+        $this->file = $file;
+        $this->line = $line;
+        $this->suppressed = $suppressed;
         $this->ignoredByBaseline = $ignoredByBaseline;
-        $this->ignoredByTest     = $ignoredByTest;
-        $this->trigger           = $trigger;
+        $this->ignoredByTest = $ignoredByTest;
+        $this->trigger = $trigger;
     }
 
     public function telemetryInfo(): Telemetry\Info
@@ -126,7 +136,7 @@ final readonly class PhpDeprecationTriggered implements Event
         $message = $this->message;
 
         if ($message !== '') {
-            $message = PHP_EOL . $message;
+            $message = PHP_EOL.$message;
         }
 
         $details = [$this->test->id(), $this->trigger->asString()];

@@ -34,7 +34,7 @@ use Throwable;
  * Depends on the following methods:
  *
  * @method string|static locale(string $locale = null, string ...$fallbackLocales)
- * @method string        toJSON()
+ * @method string toJSON()
  */
 trait Serialization
 {
@@ -81,18 +81,16 @@ trait Serialization
      * $object = Carbon::fromSerialized($value, ['allowed_classes' => [Carbon::class, CarbonImmutable::class]]);
      * ```
      *
-     * @param \Stringable|string $value
-     * @param array              $options example: ['allowed_classes' => [CarbonImmutable::class]]
+     * @param  \Stringable|string  $value
+     * @param  array  $options  example: ['allowed_classes' => [CarbonImmutable::class]]
      *
      * @throws InvalidFormatException
-     *
-     * @return static
      */
     public static function fromSerialized($value, array $options = []): static
     {
         $instance = @unserialize((string) $value, $options);
 
-        if (!$instance instanceof static) {
+        if (! $instance instanceof static) {
             throw new InvalidFormatException("Invalid serialized value: $value");
         }
 
@@ -102,9 +100,7 @@ trait Serialization
     /**
      * The __set_state handler.
      *
-     * @param string|array $dump
-     *
-     * @return static
+     * @param  string|array  $dump
      */
     #[ReturnTypeWillChange]
     public static function __set_state($dump): static
@@ -123,8 +119,6 @@ trait Serialization
 
     /**
      * Returns the values to dump on serialize() called on.
-     *
-     * @return array
      */
     public function __serialize(): array
     {
@@ -171,7 +165,7 @@ trait Serialization
         try {
             $this->__construct($data['date'] ?? null, $data['timezone'] ?? null);
         } catch (Throwable $exception) {
-            if (!isset($data['dumpDateProperties']['date'], $data['dumpDateProperties']['timezone'])) {
+            if (! isset($data['dumpDateProperties']['date'], $data['dumpDateProperties']['timezone'])) {
                 throw $exception;
             }
 

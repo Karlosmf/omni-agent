@@ -29,7 +29,7 @@ class GlobalVariableEnumerator extends Enumerator
         }
 
         // only list globals if we are specifically asked
-        if (!$input->getOption('globals')) {
+        if (! $input->getOption('globals')) {
             return [];
         }
 
@@ -46,8 +46,6 @@ class GlobalVariableEnumerator extends Enumerator
 
     /**
      * Get defined global variables.
-     *
-     * @return array
      */
     protected function getGlobals(): array
     {
@@ -66,10 +64,6 @@ class GlobalVariableEnumerator extends Enumerator
 
     /**
      * Prepare formatted global variable array.
-     *
-     * @param array $globals
-     *
-     * @return array
      */
     protected function prepareGlobals(array $globals): array
     {
@@ -80,7 +74,7 @@ class GlobalVariableEnumerator extends Enumerator
             if ($this->showItem($name)) {
                 $fname = '$'.$name;
                 $ret[$fname] = [
-                    'name'  => $fname,
+                    'name' => $fname,
                     'style' => self::IS_GLOBAL,
                     'value' => $this->presentRef($value),
                 ];

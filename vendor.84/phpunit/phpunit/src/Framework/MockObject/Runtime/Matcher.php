@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,9 +9,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\MockObject;
 
-use function sprintf;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\MockObject\Rule\AnyInvokedCount;
 use PHPUnit\Framework\MockObject\Rule\AnyParameters;
@@ -20,6 +22,8 @@ use PHPUnit\Framework\MockObject\Rule\MethodName;
 use PHPUnit\Framework\MockObject\Rule\ParametersRule;
 use PHPUnit\Framework\MockObject\Stub\Stub;
 use PHPUnit\Util\ThrowableToStringMapper;
+
+use function sprintf;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -33,10 +37,13 @@ final class Matcher
     /**
      * @var ?non-empty-string
      */
-    private ?string $afterMatchBuilderId    = null;
-    private ?MethodName $methodNameRule     = null;
+    private ?string $afterMatchBuilderId = null;
+
+    private ?MethodName $methodNameRule = null;
+
     private ?ParametersRule $parametersRule = null;
-    private ?Stub $stub                     = null;
+
+    private ?Stub $stub = null;
 
     public function __construct(InvocationOrder $rule)
     {
@@ -45,7 +52,7 @@ final class Matcher
 
     public function hasMatchers(): bool
     {
-        return !$this->invocationRule instanceof AnyInvokedCount;
+        return ! $this->invocationRule instanceof AnyInvokedCount;
     }
 
     public function hasMethodNameRule(): bool
@@ -79,7 +86,7 @@ final class Matcher
     }
 
     /**
-     * @param non-empty-string $id
+     * @param  non-empty-string  $id
      */
     public function setAfterMatchBuilderId(string $id): void
     {
@@ -149,7 +156,7 @@ final class Matcher
                 throw new MatchBuilderNotFoundException($this->afterMatchBuilderId);
             }
 
-            if (!$matcher->invocationRule->hasBeenInvoked()) {
+            if (! $matcher->invocationRule->hasBeenInvoked()) {
                 return false;
             }
         }
@@ -158,12 +165,12 @@ final class Matcher
             throw new MethodNameNotConfiguredException;
         }
 
-        if (!$this->invocationRule->matches($invocation)) {
+        if (! $this->invocationRule->matches($invocation)) {
             return false;
         }
 
         try {
-            if (!$this->methodNameRule->matches($invocation)) {
+            if (! $this->methodNameRule->matches($invocation)) {
                 return false;
             }
         } catch (ExpectationFailedException $e) {
@@ -198,11 +205,11 @@ final class Matcher
                 $this->parametersRule = new AnyParameters;
             }
 
-            $invocationIsAny    = $this->invocationRule instanceof AnyInvokedCount;
-            $invocationIsNever  = $this->invocationRule instanceof InvokedCount && $this->invocationRule->isNever();
+            $invocationIsAny = $this->invocationRule instanceof AnyInvokedCount;
+            $invocationIsNever = $this->invocationRule instanceof InvokedCount && $this->invocationRule->isNever();
             $invocationIsAtMost = $this->invocationRule instanceof InvokedAtMostCount;
 
-            if (!$invocationIsAny && !$invocationIsNever && !$invocationIsAtMost) {
+            if (! $invocationIsAny && ! $invocationIsNever && ! $invocationIsAtMost) {
                 $this->parametersRule->verify();
             }
         } catch (ExpectationFailedException $e) {

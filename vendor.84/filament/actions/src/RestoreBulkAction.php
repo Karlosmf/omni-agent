@@ -79,7 +79,7 @@ class RestoreBulkAction extends BulkAction
         $this->modalIcon(FilamentIcon::resolve(ActionsIconAlias::RESTORE_ACTION_MODAL) ?? Heroicon::OutlinedArrowUturnLeft);
 
         $this->action(function (): void {
-            $this->process(static function (RestoreBulkAction $action, EloquentCollection | Collection | LazyCollection $records): void {
+            $this->process(static function (RestoreBulkAction $action, EloquentCollection|Collection|LazyCollection $records): void {
                 if (! $action->shouldFetchSelectedRecords()) {
                     try {
                         $action->reportBulkProcessingSuccessfulRecordsCount(

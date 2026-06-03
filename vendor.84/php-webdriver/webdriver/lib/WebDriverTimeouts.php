@@ -14,6 +14,7 @@ class WebDriverTimeouts
      * @var ExecuteMethod
      */
     protected $executor;
+
     /**
      * @var bool
      */
@@ -28,7 +29,7 @@ class WebDriverTimeouts
     /**
      * Specify the amount of time the driver should wait when searching for an element if it is not immediately present.
      *
-     * @param null|int|float $seconds Wait time in seconds.
+     * @param  null|int|float  $seconds  Wait time in seconds.
      * @return WebDriverTimeouts The current instance.
      */
     public function implicitlyWait($seconds)
@@ -56,7 +57,7 @@ class WebDriverTimeouts
     /**
      * Set the amount of time to wait for an asynchronous script to finish execution before throwing an error.
      *
-     * @param null|int|float $seconds Wait time in seconds.
+     * @param  null|int|float  $seconds  Wait time in seconds.
      * @return WebDriverTimeouts The current instance.
      */
     public function setScriptTimeout($seconds)
@@ -84,7 +85,7 @@ class WebDriverTimeouts
     /**
      * Set the amount of time to wait for a page load to complete before throwing an error.
      *
-     * @param null|int|float $seconds Wait time in seconds.
+     * @param  null|int|float  $seconds  Wait time in seconds.
      * @return WebDriverTimeouts The current instance.
      */
     public function pageLoadTimeout($seconds)

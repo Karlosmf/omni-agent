@@ -24,11 +24,17 @@ use Symfony\Component\Mailer\Exception\TransportException;
 final class SocketStream extends AbstractStream
 {
     private string $url;
+
     private string $host = 'localhost';
+
     private int $port = 465;
+
     private float $timeout;
+
     private bool $tls = true;
+
     private ?string $sourceIp = null;
+
     private array $streamContextOptions = [];
 
     /**
@@ -179,7 +185,7 @@ final class SocketStream extends AbstractStream
 
     public function terminate(): void
     {
-        if (null !== $this->stream) {
+        if ($this->stream !== null) {
             fclose($this->stream);
         }
 

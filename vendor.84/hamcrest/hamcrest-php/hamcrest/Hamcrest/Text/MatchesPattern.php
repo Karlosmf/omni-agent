@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Text;
 
 /*
@@ -10,7 +11,6 @@ namespace Hamcrest\Text;
  */
 class MatchesPattern extends SubstringMatcher
 {
-
     public function __construct($pattern)
     {
         parent::__construct($pattern);

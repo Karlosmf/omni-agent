@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace PhpParser\Lexer;
 
@@ -21,7 +23,8 @@ use PhpParser\Lexer\TokenEmulator\VoidCastEmulator;
 use PhpParser\PhpVersion;
 use PhpParser\Token;
 
-class Emulative extends Lexer {
+class Emulative extends Lexer
+{
     /** @var array{int, string, string}[] Patches used to reverse changes introduced in the code */
     private array $patches = [];
 
@@ -33,24 +36,25 @@ class Emulative extends Lexer {
     private PhpVersion $hostPhpVersion;
 
     /**
-     * @param PhpVersion|null $phpVersion PHP version to emulate. Defaults to newest supported.
+     * @param  PhpVersion|null  $phpVersion  PHP version to emulate. Defaults to newest supported.
      */
-    public function __construct(?PhpVersion $phpVersion = null) {
+    public function __construct(?PhpVersion $phpVersion = null)
+    {
         $this->targetPhpVersion = $phpVersion ?? PhpVersion::getNewestSupported();
         $this->hostPhpVersion = PhpVersion::getHostVersion();
 
         $emulators = [
-            new MatchTokenEmulator(),
-            new NullsafeTokenEmulator(),
-            new AttributeEmulator(),
-            new EnumTokenEmulator(),
-            new ReadonlyTokenEmulator(),
-            new ExplicitOctalEmulator(),
-            new ReadonlyFunctionTokenEmulator(),
-            new PropertyTokenEmulator(),
-            new AsymmetricVisibilityTokenEmulator(),
-            new PipeOperatorEmulator(),
-            new VoidCastEmulator(),
+            new MatchTokenEmulator,
+            new NullsafeTokenEmulator,
+            new AttributeEmulator,
+            new EnumTokenEmulator,
+            new ReadonlyTokenEmulator,
+            new ExplicitOctalEmulator,
+            new ReadonlyFunctionTokenEmulator,
+            new PropertyTokenEmulator,
+            new AsymmetricVisibilityTokenEmulator,
+            new PipeOperatorEmulator,
+            new VoidCastEmulator,
         ];
 
         // Collect emulators that are relevant for the PHP version we're running
@@ -65,7 +69,8 @@ class Emulative extends Lexer {
         }
     }
 
-    public function tokenize(string $code, ?ErrorHandler $errorHandler = null): array {
+    public function tokenize(string $code, ?ErrorHandler $errorHandler = null): array
+    {
         $emulators = array_filter($this->emulators, function ($emulator) use ($code) {
             return $emulator->isEmulationNeeded($code);
         });
@@ -76,7 +81,7 @@ class Emulative extends Lexer {
         }
 
         if ($errorHandler === null) {
-            $errorHandler = new ErrorHandler\Throwing();
+            $errorHandler = new ErrorHandler\Throwing;
         }
 
         $this->patches = [];
@@ -84,13 +89,13 @@ class Emulative extends Lexer {
             $code = $emulator->preprocessCode($code, $this->patches);
         }
 
-        $collector = new ErrorHandler\Collecting();
+        $collector = new ErrorHandler\Collecting;
         $tokens = parent::tokenize($code, $collector);
         $this->sortPatches();
         $tokens = $this->fixupTokens($tokens);
 
         $errors = $collector->getErrors();
-        if (!empty($errors)) {
+        if (! empty($errors)) {
             $this->fixupErrors($errors);
             foreach ($errors as $error) {
                 $errorHandler->handleError($error);
@@ -104,17 +109,20 @@ class Emulative extends Lexer {
         return $tokens;
     }
 
-    private function isForwardEmulationNeeded(PhpVersion $emulatorPhpVersion): bool {
+    private function isForwardEmulationNeeded(PhpVersion $emulatorPhpVersion): bool
+    {
         return $this->hostPhpVersion->older($emulatorPhpVersion)
             && $this->targetPhpVersion->newerOrEqual($emulatorPhpVersion);
     }
 
-    private function isReverseEmulationNeeded(PhpVersion $emulatorPhpVersion): bool {
+    private function isReverseEmulationNeeded(PhpVersion $emulatorPhpVersion): bool
+    {
         return $this->hostPhpVersion->newerOrEqual($emulatorPhpVersion)
             && $this->targetPhpVersion->older($emulatorPhpVersion);
     }
 
-    private function sortPatches(): void {
+    private function sortPatches(): void
+    {
         // Patches may be contributed by different emulators.
         // Make sure they are sorted by increasing patch position.
         usort($this->patches, function ($p1, $p2) {
@@ -123,17 +131,18 @@ class Emulative extends Lexer {
     }
 
     /**
-     * @param list<Token> $tokens
+     * @param  list<Token>  $tokens
      * @return list<Token>
      */
-    private function fixupTokens(array $tokens): array {
+    private function fixupTokens(array $tokens): array
+    {
         if (\count($this->patches) === 0) {
             return $tokens;
         }
 
         // Load first patch
         $patchIdx = 0;
-        list($patchPos, $patchType, $patchText) = $this->patches[$patchIdx];
+        [$patchPos, $patchType, $patchText] = $this->patches[$patchIdx];
 
         // We use a manual loop over the tokens, because we modify the array on the fly
         $posDelta = 0;
@@ -185,27 +194,29 @@ class Emulative extends Lexer {
                     break;
                 }
 
-                list($patchPos, $patchType, $patchText) = $this->patches[$patchIdx];
+                [$patchPos, $patchType, $patchText] = $this->patches[$patchIdx];
             }
 
             $posDelta += $localPosDelta;
         }
+
         return $tokens;
     }
 
     /**
      * Fixup line and position information in errors.
      *
-     * @param Error[] $errors
+     * @param  Error[]  $errors
      */
-    private function fixupErrors(array $errors): void {
+    private function fixupErrors(array $errors): void
+    {
         foreach ($errors as $error) {
             $attrs = $error->getAttributes();
 
             $posDelta = 0;
             $lineDelta = 0;
             foreach ($this->patches as $patch) {
-                list($patchPos, $patchType, $patchText) = $patch;
+                [$patchPos, $patchType, $patchText] = $patch;
                 if ($patchPos >= $attrs['startFilePos']) {
                     // No longer relevant
                     break;

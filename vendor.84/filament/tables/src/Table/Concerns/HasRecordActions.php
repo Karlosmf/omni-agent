@@ -18,18 +18,18 @@ trait HasRecordActions
      */
     protected array $recordActions = [];
 
-    protected string | Htmlable | Closure | null $recordActionsColumnLabel = null;
+    protected string|Htmlable|Closure|null $recordActionsColumnLabel = null;
 
-    protected string | Closure | null $recordActionsAlignment = null;
+    protected string|Closure|null $recordActionsAlignment = null;
 
-    protected RecordActionsPosition | Closure | null $recordActionsPosition = null;
+    protected RecordActionsPosition|Closure|null $recordActionsPosition = null;
 
     protected ?Closure $modifyUngroupedRecordActionsUsing = null;
 
     /**
      * @param  array<Action | ActionGroup> | ActionGroup  $actions
      */
-    public function recordActions(array | ActionGroup $actions, RecordActionsPosition | string | Closure | null $position = null): static
+    public function recordActions(array|ActionGroup $actions, RecordActionsPosition|string|Closure|null $position = null): static
     {
         $this->recordActions = [];
         $this->pushRecordActions($actions);
@@ -44,7 +44,7 @@ trait HasRecordActions
     /**
      * @param  array<Action | ActionGroup> | ActionGroup  $actions
      */
-    public function pushRecordActions(array | ActionGroup $actions): static
+    public function pushRecordActions(array|ActionGroup $actions): static
     {
         foreach (Arr::wrap($actions) as $action) {
             $action->table($this);
@@ -64,7 +64,7 @@ trait HasRecordActions
 
                 $this->cacheAction($action);
             } else {
-                throw new InvalidArgumentException('Table actions must be an instance of [' . Action::class . '] or [' . ActionGroup::class . '].');
+                throw new InvalidArgumentException('Table actions must be an instance of ['.Action::class.'] or ['.ActionGroup::class.'].');
             }
 
             $this->recordActions[] = $action;
@@ -73,21 +73,21 @@ trait HasRecordActions
         return $this;
     }
 
-    public function recordActionsColumnLabel(string | Htmlable | Closure | null $label): static
+    public function recordActionsColumnLabel(string|Htmlable|Closure|null $label): static
     {
         $this->recordActionsColumnLabel = $label;
 
         return $this;
     }
 
-    public function recordActionsAlignment(string | Closure | null $alignment = null): static
+    public function recordActionsAlignment(string|Closure|null $alignment = null): static
     {
         $this->recordActionsAlignment = $alignment;
 
         return $this;
     }
 
-    public function recordActionsPosition(RecordActionsPosition | Closure | null $position = null): static
+    public function recordActionsPosition(RecordActionsPosition|Closure|null $position = null): static
     {
         $this->recordActionsPosition = $position;
 
@@ -104,7 +104,7 @@ trait HasRecordActions
             : 'bottom-end';
 
         return array_map(
-            fn (Action | ActionGroup $action) => $action instanceof ActionGroup ? $action->defaultDropdownPlacement($defaultGroupDropdownPlacement)->defaultDropdownTeleport(true) : $action,
+            fn (Action|ActionGroup $action) => $action instanceof ActionGroup ? $action->defaultDropdownPlacement($defaultGroupDropdownPlacement)->defaultDropdownTeleport(true) : $action,
             $this->recordActions,
         );
     }
@@ -129,7 +129,7 @@ trait HasRecordActions
         return $this->evaluate($this->recordActionsAlignment);
     }
 
-    public function getRecordActionsColumnLabel(): string | Htmlable | null
+    public function getRecordActionsColumnLabel(): string|Htmlable|null
     {
         return $this->evaluate($this->recordActionsColumnLabel);
     }
@@ -139,7 +139,7 @@ trait HasRecordActions
      *
      * @param  array<Action | ActionGroup> | ActionGroup  $actions
      */
-    public function actions(array | ActionGroup $actions, RecordActionsPosition | string | Closure | null $position = null): static
+    public function actions(array|ActionGroup $actions, RecordActionsPosition|string|Closure|null $position = null): static
     {
         $this->recordActions($actions, $position);
 
@@ -151,7 +151,7 @@ trait HasRecordActions
      *
      * @param  array<Action | ActionGroup> | ActionGroup  $actions
      */
-    public function pushActions(array | ActionGroup $actions): static
+    public function pushActions(array|ActionGroup $actions): static
     {
         $this->pushRecordActions($actions);
 
@@ -161,7 +161,7 @@ trait HasRecordActions
     /**
      * @deprecated Use `recordActionsColumnLabel()` instead.
      */
-    public function actionsColumnLabel(string | Htmlable | Closure | null $label): static
+    public function actionsColumnLabel(string|Htmlable|Closure|null $label): static
     {
         $this->recordActionsColumnLabel($label);
 
@@ -171,7 +171,7 @@ trait HasRecordActions
     /**
      * @deprecated Use `recordActionsAlignment()` instead.
      */
-    public function actionsAlignment(string | Closure | null $alignment = null): static
+    public function actionsAlignment(string|Closure|null $alignment = null): static
     {
         $this->recordActionsAlignment($alignment);
 
@@ -181,7 +181,7 @@ trait HasRecordActions
     /**
      * @deprecated Use `recordActionsPosition()` instead.
      */
-    public function actionsPosition(RecordActionsPosition | Closure | null $position = null): static
+    public function actionsPosition(RecordActionsPosition|Closure|null $position = null): static
     {
         $this->recordActionsPosition($position);
 
@@ -217,7 +217,7 @@ trait HasRecordActions
     /**
      * @deprecated Use `getRecordActionsColumnLabel()` instead.
      */
-    public function getActionsColumnLabel(): string | Htmlable | null
+    public function getActionsColumnLabel(): string|Htmlable|null
     {
         return $this->getRecordActionsColumnLabel();
     }

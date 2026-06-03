@@ -36,7 +36,7 @@ final class MessageFormatterMapper extends LazyMessageFormatter
 
     public function __construct(?MessageFormatterInterface $formatter = null)
     {
-        $this->formatter = $formatter ?? new MessageFormatter();
+        $this->formatter = $formatter ?? new MessageFormatter;
     }
 
     protected function transformLocale(?string $locale): ?string

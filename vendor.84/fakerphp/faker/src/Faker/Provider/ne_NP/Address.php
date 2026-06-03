@@ -5,6 +5,7 @@ namespace Faker\Provider\ne_NP;
 class Address extends \Faker\Provider\Address
 {
     protected static $wardNumber = ['##', '#'];
+
     protected static $streetSuffix = [
         'bagh', 'bazaar', 'besi', 'chowk', 'gaun', 'kot', 'mandir', 'marg', 'nagar', 'sahar', 'sthan', 'tar',
     ];
@@ -91,16 +92,20 @@ class Address extends \Faker\Provider\Address
         'Yemen',
         'Zambia', 'Zimbabwe',
     ];
+
     protected static $cityFormats = [
         '{{cityName}}',
     ];
+
     protected static $streetNameFormats = [
         '{{firstName}}{{streetSuffix}}',
         '{{lastName}}{{streetSuffix}}',
     ];
+
     protected static $streetAddressFormats = [
         '{{streetName}}',
     ];
+
     protected static $addressFormats = [
         '{{city}}-{{wardNumber}}, {{streetAddress}}, {{district}} {{postcode}}',
     ];

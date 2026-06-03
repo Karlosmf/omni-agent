@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Arrays;
 
 /*
@@ -9,8 +10,8 @@ use Hamcrest\Description;
 
 class MatchingOnce
 {
-
     private $_elementMatchers;
+
     private $_mismatchDescription;
 
     public function __construct(array $elementMatchers, Description $mismatchDescription)
@@ -31,9 +32,8 @@ class MatchingOnce
         }
 
         $this->_mismatchDescription
-                 ->appendText('No item matches: ')->appendList('', ', ', '', $this->_elementMatchers)
-                 ->appendText(' in ')->appendValueList('[', ', ', ']', $items)
-                 ;
+            ->appendText('No item matches: ')->appendList('', ', ', '', $this->_elementMatchers)
+            ->appendText(' in ')->appendValueList('[', ', ', ']', $items);
 
         return false;
     }
@@ -53,7 +53,7 @@ class MatchingOnce
 
     private function _isMatched($item)
     {
-            /** @var $matcher \Hamcrest\Matcher */
+        /** @var $matcher \Hamcrest\Matcher */
         foreach ($this->_elementMatchers as $i => $matcher) {
             if ($matcher->matches($item)) {
                 unset($this->_elementMatchers[$i]);

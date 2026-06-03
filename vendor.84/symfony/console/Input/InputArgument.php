@@ -41,14 +41,15 @@ class InputArgument
     public const IS_ARRAY = 4;
 
     private int $mode;
+
     private string|int|bool|array|float|null $default;
 
     /**
-     * @param string                                                                        $name            The argument name
-     * @param int-mask-of<InputArgument::*>|null                                            $mode            The argument mode: a bit mask of self::REQUIRED, self::OPTIONAL and self::IS_ARRAY
-     * @param string                                                                        $description     A description text
-     * @param string|bool|int|float|array|null                                              $default         The default value (for self::OPTIONAL mode only)
-     * @param array|\Closure(CompletionInput,CompletionSuggestions):list<string|Suggestion> $suggestedValues The values used for input completion
+     * @param  string  $name  The argument name
+     * @param  int-mask-of<InputArgument::*>|null  $mode  The argument mode: a bit mask of self::REQUIRED, self::OPTIONAL and self::IS_ARRAY
+     * @param  string  $description  A description text
+     * @param  string|bool|int|float|array|null  $default  The default value (for self::OPTIONAL mode only)
+     * @param  array|\Closure(CompletionInput,CompletionSuggestions):list<string|Suggestion>  $suggestedValues  The values used for input completion
      *
      * @throws InvalidArgumentException When argument mode is not valid
      */
@@ -59,7 +60,7 @@ class InputArgument
         string|bool|int|float|array|null $default = null,
         private \Closure|array $suggestedValues = [],
     ) {
-        if (null === $mode) {
+        if ($mode === null) {
             $mode = self::OPTIONAL;
         } elseif ($mode >= (self::IS_ARRAY << 1) || $mode < 1) {
             throw new InvalidArgumentException(\sprintf('Argument mode "%s" is not valid.', $mode));
@@ -103,14 +104,14 @@ class InputArgument
      */
     public function setDefault(string|bool|int|float|array|null $default): void
     {
-        if ($this->isRequired() && null !== $default) {
+        if ($this->isRequired() && $default !== null) {
             throw new LogicException('Cannot set a default value except for InputArgument::OPTIONAL mode.');
         }
 
         if ($this->isArray()) {
-            if (null === $default) {
+            if ($default === null) {
                 $default = [];
-            } elseif (!\is_array($default)) {
+            } elseif (! \is_array($default)) {
                 throw new LogicException('A default value for an array argument must be an array.');
             }
         }
@@ -131,7 +132,7 @@ class InputArgument
      */
     public function hasCompletion(): bool
     {
-        return [] !== $this->suggestedValues;
+        return $this->suggestedValues !== [];
     }
 
     /**
@@ -142,7 +143,7 @@ class InputArgument
     public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
     {
         $values = $this->suggestedValues;
-        if ($values instanceof \Closure && !\is_array($values = $values($input))) {
+        if ($values instanceof \Closure && ! \is_array($values = $values($input))) {
             throw new LogicException(\sprintf('Closure for argument "%s" must return an array. Got "%s".', $this->name, get_debug_type($values)));
         }
         if ($values) {

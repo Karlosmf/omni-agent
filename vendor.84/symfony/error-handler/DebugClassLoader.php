@@ -119,24 +119,41 @@ class DebugClassLoader
      * @var callable
      */
     private $classLoader;
+
     private bool $isFinder;
+
     private array $loaded = [];
+
     private array $patchTypes = [];
 
     private static int $caseCheck;
+
     private static array $checkedClasses = [];
+
     private static array $final = [];
+
     private static array $finalMethods = [];
+
     private static array $finalProperties = [];
+
     private static array $finalConstants = [];
+
     private static array $deprecated = [];
+
     private static array $internal = [];
+
     private static array $internalMethods = [];
+
     private static array $annotatedParameters = [];
+
     private static array $darwinCache = ['/' => ['/', []]];
+
     private static array $method = [];
+
     private static array $returnTypes = [];
+
     private static array $methodTraits = [];
+
     private static array $fileOffsets = [];
 
     public function __construct(callable $classLoader)
@@ -150,11 +167,11 @@ class DebugClassLoader
             'deprecations' => true,
         ];
 
-        if ('phpdoc' === $this->patchTypes['force']) {
+        if ($this->patchTypes['force'] === 'phpdoc') {
             $this->patchTypes['force'] = 'docblock';
         }
 
-        if (!isset(self::$caseCheck)) {
+        if (! isset(self::$caseCheck)) {
             $file = is_file(__FILE__) ? __FILE__ : rtrim(realpath('.'), \DIRECTORY_SEPARATOR);
             $i = strrpos($file, \DIRECTORY_SEPARATOR);
             $dir = substr($file, 0, 1 + $i);
@@ -162,7 +179,7 @@ class DebugClassLoader
             $test = strtoupper($file) === $file ? strtolower($file) : strtoupper($file);
             $test = realpath($dir.$test);
 
-            if (false === $test || false === $i) {
+            if ($test === false || $i === false) {
                 // filesystem is case-sensitive
                 self::$caseCheck = 0;
             } elseif (str_ends_with($test, $file)) {
@@ -192,7 +209,7 @@ class DebugClassLoader
         class_exists(ErrorHandler::class);
         class_exists(LogLevel::class);
 
-        if (!\is_array($functions = spl_autoload_functions())) {
+        if (! \is_array($functions = spl_autoload_functions())) {
             return;
         }
 
@@ -201,7 +218,7 @@ class DebugClassLoader
         }
 
         foreach ($functions as $function) {
-            if (!\is_array($function) || !$function[0] instanceof self) {
+            if (! \is_array($function) || ! $function[0] instanceof self) {
                 $function = [new static($function), 'loadClass'];
             }
 
@@ -214,7 +231,7 @@ class DebugClassLoader
      */
     public static function disable(): void
     {
-        if (!\is_array($functions = spl_autoload_functions())) {
+        if (! \is_array($functions = spl_autoload_functions())) {
             return;
         }
 
@@ -233,7 +250,7 @@ class DebugClassLoader
 
     public static function checkClasses(): bool
     {
-        if (!\is_array($functions = spl_autoload_functions())) {
+        if (! \is_array($functions = spl_autoload_functions())) {
             return false;
         }
 
@@ -246,7 +263,7 @@ class DebugClassLoader
             }
         }
 
-        if (null === $loader) {
+        if ($loader === null) {
             return false;
         }
 
@@ -259,17 +276,17 @@ class DebugClassLoader
         foreach ($offsets as $getSymbols => $i) {
             $symbols = $getSymbols();
 
-            for (; $i < \count($symbols); ++$i) {
-                if (!is_subclass_of($symbols[$i], MockObject::class)
-                    && !is_subclass_of($symbols[$i], Stub::class)
-                    && !is_subclass_of($symbols[$i], ProphecySubjectInterface::class)
-                    && !is_subclass_of($symbols[$i], Proxy::class)
-                    && !is_subclass_of($symbols[$i], ProxyInterface::class)
-                    && !is_subclass_of($symbols[$i], LazyObjectInterface::class)
-                    && !is_subclass_of($symbols[$i], LegacyProxy::class)
-                    && !is_subclass_of($symbols[$i], MockInterface::class)
-                    && !is_subclass_of($symbols[$i], IMock::class)
-                    && !(is_subclass_of($symbols[$i], LazyClosure::class) && str_contains($symbols[$i], "@anonymous\0"))
+            for (; $i < \count($symbols); $i++) {
+                if (! is_subclass_of($symbols[$i], MockObject::class)
+                    && ! is_subclass_of($symbols[$i], Stub::class)
+                    && ! is_subclass_of($symbols[$i], ProphecySubjectInterface::class)
+                    && ! is_subclass_of($symbols[$i], Proxy::class)
+                    && ! is_subclass_of($symbols[$i], ProxyInterface::class)
+                    && ! is_subclass_of($symbols[$i], LazyObjectInterface::class)
+                    && ! is_subclass_of($symbols[$i], LegacyProxy::class)
+                    && ! is_subclass_of($symbols[$i], MockInterface::class)
+                    && ! is_subclass_of($symbols[$i], IMock::class)
+                    && ! (is_subclass_of($symbols[$i], LazyClosure::class) && str_contains($symbols[$i], "@anonymous\0"))
                 ) {
                     $loader->checkClass($symbols[$i]);
                 }
@@ -296,9 +313,9 @@ class DebugClassLoader
         $e = error_reporting(error_reporting() | \E_PARSE | \E_ERROR | \E_CORE_ERROR | \E_COMPILE_ERROR);
 
         try {
-            if ($this->isFinder && !isset($this->loaded[$class])) {
+            if ($this->isFinder && ! isset($this->loaded[$class])) {
                 $this->loaded[$class] = true;
-                if (!$file = $this->classLoader[0]->findFile($class) ?: '') {
+                if (! $file = $this->classLoader[0]->findFile($class) ?: '') {
                     // no-op
                 } elseif (\function_exists('opcache_is_script_cached') && @opcache_is_script_cached($file)) {
                     include $file;
@@ -320,9 +337,9 @@ class DebugClassLoader
 
     private function checkClass(string $class, ?string $file = null): void
     {
-        $exists = null === $file || class_exists($class, false) || interface_exists($class, false) || trait_exists($class, false);
+        $exists = $file === null || class_exists($class, false) || interface_exists($class, false) || trait_exists($class, false);
 
-        if (null !== $file && $class && '\\' === $class[0]) {
+        if ($file !== null && $class && $class[0] === '\\') {
             $class = substr($class, 1);
         }
 
@@ -333,12 +350,12 @@ class DebugClassLoader
             self::$checkedClasses[$class] = true;
 
             $refl = new \ReflectionClass($class);
-            if (null === $file && $refl->isInternal()) {
+            if ($file === null && $refl->isInternal()) {
                 return;
             }
             $name = $refl->getName();
 
-            if ($name !== $class && 0 === strcasecmp($name, $class)) {
+            if ($name !== $class && strcasecmp($name, $class) === 0) {
                 throw new \RuntimeException(\sprintf('Case mismatch between loaded and declared class names: "%s" vs "%s".', $class, $name));
             }
 
@@ -349,11 +366,11 @@ class DebugClassLoader
             }
         }
 
-        if (!$file) {
+        if (! $file) {
             return;
         }
 
-        if (!$exists) {
+        if (! $exists) {
             if (str_contains($class, '/')) {
                 throw new \RuntimeException(\sprintf('Trying to autoload a class with an invalid name "%s". Be careful that the namespace separator is "\" in PHP, not "/".', $class));
             }
@@ -369,8 +386,8 @@ class DebugClassLoader
     public function checkAnnotations(\ReflectionClass $refl, string $class): array
     {
         if (
-            'Symfony\Bridge\PhpUnit\Legacy\SymfonyTestsListenerForV7' === $class
-            || 'Symfony\Bridge\PhpUnit\Legacy\SymfonyTestsListenerForV6' === $class
+            $class === 'Symfony\Bridge\PhpUnit\Legacy\SymfonyTestsListenerForV7'
+            || $class === 'Symfony\Bridge\PhpUnit\Legacy\SymfonyTestsListenerForV6'
         ) {
             return [];
         }
@@ -399,7 +416,7 @@ class DebugClassLoader
 
             foreach (['final', 'deprecated', 'internal'] as $annotation) {
                 if (null !== $description = $doc[$annotation][0] ?? null) {
-                    self::${$annotation}[$class] = '' !== $description ? ' '.$description.(preg_match('/[.!]$/', $description) ? '' : '.') : '.';
+                    self::${$annotation}[$class] = $description !== '' ? ' '.$description.(preg_match('/[.!]$/', $description) ? '' : '.') : '.';
                 }
             }
 
@@ -407,7 +424,7 @@ class DebugClassLoader
                 foreach ($doc['method'] as $name => [$static, $returnType, $signature, $description]) {
                     self::$method[$class][] = [$class, $static, $returnType, $name.$signature, $description];
 
-                    if ('' !== $returnType) {
+                    if ($returnType !== '') {
                         $this->setReturnType($returnType, $refl->name, $name, $refl->getFileName(), $parent);
                     }
                 }
@@ -418,7 +435,7 @@ class DebugClassLoader
         if ($parent) {
             $parentAndOwnInterfaces[$parent] = $parent;
 
-            if (!isset(self::$checkedClasses[$parent])) {
+            if (! isset(self::$checkedClasses[$parent])) {
                 $this->checkClass($parent);
             }
 
@@ -429,10 +446,10 @@ class DebugClassLoader
 
         // Detect if the parent is annotated
         foreach ($parentAndOwnInterfaces + class_uses($class, false) as $use) {
-            if (!isset(self::$checkedClasses[$use])) {
+            if (! isset(self::$checkedClasses[$use])) {
                 $this->checkClass($use);
             }
-            if (isset(self::$deprecated[$use]) && strncmp($vendor, str_replace('_', '\\', $use), $vendorLen) && !isset(self::$deprecated[$class])) {
+            if (isset(self::$deprecated[$use]) && strncmp($vendor, str_replace('_', '\\', $use), $vendorLen) && ! isset(self::$deprecated[$class])) {
                 $type = class_exists($class, false) ? 'class' : (interface_exists($class, false) ? 'interface' : 'trait');
                 $verb = class_exists($use, false) || interface_exists($class, false) ? 'extends' : (interface_exists($use, false) ? 'implements' : 'uses');
 
@@ -448,11 +465,11 @@ class DebugClassLoader
                     } else {
                         self::$method[$class] = self::$method[$use];
                     }
-                } elseif (!$refl->isInterface()) {
-                    if (!strncmp($vendor, str_replace('_', '\\', $use), $vendorLen)
+                } elseif (! $refl->isInterface()) {
+                    if (! strncmp($vendor, str_replace('_', '\\', $use), $vendorLen)
                         && str_starts_with($className, 'Symfony\\')
-                        && (!class_exists(InstalledVersions::class)
-                            || 'symfony/symfony' !== InstalledVersions::getRootPackage()['name'])
+                        && (! class_exists(InstalledVersions::class)
+                            || InstalledVersions::getRootPackage()['name'] !== 'symfony/symfony')
                     ) {
                         // skip "same vendor" @method deprecations for Symfony\* classes unless symfony/symfony is being tested
                         continue;
@@ -464,8 +481,8 @@ class DebugClassLoader
                             continue;
                         }
                         $realName = substr($name, 0, strpos($name, '('));
-                        if (!$refl->hasMethod($realName) || !($methodRefl = $refl->getMethod($realName))->isPublic() || ($static && !$methodRefl->isStatic()) || (!$static && $methodRefl->isStatic())) {
-                            $deprecations[] = \sprintf('Class "%s" should implement method "%s::%s%s"%s', $className, ($static ? 'static ' : '').$interface, $name, $returnType ? ': '.$returnType : '', null === $description ? '.' : ': '.$description);
+                        if (! $refl->hasMethod($realName) || ! ($methodRefl = $refl->getMethod($realName))->isPublic() || ($static && ! $methodRefl->isStatic()) || (! $static && $methodRefl->isStatic())) {
+                            $deprecations[] = \sprintf('Class "%s" should implement method "%s::%s%s"%s', $className, ($static ? 'static ' : '').$interface, $name, $returnType ? ': '.$returnType : '', $description === null ? '.' : ': '.$description);
                         }
                     }
                 }
@@ -501,7 +518,7 @@ class DebugClassLoader
                 foreach (TentativeTypes::RETURN_TYPES[$use] as $method => $returnType) {
                     $returnType = explode('|', $returnType);
                     foreach ($returnType as $i => $t) {
-                        if ('?' !== $t && !isset(self::BUILTIN_RETURN_TYPES[$t])) {
+                        if ($t !== '?' && ! isset(self::BUILTIN_RETURN_TYPES[$t])) {
                             $returnType[$i] = '\\'.$t;
                         }
                     }
@@ -553,7 +570,7 @@ class DebugClassLoader
                 }
 
                 foreach (self::$annotatedParameters[$class][$method->name] as $parameterName => $deprecation) {
-                    if (!isset($definedParameters[$parameterName]) && !isset($doc['param'][$parameterName])) {
+                    if (! isset($definedParameters[$parameterName]) && ! isset($doc['param'][$parameterName])) {
                         $deprecations[] = \sprintf($deprecation, $className);
                     }
                 }
@@ -561,41 +578,40 @@ class DebugClassLoader
 
             $forcePatchTypes = $this->patchTypes['force'];
 
-            if ($canAddReturnType = null !== $forcePatchTypes && !str_contains($method->getFileName(), \DIRECTORY_SEPARATOR.'vendor'.\DIRECTORY_SEPARATOR)) {
+            if ($canAddReturnType = $forcePatchTypes !== null && ! str_contains($method->getFileName(), \DIRECTORY_SEPARATOR.'vendor'.\DIRECTORY_SEPARATOR)) {
                 $this->patchTypes['force'] = $forcePatchTypes ?: 'docblock';
 
-                $canAddReturnType = 2 === (int) $forcePatchTypes
-                    || false !== stripos($method->getFileName(), \DIRECTORY_SEPARATOR.'Tests'.\DIRECTORY_SEPARATOR)
+                $canAddReturnType = (int) $forcePatchTypes === 2
+                    || stripos($method->getFileName(), \DIRECTORY_SEPARATOR.'Tests'.\DIRECTORY_SEPARATOR) !== false
                     || $refl->isFinal()
                     || $method->isFinal()
                     || $method->isPrivate()
-                    || ('.' === (self::$internal[$class] ?? null) && !$refl->isAbstract())
+                    || ('.' === (self::$internal[$class] ?? null) && ! $refl->isAbstract())
                     || '.' === (self::$final[$class] ?? null)
                     || '' === ($doc['final'][0] ?? null)
-                    || '' === ($doc['internal'][0] ?? null)
-                ;
+                    || '' === ($doc['internal'][0] ?? null);
             }
 
-            if (null !== ($returnType = self::$returnTypes[$class][$method->name] ?? null) && 'docblock' === $this->patchTypes['force'] && !$method->hasReturnType() && isset(TentativeTypes::RETURN_TYPES[$returnType[2]][$method->name])) {
+            if (null !== ($returnType = self::$returnTypes[$class][$method->name] ?? null) && $this->patchTypes['force'] === 'docblock' && ! $method->hasReturnType() && isset(TentativeTypes::RETURN_TYPES[$returnType[2]][$method->name])) {
                 $this->patchReturnTypeWillChange($method);
             }
 
-            if (null !== ($returnType ??= self::MAGIC_METHODS[$method->name] ?? null) && !$method->hasReturnType() && !isset($doc['return'])) {
+            if (null !== ($returnType ??= self::MAGIC_METHODS[$method->name] ?? null) && ! $method->hasReturnType() && ! isset($doc['return'])) {
                 [$normalizedType, $returnType, $declaringClass, $declaringFile] = \is_string($returnType) ? [$returnType, $returnType, '', ''] : $returnType;
 
-                if ($canAddReturnType && 'docblock' !== $this->patchTypes['force']) {
+                if ($canAddReturnType && $this->patchTypes['force'] !== 'docblock') {
                     $this->patchMethod($method, $returnType, $declaringFile, $normalizedType);
                 }
-                if (!isset($doc['deprecated']) && strncmp($ns, $declaringClass, $len)) {
-                    if ('docblock' === $this->patchTypes['force']) {
+                if (! isset($doc['deprecated']) && strncmp($ns, $declaringClass, $len)) {
+                    if ($this->patchTypes['force'] === 'docblock') {
                         $this->patchMethod($method, $returnType, $declaringFile, $normalizedType);
-                    } elseif ('' !== $declaringClass && $this->patchTypes['deprecations']) {
+                    } elseif ($declaringClass !== '' && $this->patchTypes['deprecations']) {
                         $deprecations[] = \sprintf('Method "%s::%s()" might add "%s" as a native return type declaration in the future. Do the same in %s "%s" now to avoid errors or add an explicit @return annotation to suppress this message.', $declaringClass, $method->name, $normalizedType, interface_exists($declaringClass) ? 'implementation' : 'child class', $className);
                     }
                 }
             }
 
-            if (!$doc) {
+            if (! $doc) {
                 $this->patchTypes['force'] = $forcePatchTypes;
 
                 continue;
@@ -623,22 +639,22 @@ class DebugClassLoader
 
             foreach (['final', 'internal'] as $annotation) {
                 if (null !== $description = $doc[$annotation][0] ?? null) {
-                    self::${$annotation.'Methods'}[$class][$method->name] = [$class, '' !== $description ? ' '.$description.(preg_match('/[[:punct:]]$/', $description) ? '' : '.') : '.'];
+                    self::${$annotation.'Methods'}[$class][$method->name] = [$class, $description !== '' ? ' '.$description.(preg_match('/[[:punct:]]$/', $description) ? '' : '.') : '.'];
                     $finalOrInternal = true;
                 }
             }
 
-            if ($finalOrInternal || $method->isConstructor() || !isset($doc['param']) || StatelessInvocation::class === $class) {
+            if ($finalOrInternal || $method->isConstructor() || ! isset($doc['param']) || $class === StatelessInvocation::class) {
                 continue;
             }
-            if (!isset(self::$annotatedParameters[$class][$method->name])) {
+            if (! isset(self::$annotatedParameters[$class][$method->name])) {
                 $definedParameters = [];
                 foreach ($method->getParameters() as $parameter) {
                     $definedParameters[$parameter->name] = true;
                 }
             }
             foreach ($doc['param'] as $parameterName => $parameterType) {
-                if (!isset($definedParameters[$parameterName])) {
+                if (! isset($definedParameters[$parameterName])) {
                     self::$annotatedParameters[$class][$method->name][$parameterName] = \sprintf('The "%%s::%s()" method will require a new "%s$%s" argument in the next major version of its %s "%s", not defining it is deprecated.', $method->name, $parameterType ? $parameterType.' ' : '', $parameterName, interface_exists($className) ? 'interface' : 'parent class', $className);
                 }
             }
@@ -657,13 +673,13 @@ class DebugClassLoader
                 $doc = $this->parsePhpDoc($r);
 
                 foreach ($parentAndOwnInterfaces as $use) {
-                    if (isset(self::${$type}[$use][$r->name]) && !isset($doc['deprecated']) && ('finalConstants' === $type || substr($use, 0, strrpos($use, '\\')) !== substr($use, 0, strrpos($class, '\\')))) {
-                        $msg = 'finalConstants' === $type ? '%s" constant' : '$%s" property';
+                    if (isset(self::${$type}[$use][$r->name]) && ! isset($doc['deprecated']) && ($type === 'finalConstants' || substr($use, 0, strrpos($use, '\\')) !== substr($use, 0, strrpos($class, '\\')))) {
+                        $msg = $type === 'finalConstants' ? '%s" constant' : '$%s" property';
                         $deprecations[] = \sprintf('The "%s::'.$msg.' is considered final. You should not override it in "%s".', self::${$type}[$use][$r->name], $r->name, $class);
                     }
                 }
 
-                if (isset($doc['final']) || ('finalProperties' === $type && str_starts_with($class, 'Symfony\\') && !$r->hasType())) {
+                if (isset($doc['final']) || ($type === 'finalProperties' && str_starts_with($class, 'Symfony\\') && ! $r->hasType())) {
                     self::${$type}[$class][$r->name] = $class;
                 }
             }
@@ -681,13 +697,13 @@ class DebugClassLoader
         $j = \count($real) - 1;
 
         while (isset($tail[$i], $real[$j]) && $tail[$i] === $real[$j]) {
-            --$i;
-            --$j;
+            $i--;
+            $j--;
         }
 
         array_splice($tail, 0, $i + 1);
 
-        if (!$tail) {
+        if (! $tail) {
             return null;
         }
 
@@ -695,12 +711,12 @@ class DebugClassLoader
         $tailLen = \strlen($tail);
         $real = $refl->getFileName();
 
-        if (2 === self::$caseCheck) {
+        if (self::$caseCheck === 2) {
             $real = $this->darwinRealpath($real);
         }
 
-        if (0 === substr_compare($real, $tail, -$tailLen, $tailLen, true)
-            && 0 !== substr_compare($real, $tail, -$tailLen, $tailLen, false)
+        if (substr_compare($real, $tail, -$tailLen, $tailLen, true) === 0
+            && substr_compare($real, $tail, -$tailLen, $tailLen, false) !== 0
         ) {
             return [substr($tail, -$tailLen + 1), substr($real, -$tailLen + 1), substr($real, 0, -$tailLen + 1)];
         }
@@ -727,7 +743,7 @@ class DebugClassLoader
             } else {
                 $dir = getcwd();
 
-                if (!@chdir($real)) {
+                if (! @chdir($real)) {
                     return $real.$file;
                 }
 
@@ -737,11 +753,11 @@ class DebugClassLoader
                 $dir = $real;
                 $k = $kDir;
                 $i = \strlen($dir) - 1;
-                while (!isset(self::$darwinCache[$k])) {
+                while (! isset(self::$darwinCache[$k])) {
                     self::$darwinCache[$k] = [$dir, []];
                     self::$darwinCache[$dir] = &self::$darwinCache[$k];
 
-                    while ('/' !== $dir[--$i]) {
+                    while ($dir[--$i] !== '/') {
                     }
                     $k = substr($k, 0, ++$i);
                     $dir = substr($dir, 0, $i--);
@@ -751,7 +767,7 @@ class DebugClassLoader
 
         $dirFiles = self::$darwinCache[$kDir][1];
 
-        if (!isset($dirFiles[$file]) && str_ends_with($file, ') : eval()\'d code')) {
+        if (! isset($dirFiles[$file]) && str_ends_with($file, ') : eval()\'d code')) {
             // Get the file name from "file_name.php(123) : eval()'d code"
             $file = substr($file, 0, strrpos($file, '(', -17));
         }
@@ -762,9 +778,9 @@ class DebugClassLoader
 
         $kFile = strtolower($file);
 
-        if (!isset($dirFiles[$kFile])) {
+        if (! isset($dirFiles[$kFile])) {
             foreach (scandir($real, 2) as $f) {
-                if ('.' !== $f[0]) {
+                if ($f[0] !== '.') {
                     $dirFiles[$f] = $f;
                     if ($f === $file) {
                         $kFile = $file;
@@ -805,11 +821,11 @@ class DebugClassLoader
 
     private function setReturnType(string $types, string $class, string $method, string $filename, ?string $parent, ?\ReflectionType $returnType = null): void
     {
-        if ('__construct' === $method) {
+        if ($method === '__construct') {
             return;
         }
 
-        if ('null' === $types) {
+        if ($types === 'null') {
             self::$returnTypes[$class][$method] = ['null', 'null', $class, $filename];
 
             return;
@@ -832,7 +848,7 @@ class DebugClassLoader
             if (isset($typesMap['Traversable']) || isset($typesMap['\Traversable'])) {
                 $typesMap['iterable'] = $arrayType !== $typesMap['array'] ? $typesMap['array'] : ['iterable'];
                 unset($typesMap['array'], $typesMap['Traversable'], $typesMap['\Traversable']);
-            } elseif ($arrayType !== $typesMap['array'] && isset(self::$returnTypes[$class][$method]) && !$returnType) {
+            } elseif ($arrayType !== $typesMap['array'] && isset(self::$returnTypes[$class][$method]) && ! $returnType) {
                 return;
             }
         }
@@ -846,9 +862,9 @@ class DebugClassLoader
 
         $iterable = $object = true;
         foreach ($typesMap as $n => $t) {
-            if ('null' !== $n) {
+            if ($n !== 'null') {
                 $iterable = $iterable && (\in_array($n, ['array', 'iterable'], true) || str_contains($n, 'Iterator'));
-                $object = $object && (\in_array($n, ['callable', 'object', '$this', 'static'], true) || !isset(self::SPECIAL_RETURN_TYPES[$n]));
+                $object = $object && (\in_array($n, ['callable', 'object', '$this', 'static'], true) || ! isset(self::SPECIAL_RETURN_TYPES[$n]));
             }
         }
 
@@ -863,7 +879,7 @@ class DebugClassLoader
                     default => $definingClass,
                 };
 
-                if (!\defined($definingClass.'::'.$constantName)) {
+                if (! \defined($definingClass.'::'.$constantName)) {
                     return;
                 }
 
@@ -880,51 +896,53 @@ class DebugClassLoader
                 }
             }
 
-            if ('null' === $n) {
+            if ($n === 'null') {
                 $nullable = true;
+
                 continue;
             }
 
             $docTypes[] = $t;
 
-            if ('mixed' === $n || 'void' === $n) {
+            if ($n === 'mixed' || $n === 'void') {
                 $nullable = false;
                 $phpTypes = ['' => $n];
+
                 continue;
             }
 
-            if ('resource' === $n) {
+            if ($n === 'resource') {
                 // there is no native type for "resource"
                 return;
             }
 
-            if (!preg_match('/^(?:\\\\?[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*)+$/', $n)) {
+            if (! preg_match('/^(?:\\\\?[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*)+$/', $n)) {
                 // exclude any invalid PHP class name (e.g. `Cookie::SAMESITE_*`)
                 continue;
             }
 
-            if (!isset($phpTypes['']) && !\in_array($n, $phpTypes, true)) {
+            if (! isset($phpTypes['']) && ! \in_array($n, $phpTypes, true)) {
                 $phpTypes[] = $n;
             }
         }
         $docTypes = array_merge([], ...$docTypes);
 
-        if (!$phpTypes) {
+        if (! $phpTypes) {
             return;
         }
 
-        if (1 < \count($phpTypes)) {
-            if ($iterable && '8.0' > $this->patchTypes['php']) {
+        if (\count($phpTypes) > 1) {
+            if ($iterable && $this->patchTypes['php'] < '8.0') {
                 $phpTypes = $docTypes = ['iterable'];
-            } elseif ($object && 'object' === $this->patchTypes['force']) {
+            } elseif ($object && $this->patchTypes['force'] === 'object') {
                 $phpTypes = $docTypes = ['object'];
-            } elseif ('8.0' > $this->patchTypes['php']) {
+            } elseif ($this->patchTypes['php'] < '8.0') {
                 // ignore multi-types return declarations
                 return;
             }
         }
 
-        $phpType = \sprintf($nullable ? (1 < \count($phpTypes) ? '%s|null' : '?%s') : '%s', implode($glue, $phpTypes));
+        $phpType = \sprintf($nullable ? (\count($phpTypes) > 1 ? '%s|null' : '?%s') : '%s', implode($glue, $phpTypes));
         $docType = \sprintf($nullable ? '%s|null' : '%s', implode($glue, $docTypes));
 
         self::$returnTypes[$class][$method] = [$phpType, $docType, $class, $filename];
@@ -934,8 +952,8 @@ class DebugClassLoader
     {
         if (isset(self::SPECIAL_RETURN_TYPES[$lcType = strtolower($type)])) {
             if ('parent' === $lcType = self::SPECIAL_RETURN_TYPES[$lcType]) {
-                $lcType = null !== $parent ? '\\'.$parent : 'parent';
-            } elseif ('self' === $lcType) {
+                $lcType = $parent !== null ? '\\'.$parent : 'parent';
+            } elseif ($lcType === 'self') {
                 $lcType = '\\'.$class;
             }
 
@@ -945,14 +963,14 @@ class DebugClassLoader
         // We could resolve "use" statements to return the FQDN
         // but this would be too expensive for a runtime checker
 
-        if (!str_ends_with($type, '[]')) {
+        if (! str_ends_with($type, '[]')) {
             return $type;
         }
 
         if ($returnType instanceof \ReflectionNamedType) {
             $type = $returnType->getName();
 
-            if ('mixed' !== $type) {
+            if ($type !== 'mixed') {
                 return isset(self::SPECIAL_RETURN_TYPES[$type]) ? $type : '\\'.$type;
             }
         }
@@ -969,7 +987,7 @@ class DebugClassLoader
             return;
         }
 
-        if (!is_file($file = $method->getFileName())) {
+        if (! is_file($file = $method->getFileName())) {
             return;
         }
 
@@ -979,7 +997,7 @@ class DebugClassLoader
 
         $startLine = $method->getStartLine() + $fileOffset - 2;
 
-        if (false !== stripos($code[$startLine], 'ReturnTypeWillChange')) {
+        if (stripos($code[$startLine], 'ReturnTypeWillChange') !== false) {
             return;
         }
 
@@ -996,7 +1014,7 @@ class DebugClassLoader
         static $patchedMethods = [];
         static $useStatements = [];
 
-        if (!is_file($file = $method->getFileName()) || isset($patchedMethods[$file][$startLine = $method->getStartLine()])) {
+        if (! is_file($file = $method->getFileName()) || isset($patchedMethods[$file][$startLine = $method->getStartLine()])) {
             return;
         }
 
@@ -1018,13 +1036,13 @@ class DebugClassLoader
                 $format = null;
             }
 
-            if (isset(self::SPECIAL_RETURN_TYPES[$type]) || ('\\' === $type[0] && !$p = strrpos($type, '\\', 1))) {
+            if (isset(self::SPECIAL_RETURN_TYPES[$type]) || ($type[0] === '\\' && ! $p = strrpos($type, '\\', 1))) {
                 continue;
             }
 
             [$namespace, $useOffset, $useMap] = $useStatements[$file] ??= self::getUseStatements($file);
 
-            if ('\\' !== $type[0]) {
+            if ($type[0] !== '\\') {
                 [$declaringNamespace, , $declaringUseMap] = $useStatements[$declaringFile] ??= self::getUseStatements($declaringFile);
 
                 $p = strpos($type, '\\', 1);
@@ -1042,29 +1060,29 @@ class DebugClassLoader
             $alias = substr($type, 1 + $p);
             $type = substr($type, 1);
 
-            if (!isset($useMap[$alias]) && (class_exists($c = $namespace.$alias) || interface_exists($c) || trait_exists($c))) {
+            if (! isset($useMap[$alias]) && (class_exists($c = $namespace.$alias) || interface_exists($c) || trait_exists($c))) {
                 $useMap[$alias] = $c;
             }
 
-            if (!isset($useMap[$alias])) {
+            if (! isset($useMap[$alias])) {
                 $useStatements[$file][2][$alias] = $type;
                 $code[$useOffset] = "use $type;\n".$code[$useOffset];
-                ++$fileOffset;
+                $fileOffset++;
             } elseif ($useMap[$alias] !== $type) {
                 $alias .= 'FIXME';
                 $useStatements[$file][2][$alias] = $type;
                 $code[$useOffset] = "use $type as $alias;\n".$code[$useOffset];
-                ++$fileOffset;
+                $fileOffset++;
             }
 
-            $returnType[$i] = null !== $format ? \sprintf($format, $alias) : $alias;
+            $returnType[$i] = $format !== null ? \sprintf($format, $alias) : $alias;
         }
 
-        if ('docblock' === $this->patchTypes['force'] || ('object' === $normalizedType && '7.1' === $this->patchTypes['php'])) {
+        if ($this->patchTypes['force'] === 'docblock' || ($normalizedType === 'object' && $this->patchTypes['php'] === '7.1')) {
             $returnType = implode($glue, $returnType).($nullable ? '|null' : '');
 
             if (str_contains($code[$startLine], '#[')) {
-                --$startLine;
+                $startLine--;
             }
 
             if ($method->getDocComment()) {
@@ -1093,13 +1111,13 @@ class DebugClassLoader
         $useMap = [];
         $useOffset = 0;
 
-        if (!is_file($file)) {
+        if (! is_file($file)) {
             return [$namespace, $useOffset, $useMap];
         }
 
         $file = file($file);
 
-        for ($i = 0; $i < \count($file); ++$i) {
+        for ($i = 0; $i < \count($file); $i++) {
             if (preg_match('/^(class|interface|trait|abstract) /', $file[$i])) {
                 break;
             }
@@ -1112,12 +1130,12 @@ class DebugClassLoader
             if (str_starts_with($file[$i], 'use ')) {
                 $useOffset = $i;
 
-                for (; str_starts_with($file[$i], 'use '); ++$i) {
+                for (; str_starts_with($file[$i], 'use '); $i++) {
                     $u = explode(' as ', substr($file[$i], 4, -2), 2);
 
-                    if (1 === \count($u)) {
+                    if (\count($u) === 1) {
                         $p = strrpos($u[0], '\\');
-                        $useMap[substr($u[0], false !== $p ? 1 + $p : 0)] = $u[0];
+                        $useMap[substr($u[0], $p !== false ? 1 + $p : 0)] = $u[0];
                     } else {
                         $useMap[$u[1]] = $u[0];
                     }
@@ -1132,40 +1150,40 @@ class DebugClassLoader
 
     private function fixReturnStatements(\ReflectionMethod $method, string $returnType): void
     {
-        if ('docblock' !== $this->patchTypes['force']) {
-            if ('7.1' === $this->patchTypes['php'] && 'object' === ltrim($returnType, '?')) {
+        if ($this->patchTypes['force'] !== 'docblock') {
+            if ($this->patchTypes['php'] === '7.1' && ltrim($returnType, '?') === 'object') {
                 return;
             }
 
-            if ('7.4' > $this->patchTypes['php'] && $method->hasReturnType()) {
+            if ($this->patchTypes['php'] < '7.4' && $method->hasReturnType()) {
                 return;
             }
 
-            if ('8.0' > $this->patchTypes['php'] && (str_contains($returnType, '|') || \in_array($returnType, ['mixed', 'static'], true))) {
+            if ($this->patchTypes['php'] < '8.0' && (str_contains($returnType, '|') || \in_array($returnType, ['mixed', 'static'], true))) {
                 return;
             }
 
-            if ('8.1' > $this->patchTypes['php'] && str_contains($returnType, '&')) {
+            if ($this->patchTypes['php'] < '8.1' && str_contains($returnType, '&')) {
                 return;
             }
         }
 
-        if (!is_file($file = $method->getFileName())) {
+        if (! is_file($file = $method->getFileName())) {
             return;
         }
 
         $fixedCode = $code = file($file);
         $i = (self::$fileOffsets[$file] ?? 0) + $method->getStartLine();
 
-        if ('?' !== $returnType && 'docblock' !== $this->patchTypes['force']) {
+        if ($returnType !== '?' && $this->patchTypes['force'] !== 'docblock') {
             $fixedCode[$i - 1] = preg_replace('/\)(?::[^;\n]++)?(;?\n)/', "): $returnType\\1", $code[$i - 1]);
         }
 
         $end = $method->isGenerator() ? $i : $method->getEndLine();
         $inClosure = false;
         $braces = 0;
-        for (; $i < $end; ++$i) {
-            if (!$inClosure) {
+        for (; $i < $end; $i++) {
+            if (! $inClosure) {
                 $inClosure = str_contains($code[$i], 'function (');
             }
 
@@ -1176,9 +1194,9 @@ class DebugClassLoader
                 continue;
             }
 
-            if ('void' === $returnType) {
+            if ($returnType === 'void') {
                 $fixedCode[$i] = str_replace('    return null;', '    return;', $code[$i]);
-            } elseif ('mixed' === $returnType || '?' === $returnType[0]) {
+            } elseif ($returnType === 'mixed' || $returnType[0] === '?') {
                 $fixedCode[$i] = str_replace('    return;', '    return null;', $code[$i]);
             } else {
                 $fixedCode[$i] = str_replace('    return;', "    return $returnType!?;", $code[$i]);
@@ -1191,11 +1209,11 @@ class DebugClassLoader
     }
 
     /**
-     * @param \ReflectionClass|\ReflectionMethod|\ReflectionProperty $reflector
+     * @param  \ReflectionClass|\ReflectionMethod|\ReflectionProperty  $reflector
      */
     private function parsePhpDoc(\Reflector $reflector): array
     {
-        if (!$doc = $reflector->getDocComment()) {
+        if (! $doc = $reflector->getDocComment()) {
             return [];
         }
 
@@ -1209,15 +1227,16 @@ class DebugClassLoader
             $line = ltrim($line, '*');
 
             if ('' === $line = trim($line)) {
-                if ('' !== $tagName) {
+                if ($tagName !== '') {
                     $tags[$tagName][] = $tagContent;
                 }
                 $tagName = $tagContent = '';
+
                 continue;
             }
 
-            if ('@' === $line[0]) {
-                if ('' !== $tagName) {
+            if ($line[0] === '@') {
+                if ($tagName !== '') {
                     $tags[$tagName][] = $tagContent;
                     $tagContent = '';
                 }
@@ -1228,12 +1247,12 @@ class DebugClassLoader
                 } else {
                     $tagName = '';
                 }
-            } elseif ('' !== $tagName) {
+            } elseif ($tagName !== '') {
                 $tagContent .= ' '.str_replace("\t", ' ', $line);
             }
         }
 
-        if ('' !== $tagName) {
+        if ($tagName !== '') {
             $tags[$tagName][] = $tagContent;
         }
 
@@ -1242,29 +1261,31 @@ class DebugClassLoader
 
             $parts = preg_split('{(\s++|\((?:[^()]*+|(?R))*\)(?: *: *[^ ]++)?|<(?:[^<>]*+|(?R))*>|\{(?:[^{}]*+|(?R))*\})}', $method, -1, \PREG_SPLIT_DELIM_CAPTURE);
             $returnType = '';
-            $static = 'static' === $parts[0];
+            $static = $parts[0] === 'static';
 
             for ($i = $static ? 2 : 0; null !== $p = $parts[$i] ?? null; $i += 2) {
                 if (\in_array($p, ['', 'callable'], true) || \in_array(substr($returnType, -1), ['|', '&'], true) || \in_array($p[0], ['|', '&'], true)) {
                     $returnType .= trim($parts[$i - 1] ?? '').$p;
+
                     continue;
                 }
 
                 $signature = '(' === ($parts[$i + 1][0] ?? '(') ? $parts[$i + 1] ?? '()' : null;
 
-                if (null === $signature && '' === $returnType) {
+                if ($signature === null && $returnType === '') {
                     $returnType = $p;
+
                     continue;
                 }
 
-                if ($static && 2 === $i) {
+                if ($static && $i === 2) {
                     $static = false;
                     $returnType = 'static';
                 }
 
                 if (\in_array($description = trim(implode('', \array_slice($parts, 2 + $i))), ['', '.'], true)) {
                     $description = null;
-                } elseif (!preg_match('/[.!]$/', $description)) {
+                } elseif (! preg_match('/[.!]$/', $description)) {
                     $description .= '.';
                 }
 
@@ -1284,7 +1305,7 @@ class DebugClassLoader
                 continue;
             }
 
-            $type = 0 === $i ? '' : rtrim(substr($param, 0, $i), ' &');
+            $type = $i === 0 ? '' : rtrim(substr($param, 0, $i), ' &');
             $param = substr($param, 1 + $i, (strpos($param, ' ', $i) ?: (1 + $i + \strlen($param))) - $i - 1);
 
             $tags['param'][$param] = $type;

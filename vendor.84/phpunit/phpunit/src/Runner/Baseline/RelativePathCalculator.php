@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Runner\Baseline;
 
 use function array_fill;
@@ -36,7 +39,7 @@ final readonly class RelativePathCalculator
     private string $baselineDirectory;
 
     /**
-     * @param non-empty-string $baselineDirectory
+     * @param  non-empty-string  $baselineDirectory
      */
     public function __construct(string $baselineDirectory)
     {
@@ -44,8 +47,7 @@ final readonly class RelativePathCalculator
     }
 
     /**
-     * @param non-empty-string $filename
-     *
+     * @param  non-empty-string  $filename
      * @return non-empty-string
      */
     public function calculate(string $filename): string
@@ -58,8 +60,7 @@ final readonly class RelativePathCalculator
     }
 
     /**
-     * @param non-empty-string $filename
-     *
+     * @param  non-empty-string  $filename
      * @return list<non-empty-string>
      */
     public function parts(string $filename): array
@@ -72,9 +73,9 @@ final readonly class RelativePathCalculator
             assert($filename !== '');
         }
 
-        $parentParts        = explode('/', trim(str_replace('\\', '/', $this->baselineDirectory), '/'));
-        $parentPartsCount   = count($parentParts);
-        $filenameParts      = explode('/', trim(str_replace('\\', '/', $filename), '/'));
+        $parentParts = explode('/', trim(str_replace('\\', '/', $this->baselineDirectory), '/'));
+        $parentPartsCount = count($parentParts);
+        $filenameParts = explode('/', trim(str_replace('\\', '/', $filename), '/'));
         $filenamePartsCount = count($filenameParts);
 
         $i = 0;
@@ -84,7 +85,7 @@ final readonly class RelativePathCalculator
                 break;
             }
 
-            $parentPath   = implode('/', array_slice($parentParts, 0, $i + 1));
+            $parentPath = implode('/', array_slice($parentParts, 0, $i + 1));
             $filenamePath = implode('/', array_slice($filenameParts, 0, $i + 1));
 
             if ($parentPath !== $filenamePath) {

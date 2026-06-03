@@ -26,10 +26,14 @@ use Psy\Util\DependencyChecker;
 class ProcessForker extends AbstractListener
 {
     private ?int $savegame = null;
+
     /** @var resource */
     private $up;
+
     private bool $sigintHandlerInstalled = false;
+
     private bool $restoreStty = false;
+
     private ?string $originalStty = null;
 
     public const PCNTL_FUNCTIONS = [
@@ -99,8 +103,6 @@ class ProcessForker extends AbstractListener
      *
      * The loop process will handle the evaluation of all instructions, then
      * return its state via a socket upon completion.
-     *
-     * @param Shell $shell
      */
     public function beforeRun(Shell $shell)
     {
@@ -108,13 +110,13 @@ class ProcessForker extends AbstractListener
         // communication after 60 seconds.
         $originalTimeout = @\ini_set('default_socket_timeout', '-1');
 
-        list($up, $down) = \stream_socket_pair(\STREAM_PF_UNIX, \STREAM_SOCK_STREAM, \STREAM_IPPROTO_IP);
+        [$up, $down] = \stream_socket_pair(\STREAM_PF_UNIX, \STREAM_SOCK_STREAM, \STREAM_IPPROTO_IP);
 
         if ($originalTimeout !== false) {
             @\ini_set('default_socket_timeout', $originalTimeout);
         }
 
-        if (!$up) {
+        if (! $up) {
             throw new \RuntimeException('Unable to create socket pair');
         }
 
@@ -214,7 +216,7 @@ class ProcessForker extends AbstractListener
         }
 
         // This is the child process. It's going to do all the work.
-        if (!@\cli_set_process_title('psysh (loop)')) {
+        if (! @\cli_set_process_title('psysh (loop)')) {
             // Fall back to `setproctitle` if that wasn't succesful.
             if (\function_exists('setproctitle')) {
                 @\setproctitle('psysh (loop)');
@@ -259,8 +261,6 @@ class ProcessForker extends AbstractListener
 
     /**
      * Create a savegame at the start of each loop iteration.
-     *
-     * @param Shell $shell
      */
     public function beforeLoop(Shell $shell)
     {
@@ -277,7 +277,7 @@ class ProcessForker extends AbstractListener
         // Only handle cleanup in child process
         if (isset($this->up)) {
             // Restore default SIGINT handler after execution
-            if (!$this->sigintHandlerInstalled) {
+            if (! $this->sigintHandlerInstalled) {
                 \pcntl_signal(\SIGINT, \SIG_DFL);
             }
 
@@ -345,7 +345,7 @@ class ProcessForker extends AbstractListener
             \pcntl_waitpid($pid, $status);
 
             // worker exited cleanly, let's bail
-            if (!\pcntl_wexitstatus($status)) {
+            if (! \pcntl_wexitstatus($status)) {
                 \posix_kill(\posix_getpid(), \SIGKILL);
             }
 
@@ -360,13 +360,13 @@ class ProcessForker extends AbstractListener
      */
     private function clearStdinBuffer(): void
     {
-        if (!\defined('STDIN') || !\is_resource(\STDIN)) {
+        if (! \defined('STDIN') || ! \is_resource(\STDIN)) {
             return;
         }
 
         // Check if the stream is still usable
         $meta = @\stream_get_meta_data(\STDIN);
-        if (!$meta || ($meta['eof'] ?? false)) {
+        if (! $meta || ($meta['eof'] ?? false)) {
             return;
         }
 
@@ -385,9 +385,8 @@ class ProcessForker extends AbstractListener
      * loop. We'll just ignore these unserializable classes, and serialize what
      * we can.
      *
-     * @param int   $exitCode  Exit code from the child process
-     * @param array $scopeVars Scope variables to serialize
-     *
+     * @param  int  $exitCode  Exit code from the child process
+     * @param  array  $scopeVars  Scope variables to serialize
      * @return string Serialized data array containing exitCode and scopeVars
      */
     private function serializeReturn(int $exitCode, array $scopeVars): string
@@ -422,7 +421,7 @@ class ProcessForker extends AbstractListener
         }
 
         return @\serialize([
-            'exitCode'  => $exitCode,
+            'exitCode' => $exitCode,
             'scopeVars' => $serializable,
         ]);
     }

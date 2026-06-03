@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Framework\Constraint;
 
 /**
@@ -44,11 +47,11 @@ final class LogicalAnd extends BinaryOperator
     protected function matches(mixed $other): bool
     {
         foreach ($this->constraints() as $constraint) {
-            if (!$constraint->evaluate($other, '', true)) {
+            if (! $constraint->evaluate($other, '', true)) {
                 return false;
             }
         }
 
-        return [] !== $this->constraints();
+        return $this->constraints() !== [];
     }
 }

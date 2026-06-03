@@ -13,10 +13,11 @@ declare(strict_types=1);
 
 namespace Fidry\CpuCoreCounter\Finder;
 
+use const PHP_EOL;
+
 use function array_filter;
 use function count;
 use function explode;
-use const PHP_EOL;
 
 /**
  * Find the number of logical CPU cores for Windows.
@@ -41,7 +42,7 @@ final class WindowsRegistryLogicalFinder extends ProcOpenBasedFinder
             array_filter(
                 explode(PHP_EOL, $process),
                 static function (string $line): bool {
-                    return '' !== trim($line);
+                    return trim($line) !== '';
                 }
             )
         );

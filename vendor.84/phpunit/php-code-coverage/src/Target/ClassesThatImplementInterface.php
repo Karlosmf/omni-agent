@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Test\Target;
 
 /**
@@ -22,7 +25,7 @@ final class ClassesThatImplementInterface extends Target
     private string $interfaceName;
 
     /**
-     * @param class-string $interfaceName
+     * @param  class-string  $interfaceName
      */
     protected function __construct(string $interfaceName)
     {
@@ -63,6 +66,6 @@ final class ClassesThatImplementInterface extends Target
      */
     public function description(): string
     {
-        return 'Classes that implement interface ' . $this->target();
+        return 'Classes that implement interface '.$this->target();
     }
 }

@@ -9,8 +9,7 @@ class Person extends \Faker\Provider\Person
     /**
      * National Registration Identity Card number
      *
-     * @param \DateTime|null $birthDate birth date
-     *
+     * @param  \DateTime|null  $birthDate  birth date
      * @return string in format S1234567D or T1234567J
      */
     public static function nric(?\DateTime $birthDate = null): string
@@ -21,8 +20,7 @@ class Person extends \Faker\Provider\Person
     /**
      * Foreign Identification Number
      *
-     * @param \DateTime|null $issueDate issue date
-     *
+     * @param  \DateTime|null  $issueDate  issue date
      * @return string in format F1234567N or G1234567X
      */
     public static function fin(?\DateTime $issueDate = null): string
@@ -33,9 +31,8 @@ class Person extends \Faker\Provider\Person
     /**
      * Singapore NRIC (citizens) or FIN (foreigners) number
      *
-     * @param \DateTime|null $issueDate birth/issue date
-     * @param bool           $foreigner whether a person is foreigner or citizen
-     *
+     * @param  \DateTime|null  $issueDate  birth/issue date
+     * @param  bool  $foreigner  whether a person is foreigner or citizen
      * @return string in format S1234567D, T1234567J, F1234567N or G1234567X
      */
     public static function singaporeId(?\DateTime $issueDate = null, bool $foreigner = false): string
@@ -59,16 +56,16 @@ class Person extends \Faker\Provider\Person
 
         $length = count($weights);
 
-        for ($i = strlen($result); $i < $length; ++$i) {
+        for ($i = strlen($result); $i < $length; $i++) {
             $result .= static::randomDigit();
         }
 
         $checksum = in_array($prefix, ['G', 'T'], true) ? 4 : 0;
 
-        for ($i = 0; $i < $length; ++$i) {
+        for ($i = 0; $i < $length; $i++) {
             $checksum += (int) $result[$i] * $weights[$i];
         }
 
-        return $prefix . $result . $checksumArr[$checksum % 11];
+        return $prefix.$result.$checksumArr[$checksum % 11];
     }
 }

@@ -30,8 +30,7 @@ class ApplicationTester
 
     public function __construct(
         private Application $application,
-    ) {
-    }
+    ) {}
 
     /**
      * Executes the application.

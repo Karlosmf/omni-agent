@@ -27,12 +27,12 @@ class MessageLoggerListener implements EventSubscriberInterface, ResetInterface
 
     public function __construct()
     {
-        $this->events = new MessageEvents();
+        $this->events = new MessageEvents;
     }
 
     public function reset(): void
     {
-        $this->events = new MessageEvents();
+        $this->events = new MessageEvents;
     }
 
     public function onMessage(MessageEvent $event): void

@@ -5,6 +5,7 @@
  *
  * @copyright https://github.com/mockery/mockery/blob/HEAD/COPYRIGHT.md
  * @license https://github.com/mockery/mockery/blob/HEAD/LICENSE BSD 3-Clause License
+ *
  * @link https://github.com/mockery/mockery for the canonical source repository
  */
 
@@ -30,7 +31,7 @@ abstract class MatcherAbstract implements MatcherInterface
      *
      * @template TExpected
      *
-     * @param TExpected $expected
+     * @param  TExpected  $expected
      */
     public function __construct($expected = null)
     {

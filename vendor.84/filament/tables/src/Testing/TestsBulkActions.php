@@ -20,7 +20,7 @@ class TestsBulkActions
 {
     public function selectTableRecords(): Closure
     {
-        return function (array | Collection $records): static {
+        return function (array|Collection $records): static {
             $this->set('selectedTableRecords', array_map(
                 function ($record) {
                     if ($record instanceof Model) {
@@ -38,7 +38,7 @@ class TestsBulkActions
 
     public function mountTableBulkAction(): Closure
     {
-        return function (string | array $actions, array | Collection $records): static {
+        return function (string|array $actions, array|Collection $records): static {
             /** @phpstan-ignore-next-line */
             $this->selectTableRecords($records);
 
@@ -63,7 +63,7 @@ class TestsBulkActions
 
     public function assertTableBulkActionDataSet(): Closure
     {
-        return function (array | Closure $data): static {
+        return function (array|Closure $data): static {
             $this->assertSchemaStateSet($data);
 
             return $this;
@@ -72,7 +72,7 @@ class TestsBulkActions
 
     public function callTableBulkAction(): Closure
     {
-        return function (string | array $actions, array | Collection $records, array $data = [], array $arguments = []): static {
+        return function (string|array $actions, array|Collection $records, array $data = [], array $arguments = []): static {
             /** @phpstan-ignore-next-line */
             $this->selectTableRecords($records);
 
@@ -97,7 +97,7 @@ class TestsBulkActions
 
     public function assertTableBulkActionExists(): Closure
     {
-        return function (string | array $actions): static {
+        return function (string|array $actions): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedTableBulkActions($actions);
@@ -110,7 +110,7 @@ class TestsBulkActions
 
     public function assertTableBulkActionDoesNotExist(): Closure
     {
-        return function (string | array $actions): static {
+        return function (string|array $actions): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedTableBulkActions($actions);
@@ -137,7 +137,7 @@ class TestsBulkActions
 
     public function assertTableBulkActionVisible(): Closure
     {
-        return function (string | array $actions): static {
+        return function (string|array $actions): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedTableBulkActions($actions);
@@ -150,7 +150,7 @@ class TestsBulkActions
 
     public function assertTableBulkActionHidden(): Closure
     {
-        return function (string | array $actions): static {
+        return function (string|array $actions): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedTableBulkActions($actions);
@@ -163,7 +163,7 @@ class TestsBulkActions
 
     public function assertTableBulkActionEnabled(): Closure
     {
-        return function (string | array $actions): static {
+        return function (string|array $actions): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedTableBulkActions($actions);
@@ -176,7 +176,7 @@ class TestsBulkActions
 
     public function assertTableBulkActionDisabled(): Closure
     {
-        return function (string | array $actions): static {
+        return function (string|array $actions): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedTableBulkActions($actions);
@@ -189,7 +189,7 @@ class TestsBulkActions
 
     public function assertTableBulkActionHasIcon(): Closure
     {
-        return function (string | array $actions, string | BackedEnum $icon): static {
+        return function (string|array $actions, string|BackedEnum $icon): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedTableBulkActions($actions);
@@ -202,7 +202,7 @@ class TestsBulkActions
 
     public function assertTableBulkActionDoesNotHaveIcon(): Closure
     {
-        return function (string | array $actions, string | BackedEnum $icon): static {
+        return function (string|array $actions, string|BackedEnum $icon): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedTableBulkActions($actions);
@@ -215,7 +215,7 @@ class TestsBulkActions
 
     public function assertTableBulkActionHasLabel(): Closure
     {
-        return function (string | array $actions, string $label): static {
+        return function (string|array $actions, string $label): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedTableBulkActions($actions);
@@ -228,7 +228,7 @@ class TestsBulkActions
 
     public function assertTableBulkActionDoesNotHaveLabel(): Closure
     {
-        return function (string | array $actions, string $label): static {
+        return function (string|array $actions, string $label): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedTableBulkActions($actions);
@@ -241,7 +241,7 @@ class TestsBulkActions
 
     public function assertTableBulkActionHasColor(): Closure
     {
-        return function (string | array $actions, string | array $color): static {
+        return function (string|array $actions, string|array $color): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedTableBulkActions($actions);
@@ -254,7 +254,7 @@ class TestsBulkActions
 
     public function assertTableBulkActionDoesNotHaveColor(): Closure
     {
-        return function (string | array $actions, string | array $color): static {
+        return function (string|array $actions, string|array $color): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedTableBulkActions($actions);
@@ -267,7 +267,7 @@ class TestsBulkActions
 
     public function assertTableBulkActionMounted(): Closure
     {
-        return function (string | array $actions): static {
+        return function (string|array $actions): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedTableBulkActions($actions);
@@ -280,7 +280,7 @@ class TestsBulkActions
 
     public function assertTableBulkActionNotMounted(): Closure
     {
-        return function (string | array $actions): static {
+        return function (string|array $actions): static {
             /** @var array<array<string, mixed>> $actions */
             /** @phpstan-ignore-next-line */
             $actions = $this->parseNestedTableBulkActions($actions);
@@ -324,7 +324,7 @@ class TestsBulkActions
 
     public function parseNestedTableBulkActions(): Closure
     {
-        return function (string | array $actions): array {
+        return function (string|array $actions): array {
             /** @var array<array<string, mixed>> $actions */
             $actions = $this->parseNestedTableActions($actions);
 

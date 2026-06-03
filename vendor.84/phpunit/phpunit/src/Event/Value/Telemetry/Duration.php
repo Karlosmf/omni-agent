@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,11 +9,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event\Telemetry;
+
+use PHPUnit\Event\InvalidArgumentException;
 
 use function floor;
 use function sprintf;
-use PHPUnit\Event\InvalidArgumentException;
 
 /**
  * @immutable
@@ -21,6 +25,7 @@ use PHPUnit\Event\InvalidArgumentException;
 final readonly class Duration
 {
     private int $seconds;
+
     private int $nanoseconds;
 
     /**
@@ -43,7 +48,7 @@ final readonly class Duration
         $this->ensureNotNegative($nanoseconds, 'nanoseconds');
         $this->ensureNanoSecondsInRange($nanoseconds);
 
-        $this->seconds     = $seconds;
+        $this->seconds = $seconds;
         $this->nanoseconds = $nanoseconds;
     }
 
@@ -66,7 +71,7 @@ final readonly class Duration
     {
         $seconds = $this->seconds();
         $minutes = 0;
-        $hours   = 0;
+        $hours = 0;
 
         if ($seconds > 60 * 60) {
             $hours = floor($seconds / 60 / 60);

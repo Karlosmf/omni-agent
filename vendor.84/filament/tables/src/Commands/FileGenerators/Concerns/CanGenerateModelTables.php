@@ -212,7 +212,7 @@ trait CanGenerateModelTables
                 unset($columnData['type']);
 
                 foreach ($columnData as $methodName => $parameters) {
-                    $column .= new Literal(PHP_EOL . "            ->{$methodName}(...?:)", [$parameters]);
+                    $column .= new Literal(PHP_EOL."            ->{$methodName}(...?:)", [$parameters]);
                 }
 
                 return "{$column},";
@@ -234,6 +234,6 @@ trait CanGenerateModelTables
             return '//';
         }
 
-        return implode(PHP_EOL . '        ', $columns);
+        return implode(PHP_EOL.'        ', $columns);
     }
 }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,7 +9,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\StaticAnalysis;
+
+use PhpParser\Node;
+use PhpParser\NodeVisitorAbstract;
 
 use function array_diff_key;
 use function assert;
@@ -21,8 +27,6 @@ use function preg_quote;
 use function range;
 use function reset;
 use function sprintf;
-use PhpParser\Node;
-use PhpParser\NodeVisitorAbstract;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -32,6 +36,7 @@ use PhpParser\NodeVisitorAbstract;
 final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 {
     private int $nextBranch = 0;
+
     private readonly string $source;
 
     /**
@@ -59,7 +64,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         foreach ($node->getComments() as $comment) {
             $commentLine = $comment->getStartLine();
 
-            if (!isset($this->executableLinesGroupedByBranch[$commentLine])) {
+            if (! isset($this->executableLinesGroupedByBranch[$commentLine])) {
                 continue;
             }
 
@@ -72,7 +77,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         if ($node instanceof Node\Scalar\String_ ||
             $node instanceof Node\Scalar\EncapsedStringPart) {
             $startLine = $node->getStartLine() + 1;
-            $endLine   = $node->getEndLine() - 1;
+            $endLine = $node->getEndLine() - 1;
 
             if ($startLine <= $endLine) {
                 foreach (range($startLine, $endLine) as $line) {
@@ -156,7 +161,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 
             $isConcreteClassLike = $node instanceof Node\Stmt\Enum_ || $node instanceof Node\Stmt\Class_ || $node instanceof Node\Stmt\Trait_;
 
-            if (null !== $node->stmts) {
+            if ($node->stmts !== null) {
                 foreach ($node->stmts as $stmt) {
                     if ($stmt instanceof Node\Stmt\Nop) {
                         continue;
@@ -167,7 +172,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 
                         if (
                             $isConcreteClassLike &&
-                            !$stmt instanceof Node\Stmt\ClassMethod
+                            ! $stmt instanceof Node\Stmt\ClassMethod
                         ) {
                             $this->unsets[$line] = true;
                         }
@@ -179,10 +184,10 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                 return null;
             }
 
-            $hasEmptyBody = [] === $node->stmts ||
-                null === $node->stmts ||
+            $hasEmptyBody = $node->stmts === [] ||
+                $node->stmts === null ||
                 (
-                    1 === count($node->stmts) &&
+                    count($node->stmts) === 1 &&
                     $node->stmts[0] instanceof Node\Stmt\Nop
                 );
 
@@ -217,7 +222,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         }
 
         if ($node instanceof Node\Expr\Ternary) {
-            if (null !== $node->if &&
+            if ($node->if !== null &&
                 $node->getStartLine() !== $node->if->getEndLine()) {
                 $this->setLineBranch($node->if->getStartLine(), $node->if->getEndLine(), ++$this->nextBranch);
             }
@@ -240,7 +245,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         if ($node instanceof Node\Stmt\If_ ||
             $node instanceof Node\Stmt\ElseIf_ ||
             $node instanceof Node\Stmt\Case_) {
-            if (null === $node->cond) {
+            if ($node->cond === null) {
                 return null;
             }
 
@@ -255,9 +260,9 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
 
         if ($node instanceof Node\Stmt\For_) {
             $startLine = null;
-            $endLine   = null;
+            $endLine = null;
 
-            if ([] !== $node->init) {
+            if ($node->init !== []) {
                 $startLine = $node->init[0]->getStartLine();
 
                 end($node->init);
@@ -267,8 +272,8 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                 reset($node->init);
             }
 
-            if ([] !== $node->cond) {
-                if (null === $startLine) {
+            if ($node->cond !== []) {
+                if ($startLine === null) {
                     $startLine = $node->cond[0]->getStartLine();
                 }
 
@@ -279,8 +284,8 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                 reset($node->cond);
             }
 
-            if ([] !== $node->loop) {
-                if (null === $startLine) {
+            if ($node->loop !== []) {
+                if ($startLine === null) {
                     $startLine = $node->loop[0]->getStartLine();
                 }
 
@@ -291,7 +296,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
                 reset($node->loop);
             }
 
-            if (null === $startLine || null === $endLine) {
+            if ($startLine === null || $endLine === null) {
                 return null;
             }
 
@@ -326,7 +331,7 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         }
 
         if ($node instanceof Node\Stmt\Catch_) {
-            assert([] !== $node->types);
+            assert($node->types !== []);
             $startLine = $node->types[0]->getStartLine();
             end($node->types);
             $endLine = current($node->types)->getEndLine();
@@ -368,10 +373,10 @@ final class ExecutableLinesFindingVisitor extends NodeVisitorAbstract
         foreach ($lines as $lineNumber => $line) {
             $lineNumber++;
 
-            if (1 === preg_match('/^\s*$/', $line) ||
+            if (preg_match('/^\s*$/', $line) === 1 ||
                 (
                     isset($this->commentsToCheckForUnset[$lineNumber]) &&
-                    1 === preg_match(sprintf('/^\s*%s\s*$/', preg_quote($this->commentsToCheckForUnset[$lineNumber], '/')), $line)
+                    preg_match(sprintf('/^\s*%s\s*$/', preg_quote($this->commentsToCheckForUnset[$lineNumber], '/')), $line) === 1
                 )) {
                 unset($this->executableLinesGroupedByBranch[$lineNumber]);
             }

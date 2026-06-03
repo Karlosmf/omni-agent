@@ -19,9 +19,9 @@ trait HasState
     /**
      * @var array<string, mixed> | object | null
      */
-    protected array | object | null $constantState = null;
+    protected array|object|null $constantState = null;
 
-    protected bool | Closure $shouldPartiallyRender = false;
+    protected bool|Closure $shouldPartiallyRender = false;
 
     /**
      * @var array<string, bool> | null
@@ -31,7 +31,7 @@ trait HasState
     /**
      * @param  array<string, mixed> | object | null  $state
      */
-    public function state(array | object | null $state): static
+    public function state(array|object|null $state): static
     {
         $this->constantState($state);
 
@@ -79,14 +79,14 @@ trait HasState
     /**
      * @param  array<string, mixed> | object | null  $state
      */
-    public function constantState(array | object | null $state): static
+    public function constantState(array|object|null $state): static
     {
         $this->constantState = $state;
 
         return $this;
     }
 
-    public function partiallyRender(bool | Closure $condition = true): static
+    public function partiallyRender(bool|Closure $condition = true): static
     {
         $this->shouldPartiallyRender = $condition;
 
@@ -380,7 +380,7 @@ trait HasState
      *
      * @return array<string, mixed> | object
      */
-    public function getConstantState(): array | object
+    public function getConstantState(): array|object
     {
         return $this->evaluate($this->constantState)
             ?? $this->getRecord(withParentComponentRecord: false)
@@ -473,7 +473,7 @@ trait HasState
     /**
      * @return array<string, mixed> | Arrayable
      */
-    public function getRawState(): array | Arrayable
+    public function getRawState(): array|Arrayable
     {
         return data_get($this->getLivewire(), $this->getStatePath()) ?? [];
     }

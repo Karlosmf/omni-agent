@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Event;
 
 use PHPUnit\Runner\DeprecationCollector\Facade as DeprecationCollector;
@@ -20,12 +23,13 @@ use PHPUnit\Runner\DeprecationCollector\TestTriggeredDeprecationSubscriber;
 final class CollectingDispatcher implements Dispatcher
 {
     private EventCollection $events;
+
     private DirectDispatcher $isolatedDirectDispatcher;
 
     public function __construct(DirectDispatcher $directDispatcher)
     {
         $this->isolatedDirectDispatcher = $directDispatcher;
-        $this->events                   = new EventCollection;
+        $this->events = new EventCollection;
 
         $this->isolatedDirectDispatcher->registerSubscriber(new TestTriggeredDeprecationSubscriber(DeprecationCollector::collector()));
     }

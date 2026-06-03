@@ -51,8 +51,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 class UopzReloader extends AbstractListener implements OutputAware
 {
     private Parser $parser;
+
     private PrettyPrinter\Standard $printer;
+
     private ?OutputInterface $output = null;
+
     private ?Shell $shell = null;
 
     /** @var array<string, int> File path => last processed timestamp */
@@ -88,8 +91,8 @@ class UopzReloader extends AbstractListener implements OutputAware
      */
     public function __construct()
     {
-        $this->parser = (new ParserFactory())->createParser();
-        $this->printer = new PrettyPrinter\Standard();
+        $this->parser = (new ParserFactory)->createParser();
+        $this->printer = new PrettyPrinter\Standard;
     }
 
     /**
@@ -111,7 +114,7 @@ class UopzReloader extends AbstractListener implements OutputAware
         $this->forceReload = $force;
 
         // Re-process any skipped files now that force-reload is enabled
-        if ($force && !empty($this->skippedFiles) && $this->shell !== null) {
+        if ($force && ! empty($this->skippedFiles) && $this->shell !== null) {
             $this->reloadSkippedFiles();
         }
     }
@@ -157,14 +160,15 @@ class UopzReloader extends AbstractListener implements OutputAware
 
         foreach (\get_included_files() as $file) {
             // Skip files that no longer exist
-            if (!\file_exists($file)) {
+            if (! \file_exists($file)) {
                 continue;
             }
 
             $timestamp = \filemtime($file);
 
-            if (!isset($this->timestamps[$file])) {
+            if (! isset($this->timestamps[$file])) {
                 $this->timestamps[$file] = $timestamp;
+
                 continue;
             }
 
@@ -172,8 +176,9 @@ class UopzReloader extends AbstractListener implements OutputAware
                 continue;
             }
 
-            if (!$this->lintFile($file)) {
+            if (! $this->lintFile($file)) {
                 $this->writeError(\sprintf('Modified file "%s" has syntax errors and cannot be reloaded', ConfigPaths::prettyPath($file)));
+
                 continue;
             }
 
@@ -229,7 +234,7 @@ class UopzReloader extends AbstractListener implements OutputAware
                 return false;
             }
 
-            $traverser = new NodeTraverser();
+            $traverser = new NodeTraverser;
             $reloader = new UopzReloaderVisitor($this->printer, $this->forceReload);
             $traverser->addVisitor($reloader);
             $traverser->traverse($ast);

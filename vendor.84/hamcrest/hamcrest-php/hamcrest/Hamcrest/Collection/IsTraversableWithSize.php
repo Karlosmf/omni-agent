@@ -1,4 +1,5 @@
 <?php
+
 namespace Hamcrest\Collection;
 
 /*
@@ -13,7 +14,6 @@ use Hamcrest\Util;
  */
 class IsTraversableWithSize extends FeatureMatcher
 {
-
     public function __construct(Matcher $sizeMatcher)
     {
         parent::__construct(

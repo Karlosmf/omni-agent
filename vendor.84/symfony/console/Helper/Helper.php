@@ -96,7 +96,7 @@ abstract class Helper implements HelperInterface
         $ms = (int) ($secs * 1000);
         $secs = (int) floor($secs);
 
-        if (0 === $ms) {
+        if ($ms === 0) {
             return '< 1 ms';
         }
 
@@ -116,7 +116,7 @@ abstract class Helper implements HelperInterface
                 unset($times[$index - $precision]);
             }
 
-            if (0 === $milliSeconds) {
+            if ($milliSeconds === 0) {
                 continue;
             }
 

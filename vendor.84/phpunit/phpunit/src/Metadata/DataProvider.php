@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\Metadata;
 
 /**
@@ -25,19 +28,20 @@ final readonly class DataProvider extends Metadata
      * @var non-empty-string
      */
     private string $methodName;
+
     private bool $validateArgumentCount;
 
     /**
-     * @param int<0, 1>        $level
-     * @param class-string     $className
-     * @param non-empty-string $methodName
+     * @param  int<0, 1>  $level
+     * @param  class-string  $className
+     * @param  non-empty-string  $methodName
      */
     protected function __construct(int $level, string $className, string $methodName, bool $validateArgumentCount)
     {
         parent::__construct($level);
 
-        $this->className             = $className;
-        $this->methodName            = $methodName;
+        $this->className = $className;
+        $this->methodName = $methodName;
         $this->validateArgumentCount = $validateArgumentCount;
     }
 

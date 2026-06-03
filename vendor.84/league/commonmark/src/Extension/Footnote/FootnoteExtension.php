@@ -53,18 +53,18 @@ final class FootnoteExtension implements ConfigurableExtensionInterface
 
     public function register(EnvironmentBuilderInterface $environment): void
     {
-        $environment->addBlockStartParser(new FootnoteStartParser(), 51);
-        $environment->addInlineParser(new AnonymousFootnoteRefParser(), 35);
-        $environment->addInlineParser(new FootnoteRefParser(), 51);
+        $environment->addBlockStartParser(new FootnoteStartParser, 51);
+        $environment->addInlineParser(new AnonymousFootnoteRefParser, 35);
+        $environment->addInlineParser(new FootnoteRefParser, 51);
 
-        $environment->addRenderer(FootnoteContainer::class, new FootnoteContainerRenderer());
-        $environment->addRenderer(Footnote::class, new FootnoteRenderer());
-        $environment->addRenderer(FootnoteRef::class, new FootnoteRefRenderer());
-        $environment->addRenderer(FootnoteBackref::class, new FootnoteBackrefRenderer());
+        $environment->addRenderer(FootnoteContainer::class, new FootnoteContainerRenderer);
+        $environment->addRenderer(Footnote::class, new FootnoteRenderer);
+        $environment->addRenderer(FootnoteRef::class, new FootnoteRefRenderer);
+        $environment->addRenderer(FootnoteBackref::class, new FootnoteBackrefRenderer);
 
-        $environment->addEventListener(DocumentParsedEvent::class, [new AnonymousFootnotesListener(), 'onDocumentParsed'], 40);
-        $environment->addEventListener(DocumentParsedEvent::class, [new FixOrphanedFootnotesAndRefsListener(), 'onDocumentParsed'], 30);
-        $environment->addEventListener(DocumentParsedEvent::class, [new NumberFootnotesListener(), 'onDocumentParsed'], 20);
-        $environment->addEventListener(DocumentParsedEvent::class, [new GatherFootnotesListener(), 'onDocumentParsed'], 10);
+        $environment->addEventListener(DocumentParsedEvent::class, [new AnonymousFootnotesListener, 'onDocumentParsed'], 40);
+        $environment->addEventListener(DocumentParsedEvent::class, [new FixOrphanedFootnotesAndRefsListener, 'onDocumentParsed'], 30);
+        $environment->addEventListener(DocumentParsedEvent::class, [new NumberFootnotesListener, 'onDocumentParsed'], 20);
+        $environment->addEventListener(DocumentParsedEvent::class, [new GatherFootnotesListener, 'onDocumentParsed'], 10);
     }
 }

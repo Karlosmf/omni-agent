@@ -27,8 +27,8 @@ final class TemplateCovariant extends TagWithType implements Factory\StaticMetho
 {
     public function __construct(Type $type, ?Description $description = null)
     {
-        $this->name        = 'template-covariant';
-        $this->type        = $type;
+        $this->name = 'template-covariant';
+        $this->type = $type;
         $this->description = $description;
     }
 
@@ -43,9 +43,9 @@ final class TemplateCovariant extends TagWithType implements Factory\StaticMetho
 
         [$type, $description] = self::extractTypeFromBody($body);
 
-        $type        = $typeResolver->resolve($type, $context);
+        $type = $typeResolver->resolve($type, $context);
         $description = $descriptionFactory->create($description, $context);
 
-        return new static($type, $description);
+        return new self($type, $description);
     }
 }

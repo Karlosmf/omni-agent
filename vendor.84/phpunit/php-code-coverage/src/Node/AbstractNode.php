@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -7,13 +9,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Node;
 
 use const DIRECTORY_SEPARATOR;
-use function array_merge;
-use function str_ends_with;
-use function str_replace;
-use function substr;
+
 use Countable;
 use SebastianBergmann\CodeCoverage\Data\ProcessedClassType;
 use SebastianBergmann\CodeCoverage\Data\ProcessedFunctionType;
@@ -21,19 +21,27 @@ use SebastianBergmann\CodeCoverage\Data\ProcessedTraitType;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\LinesOfCode;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
 
+use function array_merge;
+use function str_ends_with;
+use function str_replace;
+use function substr;
+
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
  */
 abstract class AbstractNode implements Countable
 {
     private readonly string $name;
+
     private string $pathAsString;
 
     /**
      * @var non-empty-list<self>
      */
     private array $pathAsArray;
+
     private readonly ?AbstractNode $parent;
+
     private string $id;
 
     public function __construct(string $name, ?self $parent = null)
@@ -42,7 +50,7 @@ abstract class AbstractNode implements Countable
             $name = substr($name, 0, -1);
         }
 
-        $this->name   = $name;
+        $this->name = $name;
         $this->parent = $parent;
 
         $this->processId();
@@ -253,21 +261,21 @@ abstract class AbstractNode implements Countable
         if ($parentId === 'index') {
             $this->id = str_replace(':', '_', $this->name);
         } else {
-            $this->id = $parentId . '/' . $this->name;
+            $this->id = $parentId.'/'.$this->name;
         }
     }
 
     private function processPath(): void
     {
         if ($this->parent === null) {
-            $this->pathAsArray  = [$this];
+            $this->pathAsArray = [$this];
             $this->pathAsString = $this->name;
 
             return;
         }
 
-        $this->pathAsArray  = $this->parent->pathAsArray();
-        $this->pathAsString = $this->parent->pathAsString() . DIRECTORY_SEPARATOR . $this->name;
+        $this->pathAsArray = $this->parent->pathAsArray();
+        $this->pathAsString = $this->parent->pathAsString().DIRECTORY_SEPARATOR.$this->name;
 
         $this->pathAsArray[] = $this;
     }

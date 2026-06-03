@@ -19,8 +19,11 @@ use Psy\Exception\BreakException;
 class Transient implements Readline
 {
     private array $history;
+
     private int $historySize;
+
     private bool $eraseDups;
+
     /** @var resource */
     private $stdin;
 
@@ -107,9 +110,10 @@ class Transient implements Readline
     /**
      * {@inheritdoc}
      *
-     * @throws BreakException if user hits Ctrl+D
      *
      * @return false|string
+     *
+     * @throws BreakException if user hits Ctrl+D
      */
     public function readline(?string $prompt = null)
     {
@@ -137,13 +141,14 @@ class Transient implements Readline
     /**
      * Get a STDIN file handle.
      *
-     * @throws BreakException if user hits Ctrl+D
      *
      * @return resource
+     *
+     * @throws BreakException if user hits Ctrl+D
      */
     private function getStdin()
     {
-        if (!isset($this->stdin)) {
+        if (! isset($this->stdin)) {
             $this->stdin = \fopen('php://stdin', 'r');
         }
 

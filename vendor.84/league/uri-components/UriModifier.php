@@ -20,7 +20,9 @@ use Stringable;
 
 /**
  * @deprecated since version 7.0.0
+ *
  * @codeCoverageIgnore
+ *
  * @see Modifier
  */
 class UriModifier
