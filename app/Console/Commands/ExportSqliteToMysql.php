@@ -6,6 +6,8 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
+use function Laravel\Prompts\confirm;
+use function Laravel\Prompts\text;
 
 class ExportSqliteToMysql extends Command
 {
@@ -14,16 +16,18 @@ class ExportSqliteToMysql extends Command
      *
      * @var string
      */
-    protected $signature = 'app:export-sqlite-to-mysql 
-                            {output=migration_to_mysql.sql : El nombre del archivo SQL de salida}
-                            {--create : Incluir sentencias CREATE TABLE IF NOT EXISTS}';
+    protected $signature = 'db:export-sql 
+                            {output? : El nombre del archivo SQL de salida}
+                            {--schema : Exportar estructura de tablas (CREATE TABLE)}
+                            {--data : Exportar datos de tablas (INSERT INTO)}
+                            {--truncate : Truncar las tablas en el destino antes de insertar los datos}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Genera un archivo SQL para migrar de SQLite a MySQL, asegurando compatibilidad total de tipos para relaciones';
+    protected $description = 'Genera un archivo SQL para migrar de SQLite a MySQL con opciones de estructura, datos y truncado';
 
     /**
      * Execute the console command.
@@ -31,12 +35,39 @@ class ExportSqliteToMysql extends Command
     public function handle(): int
     {
         $outputFile = $this->argument('output');
-        $includeCreate = $this->option('create');
+        
+        if (!$outputFile) {
+            $outputFile = text(
+                label: '¿Cuál es el nombre del archivo SQL de salida?',
+                default: 'migration_to_mysql.sql'
+            );
+        }
 
-        $this->info("Exportando datos de SQLite a {$outputFile}...");
+        $exportSchema = $this->option('schema');
+        $exportData = $this->option('data');
+        $truncate = $this->option('truncate');
+
+        // Modo interactivo si no se pasó ni --schema ni --data
+        if (!$exportSchema && !$exportData) {
+            $this->info("Modo Interactivo de Exportación");
+            $exportSchema = confirm('¿Deseas exportar la ESTRUCTURA de las tablas (CREATE TABLE)?', true);
+            $exportData = confirm('¿Deseas exportar los DATOS de las tablas (INSERT INTO)?', true);
+        }
+
+        if (!$exportSchema && !$exportData) {
+            $this->warn('No seleccionaste nada para exportar. Operación cancelada.');
+            return self::SUCCESS;
+        }
+
+        // Si exporta datos y no se pasó el flag explícito, preguntamos por el truncate
+        if ($exportData && !$truncate && !in_array('--truncate', $_SERVER['argv'] ?? [])) {
+            $truncate = confirm('¿Deseas incluir sentencias TRUNCATE para vaciar las tablas antes de insertar?', false);
+        }
+
+        $this->info("\nResumen: Exportando " . ($exportSchema ? 'estructura ' : '') . ($exportSchema && $exportData ? 'y ' : '') . ($exportData ? 'datos ' : '') . "de SQLite a {$outputFile}...");
 
         $tables = Schema::connection('sqlite')->getTables();
-        $sql = "-- Migración de datos de SQLite a MySQL\n";
+        $sql = "-- Migración de SQLite a MySQL\n";
         $sql .= "SET FOREIGN_KEY_CHECKS=0;\n\n";
 
         foreach ($tables as $tableInfo) {
@@ -48,22 +79,38 @@ class ExportSqliteToMysql extends Command
 
             $this->comment("Procesando tabla: {$tableName}");
 
-            if ($includeCreate) {
+            if ($exportSchema) {
                 $sql .= "-- Estructura para la tabla: {$tableName}\n";
                 $sql .= $this->generateCreateTableSql($tableName);
                 $sql .= "\n\n";
             }
 
-            $sql .= "-- Datos para la tabla: {$tableName}\n";
+            if ($exportData) {
+                $sql .= "-- Datos para la tabla: {$tableName}\n";
 
-            $columns = Schema::connection('sqlite')->getColumnListing($tableName);
-            $quotedColumns = array_map(fn ($col) => "`$col`", $columns);
-            $columnsStr = implode(', ', $quotedColumns);
+                if ($truncate) {
+                    $sql .= "TRUNCATE TABLE `{$tableName}`;\n";
+                }
 
-            $orderColumn = in_array('id', $columns) ? 'id' : ($columns[0] ?? null);
+                $columns = Schema::connection('sqlite')->getColumnListing($tableName);
+                $quotedColumns = array_map(fn ($col) => "`$col`", $columns);
+                $columnsStr = implode(', ', $quotedColumns);
 
-            if ($orderColumn) {
-                DB::connection('sqlite')->table($tableName)->orderBy($orderColumn)->chunk(100, function ($rows) use (&$sql, $tableName, $columnsStr) {
+                $orderColumn = in_array('id', $columns) ? 'id' : ($columns[0] ?? null);
+
+                if ($orderColumn) {
+                    DB::connection('sqlite')->table($tableName)->orderBy($orderColumn)->chunk(100, function ($rows) use (&$sql, $tableName, $columnsStr) {
+                        foreach ($rows as $row) {
+                            $values = [];
+                            foreach ($row as $value) {
+                                $values[] = $this->formatValue($value);
+                            }
+                            $valuesStr = implode(', ', $values);
+                            $sql .= "INSERT INTO `{$tableName}` ({$columnsStr}) VALUES ({$valuesStr});\n";
+                        }
+                    });
+                } else {
+                    $rows = DB::connection('sqlite')->table($tableName)->get();
                     foreach ($rows as $row) {
                         $values = [];
                         foreach ($row as $value) {
@@ -72,20 +119,10 @@ class ExportSqliteToMysql extends Command
                         $valuesStr = implode(', ', $values);
                         $sql .= "INSERT INTO `{$tableName}` ({$columnsStr}) VALUES ({$valuesStr});\n";
                     }
-                });
-            } else {
-                $rows = DB::connection('sqlite')->table($tableName)->get();
-                foreach ($rows as $row) {
-                    $values = [];
-                    foreach ($row as $value) {
-                        $values[] = $this->formatValue($value);
-                    }
-                    $valuesStr = implode(', ', $values);
-                    $sql .= "INSERT INTO `{$tableName}` ({$columnsStr}) VALUES ({$valuesStr});\n";
                 }
-            }
 
-            $sql .= "\n";
+                $sql .= "\n";
+            }
         }
 
         $sql .= "SET FOREIGN_KEY_CHECKS=1;\n";
