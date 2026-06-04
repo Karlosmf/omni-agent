@@ -60,4 +60,18 @@ class AgencySetting extends Model
             'social_links' => 'array',
         ];
     }
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::saved(function () {
+            \Illuminate\Support\Facades\Cache::forget('agency_settings');
+        });
+
+        static::deleted(function () {
+            \Illuminate\Support\Facades\Cache::forget('agency_settings');
+        });
+    }
 }
