@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class AgencySetting extends Model
 {
@@ -47,6 +48,8 @@ class AgencySetting extends Model
         'header_scripts',
         'footer_scripts',
         'social_links',
+        'is_maintenance_mode',
+        'maintenance_bypass_key',
     ];
 
     /**
@@ -58,6 +61,7 @@ class AgencySetting extends Model
     {
         return [
             'social_links' => 'array',
+            'is_maintenance_mode' => 'boolean',
         ];
     }
 
@@ -67,11 +71,11 @@ class AgencySetting extends Model
     protected static function booted(): void
     {
         static::saved(function () {
-            \Illuminate\Support\Facades\Cache::forget('agency_settings');
+            Cache::forget('agency_settings');
         });
 
         static::deleted(function () {
-            \Illuminate\Support\Facades\Cache::forget('agency_settings');
+            Cache::forget('agency_settings');
         });
     }
 }

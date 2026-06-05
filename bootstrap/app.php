@@ -13,6 +13,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->preventRequestsDuringMaintenance(except: [
+            'admin*',
+            'livewire*',
+        ]);
         $middleware->alias([
             'role' => CheckRole::class,
         ]);

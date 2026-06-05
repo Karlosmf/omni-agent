@@ -9,6 +9,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
@@ -17,8 +18,10 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 
 class ManageAgencySettings extends Page implements HasForms
@@ -49,7 +52,9 @@ class ManageAgencySettings extends Page implements HasForms
         $settings = AgencySetting::first();
 
         if ($settings) {
-            $this->form->fill($settings->toArray());
+            $data = $settings->toArray();
+            $data['is_maintenance_mode'] = app()->isDownForMaintenance();
+            $this->form->fill($data);
         }
     }
 
@@ -270,6 +275,23 @@ class ManageAgencySettings extends Page implements HasForms
                                             ->rows(5),
                                     ]),
                             ]),
+                        Tab::make('Mantenimiento')
+                            ->icon('heroicon-o-wrench-screwdriver')
+                            ->schema([
+                                Section::make('Modo Mantenimiento')
+                                    ->description('Activa el modo mantenimiento para ocultar el sitio al público general.')
+                                    ->schema([
+                                        Toggle::make('is_maintenance_mode')
+                                            ->label('Activar Modo Mantenimiento')
+                                            ->helperText('Si se activa, los visitantes verán una pantalla de mantenimiento.')
+                                            ->live(),
+                                        TextInput::make('maintenance_bypass_key')
+                                            ->label('Clave de Acceso (Bypass)')
+                                            ->placeholder('Ej: secreto123')
+                                            ->helperText('Permite el acceso a la web si se accede con ?bypass=CLAVE (Ej: https://tudominio.com/?bypass=secreto123). Deja en blanco si no deseas bypass por URL.')
+                                            ->visible(fn (Get $get): bool => $get('is_maintenance_mode') === true),
+                                    ]),
+                            ]),
                     ]),
             ])
             ->statePath('data');
@@ -293,6 +315,16 @@ class ManageAgencySettings extends Page implements HasForms
         $settings->save();
 
         Cache::forget('agency_settings');
+
+        if ($settings->is_maintenance_mode) {
+            $options = [];
+            if (! empty($settings->maintenance_bypass_key)) {
+                $options['--secret'] = $settings->maintenance_bypass_key;
+            }
+            Artisan::call('down', $options);
+        } else {
+            Artisan::call('up');
+        }
 
         Notification::make()
             ->title('Configuración guardada correctamente')
