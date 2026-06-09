@@ -1,0 +1,26 @@
+{
+    "name": "promo",
+    "description": "Promociones importadas de producción",
+    "slides": [
+        {
+            "title": "Promoción Caribe 20%",
+            "subtitle": "Oferta Especial",
+            "description": null,
+            "image_path": "sliders/promo-1.jpg",
+            "cta_button_text": null,
+            "cta_button_url": null,
+            "sec_button_text": null,
+            "sec_button_url": null
+        },
+        {
+            "title": "Europa 2x1",
+            "subtitle": "Imperdible",
+            "description": null,
+            "image_path": "sliders/promo-2.jpg",
+            "cta_button_text": null,
+            "cta_button_url": null,
+            "sec_button_text": null,
+            "sec_button_url": null
+        }
+    ]
+}

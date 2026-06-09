@@ -1,0 +1,26 @@
+{
+  "name": "home-hero",
+  "description": "Slider principal para la página de bienvenida (Landing Page)",
+  "slides": [
+    {
+      "title": "Viajes Increíbles con Omni-Agent",
+      "subtitle": "Descubre el mundo",
+      "description": "Explora los mejores destinos, paquetes a tu medida y asistencia personalizada con Inteligencia Artificial.",
+      "image_path": "sliders/hero.png",
+      "cta_button_text": "Ver Paquetes",
+      "cta_button_url": "#packages",
+      "sec_button_text": "Saber Más",
+      "sec_button_url": "#about"
+    },
+    {
+      "title": "Tus Destinos Soñados al Mejor Precio",
+      "subtitle": "Ofertas Exclusivas",
+      "description": "Encuentra paquetes turísticos diseñados exclusivamente para ti y viaja con total tranquilidad.",
+      "image_path": "sliders/hero.png",
+      "cta_button_text": "Contactar Asistente",
+      "cta_button_url": "#chat",
+      "sec_button_text": "Ver Destinos",
+      "sec_button_url": "#packages"
+    }
+  ]
+}

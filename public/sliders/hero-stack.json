@@ -1,0 +1,56 @@
+{
+    "name": "hero-stack",
+    "description": "Slider principal importado de producción",
+    "slides": [
+        {
+            "title": "Aventura en los Alpes",
+            "subtitle": "⛰️ Explora la naturaleza",
+            "description": "Disfruta de las montañas suizas y su aire puro.",
+            "image_path": "sliders/hero-stack-1.jpg",
+            "cta_button_text": "Ver más",
+            "cta_button_url": "#",
+            "sec_button_text": null,
+            "sec_button_url": null
+        },
+        {
+            "title": "Descubre las Maldivas",
+            "subtitle": "✈️ Tu compañera de viajes",
+            "description": "Un paraíso terrenal te espera con playas de arena blanca.",
+            "image_path": "sliders/hero-stack-2.jpg",
+            "cta_button_text": "Planear viaje",
+            "cta_button_url": "#",
+            "sec_button_text": null,
+            "sec_button_url": null
+        },
+        {
+            "title": "Escapada a París",
+            "subtitle": "🗼 La ciudad del amor",
+            "description": "Vive momentos inolvidables en la capital francesa.",
+            "image_path": "sliders/hero-stack-3.jpg",
+            "cta_button_text": "Reservar ahora",
+            "cta_button_url": "#",
+            "sec_button_text": null,
+            "sec_button_url": null
+        },
+        {
+            "title": "Relajación en Bali",
+            "subtitle": "🌺 Destino exótico",
+            "description": "Conecta con la naturaleza y la cultura balinesa.",
+            "image_path": "sliders/hero-stack-4.jpg",
+            "cta_button_text": "Descubrir",
+            "cta_button_url": "#",
+            "sec_button_text": null,
+            "sec_button_url": null
+        },
+        {
+            "title": "Atardecer en Santorini",
+            "subtitle": "🌅 Vistas increíbles",
+            "description": "Disfruta de la magia de las islas griegas.",
+            "image_path": "sliders/hero-stack-5.jpg",
+            "cta_button_text": "Explorar",
+            "cta_button_url": "#",
+            "sec_button_text": null,
+            "sec_button_url": null
+        }
+    ]
+}
