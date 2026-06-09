@@ -6,6 +6,7 @@ use App\Models\JsonSlider;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -37,49 +38,48 @@ class ManageSliders extends Page implements HasForms
         return auth()->user()?->isAdmin() ?? false;
     }
 
-    /**
-     * Get all sliders from the directory.
-     */
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('create')
+                ->label('Crear Slider')
+                ->icon('heroicon-m-plus')
+                ->form($this->getSliderFormSchema())
+                ->action(function (array $data) {
+                    $name = kebab_case($data['name']);
+
+                    if (JsonSlider::find($name)) {
+                        Notification::make()
+                            ->title('Error al crear')
+                            ->body("Ya existe un slider con el nombre: {$name}.json")
+                            ->danger()
+                            ->send();
+
+                        return;
+                    }
+
+                    $slider = new JsonSlider(
+                        name: $name,
+                        description: $data['description'] ?? null,
+                        transition: $data['transition'] ?? 'fade',
+                        width: $data['width'] ?? '100%',
+                        height: $data['height'] ?? '500px',
+                        slides: $data['slides'] ?? []
+                    );
+
+                    $slider->save();
+
+                    Notification::make()
+                        ->title('Slider creado correctamente')
+                        ->success()
+                        ->send();
+                }),
+        ];
+    }
+
     public function getSliders(): Collection
     {
         return JsonSlider::all();
-    }
-
-    /**
-     * Define the create action.
-     */
-    public function createAction(): Action
-    {
-        return Action::make('create')
-            ->label('Crear Slider')
-            ->icon('heroicon-m-plus')
-            ->form($this->getSliderFormSchema())
-            ->action(function (array $data) {
-                $name = kebab_case($data['name']);
-
-                if (JsonSlider::find($name)) {
-                    Notification::make()
-                        ->title('Error al crear')
-                        ->body("Ya existe un slider con el nombre: {$name}.json")
-                        ->danger()
-                        ->send();
-
-                    return;
-                }
-
-                $slider = new JsonSlider(
-                    name: $name,
-                    description: $data['description'] ?? null,
-                    slides: $data['slides'] ?? []
-                );
-
-                $slider->save();
-
-                Notification::make()
-                    ->title('Slider creado correctamente')
-                    ->success()
-                    ->send();
-            });
     }
 
     /**
@@ -99,6 +99,9 @@ class ManageSliders extends Page implements HasForms
                 return [
                     'name' => $slider->name,
                     'description' => $slider->description,
+                    'transition' => $slider->transition,
+                    'width' => $slider->width,
+                    'height' => $slider->height,
                     'slides' => $slider->slides,
                 ];
             })
@@ -119,6 +122,9 @@ class ManageSliders extends Page implements HasForms
                 $slider = new JsonSlider(
                     name: $newName,
                     description: $data['description'] ?? null,
+                    transition: $data['transition'] ?? 'fade',
+                    width: $data['width'] ?? '100%',
+                    height: $data['height'] ?? '500px',
                     slides: $data['slides'] ?? []
                 );
 
@@ -169,6 +175,31 @@ class ManageSliders extends Page implements HasForms
             TextInput::make('description')
                 ->label('Descripción')
                 ->placeholder('Para identificar dónde se utiliza este slider'),
+
+            Select::make('transition')
+                ->label('Tipo de Transición')
+                ->options([
+                    'fade' => 'Desvanecimiento (Fade)',
+                    'slide-left' => 'Desplazamiento Izquierda (Slide Left)',
+                    'slide-right' => 'Desplazamiento Derecha (Slide Right)',
+                    'zoom' => 'Efecto Zoom (Scale/Zoom)',
+                ])
+                ->default('fade')
+                ->required(),
+
+            TextInput::make('width')
+                ->label('Ancho (Width)')
+                ->placeholder('Ej: 100% o 1200px')
+                ->default('100%')
+                ->required()
+                ->helperText('Puedes usar porcentajes (ej. 100%) o píxeles (ej. 1200px)'),
+
+            TextInput::make('height')
+                ->label('Alto (Height)')
+                ->placeholder('Ej: 500px o 70vh')
+                ->default('500px')
+                ->required()
+                ->helperText('Puedes usar píxeles (ej. 500px), alto de pantalla (ej. 70vh) o relativo'),
 
             Repeater::make('slides')
                 ->label('Diapositivas')

@@ -1,17 +1,5 @@
 <x-filament-panels::page>
     <div class="space-y-6">
-        <!-- Header Section with Create Button -->
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                    Administra tus sliders JSON almacenados en <code class="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded font-mono text-xs">public/sliders/</code>.
-                </p>
-            </div>
-            <div>
-                {{ $this->createAction }}
-            </div>
-        </div>
-
         <!-- Sliders Grid/List -->
         @if($this->getSliders()->isEmpty())
             <x-filament::section>
@@ -57,7 +45,22 @@
                                     <span style="font-size: 0.75rem; font-weight: 500; opacity: 0.7;">Snippet Livewire</span>
                                     <button 
                                         type="button"
-                                        x-on:click="window.navigator.clipboard.writeText('<livewire:slider name=\'{{ $slider->name }}\' />'); $tooltip('Copiado', { timeout: 1500 })"
+                                        x-on:click="
+                                            const codeText = '<livewire:slider name=\'{{ $slider->name }}\' />';
+                                            if (navigator.clipboard && window.isSecureContext) {
+                                                navigator.clipboard.writeText(codeText);
+                                            } else {
+                                                const textArea = document.createElement('textarea');
+                                                textArea.value = codeText;
+                                                textArea.style.position = 'absolute';
+                                                textArea.style.opacity = '0';
+                                                document.body.appendChild(textArea);
+                                                textArea.select();
+                                                document.execCommand('copy');
+                                                document.body.removeChild(textArea);
+                                            }
+                                            $tooltip('Copiado', { timeout: 1500 });
+                                        "
                                         title="Copiar código"
                                         style="opacity: 0.5; transition: opacity 0.2s;"
                                         onmouseover="this.style.opacity='1'"

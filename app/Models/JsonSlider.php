@@ -11,12 +11,21 @@ class JsonSlider
 
     public ?string $description;
 
+    public ?string $transition;
+
+    public ?string $width;
+
+    public ?string $height;
+
     public array $slides;
 
-    public function __construct(string $name, ?string $description = null, array $slides = [])
+    public function __construct(string $name, ?string $description = null, ?string $transition = 'fade', ?string $width = '100%', ?string $height = '500px', array $slides = [])
     {
         $this->name = $name;
         $this->description = $description;
+        $this->transition = $transition;
+        $this->width = $width;
+        $this->height = $height;
         $this->slides = $slides;
     }
 
@@ -77,6 +86,9 @@ class JsonSlider
             return new self(
                 name: $name,
                 description: $data['description'] ?? null,
+                transition: $data['transition'] ?? 'fade',
+                width: $data['width'] ?? '100%',
+                height: $data['height'] ?? '500px',
                 slides: $data['slides'] ?? []
             );
         } catch (\Exception $e) {
@@ -103,6 +115,9 @@ class JsonSlider
         $data = [
             'name' => $this->name,
             'description' => $this->description,
+            'transition' => $this->transition,
+            'width' => $this->width,
+            'height' => $this->height,
             'slides' => $this->slides,
         ];
 

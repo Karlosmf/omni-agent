@@ -8,7 +8,11 @@ uses(RefreshDatabase::class);
 it('returns default logo when no setting exists', function () {
     AgencySetting::truncate();
 
-    expect(get_agency_logotipo_url())->toContain('images/branding/logo-full.png');
+    if (file_exists(public_path('images/branding/logo-full.png'))) {
+        expect(get_agency_logotipo_url())->toContain('images/branding/logo-full.png');
+    } else {
+        expect(get_agency_logotipo_url())->toBe('');
+    }
 });
 
 it('returns user uploaded logo when setting exists', function () {
@@ -30,5 +34,9 @@ it('returns absolute path for PDF generation', function () {
 it('returns default isotipo when no setting exists', function () {
     AgencySetting::truncate();
 
-    expect(get_agency_isotipo_url())->toContain('images/branding/logo-icon.png');
+    if (file_exists(public_path('images/branding/logo-icon.png'))) {
+        expect(get_agency_isotipo_url())->toContain('images/branding/logo-icon.png');
+    } else {
+        expect(get_agency_isotipo_url())->toBe('');
+    }
 });

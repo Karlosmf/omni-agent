@@ -21,7 +21,7 @@ class AdminUserSeeder extends Seeder
         );
 
         User::updateOrCreate(
-            ['email' => 'belenzorzon@luopanviajes.tur.ar'],
+            ['email' => 'belenzorzon@omniagent.com'],
             [
                 'name' => 'Belen',
                 'password' => Hash::make('Agencia843'),
@@ -30,7 +30,7 @@ class AdminUserSeeder extends Seeder
         );
 
         User::updateOrCreate(
-            ['email' => 'nelaflama@luopanviajes.tur.ar'],
+            ['email' => 'nelaflama@omniagent.com'],
             [
                 'name' => 'Nela',
                 'password' => Hash::make('Agencia843'),

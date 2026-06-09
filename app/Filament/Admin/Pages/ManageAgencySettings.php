@@ -23,6 +23,10 @@ use Filament\Schemas\Schema;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Encoders\WebpEncoder;
+use Intervention\Image\ImageManager;
 
 class ManageAgencySettings extends Page implements HasForms
 {
@@ -46,6 +50,15 @@ class ManageAgencySettings extends Page implements HasForms
     protected string $view = 'filament.admin.pages.manage-agency-settings';
 
     public ?array $data = [];
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('save')
+                ->label('Guardar Cambios')
+                ->action('save'),
+        ];
+    }
 
     public function mount(): void
     {
@@ -94,9 +107,14 @@ class ManageAgencySettings extends Page implements HasForms
                                                     ->image()
                                                     ->disk('branding')
                                                     ->directory('')
-                                                    ->getUploadedFileNameForStorageUsing(
-                                                        fn (UploadedFile $file): string => 'logotipo.'.$file->getClientOriginalExtension()
-                                                    )
+                                                    ->saveUploadedFileUsing(function (UploadedFile $file): string {
+                                                        $manager = new ImageManager(new Driver);
+                                                        $image = $manager->decode($file->getRealPath());
+                                                        $encoded = $image->encode(new WebpEncoder(90));
+                                                        Storage::disk('branding')->put('logotipo.webp', (string) $encoded);
+
+                                                        return 'logotipo.webp';
+                                                    })
                                                     ->maxSize(2048)
                                                     ->imageEditor()
                                                     ->imagePreviewHeight('80')
@@ -106,9 +124,14 @@ class ManageAgencySettings extends Page implements HasForms
                                                     ->image()
                                                     ->disk('branding')
                                                     ->directory('')
-                                                    ->getUploadedFileNameForStorageUsing(
-                                                        fn (UploadedFile $file): string => 'isotipo.'.$file->getClientOriginalExtension()
-                                                    )
+                                                    ->saveUploadedFileUsing(function (UploadedFile $file): string {
+                                                        $manager = new ImageManager(new Driver);
+                                                        $image = $manager->decode($file->getRealPath());
+                                                        $encoded = $image->encode(new WebpEncoder(90));
+                                                        Storage::disk('branding')->put('isotipo.webp', (string) $encoded);
+
+                                                        return 'isotipo.webp';
+                                                    })
                                                     ->maxSize(1024)
                                                     ->imageEditor()
                                                     ->imagePreviewHeight('80')
@@ -295,15 +318,6 @@ class ManageAgencySettings extends Page implements HasForms
                     ]),
             ])
             ->statePath('data');
-    }
-
-    protected function getFormActions(): array
-    {
-        return [
-            Action::make('save')
-                ->label('Guardar Cambios')
-                ->submit('save'),
-        ];
     }
 
     public function save(): void

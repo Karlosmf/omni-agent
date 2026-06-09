@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Auth\Login;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -26,11 +27,20 @@ class CustomerPanelProvider extends PanelProvider
         return $panel
             ->id('customer')
             ->path('portal')
-            ->login()
+            ->login(Login::class)
             ->colors([
                 'primary' => Color::Sky,
             ])
-            ->brandLogo(fn () => get_agency_logotipo_url())
+            ->brandName(fn () => get_agency_settings()?->company_name ?? 'Omni-Agent')
+            ->brandLogo(function () {
+                $url = get_agency_logotipo_url();
+                // Check if the logo image physically exists on the disk or if it's the fallback template logo
+                if (str_contains($url, 'logo-full.png') && ! file_exists(public_path('images/branding/logo-full.png'))) {
+                    return null;
+                }
+
+                return $url;
+            })
             ->favicon(fn () => get_agency_isotipo_url())
             ->brandLogoHeight('3rem')
             ->discoverResources(in: app_path('Filament/Customer/Resources'), for: 'App\Filament\Customer\Resources')

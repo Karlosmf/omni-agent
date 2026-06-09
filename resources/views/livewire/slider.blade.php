@@ -3,17 +3,21 @@
 use function Livewire\Volt\{state, mount};
 use App\Models\JsonSlider;
 
-state(['name', 'slides' => []]);
+state(['name', 'slides' => [], 'transition' => 'fade', 'width' => '100%', 'height' => '500px']);
 
 mount(function (string $name) {
     $this->name = $name;
     $slider = JsonSlider::find($name);
     $this->slides = $slider ? $slider->slides : [];
+    $this->transition = $slider->transition ?? 'fade';
+    $this->width = $slider->width ?? '100%';
+    $this->height = $slider->height ?? '500px';
 });
 
 ?>
 
-<div class="relative w-full overflow-hidden rounded-2xl bg-gray-900 shadow-xl"
+<div class="relative overflow-hidden rounded-2xl bg-gray-900 shadow-xl mx-auto"
+     style="width: {{ $width }}; max-width: 100%;"
      x-data="{
          activeSlide: 0,
          slidesCount: {{ count($slides) }},
@@ -44,15 +48,38 @@ mount(function (string $name) {
         </div>
     @else
         <!-- Slides Wrapper -->
-        <div class="relative min-h-[400px] md:min-h-[500px] lg:min-h-[600px] flex items-center">
+        <div class="relative flex items-center w-full" style="height: {{ $height }}; min-height: 300px;">
             @foreach($slides as $index => $slide)
+                @php
+                    // Define transition classes based on config
+                    $enterClass = "transition ease-out duration-700";
+                    $leaveClass = "transition ease-in duration-500";
+                    $enterStart = "opacity-0";
+                    $enterEnd = "opacity-100";
+                    $leaveStart = "opacity-100";
+                    $leaveEnd = "opacity-0";
+
+                    if ($transition === 'slide-left') {
+                        $enterStart = "opacity-0 translate-x-full";
+                        $leaveEnd = "opacity-0 -translate-x-full";
+                    } elseif ($transition === 'slide-right') {
+                        $enterStart = "opacity-0 -translate-x-full";
+                        $leaveEnd = "opacity-0 translate-x-full";
+                    } elseif ($transition === 'zoom') {
+                        $enterStart = "opacity-0 scale-110";
+                        $leaveEnd = "opacity-0 scale-95";
+                    } else { // fade
+                        $enterStart = "opacity-0 scale-102";
+                        $leaveEnd = "opacity-0 scale-98";
+                    }
+                @endphp
                 <div x-show="activeSlide === {{ $index }}"
-                     x-transition:enter="transition ease-out duration-700"
-                     x-transition:enter-start="opacity-0 scale-105"
-                     x-transition:enter-end="opacity-100 scale-100"
-                     x-transition:leave="transition ease-in duration-500"
-                     x-transition:leave-start="opacity-100 scale-100"
-                     x-transition:leave-end="opacity-0 scale-95"
+                     x-transition:enter="{{ $enterClass }}"
+                     x-transition:enter-start="{{ $enterStart }}"
+                     x-transition:enter-end="{{ $enterEnd }}"
+                     x-transition:leave="{{ $leaveClass }}"
+                     x-transition:leave-start="{{ $leaveStart }}"
+                     x-transition:leave-end="{{ $leaveEnd }}"
                      class="absolute inset-0 w-full h-full"
                 >
                     <!-- Background Image with overlay -->

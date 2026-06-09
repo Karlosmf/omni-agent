@@ -50,7 +50,7 @@ return [
         'branding' => [
             'driver' => 'local',
             'root' => public_path('images/branding'),
-            'url' => rtrim(env('APP_URL'), '/').'/images/branding',
+            'url' => '/images/branding',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,

@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Auth\Login;
 use App\Models\AgencySetting;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -43,7 +44,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->login(Login::class)
             ->default()
             ->colors([
                 'primary' => $agencySettings?->be_primary_color ?? Color::Amber,
@@ -53,7 +54,16 @@ class AdminPanelProvider extends PanelProvider
                 'success' => $agencySettings?->be_success_color ?? Color::Green,
                 'warning' => $agencySettings?->be_warning_color ?? Color::Amber,
             ])
-            ->brandLogo(fn () => get_agency_logotipo_url())
+            ->brandName(fn () => get_agency_settings()?->company_name ?? 'Omni-Agent')
+            ->brandLogo(function () {
+                $url = get_agency_logotipo_url();
+                // Check if the logo image physically exists on the disk or if it's the fallback template logo
+                if (str_contains($url, 'logo-full.png') && ! file_exists(public_path('images/branding/logo-full.png'))) {
+                    return null;
+                }
+
+                return $url;
+            })
             ->favicon(fn () => get_agency_isotipo_url())
             ->brandLogoHeight('3rem')
             ->homeUrl('/')

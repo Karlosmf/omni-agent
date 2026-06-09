@@ -75,7 +75,11 @@ if (! function_exists('get_agency_logotipo_url')) {
             return asset('images/branding/'.$settings->logotipo_path);
         }
 
-        return asset('images/branding/logo-full.png');
+        if (file_exists(public_path('images/branding/logo-full.png'))) {
+            return asset('images/branding/logo-full.png');
+        }
+
+        return '';
     }
 }
 
@@ -88,7 +92,11 @@ if (! function_exists('get_agency_logotipo_path')) {
             return public_path('images/branding/'.$settings->logotipo_path);
         }
 
-        return public_path('images/branding/logo-full.png');
+        if (file_exists(public_path('images/branding/logo-full.png'))) {
+            return public_path('images/branding/logo-full.png');
+        }
+
+        return '';
     }
 }
 
@@ -101,7 +109,11 @@ if (! function_exists('get_agency_isotipo_url')) {
             return asset('images/branding/'.$settings->isotipo_path);
         }
 
-        return asset('images/branding/logo-icon.png');
+        if (file_exists(public_path('images/branding/logo-icon.png'))) {
+            return asset('images/branding/logo-icon.png');
+        }
+
+        return '';
     }
 }
 
