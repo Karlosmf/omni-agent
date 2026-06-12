@@ -1,20 +1,24 @@
-@props(['sliders' => collect()])
+@props(['sliders' => collect(), 'images' => []])
 
 @php
-    $images = $sliders->isNotEmpty()
-        ? $sliders->map(fn($s) => str_starts_with($s->image_path, 'http') ? $s->image_path : asset('storage/' . $s->image_path))->toArray()
-        : [
+    if (!empty($images)) {
+        $imageList = $images;
+    } elseif ($sliders->isNotEmpty()) {
+        $imageList = $sliders->map(fn($s) => str_starts_with($s->image_path, 'http') ? $s->image_path : asset('storage/' . $s->image_path))->toArray();
+    } else {
+        $imageList = [
             'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=800&auto=format&fit=crop', // Maldives
             'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=800&auto=format&fit=crop', // Swiss Alps
             'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=800&auto=format&fit=crop', // Paris
             'https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=800&auto=format&fit=crop', // Bali
             'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=800&auto=format&fit=crop', // Santorini
         ];
+    }
 @endphp
 
 <div x-data="{ 
     active: 0,
-    images: @js($images),
+    images: @js($imageList),
     next() { this.active = (this.active + 1) % this.images.length },
     prev() { this.active = (this.active - 1 + this.images.length) % this.images.length },
     init() {

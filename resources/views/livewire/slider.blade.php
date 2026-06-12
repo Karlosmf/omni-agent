@@ -3,20 +3,29 @@
 use function Livewire\Volt\{state, mount};
 use App\Models\JsonSlider;
 
-state(['name', 'slides' => [], 'transition' => 'fade', 'width' => '100%', 'height' => '500px']);
+state(['name', 'slides' => [], 'transition' => 'fade', 'width' => '100%', 'height' => '500px', 'borderStyle' => 'default']);
 
-mount(function (string $name) {
+mount(function (string $name, ?string $borderStyle = 'default') {
     $this->name = $name;
     $slider = JsonSlider::find($name);
     $this->slides = $slider ? $slider->slides : [];
     $this->transition = $slider->transition ?? 'fade';
     $this->width = $slider->width ?? '100%';
     $this->height = $slider->height ?? '500px';
+    $this->borderStyle = $borderStyle;
 });
 
 ?>
 
-<div class="relative overflow-hidden rounded-2xl bg-gray-900 shadow-xl mx-auto"
+<div class="relative overflow-hidden shadow-xl mx-auto
+        {{ match($borderStyle) {
+            'none' => '',
+            'subtle' => 'rounded-xl border border-white/10',
+            'glass' => 'rounded-2xl border border-white/20 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.3)]',
+            'promo' => 'rounded-2xl border border-white/10 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)]',
+            default => 'rounded-2xl',
+        } }}
+        bg-gray-900"
      style="width: {{ $width }}; max-width: 100%;"
      x-data="{
          activeSlide: 0,
@@ -48,7 +57,7 @@ mount(function (string $name) {
         </div>
     @else
         <!-- Slides Wrapper -->
-        <div class="relative flex items-center w-full" style="height: {{ $height }}; min-height: 300px;">
+        <div class="relative flex items-center w-full" style="height: {{ $height }}; min-height: 200px;">
             @foreach($slides as $index => $slide)
                 @php
                     // Define transition classes based on config

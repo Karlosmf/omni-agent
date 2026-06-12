@@ -1,6 +1,9 @@
 {
   "name": "home-hero",
   "description": "Slider principal para la página de bienvenida (Landing Page)",
+  "transition": "slide-left",
+  "width": "100%",
+  "height": "600px",
   "slides": [
     {
       "title": "Viajes Increíbles con Omni-Agent",

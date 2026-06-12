@@ -1,6 +1,9 @@
 {
     "name": "hero-stack",
     "description": "Slider principal importado de producción",
+    "transition": "fade",
+    "width": "100%",
+    "height": "500px",
     "slides": [
         {
             "title": "Aventura en los Alpes",

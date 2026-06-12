@@ -1,6 +1,9 @@
 {
     "name": "promo",
     "description": "Promociones importadas de producción",
+    "transition": "fade",
+    "width": "100%",
+    "height": "250px",
     "slides": [
         {
             "title": "Promoción Caribe 20%",
