@@ -71,24 +71,35 @@ new #[Layout('components.layouts.guest')] class extends Component
 
     public function with(): array
     {
+        $images = [];
+        if ($this->package->cover_image) {
+            $images[] = $this->package->cover_image;
+        }
+        if (is_array($this->package->gallery)) {
+            $images = array_merge($images, $this->package->gallery);
+        }
+        
         return [
-            'galleryImages' => $this->package->gallery ?? [],
+            'galleryImages' => $images,
             'itinerary' => $this->package->itinerary ?? [],
         ];
     }
 } ?>
 
-    <div class="min-h-screen bg-gray-50" x-data="{ activeSlide: 0 }">
+    <div class="min-h-screen bg-gray-50">
 
         {{-- Hero / Gallery --}}
-        <div class="relative h-[60vh] md:h-[70vh] overflow-hidden bg-gray-900">
+        <div class="relative h-[60vh] md:h-[70vh] overflow-hidden bg-gray-900"
+            x-data="{ activeSlide: 0 }"
+            x-init="if ({{ count($galleryImages) }} > 1) { setInterval(() => { activeSlide = (activeSlide + 1) % {{ count($galleryImages) }} }, 5000) }"
+            wire:ignore>
             @if (count($galleryImages) > 0)
                 @foreach ($galleryImages as $index => $image)
                     <div x-show="activeSlide === {{ $index }}" x-transition:enter="transition ease-out duration-700"
                         x-transition:enter-start="opacity-0 scale-105" x-transition:enter-end="opacity-100 scale-100"
                         x-transition:leave="transition ease-in duration-500" x-transition:leave-start="opacity-100"
                         x-transition:leave-end="opacity-0" class="absolute inset-0">
-                        <img src="{{ asset('storage/' . $image) }}" alt="{{ $package->title }}"
+                        <img src="{{ str_starts_with($image, 'http') ? $image : asset('storage/' . $image) }}" alt="{{ $package->title }}"
                             class="w-full h-full object-cover">
                     </div>
                 @endforeach

@@ -16,7 +16,12 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Encoders\WebpEncoder;
+use Intervention\Image\ImageManager;
 
 class TravelPackageForm
 {
@@ -187,7 +192,17 @@ class TravelPackageForm
                         FileUpload::make('cover_image')
                             ->label('Imagen de Portada')
                             ->image()
-                            ->directory('travel-packages/covers')
+                            ->disk('public')
+                            ->saveUploadedFileUsing(function (UploadedFile $file): string {
+                                $manager = new ImageManager(new Driver);
+                                $image = $manager->decode($file->getRealPath());
+                                $encoded = $image->encode(new WebpEncoder(90));
+                                $filename = Str::random(40).'.webp';
+
+                                Storage::disk('public')->put('ideas/'.$filename, (string) $encoded);
+
+                                return 'ideas/'.$filename;
+                            })
                             ->imageResizeMode('cover')
                             ->imageCropAspectRatio('16:9')
                             ->imageResizeTargetWidth('1200')
@@ -197,7 +212,17 @@ class TravelPackageForm
                             ->image()
                             ->multiple()
                             ->reorderable()
-                            ->directory('travel-packages/gallery')
+                            ->disk('public')
+                            ->saveUploadedFileUsing(function (UploadedFile $file): string {
+                                $manager = new ImageManager(new Driver);
+                                $image = $manager->decode($file->getRealPath());
+                                $encoded = $image->encode(new WebpEncoder(90));
+                                $filename = Str::random(40).'.webp';
+
+                                Storage::disk('public')->put('ideas/'.$filename, (string) $encoded);
+
+                                return 'ideas/'.$filename;
+                            })
                             ->imageResizeTargetWidth('1200')
                             ->imageResizeTargetHeight('800'),
                     ]),

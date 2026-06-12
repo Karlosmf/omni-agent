@@ -33,6 +33,13 @@ class TravelPackagesTable
             ->columns([
                 ImageColumn::make('cover_image')
                     ->label('Portada')
+                    ->checkFileExistence(false)
+                    ->getStateUsing(fn ($record): ?string => $record->cover_image
+                            ? (str_starts_with($record->cover_image, 'http')
+                                ? $record->cover_image
+                                : asset('storage/'.$record->cover_image))
+                            : null
+                    )
                     ->circular(false)
                     ->height(60)
                     ->width(80),
