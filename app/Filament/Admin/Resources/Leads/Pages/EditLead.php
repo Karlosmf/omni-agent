@@ -16,17 +16,12 @@ class EditLead extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('convert_to_customer')
-                ->label('Convertir a Cliente')
-                ->icon('heroicon-o-user-plus')
+            Action::make('view_customer')
+                ->label('Ver Cliente')
+                ->icon('heroicon-o-user')
                 ->color('primary')
-                ->url(fn (Lead $record) => CustomerResource::getUrl('create', [
-                    'name' => $record->customer_name,
-                    'phone' => $record->customer_phone,
-                    'email' => $record->customer_email,
-                    'lead_id' => $record->id,
-                ]))
-                ->visible(fn () => ! $this->record->customer_id),
+                ->url(fn (Lead $record) => CustomerResource::getUrl('edit', ['record' => $record->customer_id]))
+                ->visible(fn () => !is_null($this->record->customer_id)),
             DeleteAction::make()
                 ->label('Eliminar')
                 ->icon('heroicon-o-trash'),

@@ -22,16 +22,12 @@ class LeadForm
                     ->schema([
                         Grid::make(2)
                             ->schema([
-                                TextInput::make('customer_name')
-                                    ->label('Nombre Completo')
+                                Select::make('customer_id')
+                                    ->relationship('customer', 'name')
+                                    ->label('Cliente Asociado')
+                                    ->searchable()
+                                    ->preload()
                                     ->required(),
-                                TextInput::make('customer_phone')
-                                    ->label('Teléfono de Contacto')
-                                    ->tel()
-                                    ->required(),
-                                TextInput::make('customer_email')
-                                    ->label('Correo Electrónico')
-                                    ->email(),
                                 TextInput::make('customer_budget')
                                     ->label('Presupuesto Estimado'),
                             ]),

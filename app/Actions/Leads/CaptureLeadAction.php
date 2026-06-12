@@ -22,9 +22,6 @@ class CaptureLeadAction
         return Lead::create([
             'customer_id' => $customer->id,
             'travel_package_id' => $data['travel_package_id'] ?? null,
-            'customer_name' => $customer->name,
-            'customer_phone' => $customer->phone ?? 'Sin teléfono',
-            'customer_email' => $customer->email,
             'customer_budget' => $data['customer_budget'] ?? null,
             'source' => $data['source'] ?? 'unknown',
             'raw_message' => $data['raw_message'] ?? '',
@@ -64,6 +61,7 @@ class CaptureLeadAction
                 'email' => $email,
                 'phone' => $phone,
                 'role' => UserRole::Customer,
+                'is_guest' => true,
                 'password' => Hash::make(Str::random(16)), // Random secure password
             ]);
         } else {

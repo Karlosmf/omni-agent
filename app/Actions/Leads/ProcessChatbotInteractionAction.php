@@ -54,8 +54,8 @@ class ProcessChatbotInteractionAction
                     ];
 
                     // Update customer name if extracted and still generic
-                    if (! empty($extraction['nombre']) && ($lead->customer_name === 'Web Guest' || empty($lead->customer_name))) {
-                        $updateData['customer_name'] = $extraction['nombre'];
+                    if (! empty($extraction['nombre']) && $lead->customer && ($lead->customer->name === 'Web Guest' || empty($lead->customer->name))) {
+                        $lead->customer->update(['name' => $extraction['nombre']]);
                     }
 
                     $lead->update($updateData);

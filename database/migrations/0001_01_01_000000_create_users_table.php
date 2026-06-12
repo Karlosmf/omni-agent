@@ -18,12 +18,7 @@ return new class extends Migration
             $table->string('role')->default('customer');
             $table->json('permissions')->nullable();
             $table->string('phone')->nullable()->unique();
-            $table->string('doc_number')->nullable();
-            $table->string('passport_number')->nullable();
-            $table->date('birth_date')->nullable();
-            $table->text('address')->nullable();
-            $table->json('history_json')->nullable();
-            $table->text('notes')->nullable();
+            $table->boolean('is_guest')->default(false);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

@@ -2,6 +2,7 @@
 
 use App\Actions\Leads\ProcessChatbotInteractionAction;
 use App\Models\Lead;
+use App\Models\User;
 use App\Services\AiConciergeService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
@@ -10,9 +11,10 @@ use Tests\TestCase;
 uses(TestCase::class, RefreshDatabase::class);
 
 test('it processes chat and extracts data', function () {
+    $customer = User::factory()->create(['name' => 'Web Guest', 'role' => \App\Enums\UserRole::Customer]);
     $lead = Lead::factory()->create([
+        'customer_id' => $customer->id,
         'ai_data' => [],
-        'customer_name' => 'Web Guest',
     ]);
 
     $mockAiService = Mockery::mock(AiConciergeService::class);
@@ -37,7 +39,7 @@ test('it processes chat and extracts data', function () {
     expect($reply)->toBe('¡Qué lindo destino!');
 
     $lead->refresh();
-    expect($lead->customer_name)->toBe('Juan')
+    expect($lead->customer->name)->toBe('Juan')
         ->and($lead->needs_human_attention)->toBeTrue()
         ->and($lead->ai_data)->toHaveKey('destino', 'Paris');
 });

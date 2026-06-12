@@ -28,13 +28,8 @@ class User extends Authenticatable implements FilamentUser
         'email',
         'phone',
         'role',
+        'is_guest',
         'permissions', // Added
-        'doc_number',
-        'passport_number',
-        'birth_date',
-        'address',
-        'history_json',
-        'notes',
         'password',
     ];
 
@@ -59,10 +54,17 @@ class User extends Authenticatable implements FilamentUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'role' => UserRole::class,
-            'birth_date' => 'date',
+            'is_guest' => 'boolean',
             'permissions' => 'array', // Added
-            'history_json' => 'array',
         ];
+    }
+
+    /**
+     * Get the user's profile.
+     */
+    public function profile(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(UserProfile::class);
     }
 
     /**

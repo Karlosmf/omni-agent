@@ -16,11 +16,11 @@ class LeadExporter extends Exporter
         return [
             ExportColumn::make('id')
                 ->label('ID'),
-            ExportColumn::make('customer_name')
+            ExportColumn::make('customer.name')
                 ->label('Nombre'),
-            ExportColumn::make('customer_phone')
+            ExportColumn::make('customer.phone')
                 ->label('Teléfono'),
-            ExportColumn::make('customer_email')
+            ExportColumn::make('customer.email')
                 ->label('Email'),
             ExportColumn::make('customer_budget')
                 ->label('Presupuesto'),

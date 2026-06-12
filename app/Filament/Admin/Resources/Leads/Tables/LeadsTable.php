@@ -26,10 +26,10 @@ class LeadsTable
     {
         return $table
             ->columns([
-                TextColumn::make('customer_name')
+                TextColumn::make('customer.name')
                     ->label('Nombre')
                     ->searchable()
-                    ->description(fn ($record) => collect([$record->customer_phone, $record->customer_email])->filter()->implode(' | ')),
+                    ->description(fn ($record) => collect([$record->customer?->phone, $record->customer?->email])->filter()->implode(' | ')),
                 TextColumn::make('source')
                     ->label('Origen')
                     ->badge()
@@ -63,18 +63,13 @@ class LeadsTable
                     ->label('Atención Requerida'),
             ])
             ->recordActions([
-                Action::make('convert_to_customer')
-                    ->label('Convertir a Cliente')
-                    ->icon('heroicon-o-user-plus')
+                Action::make('view_customer')
+                    ->label('Ver Cliente')
+                    ->icon('heroicon-o-user')
                     ->color('primary')
                     ->button()
-                    ->url(fn (Lead $record) => CustomerResource::getUrl('create', [
-                        'name' => $record->customer_name,
-                        'phone' => $record->customer_phone,
-                        'email' => $record->customer_email,
-                        'lead_id' => $record->id,
-                    ]))
-                    ->visible(fn (Lead $record) => is_null($record->customer_id)),
+                    ->url(fn (Lead $record) => CustomerResource::getUrl('edit', ['record' => $record->customer_id]))
+                    ->visible(fn (Lead $record) => !is_null($record->customer_id)),
                 ActionGroup::make([
                     Action::make('whatsapp')
                         ->label('WhatsApp')
@@ -83,12 +78,12 @@ class LeadsTable
                         ->url(function ($record) {
                             $settings = get_agency_settings();
                             $companyName = $settings?->company_name ?? config('app.name', 'nuestra agencia de viajes');
-                            $text = urlencode("Hola {$record->customer_name}, soy del equipo de {$companyName}. Te contacto por tu consulta sobre viajes. ¿En qué puedo ayudarte?");
+                            $text = urlencode("Hola {$record->customer?->name}, soy del equipo de {$companyName}. Te contacto por tu consulta sobre viajes. ¿En qué puedo ayudarte?");
 
-                            return "https://wa.me/{$record->customer_phone}?text={$text}";
+                            return "https://wa.me/{$record->customer?->phone}?text={$text}";
                         })
                         ->openUrlInNewTab()
-                        ->visible(fn ($record) => ! empty($record->customer_phone)),
+                        ->visible(fn ($record) => ! empty($record->customer?->phone)),
                     EditAction::make()
                         ->label('Editar'),
                     Action::make('escalate')

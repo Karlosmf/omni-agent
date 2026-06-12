@@ -5,7 +5,7 @@ use Laravel\Dusk\Browser;
 test('guest can open chat and send message', function () {
     $this->browse(function (Browser $browser) {
         $browser->visit('/')
-            ->assertSee('Luopan Concierge') // Check header
+            ->assertSee('Omni-Agent Concierge') // Check header
             ->assertSee('¡Hola! Soy tu asistente virtual') // Check default message
             ->click('button[wire\\:click="toggleChat"]') // Open chat
             ->pause(500)

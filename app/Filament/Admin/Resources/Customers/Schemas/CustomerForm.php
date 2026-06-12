@@ -32,24 +32,24 @@ class CustomerForm
                                     ->required()
                                     ->maxLength(255),
                             ]),
-                        Grid::make(3)
+                        \Filament\Schemas\Components\Group::make()
+                            ->relationship('profile')
                             ->schema([
-                                TextInput::make('doc_number')
-                                    ->label('DNI / Documento'),
-                                TextInput::make('passport_number')
-                                    ->label('Pasaporte'),
-                                DatePicker::make('birth_date')
-                                    ->label('Fecha de Nacimiento'),
-                            ]),
+                                Grid::make(3)
+                                    ->schema([
+                                        TextInput::make('doc_number')
+                                            ->label('DNI / Documento'),
+                                        TextInput::make('passport_number')
+                                            ->label('Pasaporte'),
+                                        DatePicker::make('birth_date')
+                                            ->label('Fecha de Nacimiento'),
+                                    ]),
+                                Textarea::make('address')
+                                    ->label('Domicilio Completo')
+                                    ->rows(2)
+                                    ->columnSpanFull(),
+                            ])->columnSpanFull(),
                     ]),
-                Section::make('Dirección y Detalles')
-                    ->schema([
-                        Textarea::make('address')
-                            ->label('Domicilio Completo')
-                            ->rows(2)
-                            ->columnSpanFull(),
-                    ])
-                    ->collapsible(),
             ]);
     }
 }

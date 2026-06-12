@@ -33,5 +33,7 @@ class AppServiceProvider extends ServiceProvider
         }
 
         View::share('agencySettings', $agencySettings);
+
+        \App\Models\BookingItem::observe(\App\Observers\BookingItemObserver::class);
     }
 }

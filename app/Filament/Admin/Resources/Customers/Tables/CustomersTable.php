@@ -25,14 +25,14 @@ class CustomersTable
                 TextColumn::make('email')
                     ->label('Email')
                     ->searchable(),
-                TextColumn::make('doc_number')
+                TextColumn::make('profile.doc_number')
                     ->label('DNI')
                     ->searchable(),
-                TextColumn::make('passport_number')
+                TextColumn::make('profile.passport_number')
                     ->label('Pasaporte')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('birth_date')
+                TextColumn::make('profile.birth_date')
                     ->label('Fecha Nac.')
                     ->date()
                     ->toggleable(isToggledHiddenByDefault: true),

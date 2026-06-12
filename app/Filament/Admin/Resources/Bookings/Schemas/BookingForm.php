@@ -81,7 +81,8 @@ class BookingForm
                             ->schema([
                                 Select::make('lead_id')
                                     ->label('Consulta de Origen')
-                                    ->relationship('lead', 'customer_name')
+                                    ->relationship('lead', 'id')
+                                    ->getOptionLabelFromRecordUsing(fn ($record) => "Lead #{$record->id} - {$record->customer?->name}")
                                     ->searchable()
                                     ->preload()
                                     ->live()
@@ -89,7 +90,7 @@ class BookingForm
                                         if ($state) {
                                             $lead = Lead::find($state);
                                             if ($lead) {
-                                                $set('holder_name', $lead->customer_name);
+                                                $set('holder_name', $lead->customer?->name);
                                                 if ($lead->customer_id) {
                                                     $set('customer_id', $lead->customer_id);
                                                 }

@@ -8,33 +8,30 @@ use App\Models\Lead;
 use App\Models\ServiceType;
 use App\Models\User;
 
-it('can verify the full Luopan Flow', function () {
+it('can verify the full Omni-Agent Flow', function () {
     // 0. Ensure Service Types exist
     $hotelType = ServiceType::firstOrCreate(['key' => 'hotel'], ['name' => 'Hotel']);
     $transferType = ServiceType::firstOrCreate(['key' => 'transfer'], ['name' => 'Traslado']);
 
-    // 1. Create a Lead
+    // 1. Create a Customer User
+    $customer = User::create([
+        'name' => 'Juan Perez',
+        'phone' => '123456789',
+        'email' => 'juan@example.com',
+        'role' => UserRole::Customer,
+        'password' => bcrypt('password'),
+    ]);
+
+    // 2. Create a Lead
     $lead = Lead::factory()->create([
-        'customer_name' => 'Juan Perez',
-        'customer_phone' => '123456789',
-        'customer_email' => 'juan@example.com',
+        'customer_id' => $customer->id,
         'customer_budget' => 'USD 3.000',
         'status' => LeadStatus::New,
     ]);
 
     expect($lead->status)->toBe(LeadStatus::New);
 
-    // 2. Convert Lead to Customer
-    $customer = User::create([
-        'name' => $lead->customer_name,
-        'phone' => $lead->customer_phone,
-        'email' => $lead->customer_email,
-        'role' => UserRole::Customer,
-        'password' => bcrypt('password'),
-    ]);
-
     $lead->update([
-        'customer_id' => $customer->id,
         'status' => LeadStatus::Closed,
     ]);
 

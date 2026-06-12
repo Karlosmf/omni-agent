@@ -21,7 +21,7 @@ test('it creates a new lead and links to a new user if email provided', function
     ]);
 
     expect($lead)->toBeInstanceOf(Lead::class)
-        ->and($lead->customer_name)->toBe('Juan Perez')
+        ->and($lead->customer->name)->toBe('Juan Perez')
         ->and($lead->customer_id)->not->toBeNull();
 
     $user = User::find($lead->customer_id);
