@@ -4,7 +4,7 @@
     if (!empty($images)) {
         $imageList = $images;
     } elseif ($sliders->isNotEmpty()) {
-        $imageList = $sliders->map(fn($s) => str_starts_with($s->image_path, 'http') ? $s->image_path : asset('storage/' . $s->image_path))->toArray();
+        $imageList = $sliders->map(fn($s) => str_starts_with($s->image_path, 'http') ? $s->image_path : (str_starts_with($s->image_path, 'predefined/') ? asset('storage/' . $s->image_path) : asset('uploads/' . $s->image_path)))->toArray();
     } else {
         $imageList = [
             'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=800&auto=format&fit=crop', // Maldives

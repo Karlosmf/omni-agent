@@ -192,14 +192,14 @@ class TravelPackageForm
                         FileUpload::make('cover_image')
                             ->label('Imagen de Portada')
                             ->image()
-                            ->disk('public')
+                            ->disk('uploads')
                             ->saveUploadedFileUsing(function (UploadedFile $file): string {
                                 $manager = new ImageManager(new Driver);
                                 $image = $manager->decode($file->getRealPath());
                                 $encoded = $image->encode(new WebpEncoder(90));
                                 $filename = Str::random(40).'.webp';
 
-                                Storage::disk('public')->put('ideas/'.$filename, (string) $encoded);
+                                Storage::disk('uploads')->put('ideas/'.$filename, (string) $encoded);
 
                                 return 'ideas/'.$filename;
                             })
@@ -212,14 +212,14 @@ class TravelPackageForm
                             ->image()
                             ->multiple()
                             ->reorderable()
-                            ->disk('public')
+                            ->disk('uploads')
                             ->saveUploadedFileUsing(function (UploadedFile $file): string {
                                 $manager = new ImageManager(new Driver);
                                 $image = $manager->decode($file->getRealPath());
                                 $encoded = $image->encode(new WebpEncoder(90));
                                 $filename = Str::random(40).'.webp';
 
-                                Storage::disk('public')->put('ideas/'.$filename, (string) $encoded);
+                                Storage::disk('uploads')->put('ideas/'.$filename, (string) $encoded);
 
                                 return 'ideas/'.$filename;
                             })

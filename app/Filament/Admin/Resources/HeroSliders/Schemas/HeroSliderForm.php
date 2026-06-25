@@ -68,7 +68,7 @@ class HeroSliderForm
                         FileUpload::make('image_path')
                             ->label('Imagen de Fondo / Lateral')
                             ->image()
-                            ->disk('public')
+                            ->disk('uploads')
                             ->directory('sliders')
                             ->helperText(fn (Get $get) => match ($get('slider_type')) {
                                 'main' => 'Resolución recomendada: 1920x1080px (Apaisada / Pantalla Completa)',

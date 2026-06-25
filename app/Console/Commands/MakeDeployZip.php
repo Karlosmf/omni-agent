@@ -56,6 +56,9 @@ class MakeDeployZip extends Command
             return 1;
         }
 
+        $this->info('📡 Publicando assets de Filament...');
+        $this->call('filament:assets');
+
         if ($includeAssets) {
             $this->info('📡 Publicando assets de Livewire...');
             $this->call('livewire:publish', ['--assets' => true]);
@@ -233,8 +236,10 @@ class MakeDeployZip extends Command
         // Agregar carpetas esenciales vacías
         $essentialDirs = [
             'storage/app/public', 'storage/app/livewire-tmp',
+            'storage/app/private', 'storage/app/private/livewire-tmp',
             'storage/framework/cache/data', 'storage/framework/sessions',
             'storage/framework/views', 'storage/logs', 'bootstrap/cache',
+            'public/uploads', 'public/uploads/sliders', 'public/uploads/ideas', 'public/uploads/livewire-tmp',
         ];
         foreach ($essentialDirs as $dir) {
             $zip->addEmptyDir($dir);

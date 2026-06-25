@@ -99,7 +99,7 @@ new #[Layout('components.layouts.guest')] class extends Component
                         x-transition:enter-start="opacity-0 scale-105" x-transition:enter-end="opacity-100 scale-100"
                         x-transition:leave="transition ease-in duration-500" x-transition:leave-start="opacity-100"
                         x-transition:leave-end="opacity-0" class="absolute inset-0">
-                        <img src="{{ str_starts_with($image, 'http') ? $image : asset('storage/' . $image) }}" alt="{{ $package->title }}"
+                        <img src="{{ str_starts_with($image, 'http') ? $image : asset('uploads/' . $image) }}" alt="{{ $package->title }}"
                             class="w-full h-full object-cover">
                     </div>
                 @endforeach
@@ -113,7 +113,7 @@ new #[Layout('components.layouts.guest')] class extends Component
                     @endforeach
                 </div>
             @elseif ($package->cover_image)
-                <img src="{{ str_starts_with($package->cover_image, 'http') ? $package->cover_image : asset('storage/' . $package->cover_image) }}"
+                <img src="{{ str_starts_with($package->cover_image, 'http') ? $package->cover_image : asset('uploads/' . $package->cover_image) }}"
                     alt="{{ $package->title }}" class="w-full h-full object-cover">
             @else
                 <div class="w-full h-full bg-gradient-to-br from-amber-400 via-orange-500 to-rose-500"></div>

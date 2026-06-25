@@ -72,7 +72,10 @@ if (! function_exists('get_agency_logotipo_url')) {
         $settings = get_agency_settings();
 
         if ($settings && $settings->logotipo_path) {
-            return asset('images/branding/'.$settings->logotipo_path);
+            $filePath = public_path('images/branding/'.$settings->logotipo_path);
+            $version = file_exists($filePath) ? '?v='.filemtime($filePath) : '';
+
+            return asset('images/branding/'.$settings->logotipo_path).$version;
         }
 
         if (file_exists(public_path('images/branding/logo-full.png'))) {
@@ -106,7 +109,10 @@ if (! function_exists('get_agency_isotipo_url')) {
         $settings = get_agency_settings();
 
         if ($settings && $settings->isotipo_path) {
-            return asset('images/branding/'.$settings->isotipo_path);
+            $filePath = public_path('images/branding/'.$settings->isotipo_path);
+            $version = file_exists($filePath) ? '?v='.filemtime($filePath) : '';
+
+            return asset('images/branding/'.$settings->isotipo_path).$version;
         }
 
         if (file_exists(public_path('images/branding/logo-icon.png'))) {

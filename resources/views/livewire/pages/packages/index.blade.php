@@ -60,7 +60,7 @@ new #[Layout('components.layouts.guest')] class extends Component {
                 x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 scale-105"
                 x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-500"
                 x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="absolute inset-0 block">
-                <img src="{{ str_starts_with($feat->cover_image, 'http') ? $feat->cover_image : asset('storage/' . $feat->cover_image) }}"
+                <img src="{{ str_starts_with($feat->cover_image, 'http') ? $feat->cover_image : asset('uploads/' . $feat->cover_image) }}"
                     alt="{{ $feat->title }}" class="w-full h-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
                 <div class="absolute bottom-0 left-0 right-0 p-8 md:p-16 text-white">
@@ -167,7 +167,7 @@ new #[Layout('components.layouts.guest')] class extends Component {
                     <a href="{{ route('packages.show', $package->slug) }}"
                         class="group relative block aspect-[3/4] rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-1">
                         @if ($package->cover_image)
-                            <img src="{{ str_starts_with($package->cover_image, 'http') ? $package->cover_image : asset('storage/' . $package->cover_image) }}"
+                            <img src="{{ str_starts_with($package->cover_image, 'http') ? $package->cover_image : asset('uploads/' . $package->cover_image) }}"
                                 alt="{{ $package->title }}"
                                 class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                         @else

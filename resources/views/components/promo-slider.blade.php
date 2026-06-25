@@ -34,7 +34,7 @@
             >
                 <!-- Image -->
                 <img 
-                    src="{{ str_starts_with($slide->image_path, 'http') ? $slide->image_path : asset('storage/' . $slide->image_path) }}" 
+                    src="{{ str_starts_with($slide->image_path, 'http') ? $slide->image_path : (str_starts_with($slide->image_path, 'predefined/') ? asset('storage/' . $slide->image_path) : asset('uploads/' . $slide->image_path)) }}" 
                     alt="{{ $slide->title }}"
                     class="absolute inset-0 w-full h-full object-cover transform transition-transform duration-10000 hover:scale-105"
                 >

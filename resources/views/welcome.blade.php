@@ -280,7 +280,7 @@
         @php
             $heroStack = \App\Models\JsonSlider::find('hero-stack');
             $heroImages = $heroStack
-                ? collect($heroStack->slides)->map(fn($s) => str_starts_with($s['image_path'], 'http') ? $s['image_path'] : asset('storage/' . $s['image_path']))->toArray()
+                ? collect($heroStack->slides)->map(fn($s) => str_starts_with($s['image_path'], 'http') ? $s['image_path'] : (str_starts_with($s['image_path'], 'predefined/') ? asset('storage/' . $s['image_path']) : asset('uploads/' . $s['image_path'])))->toArray()
                 : [];
         @endphp
         <div
@@ -428,7 +428,7 @@
                         <a href="{{ route('packages.show', $package->slug) }}"
                             class="group relative flex-shrink-0 w-[85%] md:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] snap-start aspect-[3/4] rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-1">
                             @if ($package->cover_image)
-                                <img src="{{ str_starts_with($package->cover_image, 'http') ? $package->cover_image : asset('storage/' . $package->cover_image) }}"
+                                <img src="{{ str_starts_with($package->cover_image, 'http') ? $package->cover_image : asset('uploads/' . $package->cover_image) }}"
                                     alt="{{ $package->title }}"
                                     class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                             @else

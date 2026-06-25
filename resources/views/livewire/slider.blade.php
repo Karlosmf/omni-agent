@@ -95,7 +95,7 @@ mount(function (string $name, ?string $borderStyle = 'default') {
                     @php
                         $imageUrl = str_starts_with($slide['image_path'], 'http') 
                             ? $slide['image_path'] 
-                            : asset('storage/' . $slide['image_path']);
+                            : (str_starts_with($slide['image_path'], 'predefined/') ? asset('storage/' . $slide['image_path']) : asset('uploads/' . $slide['image_path']));
                     @endphp
                     <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ $imageUrl }}');"></div>
                     <div class="absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-900/60 to-transparent"></div>

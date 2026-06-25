@@ -47,12 +47,19 @@ return [
             'report' => false,
         ],
 
+        'uploads' => [
+            'driver' => 'local',
+            'root' => public_path('uploads'),
+            'url' => rtrim(env('APP_URL'), '/').'/uploads',
+            'throw' => true,
+            'report' => false,
+        ],
+
         'branding' => [
             'driver' => 'local',
             'root' => public_path('images/branding'),
             'url' => '/images/branding',
-            'visibility' => 'public',
-            'throw' => false,
+            'throw' => true,
             'report' => false,
         ],
 

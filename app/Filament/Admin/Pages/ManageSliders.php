@@ -220,7 +220,7 @@ class ManageSliders extends Page implements HasForms
                     FileUpload::make('image_path')
                         ->label('Imagen')
                         ->image()
-                        ->disk('public')
+                        ->disk('uploads')
                         ->directory('sliders')
                         ->required(),
 

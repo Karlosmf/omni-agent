@@ -37,7 +37,7 @@ class TravelPackagesTable
                     ->getStateUsing(fn ($record): ?string => $record->cover_image
                             ? (str_starts_with($record->cover_image, 'http')
                                 ? $record->cover_image
-                                : asset('storage/'.$record->cover_image))
+                                : asset('uploads/'.$record->cover_image))
                             : null
                     )
                     ->circular(false)
