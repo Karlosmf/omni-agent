@@ -52,7 +52,7 @@ class Supplier extends Model
     protected function balanceUsd(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->bookingItems()->sum('cost_usd') -
+            get: fn () => $this->bookingItems()->sum('cost') -
             $this->transactions()->where('type', TransactionType::Pago)->sum('amount_usd_fixed')
         );
     }

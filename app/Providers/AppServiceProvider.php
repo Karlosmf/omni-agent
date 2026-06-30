@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\AgencySetting;
+use App\Models\BookingItem;
+use App\Observers\BookingItemObserver;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -26,14 +28,18 @@ class AppServiceProvider extends ServiceProvider
         // Share Agency Settings globally
         $agencySettings = null;
 
-        if (Schema::hasTable('agency_settings')) {
-            $agencySettings = Cache::rememberForever('agency_settings', function () {
-                return AgencySetting::first();
-            });
+        try {
+            if (Schema::hasTable('agency_settings')) {
+                $agencySettings = Cache::rememberForever('agency_settings', function () {
+                    return AgencySetting::first();
+                });
+            }
+        } catch (\Throwable $e) {
+            // Ignore database connection/file issues during application booting
         }
 
         View::share('agencySettings', $agencySettings);
 
-        \App\Models\BookingItem::observe(\App\Observers\BookingItemObserver::class);
+        BookingItem::observe(BookingItemObserver::class);
     }
 }
