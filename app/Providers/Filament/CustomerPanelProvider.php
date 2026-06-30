@@ -27,6 +27,7 @@ class CustomerPanelProvider extends PanelProvider
         return $panel
             ->id('customer')
             ->path('portal')
+            ->maxContentWidth('full')
             ->login(Login::class)
             ->colors([
                 'primary' => Color::Sky,

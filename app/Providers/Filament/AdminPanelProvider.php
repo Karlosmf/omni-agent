@@ -44,6 +44,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin')
             ->path('admin')
+            ->maxContentWidth('full')
             ->login(Login::class)
             ->default()
             ->colors([
