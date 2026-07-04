@@ -6,6 +6,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -32,7 +33,7 @@ class CustomerForm
                                     ->required()
                                     ->maxLength(255),
                             ]),
-                        \Filament\Schemas\Components\Group::make()
+                        Group::make()
                             ->relationship('profile')
                             ->schema([
                                 Grid::make(3)

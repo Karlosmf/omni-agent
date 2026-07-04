@@ -17,7 +17,7 @@ Para empezar a trabajar, sigue estos pasos:
 
 ## 2. El Semáforo de Clientes (Pipeline) 🚦
 
-Cuando entras, verás una lista de personas interesadas en viajar. A esto le llamamos "Pipeline" o "Tubería", pero imagínalo como un **Semáforo** que te dice a quién atender primero.
+Cuando entras, verás una lista de personas interesadas en viajar (Leads). A esto le llamamos "Pipeline" o "Tubería", pero imagínalo como un **Semáforo** que te dice a quién atender primero.
 
 **¿Qué significan los colores?**
 
@@ -25,10 +25,8 @@ Cuando entras, verás una lista de personas interesadas en viajar. A esto le lla
 *   🟡 **AMARILLO (Tibio):** Está interesado, pero está mirando precios o pensando. Hay que seguirlo de cerca.
 *   🔵 **AZUL (Frío):** Solo está preguntando. Puede comprar en el futuro, pero no es urgente.
 
-**¿Cómo funciona el camino del cliente?**
-1.  **Nuevo:** Acaba de llegar. Nadie le habló todavía.
-2.  **Contactado:** Ya le mandaste un mensajito o lo llamaste.
-3.  **Cerrado:** ¡Venta realizada! O tal vez dijo que no.
+**Convertir una Consulta a Expediente:**
+Si el cliente ya está listo para que le armes un viaje formal, simplemente toca el botón gris que dice **"Convertir a Expediente"** desde su consulta. El sistema copiará inteligentemente los datos (gracias a la Inteligencia Artificial) y te abrirá un nuevo Expediente sin que tengas que tipear todo de nuevo.
 
 ---
 
@@ -37,14 +35,13 @@ Cuando entras, verás una lista de personas interesadas en viajar. A esto le lla
 Aquí es donde armas el plan de viaje para el cliente. Puedes hacerlo **desde cero** o usar una de tus **Ideas de Viaje** para no tener que cargar todo a mano.
 
 **Opciones Rápidas (Automatizadas):**
-1.  **Desde las Consultas (Leads):** Si la consulta de la web vino por un paquete específico, al tocar "Convertir a Cliente" el sistema copiará todo el paquete a su nuevo Presupuesto.
-2.  **Desde el Cliente:** Tocá el botón "Crear desde Idea de Viaje" en su perfil para elegir un paquete y armarle el presupuesto al instante.
-3.  **Desde el Catálogo:** Entrá a "Ideas de Viaje" y tocá el botón verde "Presupuestar" para asignárselo a la persona.
+1.  **Desde las Consultas (Leads):** Tocando "Convertir a Expediente" como explicamos arriba.
+2.  **Desde el Catálogo:** Entrá a "Ideas de Viaje" y tocá el botón verde "Presupuestar" para asignárselo a la persona.
 
 **Pasos para armar manual o agregar servicios extra:**
 
-1.  Ve al menú **"Ventas"** y elige **"Files"** (Expedientes) o **"Nuevo File"**.
-2.  Elige el nombre del cliente.
+1.  Ve al menú **"Ventas"** y elige **"Expedientes"** o **"Nuevo File"**.
+2.  Elige el nombre del cliente (ahora es opcional, ideal si solo quieres hacer un presupuesto rápido a alguien que aún no registraste).
 3.  En la sección **"Servicios / Items"**, ve agregando las partes del viaje una por una:
     *   ✈️ **Vuelo:** Agrega el avión.
     *   🏨 **Hotel:** Agrega el alojamiento.
@@ -53,19 +50,17 @@ Aquí es donde armas el plan de viaje para el cliente. Puedes hacerlo **desde ce
 4.  Por cada cosa que agregues, pon el precio que nos cuesta a nosotros (Costo) y el precio que le cobramos al cliente (Venta).
 5.  El sistema suma todo automático y te dice cuánto ganas.
 
-**Descargar la Hoja de Ruta:**
-Cuando termines de cargar todo, busca el botón **PDF** (generalmente un icono verde o rojo). Al hacer clic, se descarga un archivo hermoso con todo el itinerario listo para mandar por WhatsApp.
+**Descargar y Enviar:**
+*   **PDF Presupuesto:** Botón celeste para descargar el presupuesto de venta de forma elegante.
+*   **PDF Acuerdo:** Botón amarillo para descargar el Acuerdo Legal (Contrato) de viaje para que el cliente lo firme.
+*   **Botón WhatsApp:** Un botón verde que, al hacer clic, te abre WhatsApp Web con un mensaje ya redactado y los datos listos para enviarle al cliente en un segundo.
 
 ---
 
 ## 4. Diferencia entre Presupuesto y File
 
-Es fácil confundirse, pero aquí está la diferencia simple:
-
 *   📝 **Presupuesto (Borrador):** Es un papel de trabajo o una cotización. El cliente todavía lo está pensando. Puedes hacer muchos cambios y borrarlos.
 *   ✅ **File (Confirmado):** Es cuando el cliente dijo **"SÍ, QUIERO VIAJAR"**. Aquí ya es un viaje en serio. Tiene número de expediente y ya empezamos a cobrar y reservar.
-
-**Para pasar de Presupuesto a File:** Solo tienes que cambiar el estado en el menú desplegable de Borrador a Confirmado.
 
 ---
 
@@ -81,122 +76,60 @@ Aquí anotamos la plata que entra y sale.
 5.  Elige cómo pagó (Efectivo, Transferencia, Tarjeta).
 6.  ¡Guardar!
 
-**Pagar a un proveedor (Operador):**
-Es igual, pero eliges al Proveedor en vez del Cliente y pones que es una "Salida" de dinero.
-
----
-
-## Consejos Rápidos del Sistema 💡
-
-*   **Badges (Globos de colores):** Si ves un numerito rojo en el menú, es que tienes cosas pendientes. ¡Míralo!
-*   **Whatsapp:** En la web, los clientes pueden elegir con quién hablar según los contactos que configures en el panel. El sistema te avisa.
-*   **Ayuda:** Si te trabas, pregúntale a los administradores del sistema.
-
 ---
 
 ## 6. Escaparate de Viajes (Ideas de Viaje) 🌴
 
 Desde el panel podés crear y gestionar **paquetes turísticos** que se muestran automáticamente en la web para tus clientes.
 
-### ¿Cómo cargar un nuevo paquete?
+### ¿Cómo cargar un nuevo paquete (Modo Rápido)?
 
+Hemos rediseñado esto para que sea rapidísimo cargar un paquete.
 1.  Ve al menú **"Catálogo"** → **"Ideas de Viaje"**.
-2.  Tocá **"Nuevo"** (botón arriba a la derecha).
-3.  Completá los datos principales:
-    *   **Título:** El nombre atractivo del paquete (ej: "Caribe All-Inclusive 2026").
-    *   **Destino:** El lugar principal (ej: "Punta Cana").
-    *   **Noches:** Cuántas noches incluye.
-    *   **Moneda y Precio Desde:** El precio base para mostrar en la web.
-    *   **Tags:** Palabras clave como "playa", "familiar", "luna-de-miel" (apretá Enter después de cada una).
+2.  Tocá **"Nuevo"**.
+3.  Te encontrarás con la pestaña **"Idea Rápida"**. Allí solo necesitas poner:
+    *   **Título:** (ej: "Caribe All-Inclusive 2026").
+    *   **Destino:** (ej: "Punta Cana").
+    *   **Noches y Precios.**
+    *   **Breve Descripción:** Para dar una idea de qué se trata.
+4.  ¡Y ya podés guardarlo!
 
-4.  **Cargar el Itinerario (día por día):**
-    *   Bajá hasta la sección **"Itinerario"**.
-    *   Tocá **"Agregar día"**.
-    *   Completá: **Día** (ej: "Día 1"), **Título** (ej: "Llegada y Check-in"), y una **Descripción** del día.
-    *   Podés agregar todos los días que necesites y **reordenarlos** arrastrándolos.
-
-5.  **Subir Imágenes:**
-    *   **Imagen de Portada:** Es la foto principal que se ve en la tarjeta del listado. Subí una sola imagen bien linda.
-    *   **Galería de Fotos:** Acá podés subir **varias fotos** que se van a ver como un carrusel en la página del paquete. Seleccioná varias a la vez.
-
-6.  **Incluye / No incluye:** Escribí lo que entra y lo que no entra en el paquete, cada línea con un ✅ o ❌.
-
-7.  **Toggle "Activo":** Este botoncito controla si el paquete **se muestra o no** en la web pública. Si lo desactivás, el paquete desaparece del Home sin borrarlo.
-
-8.  Tocá **"Crear"** y listo, ¡tu paquete ya está visible en la web!
-
-### Tip rápido
-Desde la **lista de paquetes**, podés activar o desactivar cualquier paquete con un solo click en el botoncito de la columna "Activo", sin necesidad de entrar a editarlo.
+**Si querés agregar más detalles después (Modo Extendido):**
+Podés navegar por las siguientes pestañas del mismo formulario:
+*   **Descripción Extendida:** Para agregar textos más largos y lo que Incluye/No Incluye.
+*   **Itinerario:** Día por día.
+*   **Costos y Servicios:** Para armar la estructura de costos reales del paquete.
+*   **Imágenes:** Subir una foto de portada y una galería entera de fotos para el carrusel web.
 
 ---
 
 ## 7. Consultas desde la Web (Nuevos Leads) 📩
 
-Cuando un cliente visita un paquete en tu página web y hace clic en el botón naranja **"¡Quiero este viaje! ✈️"**, el sistema le pedirá sus datos de contacto.
-
-¿Qué pasa cuando el cliente envía el formulario?
+Cuando un cliente visita un paquete en tu página web o te escribe por el chat y hace clic en enviar:
 1. Se crea automáticamente un **Nuevo Lead (Consulta)** en el sistema Omni-Agent.
-2. Aparecerá en el panel de control con todos los datos que ingresó y el nombre del paquete que le interesó.
-3. El asistente de Inteligencia Artificial analizará su mensaje para extraer información útil como el destino y la cantidad de pasajeros.
-4. **Al cliente** se le muestra un mensaje de confirmación verde avisando que se contactarán a la brevedad.
+2. El asistente de Inteligencia Artificial lee todo lo que el cliente escribió y saca los datos clave (destino, pasajeros, fechas) para que no tengas que leer todo manualmente.
+3. **Privacidad:** El cliente debe aceptar las políticas de privacidad en el chat para cumplir con las normativas vigentes.
 
 ---
 
-## 8. Configuración de Marca Blanca 🏷️
+## 8. Configuración de Marca Blanca y Textos Legales 🏷️
 
-Si eres administrador, puedes personalizar todo el sistema para que tenga la identidad de tu agencia.
-
-### ¿Cómo personalizar tu agencia?
+Puedes personalizar el sistema para que tenga tu identidad.
 
 1.  Ve al menú **"Configuración"** → **"Marca Blanca"**.
-2.  Encontrarás varias pestañas:
-
-#### Identidad y Frontend
-*   **Nombre de la Empresa:** El nombre que aparecerá en los títulos y correos.
-*   **Asistente Virtual:** Dale un nombre a tu IA (ej: "Brisa", "Sole", etc.).
-*   **Logo y Favicon:** Sube las imágenes de tu marca.
-*   **Colores:** Define la paleta de colores (Primario, Secundario, Fondo) que verán tus clientes en la web.
-*   **SEO:** Escribe una descripción para que Google encuentre mejor tu página.
-
-#### Contacto y Redes
-*   **Datos básicos:** Email, teléfono y dirección física.
-*   **Botones del Hero:** Configura a dónde llevan los botones principales de la web ("Planear viaje" y "Ubicación").
-*   **Redes Sociales:** Agrega tus links de Instagram, Facebook, etc. 
-    *   **IMPORTANTE:** Si agregas un link de tipo "WhatsApp", el nombre que le pongas (ej: "WhatsApp Juan") se usará automáticamente en el menú desplegable de la web y el asistente virtual lo mencionará al cerrar una consulta.
-
-#### Analítica y Scripts 📊
-*   Aquí puedes pegar los códigos de **Google Analytics**, **Meta Pixel (Facebook)** o chats externos.
-*   **Scripts en Header:** Códigos que van en el `<head>` (rastreo).
-*   **Scripts en Footer:** Códigos que van al final del `<body>` (widgets de chat).
-
-#### Gestión de Sliders (Imágenes Destacadas) 🖼️
-*   Ve al menú **"Catálogo"** → **"Sliders"**.
-*   Aquí puedes crear las imágenes que decoran la página principal.
-*   **Tipos de Slider:** Al crear uno nuevo, puedes elegir dónde se mostrará:
-    *   **Slider Principal:** El gran banner de pantalla completa.
-    *   **Hero Stack:** Las tarjetas flotantes a la derecha del inicio.
-    *   **Promociones:** El banner tipo franja horizontal que aparece debajo del encabezado principal.
-*   **Forma de Cargar la Imagen:** 
-    *   Puedes subir una imagen desde tu PC, usar una URL externa o elegir una de las imágenes predefinidas del sistema.
-    *   El sistema te sugerirá el tamaño ideal (ej. 1920x1080 o 1600x400) dependiendo del tipo de slider que elijas.
-*   Cada slider te permite configurar:
-    *   **Título y Subtítulo:** El texto grande y la etiqueta superior.
-    *   **Descripción:** Un párrafo informativo.
-    *   **Botones:** Puedes poner hasta dos botones con su propio texto y link (ej: "Ver más", "Reservar ahora"). Si dejas los campos de botones vacíos, no aparecerán.
-    *   **Activo / Inactivo:** Puedes apagar un slider sin necesidad de borrarlo. ¡Ideal para promos temporales!
+2.  **Identidad:** Cambia logos, colores, nombre de la IA.
+3.  **Legal y Acuerdos:** Acá puedes escribir el texto de tu **Plantilla de Acuerdo** (Contrato de viaje). Puedes usar "palabras mágicas" como `[NOMBRE_CLIENTE]` o `[TOTAL_VIAJE]` que el sistema reemplazará automáticamente cuando generes el PDF del Acuerdo para un pasajero.
+4.  **Sliders:** Para cambiar los grandes banners de tu página principal.
 
 ---
 
 ## 9. Roles y Accesos al Sistema 🔐
 
-Para mantener el orden y la seguridad, el sistema cuenta con distintos **Roles** de usuario que limitan a qué pantallas pueden entrar. Al crear o editar un usuario desde el menú **"Sistema" → "Usuarios"**, puedes asignarle uno de los siguientes roles:
-
-*   👑 **Administrador:** Tiene acceso total. Puede ver todas las ventas, cambiar la configuración, crear usuarios y ver todas las finanzas de la agencia.
-*   💰 **Finanzas:** Especialistas en dinero. Pueden acceder a tesorería, registrar cobros, pagos a operadores, márgenes y liquidaciones, pero no modifican la configuración global.
-*   💼 **Ventas:** Asesores o vendedores. Se enfocan en sus propios Leads, Files y Presupuestos. No pueden ver las finanzas completas de la agencia ni configuraciones del sistema.
-*   👔 **Staff:** Personal de la agencia con accesos medios (generalmente cargan catálogo o manejan la recepción inicial de clientes).
+*   👑 **Administrador:** Tiene acceso total.
+*   💰 **Finanzas:** Especialistas en dinero.
+*   💼 **Ventas:** Asesores o vendedores. No ven la rentabilidad total de la agencia.
+*   👔 **Staff:** Personal de la agencia con accesos medios.
 *   👤 **Usuario General:** Empleado básico con acceso limitado.
-*   🛍️ **Cliente:** Es el usuario de la persona que viaja. (En una futura actualización tendrán su propio panel para ver sus pagos y descargar sus vouchers, actualmente no ingresan al panel de empleados).
 
 ---
-*Manual actualizado para Sistema Omni-Agent v1.0 (Marca Blanca, Sliders y Roles Consolidados)*
+*Manual actualizado para Sistema Omni-Agent v1.1 (IA, Expedientes ágiles, Whatsapp, Acuerdos y Tabs de Carga)*

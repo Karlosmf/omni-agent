@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
+
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\text;
 
@@ -35,8 +36,8 @@ class ExportSqliteToMysql extends Command
     public function handle(): int
     {
         $outputFile = $this->argument('output');
-        
-        if (!$outputFile) {
+
+        if (! $outputFile) {
             $outputFile = text(
                 label: '¿Cuál es el nombre del archivo SQL de salida?',
                 default: 'migration_to_mysql.sql'
@@ -48,23 +49,24 @@ class ExportSqliteToMysql extends Command
         $truncate = $this->option('truncate');
 
         // Modo interactivo si no se pasó ni --schema ni --data
-        if (!$exportSchema && !$exportData) {
-            $this->info("Modo Interactivo de Exportación");
+        if (! $exportSchema && ! $exportData) {
+            $this->info('Modo Interactivo de Exportación');
             $exportSchema = confirm('¿Deseas exportar la ESTRUCTURA de las tablas (CREATE TABLE)?', true);
             $exportData = confirm('¿Deseas exportar los DATOS de las tablas (INSERT INTO)?', true);
         }
 
-        if (!$exportSchema && !$exportData) {
+        if (! $exportSchema && ! $exportData) {
             $this->warn('No seleccionaste nada para exportar. Operación cancelada.');
+
             return self::SUCCESS;
         }
 
         // Si exporta datos y no se pasó el flag explícito, preguntamos por el truncate
-        if ($exportData && !$truncate && !in_array('--truncate', $_SERVER['argv'] ?? [])) {
+        if ($exportData && ! $truncate && ! in_array('--truncate', $_SERVER['argv'] ?? [])) {
             $truncate = confirm('¿Deseas incluir sentencias TRUNCATE para vaciar las tablas antes de insertar?', false);
         }
 
-        $this->info("\nResumen: Exportando " . ($exportSchema ? 'estructura ' : '') . ($exportSchema && $exportData ? 'y ' : '') . ($exportData ? 'datos ' : '') . "de SQLite a {$outputFile}...");
+        $this->info("\nResumen: Exportando ".($exportSchema ? 'estructura ' : '').($exportSchema && $exportData ? 'y ' : '').($exportData ? 'datos ' : '')."de SQLite a {$outputFile}...");
 
         $tables = Schema::connection('sqlite')->getTables();
         $sql = "-- Migración de SQLite a MySQL\n";

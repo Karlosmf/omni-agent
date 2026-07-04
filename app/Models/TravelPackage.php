@@ -5,6 +5,7 @@ namespace App\Models;
 use Database\Factories\TravelPackageFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class TravelPackage extends Model
@@ -53,10 +54,12 @@ class TravelPackage extends Model
 
     public function getPriceBasisAttribute()
     {
-        if (\Illuminate\Support\Facades\Storage::disk('local')->exists('travel_packages_extras.json')) {
-            $extras = json_decode(\Illuminate\Support\Facades\Storage::disk('local')->get('travel_packages_extras.json'), true);
+        if (Storage::disk('local')->exists('travel_packages_extras.json')) {
+            $extras = json_decode(Storage::disk('local')->get('travel_packages_extras.json'), true);
+
             return $extras[$this->id]['price_basis'] ?? 'por persona';
         }
+
         return 'por persona';
     }
 }

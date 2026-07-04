@@ -129,11 +129,7 @@ class AiConciergeService
             Log::error('AiConciergeService Error: '.$e->getMessage());
 
             if ($e->getMessage() === 'GEMINI_API_KEY_MISSING') {
-                return "Por el momento, nuestro asistente virtual no está disponible.\n\n".
-                       "PREGUNTAS FRECUENTES:\n".
-                       "• ¿Cómo reservo un viaje? Puedes contactarnos por WhatsApp usando nuestros enlaces sociales.\n".
-                       "• ¿Cuáles son los medios de pago? Aceptamos transferencias y tarjetas.\n".
-                       '• ¿Dónde están ubicados? Revisa nuestra sección de contacto.';
+                return $this->fallbackBotLogic($messageContent, $lead);
             }
 
             return 'Disculpá, estoy teniendo un pequeño problema técnico. ¿Podés intentar de nuevo en unos segundos? 🙏';
@@ -260,11 +256,7 @@ class AiConciergeService
             Log::error('AiConciergeService Stream Error: '.$e->getMessage());
 
             if ($e->getMessage() === 'GEMINI_API_KEY_MISSING') {
-                yield "Por el momento, nuestro asistente virtual no está disponible.\n\n".
-                      "PREGUNTAS FRECUENTES:\n".
-                      "• ¿Cómo reservo un viaje? Puedes contactarnos por WhatsApp usando nuestros enlaces sociales.\n".
-                      "• ¿Cuáles son los medios de pago? Aceptamos transferencias y tarjetas.\n".
-                      '• ¿Dónde están ubicados? Revisa nuestra sección de contacto.';
+                yield $this->fallbackBotLogic($messageContent, $lead);
             } else {
                 yield 'Disculpá, estoy teniendo un pequeño problema técnico. ¿Podés intentar de nuevo? 🙏';
             }
@@ -327,5 +319,53 @@ class AiConciergeService
         }
 
         throw $lastException;
+    }
+
+    /**
+     * Fallback logic when AI is not configured.
+     * Acts as a basic state machine to gather lead data.
+     */
+    private function fallbackBotLogic(string $userMsg, Lead $lead): string
+    {
+        $aiData = is_array($lead->ai_data) ? $lead->ai_data : [];
+        
+        // Find the last question asked by the assistant
+        $lastAssistantMsg = $lead->messages()->where('role', 'assistant')->latest()->first();
+        $lastText = $lastAssistantMsg ? strtolower($lastAssistantMsg->content) : '';
+        
+        if (str_contains($lastText, 'destino en mente')) {
+            $aiData['destino'] = $userMsg;
+            $reply = "¿Tenés alguna fecha o mes en mente para el viaje?";
+        } elseif (str_contains($lastText, 'fecha')) {
+            $aiData['fecha'] = $userMsg;
+            $reply = "¿Cuántos pasajeros viajan en total? (Si hay niños, por favor indicame las edades)";
+        } elseif (str_contains($lastText, 'pasajeros')) {
+            $aiData['pasajeros'] = $userMsg;
+            $reply = "¿Desde qué ciudad les gustaría salir?";
+        } elseif (str_contains($lastText, 'ciudad')) {
+            $aiData['origen'] = $userMsg;
+            $settings = get_agency_settings();
+            $whatsappLinks = collect($settings?->social_links ?? [])
+                ->filter(fn ($link) => str_contains(strtolower($link['platform'] ?? ''), 'whatsapp') ||
+                    str_contains(strtolower($link['icon'] ?? ''), 'whatsapp')
+                );
+            $names = $whatsappLinks->map(function ($link) {
+                return trim(str_ireplace('WhatsApp', '', $link['platform'] ?? '')) ?: 'nuestros agentes';
+            })->filter()->unique();
+            $namesString = $names->isNotEmpty() ? $names->join(', ', ' o ') : 'nuestros agentes';
+
+            $reply = "¡Perfecto! Ya tengo lo necesario. {$namesString} se van a comunicar con vos a la brevedad para armarte la propuesta. 😉";
+        } else {
+            $reply = "Gracias por la información. En breve nos comunicaremos con vos.";
+        }
+        
+        $lead->update(['ai_data' => $aiData]);
+        
+        $lead->messages()->create([
+            'role' => 'assistant',
+            'content' => $reply,
+        ]);
+        
+        return $reply;
     }
 }

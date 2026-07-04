@@ -2,9 +2,12 @@
 
 namespace App\Filament\Admin\Resources\Leads\Tables;
 
+use App\Enums\BookingStatus;
 use App\Enums\LeadStatus;
+use App\Filament\Admin\Resources\Bookings\BookingResource;
 use App\Filament\Admin\Resources\Customers\CustomerResource;
 use App\Filament\Exporters\LeadExporter;
+use App\Models\Booking;
 use App\Models\Lead;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -49,6 +52,7 @@ class LeadsTable
                     ->visibleFrom('md')
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('created_at', 'desc')
             ->defaultGroup('status')
             ->groups([
                 Group::make('status')
@@ -69,7 +73,7 @@ class LeadsTable
                     ->color('primary')
                     ->button()
                     ->url(fn (Lead $record) => CustomerResource::getUrl('edit', ['record' => $record->customer_id]))
-                    ->visible(fn (Lead $record) => !is_null($record->customer_id)),
+                    ->visible(fn (Lead $record) => ! is_null($record->customer_id)),
                 ActionGroup::make([
                     Action::make('whatsapp')
                         ->label('WhatsApp')
@@ -92,6 +96,25 @@ class LeadsTable
                         ->color('warning')
                         ->action(fn ($record) => $record->update(['needs_human_attention' => true]))
                         ->visible(fn ($record) => ! $record->needs_human_attention),
+                    Action::make('create_booking')
+                        ->label('Crear Expediente')
+                        ->icon('heroicon-o-folder-plus')
+                        ->color('primary')
+                        ->action(function (Lead $record) {
+                            $booking = Booking::create([
+                                'lead_id' => $record->id,
+                                'customer_id' => $record->customer_id,
+                                'holder_name' => $record->customer?->name ?? 'A definir',
+                                'destination' => $record->ai_data['destino'] ?? null,
+                                'passengers' => $record->ai_data['pasajeros'] ?? 1,
+                                'status' => BookingStatus::Borrador,
+                                'travel_date' => now()->addMonths(1),
+                                'valid_until' => now()->addDays(7),
+                            ]);
+                            $record->update(['status' => LeadStatus::Closed]);
+
+                            return redirect()->to(BookingResource::getUrl('edit', ['record' => $booking->id]));
+                        }),
                     DeleteAction::make()
                         ->label('Eliminar')
                         ->icon('heroicon-o-trash'),

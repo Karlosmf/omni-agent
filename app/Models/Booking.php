@@ -85,6 +85,11 @@ class Booking extends Model
         return $this->hasMany(BookingItem::class);
     }
 
+    public function bookingPassengers(): HasMany
+    {
+        return $this->hasMany(BookingPassenger::class);
+    }
+
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);

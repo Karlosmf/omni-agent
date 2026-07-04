@@ -7,6 +7,7 @@ use App\Models\BookingItem;
 use App\Observers\BookingItemObserver;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -32,11 +33,12 @@ class AppServiceProvider extends ServiceProvider
             if (Schema::hasTable('agency_settings')) {
                 $agencySettings = Cache::rememberForever('agency_settings', function () {
                     $settings = AgencySetting::first();
-                    if ($settings && \Illuminate\Support\Facades\Storage::disk('local')->exists('agency_legal.json')) {
-                        $legalData = json_decode(\Illuminate\Support\Facades\Storage::disk('local')->get('agency_legal.json'), true);
+                    if ($settings && Storage::disk('local')->exists('agency_legal.json')) {
+                        $legalData = json_decode(Storage::disk('local')->get('agency_legal.json'), true);
                         $settings->cuit = $legalData['cuit'] ?? '';
                         $settings->legajo = $legalData['legajo'] ?? '';
                     }
+
                     return $settings;
                 });
             }

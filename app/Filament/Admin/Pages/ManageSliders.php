@@ -14,6 +14,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Livewire\WithFileUploads;
 
 class ManageSliders extends Page implements HasForms
@@ -46,7 +47,7 @@ class ManageSliders extends Page implements HasForms
                 ->icon('heroicon-m-plus')
                 ->form($this->getSliderFormSchema())
                 ->action(function (array $data) {
-                    $name = \Illuminate\Support\Str::kebab($data['name']);
+                    $name = Str::kebab($data['name']);
 
                     if (JsonSlider::find($name)) {
                         Notification::make()
@@ -107,7 +108,7 @@ class ManageSliders extends Page implements HasForms
             })
             ->action(function (array $data, array $arguments) {
                 $oldName = $arguments['name'];
-                $newName = \Illuminate\Support\Str::kebab($data['name']);
+                $newName = Str::kebab($data['name']);
 
                 if ($oldName !== $newName && JsonSlider::find($newName)) {
                     Notification::make()

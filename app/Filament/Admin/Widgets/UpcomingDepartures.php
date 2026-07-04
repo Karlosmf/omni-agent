@@ -14,7 +14,11 @@ class UpcomingDepartures extends BaseWidget
 
     protected static ?string $heading = 'Próximas Salidas Confirmadas';
 
-    protected int|string|array $columnSpan = 'full';
+    protected int|string|array $columnSpan = [
+        'default' => 'full',
+        'md' => 'full',
+        'xl' => 'full',
+    ];
 
     public function table(Table $table): Table
     {

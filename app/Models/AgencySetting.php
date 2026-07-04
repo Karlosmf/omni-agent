@@ -50,6 +50,7 @@ class AgencySetting extends Model
         'social_links',
         'is_maintenance_mode',
         'maintenance_bypass_key',
+        'contract_template',
     ];
 
     /**

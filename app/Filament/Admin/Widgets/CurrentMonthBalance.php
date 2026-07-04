@@ -11,6 +11,12 @@ class CurrentMonthBalance extends StatsOverviewWidget
 {
     protected static ?int $sort = 4;
 
+    protected int|string|array $columnSpan = [
+        'default' => 'full',
+        'md' => 'full',
+        'xl' => 'full',
+    ];
+
     protected function getStats(): array
     {
         $now = now();

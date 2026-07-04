@@ -1,6 +1,7 @@
 <?php
 
 use App\Actions\Leads\ProcessChatbotInteractionAction;
+use App\Enums\UserRole;
 use App\Models\Lead;
 use App\Models\User;
 use App\Services\AiConciergeService;
@@ -11,7 +12,7 @@ use Tests\TestCase;
 uses(TestCase::class, RefreshDatabase::class);
 
 test('it processes chat and extracts data', function () {
-    $customer = User::factory()->create(['name' => 'Web Guest', 'role' => \App\Enums\UserRole::Customer]);
+    $customer = User::factory()->create(['name' => 'Web Guest', 'role' => UserRole::Customer]);
     $lead = Lead::factory()->create([
         'customer_id' => $customer->id,
         'ai_data' => [],

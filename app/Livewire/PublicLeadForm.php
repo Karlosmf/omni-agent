@@ -4,12 +4,14 @@ namespace App\Livewire;
 
 use App\Actions\Leads\CaptureLeadAction;
 use App\Services\AiConciergeService;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\HtmlString;
 use Livewire\Component;
 
 class PublicLeadForm extends Component implements HasForms
@@ -50,6 +52,10 @@ class PublicLeadForm extends Component implements HasForms
                     ->minLength(10)
                     ->rows(3)
                     ->placeholder('Contanos qué estás buscando...'),
+                Checkbox::make('accept_policies')
+                    ->label(fn () => new HtmlString('Acepto las <a href="'.route('pages.privacidad').'" target="_blank" class="text-amber-600 hover:underline font-medium">Políticas de Privacidad</a>'))
+                    ->accepted()
+                    ->required(),
             ])
             ->statePath('data');
     }

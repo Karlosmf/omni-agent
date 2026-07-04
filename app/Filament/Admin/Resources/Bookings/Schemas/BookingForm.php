@@ -14,6 +14,7 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
@@ -56,7 +57,6 @@ class BookingForm
 
                                         return User::create($data)->id;
                                     })
-                                    ->required()
                                     ->live()
                                     ->afterStateUpdated(function (Set $set, $state) {
                                         if ($state) {
@@ -128,6 +128,63 @@ class BookingForm
                             ->rows(3)
                             ->columnSpanFull()
                             ->helperText('Solo visible para el equipo administrativo.'),
+                    ]),
+
+                Section::make('Pasajeros')
+                    ->columnSpanFull()
+                    ->schema([
+                        Repeater::make('bookingPassengers')
+                            ->label('Listado de Pasajeros')
+                            ->relationship('bookingPassengers')
+                            ->schema([
+                                Grid::make(4)
+                                    ->schema([
+                                        Toggle::make('is_titular')
+                                            ->label('Es Titular')
+                                            ->inline(false)
+                                            ->columnSpan(1),
+                                        TextInput::make('first_name')
+                                            ->label('Nombres')
+                                            ->required()
+                                            ->columnSpan(1),
+                                        TextInput::make('last_name')
+                                            ->label('Apellidos')
+                                            ->required()
+                                            ->columnSpan(2),
+                                    ]),
+                                Grid::make(4)
+                                    ->schema([
+                                        Select::make('document_type')
+                                            ->label('Tipo de Documento')
+                                            ->options([
+                                                'DNI' => 'DNI',
+                                                'Pasaporte' => 'Pasaporte',
+                                                'Otro' => 'Otro',
+                                            ])
+                                            ->default('DNI')
+                                            ->required(),
+                                        TextInput::make('document_number')
+                                            ->label('Número de Documento')
+                                            ->required(),
+                                        DatePicker::make('document_expiration')
+                                            ->label('Vencimiento Documento'),
+                                        DatePicker::make('birth_date')
+                                            ->label('Fecha de Nacimiento')
+                                            ->required(),
+                                    ]),
+                                Grid::make(3)
+                                    ->schema([
+                                        TextInput::make('nationality')
+                                            ->label('Nacionalidad'),
+                                        TextInput::make('email')
+                                            ->label('Email')
+                                            ->email(),
+                                        TextInput::make('phone')
+                                            ->label('Teléfono'),
+                                    ]),
+                            ])
+                            ->columns(1)
+                            ->itemLabel(fn (array $state): ?string => ($state['first_name'] ?? '').' '.($state['last_name'] ?? '')),
                     ]),
 
                 Section::make('Detalle de Servicios')

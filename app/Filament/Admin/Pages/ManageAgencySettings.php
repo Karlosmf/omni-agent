@@ -7,6 +7,7 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -67,13 +68,13 @@ class ManageAgencySettings extends Page implements HasForms
         if ($settings) {
             $data = $settings->toArray();
             $data['is_maintenance_mode'] = app()->isDownForMaintenance();
-            
+
             if (Storage::disk('local')->exists('agency_legal.json')) {
                 $legalData = json_decode(Storage::disk('local')->get('agency_legal.json'), true);
                 $data['cuit'] = $legalData['cuit'] ?? '';
                 $data['legajo'] = $legalData['legajo'] ?? '';
             }
-            
+
             $this->form->fill($data);
         }
     }
@@ -313,6 +314,31 @@ class ManageAgencySettings extends Page implements HasForms
                                             ->label('Scripts en <body>')
                                             ->helperText('Se insertará antes del cierre de </body>')
                                             ->rows(5),
+                                    ]),
+                            ]),
+                        Tab::make('Legal y Acuerdos')
+                            ->icon('heroicon-o-document-text')
+                            ->schema([
+                                Section::make('Plantilla de Acuerdo')
+                                    ->description('Redacta el acuerdo de viaje de tu agencia. Usa las etiquetas [NOMBRE_CLIENTE], [DNI_CLIENTE], [EMAIL_CLIENTE], [TELEFONO_CLIENTE], [TOTAL_VIAJE], [DESTINO] y [FECHA_VIAJE] para que se reemplacen automáticamente con los datos reales al generar el PDF.')
+                                    ->schema([
+                                        RichEditor::make('contract_template')
+                                            ->label('Acuerdo de Viaje (Plantilla)')
+                                            ->columnSpanFull()
+                                            ->toolbarButtons([
+                                                'blockquote',
+                                                'bold',
+                                                'bulletList',
+                                                'h2',
+                                                'h3',
+                                                'italic',
+                                                'link',
+                                                'orderedList',
+                                                'redo',
+                                                'strike',
+                                                'underline',
+                                                'undo',
+                                            ]),
                                     ]),
                             ]),
                         Tab::make('Mantenimiento')

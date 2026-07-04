@@ -46,7 +46,7 @@
             <div class="group bg-white/80 backdrop-blur-md p-8 rounded-3xl shadow-lg border border-white/50 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-orange-100 to-transparent rounded-bl-full opacity-50 -z-10 transition-transform duration-500 group-hover:scale-125"></div>
                 <div class="w-14 h-14 bg-orange-100 rounded-2xl flex items-center justify-center text-orange-600 mb-6 shadow-sm border border-orange-200 transition-transform duration-300 group-hover:-rotate-6">
-                    <i class="ph-bold ph-bullseye text-3xl"></i>
+                    <i class="ph-bold ph-target text-3xl"></i>
                 </div>
                 <h3 class="text-2xl font-bold text-gray-900 mb-4">Nuestra Misión</h3>
                 <p class="text-gray-600 leading-relaxed">

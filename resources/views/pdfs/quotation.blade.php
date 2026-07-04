@@ -91,14 +91,13 @@
         }
 
         .footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            text-align: center;
-            font-size: 12px;
-            color: #999;
+            margin-top: 50px;
+            text-align: justify;
+            font-size: 9px;
+            color: #777;
             border-top: 1px solid #eee;
-            padding-top: 20px;
+            padding-top: 15px;
+            line-height: 1.4;
         }
     </style>
 </head>
@@ -179,7 +178,14 @@
     </div>
 
     <div class="footer">
-        Gracias por confiar en {{ $settings?->company_name ?? config('app.name', 'nosotros') }} para tu próximo viaje.
+        <p>La presente cotización constituye únicamente una propuesta comercial y no implica reserva, bloqueo de lugares, emisión de servicios ni contratación definitiva.</p>
+        <p>Las tarifas, disponibilidad, impuestos, percepciones, tipos de cambio, horarios, itinerarios y demás condiciones corresponden a la información disponible al momento de su emisión y podrán ser modificados por los respectivos prestadores o por circunstancias ajenas al control razonable de {{ $settings?->company_name ?? config('app.name', 'la agencia') }}, hasta la confirmación y emisión de los servicios.</p>
+        <p>Los precios informados están sujetos a disponibilidad al momento de la reserva efectiva. La presente cotización no garantiza cupos, plazas, habitaciones ni servicios.</p>
+        <p>La contratación quedará perfeccionada únicamente con la aceptación del pasajero, el pago correspondiente, la confirmación de disponibilidad por los prestadores y la emisión de la documentación de viaje.</p>
+        <p>Cuando la cotización se encuentre expresada en moneda extranjera o dependa de tarifas internacionales, su conversión a pesos, así como impuestos y percepciones aplicables, se determinarán conforme a la normativa vigente al momento del pago, salvo indicación expresa en contrario.</p>
+        <p>Salvo que se indique expresamente, la asistencia al viajero no se encuentra incluida en esta cotización. Se recomienda su contratación, así como verificar con anticipación la documentación personal, requisitos migratorios, sanitarios y demás exigencias aplicables al viaje.</p>
+        <p>{{ $settings?->company_name ?? config('app.name', 'La agencia') }} actúa como agencia intermediaria, gestionando servicios prestados por terceros independientes, sin perjuicio de las obligaciones que le impone la legislación vigente.</p>
+        <p>La contratación definitiva se regirá por las Condiciones Generales de Contratación de {{ $settings?->company_name ?? config('app.name', 'la agencia') }}, las condiciones particulares de los prestadores intervinientes y la normativa aplicable, incluyendo la Ley N.º 18.829, la Ley N.º 24.240, el Código Civil y Comercial de la Nación y demás disposiciones vigentes. Los errores materiales o tipográficos podrán ser rectificados antes de la confirmación definitiva de la reserva.</p>
     </div>
 
 </body>

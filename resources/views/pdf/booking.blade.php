@@ -81,14 +81,13 @@
         }
 
         .footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            text-align: center;
-            font-size: 10px;
-            color: #777;
+            margin-top: 30px;
+            font-size: 8px;
+            color: #555;
             border-top: 1px solid #ddd;
             padding-top: 10px;
+            text-align: justify;
+            line-height: 1.3;
         }
     </style>
 </head>
@@ -189,8 +188,15 @@
     @endif
 
     <div class="footer">
-        Este documento es un comprobante no fiscal emitido por el sistema {{ config('app.name', 'Omni-Agent') }}.<br>
-        Gracias por confiar en {{ $settings?->company_name ?? config('app.name', 'nuestra agencia') }}.
+        <p><strong>Condiciones Generales:</strong></p>
+        <p>La presente cotización constituye únicamente una propuesta comercial y no implica reserva, bloqueo de lugares, emisión de servicios ni contratación definitiva.</p>
+        <p>Las tarifas, disponibilidad, impuestos, percepciones, tipos de cambio, horarios, itinerarios y demás condiciones corresponden a la información disponible al momento de su emisión y podrán ser modificados por los respectivos prestadores o por circunstancias ajenas al control razonable de {{ $settings?->company_name ?? config('app.name', 'nuestra agencia') }}, hasta la confirmación y emisión de los servicios.</p>
+        <p>Los precios informados están sujetos a disponibilidad al momento de la reserva efectiva. La presente cotización no garantiza cupos, plazas, habitaciones ni servicios.</p>
+        <p>La contratación quedará perfeccionada únicamente con la aceptación del pasajero, el pago correspondiente, la confirmación de disponibilidad por los prestadores y la emisión de la documentación de viaje.</p>
+        <p>Cuando la cotización incluya servicios internacionales, los valores expresados en moneda extranjera (USD/EUR) podrán ser abonados en pesos argentinos al tipo de cambio oficial vendedor más el Impuesto PAIS (30%) y la Percepción a cuenta de Ganancias/Bienes Personales (30%), según normativas vigentes al momento del pago, salvo que se abone mediante transferencia en dólares billete.</p>
+        <p>Se recomienda a todos los pasajeros la contratación de una asistencia al viajero (seguro médico) con cobertura amplia.</p>
+        <p>Es responsabilidad exclusiva del pasajero contar con la documentación personal y sanitaria vigente y requerida (pasaporte, visas, vacunas, permisos de menores) para el ingreso o tránsito en los países de destino.</p>
+        <p>La vigencia de esta cotización es de 24 horas desde su envío, pudiendo sufrir modificaciones sin previo aviso debido a la fluctuación cambiaria o variaciones en las tarifas aéreas o de los operadores turísticos.</p>
     </div>
 
 </body>

@@ -16,6 +16,8 @@ new #[Layout('components.layouts.guest')] class extends Component
 
     public string $message = '';
 
+    public bool $accept_policies = false;
+
     public bool $success = false;
 
     public function mount(string $slug): void
@@ -30,6 +32,9 @@ new #[Layout('components.layouts.guest')] class extends Component
             'email' => 'required|email',
             'phone' => 'nullable|string',
             'message' => 'nullable|string',
+            'accept_policies' => 'accepted',
+        ], [
+            'accept_policies.accepted' => 'Debes aceptar las políticas de privacidad.',
         ]);
 
         $fullMessage = "Consulta por paquete: {$this->package->title} ({$this->package->nights} noches, {$this->package->destination}).\n".
@@ -285,6 +290,13 @@ new #[Layout('components.layouts.guest')] class extends Component
                                             <textarea wire:model="message" rows="2" placeholder="Comentarios o dudas adicionales..." class="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors resize-none"></textarea>
                                             @error('message') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                         </div>
+                                        <div class="flex items-start gap-2 pt-1">
+                                            <input wire:model="accept_policies" type="checkbox" id="accept_policies" class="mt-1 rounded border-gray-300 text-amber-500 shadow-sm focus:ring-amber-500">
+                                            <label for="accept_policies" class="text-sm text-gray-600">
+                                                Acepto las <a href="{{ route('pages.privacidad') }}" target="_blank" class="text-amber-600 hover:underline font-medium">Políticas de Privacidad</a>
+                                            </label>
+                                        </div>
+                                        @error('accept_policies') <span class="text-red-500 text-xs block mb-2">{{ $message }}</span> @enderror
                                         <div class="flex gap-2">
                                             <button type="button" @click="showForm = false" class="px-4 py-2.5 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-bold transition-colors w-1/3">
                                                 Cancelar

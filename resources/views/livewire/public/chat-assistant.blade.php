@@ -300,6 +300,13 @@ $sendMessage = function () {
                         </div>
                     </div>
 
+                    <div class="flex items-start gap-2 pt-2">
+                        <input type="checkbox" id="acceptPolicies" required class="mt-1 w-4 h-4 text-emerald-500 border-slate-300 rounded focus:ring-emerald-500">
+                        <label for="acceptPolicies" class="text-[11px] text-slate-500 font-medium leading-tight">
+                            Acepto las <a href="#" target="_blank" class="text-emerald-600 hover:underline">Políticas de Privacidad</a> y Términos de Servicio.
+                        </label>
+                    </div>
+
                     <button type="submit"
                         class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold text-sm tracking-wide hover:from-emerald-600 hover:to-teal-600 focus:ring-4 focus:ring-emerald-500/20 transition-all duration-300 shadow-[0_8px_16px_-6px_rgba(16,185,129,0.4)] hover:shadow-[0_12px_20px_-6px_rgba(16,185,129,0.5)] active:scale-[0.98] flex justify-center items-center gap-2 group">
                         <span>Comenzar ahora</span>

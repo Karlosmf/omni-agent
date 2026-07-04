@@ -14,7 +14,7 @@ class BookingFinancialService
     {
         $totalCost = 0;
         $totalSell = 0;
-        
+
         // Asumimos que la moneda "base" del legajo es la que dice $booking->currency (suele ser USD)
         // Y usamos $booking->exchange_rate para conversiones internas.
         $bookingRate = (float) ($booking->exchange_rate > 0 ? $booking->exchange_rate : 1);

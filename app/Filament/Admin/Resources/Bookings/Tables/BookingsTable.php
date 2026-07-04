@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\Bookings\Tables;
 
 use App\Enums\BookingStatus;
 use App\Enums\UserRole;
+use App\Models\AgencySetting;
 use App\Models\Booking;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -117,14 +118,42 @@ class BookingsTable
 
                 EditAction::make()
                     ->label('Editar'),
+                Action::make('whatsapp')
+                    ->label('WhatsApp')
+                    ->icon('heroicon-o-chat-bubble-left-ellipsis')
+                    ->color('success')
+                    ->url(function ($record) {
+                        $text = "Hola *{$record->holder_name}*! 👋\n";
+                        if ($record->destination) {
+                            $text .= "Aquí tienes tu cotización para *{$record->destination}* ✈️\n";
+                        } else {
+                            $text .= "Aquí tienes tu cotización ✈️\n";
+                        }
+                        $text .= "Total: *{$record->currency} ".number_format($record->total_sell, 2)."*\n";
+                        $text .= '¡Avisanos si tenés alguna duda!';
+
+                        return 'https://wa.me/?text='.urlencode($text);
+                    })
+                    ->openUrlInNewTab(),
                 Action::make('pdf')
-                    ->label('PDF')
+                    ->label('Presupuesto')
                     ->icon('heroicon-o-document-arrow-down')
                     ->color('success')
                     ->action(function ($record) {
                         return response()->streamDownload(function () use ($record) {
                             echo Pdf::loadView('pdf.booking', ['booking' => $record])->output();
-                        }, 'booking-'.$record->file_number.'.pdf');
+                        }, 'presupuesto-'.$record->file_number.'.pdf');
+                    }),
+                Action::make('contract_pdf')
+                    ->label('Acuerdo')
+                    ->icon('heroicon-o-document-check')
+                    ->color('warning')
+                    ->visible(fn (Booking $record) => in_array($record->status, [BookingStatus::Senado, BookingStatus::Emitido]))
+                    ->action(function ($record) {
+                        return response()->streamDownload(function () use ($record) {
+                            $settings = AgencySetting::first();
+                            echo Pdf::loadView('pdf.contract', ['booking' => $record, 'settings' => $settings])->output();
+                        }, 'acuerdo-'.$record->file_number.'.pdf');
                     }),
                 DeleteAction::make()
                     ->label('Eliminar')

@@ -13,12 +13,8 @@ class UpcomingDeadlinesWidget extends BaseWidget
     protected static ?int $sort = 101; // Next to CurrencyRatesWidget at the bottom
 
     protected int|string|array $columnSpan = [
-        'default' => 1,
-        'sm' => 1,
-        'md' => 1,
+        'default' => 'full',
         'lg' => 1,
-        'xl' => 1,
-        '2xl' => 1,
     ];
 
     public function table(Table $table): Table
