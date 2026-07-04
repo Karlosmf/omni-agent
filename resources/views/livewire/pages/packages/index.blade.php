@@ -202,6 +202,7 @@ new #[Layout('components.layouts.guest')] class extends Component {
                             <span class="block text-sm font-bold italic text-white/80 mb-1">Desde</span>
                             <span class="block text-3xl font-extrabold text-amber-300 drop-shadow-lg">{{ $package->currency }}
                                 {{ number_format($package->price_from, 0, ',', '.') }}</span>
+                            <span class="block text-xs font-medium text-white/90 drop-shadow-md mt-0.5">{{ ucfirst($package->price_basis) }}</span>
                         </div>
                     </a>
                 @endforeach

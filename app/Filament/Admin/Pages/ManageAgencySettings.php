@@ -67,6 +67,13 @@ class ManageAgencySettings extends Page implements HasForms
         if ($settings) {
             $data = $settings->toArray();
             $data['is_maintenance_mode'] = app()->isDownForMaintenance();
+            
+            if (Storage::disk('local')->exists('agency_legal.json')) {
+                $legalData = json_decode(Storage::disk('local')->get('agency_legal.json'), true);
+                $data['cuit'] = $legalData['cuit'] ?? '';
+                $data['legajo'] = $legalData['legajo'] ?? '';
+            }
+            
             $this->form->fill($data);
         }
     }
@@ -245,6 +252,16 @@ class ManageAgencySettings extends Page implements HasForms
 
                                         Grid::make(2)
                                             ->schema([
+                                                TextInput::make('cuit')
+                                                    ->label('CUIT')
+                                                    ->placeholder('Ej: 30-12345678-9'),
+                                                TextInput::make('legajo')
+                                                    ->label('Número de Legajo')
+                                                    ->placeholder('Ej: 12345'),
+                                            ]),
+
+                                        Grid::make(2)
+                                            ->schema([
                                                 TextInput::make('hero_cta_url')
                                                     ->label('URL Botón Principal (Hero)')
                                                     ->placeholder('Ej: https://tupagina.com/planear'),
@@ -323,6 +340,13 @@ class ManageAgencySettings extends Page implements HasForms
     public function save(): void
     {
         $data = $this->form->getState();
+
+        $legalData = [
+            'cuit' => $data['cuit'] ?? '',
+            'legajo' => $data['legajo'] ?? '',
+        ];
+        Storage::disk('local')->put('agency_legal.json', json_encode($legalData));
+        unset($data['cuit'], $data['legajo']);
 
         $settings = AgencySetting::first() ?: new AgencySetting;
         $settings->fill($data);

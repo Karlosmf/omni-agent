@@ -6,7 +6,11 @@ use Livewire\Volt\Volt;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
+
+Route::view('/quienes-somos', 'pages.quienes-somos')->name('pages.quienes-somos');
+Route::view('/politicas-de-privacidad', 'pages.privacidad')->name('pages.privacidad');
+Route::view('/politicas-de-cookies', 'pages.cookies')->name('pages.cookies');
 
 Volt::route('/chat', 'public.chat-assistant')->name('chat');
 

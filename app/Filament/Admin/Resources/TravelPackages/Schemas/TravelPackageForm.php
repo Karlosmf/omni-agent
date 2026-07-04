@@ -67,6 +67,33 @@ class TravelPackageForm
                                     ->numeric()
                                     ->prefix('$')
                                     ->required(),
+                                Select::make('price_basis')
+                                    ->label('Base del Precio')
+                                    ->options([
+                                        'por persona' => 'Por persona',
+                                        'en base doble' => 'En base doble',
+                                        'por persona, en base doble' => 'Por persona, en base doble',
+                                    ])
+                                    ->default('por persona')
+                                    ->dehydrated(false)
+                                    ->afterStateHydrated(function (Select $component, ?\Illuminate\Database\Eloquent\Model $record) {
+                                        if ($record && $record->exists) {
+                                            $extras = \Illuminate\Support\Facades\Storage::disk('local')->exists('travel_packages_extras.json') ? json_decode(\Illuminate\Support\Facades\Storage::disk('local')->get('travel_packages_extras.json'), true) : [];
+                                            $component->state($extras[$record->id]['price_basis'] ?? 'por persona');
+                                        } else {
+                                            $component->state('por persona');
+                                        }
+                                    })
+                                    ->saveRelationshipsUsing(function (Select $component, $state, ?\Illuminate\Database\Eloquent\Model $record) {
+                                        if ($record) {
+                                            $extras = \Illuminate\Support\Facades\Storage::disk('local')->exists('travel_packages_extras.json') ? json_decode(\Illuminate\Support\Facades\Storage::disk('local')->get('travel_packages_extras.json'), true) : [];
+                                            if (!isset($extras[$record->id])) {
+                                                $extras[$record->id] = [];
+                                            }
+                                            $extras[$record->id]['price_basis'] = $state;
+                                            \Illuminate\Support\Facades\Storage::disk('local')->put('travel_packages_extras.json', json_encode($extras));
+                                        }
+                                    }),
                                 Toggle::make('is_active')
                                     ->label('Activo')
                                     ->default(true),

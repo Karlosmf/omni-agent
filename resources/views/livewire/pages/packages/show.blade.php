@@ -220,7 +220,7 @@ new #[Layout('components.layouts.guest')] class extends Component
                                 <p class="text-4xl font-extrabold mt-1">{{ $package->currency }}
                                     {{ number_format($package->price_from, 0, ',', '.') }}
                                 </p>
-                                <p class="text-sm text-white/70 mt-1">por persona</p>
+                                <p class="text-sm text-white/70 mt-1">{{ ucfirst($package->price_basis) }}</p>
                             </div>
 
                             <div class="p-6 space-y-4">

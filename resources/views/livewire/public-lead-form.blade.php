@@ -1,12 +1,12 @@
 <div
-    class="bg-white/80 dark:bg-zinc-800/80 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-white/20 dark:border-zinc-700/50">
-    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">¿Consultas?</h3>
-    <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Dejanos tus datos y te contactaremos para planear tu
+    class="bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-white/20">
+    <h3 class="text-2xl font-bold text-gray-900 mb-2">¿Consultas?</h3>
+    <p class="text-sm text-gray-500 mb-6">Dejanos tus datos y te contactaremos para planear tu
         próximo viaje.</p>
 
     @if($success)
         <div
-            class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 p-4 rounded-lg mb-6 flex items-center gap-3">
+            class="bg-green-100 text-green-700 p-4 rounded-lg mb-6 flex items-center gap-3">
             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
             </svg>

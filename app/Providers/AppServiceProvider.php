@@ -31,7 +31,13 @@ class AppServiceProvider extends ServiceProvider
         try {
             if (Schema::hasTable('agency_settings')) {
                 $agencySettings = Cache::rememberForever('agency_settings', function () {
-                    return AgencySetting::first();
+                    $settings = AgencySetting::first();
+                    if ($settings && \Illuminate\Support\Facades\Storage::disk('local')->exists('agency_legal.json')) {
+                        $legalData = json_decode(\Illuminate\Support\Facades\Storage::disk('local')->get('agency_legal.json'), true);
+                        $settings->cuit = $legalData['cuit'] ?? '';
+                        $settings->legajo = $legalData['legajo'] ?? '';
+                    }
+                    return $settings;
                 });
             }
         } catch (\Throwable $e) {

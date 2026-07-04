@@ -50,4 +50,13 @@ class TravelPackage extends Model
         'is_active' => 'boolean',
         'price_from' => 'decimal:2',
     ];
+
+    public function getPriceBasisAttribute()
+    {
+        if (\Illuminate\Support\Facades\Storage::disk('local')->exists('travel_packages_extras.json')) {
+            $extras = json_decode(\Illuminate\Support\Facades\Storage::disk('local')->get('travel_packages_extras.json'), true);
+            return $extras[$this->id]['price_basis'] ?? 'por persona';
+        }
+        return 'por persona';
+    }
 }
