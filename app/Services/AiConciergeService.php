@@ -102,6 +102,7 @@ class AiConciergeService
             2. Cantidad de noches deseadas.
             3. Ciudad de salida (Solo pregunta desde dónde quieren salir, no ofrezcas transporte).
             4. Destino y Pasajeros (si no lo dijeron).
+            5. Presupuesto aproximado (si es relevante).
 
             CIERRE:
             Una vez que tengas estos datos básicos, CIERRA LA CALIFICACIÓN con este mensaje exacto:
@@ -217,6 +218,7 @@ class AiConciergeService
             2. Cantidad de noches deseadas.
             3. Ciudad de salida (Solo pregunta desde dónde quieren salir, no ofrezcas transporte).
             4. Destino y Pasajeros (si no lo dijeron).
+            5. Presupuesto aproximado (si es relevante).
 
             CIERRE:
             Una vez que tengas estos datos básicos, CIERRA LA CALIFICACIÓN con este mensaje exacto:
@@ -272,7 +274,7 @@ class AiConciergeService
             $prompt = "Analiza el historial y extrae JSON estricto:
             - 'destino': Lugar mencionado.
             - 'presupuesto': Monto mencionado.
-            - 'pasajeros': Cantidad.
+            - 'pasajeros': Cantidad exacta como texto (Ej: '4 adultos, 3 niños'. IMPORTANTE: NO juntes ni sumes los números, dejalo como string descriptivo).
             - 'nombre': Nombre del usuario si se presentó (ej: 'Hola soy Juan' → 'Juan').
             - 'resumen': Resumen corto INCLUYENDO: fechas/quincena, noches y ciudad de salida si están.
             - 'requiere_atencion': true si pide humano o parece molesto.

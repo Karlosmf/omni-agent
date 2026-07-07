@@ -119,6 +119,25 @@ class TravelPackageForm
                                     ->rows(2)
                                     ->maxLength(500)
                                     ->helperText('Breve descripción para la tarjeta del listado o para dar una idea general rápida.'),
+                                FileUpload::make('cover_image')
+                                    ->label('Imagen de Portada (Obligatoria)')
+                                    ->required()
+                                    ->image()
+                                    ->disk('uploads')
+                                    ->saveUploadedFileUsing(function (UploadedFile $file): string {
+                                        $manager = new ImageManager(new Driver);
+                                        $image = $manager->decode($file->getRealPath());
+                                        $encoded = $image->encode(new WebpEncoder(90));
+                                        $filename = Str::random(40).'.webp';
+
+                                        Storage::disk('uploads')->put('ideas/'.$filename, (string) $encoded);
+
+                                        return 'ideas/'.$filename;
+                                    })
+                                    ->imageResizeMode('cover')
+                                    ->imageCropAspectRatio('16:9')
+                                    ->imageResizeTargetWidth('1200')
+                                    ->imageResizeTargetHeight('675'),
                             ]),
 
                         Tabs\Tab::make('Descripción Extendida')
@@ -215,24 +234,6 @@ class TravelPackageForm
 
                         Tabs\Tab::make('Imágenes')
                             ->schema([
-                                FileUpload::make('cover_image')
-                                    ->label('Imagen de Portada')
-                                    ->image()
-                                    ->disk('uploads')
-                                    ->saveUploadedFileUsing(function (UploadedFile $file): string {
-                                        $manager = new ImageManager(new Driver);
-                                        $image = $manager->decode($file->getRealPath());
-                                        $encoded = $image->encode(new WebpEncoder(90));
-                                        $filename = Str::random(40).'.webp';
-
-                                        Storage::disk('uploads')->put('ideas/'.$filename, (string) $encoded);
-
-                                        return 'ideas/'.$filename;
-                                    })
-                                    ->imageResizeMode('cover')
-                                    ->imageCropAspectRatio('16:9')
-                                    ->imageResizeTargetWidth('1200')
-                                    ->imageResizeTargetHeight('675'),
                                 FileUpload::make('gallery')
                                     ->label('Galería de Fotos')
                                     ->image()
