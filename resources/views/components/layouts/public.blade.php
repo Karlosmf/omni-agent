@@ -15,6 +15,7 @@
     <link href="https://fonts.bunny.net/css?family=outfit:300,400,500,600,700" rel="stylesheet" />
 
     <!-- Tailwind / Vite -->
+    @filamentStyles
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @else
@@ -94,21 +95,24 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
-                <div class="flex-shrink-0 flex items-center gap-3">
-                    @if($agencySettings?->logotipo_path || $agencySettings?->isotipo_path)
-                        @if($agencySettings?->logotipo_path)
-                            <img class="h-12 w-auto hidden md:block" src="{{ get_agency_logotipo_url() }}" alt="{{ $agencySettings->company_name }}">
+                <div class="flex-shrink-0 flex items-center h-full gap-3">
+                    <a href="{{ url('/') }}" class="flex items-center h-full gap-3">
+                        @if($agencySettings?->logotipo_path || $agencySettings?->isotipo_path)
+                            @if($agencySettings?->logotipo_path)
+                                <img class="h-full w-auto object-contain hidden md:block" src="{{ get_agency_logotipo_url() }}" alt="{{ $agencySettings->company_name }}">
+                            @endif
+                            @if($agencySettings?->isotipo_path)
+                                <img class="h-full w-auto object-contain {{ $agencySettings?->logotipo_path ? 'md:hidden' : '' }}" src="{{ get_agency_isotipo_url() }}" alt="{{ $agencySettings->company_name }}">
+                            @endif
+                        @else
+                            <span class="text-xl font-bold text-gray-900">{{ $agencySettings?->company_name ?? config('app.name') }}</span>
                         @endif
-                        @if($agencySettings?->isotipo_path)
-                            <img class="h-12 w-auto {{ $agencySettings?->logotipo_path ? 'md:hidden' : '' }}" src="{{ get_agency_isotipo_url() }}" alt="{{ $agencySettings->company_name }}">
-                        @endif
-                    @else
-                        <span class="text-xl font-bold text-gray-900">{{ $agencySettings?->company_name ?? config('app.name') }}</span>
-                    @endif
+                    </a>
                 </div>
 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-6 lg:space-x-8">
+                    <a href="{{ url('/') }}" class="text-gray-600 hover:text-amber-600 font-medium transition-colors">Inicio</a>
                     <a href="{{ route('pages.quienes-somos') }}" class="text-gray-600 hover:text-amber-600 font-medium transition-colors">Quiénes Somos</a>
                     <div class="relative group" @click.away="showPolicies = false" x-data="{ showPolicies: false }">
                         <button @click="showPolicies = !showPolicies" class="text-gray-600 hover:text-amber-600 font-medium transition-colors flex items-center gap-1">
@@ -222,6 +226,7 @@
             x-transition:leave-end="opacity-0 -translate-y-2"
             class="md:hidden bg-white border-t border-gray-100 shadow-lg" style="display: none;">
             <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="{{ url('/') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-600 hover:bg-amber-50">Inicio</a>
                 <a href="{{ route('pages.quienes-somos') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-600 hover:bg-amber-50">Quiénes Somos</a>
                 <div x-data="{ open: false }">
                     <button @click="open = !open" class="flex w-full items-center justify-between px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-600 hover:bg-amber-50">
@@ -401,6 +406,7 @@
         {!! $agencySettings->footer_scripts !!}
     @endif
     @livewireScripts
+    @filamentScripts
 </body>
 
 </html>

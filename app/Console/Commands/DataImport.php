@@ -33,16 +33,12 @@ class DataImport extends Command
         $fileName = $this->argument('file');
 
         if (! $fileName) {
-            if (File::exists(base_path('source.sql'))) {
-                $fileName = 'source.sql';
-            } else {
-                $fileName = text(
-                    label: '¿Cuál es el nombre del archivo SQL a importar?',
-                    placeholder: 'source.sql',
-                    default: 'source.sql',
-                    required: true
-                );
-            }
+            $fileName = text(
+                label: '¿Cuál es el nombre del archivo SQL a importar?',
+                placeholder: 'source.sql',
+                default: 'source.sql',
+                required: true
+            );
         }
 
         $filePath = base_path($fileName);

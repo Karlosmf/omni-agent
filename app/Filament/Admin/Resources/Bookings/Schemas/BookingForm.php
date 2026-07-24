@@ -20,6 +20,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -97,6 +98,30 @@ class BookingForm
                                                 $aiData = $lead->ai_data ?? [];
                                                 if (! empty($aiData['destino'])) {
                                                     $set('destination', $aiData['destino']);
+                                                } elseif (! empty($aiData['destination'])) {
+                                                    $set('destination', $aiData['destination']);
+                                                }
+                                                if (isset($aiData['pasajeros'])) {
+                                                    $rawPass = $aiData['pasajeros'];
+                                                } elseif (isset($aiData['passengers'])) {
+                                                    $rawPass = $aiData['passengers'];
+                                                } else {
+                                                    $rawPass = null;
+                                                }
+
+                                                if ($rawPass !== null) {
+                                                    session()->flash('lead_original_passengers', $rawPass);
+                                                    if (is_numeric(trim($rawPass))) {
+                                                        $set('passengers', (int) $rawPass);
+                                                    } else {
+                                                        preg_match_all("/(\d+)\s*(adultos?|niñ[os|as]+|ninos?|menores?|bebes?|bebés?|pasajeros?|personas?|menor)/i", $rawPass, $matches);
+                                                        if (! empty($matches[1])) {
+                                                            $set('passengers', array_sum($matches[1]));
+                                                        } else {
+                                                            preg_match("/\d+/", $rawPass, $firstNum);
+                                                            $set('passengers', ! empty($firstNum) ? (int) $firstNum[0] : 1);
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
@@ -115,7 +140,44 @@ class BookingForm
                                     ->label('Noches')
                                     ->numeric(),
                                 TextInput::make('passengers')
-                                    ->label('Pasajeros')
+                                    ->label(function (Get $get, ?Model $record) {
+                                        $original = session('lead_original_passengers');
+
+                                        if (! $original && $record && isset($record->lead_id)) {
+                                            $lead = Lead::find($record->lead_id);
+                                            if ($lead) {
+                                                $original = $lead->ai_data['pasajeros'] ?? $lead->ai_data['passengers'] ?? null;
+                                            }
+                                        }
+
+                                        if (! $original && $get('lead_id')) {
+                                            $lead = Lead::find($get('lead_id'));
+                                            if ($lead) {
+                                                $original = $lead->ai_data['pasajeros'] ?? $lead->ai_data['passengers'] ?? null;
+                                            }
+                                        }
+
+                                        return $original ? "Pasajeros ({$original})" : 'Pasajeros';
+                                    })
+                                    ->helperText(function (Get $get, ?Model $record) {
+                                        $original = session('lead_original_passengers');
+
+                                        if (! $original && $record && isset($record->lead_id)) {
+                                            $lead = Lead::find($record->lead_id);
+                                            if ($lead) {
+                                                $original = $lead->ai_data['pasajeros'] ?? $lead->ai_data['passengers'] ?? null;
+                                            }
+                                        }
+
+                                        if (! $original && $get('lead_id')) {
+                                            $lead = Lead::find($get('lead_id'));
+                                            if ($lead) {
+                                                $original = $lead->ai_data['pasajeros'] ?? $lead->ai_data['passengers'] ?? null;
+                                            }
+                                        }
+
+                                        return $original ? "Detalle de consulta: {$original}" : null;
+                                    })
                                     ->numeric()
                                     ->default(2),
                                 DatePicker::make('valid_until')

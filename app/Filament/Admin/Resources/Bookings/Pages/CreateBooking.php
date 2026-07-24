@@ -59,10 +59,19 @@ class CreateBooking extends CreateRecord
                 $data['destination'] = $aiData['destino'];
             }
 
-            if (isset($aiData['passengers'])) {
-                $data['passengers'] = (int) filter_var($aiData['passengers'], FILTER_SANITIZE_NUMBER_INT);
-            } elseif (isset($aiData['pasajeros'])) {
-                $data['passengers'] = (int) filter_var($aiData['pasajeros'], FILTER_SANITIZE_NUMBER_INT);
+            $rawPassengers = $aiData['pasajeros'] ?? $aiData['passengers'] ?? null;
+            if ($rawPassengers !== null) {
+                if (is_numeric(trim($rawPassengers))) {
+                    $data['passengers'] = (int) $rawPassengers;
+                } else {
+                    preg_match_all("/(\d+)\s*(adultos?|niñ[os|as]+|ninos?|menores?|bebes?|bebés?|pasajeros?|personas?|menor)/i", $rawPassengers, $matches);
+                    if (! empty($matches[1])) {
+                        $data['passengers'] = array_sum($matches[1]);
+                    } else {
+                        preg_match("/\d+/", $rawPassengers, $firstNum);
+                        $data['passengers'] = ! empty($firstNum) ? (int) $firstNum[0] : 1;
+                    }
+                }
             }
 
             // Travel Date
@@ -78,6 +87,12 @@ class CreateBooking extends CreateRecord
             // Holder Name from Customer
             if ($lead->customer) {
                 $data['holder_name'] = $lead->customer->name;
+            }
+
+            // Guardamos el string original de pasajeros del lead para que el Schema pueda leerlo dinámicamente
+            $originalPassengersInfo = $aiData['pasajeros'] ?? $aiData['passengers'] ?? null;
+            if ($originalPassengersInfo) {
+                session()->flash('lead_original_passengers', $originalPassengersInfo);
             }
         } elseif (isset($data['customer_id'])) {
             // Fallback if no lead but customer exists

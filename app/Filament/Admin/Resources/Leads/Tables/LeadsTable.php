@@ -101,16 +101,27 @@ class LeadsTable
                         ->icon('heroicon-o-folder-plus')
                         ->color('primary')
                         ->action(function (Lead $record) {
-                            $booking = Booking::create([
-                                'lead_id' => $record->id,
-                                'customer_id' => $record->customer_id,
-                                'holder_name' => $record->customer?->name ?? 'A definir',
-                                'destination' => $record->ai_data['destino'] ?? null,
-                                'passengers' => $record->ai_data['pasajeros'] ?? 1,
-                                'status' => BookingStatus::Borrador,
-                                'travel_date' => now()->addMonths(1),
-                                'valid_until' => now()->addDays(7),
-                            ]);
+                            if ($record->travelPackage && $record->customer) {
+                                $service = app(\App\Services\BudgetGenerationService::class);
+                                $booking = $service->clonePackageToBudget(
+                                    $record->travelPackage,
+                                    $record->customer,
+                                    $record->id,
+                                    null,
+                                    $record->ai_data['pasajeros'] ?? 1
+                                );
+                            } else {
+                                $booking = Booking::create([
+                                    'lead_id' => $record->id,
+                                    'customer_id' => $record->customer_id,
+                                    'holder_name' => $record->customer?->name ?? 'A definir',
+                                    'destination' => $record->ai_data['destino'] ?? null,
+                                    'passengers' => $record->ai_data['pasajeros'] ?? 1,
+                                    'status' => BookingStatus::Borrador,
+                                    'travel_date' => now()->addMonths(1),
+                                    'valid_until' => now()->addDays(7),
+                                ]);
+                            }
                             $record->update(['status' => LeadStatus::Closed]);
 
                             return redirect()->to(BookingResource::getUrl('edit', ['record' => $booking->id]));

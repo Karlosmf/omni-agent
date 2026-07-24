@@ -161,6 +161,32 @@
         </table>
     </div>
 
+    @if(isset($format) && $format === 'full')
+        @if(isset($travelPackage))
+            <div class="section" style="margin-top: 30px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; padding-bottom: 20px;">
+                @if($travelPackage->cover_image)
+                    <div style="width: 100%; max-height: 300px; overflow: hidden; background-color: #f5f5f5; text-align: center;">
+                        <img src="{{ storage_path('app/public/' . $travelPackage->cover_image) }}" style="width: 100%;">
+                    </div>
+                @endif
+                <div style="padding: 20px;">
+                    <h2 style="color: #075E54; margin-top: 0; font-size: 24px; border-bottom: 2px solid #075E54; padding-bottom: 10px;">{{ $travelPackage->title }}</h2>
+                    <div style="font-size: 13px; line-height: 1.6; color: #444;">
+                        <h4 style="color: #075E54; margin-bottom: 5px;">Itinerario y Detalles</h4>
+                        {!! nl2br(e($booking->notes)) !!}
+                    </div>
+                </div>
+            </div>
+        @elseif(!empty($booking->notes))
+            <div class="section">
+                <div class="title">Detalles de la Idea de Viaje</div>
+                <div style="font-size: 12px; line-height: 1.5;">
+                    {!! nl2br(e($booking->notes)) !!}
+                </div>
+            </div>
+        @endif
+    @endif
+
     @if($booking->transactions->isNotEmpty())
         <div class="section">
             <div class="title">Pagos Registrados</div>

@@ -136,12 +136,33 @@ class BookingsTable
                     })
                     ->openUrlInNewTab(),
                 Action::make('pdf')
-                    ->label('Presupuesto')
+                    ->label('Descargar PDF')
                     ->icon('heroicon-o-document-arrow-down')
-                    ->color('success')
-                    ->action(function ($record) {
-                        return response()->streamDownload(function () use ($record) {
-                            echo Pdf::loadView('pdf.booking', ['booking' => $record])->output();
+                    ->form([
+                        \Filament\Forms\Components\Radio::make('format')
+                            ->label('Formato del documento')
+                            ->options([
+                                'budget_only' => 'Solo Presupuesto',
+                                'full' => 'Presupuesto + Detalle de la Idea de Viaje',
+                            ])
+                            ->default('budget_only')
+                            ->required(),
+                    ])
+                    ->action(function ($record, array $data) {
+                        return response()->streamDownload(function () use ($record, $data) {
+                            $travelPackage = null;
+                            if ($record->lead?->travelPackage) {
+                                $travelPackage = $record->lead->travelPackage;
+                            } elseif (str_starts_with((string)$record->internal_notes, 'Presupuesto generado a partir de Idea de Viaje: ')) {
+                                $title = str_replace('Presupuesto generado a partir de Idea de Viaje: ', '', $record->internal_notes);
+                                $travelPackage = \App\Models\TravelPackage::where('title', $title)->first();
+                            }
+                            
+                            echo Pdf::loadView('pdf.booking', [
+                                'booking' => $record, 
+                                'format' => $data['format'],
+                                'travelPackage' => $travelPackage
+                            ])->output();
                         }, 'presupuesto-'.$record->file_number.'.pdf');
                     }),
                 Action::make('contract_pdf')
