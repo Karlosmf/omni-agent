@@ -166,7 +166,17 @@
             <div class="section" style="margin-top: 30px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; padding-bottom: 20px;">
                 @if($travelPackage->cover_image)
                     <div style="width: 100%; max-height: 300px; overflow: hidden; background-color: #f5f5f5; text-align: center;">
-                        <img src="{{ storage_path('app/public/' . $travelPackage->cover_image) }}" style="width: 100%;">
+                        @php
+                            $coverPath = public_path('uploads/' . $travelPackage->cover_image);
+                            $coverData = '';
+                            if (file_exists($coverPath)) {
+                                $coverType = pathinfo($coverPath, PATHINFO_EXTENSION);
+                                $coverData = 'data:image/' . $coverType . ';base64,' . base64_encode(file_get_contents($coverPath));
+                            }
+                        @endphp
+                        @if($coverData)
+                            <img src="{{ $coverData }}" style="width: 100%;">
+                        @endif
                     </div>
                 @endif
                 <div style="padding: 20px;">
