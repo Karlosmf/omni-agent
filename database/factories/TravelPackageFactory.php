@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\PriceBasis;
 use App\Models\ServiceType;
 use App\Models\TravelPackage;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -37,6 +38,8 @@ class TravelPackageFactory extends Factory
             'nights' => fake()->numberBetween(3, 14),
             'tags' => fake()->randomElements(['playa', 'aventura', 'familiar', 'all-inclusive', 'cultural', 'crucero', 'luna-de-miel', 'exótico'], fake()->numberBetween(1, 3)),
             'price_from' => fake()->randomFloat(2, 800, 8000),
+            'price_basis' => fake()->randomElement(PriceBasis::cases())->value,
+            'price_basis_min' => fn (array $attrs) => PriceBasis::tryFrom($attrs['price_basis'])?->minimumPassengers() ?? 1,
             'currency' => fake()->randomElement(['USD', 'ARS']),
             'cover_image' => 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800&auto=format&fit=crop',
             'gallery' => [

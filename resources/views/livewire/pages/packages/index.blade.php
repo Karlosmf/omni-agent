@@ -74,7 +74,7 @@ new #[Layout('components.layouts.guest')] class extends Component {
                             </div>
                         @endif
                         <h2 class="text-3xl md:text-5xl font-extrabold leading-tight mb-2">{{ $feat->title }}</h2>
-                        <p class="text-lg text-white/80">{{ $feat->destination }} · {{ $feat->nights }} noches · desde
+                        <p class="text-lg text-white/80">{{ $feat->destination }} · {{ $feat->nights > 0 ? $feat->nights . ' noches' : 'Full Day' }} · desde
                             <span class="text-amber-300 font-bold">{{ $feat->currency }}
                                 {{ number_format($feat->price_from, 0, ',', '.') }}</span>
                         </p>
@@ -185,7 +185,7 @@ new #[Layout('components.layouts.guest')] class extends Component {
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
-                                {{ $package->destination }} · {{ $package->nights }} noches
+                                {{ $package->destination }} · {{ $package->nights > 0 ? $package->nights . ' noches' : 'Full Day' }}
                             </p>
                             @if ($package->tags)
                                 <div class="flex flex-wrap gap-1.5">
@@ -202,7 +202,7 @@ new #[Layout('components.layouts.guest')] class extends Component {
                             <span class="block text-sm font-bold italic text-white/80 mb-1">Desde</span>
                             <span class="block text-3xl font-extrabold text-amber-300 drop-shadow-lg">{{ $package->currency }}
                                 {{ number_format($package->price_from, 0, ',', '.') }}</span>
-                            <span class="block text-xs font-medium text-white/90 drop-shadow-md mt-0.5">{{ ucfirst($package->price_basis) }}</span>
+                            <span class="block text-xs font-medium text-white/90 drop-shadow-md mt-0.5">{{ $package->price_basis?->label() }}</span>
                         </div>
                     </a>
                 @endforeach

@@ -171,7 +171,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
-                                    {{ $package->destination }} · {{ $package->nights }} noches
+                                    {{ $package->destination }} · {{ $package->nights > 0 ? $package->nights . ' noches' : 'Full Day' }}
                                 </p>
                                 @if ($package->tags)
                                     <div class="flex flex-wrap gap-1.5">
@@ -189,7 +189,7 @@
                                 <span
                                     class="block text-3xl font-extrabold text-amber-300 drop-shadow-lg">{{ $package->currency }}
                                     {{ number_format($package->price_from, 0, ',', '.') }}</span>
-                                <span class="block text-xs font-medium text-white/90 drop-shadow-md mt-0.5">{{ ucfirst($package->price_basis) }}</span>
+                                <span class="block text-xs font-medium text-white/90 drop-shadow-md mt-0.5">{{ $package->price_basis?->label() }}</span>
                             </div>
                         </a>
                     @endforeach

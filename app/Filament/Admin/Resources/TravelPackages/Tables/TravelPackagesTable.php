@@ -2,7 +2,9 @@
 
 namespace App\Filament\Admin\Resources\TravelPackages\Tables;
 
+use App\Enums\PriceBasis;
 use App\Enums\UserRole;
+use App\Filament\Admin\Concerns\HasBudgetGenerationModal;
 use App\Filament\Admin\Resources\Bookings\BookingResource;
 use App\Models\TravelPackage;
 use App\Models\User;
@@ -12,7 +14,6 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -55,7 +56,7 @@ class TravelPackagesTable
                 TextColumn::make('nights')
                     ->label('Noches')
                     ->sortable()
-                    ->suffix(' noches'),
+                    ->formatStateUsing(fn (int $state): string => $state > 0 ? "{$state} noches" : 'Full Day'),
                 TextColumn::make('price_from')
                     ->label('Precio Desde')
                     ->money(fn ($record) => $record->currency ?? 'USD')
@@ -79,37 +80,31 @@ class TravelPackagesTable
                     ->label('Presupuestar')
                     ->icon('heroicon-o-currency-dollar')
                     ->color('success')
-                    ->form([
-                        Select::make('customer_id')
-                            ->label('Cliente')
-                            ->options(User::where('role', UserRole::Customer)->pluck('name', 'id'))
-                            ->searchable()
-                            ->preload()
-                            ->required()
-                            ->createOptionForm([
-                                TextInput::make('name')
-                                    ->label('Nombre')
-                                    ->required(),
-                                TextInput::make('phone')
-                                    ->label('Teléfono')
-                                    ->required(),
-                            ])
-                            ->createOptionUsing(function (array $data): int {
-                                $data['role'] = UserRole::Customer;
-                                $data['password'] = Hash::make(Str::random(12));
+                    ->form(function (TravelPackage $record): array {
+                        return [
+                            Select::make('customer_id')
+                                ->label('Cliente')
+                                ->options(User::where('role', UserRole::Customer)->pluck('name', 'id'))
+                                ->searchable()
+                                ->preload()
+                                ->required()
+                                ->createOptionForm([
+                                    TextInput::make('name')
+                                        ->label('Nombre')
+                                        ->required(),
+                                    TextInput::make('phone')
+                                        ->label('Teléfono')
+                                        ->required(),
+                                ])
+                                ->createOptionUsing(function (array $data): int {
+                                    $data['role'] = UserRole::Customer;
+                                    $data['password'] = Hash::make(Str::random(12));
 
-                                return User::create($data)->id;
-                            }),
-                        DatePicker::make('travel_date')
-                            ->label('Fecha Estimada de Viaje')
-                            ->default(now()->addMonths(3))
-                            ->required(),
-                        TextInput::make('passengers')
-                            ->label('Cantidad de Pasajeros')
-                            ->numeric()
-                            ->default(2)
-                            ->required(),
-                    ])
+                                    return User::create($data)->id;
+                                }),
+                            ...HasBudgetGenerationModal::schema($record),
+                        ];
+                    })
                     ->action(function (TravelPackage $record, array $data) {
                         $customer = User::find($data['customer_id']);
                         if (! $customer) {
@@ -126,7 +121,11 @@ class TravelPackagesTable
                             $record,
                             $customer,
                             travelDate: $data['travel_date'],
-                            passengers: $data['passengers']
+                            passengers: null,
+                            priceOverride: isset($data['price_override']) ? (float) $data['price_override'] : null,
+                            basisOverride: PriceBasis::tryFrom($data['basis_override'] ?? '') ?: null,
+                            adults: (int) ($data['adults'] ?? 1),
+                            children: (array) ($data['children'] ?? []),
                         );
 
                         Notification::make()

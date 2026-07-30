@@ -2,6 +2,8 @@
 
 namespace App\Filament\Admin\Resources\Customers\Pages;
 
+use App\Enums\PriceBasis;
+use App\Filament\Admin\Concerns\HasBudgetGenerationModal;
 use App\Filament\Admin\Resources\Bookings\BookingResource;
 use App\Filament\Admin\Resources\Customers\CustomerResource;
 use App\Models\TravelPackage;
@@ -9,9 +11,7 @@ use App\Models\User;
 use App\Services\BudgetGenerationService;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Support\Enums\Width;
@@ -37,23 +37,22 @@ class EditCustomer extends EditRecord
                 ->label('Crear desde Idea de Viaje')
                 ->icon('heroicon-o-sparkles')
                 ->color('success')
-                ->form([
-                    Select::make('travel_package_id')
-                        ->label('Seleccionar Idea de Viaje')
-                        ->options(TravelPackage::pluck('title', 'id'))
-                        ->searchable()
-                        ->preload()
-                        ->required(),
-                    DatePicker::make('travel_date')
-                        ->label('Fecha Estimada de Viaje')
-                        ->default(now()->addMonths(3))
-                        ->required(),
-                    TextInput::make('passengers')
-                        ->label('Cantidad de Pasajeros')
-                        ->numeric()
-                        ->default(2)
-                        ->required(),
-                ])
+                ->form(function (): array {
+                    return [
+                        Select::make('travel_package_id')
+                            ->label('Seleccionar Idea de Viaje')
+                            ->options(TravelPackage::pluck('title', 'id'))
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->live(),
+                        ...HasBudgetGenerationModal::schema(null),
+                    ];
+                })
+                ->mountUsing(function ($form) {
+                    // Re-fill price/basis when the package selection changes
+                    $form->fill([]);
+                })
                 ->action(function (array $data, User $record) {
                     $package = TravelPackage::find($data['travel_package_id']);
                     $service = app(BudgetGenerationService::class);
@@ -61,7 +60,11 @@ class EditCustomer extends EditRecord
                         $package,
                         $record,
                         travelDate: $data['travel_date'],
-                        passengers: $data['passengers']
+                        passengers: null,
+                        priceOverride: isset($data['price_override']) ? (float) $data['price_override'] : null,
+                        basisOverride: PriceBasis::tryFrom($data['basis_override'] ?? '') ?: null,
+                        adults: (int) ($data['adults'] ?? 1),
+                        children: (array) ($data['children'] ?? []),
                     );
 
                     Notification::make()

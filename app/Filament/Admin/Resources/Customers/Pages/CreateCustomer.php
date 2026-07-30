@@ -59,7 +59,17 @@ class CreateCustomer extends CreateRecord
 
                 if ($lead->travel_package_id) {
                     $service = app(BudgetGenerationService::class);
-                    $service->clonePackageToBudget($lead->travelPackage, $this->record, $lead->id);
+                    $service->clonePackageToBudget(
+                        $lead->travelPackage,
+                        $this->record,
+                        $lead->id,
+                        travelDate: null,
+                        passengers: null,
+                        priceOverride: null,
+                        basisOverride: null,
+                        adults: (int) ($lead->ai_data['pasajeros'] ?? 2),
+                        children: [],
+                    );
 
                     Notification::make()
                         ->title('Presupuesto Creado')

@@ -37,7 +37,8 @@ new #[Layout('components.layouts.guest')] class extends Component
             'accept_policies.accepted' => 'Debes aceptar las políticas de privacidad.',
         ]);
 
-        $fullMessage = "Consulta por paquete: {$this->package->title} ({$this->package->nights} noches, {$this->package->destination}).\n".
+        $duracion = $this->package->nights > 0 ? "{$this->package->nights} noches" : "Full Day";
+        $fullMessage = "Consulta por paquete: {$this->package->title} ({$duracion}, {$this->package->destination}).\n".
                        'Mensaje del cliente: '.($this->message ?: 'Sin comentarios adicionales.');
 
         $captureLeadAction = app(\App\Actions\Leads\CaptureLeadAction::class);
@@ -152,7 +153,7 @@ new #[Layout('components.layouts.guest')] class extends Component
                             {{ $package->destination }}
                         </span>
                         <span class="text-white/40">·</span>
-                        <span>{{ $package->nights }} noches</span>
+                        <span>{{ $package->nights > 0 ? $package->nights . ' noches' : 'Full Day (Sin noches)' }}</span>
                     </p>
                 </div>
             </div>
@@ -225,7 +226,7 @@ new #[Layout('components.layouts.guest')] class extends Component
                                 <p class="text-4xl font-extrabold mt-1">{{ $package->currency }}
                                     {{ number_format($package->price_from, 0, ',', '.') }}
                                 </p>
-                                <p class="text-sm text-white/70 mt-1">{{ ucfirst($package->price_basis) }}</p>
+                                <p class="text-sm text-white/70 mt-1">{{ $package->price_basis?->label() }}</p>
                             </div>
 
                             <div class="p-6 space-y-4">

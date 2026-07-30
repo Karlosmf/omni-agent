@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 
 use function Laravel\Prompts\confirm;
@@ -125,6 +126,14 @@ class ExportSqliteToMysql extends Command
 
                 $sql .= "\n";
             }
+        }
+
+        if (confirm('¿Deseas agregar el usuario admin por defecto (admin@admin.com / admin123) al archivo SQL?', true)) {
+            $password = Hash::make('admin123');
+            $date = now()->format('Y-m-d H:i:s');
+            $sql .= "\n-- Inyectando usuario admin por defecto\n";
+            $sql .= "DELETE FROM `users` WHERE `email` = 'admin@admin.com';\n";
+            $sql .= "INSERT INTO `users` (`name`, `email`, `password`, `role`, `created_at`, `updated_at`) VALUES ('Admin', 'admin@admin.com', '{$password}', 'admin', '{$date}', '{$date}');\n";
         }
 
         $sql .= "SET FOREIGN_KEY_CHECKS=1;\n";
