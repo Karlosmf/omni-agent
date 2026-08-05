@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Pages;
 
+use App\Enums\AiProvider;
 use App\Models\AgencySetting;
 use Filament\Actions\Action;
 use Filament\Forms\Components\ColorPicker;
@@ -11,6 +12,7 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
@@ -99,12 +101,35 @@ class ManageAgencySettings extends Page implements HasForms
                                                     ->label('Nombre de la Asistente Virtual')
                                                     ->placeholder('Ej: Brisa')
                                                     ->required(),
-                                                TextInput::make('gemini_api_key')
-                                                    ->label('Gemini API Key')
-                                                    ->placeholder('AIzaSy...')
-                                                    ->helperText('Si se deja en blanco, se desactivará la IA y se mostrarán FAQs.')
+                                                ToggleButtons::make('ai_provider')
+                                                    ->label('Proveedor de IA')
+                                                    ->options(AiProvider::class)
+                                                    ->default(AiProvider::None)
+                                                    ->inline()
+                                                    ->live()
+                                                    ->columnSpanFull(),
+                                                TextInput::make('ai_api_key')
+                                                    ->label('API Key de IA')
+                                                    ->placeholder(function (Get $get): string {
+                                                        $val = $get('ai_provider');
+                                                        $provider = $val instanceof AiProvider ? $val : AiProvider::tryFrom($val ?? 'none');
+
+                                                        return $provider?->getApiKeyPlaceholder() ?? 'API Key...';
+                                                    })
+                                                    ->helperText(function (Get $get): string {
+                                                        $val = $get('ai_provider');
+                                                        $provider = $val instanceof AiProvider ? $val : AiProvider::tryFrom($val ?? 'none');
+
+                                                        return $provider?->getHelperText() ?? '';
+                                                    })
                                                     ->password()
                                                     ->revealable()
+                                                    ->visible(function (Get $get): bool {
+                                                        $val = $get('ai_provider');
+                                                        $val = $val instanceof AiProvider ? $val->value : ($val ?? 'none');
+
+                                                        return $val !== 'none';
+                                                    })
                                                     ->columnSpanFull(),
                                             ]),
 

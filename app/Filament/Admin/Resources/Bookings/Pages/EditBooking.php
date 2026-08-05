@@ -4,17 +4,27 @@ namespace App\Filament\Admin\Resources\Bookings\Pages;
 
 use App\Enums\BookingStatus;
 use App\Filament\Admin\Resources\Bookings\BookingResource;
+use App\Filament\Admin\Resources\Bookings\Widgets\BookingFinancialSummary;
 use App\Models\AgencySetting;
 use App\Models\Booking;
 use App\Models\Lead;
+use App\Models\TravelPackage;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
+use Filament\Forms\Components\Radio;
 use Filament\Resources\Pages\EditRecord;
 
 class EditBooking extends EditRecord
 {
     protected static string $resource = BookingResource::class;
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            BookingFinancialSummary::class,
+        ];
+    }
 
     protected function getHeaderActions(): array
     {
@@ -40,7 +50,7 @@ class EditBooking extends EditRecord
                 ->label('Presupuesto (PDF)')
                 ->icon('heroicon-o-document-arrow-down')
                 ->form([
-                    \Filament\Forms\Components\Radio::make('format')
+                    Radio::make('format')
                         ->label('Formato del documento')
                         ->options([
                             'budget_only' => 'Solo Presupuesto',
@@ -54,15 +64,15 @@ class EditBooking extends EditRecord
                         $travelPackage = null;
                         if ($record->lead?->travelPackage) {
                             $travelPackage = $record->lead->travelPackage;
-                        } elseif (str_starts_with((string)$record->internal_notes, 'Presupuesto generado a partir de Idea de Viaje: ')) {
+                        } elseif (str_starts_with((string) $record->internal_notes, 'Presupuesto generado a partir de Idea de Viaje: ')) {
                             $title = str_replace('Presupuesto generado a partir de Idea de Viaje: ', '', $record->internal_notes);
-                            $travelPackage = \App\Models\TravelPackage::where('title', $title)->first();
+                            $travelPackage = TravelPackage::where('title', $title)->first();
                         }
-                        
+
                         echo Pdf::loadView('pdf.booking', [
-                            'booking' => $record, 
+                            'booking' => $record,
                             'format' => $data['format'],
-                            'travelPackage' => $travelPackage
+                            'travelPackage' => $travelPackage,
                         ])->output();
                     }, 'presupuesto-'.$record->file_number.'.pdf');
                 }),

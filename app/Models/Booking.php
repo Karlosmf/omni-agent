@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Booking extends Model
 {
@@ -37,13 +38,19 @@ class Booking extends Model
 
                 $booking->file_number = $prefix.str_pad($number, 5, '0', STR_PAD_LEFT);
             }
+
+            if (empty($booking->public_token)) {
+                $booking->public_token = Str::random(48);
+            }
         });
     }
 
     protected $fillable = [
         'lead_id',
         'customer_id',
+        'agent_id',
         'file_number',
+        'public_token',
         'holder_name',
         'destination',
         'nights',
@@ -58,6 +65,7 @@ class Booking extends Model
         'valid_until',
         'internal_notes',
         'notes',
+        'vouchers',
     ];
 
     protected $casts = [
@@ -68,6 +76,7 @@ class Booking extends Model
         'total_sell' => 'decimal:2',
         'profit' => 'decimal:2',
         'exchange_rate' => 'decimal:2',
+        'vouchers' => 'array',
     ];
 
     public function lead(): BelongsTo
@@ -80,6 +89,11 @@ class Booking extends Model
         return $this->belongsTo(User::class, 'customer_id');
     }
 
+    public function agent(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'agent_id');
+    }
+
     public function items(): HasMany
     {
         return $this->hasMany(BookingItem::class);
@@ -90,7 +104,12 @@ class Booking extends Model
         return $this->hasMany(BookingPassenger::class);
     }
 
-    public function transactions(): HasMany
+    public function itineraryDays()
+    {
+        return $this->hasMany(ItineraryDay::class)->orderBy('day_number');
+    }
+
+    public function transactions()
     {
         return $this->hasMany(Transaction::class);
     }
@@ -103,5 +122,17 @@ class Booking extends Model
     public function calculateProfit(): float
     {
         return (float) ($this->total_sell - $this->total_cost);
+    }
+
+    /**
+     * Get the public shareable URL for this booking proposal.
+     */
+    public function publicUrl(): string
+    {
+        if (empty($this->public_token)) {
+            $this->update(['public_token' => Str::random(48)]);
+        }
+
+        return route('booking.public', $this->public_token);
     }
 }

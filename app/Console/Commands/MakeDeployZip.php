@@ -98,6 +98,7 @@ class MakeDeployZip extends Command
             Str::startsWith($zipPathInternal, 'storage/app/livewire-tmp/') ||
             Str::startsWith($zipPathInternal, 'bootstrap/cache/') ||
             Str::startsWith($zipPathInternal, 'public/storage') ||
+            Str::startsWith($zipPathInternal, 'public/uploads/') ||
             Str::endsWith($zipPathInternal, '.zip') ||
             Str::endsWith($zipPathInternal, '.sql') ||
             Str::endsWith($zipPathInternal, '.sqlite') ||
@@ -183,7 +184,7 @@ class MakeDeployZip extends Command
             'storage/logs/*', 'storage/framework/cache/data/*',
             'storage/framework/sessions/*', 'storage/framework/views/*',
             'storage/app/private/*', 'storage/app/livewire-tmp/*',
-            'bootstrap/cache/*', 'public/storage',
+            'bootstrap/cache/*', 'public/storage', 'public/uploads/*',
             '*.zip', '*.sql', '*.sqlite',
             '.agents', '.claude', '.gemini', '.vscode', '.postman',
             '.DS_Store', 'Thumbs.db',

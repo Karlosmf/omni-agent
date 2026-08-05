@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Leads\Schemas;
 
 use App\Enums\LeadStatus;
+use App\Enums\UserRole;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -41,6 +42,12 @@ class LeadForm
                                     ->label('Estado de la Consulta')
                                     ->options(LeadStatus::class)
                                     ->required(),
+                                Select::make('agent_id')
+                                    ->label('Agente Asignado')
+                                    ->relationship('agent', 'name', fn ($query) => $query->where('role', UserRole::Sales)->orWhere('role', UserRole::Admin))
+                                    ->default(fn () => auth()->check() ? auth()->id() : null)
+                                    ->searchable()
+                                    ->preload(),
                             ]),
                     ]),
                 Section::make('Análisis de IA')

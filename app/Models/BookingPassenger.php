@@ -19,6 +19,7 @@ class BookingPassenger extends Model
         'nationality',
         'phone',
         'email',
+        'passport_path',
     ];
 
     protected $casts = [

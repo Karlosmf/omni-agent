@@ -197,6 +197,56 @@
         @endif
     @endif
 
+    @if($booking->itineraryDays && $booking->itineraryDays->isNotEmpty())
+        <div class="section" style="page-break-inside: avoid; page-break-before: auto;">
+            <div class="title" style="color: #075E54; border-bottom: 2px solid #075E54; padding-bottom: 5px; margin-bottom: 15px;">Itinerario del Viaje</div>
+            @foreach($booking->itineraryDays as $day)
+                <div style="margin-bottom: 20px; page-break-inside: avoid;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td width="30" valign="top" style="padding-top: 3px;">
+                                <div style="width: 20px; height: 20px; background-color: #075E54; color: white; border-radius: 10px; text-align: center; line-height: 20px; font-weight: bold; font-size: 10px;">{{ $day->day_number }}</div>
+                            </td>
+                            <td valign="top">
+                                <div style="font-weight: bold; font-size: 14px; margin-bottom: 3px;">
+                                    {{ $day->title }}
+                                </div>
+                                @if($day->date || $day->location)
+                                    <div style="font-size: 10px; color: #666; margin-bottom: 8px;">
+                                        @if($day->date)
+                                            {{ $day->date->format('d/m/Y') }}
+                                        @endif
+                                        @if($day->date && $day->location) | @endif
+                                        @if($day->location)
+                                            {{ $day->location }}
+                                        @endif
+                                    </div>
+                                @endif
+                                
+                                @if($day->description)
+                                    <div style="font-size: 12px; line-height: 1.5; color: #444; margin-bottom: 10px;">
+                                        {!! nl2br(e($day->description)) !!}
+                                    </div>
+                                @endif
+
+                                @if(is_array($day->services) && count($day->services) > 0)
+                                    <div style="margin-top: 5px; border-top: 1px dashed #ccc; padding-top: 5px;">
+                                        <strong>Servicios del día:</strong>
+                                        <ul style="margin: 5px 0 0 0; padding-left: 20px; font-size: 11px;">
+                                            @foreach($day->services as $service)
+                                                <li>{{ $service['description'] ?? 'Servicio' }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            @endforeach
+        </div>
+    @endif
+
     @if($booking->transactions->isNotEmpty())
         <div class="section">
             <div class="title">Pagos Registrados</div>

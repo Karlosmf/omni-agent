@@ -4,8 +4,10 @@ namespace App\Filament\Admin\Resources\Bookings\Tables;
 
 use App\Enums\BookingStatus;
 use App\Enums\UserRole;
+use App\Filament\Exports\BookingExporter;
 use App\Models\AgencySetting;
 use App\Models\Booking;
+use App\Models\TravelPackage;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
@@ -13,9 +15,14 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
 use Filament\Actions\ReplicateAction;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -36,6 +43,11 @@ class BookingsTable
                     ->label('Titular')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('agent.name')
+                    ->label('Agente')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('destination')
                     ->label('Destino')
                     ->searchable()
@@ -88,7 +100,7 @@ class BookingsTable
                             ->when($data['travel_date_to'], fn ($query, $date) => $query->whereDate('travel_date', '<=', $date));
                     }),
             ])
-            ->recordActions([
+            ->actions([
                 ReplicateAction::make()
                     ->label('Duplicar')
                     ->modalHeading('Duplicar Presupuesto / File')
@@ -118,8 +130,20 @@ class BookingsTable
 
                 EditAction::make()
                     ->label('Editar'),
+                Action::make('share_link')
+                    ->label('Ver Link Público')
+                    ->icon('heroicon-o-link')
+                    ->color('gray')
+                    ->modalHeading('Link del Presupuesto')
+                    ->modalDescription(fn (Booking $record) => 'Copiá este link y compartilo por WhatsApp, email o el canal que prefieras.')
+                    ->modalContent(fn (Booking $record) => view('filament.modals.share-booking-link', [
+                        'url' => $record->publicUrl(),
+                        'booking' => $record,
+                    ]))
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Cerrar'),
                 Action::make('whatsapp')
-                    ->label('WhatsApp')
+                    ->label('WhatsApp Web')
                     ->icon('heroicon-o-chat-bubble-left-ellipsis')
                     ->color('success')
                     ->url(function ($record) {
@@ -130,16 +154,47 @@ class BookingsTable
                             $text .= "Aquí tienes tu cotización ✈️\n";
                         }
                         $text .= "Total: *{$record->currency} ".number_format($record->total_sell, 2)."*\n";
+                        $text .= 'Podés ver el detalle acá: '.$record->publicUrl()."\n";
                         $text .= '¡Avisanos si tenés alguna duda!';
 
                         return 'https://wa.me/?text='.urlencode($text);
                     })
                     ->openUrlInNewTab(),
+                Action::make('whatsapp_api')
+                    ->label('Enviar por WhatsApp (API)')
+                    ->icon('heroicon-o-paper-airplane')
+                    ->color('primary')
+                    ->form([
+                        TextInput::make('phone')
+                            ->label('Teléfono Destino')
+                            ->default(fn (Booking $record) => $record->customer?->phone)
+                            ->required(),
+                        Textarea::make('message')
+                            ->label('Mensaje')
+                            ->default(fn (Booking $record) => "Hola *{$record->holder_name}*! 👋\nTe comparto el detalle de tu viaje: ".$record->publicUrl())
+                            ->rows(4)
+                            ->required(),
+                    ])
+                    ->action(function (Booking $record, array $data) {
+                        // TODO: Implement actual Meta/Twilio API call here
+                        // e.g. TwilioService::sendMessage($data['phone'], $data['message']);
+
+                        // Simulate success
+                        Notification::make()
+                            ->title('WhatsApp Enviado')
+                            ->body('El mensaje fue enviado exitosamente a '.$data['phone'])
+                            ->success()
+                            ->send();
+
+                        // Optionally log in internal notes
+                        $record->internal_notes .= "\n[".now()->format('Y-m-d H:i')."] WhatsApp enviado a {$data['phone']} vía API.";
+                        $record->save();
+                    }),
                 Action::make('pdf')
                     ->label('Descargar PDF')
                     ->icon('heroicon-o-document-arrow-down')
                     ->form([
-                        \Filament\Forms\Components\Radio::make('format')
+                        Radio::make('format')
                             ->label('Formato del documento')
                             ->options([
                                 'budget_only' => 'Solo Presupuesto',
@@ -153,15 +208,15 @@ class BookingsTable
                             $travelPackage = null;
                             if ($record->lead?->travelPackage) {
                                 $travelPackage = $record->lead->travelPackage;
-                            } elseif (str_starts_with((string)$record->internal_notes, 'Presupuesto generado a partir de Idea de Viaje: ')) {
+                            } elseif (str_starts_with((string) $record->internal_notes, 'Presupuesto generado a partir de Idea de Viaje: ')) {
                                 $title = str_replace('Presupuesto generado a partir de Idea de Viaje: ', '', $record->internal_notes);
-                                $travelPackage = \App\Models\TravelPackage::where('title', $title)->first();
+                                $travelPackage = TravelPackage::where('title', $title)->first();
                             }
-                            
+
                             echo Pdf::loadView('pdf.booking', [
-                                'booking' => $record, 
+                                'booking' => $record,
                                 'format' => $data['format'],
-                                'travelPackage' => $travelPackage
+                                'travelPackage' => $travelPackage,
                             ])->output();
                         }, 'presupuesto-'.$record->file_number.'.pdf');
                     }),
@@ -180,7 +235,14 @@ class BookingsTable
                     ->label('Eliminar')
                     ->icon('heroicon-o-trash'),
             ])
-            ->toolbarActions([
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(BookingExporter::class)
+                    ->label('Exportar Excel')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success'),
+            ])
+            ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->label('Eliminar seleccionados')

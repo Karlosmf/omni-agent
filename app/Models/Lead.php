@@ -4,13 +4,16 @@ namespace App\Models;
 
 use App\Enums\LeadStatus;
 use App\Enums\LeadTemperature;
+use App\Observers\LeadObserver;
 use Database\Factories\LeadFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+#[ObservedBy(LeadObserver::class)]
 class Lead extends Model
 {
     /** @use HasFactory<LeadFactory> */
@@ -18,6 +21,7 @@ class Lead extends Model
 
     protected $fillable = [
         'customer_id',
+        'agent_id',
         'source',
         'travel_package_id',
         'status',
@@ -39,6 +43,11 @@ class Lead extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'customer_id');
+    }
+
+    public function agent(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'agent_id');
     }
 
     public function booking(): HasOne

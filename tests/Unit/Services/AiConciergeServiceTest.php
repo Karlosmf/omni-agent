@@ -12,7 +12,7 @@ use Tests\TestCase;
 uses(TestCase::class, RefreshDatabase::class);
 
 beforeEach(function () {
-    AgencySetting::factory()->create(['gemini_api_key' => 'fake_api_key']);
+    AgencySetting::factory()->create(['ai_provider' => 'gemini', 'gemini_api_key' => 'fake_api_key', 'ai_api_key' => 'fake_api_key']);
 });
 
 test('it processes message successfully and saves history', function () {
@@ -25,7 +25,7 @@ test('it processes message successfully and saves history', function () {
     $mockModel->shouldReceive('generateContent')->once()->andReturn($mockResponse);
 
     $mockClient = Mockery::mock();
-    $mockClient->shouldReceive('generativeModel')->with('models/gemini-flash-latest')->once()->andReturn($mockModel);
+    $mockClient->shouldReceive('generativeModel')->with('models/gemini-2.0-flash')->once()->andReturn($mockModel);
 
     Gemini::swap($mockClient);
 
@@ -85,6 +85,7 @@ test('it updates temperature to hot on human request', function () {
 
 test('it handles errors gracefully', function () {
     $lead = Lead::factory()->create();
+    Log::shouldReceive('warning')->times(3); // Since we added retry, it logs warning then exception
     Log::shouldReceive('error')->once();
 
     $mockClient = Mockery::mock();
@@ -98,18 +99,18 @@ test('it handles errors gracefully', function () {
     expect($response)->toBe('Disculpá, estoy teniendo un pequeño problema técnico. ¿Podés intentar de nuevo en unos segundos? 🙏');
 });
 
-test('it returns FAQ when Gemini API key is missing', function () {
+test('it returns fallback when Gemini API key is missing', function () {
     $lead = Lead::factory()->create();
 
     // Set empty API key
     $settings = AgencySetting::first();
+    $settings->ai_provider = 'none';
     $settings->gemini_api_key = null;
+    $settings->ai_api_key = null;
     $settings->save();
-
-    Log::shouldReceive('error')->once();
 
     $service = new AiConciergeService;
     $response = $service->processMessage('Hola', $lead);
 
-    expect($response)->toContain('PREGUNTAS FRECUENTES:');
+    expect($response)->toBe('Gracias por la información. En breve nos comunicaremos con vos.');
 });

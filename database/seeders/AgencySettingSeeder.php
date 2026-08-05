@@ -19,6 +19,12 @@ class AgencySettingSeeder extends Seeder
                 'logotipo_path' => null,
                 'isotipo_path' => null,
 
+                // IA: sin key por defecto → el chatbot usa el modo fallback (sin IA)
+                // El administrador configura su propia key desde el panel → Configuración → Marca Blanca
+                'ai_provider' => 'gemini',
+                'ai_api_key' => null,
+                'gemini_api_key' => null,
+
                 // Frontend Colors
                 'fe_primary_color' => '#1a56db',
                 'fe_secondary_color' => '#7e22ce',

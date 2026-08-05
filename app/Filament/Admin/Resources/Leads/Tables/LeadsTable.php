@@ -40,6 +40,11 @@ class LeadsTable
                     ->label('Origen')
                     ->badge()
                     ->visibleFrom('md'),
+                TextColumn::make('agent.name')
+                    ->label('Agente')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('status')
                     ->label('Estado')
                     ->badge()

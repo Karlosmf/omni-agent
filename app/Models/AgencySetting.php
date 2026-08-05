@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\AiProvider;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
@@ -18,6 +19,8 @@ class AgencySetting extends Model
     protected $fillable = [
         'company_name',
         'gemini_api_key',
+        'ai_provider',
+        'ai_api_key',
         'ai_assistant_name',
         'logotipo_path',
         'isotipo_path',
@@ -63,6 +66,7 @@ class AgencySetting extends Model
         return [
             'social_links' => 'array',
             'is_maintenance_mode' => 'boolean',
+            'ai_provider' => AiProvider::class,
         ];
     }
 

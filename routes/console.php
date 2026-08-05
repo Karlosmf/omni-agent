@@ -10,3 +10,4 @@ Artisan::command('inspire', function () {
 use Illuminate\Support\Facades\Schedule;
 
 Schedule::command('app:sync-currency-rates')->twiceDaily(10, 15);
+Schedule::command('omni:notify-pending')->dailyAt('09:00');

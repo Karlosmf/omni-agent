@@ -102,6 +102,15 @@ class User extends Authenticatable implements FilamentUser
             return true;
         }
 
+        // Role-based defaults
+        if ($this->role === UserRole::Sales && in_array($permission, ['manage_leads', 'manage_bookings'])) {
+            return true;
+        }
+
+        if ($this->role === UserRole::Finances && in_array($permission, ['manage_transactions', 'manage_finances', 'manage_bookings'])) {
+            return true;
+        }
+
         return in_array($permission, $this->permissions ?? []);
     }
 
@@ -132,6 +141,6 @@ class User extends Authenticatable implements FilamentUser
             return $this->role === UserRole::Customer;
         }
 
-        return $this->hasAnyPermission(['manage_users', 'manage_leads', 'manage_bookings', 'manage_transactions']);
+        return $this->isAdmin() || in_array($this->role, [UserRole::Sales, UserRole::Finances, UserRole::Staff]) || $this->hasAnyPermission(['manage_users', 'manage_leads', 'manage_bookings', 'manage_transactions']);
     }
 }

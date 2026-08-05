@@ -13,6 +13,7 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
 
 class LeadResource extends Resource
@@ -43,6 +44,21 @@ class LeadResource extends Resource
     public static function getNavigationBadgeColor(): string|array|null
     {
         return 'danger';
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        $user = auth()->user();
+        if ($user && ! $user->isAdmin()) {
+            $query->where(function ($q) use ($user) {
+                $q->where('agent_id', $user->id)
+                    ->orWhereNull('agent_id');
+            });
+        }
+
+        return $query;
     }
 
     public static function form(Schema $schema): Schema

@@ -6,6 +6,7 @@ use App\Enums\BookingStatus;
 use App\Filament\Admin\Resources\Bookings\Pages\CreateBooking;
 use App\Filament\Admin\Resources\Bookings\Pages\EditBooking;
 use App\Filament\Admin\Resources\Bookings\Pages\ListBookings;
+use App\Filament\Admin\Resources\Bookings\RelationManagers\ItineraryDaysRelationManager;
 use App\Filament\Admin\Resources\Bookings\RelationManagers\TransactionsRelationManager;
 use App\Filament\Admin\Resources\Bookings\Schemas\BookingForm;
 use App\Filament\Admin\Resources\Bookings\Tables\BookingsTable;
@@ -14,6 +15,7 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
 
 class BookingResource extends Resource
@@ -56,6 +58,21 @@ class BookingResource extends Resource
         return 'Borradores y Presupuestos pendientes';
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        $user = auth()->user();
+        if ($user && ! $user->isAdmin()) {
+            $query->where(function ($q) use ($user) {
+                $q->where('agent_id', $user->id)
+                    ->orWhereNull('agent_id');
+            });
+        }
+
+        return $query;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return BookingForm::configure($schema);
@@ -70,6 +87,7 @@ class BookingResource extends Resource
     {
         return [
             TransactionsRelationManager::class,
+            ItineraryDaysRelationManager::class,
         ];
     }
 

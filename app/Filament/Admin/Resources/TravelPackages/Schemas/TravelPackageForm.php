@@ -226,6 +226,40 @@ class TravelPackageForm
 
                         Tabs\Tab::make('Itinerario')
                             ->schema([
+                                \Filament\Forms\Components\Actions::make([
+                                    \Filament\Forms\Components\Actions\Action::make('generate_itinerary')
+                                        ->label('Generar Borrador con IA')
+                                        ->icon('heroicon-o-sparkles')
+                                        ->color('primary')
+                                        ->form([
+                                            \Filament\Forms\Components\Textarea::make('prompt')
+                                                ->label('Instrucción para la IA')
+                                                ->placeholder('Ej: Generame 7 días en Roma visitando lo más importante. Empezá por el Coliseo.')
+                                                ->required(),
+                                        ])
+                                        ->action(function (array $data, Set $set, \App\Services\AiConciergeService $aiService) {
+                                            $days = $aiService->generateItinerary($data['prompt']);
+                                            if (!empty($days)) {
+                                                $formatted = array_map(function($day) {
+                                                    return [
+                                                        'day' => 'Día ' . ($day['day'] ?? ''),
+                                                        'title' => $day['title'] ?? '',
+                                                        'description' => $day['description'] ?? '',
+                                                    ];
+                                                }, $days);
+                                                $set('itinerary', $formatted);
+                                                \Filament\Notifications\Notification::make()
+                                                    ->title('Itinerario generado con éxito')
+                                                    ->success()
+                                                    ->send();
+                                            } else {
+                                                \Filament\Notifications\Notification::make()
+                                                    ->title('Error al generar. Intenta de nuevo.')
+                                                    ->danger()
+                                                    ->send();
+                                            }
+                                        }),
+                                ]),
                                 Repeater::make('itinerary')
                                     ->label('Días del viaje')
                                     ->schema([

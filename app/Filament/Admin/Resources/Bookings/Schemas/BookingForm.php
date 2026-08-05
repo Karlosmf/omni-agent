@@ -10,6 +10,7 @@ use App\Models\ServiceType;
 use App\Models\User;
 use App\Services\CurrencyService;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -77,6 +78,15 @@ class BookingForm
                                     ->options(BookingStatus::class)
                                     ->default(BookingStatus::Borrador)
                                     ->required(),
+                            ]),
+                        Grid::make(2)
+                            ->schema([
+                                Select::make('agent_id')
+                                    ->label('Agente Asignado')
+                                    ->relationship('agent', 'name', fn ($query) => $query->where('role', UserRole::Sales)->orWhere('role', UserRole::Admin))
+                                    ->default(fn () => auth()->check() ? auth()->id() : null)
+                                    ->searchable()
+                                    ->preload(),
                             ]),
                         Grid::make(3)
                             ->schema([
@@ -228,6 +238,11 @@ class BookingForm
                                         TextInput::make('document_number')
                                             ->label('Número de Documento')
                                             ->required(),
+                                        FileUpload::make('passport_path')
+                                            ->label('Foto del Pasaporte/DNI')
+                                            ->image()
+                                            ->directory('passports')
+                                            ->maxSize(5120),
                                         DatePicker::make('document_expiration')
                                             ->label('Vencimiento Documento'),
                                         DatePicker::make('birth_date')
@@ -412,6 +427,15 @@ class BookingForm
                         Textarea::make('notes')
                             ->label('Notas / Itinerario / Condiciones para el pasajero')
                             ->rows(3),
+                        FileUpload::make('vouchers')
+                            ->label('Vouchers y Documentos de Viaje')
+                            ->multiple()
+                            ->directory('vouchers')
+                            ->preserveFilenames()
+                            ->acceptedFileTypes(['application/pdf', 'image/jpeg', 'image/png'])
+                            ->maxSize(10240)
+                            ->columnSpanFull()
+                            ->helperText('Sube los PDFs de vuelos, hoteles, etc. El cliente podrá descargarlos desde su portal.'),
                     ]),
             ]);
     }
