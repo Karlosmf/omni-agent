@@ -1,4 +1,28 @@
 <x-filament-panels::page>
+    <style>
+        .bg-amber-50 { background-color: #fffbeb !important; }
+        .bg-amber-500\/10 { background-color: rgba(245, 158, 11, 0.1) !important; }
+        .border-amber-200 { border-color: #fde68a !important; }
+        .border-amber-300 { border-color: #fcd34d !important; }
+        .text-amber-700 { color: #b45309 !important; }
+        .text-amber-700\/70 { color: rgba(180, 83, 9, 0.7) !important; }
+        .text-amber-600 { color: #d97706 !important; }
+        
+        .bg-green-50 { background-color: #f0fdf4 !important; }
+        .bg-green-500\/10 { background-color: rgba(34, 197, 94, 0.1) !important; }
+        .border-green-300 { border-color: #86efac !important; }
+        .text-green-700 { color: #15803d !important; }
+        .text-green-700\/70 { color: rgba(21, 128, 61, 0.7) !important; }
+        .text-green-600 { color: #16a34a !important; }
+        
+        /* Dark mode equivalents if needed, but since they rely on tailwind's dark: variant, we should add them explicitly */
+        .dark .dark\:text-amber-400 { color: #fbbf24 !important; }
+        .dark .dark\:text-amber-400\/70 { color: rgba(251, 191, 36, 0.7) !important; }
+        .dark .dark\:bg-amber-500\/20 { background-color: rgba(245, 158, 11, 0.2) !important; }
+        
+        .dark .dark\:text-green-400 { color: #4ade80 !important; }
+        .dark .dark\:text-green-400\/70 { color: rgba(74, 222, 128, 0.7) !important; }
+    </style>
     <div class="space-y-6">
         {{-- Funnel de Conversión --}}
         <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-white/10 p-6">
