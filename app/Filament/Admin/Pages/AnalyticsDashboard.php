@@ -43,9 +43,10 @@ class AnalyticsDashboard extends Page
             ->get();
 
         // Top Products
-        $topProducts = Booking::select('travel_package_id', \DB::raw('count(*) as total'))
+        $topProducts = Lead::select('travel_package_id', \DB::raw('count(*) as total'))
+            ->join('bookings', 'leads.id', '=', 'bookings.lead_id')
             ->whereNotNull('travel_package_id')
-            ->whereIn('status', [
+            ->whereIn('bookings.status', [
                 BookingStatus::Senado,
                 BookingStatus::Emitido,
             ])
