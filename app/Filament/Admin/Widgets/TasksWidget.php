@@ -4,7 +4,7 @@ namespace App\Filament\Admin\Widgets;
 
 use App\Filament\Admin\Resources\Tasks\TaskResource;
 use App\Models\Task;
-use Filament\Tables\Actions\Action;
+use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
