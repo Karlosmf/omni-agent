@@ -9,7 +9,7 @@ use Filament\Widgets\ChartWidget;
 
 class FunnelChart extends ChartWidget
 {
-    protected static ?string $heading = 'Funnel de Conversión';
+    protected ?string $heading = 'Funnel de Conversión';
     
     protected static ?int $sort = 2;
 
