@@ -31,8 +31,9 @@ class LeadReceivedMail extends Mailable
      */
     public function envelope(): Envelope
     {
+        $name = $this->settings['name'] ?? 'OmniAgent';
         return new Envelope(
-            subject: '¡Recibimos tu consulta! - '.$this->settings['name'],
+            subject: '¡Recibimos tu consulta! - '.$name,
         );
     }
 
