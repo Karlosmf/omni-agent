@@ -143,53 +143,32 @@ class BookingsTable
                     ->modalSubmitAction(false)
                     ->modalCancelActionLabel('Cerrar'),
                 Action::make('whatsapp')
-                    ->label('WhatsApp Web')
+                    ->label('Enviar por WhatsApp')
                     ->icon('heroicon-o-chat-bubble-left-ellipsis')
                     ->color('success')
                     ->url(function ($record) {
-                        $text = "Hola *{$record->holder_name}*! 👋\n";
+                        $phone = preg_replace('/[^0-9]/', '', $record->customer?->phone ?? '');
+                        
+                        $text = "Hola *{$record->holder_name}*! 👋\n\n";
                         if ($record->destination) {
-                            $text .= "Aquí tienes tu cotización para *{$record->destination}* ✈️\n";
+                            $text .= "Te comparto el detalle de tu viaje a *{$record->destination}* ✈️\n";
                         } else {
-                            $text .= "Aquí tienes tu cotización ✈️\n";
+                            $text .= "Te comparto el detalle de tu viaje ✈️\n";
                         }
-                        $text .= "Total: *{$record->currency} ".number_format($record->total_sell, 2)."*\n";
-                        $text .= 'Podés ver el detalle acá: '.$record->publicUrl()."\n";
-                        $text .= '¡Avisanos si tenés alguna duda!';
+                        
+                        if ($record->status === \App\Enums\BookingStatus::Borrador || $record->status === \App\Enums\BookingStatus::Presupuesto) {
+                            $text .= "Total de la cotización: *{$record->currency} ".number_format($record->total_sell, 2)."*\n";
+                        } else {
+                            $text .= "Tu viaje está confirmado ✅\n";
+                        }
+                        
+                        $text .= "\nPodés ver todo el itinerario, la propuesta y tus vouchers ingresando acá:\n";
+                        $text .= $record->publicUrl()."\n\n";
+                        $text .= 'Cualquier duda, ¡estamos a tu disposición!';
 
-                        return 'https://wa.me/?text='.urlencode($text);
+                        return 'https://wa.me/' . $phone . '?text=' . urlencode($text);
                     })
                     ->openUrlInNewTab(),
-                Action::make('whatsapp_api')
-                    ->label('Enviar por WhatsApp (API)')
-                    ->icon('heroicon-o-paper-airplane')
-                    ->color('primary')
-                    ->form([
-                        TextInput::make('phone')
-                            ->label('Teléfono Destino')
-                            ->default(fn (Booking $record) => $record->customer?->phone)
-                            ->required(),
-                        Textarea::make('message')
-                            ->label('Mensaje')
-                            ->default(fn (Booking $record) => "Hola *{$record->holder_name}*! 👋\nTe comparto el detalle de tu viaje: ".$record->publicUrl())
-                            ->rows(4)
-                            ->required(),
-                    ])
-                    ->action(function (Booking $record, array $data) {
-                        // TODO: Implement actual Meta/Twilio API call here
-                        // e.g. TwilioService::sendMessage($data['phone'], $data['message']);
-
-                        // Simulate success
-                        Notification::make()
-                            ->title('WhatsApp Enviado')
-                            ->body('El mensaje fue enviado exitosamente a '.$data['phone'])
-                            ->success()
-                            ->send();
-
-                        // Optionally log in internal notes
-                        $record->internal_notes .= "\n[".now()->format('Y-m-d H:i')."] WhatsApp enviado a {$data['phone']} vía API.";
-                        $record->save();
-                    }),
                 Action::make('pdf')
                     ->label('Descargar PDF')
                     ->icon('heroicon-o-document-arrow-down')
