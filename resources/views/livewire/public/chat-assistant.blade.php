@@ -1,12 +1,18 @@
 <?php
 
-use App\Models\Message;
-use App\Services\AiConciergeService;
-use App\Models\Lead;
-use App\Models\User;
+use App\Actions\Leads\CaptureLeadAction;
+use App\Actions\Leads\ProcessChatbotInteractionAction;
 use App\Enums\LeadStatus;
 use App\Enums\LeadTemperature;
-use function Livewire\Volt\{state, mount, boot};
+use App\Models\Lead;
+use App\Models\Message;
+use App\Models\User;
+use App\Services\AiConciergeService;
+use Illuminate\Support\Facades\Log;
+
+use function Livewire\Volt\boot;
+use function Livewire\Volt\mount;
+use function Livewire\Volt\state;
 
 state([
     'isOpen' => false,
@@ -40,7 +46,7 @@ mount(function (bool $embedded = false) {
             $this->messages = Message::where('lead_id', $this->leadId)
                 ->oldest()
                 ->get()
-                ->map(fn($m) => ['role' => $m->role, 'content' => $m->content])
+                ->map(fn ($m) => ['role' => $m->role, 'content' => $m->content])
                 ->toArray();
         } else {
             $this->leadId = null;
@@ -52,31 +58,32 @@ mount(function (bool $embedded = false) {
         $settings = get_agency_settings();
         $assistantName = $settings?->ai_assistant_name ?? 'Brisa';
         $companyName = $settings?->company_name ?? config('app.name', 'nuestra agencia');
-        
+
         $this->messages = [
-            ['role' => 'assistant', 'content' => "¡Hola! Soy {$assistantName}, tu asistente de {$companyName}. 🌴✈️ Completá tus datos y te ayudo a planificar tu viaje."]
+            ['role' => 'assistant', 'content' => "¡Hola! Soy {$assistantName}, tu asistente de {$companyName}. 🌴✈️ Completá tus datos y te ayudo a planificar tu viaje."],
         ];
     }
 });
 
-$toggleChat = fn() => $this->isOpen = !$this->isOpen;
+$toggleChat = fn () => $this->isOpen = ! $this->isOpen;
 
 $submitCapture = function () {
-    if (empty(trim($this->captureName)) || empty(trim($this->capturePhone)))
+    if (empty(trim($this->captureName)) || empty(trim($this->capturePhone))) {
         return;
+    }
 
     $destination = $this->captureDestination ?: 'Sin definir';
     $budget = null;
-    if (!empty($this->captureCurrency) && !empty($this->captureBudgetAmount)) {
-        $budget = $this->captureCurrency . ' ' . number_format((float) $this->captureBudgetAmount, 0, ',', '.');
+    if (! empty($this->captureCurrency) && ! empty($this->captureBudgetAmount)) {
+        $budget = $this->captureCurrency.' '.number_format((float) $this->captureBudgetAmount, 0, ',', '.');
     }
 
     // Create Lead with real data and Customer association
-    $captureLeadAction = app(\App\Actions\Leads\CaptureLeadAction::class);
+    $captureLeadAction = app(CaptureLeadAction::class);
     $lead = $captureLeadAction->execute([
         'customer_name' => trim($this->captureName),
         'customer_phone' => trim($this->capturePhone),
-        'customer_email' => !empty(trim($this->captureEmail)) ? trim($this->captureEmail) : null,
+        'customer_email' => ! empty(trim($this->captureEmail)) ? trim($this->captureEmail) : null,
         'customer_budget' => $budget,
         'source' => 'web_widget',
         'raw_message' => "Interesado en: {$destination}",
@@ -91,10 +98,10 @@ $submitCapture = function () {
     $this->showCaptureForm = false;
 
     // Auto-greeting from assistant with context
-    $greeting = "¡Hola {$this->captureName}! 👋 " .
+    $greeting = "¡Hola {$this->captureName}! 👋 ".
         ($destination !== 'Sin definir'
             ? "Qué lindo destino {$destination}. ¿Tenés alguna fecha en mente para el viaje?"
-            : "¿Tenés algún destino en mente para tu próximo viaje?");
+            : '¿Tenés algún destino en mente para tu próximo viaje?');
 
     $lead->messages()->create(['role' => 'assistant', 'content' => $greeting]);
 
@@ -104,8 +111,9 @@ $submitCapture = function () {
 };
 
 $sendMessage = function () {
-    if (empty(trim($this->input)))
+    if (empty(trim($this->input))) {
         return;
+    }
 
     // 1. Add User Message (Optimistic UI)
     $userMsg = $this->input;
@@ -120,14 +128,14 @@ $sendMessage = function () {
             $lead = Lead::find($this->leadId);
         }
 
-        if (!$lead) {
+        if (! $lead) {
             // Fallback: create lead if somehow capture was skipped
-            $captureLeadAction = app(\App\Actions\Leads\CaptureLeadAction::class);
+            $captureLeadAction = app(CaptureLeadAction::class);
             $lead = $captureLeadAction->execute([
                 'customer_name' => $this->captureName ?: 'Web Guest',
                 'customer_phone' => $this->capturePhone ?: 'Sin teléfono',
-                'customer_email' => !empty($this->captureEmail) ? $this->captureEmail : null,
-                'customer_budget' => (!empty($this->captureCurrency) && !empty($this->captureBudgetAmount)) ? $this->captureCurrency . ' ' . $this->captureBudgetAmount : null,
+                'customer_email' => ! empty($this->captureEmail) ? $this->captureEmail : null,
+                'customer_budget' => (! empty($this->captureCurrency) && ! empty($this->captureBudgetAmount)) ? $this->captureCurrency.' '.$this->captureBudgetAmount : null,
                 'source' => 'web_widget',
                 'raw_message' => $userMsg,
                 'ai_data' => ['history' => []],
@@ -137,12 +145,12 @@ $sendMessage = function () {
         }
 
         // 3. Process with Action
-        $processAction = app(\App\Actions\Leads\ProcessChatbotInteractionAction::class);
+        $processAction = app(ProcessChatbotInteractionAction::class);
         $replyContent = $processAction->execute($userMsg, $lead, $this->messages);
 
-    } catch (\Throwable $e) {
-        \Illuminate\Support\Facades\Log::error("Chatbot Error: " . $e->getMessage());
-        $replyContent = "Disculpá, tuve una pequeña desconexión. ¿Me lo repetís?";
+    } catch (Throwable $e) {
+        Log::error('Chatbot Error: '.$e->getMessage());
+        $replyContent = 'Disculpá, tuve una pequeña desconexión. ¿Me lo repetís?';
     }
 
     // 5. Add AI Response
@@ -150,6 +158,13 @@ $sendMessage = function () {
     $this->isLoading = false;
 };
 
+$toJSON = function (): array {
+    return [
+        'isOpen' => $this->isOpen,
+        'messages' => $this->messages,
+        'leadId' => $this->leadId,
+    ];
+};
 ?>
 
 <div :class="$wire.embedded ? 'w-full max-w-md relative z-20' : 'fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4 font-sans antialiased'"
@@ -298,13 +313,28 @@ $sendMessage = function () {
                                 <option value="Otro destino">🌍 Otro destino</option>
                             </select>
                         </div>
-                    </div>
 
-                    <div class="flex items-start gap-2 pt-2">
-                        <input type="checkbox" id="acceptPolicies" required class="mt-1 w-4 h-4 text-emerald-500 border-slate-300 rounded focus:ring-emerald-500">
-                        <label for="acceptPolicies" class="text-[11px] text-slate-500 font-medium leading-tight">
-                            Acepto las <a href="#" target="_blank" class="text-emerald-600 hover:underline">Políticas de Privacidad</a> y Términos de Servicio.
-                        </label>
+                        <!-- Presupuesto estimado -->
+                        <div class="grid grid-cols-[80px_1fr] gap-2">
+                            <select wire:model="captureCurrency"
+                                class="py-2.5 px-2 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 focus:ring-1 text-sm bg-slate-50/50 hover:bg-white transition-all shadow-sm text-slate-600">
+                                <option value="">$</option>
+                                <option value="USD">USD</option>
+                                <option value="ARS">ARS</option>
+                                <option value="EUR">EUR</option>
+                            </select>
+                            <input type="number" wire:model="captureBudgetAmount"
+                                placeholder="Presupuesto estimado (opcional)"
+                                min="0" step="100"
+                                class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 focus:ring-1 text-sm bg-slate-50/50 hover:bg-white transition-all shadow-sm" />
+                        </div>
+
+                        <div class="flex items-start gap-2 pt-2">
+                            <input type="checkbox" id="acceptPolicies" required class="mt-1 w-4 h-4 text-emerald-500 border-slate-300 rounded focus:ring-emerald-500">
+                            <label for="acceptPolicies" class="text-[11px] text-slate-500 font-medium leading-tight">
+                                Acepto las <a href="#" target="_blank" class="text-emerald-600 hover:underline">Políticas de Privacidad</a> y Términos de Servicio.
+                            </label>
+                        </div>
                     </div>
 
                     <button type="submit"

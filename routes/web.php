@@ -26,10 +26,7 @@ Route::get('/cotizar', PublicCotizador::class)->name('cotizador');
 // Landing pública del presupuesto — sin autenticación, accesible con el link
 Route::get('/presupuesto/{token}', [PublicBookingController::class, 'show'])->name('booking.public');
 
-// Portal del Cliente
-Route::redirect('/portal', '/portal/dashboard');
-Volt::route('/portal/login', 'portal.login')->name('login')->middleware('guest');
-Volt::route('/portal/dashboard', 'portal.dashboard')->name('portal.dashboard')->middleware('auth');
+// Portal del Cliente is handled by Filament at /portal
 
 Route::middleware('auth')->group(function () {
     Route::get('/admin/transactions/{transaction}/receipt', [ReceiptController::class, 'download'])

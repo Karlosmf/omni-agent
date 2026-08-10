@@ -47,41 +47,41 @@ class CreateBooking extends CreateRecord
 
         // 3. Populate data if lead found
         if ($lead) {
-            $data['lead_id'] = $lead->id; // Ensure lead_id is set
+            $data['lead_id'] = $lead->id;
 
-            // Try to parse AI data
-            // AI data is cast to array in Lead model
             $aiData = $lead->ai_data ?? [];
 
-            if (isset($aiData['destination'])) {
-                $data['destination'] = $aiData['destination'];
-            } elseif (isset($aiData['destino'])) {
+            // Destination
+            if (! empty($aiData['destino'])) {
                 $data['destination'] = $aiData['destino'];
+            } elseif (! empty($aiData['destination'])) {
+                $data['destination'] = $aiData['destination'];
             }
 
+            // Passengers (numeric parse)
             $rawPassengers = $aiData['pasajeros'] ?? $aiData['passengers'] ?? null;
             if ($rawPassengers !== null) {
-                if (is_numeric(trim($rawPassengers))) {
+                if (is_numeric(trim((string) $rawPassengers))) {
                     $data['passengers'] = (int) $rawPassengers;
                 } else {
-                    preg_match_all("/(\d+)\s*(adultos?|niñ[os|as]+|ninos?|menores?|bebes?|bebés?|pasajeros?|personas?|menor)/i", $rawPassengers, $matches);
+                    preg_match_all('/(\d+)\s*(adultos?|niñ[os|as]+|ninos?|menores?|bebes?|bebés?|pasajeros?|personas?|menor)/i', $rawPassengers, $matches);
                     if (! empty($matches[1])) {
                         $data['passengers'] = array_sum($matches[1]);
                     } else {
-                        preg_match("/\d+/", $rawPassengers, $firstNum);
+                        preg_match('/\d+/', $rawPassengers, $firstNum);
                         $data['passengers'] = ! empty($firstNum) ? (int) $firstNum[0] : 1;
                     }
                 }
             }
 
-            // Travel Date
-            if (isset($aiData['travel_date'])) {
+            // Travel Date — from ai_data['fecha'] (text) or ai_data['travel_date'] (ISO)
+            if (! empty($aiData['travel_date'])) {
                 $data['travel_date'] = $aiData['travel_date'];
             }
 
-            // Notes from summary
-            if ($lead->ai_summary) {
-                $data['notes'] = 'Resumen IA: '.$lead->ai_summary."\n\nMensaje Original: ".$lead->raw_message;
+            // Nights
+            if (! empty($aiData['noches']) && is_numeric($aiData['noches'])) {
+                $data['nights'] = (int) $aiData['noches'];
             }
 
             // Holder Name from Customer
@@ -89,13 +89,37 @@ class CreateBooking extends CreateRecord
                 $data['holder_name'] = $lead->customer->name;
             }
 
-            // Guardamos el string original de pasajeros del lead para que el Schema pueda leerlo dinámicamente
-            $originalPassengersInfo = $aiData['pasajeros'] ?? $aiData['passengers'] ?? null;
-            if ($originalPassengersInfo) {
-                session()->flash('lead_original_passengers', $originalPassengersInfo);
+            // Build internal_notes with all AI-captured lead info
+            $internalParts = [];
+            if (! empty($aiData['resumen'])) {
+                $internalParts[] = "Resumen IA: {$aiData['resumen']}";
+            }
+            if (! empty($aiData['presupuesto'])) {
+                $internalParts[] = "Presupuesto consultante: {$aiData['presupuesto']}";
+            }
+            if (! empty($aiData['ciudad_salida'])) {
+                $internalParts[] = "Ciudad de salida: {$aiData['ciudad_salida']}";
+            }
+            if (! empty($aiData['fecha'])) {
+                $internalParts[] = "Fechas solicitadas: {$aiData['fecha']}";
+            }
+            if ($lead->raw_message) {
+                $internalParts[] = "Mensaje original: {$lead->raw_message}";
+            }
+            if (! empty($internalParts)) {
+                $data['internal_notes'] = implode("\n", $internalParts);
+            }
+
+            // Notes — ai_summary para el campo visible al cliente
+            if ($lead->ai_summary) {
+                $data['notes'] = $lead->ai_summary;
+            }
+
+            // Flash original passengers string so BookingForm can display it as label hint
+            if ($rawPassengers) {
+                session()->flash('lead_original_passengers', $rawPassengers);
             }
         } elseif (isset($data['customer_id'])) {
-            // Fallback if no lead but customer exists
             $customer = User::find($data['customer_id']);
             if ($customer) {
                 $data['holder_name'] = $customer->name;

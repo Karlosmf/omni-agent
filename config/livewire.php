@@ -182,5 +182,5 @@ return [
     |
     */
 
-    'release_token' => 'a',
+    'release_token' => env('LIVEWIRE_RELEASE_TOKEN', md5(env('APP_KEY'))),
 ];

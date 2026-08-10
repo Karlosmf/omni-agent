@@ -40,6 +40,11 @@ class ServiceTypeResource extends Resource
                     ->label('Nombre')
                     ->required()
                     ->maxLength(255),
+                TextInput::make('key')
+                    ->label('Clave (slug)')
+                    ->helperText('Dejar en blanco para generar automáticamente.')
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true),
             ]);
     }
 

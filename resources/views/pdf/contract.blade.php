@@ -70,11 +70,39 @@
         $destination = $booking->destination ?? '_______________';
         $travelDate = $booking->travel_date ? $booking->travel_date->format('d/m/Y') : '_______________';
         
-        $template = $settings?->contract_template ?? '<p>No se ha configurado la plantilla del acuerdo en los ajustes de la agencia.</p>';
+        $template = $settings?->contract_template ?? '<h2>ACUERDO DE VIAJE</h2>
+
+<p><strong>Entre los siguientes sujetos:</strong></p>
+<p>De un lado, <strong>[NOMBRE_CLIENTE]</strong> DNI/Documento Nº <strong>[DNI_CLIENTE]</strong>, con domicilio en [DIR_CLIENTE], Email: [EMAIL_CLIENTE], Teléfono: [TELEFONO_CLIENTE], en adelante "El Cliente".</p>
+<p>De otra parte, la agencia de viajes <strong>' . config('app.name', 'Agencia') . '</strong>, con CUIT [CUIT_AGENCIA] y legajo [LEGAJO_AGENCIA], con domicilio en [DIR_AGENCIA], en adelante "La Agencia".</p>
+
+<h3>PRIMERO: OBJETO</h3>
+<p>El presente acuerdo tiene por objeto la organización y prestación del servicio de viaje al destino <strong>[DESTINO]</strong>, con fecha de salida [FECHA_VIAJE], por un monto total de <strong>[TOTAL_VIAJE]</strong>, los detalles de los cuales se detallan en los documentos que se entregan al Cliente.</p>
+
+<h3>SEGUNDO: CONDICIONES GENERALES</h3>
+<ul>
+<li>El Cliente declara haber recibido información completa sobre el destino, duración, características del servicio y requisitos de documentación (pasaporte, visa, vacunas).</li>
+<li>El pago se realiza según el plan de pagos acordado. El incumplimiento en los plazos de pago faculta a La Agencia a suspender o cancelar el servicio sin reembolso.</li>
+<li>Los equipajes deben cumplir con las normativas de las aerolíneas y autoridades migratorias. La Agencia no se hace responsable por equipaje no entregado.</li>
+<li>En caso de fuerza mayor (catástrofes, huelgas, pandemias, entre otros), La Agencia se compromete a informar al Cliente y gestionar reprogramaciones o reembolzos según las condiciones impuestas por los proveedores.</li>
+<li>El Cliente se compromete a viajar con documentación válida y al presentarse en los horarios acordados para cada servicio.</li>
+<li>Cualquier reclamo sobre servicios debe comunicarse a La Agencia dentro de las 48 horas posteriores a la finalización del servicio.</li>
+<li>La contratación de seguro de viaje es obligatoria. El Cliente se compromete a proporcionar información veraz sobre su estado de salud.</li>
+</ul>
+
+<h3>TERCERO: RESOLUCIÓN</h3>
+<p>El presente acuerdo se considera aceptado plenamente, sin coerción y en conocimiento de todas las cláusulas aquí expresas. La firma del Cliente en el pie de la hoja constituye su adhesión a estos términos.</p>
+
+<p>En testimonio de conformidad, ambas partes firman el presente acuerdo en el lugar y fecha indicados.</p>' ;
         
+        $customerAddress = $booking->lead?->address ?? '_______________';
+        $agencyAddress = $settings?->address ?? config('app.address', '_______________');
+        $agencyCuit = $settings?->cuit ?? '_______________';
+        $agencyLegajo = $settings?->legajo ?? '_______________';
+
         $content = str_replace(
-            ['[NOMBRE_CLIENTE]', '[DNI_CLIENTE]', '[EMAIL_CLIENTE]', '[TELEFONO_CLIENTE]', '[TOTAL_VIAJE]', '[DESTINO]', '[FECHA_VIAJE]'],
-            [$customerName, $customerDni, $customerEmail, $customerPhone, $totalTravel, $destination, $travelDate],
+            ['[NOMBRE_CLIENTE]', '[DNI_CLIENTE]', '[EMAIL_CLIENTE]', '[TELEFONO_CLIENTE]', '[TOTAL_VIAJE]', '[DESTINO]', '[FECHA_VIAJE]', '[DIR_CLIENTE]', '[DIR_AGENCIA]', '[CUIT_AGENCIA]', '[LEGAJO_AGENCIA]'],
+            [$customerName, $customerDni, $customerEmail, $customerPhone, $totalTravel, $destination, $travelDate, $customerAddress, $agencyAddress, $agencyCuit, $agencyLegajo],
             $template
         );
     @endphp

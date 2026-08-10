@@ -134,11 +134,14 @@ class AiConciergeService
     {
         try {
             $prompt = "Analiza el historial y extrae JSON estricto:
-            - 'destino': Lugar mencionado.
-            - 'presupuesto': Monto mencionado.
-            - 'pasajeros': Cantidad exacta como texto (Ej: '4 adultos, 3 niños'. IMPORTANTE: NO juntes ni sumes los números, dejalo como string descriptivo).
+            - 'destino': Lugar de destino mencionado.
+            - 'presupuesto': Monto o rango presupuestario mencionado (ej: 'USD 2000', 'ARS 500000').
+            - 'pasajeros': Cantidad exacta como texto descriptivo (Ej: '4 adultos, 3 niños'. IMPORTANTE: NO juntes ni sumes los números, dejalo como string descriptivo).
+            - 'fecha': Fecha o período del viaje mencionado (ej: 'primera quincena de agosto', 'septiembre 2026', '15/09/2026').
+            - 'noches': Número de noches mencionado como entero. null si no se mencionó.
+            - 'ciudad_salida': Ciudad desde donde salen los pasajeros. null si no se mencionó.
             - 'nombre': Nombre del usuario si se presentó (ej: 'Hola soy Juan' → 'Juan').
-            - 'resumen': Resumen corto INCLUYENDO: fechas/quincena, noches y ciudad de salida si están.
+            - 'resumen': Resumen corto INCLUYENDO: destino, fechas/quincena, noches, ciudad de salida, pasajeros y presupuesto si están.
             - 'requiere_atencion': true si pide humano o parece molesto.
 
             Texto: \"{$message}\"";
@@ -294,20 +297,21 @@ class AiConciergeService
         $systemPrompt = "Eres '{$assistantName}', la asistente virtual de {$companyName}.
             TU OBJETIVO: Recabar información CLAVE de forma RÁPIDA y ESCUETA. No des consejos ni sugieras vuelos/hoteles. Solo pregunta.
             
-            DATOS A CONSEGUIR (Uno por uno, no abrumes):
-            1. Fecha aprox del viaje: ¿Primera o segunda quincena? ¿Tiene flexibilidad?
-            2. Cantidad de noches deseadas.
-            3. Ciudad de salida (Solo pregunta desde dónde quieren salir, no ofrezcas transporte).
-            4. Destino y Pasajeros (si no lo dijeron).
-            5. Presupuesto aproximado (si es relevante).
-
+            DATOS A CONSEGUIR (Uno por uno, en orden, no abrumes):
+            1. Destino y Pasajeros (si no los mencionaron aún).
+            2. Fecha aprox del viaje: ¿Primera o segunda quincena? ¿Tiene flexibilidad?
+            3. Ciudad de salida (desde dónde quieren salir, no ofrezcas transporte).
+            4. Presupuesto estimado (en USD o ARS). SIEMPRE preguntalo — es imprescindible para armar una propuesta real.
+            5. Cantidad de noches si no quedó claro de la fecha.
+            
             CIERRE:
-            Una vez que tengas estos datos básicos, CIERRA LA CALIFICACIÓN con este mensaje exacto:
-            '¡Perfecto! Ya tengo lo necesario. {$namesString} se van a comunicar con vos a la brevedad para armarte la propuesta. 😉'
-
+            Una vez que tengas estos datos, CIERRA LA CALIFICACIÓN con este mensaje exacto:
+            '¡Perfecto! Ya tengo todo lo que necesito. {$namesString} se van a comunicar con vos a la brevedad para armarte la propuesta. 😉'
+            
             REGLAS:
             - Sé MUY BREVE. Máximo 1 oración por respuesta.
-            - Si preguntan precios o vuelos, di que eso lo arman las chicas ({$namesString}).
+            - Si preguntan precios o vuelos exactos, di que eso lo arman {$namesString}.
+            - Si el presupuesto ya está en DATOS DEL LEAD, no lo vuelvas a preguntar.
             - No inventes nada.{$leadContext}";
 
         if (! empty($context)) {
@@ -355,6 +359,9 @@ class AiConciergeService
             $reply = '¿Desde qué ciudad les gustaría salir?';
         } elseif (str_contains($lastText, 'ciudad')) {
             $aiData['origen'] = $userMsg;
+            $reply = '¿Tenés un presupuesto estimado en mente? (en USD o ARS — es para orientar la propuesta, no te preocupes si no lo tenés exacto)';
+        } elseif (str_contains($lastText, 'presupuesto estimado')) {
+            $aiData['presupuesto'] = $userMsg;
             $settings = get_agency_settings();
             $whatsappLinks = collect($settings?->social_links ?? [])
                 ->filter(fn ($link) => str_contains(strtolower($link['platform'] ?? ''), 'whatsapp') ||
@@ -365,7 +372,7 @@ class AiConciergeService
             })->filter()->unique();
             $namesString = $names->isNotEmpty() ? $names->join(', ', ' o ') : 'nuestros agentes';
 
-            $reply = "¡Perfecto! Ya tengo lo necesario. {$namesString} se van a comunicar con vos a la brevedad para armarte la propuesta. 😉";
+            $reply = "¡Perfecto! Ya tengo todo lo que necesito. {$namesString} se van a comunicar con vos a la brevedad para armarte la propuesta. 😉";
         } else {
             $reply = 'Gracias por la información. En breve nos comunicaremos con vos.';
         }
@@ -396,16 +403,17 @@ Responde ÚNICAMENTE con el array JSON crudo, sin bloques de código markdown, s
         try {
             $response = Gemini::geminiPro()->generateContent($systemPrompt);
             $text = $response->text();
-            
+
             // Clean markdown blocks if the model still adds them
             $text = preg_replace('/```json\s*/i', '', $text);
             $text = preg_replace('/```\s*/', '', $text);
-            
+
             $decoded = json_decode(trim($text), true);
-            
+
             return is_array($decoded) ? $decoded : [];
         } catch (Throwable $e) {
-            Log::error('Error generating itinerary with AI: ' . $e->getMessage());
+            Log::error('Error generating itinerary with AI: '.$e->getMessage());
+
             return [];
         }
     }

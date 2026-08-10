@@ -41,7 +41,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => rtrim(env('APP_URL'), '/').'/storage',
+            'url' => rtrim(config('app.url'), '/').'/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
@@ -50,7 +50,7 @@ return [
         'uploads' => [
             'driver' => 'local',
             'root' => public_path('uploads'),
-            'url' => rtrim(env('APP_URL'), '/').'/uploads',
+            'url' => rtrim(config('app.url'), '/').'/uploads',
             'throw' => true,
             'report' => false,
         ],

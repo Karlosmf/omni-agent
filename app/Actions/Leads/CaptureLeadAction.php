@@ -56,13 +56,13 @@ class CaptureLeadAction
         $customer = $query->first();
 
         if (! $customer) {
-            $customer = User::create([
+            $customer = User::forceCreate([
                 'name' => $name,
                 'email' => $email,
                 'phone' => $phone,
                 'role' => UserRole::Customer,
                 'is_guest' => true,
-                'password' => Hash::make(Str::random(16)), // Random secure password
+                'password' => Hash::make(Str::random(16)),
             ]);
         } else {
             // Update name or phone if missing

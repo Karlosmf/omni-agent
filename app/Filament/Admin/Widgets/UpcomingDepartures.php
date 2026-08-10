@@ -25,6 +25,7 @@ class UpcomingDepartures extends BaseWidget
         return $table
             ->query(
                 Booking::query()
+                    ->with(['lead', 'lead.customer'])
                     ->where('status', '!=', BookingStatus::Presupuesto)
                     ->where('travel_date', '>=', now())
                     ->orderBy('travel_date', 'asc')
@@ -39,7 +40,7 @@ class UpcomingDepartures extends BaseWidget
                     ->label('Expediente'),
                 Tables\Columns\TextColumn::make('holder_name')
                     ->label('Pasajeros'),
-                Tables\Columns\TextColumn::make('lead.customer_phone')
+                Tables\Columns\TextColumn::make('lead.customer.phone')
                     ->label('Contacto'),
                 Tables\Columns\TextColumn::make('status')
                     ->label('Estado')

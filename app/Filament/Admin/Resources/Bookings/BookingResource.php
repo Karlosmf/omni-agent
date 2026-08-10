@@ -6,6 +6,7 @@ use App\Enums\BookingStatus;
 use App\Filament\Admin\Resources\Bookings\Pages\CreateBooking;
 use App\Filament\Admin\Resources\Bookings\Pages\EditBooking;
 use App\Filament\Admin\Resources\Bookings\Pages\ListBookings;
+use App\Filament\Admin\Resources\Bookings\RelationManagers\ActivitiesRelationManager;
 use App\Filament\Admin\Resources\Bookings\RelationManagers\ItineraryDaysRelationManager;
 use App\Filament\Admin\Resources\Bookings\RelationManagers\TransactionsRelationManager;
 use App\Filament\Admin\Resources\Bookings\Schemas\BookingForm;
@@ -88,6 +89,7 @@ class BookingResource extends Resource
         return [
             TransactionsRelationManager::class,
             ItineraryDaysRelationManager::class,
+            ActivitiesRelationManager::class,
         ];
     }
 

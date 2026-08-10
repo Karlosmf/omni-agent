@@ -3,14 +3,17 @@
 namespace App\Models;
 
 use App\Enums\BookingStatus;
+use App\Observers\BookingObserver;
 use Carbon\Carbon;
 use Database\Factories\BookingFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
+#[ObservedBy(BookingObserver::class)]
 class Booking extends Model
 {
     /** @use HasFactory<BookingFactory> */
@@ -112,6 +115,11 @@ class Booking extends Model
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function activities(): HasMany
+    {
+        return $this->hasMany(BookingActivity::class)->latest();
     }
 
     public function isExpired(): bool

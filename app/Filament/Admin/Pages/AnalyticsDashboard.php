@@ -2,9 +2,9 @@
 
 namespace App\Filament\Admin\Pages;
 
-use App\Enums\BookingStatus;
-use App\Models\Booking;
-use App\Models\Lead;
+use App\Filament\Admin\Widgets\Analytics\FunnelStatsWidget;
+use App\Filament\Admin\Widgets\Analytics\SourcesChartWidget;
+use App\Filament\Admin\Widgets\Analytics\TopProductsWidget;
 use BackedEnum;
 use Filament\Pages\Page;
 use UnitEnum;
@@ -21,49 +21,12 @@ class AnalyticsDashboard extends Page
 
     protected static ?int $navigationSort = 1;
 
-    protected string $view = 'filament.admin.pages.analytics-dashboard';
-
-    protected function getViewData(): array
+    protected function getHeaderWidgets(): array
     {
-        $totalLeads = Lead::count();
-        $totalCotizados = Booking::count();
-        $totalConfirmados = Booking::whereIn('status', [
-            BookingStatus::Senado,
-            BookingStatus::Emitido,
-        ])->count();
-
-        // Conversions
-        $cotizacionRate = $totalLeads > 0 ? round(($totalCotizados / $totalLeads) * 100, 1) : 0;
-        $confirmacionRate = $totalCotizados > 0 ? round(($totalConfirmados / $totalCotizados) * 100, 1) : 0;
-
-        // Sources
-        $sources = Lead::select('source', \DB::raw('count(*) as total'))
-            ->groupBy('source')
-            ->orderByDesc('total')
-            ->get();
-
-        // Top Products
-        $topProducts = Lead::select('travel_package_id', \DB::raw('count(*) as total'))
-            ->join('bookings', 'leads.id', '=', 'bookings.lead_id')
-            ->whereNotNull('travel_package_id')
-            ->whereIn('bookings.status', [
-                BookingStatus::Senado,
-                BookingStatus::Emitido,
-            ])
-            ->groupBy('travel_package_id')
-            ->orderByDesc('total')
-            ->with('travelPackage')
-            ->take(5)
-            ->get();
-
         return [
-            'totalLeads' => $totalLeads,
-            'totalCotizados' => $totalCotizados,
-            'totalConfirmados' => $totalConfirmados,
-            'cotizacionRate' => $cotizacionRate,
-            'confirmacionRate' => $confirmacionRate,
-            'sources' => $sources,
-            'topProducts' => $topProducts,
+            FunnelStatsWidget::class,
+            SourcesChartWidget::class,
+            TopProductsWidget::class,
         ];
     }
 }

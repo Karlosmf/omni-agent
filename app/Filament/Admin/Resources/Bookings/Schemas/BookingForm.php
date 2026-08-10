@@ -22,7 +22,6 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class BookingForm
@@ -55,9 +54,9 @@ class BookingForm
                                     ])
                                     ->createOptionUsing(function (array $data) {
                                         $data['role'] = UserRole::Customer;
-                                        $data['password'] = Hash::make(Str::random(12));
+                                        $data['password'] = Str::random(12);
 
-                                        return User::create($data)->id;
+                                        return User::forceCreate($data)->id;
                                     })
                                     ->live()
                                     ->afterStateUpdated(function (Set $set, $state) {
@@ -98,42 +97,81 @@ class BookingForm
                                     ->preload()
                                     ->live()
                                     ->afterStateUpdated(function (Set $set, $state) {
-                                        if ($state) {
-                                            $lead = Lead::find($state);
-                                            if ($lead) {
-                                                $set('holder_name', $lead->customer?->name);
-                                                if ($lead->customer_id) {
-                                                    $set('customer_id', $lead->customer_id);
-                                                }
-                                                $aiData = $lead->ai_data ?? [];
-                                                if (! empty($aiData['destino'])) {
-                                                    $set('destination', $aiData['destino']);
-                                                } elseif (! empty($aiData['destination'])) {
-                                                    $set('destination', $aiData['destination']);
-                                                }
-                                                if (isset($aiData['pasajeros'])) {
-                                                    $rawPass = $aiData['pasajeros'];
-                                                } elseif (isset($aiData['passengers'])) {
-                                                    $rawPass = $aiData['passengers'];
-                                                } else {
-                                                    $rawPass = null;
-                                                }
+                                        if (! $state) {
+                                            return;
+                                        }
 
-                                                if ($rawPass !== null) {
-                                                    session()->flash('lead_original_passengers', $rawPass);
-                                                    if (is_numeric(trim($rawPass))) {
-                                                        $set('passengers', (int) $rawPass);
-                                                    } else {
-                                                        preg_match_all("/(\d+)\s*(adultos?|niñ[os|as]+|ninos?|menores?|bebes?|bebés?|pasajeros?|personas?|menor)/i", $rawPass, $matches);
-                                                        if (! empty($matches[1])) {
-                                                            $set('passengers', array_sum($matches[1]));
-                                                        } else {
-                                                            preg_match("/\d+/", $rawPass, $firstNum);
-                                                            $set('passengers', ! empty($firstNum) ? (int) $firstNum[0] : 1);
-                                                        }
-                                                    }
+                                        $lead = Lead::with('customer')->find($state);
+                                        if (! $lead) {
+                                            return;
+                                        }
+
+                                        // Customer linkage
+                                        $set('holder_name', $lead->customer?->name);
+                                        if ($lead->customer_id) {
+                                            $set('customer_id', $lead->customer_id);
+                                        }
+
+                                        $aiData = $lead->ai_data ?? [];
+
+                                        // Destination
+                                        if (! empty($aiData['destino'])) {
+                                            $set('destination', $aiData['destino']);
+                                        } elseif (! empty($aiData['destination'])) {
+                                            $set('destination', $aiData['destination']);
+                                        }
+
+                                        // Passengers
+                                        $rawPass = $aiData['pasajeros'] ?? $aiData['passengers'] ?? null;
+                                        if ($rawPass !== null) {
+                                            session()->flash('lead_original_passengers', $rawPass);
+                                            if (is_numeric(trim((string) $rawPass))) {
+                                                $set('passengers', (int) $rawPass);
+                                            } else {
+                                                preg_match_all('/(\d+)\s*(adultos?|niñ[os|as]+|ninos?|menores?|bebes?|bebés?|pasajeros?|personas?|menor)/i', $rawPass, $matches);
+                                                if (! empty($matches[1])) {
+                                                    $set('passengers', array_sum($matches[1]));
+                                                } else {
+                                                    preg_match('/\d+/', $rawPass, $firstNum);
+                                                    $set('passengers', ! empty($firstNum) ? (int) $firstNum[0] : 1);
                                                 }
                                             }
+                                        }
+
+                                        // Nights
+                                        if (! empty($aiData['noches']) && is_numeric($aiData['noches'])) {
+                                            $set('nights', (int) $aiData['noches']);
+                                        }
+
+                                        // Travel date (ISO)
+                                        if (! empty($aiData['travel_date'])) {
+                                            $set('travel_date', $aiData['travel_date']);
+                                        }
+
+                                        // Internal notes — full lead context
+                                        $parts = [];
+                                        if (! empty($aiData['resumen'])) {
+                                            $parts[] = "Resumen IA: {$aiData['resumen']}";
+                                        }
+                                        if (! empty($aiData['presupuesto'])) {
+                                            $parts[] = "Presupuesto consultante: {$aiData['presupuesto']}";
+                                        }
+                                        if (! empty($aiData['ciudad_salida'])) {
+                                            $parts[] = "Ciudad de salida: {$aiData['ciudad_salida']}";
+                                        }
+                                        if (! empty($aiData['fecha'])) {
+                                            $parts[] = "Fechas solicitadas: {$aiData['fecha']}";
+                                        }
+                                        if ($lead->raw_message) {
+                                            $parts[] = "Mensaje original: {$lead->raw_message}";
+                                        }
+                                        if (! empty($parts)) {
+                                            $set('internal_notes', implode("\n", $parts));
+                                        }
+
+                                        // Notes visible al cliente
+                                        if ($lead->ai_summary) {
+                                            $set('notes', $lead->ai_summary);
                                         }
                                     }),
                                 TextInput::make('holder_name')

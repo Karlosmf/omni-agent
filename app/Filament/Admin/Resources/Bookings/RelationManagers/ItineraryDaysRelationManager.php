@@ -2,6 +2,9 @@
 
 namespace App\Filament\Admin\Resources\Bookings\RelationManagers;
 
+use App\Services\AiConciergeService;
+use App\Traits\GeneratesItineraryWithAi;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -21,6 +24,8 @@ use Filament\Tables\Table;
 
 class ItineraryDaysRelationManager extends RelationManager
 {
+    use GeneratesItineraryWithAi;
+
     protected static string $relationship = 'itineraryDays';
 
     protected static ?string $title = 'Itinerario del Viaje';
@@ -109,39 +114,28 @@ class ItineraryDaysRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                \Filament\Tables\Actions\Action::make('generate_ai')
+                Action::make('generate_ai')
                     ->label('Generar con IA')
                     ->icon('heroicon-o-sparkles')
                     ->color('primary')
-                    ->form([
-                        \Filament\Forms\Components\Textarea::make('prompt')
-                            ->label('Instrucción para la IA')
-                            ->placeholder('Ej: Generame 7 días en Roma para 2 personas')
-                            ->required(),
-                    ])
-                    ->action(function (array $data, \App\Services\AiConciergeService $aiService, \Filament\Resources\RelationManagers\RelationManager $livewire) {
+                    ->form(self::itineraryAiForm())
+                    ->action(function (array $data, AiConciergeService $aiService, RelationManager $livewire) {
                         $days = $aiService->generateItinerary($data['prompt']);
-                        if (!empty($days)) {
+                        if (! empty($days)) {
                             $booking = $livewire->getOwnerRecord();
                             $currentCount = $booking->itineraryDays()->count();
-                            
+
                             foreach ($days as $index => $day) {
                                 $booking->itineraryDays()->create([
                                     'day_number' => $currentCount + $index + 1,
-                                    'title' => $day['title'] ?? ('Día ' . ($index + 1)),
+                                    'title' => $day['title'] ?? ('Día '.($index + 1)),
                                     'description' => $day['description'] ?? '',
                                 ]);
                             }
-                            
-                            \Filament\Notifications\Notification::make()
-                                ->title('Itinerario generado con éxito')
-                                ->success()
-                                ->send();
+
+                            self::notifyItinerarySuccess();
                         } else {
-                            \Filament\Notifications\Notification::make()
-                                ->title('Error al generar itinerario')
-                                ->danger()
-                                ->send();
+                            self::notifyItineraryFailure();
                         }
                     }),
                 CreateAction::make(),

@@ -24,6 +24,6 @@ class ProcessAiResponse implements ShouldQueue
      */
     public function handle(AiConciergeService $aiService): void
     {
-        $aiService->analyzeLead($this->lead);
+        $aiService->extractLeadData($this->lead);
     }
 }

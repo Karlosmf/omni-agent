@@ -5,8 +5,10 @@ namespace App\Filament\Admin\Resources\Bookings\Tables;
 use App\Enums\BookingStatus;
 use App\Enums\UserRole;
 use App\Filament\Exports\BookingExporter;
+use App\Mail\BookingProposalMail;
 use App\Models\AgencySetting;
 use App\Models\Booking;
+use App\Models\BookingActivity;
 use App\Models\TravelPackage;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -20,13 +22,13 @@ use Filament\Actions\ReplicateAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Mail;
 
 class BookingsTable
 {
@@ -148,27 +150,70 @@ class BookingsTable
                     ->color('success')
                     ->url(function ($record) {
                         $phone = preg_replace('/[^0-9]/', '', $record->customer?->phone ?? '');
-                        
+
                         $text = "Hola *{$record->holder_name}*! 👋\n\n";
                         if ($record->destination) {
                             $text .= "Te comparto el detalle de tu viaje a *{$record->destination}* ✈️\n";
                         } else {
                             $text .= "Te comparto el detalle de tu viaje ✈️\n";
                         }
-                        
-                        if ($record->status === \App\Enums\BookingStatus::Borrador || $record->status === \App\Enums\BookingStatus::Presupuesto) {
+
+                        if ($record->status === BookingStatus::Borrador || $record->status === BookingStatus::Presupuesto) {
                             $text .= "Total de la cotización: *{$record->currency} ".number_format($record->total_sell, 2)."*\n";
                         } else {
                             $text .= "Tu viaje está confirmado ✅\n";
                         }
-                        
+
                         $text .= "\nPodés ver todo el itinerario, la propuesta y tus vouchers ingresando acá:\n";
                         $text .= $record->publicUrl()."\n\n";
                         $text .= 'Cualquier duda, ¡estamos a tu disposición!';
 
-                        return 'https://wa.me/' . $phone . '?text=' . urlencode($text);
+                        return 'https://wa.me/'.$phone.'?text='.urlencode($text);
                     })
                     ->openUrlInNewTab(),
+                Action::make('send_email')
+                    ->label('Enviar por Email')
+                    ->icon('heroicon-o-envelope')
+                    ->color('info')
+                    ->form([
+                        TextInput::make('email')
+                            ->label('Email del cliente')
+                            ->email()
+                            ->required()
+                            ->default(fn (Booking $record): ?string => $record->customer?->email),
+                        Radio::make('format')
+                            ->label('Formato del documento')
+                            ->options([
+                                'budget_only' => 'Solo Presupuesto',
+                                'full' => 'Presupuesto + Detalle de la Idea de Viaje',
+                            ])
+                            ->default('budget_only')
+                            ->required(),
+                    ])
+                    ->action(function (Booking $record, array $data) {
+                        $travelPackage = $record->lead?->travelPackage;
+                        if (! $travelPackage && str_starts_with((string) $record->internal_notes, 'Presupuesto generado a partir de Idea de Viaje: ')) {
+                            $title = str_replace('Presupuesto generado a partir de Idea de Viaje: ', '', $record->internal_notes);
+                            $travelPackage = TravelPackage::where('title', $title)->first();
+                        }
+
+                        $pdfContent = Pdf::loadView('pdf.booking', [
+                            'booking' => $record,
+                            'format' => $data['format'],
+                            'travelPackage' => $travelPackage,
+                        ])->output();
+
+                        Mail::to($data['email'])
+                            ->send(new BookingProposalMail($record, $pdfContent));
+
+                        BookingActivity::log($record, 'email_sent', "Presupuesto enviado a {$data['email']}");
+
+                        Notification::make()
+                            ->title('Presupuesto enviado por email')
+                            ->body("Se envió el PDF a {$data['email']}")
+                            ->success()
+                            ->send();
+                    }),
                 Action::make('pdf')
                     ->label('Descargar PDF')
                     ->icon('heroicon-o-document-arrow-down')

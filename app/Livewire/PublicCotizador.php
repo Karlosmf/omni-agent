@@ -65,16 +65,17 @@ class PublicCotizador extends Component
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:50',
         ]);
-
-        $customer = User::firstOrCreate(
-            ['email' => $this->email],
-            [
+        $customer = User::where('email', $this->email)->first();
+        if (! $customer) {
+            $customer = new User;
+            $customer->forceFill([
+                'email' => $this->email,
                 'name' => $this->name,
                 'phone' => $this->phone,
                 'role' => UserRole::Customer,
                 'password' => bcrypt(Str::random(16)),
-            ]
-        );
+            ])->save();
+        }
 
         $lead = Lead::create([
             'customer_id' => $customer->id,

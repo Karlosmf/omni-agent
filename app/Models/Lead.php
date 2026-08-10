@@ -21,6 +21,7 @@ class Lead extends Model
 
     protected $fillable = [
         'customer_id',
+        'customer_name',
         'agent_id',
         'source',
         'travel_package_id',
