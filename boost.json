@@ -3,6 +3,7 @@
         "gemini",
         "opencode"
     ],
+    "cloud": false,
     "guidelines": true,
     "herd_mcp": true,
     "mcp": true,
@@ -11,6 +12,7 @@
     ],
     "sail": false,
     "skills": [
+        "infer-conventions",
         "laravel-best-practices",
         "livewire-development",
         "volt-development",
