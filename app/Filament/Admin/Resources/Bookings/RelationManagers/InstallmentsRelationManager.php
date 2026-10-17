@@ -137,7 +137,7 @@ class InstallmentsRelationManager extends RelationManager
                             'booking_id' => $record->booking_id,
                             'installment_id' => $record->id,
                             'transaction_category_id' => TransactionCategory::firstOrCreate(
-                                ['name' => 'Cobro de cliente'],
+                                ['name' => 'Pago de Pasajero'],
                                 ['type' => 'ingreso', 'is_system' => true],
                             )->id,
                             'type' => TransactionType::Cobro,
