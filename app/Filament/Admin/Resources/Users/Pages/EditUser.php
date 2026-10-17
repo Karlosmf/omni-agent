@@ -3,13 +3,27 @@
 namespace App\Filament\Admin\Resources\Users\Pages;
 
 use App\Filament\Admin\Resources\Users\UserResource;
+use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Database\Eloquent\Model;
 
 class EditUser extends EditRecord
 {
     protected static string $resource = UserResource::class;
+
+    /**
+     * `role` is not mass assignable; only this admin-only form may set it.
+     *
+     * @param  array<string, mixed>  $data
+     */
+    protected function handleRecordUpdate(Model $record, array $data): Model
+    {
+        User::unguarded(fn () => $record->update($data));
+
+        return $record;
+    }
 
     protected function getHeaderActions(): array
     {

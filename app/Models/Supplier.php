@@ -31,10 +31,6 @@ class Supplier extends Model
         'notes',
     ];
 
-    protected $appends = [
-        'balance_usd',
-    ];
-
     public function accounts(): HasMany
     {
         return $this->hasMany(SupplierAccount::class);

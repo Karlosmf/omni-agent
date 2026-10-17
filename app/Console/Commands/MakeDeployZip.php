@@ -13,7 +13,7 @@ use function Laravel\Prompts\select;
 
 class MakeDeployZip extends Command
 {
-    protected $signature = 'make:deploy-zip {--name=deploy.zip} {--no_brand} {--include-assets}';
+    protected $signature = 'make:deploy-zip {--name=deploy.zip} {--no_brand} {--include-assets} {--host= : Perfil de hosting (hostinger, donweb, hostrentable) para mostrar el checklist post-deploy}';
 
     protected $description = 'Genera un paquete ZIP para despliegue detectando el mejor método (7-Zip o Nativo)';
 
@@ -36,6 +36,13 @@ class MakeDeployZip extends Command
                 default: 'no'
             );
             $includeAssets = ($choice === 'yes');
+        }
+
+        $host = $this->option('host');
+        if ($host && ! config("omni-hosting.profiles.{$host}")) {
+            $this->error('Perfil de hosting desconocido. Opciones: '.implode(', ', array_keys(config('omni-hosting.profiles'))));
+
+            return 1;
         }
 
         $this->info('🚀 Iniciando proceso de empaquetado unificado...');
@@ -77,11 +84,34 @@ class MakeDeployZip extends Command
         // 3. Detección de 7-Zip
         $sevenZipPath = $this->getSevenZipPath();
 
-        if ($sevenZipPath) {
-            return $this->useSevenZip($sevenZipPath, $zipPath, $noBrand);
+        $result = $sevenZipPath
+            ? $this->useSevenZip($sevenZipPath, $zipPath, $noBrand)
+            : $this->useNativeZip($zipPath, $noBrand);
+
+        if ($host && $result === 0) {
+            $this->printPostDeployChecklist((string) $host);
         }
 
-        return $this->useNativeZip($zipPath, $noBrand);
+        return $result;
+    }
+
+    /**
+     * Steps the client has to follow in the hosting panel after uploading the package.
+     */
+    private function printPostDeployChecklist(string $host): void
+    {
+        $profile = config("omni-hosting.profiles.{$host}");
+        $cron = str_replace(['{path}', '{php}'], ['/RUTA/DEL/PROYECTO', $profile['php_binary']], config('omni-hosting.cron_command'));
+
+        $this->newLine();
+        $this->info("📋 Checklist post-deploy — {$profile['label']}");
+        $this->line("  1. Subí y descomprimí el ZIP; el contenido de public/ va en {$profile['public_dir']}/.");
+        $this->line('  2. Copiá .env.example a .env y completá APP_URL, la base de datos y APP_KEY (php artisan key:generate).');
+        $this->line('  3. Poné PHP 8.4 en el panel del hosting y dale permisos de escritura a storage/ y bootstrap/cache/.');
+        $this->line('  4. Ejecutá las migraciones y "storage:link" (por SSH, o desde el panel de admin: Sistema → Server Admin).');
+        $this->line("  5. En {$profile['panel']} → {$profile['cron_location']}, creá una tarea cada minuto:");
+        $this->line("       {$cron}");
+        $this->line('  6. Entrá al panel de admin: si el aviso "El cron no está corriendo" desapareció, quedó listo (o corré php artisan omni:doctor).');
     }
 
     /**

@@ -29,6 +29,7 @@ class CustomerPanelProvider extends PanelProvider
             ->path('portal')
             ->maxContentWidth('full')
             ->login(Login::class)
+            ->passwordReset()
             ->colors([
                 'primary' => Color::Sky,
             ])

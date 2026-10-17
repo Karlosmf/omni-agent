@@ -4,16 +4,15 @@ namespace App\Actions\Leads;
 
 use App\Models\Lead;
 use App\Services\AiConciergeService;
+use App\Services\LeadEnrichmentService;
 use Illuminate\Support\Facades\Log;
 
 class ProcessChatbotInteractionAction
 {
-    protected AiConciergeService $aiService;
-
-    public function __construct(AiConciergeService $aiService)
-    {
-        $this->aiService = $aiService;
-    }
+    public function __construct(
+        protected AiConciergeService $aiService,
+        protected LeadEnrichmentService $enrichment = new LeadEnrichmentService,
+    ) {}
 
     /**
      * Handle the chatbot message processing, including AI interaction and Lead update.
@@ -38,28 +37,7 @@ class ProcessChatbotInteractionAction
 
                 $extraction = $this->aiService->extractLeadData($extractionContext);
 
-                if (! empty($extraction)) {
-                    $currentAiData = $lead->ai_data ?? [];
-
-                    $newAiData = array_merge($currentAiData, array_filter([
-                        'destino' => $extraction['destino'] ?? null,
-                        'presupuesto' => $extraction['presupuesto'] ?? null,
-                        'pasajeros' => $extraction['pasajeros'] ?? null,
-                    ]));
-
-                    $updateData = [
-                        'ai_data' => $newAiData,
-                        'ai_summary' => $extraction['resumen'] ?? $lead->ai_summary,
-                        'needs_human_attention' => ($extraction['requiere_atencion'] ?? false) || $lead->needs_human_attention,
-                    ];
-
-                    // Update customer name if extracted and still generic
-                    if (! empty($extraction['nombre']) && $lead->customer && ($lead->customer->name === 'Web Guest' || empty($lead->customer->name))) {
-                        $lead->customer->update(['name' => $extraction['nombre']]);
-                    }
-
-                    $lead->update($updateData);
-                }
+                $this->enrichment->apply($lead, $extraction);
             }
 
             return $replyContent;

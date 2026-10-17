@@ -3,14 +3,13 @@
 namespace App\Livewire;
 
 use App\Actions\Leads\CaptureLeadAction;
-use App\Services\AiConciergeService;
+use App\Jobs\ProcessLeadExtraction;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\HtmlString;
 use Livewire\Component;
 
@@ -21,6 +20,9 @@ class PublicLeadForm extends Component implements HasForms
     public ?array $data = [];
 
     public $success = false;
+
+    /** Honeypot: real visitors never see or fill this field. */
+    public string $website = '';
 
     public function mount(): void
     {
@@ -44,7 +46,7 @@ class PublicLeadForm extends Component implements HasForms
                 TextInput::make('phone')
                     ->label('Teléfono (Opcional)')
                     ->tel()
-                    ->numeric()
+                    ->regex('/^\+?[0-9\s\-()]{7,20}$/')
                     ->placeholder('+54 9 ...'),
                 Textarea::make('message')
                     ->label('Mensaje')
@@ -60,39 +62,27 @@ class PublicLeadForm extends Component implements HasForms
             ->statePath('data');
     }
 
-    public function submit(AiConciergeService $aiService, CaptureLeadAction $captureLeadAction)
+    public function submit(CaptureLeadAction $captureLeadAction)
     {
+        if ($this->website !== '') {
+            $this->success = true;
+
+            return;
+        }
+
         $data = $this->form->getState();
 
         $lead = $captureLeadAction->execute([
             'customer_name' => $data['name'],
-            'customer_phone' => $data['phone'] ?? 'Web-Form',
+            'customer_phone' => $data['phone'] ?? null,
             'customer_email' => $data['email'],
             'source' => 'web_form',
             'raw_message' => $data['message'],
             'ai_data' => ['email' => $data['email']],
         ]);
 
-        // Process message with AI to get a summary/intent
-        // Process message with AI to get a summary and structured data
-        try {
-            $extraction = $aiService->extractLeadData("El usuario {$data['name']} escribió: {$data['message']}");
-
-            // Merge existing ai_data (email) with extracted data
-            $currentAiData = $lead->ai_data ?? [];
-            $newAiData = array_merge($currentAiData, [
-                'destino' => $extraction['destino'] ?? null,
-                'presupuesto' => $extraction['presupuesto'] ?? null,
-                'pasajeros' => $extraction['pasajeros'] ?? 1,
-            ]);
-
-            $lead->update([
-                'ai_data' => $newAiData,
-                'ai_summary' => $extraction['resumen'] ?? null,
-            ]);
-        } catch (\Throwable $e) {
-            Log::error('Error processing form with AI: '.$e->getMessage());
-        }
+        // The AI enrichment runs on the queue so the visitor does not wait for it.
+        ProcessLeadExtraction::dispatch($lead, "El usuario {$data['name']} escribió: {$data['message']}");
 
         $this->form->fill();
         $this->success = true;

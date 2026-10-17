@@ -6,7 +6,6 @@ use App\Enums\BookingStatus;
 use App\Enums\UserRole;
 use App\Filament\Exports\BookingExporter;
 use App\Mail\BookingProposalMail;
-use App\Models\AgencySetting;
 use App\Models\Booking;
 use App\Models\BookingActivity;
 use App\Models\TravelPackage;
@@ -251,7 +250,7 @@ class BookingsTable
                     ->visible(fn (Booking $record) => in_array($record->status, [BookingStatus::Senado, BookingStatus::Emitido]))
                     ->action(function ($record) {
                         return response()->streamDownload(function () use ($record) {
-                            $settings = AgencySetting::first();
+                            $settings = get_agency_settings();
                             echo Pdf::loadView('pdf.contract', ['booking' => $record, 'settings' => $settings])->output();
                         }, 'acuerdo-'.$record->file_number.'.pdf');
                     }),

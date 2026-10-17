@@ -8,6 +8,7 @@ use App\Models\Lead;
 use App\Models\Message;
 use App\Models\User;
 use App\Services\AiConciergeService;
+use App\Support\ChatThrottle;
 use Illuminate\Support\Facades\Log;
 
 use function Livewire\Volt\boot;
@@ -133,7 +134,7 @@ $sendMessage = function () {
             $captureLeadAction = app(CaptureLeadAction::class);
             $lead = $captureLeadAction->execute([
                 'customer_name' => $this->captureName ?: 'Web Guest',
-                'customer_phone' => $this->capturePhone ?: 'Sin teléfono',
+                'customer_phone' => $this->capturePhone ?: null,
                 'customer_email' => ! empty($this->captureEmail) ? $this->captureEmail : null,
                 'customer_budget' => (! empty($this->captureCurrency) && ! empty($this->captureBudgetAmount)) ? $this->captureCurrency.' '.$this->captureBudgetAmount : null,
                 'source' => 'web_widget',
@@ -144,7 +145,14 @@ $sendMessage = function () {
             session(['chat_lead_id' => $lead->id]);
         }
 
-        // 3. Process with Action
+        // 3. Process with Action (rate limited: every message costs AI calls)
+        if ($blocked = ChatThrottle::attempt((string) request()->ip(), session()->getId(), $lead)) {
+            $this->messages[] = ['role' => 'assistant', 'content' => $blocked];
+            $this->isLoading = false;
+
+            return;
+        }
+
         $processAction = app(ProcessChatbotInteractionAction::class);
         $replyContent = $processAction->execute($userMsg, $lead, $this->messages);
 
@@ -195,7 +203,7 @@ $toJSON = function (): array {
         style="transform-origin: bottom right;">
 
         <!-- Header -->
-        <div class="relative bg-emerald-600 text-white p-4 shrink-0 overflow-hidden">
+        <div class="relative bg-primary text-primary-content p-4 shrink-0 overflow-hidden">
             <!-- Glass reflection effect -->
             <div class="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-50 pointer-events-none"></div>
             <!-- Decorative circle -->

@@ -7,6 +7,7 @@ use App\Enums\LeadTemperature;
 use App\Enums\UserRole;
 use App\Models\Lead;
 use App\Models\User;
+use App\Support\PhoneNumber;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -21,6 +22,7 @@ class CaptureLeadAction
 
         return Lead::create([
             'customer_id' => $customer->id,
+            'customer_name' => ! empty($data['customer_name']) ? trim($data['customer_name']) : null,
             'travel_package_id' => $data['travel_package_id'] ?? null,
             'customer_budget' => $data['customer_budget'] ?? null,
             'source' => $data['source'] ?? 'unknown',
@@ -38,7 +40,7 @@ class CaptureLeadAction
     private function findOrCreateCustomer(array $data): User
     {
         $email = ! empty($data['customer_email']) ? trim($data['customer_email']) : null;
-        $phone = ! empty($data['customer_phone']) ? trim($data['customer_phone']) : null;
+        $phone = PhoneNumber::normalize($data['customer_phone'] ?? null);
         $name = ! empty($data['customer_name']) ? trim($data['customer_name']) : 'Web Guest';
 
         $query = User::query()->where('role', UserRole::Customer);
@@ -48,8 +50,8 @@ class CaptureLeadAction
         } elseif ($phone) {
             $query->where('phone', $phone);
         } else {
-            // Can't reliably find without email or phone, so we'll just create one below
-            // But we add a dummy condition that fails
+            // Without a real email or phone there is nothing to match on: anonymous
+            // visitors must never be merged into one shared customer.
             $query->whereRaw('1 = 0');
         }
 

@@ -28,7 +28,6 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'phone',
-        'role',
         'is_guest',
         'permissions', // Added
         'password',
@@ -107,7 +106,7 @@ class User extends Authenticatable implements FilamentUser
             return true;
         }
 
-        if ($this->role === UserRole::Finances && in_array($permission, ['manage_transactions', 'manage_finances', 'manage_bookings'])) {
+        if ($this->role === UserRole::Finances && in_array($permission, ['manage_transactions', 'manage_finances', 'manage_bookings', 'view_financial_reports'])) {
             return true;
         }
 

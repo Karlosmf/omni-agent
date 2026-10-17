@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Actions\Leads\CaptureLeadAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLeadRequest;
+use App\Http\Resources\LeadResource;
 use App\Jobs\ProcessAiResponse;
 use Illuminate\Http\JsonResponse;
 
@@ -25,7 +26,7 @@ class LeadController extends Controller
 
         return response()->json([
             'message' => 'Lead received. AI processing started.',
-            'data' => $lead,
+            'data' => new LeadResource($lead),
         ], 201);
     }
 }

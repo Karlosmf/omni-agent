@@ -100,7 +100,7 @@ class TravelPackagesTable
                                     $data['role'] = UserRole::Customer;
                                     $data['password'] = Hash::make(Str::random(12));
 
-                                    return User::create($data)->id;
+                                    return User::forceCreate($data)->id;
                                 }),
                             ...HasBudgetGenerationModal::schema($record),
                         ];
@@ -108,7 +108,7 @@ class TravelPackagesTable
                     ->action(function (TravelPackage $record, array $data) {
                         $customer = User::find($data['customer_id']);
                         if (! $customer) {
-                            $customer = User::create([
+                            $customer = User::forceCreate([
                                 'name' => $data['name'],
                                 'phone' => $data['phone'] ?? '',
                                 'role' => UserRole::Customer,

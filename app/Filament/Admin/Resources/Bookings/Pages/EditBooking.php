@@ -6,7 +6,6 @@ use App\Enums\BookingStatus;
 use App\Filament\Admin\Resources\Bookings\BookingResource;
 use App\Filament\Admin\Resources\Bookings\Widgets\BookingFinancialSummary;
 use App\Mail\BookingProposalMail;
-use App\Models\AgencySetting;
 use App\Models\Booking;
 use App\Models\BookingActivity;
 use App\Models\Lead;
@@ -141,7 +140,7 @@ class EditBooking extends EditRecord
                 ->visible(fn (Booking $record) => in_array($record->status, [BookingStatus::Senado, BookingStatus::Emitido]))
                 ->action(function ($record) {
                     return response()->streamDownload(function () use ($record) {
-                        $settings = AgencySetting::first();
+                        $settings = get_agency_settings();
                         echo Pdf::loadView('pdf.contract', ['booking' => $record, 'settings' => $settings])->output();
                     }, 'acuerdo-'.$record->file_number.'.pdf');
                 }),

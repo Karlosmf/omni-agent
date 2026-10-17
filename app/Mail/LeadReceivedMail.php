@@ -3,13 +3,14 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class LeadReceivedMail extends Mailable
+class LeadReceivedMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -32,6 +33,7 @@ class LeadReceivedMail extends Mailable
     public function envelope(): Envelope
     {
         $name = $this->settings['name'] ?? 'OmniAgent';
+
         return new Envelope(
             subject: '¡Recibimos tu consulta! - '.$name,
         );

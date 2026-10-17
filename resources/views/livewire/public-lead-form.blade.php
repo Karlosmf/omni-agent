@@ -17,6 +17,8 @@
     <form wire:submit="submit" class="space-y-4">
         {{ $this->form }}
 
+        <input type="text" wire:model="website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden">
+
         <button type="submit"
             class="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-medium py-2.5 rounded-lg shadow-lg hover:shadow-xl transition-all flex justify-center items-center gap-2 group">
             <span wire:loading.remove>Enviar Consulta</span>

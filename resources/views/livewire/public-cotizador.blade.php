@@ -46,6 +46,7 @@
                 </div>
 
                 <form wire:submit.prevent="submit" class="space-y-6">
+                    <input type="text" wire:model="website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden">
                     
                     <!-- STEP 1: Destino -->
                     <div class="{{ $step === 1 ? 'block' : 'hidden' }}">

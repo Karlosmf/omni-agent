@@ -2,12 +2,11 @@
 
 namespace App\Livewire;
 
-use App\Enums\LeadStatus;
+use App\Actions\Leads\CaptureLeadAction;
 use App\Enums\UserRole;
-use App\Models\Lead;
 use App\Models\User;
 use Filament\Notifications\Notification;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class PublicCotizador extends Component
@@ -34,6 +33,9 @@ class PublicCotizador extends Component
 
     public $isSubmitted = false;
 
+    /** Honeypot: real visitors never see or fill this field. */
+    public string $website = '';
+
     public function nextStep()
     {
         if ($this->step === 1) {
@@ -55,44 +57,46 @@ class PublicCotizador extends Component
 
     public function previousStep()
     {
-        $this->step--;
+        $this->step = max(1, $this->step - 1);
     }
 
     public function submit()
     {
+        if ($this->website !== '') {
+            $this->isSubmitted = true;
+
+            return;
+        }
+
         $this->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:50',
         ]);
-        $customer = User::where('email', $this->email)->first();
-        if (! $customer) {
-            $customer = new User;
-            $customer->forceFill([
-                'email' => $this->email,
-                'name' => $this->name,
-                'phone' => $this->phone,
-                'role' => UserRole::Customer,
-                'password' => bcrypt(Str::random(16)),
-            ])->save();
-        }
+        try {
+            $lead = app(CaptureLeadAction::class)->execute([
+                'customer_name' => $this->name,
+                'customer_email' => $this->email,
+                'customer_phone' => $this->phone,
+                'source' => 'cotizador_publico',
+                'raw_message' => "Solicitud desde el cotizador web.\nDestino: {$this->destination}\nFechas: {$this->travel_date_start} al {$this->travel_date_end}\nPasajeros: {$this->adults} adultos, {$this->children} niños.",
+                'ai_data' => [
+                    'destino' => $this->destination,
+                    'tipo_viaje' => $this->trip_type,
+                    'fecha_salida' => $this->travel_date_start,
+                    'fecha_regreso' => $this->travel_date_end,
+                    'adultos' => $this->adults,
+                    'ninos' => $this->children,
+                    'pasajeros' => $this->adults + $this->children,
+                ],
+            ]);
+            $lead->update(['needs_human_attention' => true]); // Requiere atención porque fue manual
+        } catch (\Throwable $e) {
+            Log::error('Cotizador error: '.$e->getMessage());
+            $this->addError('submit', 'No pudimos enviar tu solicitud. Probá de nuevo en unos minutos.');
 
-        $lead = Lead::create([
-            'customer_id' => $customer->id,
-            'source' => 'cotizador_publico',
-            'status' => LeadStatus::New,
-            'ai_data' => [
-                'destino' => $this->destination,
-                'tipo_viaje' => $this->trip_type,
-                'fecha_salida' => $this->travel_date_start,
-                'fecha_regreso' => $this->travel_date_end,
-                'adultos' => $this->adults,
-                'ninos' => $this->children,
-                'pasajeros' => $this->adults + $this->children,
-            ],
-            'needs_human_attention' => true, // Requiere atención porque fue manual
-            'raw_message' => "Solicitud desde el cotizador web.\nDestino: {$this->destination}\nFechas: {$this->travel_date_start} al {$this->travel_date_end}\nPasajeros: {$this->adults} adultos, {$this->children} niños.",
-        ]);
+            return;
+        }
 
         // Notify admin
         $admin = User::where('role', UserRole::Admin)->first();

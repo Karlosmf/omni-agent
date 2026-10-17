@@ -44,7 +44,7 @@ class AiConciergeService
 
             $systemPrompt = $this->buildSystemPrompt($messageContent, $lead);
 
-            $responseText = $this->callAiWithRetry("{$systemPrompt}\nUsuario: {$messageContent}");
+            $responseText = $this->callAiWithRetry("{$systemPrompt}\nAsistente:");
 
             $lead->messages()->create([
                 'role' => 'assistant',
@@ -98,7 +98,7 @@ class AiConciergeService
             if ($provider === AiProvider::Gemini) {
                 config(['gemini.api_key' => $apiKey]);
                 $stream = Gemini::generativeModel('models/gemini-2.0-flash')
-                    ->generateContentStream("{$systemPrompt}\nUsuario: {$messageContent}");
+                    ->generateContentStream("{$systemPrompt}\nAsistente:");
 
                 foreach ($stream as $response) {
                     $chunk = $response->text();
@@ -107,7 +107,7 @@ class AiConciergeService
                 }
             } else {
                 // OpenAI does not support true streaming through simple HTTP — yield full response
-                $fullResponse = $this->callOpenAi("{$systemPrompt}\nUsuario: {$messageContent}", $apiKey);
+                $fullResponse = $this->callOpenAi("{$systemPrompt}\nAsistente:", $apiKey);
                 yield $fullResponse;
             }
 
@@ -290,8 +290,8 @@ class AiConciergeService
             return trim($displayName) ?: 'nuestros agentes';
         })->filter()->unique();
 
-        $namesString = $names->isNotEmpty() ? $names->join(', ', ' o ') : 'Nela o Belén';
-        $assistantName = $settings?->ai_assistant_name ?? 'Brisa';
+        $namesString = $names->isNotEmpty() ? $names->join(', ', ' o ') : 'nuestros asesores';
+        $assistantName = $settings?->ai_assistant_name ?: 'Asistente';
         $companyName = $settings?->company_name ?? config('app.name', 'nuestra agencia de viajes');
 
         $systemPrompt = "Eres '{$assistantName}', la asistente virtual de {$companyName}.
@@ -401,8 +401,7 @@ El formato JSON debe ser un array de objetos, donde cada objeto represente un d�
 Responde ÚNICAMENTE con el array JSON crudo, sin bloques de código markdown, sin prefijos y sin explicaciones adicionales.";
 
         try {
-            $response = Gemini::geminiPro()->generateContent($systemPrompt);
-            $text = $response->text();
+            $text = $this->callAiWithRetry($systemPrompt);
 
             // Clean markdown blocks if the model still adds them
             $text = preg_replace('/```json\s*/i', '', $text);

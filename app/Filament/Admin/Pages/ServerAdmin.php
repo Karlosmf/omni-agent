@@ -57,6 +57,22 @@ class ServerAdmin extends Page
                 })
                 ->color('warning'),
 
+            Action::make('runMigrations')
+                ->label('Run Migrations')
+                ->icon('heroicon-o-circle-stack')
+                ->action(function () {
+                    Artisan::call('migrate', ['--force' => true]);
+
+                    Notification::make()
+                        ->title('Migraciones ejecutadas')
+                        ->body(trim(Artisan::output()))
+                        ->success()
+                        ->send();
+                })
+                ->requiresConfirmation()
+                ->modalDescription('Hacé un backup de la base antes de continuar.')
+                ->color('danger'),
+
             Action::make('createStorageLink')
                 ->label('Run Storage Link')
                 ->icon('heroicon-o-link')

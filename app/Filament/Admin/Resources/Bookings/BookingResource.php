@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Bookings;
 
 use App\Enums\BookingStatus;
+use App\Enums\UserRole;
 use App\Filament\Admin\Resources\Bookings\Pages\CreateBooking;
 use App\Filament\Admin\Resources\Bookings\Pages\EditBooking;
 use App\Filament\Admin\Resources\Bookings\Pages\ListBookings;
@@ -64,7 +65,7 @@ class BookingResource extends Resource
         $query = parent::getEloquentQuery();
 
         $user = auth()->user();
-        if ($user && ! $user->isAdmin()) {
+        if ($user && $user->role === UserRole::Sales) {
             $query->where(function ($q) use ($user) {
                 $q->where('agent_id', $user->id)
                     ->orWhereNull('agent_id');
