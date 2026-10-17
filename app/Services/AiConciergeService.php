@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Enums\AiProvider;
 use App\Enums\LeadTemperature;
 use App\Models\Lead;
+use Gemini\Data\GenerationConfig;
+use Gemini\Enums\ResponseMimeType;
 use Gemini\Laravel\Facades\Gemini;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -21,6 +23,11 @@ class AiConciergeService
      * Messages to include in context.
      */
     private const CONTEXT_MESSAGE_COUNT = 15;
+
+    /**
+     * Output budget for long structured answers (a whole travel package as JSON).
+     */
+    private const LONG_ANSWER_TOKENS = 8000;
 
     /**
      * Process a message through the configured AI provider.
@@ -99,7 +106,7 @@ class AiConciergeService
 
             if ($provider === AiProvider::Gemini) {
                 config(['gemini.api_key' => $apiKey]);
-                $stream = Gemini::generativeModel('models/gemini-2.0-flash')
+                $stream = Gemini::generativeModel('models/'.$this->resolveModel($settings, $provider))
                     ->generateContentStream("{$systemPrompt}\nAsistente:");
 
                 foreach ($stream as $response) {
@@ -108,8 +115,8 @@ class AiConciergeService
                     yield $chunk;
                 }
             } else {
-                // OpenAI does not support true streaming through simple HTTP — yield full response
-                $fullResponse = $this->callOpenAi("{$systemPrompt}\nAsistente:", $apiKey);
+                // OpenAI-compatible providers do not stream through simple HTTP — yield full response
+                $fullResponse = $this->callOpenAiCompatible($provider, "{$systemPrompt}\nAsistente:", $apiKey, $this->resolveModel($settings, $provider));
                 yield $fullResponse;
             }
 
@@ -173,9 +180,33 @@ class AiConciergeService
     }
 
     /**
+     * The model the agency chose, or the provider's default when none was set.
+     */
+    private function resolveModel(mixed $settings, AiProvider $provider): string
+    {
+        return filled($settings?->ai_model) ? trim($settings->ai_model) : $provider->getDefaultModel();
+    }
+
+    /**
+     * Check that the configured provider, key and model answer. Returns the error text, or null when it works.
+     */
+    public function testConnection(): ?string
+    {
+        try {
+            $this->callAiWithRetry('Respondé solo con la palabra OK.', retries: 0);
+
+            return null;
+        } catch (Throwable $e) {
+            return $e->getMessage() === 'AI_DISABLED'
+                ? 'La IA está desactivada: elegí un proveedor.'
+                : (in_array($e->getMessage(), ['AI_API_KEY_MISSING', 'GEMINI_API_KEY_MISSING']) ? 'Falta cargar la API key.' : $e->getMessage());
+        }
+    }
+
+    /**
      * Call the configured AI provider with retry logic.
      */
-    private function callAiWithRetry(string $prompt, ?string $pdfPath = null): string
+    private function callAiWithRetry(string $prompt, ?string $pdfPath = null, int $retries = self::MAX_RETRIES, bool $json = false): string
     {
         $settings = get_agency_settings();
         $provider = $settings?->ai_provider ?? AiProvider::None;
@@ -190,9 +221,14 @@ class AiConciergeService
             throw new \Exception('AI_API_KEY_MISSING');
         }
 
+        if ($pdfPath !== null && ! $provider->supportsPdf()) {
+            throw new \Exception("{$provider->getLabel()} no puede leer PDFs. Usá Gemini u OpenAI, o importá desde un enlace.");
+        }
+
+        $model = $this->resolveModel($settings, $provider);
         $lastException = null;
 
-        for ($attempt = 0; $attempt <= self::MAX_RETRIES; $attempt++) {
+        for ($attempt = 0; $attempt <= $retries; $attempt++) {
             try {
                 if ($attempt > 0) {
                     usleep($attempt * 500_000);
@@ -200,14 +236,14 @@ class AiConciergeService
 
                 if ($pdfPath !== null) {
                     return match ($provider) {
-                        AiProvider::Gemini => $this->callGeminiWithPdf($prompt, $pdfPath, $apiKey),
-                        AiProvider::OpenAI => $this->callOpenAiWithPdf($prompt, $pdfPath, $apiKey),
+                        AiProvider::Gemini => $this->callGeminiWithPdf($prompt, $pdfPath, $apiKey, $model, $json),
+                        default => $this->callOpenAiWithPdf($prompt, $pdfPath, $apiKey, $model, $json),
                     };
                 }
 
                 return match ($provider) {
-                    AiProvider::Gemini => $this->callGemini($prompt, $apiKey),
-                    AiProvider::OpenAI => $this->callOpenAi($prompt, $apiKey),
+                    AiProvider::Gemini => $this->callGemini($prompt, $apiKey, $model, $json),
+                    default => $this->callOpenAiCompatible($provider, $prompt, $apiKey, $model, $json),
                 };
             } catch (Throwable $e) {
                 $lastException = $e;
@@ -220,28 +256,32 @@ class AiConciergeService
 
     /**
      * Run a one-off prompt with the agency's configured provider and key, optionally reading a PDF.
+     * With $json the provider is asked for a JSON object and may answer at length (trip imports).
      *
      * @throws Throwable When the AI is disabled, has no key, or every retry failed.
      */
-    public function generate(string $prompt, ?string $pdfPath = null): string
+    public function generate(string $prompt, ?string $pdfPath = null, bool $json = false): string
     {
-        return $this->callAiWithRetry($prompt, $pdfPath);
+        return $this->callAiWithRetry($prompt, $pdfPath, json: $json);
     }
 
     /**
      * Gemini reading a PDF directly (works for scanned PDFs too).
      */
-    private function callGeminiWithPdf(string $prompt, string $pdfPath, string $apiKey): string
+    private function callGeminiWithPdf(string $prompt, string $pdfPath, string $apiKey, string $model, bool $json): string
     {
         $response = Http::timeout(90)
             ->withHeaders(['x-goog-api-key' => $apiKey])
-            ->post('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', [
+            ->post('https://generativelanguage.googleapis.com/v1beta/models/'.$model.':generateContent', [
                 'contents' => [[
                     'parts' => [
                         ['text' => $prompt],
                         ['inline_data' => ['mime_type' => 'application/pdf', 'data' => base64_encode((string) file_get_contents($pdfPath))]],
                     ],
                 ]],
+                'generationConfig' => $json
+                    ? ['responseMimeType' => 'application/json', 'maxOutputTokens' => self::LONG_ANSWER_TOKENS]
+                    : ['maxOutputTokens' => self::LONG_ANSWER_TOKENS],
             ]);
 
         if ($response->failed()) {
@@ -254,12 +294,12 @@ class AiConciergeService
     /**
      * OpenAI reading a PDF directly.
      */
-    private function callOpenAiWithPdf(string $prompt, string $pdfPath, string $apiKey): string
+    private function callOpenAiWithPdf(string $prompt, string $pdfPath, string $apiKey, string $model, bool $json): string
     {
         $response = Http::withToken($apiKey)
             ->timeout(90)
-            ->post('https://api.openai.com/v1/chat/completions', [
-                'model' => 'gpt-4o-mini',
+            ->post(AiProvider::OpenAI->getChatCompletionsUrl(), [
+                'model' => $model,
                 'messages' => [[
                     'role' => 'user',
                     'content' => [
@@ -270,7 +310,8 @@ class AiConciergeService
                         ]],
                     ],
                 ]],
-                'max_tokens' => 4000,
+                'max_tokens' => self::LONG_ANSWER_TOKENS,
+                ...($json ? ['response_format' => ['type' => 'json_object']] : []),
             ]);
 
         if ($response->failed()) {
@@ -283,32 +324,42 @@ class AiConciergeService
     /**
      * Call Gemini API.
      */
-    private function callGemini(string $prompt, string $apiKey): string
+    private function callGemini(string $prompt, string $apiKey, string $model, bool $json = false): string
     {
         config(['gemini.api_key' => $apiKey]);
-        $result = Gemini::generativeModel('models/gemini-2.0-flash')->generateContent($prompt);
+        $generator = Gemini::generativeModel('models/'.$model);
+
+        if ($json) {
+            $generator = $generator->withGenerationConfig(new GenerationConfig(
+                maxOutputTokens: self::LONG_ANSWER_TOKENS,
+                responseMimeType: ResponseMimeType::APPLICATION_JSON,
+            ));
+        }
+
+        $result = $generator->generateContent($prompt);
 
         return $result->text();
     }
 
     /**
-     * Call OpenAI Chat Completions API.
+     * Call a Chat Completions API (OpenAI, or any provider that speaks the same protocol, like Groq).
      */
-    private function callOpenAi(string $prompt, string $apiKey): string
+    private function callOpenAiCompatible(AiProvider $provider, string $prompt, string $apiKey, string $model, bool $json = false): string
     {
         $response = Http::withToken($apiKey)
-            ->timeout(30)
-            ->post('https://api.openai.com/v1/chat/completions', [
-                'model' => 'gpt-4o-mini',
+            ->timeout($json ? 120 : 30)
+            ->post($provider->getChatCompletionsUrl(), [
+                'model' => $model,
                 'messages' => [
                     ['role' => 'user', 'content' => $prompt],
                 ],
-                'max_tokens' => 500,
-                'temperature' => 0.7,
+                'max_tokens' => $json ? self::LONG_ANSWER_TOKENS : 2000,
+                'temperature' => $json ? 0.2 : 0.7,
+                ...($json ? ['response_format' => ['type' => 'json_object']] : []),
             ]);
 
         if ($response->failed()) {
-            throw new \Exception('OpenAI API error: '.$response->body());
+            throw new \Exception("{$provider->getLabel()} API error: ".$response->body());
         }
 
         return $response->json('choices.0.message.content') ?? '';

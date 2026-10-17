@@ -26,7 +26,7 @@ class TravelPackageExtractor
 
         foreach ([0, 1] as $attempt) {
             try {
-                $raw = $this->ai->generate($attempt === 0 ? $prompt : $prompt."\n\nTu respuesta anterior no fue un JSON válido. Respondé SOLO con el objeto JSON, sin texto adicional.", $pdfPath);
+                $raw = $this->ai->generate($attempt === 0 ? $prompt : $prompt."\n\nTu respuesta anterior no fue un JSON válido. Respondé SOLO con el objeto JSON, sin texto adicional.", $pdfPath, json: true);
                 $payload = $this->parse($raw);
 
                 return $this->normalize($payload);

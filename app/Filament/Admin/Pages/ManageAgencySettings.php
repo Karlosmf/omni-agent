@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Pages;
 use App\Enums\AiProvider;
 use App\Enums\RateSource;
 use App\Models\AgencySetting;
+use App\Services\AiConciergeService;
 use Filament\Actions\Action;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
@@ -62,7 +63,30 @@ class ManageAgencySettings extends Page implements HasForms
             Action::make('save')
                 ->label('Guardar Cambios')
                 ->action('save'),
+            Action::make('testAi')
+                ->label('Guardar y probar IA')
+                ->icon('heroicon-o-bolt')
+                ->color('gray')
+                ->action('testAi'),
         ];
+    }
+
+    /**
+     * Save the settings and check that the chosen AI provider, key and model answer.
+     */
+    public function testAi(): void
+    {
+        $this->save();
+
+        $error = app(AiConciergeService::class)->testConnection();
+
+        if ($error === null) {
+            Notification::make()->title('La IA respondió correctamente')->success()->send();
+
+            return;
+        }
+
+        Notification::make()->title('No se pudo conectar con la IA')->body(str($error)->limit(300))->danger()->send();
     }
 
     public function mount(): void
@@ -89,20 +113,19 @@ class ManageAgencySettings extends Page implements HasForms
             ->components([
                 Tabs::make('Settings')
                     ->tabs([
-                        Tab::make('Identidad y Frontend')
-                            ->icon('heroicon-o-computer-desktop')
+                        Tab::make('Inteligencia Artificial')
+                            ->icon('heroicon-o-sparkles')
                             ->schema([
-                                Section::make('Identidad Visual')
+                                Section::make('Asistente virtual')
+                                    ->description('Conectá la IA que usa el chat, WhatsApp y la importación de ideas de viaje. Cada agencia usa su propia API key.')
                                     ->schema([
                                         Grid::make(2)
                                             ->schema([
-                                                TextInput::make('company_name')
-                                                    ->label('Nombre de la Empresa')
-                                                    ->required(),
                                                 TextInput::make('ai_assistant_name')
                                                     ->label('Nombre de la Asistente Virtual')
                                                     ->placeholder('Ej: Brisa')
-                                                    ->required(),
+                                                    ->required()
+                                                    ->columnSpanFull(),
                                                 ToggleButtons::make('ai_provider')
                                                     ->label('Proveedor de IA')
                                                     ->options(AiProvider::class)
@@ -133,6 +156,31 @@ class ManageAgencySettings extends Page implements HasForms
                                                         return $val !== 'none';
                                                     })
                                                     ->columnSpanFull(),
+                                                TextInput::make('ai_model')
+                                                    ->label('Modelo')
+                                                    ->placeholder(function (Get $get): string {
+                                                        $val = $get('ai_provider');
+                                                        $provider = $val instanceof AiProvider ? $val : AiProvider::tryFrom($val ?? 'none');
+
+                                                        return $provider?->getDefaultModel() ?: '';
+                                                    })
+                                                    ->helperText('Dejalo vacío para usar el modelo recomendado. Cambialo si el proveedor retira ese modelo.')
+                                                    ->visible(fn (Get $get): bool => ($get('ai_provider') instanceof AiProvider ? $get('ai_provider')->value : ($get('ai_provider') ?? 'none')) !== 'none')
+                                                    ->columnSpanFull(),
+                                            ]),
+                                    ]),
+                            ]),
+
+                        Tab::make('Identidad y Frontend')
+                            ->icon('heroicon-o-computer-desktop')
+                            ->schema([
+                                Section::make('Identidad Visual')
+                                    ->schema([
+                                        Grid::make(2)
+                                            ->schema([
+                                                TextInput::make('company_name')
+                                                    ->label('Nombre de la Empresa')
+                                                    ->required(),
                                             ]),
 
                                         Grid::make(2)
