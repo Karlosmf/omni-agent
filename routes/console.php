@@ -20,3 +20,4 @@ Schedule::command('queue:work --stop-when-empty --max-time=50 --tries=3')
     ->name('process-queue')
     ->everyMinute()
     ->withoutOverlapping(5);
+Schedule::command('omni:installment-reminders')->dailyAt('09:00');

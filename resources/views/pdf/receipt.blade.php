@@ -160,6 +160,9 @@
 
     <div class="notes">
         <strong>Método de Pago:</strong> {{ $transaction->method }}<br>
+        @if($transaction->installment)
+            <strong>Imputado a:</strong> {{ $transaction->installment->label }} (vence {{ $transaction->installment->due_date->format('d/m/Y') }})<br>
+        @endif
         @if($transaction->exchange_rate > 1)
             <strong>Tipo de Cambio Ref:</strong> {{ number_format($transaction->exchange_rate, 2) }}<br>
         @endif

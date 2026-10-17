@@ -332,6 +332,9 @@
                                 </a>
                             </div>
                         </div>
+
+                        {{-- Plan de pagos --}}
+                        @include('public.partials.payment-plan')
                     </div>
                 </div>
             </div>

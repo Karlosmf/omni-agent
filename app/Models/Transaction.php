@@ -6,13 +6,16 @@ use App\Enums\Currency;
 use App\Enums\RateSource;
 use App\Enums\TransactionType;
 use App\Exceptions\MissingExchangeRateException;
+use App\Observers\TransactionObserver;
 use App\Services\CurrencyService;
 use Database\Factories\TransactionFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
+#[ObservedBy(TransactionObserver::class)]
 class Transaction extends Model
 {
     /** @use HasFactory<TransactionFactory> */
@@ -35,6 +38,7 @@ class Transaction extends Model
 
     protected $fillable = [
         'booking_id',
+        'installment_id',
         'supplier_id',
         'supplier_account_id',
         'financial_account_id',
@@ -104,6 +108,11 @@ class Transaction extends Model
     public function booking(): BelongsTo
     {
         return $this->belongsTo(Booking::class);
+    }
+
+    public function installment(): BelongsTo
+    {
+        return $this->belongsTo(PaymentInstallment::class, 'installment_id');
     }
 
     public function supplier(): BelongsTo

@@ -389,6 +389,23 @@ class ManageAgencySettings extends Page implements HasForms
                                                     ->helperText('Ejemplo: ABC genera ABC-2026-00001.'),
                                             ]),
                                     ]),
+                                Section::make('Plan de pagos y recordatorios')
+                                    ->description('Etiquetas disponibles: [NOMBRE], [CUOTA], [MONTO], [VENCIMIENTO], [EXPEDIENTE]. Si dejás un texto vacío se usa el predeterminado.')
+                                    ->schema([
+                                        TextInput::make('installments_last_due_days_before_trip')
+                                            ->label('La última cuota debe vencer N días antes del viaje')
+                                            ->numeric()
+                                            ->integer()
+                                            ->minValue(0)
+                                            ->default(30),
+                                        Textarea::make('payment_instructions')
+                                            ->label('Cómo pagar (se muestra al cliente)')
+                                            ->helperText('Datos bancarios, alias, links de pago. Se ve en el link público del presupuesto y en los recordatorios.')
+                                            ->rows(4),
+                                        Textarea::make('reminder_before_text')->label('Recordatorio: 3 días antes')->rows(2),
+                                        Textarea::make('reminder_due_text')->label('Recordatorio: día del vencimiento')->rows(2),
+                                        Textarea::make('reminder_overdue_text')->label('Recordatorio: 2 días después')->rows(2),
+                                    ]),
                             ]),
                         Tab::make('Mantenimiento')
                             ->icon('heroicon-o-wrench-screwdriver')
@@ -424,7 +441,7 @@ class ManageAgencySettings extends Page implements HasForms
         unset($data['cuit'], $data['legajo']);
 
         // Keep the column defaults (oficial / LPN) when these are left empty.
-        foreach (['default_rate_source', 'file_number_prefix'] as $key) {
+        foreach (['default_rate_source', 'file_number_prefix', 'installments_last_due_days_before_trip'] as $key) {
             if (blank($data[$key] ?? null)) {
                 unset($data[$key]);
             }

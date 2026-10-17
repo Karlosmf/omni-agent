@@ -57,6 +57,11 @@ class AgencySetting extends Model
         'contract_template',
         'default_rate_source',
         'file_number_prefix',
+        'installments_last_due_days_before_trip',
+        'payment_instructions',
+        'reminder_before_text',
+        'reminder_due_text',
+        'reminder_overdue_text',
     ];
 
     /**

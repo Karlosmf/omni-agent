@@ -273,6 +273,34 @@
         </div>
     @endif
 
+    @if($booking->installments->isNotEmpty())
+        <div class="section">
+            <div class="title">Plan de pagos</div>
+            <table class="items">
+                <thead>
+                    <tr>
+                        <th>Cuota</th>
+                        <th>Vence</th>
+                        <th class="right-align">Monto (USD)</th>
+                        <th class="right-align">Cobrado (USD)</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($booking->installments as $installment)
+                        <tr>
+                            <td>{{ $installment->label }}</td>
+                            <td>{{ $installment->due_date->format('d/m/Y') }}</td>
+                            <td class="right-align">USD {{ number_format($installment->amount, 2) }}</td>
+                            <td class="right-align">USD {{ number_format($installment->paid_amount, 2) }}</td>
+                            <td>{{ $installment->status->getLabel() }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @endif
+
     <div class="footer">
         <p><strong>Condiciones Generales:</strong></p>
         <p>La presente cotización constituye únicamente una propuesta comercial y no implica reserva, bloqueo de lugares, emisión de servicios ni contratación definitiva.</p>

@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\Transactions\Schemas;
 use App\Enums\Currency;
 use App\Enums\RateSource;
 use App\Enums\TransactionType;
+use App\Models\PaymentInstallment;
 use App\Models\SupplierAccount;
 use App\Services\CurrencyService;
 use Filament\Forms\Components\DatePicker;
@@ -13,6 +14,7 @@ use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
@@ -131,6 +133,16 @@ class TransactionForm
                                     ->searchable()
                                     ->preload()
                                     ->visible(fn (Get $get) => $get('type') === TransactionType::Cobro->value || $get('type') === TransactionType::Pago->value),
+
+                                Select::make('installment_id')
+                                    ->label('Imputar a cuota')
+                                    ->helperText('Si no elegís una, se imputa a la cuota más antigua pendiente.')
+                                    ->options(fn (Get $get, $livewire) => PaymentInstallment::where('booking_id', self::resolveBookingId($get, $livewire))
+                                        ->orderBy('number')
+                                        ->get()
+                                        ->mapWithKeys(fn (PaymentInstallment $i) => [$i->id => "{$i->label} — vence {$i->due_date->format('d/m/Y')}"]))
+                                    ->visible(fn (Get $get, $livewire) => $get('type') === TransactionType::Cobro->value && self::resolveBookingId($get, $livewire))
+                                    ->searchable(),
 
                                 Select::make('supplier_id')
                                     ->label('Proveedor')
@@ -272,6 +284,18 @@ class TransactionForm
                             ]),
                     ]),
             ]);
+    }
+
+    /**
+     * The booking being edited: the selected one, or the owner when used inside a booking's relation manager.
+     */
+    protected static function resolveBookingId(Get $get, mixed $livewire): mixed
+    {
+        if ($get('booking_id')) {
+            return $get('booking_id');
+        }
+
+        return $livewire instanceof RelationManager ? $livewire->getOwnerRecord()->getKey() : null;
     }
 
     /**

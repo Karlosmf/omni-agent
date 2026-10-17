@@ -16,7 +16,7 @@ class PublicBookingController extends Controller
     public function show(string $token, Request $request): View|Response
     {
         $booking = Booking::where('public_token', $token)
-            ->with(['items.serviceType', 'items.supplier', 'transactions'])
+            ->with(['items.serviceType', 'items.supplier', 'transactions', 'installments'])
             ->firstOrFail();
 
         $settings = get_agency_settings();

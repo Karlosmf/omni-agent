@@ -8,6 +8,7 @@ use App\Filament\Admin\Resources\Bookings\Pages\CreateBooking;
 use App\Filament\Admin\Resources\Bookings\Pages\EditBooking;
 use App\Filament\Admin\Resources\Bookings\Pages\ListBookings;
 use App\Filament\Admin\Resources\Bookings\RelationManagers\ActivitiesRelationManager;
+use App\Filament\Admin\Resources\Bookings\RelationManagers\InstallmentsRelationManager;
 use App\Filament\Admin\Resources\Bookings\RelationManagers\ItineraryDaysRelationManager;
 use App\Filament\Admin\Resources\Bookings\RelationManagers\TransactionsRelationManager;
 use App\Filament\Admin\Resources\Bookings\Schemas\BookingForm;
@@ -88,6 +89,7 @@ class BookingResource extends Resource
     public static function getRelations(): array
     {
         return [
+            InstallmentsRelationManager::class,
             TransactionsRelationManager::class,
             ItineraryDaysRelationManager::class,
             ActivitiesRelationManager::class,

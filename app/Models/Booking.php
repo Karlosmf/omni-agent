@@ -112,6 +112,11 @@ class Booking extends Model
         return $this->hasMany(ItineraryDay::class)->orderBy('day_number');
     }
 
+    public function installments(): HasMany
+    {
+        return $this->hasMany(PaymentInstallment::class)->orderBy('number');
+    }
+
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
