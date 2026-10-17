@@ -1,0 +1,35 @@
+1
+00:00:04,734 --> 00:00:13,880
+Hola. En este video te muestro cómo sumar a una persona nueva al equipo y darle el acceso justo que necesita. Esto lo hace un administrador.
+
+2
+00:00:15,522 --> 00:00:28,104
+Entramos a Sistema, Usuarios. Acá está todo el equipo, y también los clientes que se crean solos cuando hacen una consulta. Cada persona tiene un rol, que define qué puede ver y hacer.
+
+3
+00:00:29,727 --> 00:00:33,535
+Para sumar a alguien, abrimos el formulario de creación.
+
+4
+00:00:35,142 --> 00:00:40,073
+Escribimos su nombre y su correo electrónico, que va a usar para ingresar.
+
+5
+00:00:41,735 --> 00:00:58,810
+Elegimos el rol. Ventas trabaja sus consultas y sus expedientes, y no ve los reportes financieros. Finanzas ve todos los expedientes, la caja y los reportes. Administrador puede todo. Para Lucas, que va a vender, elegimos Ventas.
+
+6
+00:01:00,451 --> 00:01:05,184
+Le ponemos una contraseña inicial. Después le recomendás cambiarla.
+
+7
+00:01:06,859 --> 00:01:22,425
+Y abajo están los permisos extra. Por defecto cada rol ya trae los suyos, pero acá podés darle a una persona accesos puntuales, por ejemplo ver los reportes financieros, sin cambiarle el rol. Tildamos solo lo que haga falta.
+
+8
+00:01:24,144 --> 00:01:26,184
+Guardamos con Crear registro.
+
+9
+00:01:27,871 --> 00:01:41,695
+Listo, Lucas ya puede ingresar con su correo y su contraseña, y va a ver solamente lo que corresponde a su rol. Para quitarle el acceso en el futuro, cambiás su rol o eliminás el usuario. ¡Gracias por mirar!

@@ -1,0 +1,21 @@
+Hola. En este video te muestro las formas de enviarle el presupuesto a tu cliente: con un link privado, por correo electrónico y en PDF.
+
+Estamos en Ventas, Presupuestos y Files. Arriba hay pestañas para ver los borradores, los presupuestos, los expedientes activos y los cancelados. En cada fila ves el cliente, el destino, el total y la ganancia.
+
+La columna Aperturas te dice cuántas veces el cliente abrió su presupuesto, y cuándo fue la última vez. Es muy útil para saber a quién llamar.
+
+Para compartirlo, tocamos Ver Link Público. Es una dirección privada: solo la ve quien la recibe.
+
+Ahí está el link. Lo copiás y se lo mandás por WhatsApp, por mail o por el medio que prefieras.
+
+Esto es lo que ve el cliente. El destino, los servicios, el precio total, un botón para escribirte por WhatsApp y otro para descargar el PDF. No se ve ningún costo tuyo ni ninguna nota interna.
+
+Fijate que el sistema cuenta cada vez que el cliente abre este link. Si tiene plan de pagos, también lo ve acá, con sus cuotas.
+
+Ahora volvemos al expediente para enviarlo por correo. Arriba a la derecha están los botones. Tocamos Enviar por Email.
+
+Se abre una ventana con el correo del cliente ya cargado. Elegís si querés mandar solo el presupuesto, o el presupuesto con el detalle de la idea de viaje.
+
+Confirmamos, y el sistema le envía el mail con el PDF adjunto y deja registrado el envío.
+
+Ese envío queda anotado en la pestaña Historial de Actividad del expediente, junto con las veces que el cliente lo abrió. Y también marca la consulta como contactada. ¡Gracias por mirar!

@@ -1,0 +1,21 @@
+Hola. En este video dejamos configurada tu agencia: el nombre, los datos de contacto, el dólar que usás para cobrar y cómo le explicás al cliente cómo pagar. Solo lo hacés una vez.
+
+Entramos a Configuración, Marca Blanca. Ahí está todo ordenado en pestañas. La primera es Identidad: el nombre de la empresa, el logo, los colores del sitio y el nombre del asistente virtual que atiende el chat.
+
+Más abajo elegís el proveedor de inteligencia artificial y pegás su clave. Eso es lo que hace funcionar el chat inteligente, y también el importador de ideas de viaje.
+
+En la pestaña Contacto y Redes completás tu correo, teléfono, dirección y redes sociales. Si cargás tu WhatsApp acá, lo van a usar el chat y los presupuestos.
+
+Ahora la pestaña más importante para el dinero: Finanzas.
+
+Primero, el dólar marcado por defecto. Los viajes se llevan siempre en dólares, y cuando algo se cobra en pesos, el sistema los convierte con la cotización que elijas en cada operación. Acá definís cuál aparece preseleccionada: oficial, MEP o tarjeta.
+
+Al lado, el prefijo del número de expediente. Si ponés V D S, tus expedientes van a ser V D S, guion, año, guion, número.
+
+Más abajo, la regla de la última cuota: cuántos días antes del viaje tiene que estar todo pago. Por defecto son treinta.
+
+Y el campo Cómo pagar. Escribí tus datos bancarios, alias o links de pago. Esto lo ve el cliente en el link público de su presupuesto y también en los mails de recordatorio.
+
+Cuando terminás, apretás Guardar Cambios, arriba a la derecha.
+
+Listo, el sistema te avisa que la configuración quedó guardada. Con esto tu agencia ya está lista para trabajar. En el próximo video vemos cómo atender una consulta. ¡Gracias por mirar!

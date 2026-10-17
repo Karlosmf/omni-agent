@@ -1,0 +1,23 @@
+Hola, bienvenido. En este primer video te muestro cómo entrar al sistema y cómo está organizado el panel, para que sepas dónde está cada cosa.
+
+Para entrar, abrís la dirección del panel de tu agencia, que termina en barra admin. Escribí tu correo electrónico y tu contraseña.
+
+Después tocás el botón para ingresar. Si no recordás la contraseña, pedile a un administrador que te la cambie.
+
+Este es el Escritorio, la pantalla de inicio. Arriba tenés cuatro atajos: crear una consulta, buscar un cliente, crear un nuevo expediente y registrar un pago.
+
+Más abajo ves los números del negocio: cuántas consultas entraron, cuántos presupuestos enviaste y cuántos viajes vendiste, con sus porcentajes de conversión.
+
+También el origen de tus consultas, las ventas del mes en dólares, y tu agenda de tareas pendientes.
+
+Si seguís bajando, vas a encontrar la velocidad de respuesta, las cobranzas con las cuotas vencidas, y el resultado financiero del año.
+
+A la izquierda está el menú. Está ordenado por grupos. En Ventas están las consultas, los clientes, y los presupuestos o expedientes.
+
+En Tesorería está la caja, con todos los cobros y pagos, y los reportes financieros.
+
+En Clientes está la bandeja de WhatsApp, y en Gestión, tus tareas.
+
+En Catálogo cargás las ideas de viaje que se muestran en tu sitio web, y en Sistema están los usuarios, los proveedores y las reglas del seguimiento automático.
+
+Cada persona del equipo ve solamente lo que su rol permite. Y con esto ya sabés moverte por el sistema. En el próximo video configuramos tu agencia. ¡Gracias por mirar!

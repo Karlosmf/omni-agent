@@ -1,0 +1,19 @@
+Hola. En este video vemos la Caja, donde queda registrado todo el dinero que entra y sale de la agencia, y cómo cargar un pago a un proveedor.
+
+En Tesorería, Caja, está el listado de movimientos. Los cobros son los ingresos, lo que te pagan los clientes. Los pagos son los egresos, lo que pagás vos. Cada uno muestra la moneda, la cotización y su equivalente en dólares.
+
+Para cargar un movimiento, tocamos el botón de crear arriba a la derecha.
+
+Vamos a registrar el pago de un anticipo al hotel. Primero el tipo de transacción: pago, o sea, un egreso.
+
+El método de pago, transferencia, y la cuenta desde la que salió el dinero.
+
+La categoría, pago a proveedor. Como elegimos que es un egreso, el sistema solo te ofrece las categorías de egresos.
+
+Lo asociamos al expediente del viaje y al proveedor. Así el saldo del proveedor y la ganancia del viaje se actualizan solos.
+
+Ahora la moneda y el monto. Si el pago fuera en pesos, acá aparecería el selector de cotización, igual que en los servicios. Este pago es en dólares, cuatrocientos cincuenta.
+
+Podés adjuntar el comprobante y escribir una nota. Guardamos con Crear registro.
+
+Listo, el pago quedó registrado y se abre su ficha, por si necesitás corregir algo. Si volvemos al listado de la Caja, ahí aparece el movimiento nuevo. Y en el expediente del viaje, la pestaña Movimientos de Caja muestra todos los cobros y pagos de ese viaje. Gracias por mirar.

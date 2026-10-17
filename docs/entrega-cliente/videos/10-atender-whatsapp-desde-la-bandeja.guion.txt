@@ -1,0 +1,21 @@
+Hola. En este video te muestro la bandeja de WhatsApp: cómo ver los mensajes de tus clientes, cómo responderlos y cómo se reparte el trabajo con el asistente de inteligencia artificial.
+
+Entramos a Clientes, Bandeja de WhatsApp. Cada mensaje que un cliente le manda al número de la agencia entra al sistema como una consulta y aparece acá. A la izquierda, las conversaciones; a la derecha, el chat.
+
+Arriba tenés filtros para ver solo las no leídas, las que te asignaron a vos, o las urgentes. El numerito verde te indica cuántos mensajes nuevos hay en cada conversación.
+
+Abrimos la conversación de la familia Gómez. Preguntaron por un viaje a Mendoza. Fijate que el primer mensaje lo respondió el asistente, que hace las preguntas clave: la fecha, cuántos viajan, el presupuesto.
+
+Ahora quieren saber si hay bodegas incluidas. Eso ya lo responde una persona. Arriba aparece que la ventana de veinticuatro horas está abierta, y eso nos deja escribir libremente.
+
+Escribimos la respuesta y tocamos Enviar. Fijate que apenas respondemos nosotros, la inteligencia artificial se pausa sola en esta conversación, para que no se pisen.
+
+El mensaje sale por WhatsApp, y debajo de cada uno ves si está enviado, entregado o leído. Si querés que la inteligencia artificial vuelva a atender esta conversación, tocás Reanudar IA.
+
+Cuando la inteligencia artificial termina de hacer las preguntas, o el cliente pide hablar con una persona, deja de responder sola y el sistema te avisa. Es el caso de Camila Ortiz, que está marcada con IA en pausa.
+
+A Camila le escribió hace más de tres días. WhatsApp solo permite responder libremente durante las veinticuatro horas siguientes al último mensaje del cliente. Pasado ese plazo, hay que usar una plantilla aprobada por Meta.
+
+La bandeja lo detecta sola y te muestra la lista de plantillas. Elegimos la de seguimiento de viaje, completamos el nombre y enviamos.
+
+Y listo. Con esto atendés todos tus mensajes de WhatsApp desde un solo lugar, sin perder el historial, y el asistente te ayuda con las primeras preguntas. ¡Gracias por mirar!

@@ -1,0 +1,43 @@
+1
+00:00:04,541 --> 00:00:16,938
+Hola. En este video dejamos configurada tu agencia: el nombre, los datos de contacto, el dólar que usás para cobrar y cómo le explicás al cliente cómo pagar. Solo lo hacés una vez.
+
+2
+00:00:18,655 --> 00:00:32,874
+Entramos a Configuración, Marca Blanca. Ahí está todo ordenado en pestañas. La primera es Identidad: el nombre de la empresa, el logo, los colores del sitio y el nombre del asistente virtual que atiende el chat.
+
+3
+00:00:34,512 --> 00:00:45,037
+Más abajo elegís el proveedor de inteligencia artificial y pegás su clave. Eso es lo que hace funcionar el chat inteligente, y también el importador de ideas de viaje.
+
+4
+00:00:46,678 --> 00:00:57,774
+En la pestaña Contacto y Redes completás tu correo, teléfono, dirección y redes sociales. Si cargás tu WhatsApp acá, lo van a usar el chat y los presupuestos.
+
+5
+00:00:59,392 --> 00:01:03,452
+Ahora la pestaña más importante para el dinero: Finanzas.
+
+6
+00:01:05,148 --> 00:01:22,084
+Primero, el dólar marcado por defecto. Los viajes se llevan siempre en dólares, y cuando algo se cobra en pesos, el sistema los convierte con la cotización que elijas en cada operación. Acá definís cuál aparece preseleccionada: oficial, MEP o tarjeta.
+
+7
+00:01:23,714 --> 00:01:34,369
+Al lado, el prefijo del número de expediente. Si ponés V D S, tus expedientes van a ser V D S, guion, año, guion, número.
+
+8
+00:01:35,994 --> 00:01:44,325
+Más abajo, la regla de la última cuota: cuántos días antes del viaje tiene que estar todo pago. Por defecto son treinta.
+
+9
+00:01:45,973 --> 00:01:56,895
+Y el campo Cómo pagar. Escribí tus datos bancarios, alias o links de pago. Esto lo ve el cliente en el link público de su presupuesto y también en los mails de recordatorio.
+
+10
+00:01:58,527 --> 00:02:02,923
+Cuando terminás, apretás Guardar Cambios, arriba a la derecha.
+
+11
+00:02:04,573 --> 00:02:17,120
+Listo, el sistema te avisa que la configuración quedó guardada. Con esto tu agencia ya está lista para trabajar. En el próximo video vemos cómo atender una consulta. ¡Gracias por mirar!

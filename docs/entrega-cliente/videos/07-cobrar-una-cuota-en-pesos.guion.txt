@@ -1,0 +1,19 @@
+Hola. En este video vemos cómo cobrar una cuota cuando el cliente paga en pesos, y qué pasa si paga solo una parte.
+
+Este expediente ya tiene un plan de pagos. Entramos a la pestaña Plan de Pagos, al final de la pantalla.
+
+La seña está pagada, la primera cuota tiene un pago parcial, y las otras dos están pendientes. Todo en dólares, que es la moneda del viaje.
+
+El cliente nos transfirió pesos para pagar la segunda cuota. Tocamos Registrar pago en esa fila.
+
+Elegimos pesos argentinos. El sistema propone la cotización del día y calcula cuántos pesos equivalen a la cuota completa.
+
+Si el cliente usó otro dólar, por ejemplo el de tarjeta, lo elegimos acá y el sistema recalcula. Siempre queda guardada la cotización de ese día, así el valor del cobro no cambia aunque el dólar se mueva.
+
+Ahora indicamos los pesos que realmente nos transfirió el cliente. Esta vez, un millón, que no alcanza a cubrir toda la cuota.
+
+Elegimos el método de pago, la fecha, y confirmamos.
+
+Fijate que la cuota quedó como pago parcial, con el saldo que todavía falta, calculado en dólares. Si el cliente paga el resto más adelante, simplemente registrás otro pago y la cuota pasa a pagada.
+
+Y si el cliente paga de más, el excedente se aplica solo a la cuota siguiente. Todos los cobros quedan en la Caja, donde podés descargar el recibo en PDF. Gracias por mirar.

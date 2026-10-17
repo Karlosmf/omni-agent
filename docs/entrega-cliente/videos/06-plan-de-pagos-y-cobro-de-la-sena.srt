@@ -1,0 +1,47 @@
+1
+00:00:04,563 --> 00:00:13,872
+Hola, en este video te muestro cómo armar el plan de pagos de un viaje y cómo registrar el cobro de la seña. Lo vas a hacer en menos de dos minutos.
+
+2
+00:00:15,567 --> 00:00:27,616
+Estamos dentro de un expediente. Arriba ves el total del viaje en dólares, lo que ya se cobró, y el saldo que falta cobrar. Todavía no hay cobros, así que el saldo es el total.
+
+3
+00:00:29,272 --> 00:00:33,831
+Bajamos hasta las pestañas del expediente y entramos a Plan de Pagos.
+
+4
+00:00:35,412 --> 00:00:40,586
+Como todavía no hay un plan, aparece vacío. Tocá el botón Generar plan.
+
+5
+00:00:42,261 --> 00:00:57,142
+Acá elegís cómo querés cobrar. El porcentaje de seña, cuántas cuotas va a tener el saldo, la fecha de la primera cuota y cada cuánto vencen. Para este ejemplo dejamos treinta por ciento de seña, tres cuotas mensuales.
+
+6
+00:00:58,827 --> 00:01:07,369
+Si la última cuota quedara muy cerca de la fecha del viaje, el sistema te avisa hasta qué día puede llegar. Confirmamos con Enviar.
+
+7
+00:01:09,054 --> 00:01:20,243
+Listo. El sistema calculó la seña, que vence hoy, y las tres cuotas del saldo, todo en dólares. Los centavos que sobran del redondeo se suman a la última cuota.
+
+8
+00:01:21,898 --> 00:01:28,002
+Ahora supongamos que el cliente pagó la seña. En la fila de la seña tocamos Registrar pago.
+
+9
+00:01:29,665 --> 00:01:43,304
+El cliente pagó en pesos, así que elegimos pesos como moneda. El sistema propone la cotización del día y calcula cuántos pesos corresponden a la cuota. Si usaste otro dólar, lo cambiás en el selector.
+
+10
+00:01:44,943 --> 00:01:49,073
+Elegimos el método de pago, la fecha, y confirmamos.
+
+11
+00:01:50,654 --> 00:01:54,389
+La seña figura como pagada, y mirá lo que pasó arriba.
+
+12
+00:01:56,721 --> 00:02:09,083
+El saldo adeudado bajó, y como se cobró la seña, el expediente pasó solo al estado Señado. Eso es todo. En el próximo video vemos cómo cobrar las cuotas. Gracias por mirar.

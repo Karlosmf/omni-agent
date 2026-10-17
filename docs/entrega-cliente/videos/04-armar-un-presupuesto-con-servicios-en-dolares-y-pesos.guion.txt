@@ -1,0 +1,23 @@
+Hola. En este video te muestro cómo cargar los servicios de un presupuesto, algunos en dólares y otros en pesos, y cómo el sistema calcula el total y tu ganancia.
+
+Estamos en un expediente de Cancún. En Información General están el cliente, el vendedor, el destino, las fechas y hasta cuándo es válido el presupuesto.
+
+Bajamos hasta Detalle de Servicios. Cada línea es un servicio del viaje: un vuelo, un hotel, un traslado. Esta ya tiene un hotel cargado en dólares.
+
+Vamos a agregar un traslado que le pagamos al proveedor en pesos. Tocamos Añadir a servicios.
+
+Primero elegimos el tipo de servicio, que es Traslado, y escribimos una descripción.
+
+Después el prestador, o sea el proveedor que te lo vende. Si todavía no existe, lo podés crear ahí mismo con el botón más.
+
+Ahora la moneda. Elegimos pesos argentinos. Fijate que aparece la cotización: el sistema nos muestra el valor del día del dólar oficial, el MEP y el de tarjeta, y propone el que tengas marcado por defecto.
+
+Si usás otro dólar, lo cambiás en el selector, y si querés un valor propio, elegís personalizado y escribís el número. El campo dice cuántos pesos vale un dólar, y con eso el sistema convierte todo a dólares.
+
+Ahora cargamos el costo, lo que le pagamos al proveedor, y el precio de venta, lo que paga el cliente, los dos en pesos.
+
+Bajamos a Liquidación. Arriba ves el subtotal en pesos, solo como referencia. Y abajo, el costo total, el precio total y la rentabilidad, siempre en dólares. El traslado ya se convirtió con la cotización que elegimos.
+
+Cuando está todo, guardamos los cambios.
+
+Listo. El presupuesto quedó con sus servicios y su total en dólares. En el próximo video vemos cómo enviárselo al cliente. ¡Gracias por mirar!

@@ -1,0 +1,23 @@
+Hola. En este video te muestro cómo crear una idea de viaje, que es un paquete que se muestra en la web de tu agencia, y cómo publicarla.
+
+Entramos a Catálogo, Ideas de Viaje. Acá están todos tus paquetes. Los que están activos se ven en tu sitio; los que no, quedan guardados como borrador.
+
+Para crear una nueva, abrimos el formulario. La primera pestaña es Idea Rápida: lo mínimo para que el paquete se publique.
+
+Ponemos el título, el destino y la cantidad de noches.
+
+Después el precio desde, con su moneda, y la base del precio: por persona, o base doble, por ejemplo. Eso le dice al sistema cómo multiplicar el precio según los pasajeros cuando armás un presupuesto.
+
+Un resumen corto, que se ve en la tarjeta del listado, y que es lo primero que lee el cliente.
+
+La imagen de portada es obligatoria. La subimos desde la computadora, y el sistema la optimiza solo.
+
+Si querés, completás el itinerario día por día. Hasta podés pedirle a la inteligencia artificial que te arme un borrador, y después lo corregís.
+
+Y en la pestaña Incluye y No incluye, listás qué trae el paquete, una línea por cada cosa.
+
+En la pestaña Costos y Servicios cargás los servicios con sus costos, para que cuando generes un presupuesto a partir de esta idea ya venga armado. Como todavía no los vamos a cargar, quitamos la línea vacía. Guardamos con Crear registro.
+
+Listo. Como el interruptor Activa estaba prendido, la idea ya se publica en tu sitio. Si querés sacarla de la web sin borrarla, solo apagás ese interruptor.
+
+Así la ve tu cliente en el catálogo público, con su portada, el destino, las noches y el precio. Con esto ya tenés tu primera idea publicada. ¡Gracias por mirar!

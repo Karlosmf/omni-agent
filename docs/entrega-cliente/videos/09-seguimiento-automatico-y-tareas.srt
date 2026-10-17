@@ -1,0 +1,47 @@
+1
+00:00:04,725 --> 00:00:15,207
+Hola. En este video te muestro cómo el sistema te ayuda a que ninguna consulta ni presupuesto se te quede sin respuesta, con el seguimiento automático y las tareas.
+
+2
+00:00:16,910 --> 00:00:30,573
+Entramos a Sistema, Seguimiento automático. Acá están las reglas. Cada hora, el sistema revisa tus consultas y presupuestos, y cuando se cumple una condición, te crea una tarea o te avisa.
+
+3
+00:00:32,279 --> 00:00:49,622
+Por ejemplo, si una consulta sigue sin contactar después de veinticuatro horas, se le crea una tarea al vendedor. Si un cliente pide hablar con una persona, la tarea es urgente. Si enviaste un presupuesto y no lo abrió en cuarenta y ocho horas, te sugiere llamarlo.
+
+4
+00:00:51,353 --> 00:01:05,375
+Y si el cliente abrió el presupuesto tres veces o más y todavía no señó, te avisa que es un buen momento para cerrar la venta. Cada regla se dispara una sola vez por consulta, así que no te llena de avisos repetidos.
+
+5
+00:01:07,019 --> 00:01:13,355
+Las reglas son tuyas. Tocamos Editar en la regla de lead sin contactar para cambiar cuánto espera.
+
+6
+00:01:14,985 --> 00:01:24,541
+Cambiamos las veinticuatro horas por doce. También podrías elegir qué hace: crear una tarea, avisar al vendedor o avisar a los administradores.
+
+7
+00:01:26,170 --> 00:01:30,057
+Guardamos. Los cambios valen desde la próxima revisión.
+
+8
+00:01:31,653 --> 00:01:38,256
+Si querés pausar una regla, solo apagás su interruptor. Probemos con la de presupuesto vencido.
+
+9
+00:01:39,834 --> 00:01:44,626
+Ahora veamos qué te deja el sistema. Entramos a Gestión, Tareas.
+
+10
+00:01:46,292 --> 00:01:58,828
+Estas son tus tareas. Las que creó el sistema aparecen con su título, por ejemplo contactar a un cliente, y vencen hoy. Cada una está asociada a la consulta o al expediente que la generó.
+
+11
+00:02:00,523 --> 00:02:09,610
+Cuando terminás una tarea, la marcás con el interruptor de Hecha, y desaparece de tus pendientes. También la ves resumida en tu Escritorio.
+
+12
+00:02:11,322 --> 00:02:23,490
+Por último, en Consultas podés filtrar por seguimiento atrasado, para ver todas las que deberías haber contactado ya. Así empezás cada día sabiendo a quién llamar. ¡Gracias por mirar!

@@ -1,0 +1,17 @@
+Hola. En este video te muestro cómo trabajar una consulta y convertirla en un expediente, que es el presupuesto del viaje.
+
+Entramos a Ventas, Consultas. Cada fila es una persona interesada en viajar. Las consultas llegan solas desde el chat, el formulario de la web, el cotizador o WhatsApp, y aparecen agrupadas por estado: nuevas, contactadas y cerradas.
+
+La columna Atención te marca con una tilde verde a quienes necesitan que los llames ya, por ejemplo porque pidieron hablar con una persona. Y en Próximo seguimiento, en rojo, ves las consultas que ya deberías haber contactado.
+
+Vamos a trabajar la consulta de Diego Acosta. A la derecha de la fila, el menú de acciones.
+
+Desde acá podés escribirle por WhatsApp, editar la consulta, marcarla para que la atienda una persona, o crear el expediente. Tocamos Crear Expediente.
+
+Se abre una ventana con los datos del viaje. La consulta ya traía cuatro pasajeros. Indicamos la fecha estimada de viaje, el precio por persona que acordaste, y la base de ese precio.
+
+Fijate que abajo el sistema calcula el total estimado del viaje. Cuando está todo, confirmamos.
+
+El sistema crea el expediente copiando el destino, los pasajeros y el nombre del cliente desde la consulta, así no tenés que volver a escribir nada.
+
+Desde acá cargás los servicios del viaje, y eso lo vemos en el próximo video. Gracias por mirar.

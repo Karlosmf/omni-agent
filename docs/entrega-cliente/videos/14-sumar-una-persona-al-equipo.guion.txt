@@ -1,0 +1,17 @@
+Hola. En este video te muestro cómo sumar a una persona nueva al equipo y darle el acceso justo que necesita. Esto lo hace un administrador.
+
+Entramos a Sistema, Usuarios. Acá está todo el equipo, y también los clientes que se crean solos cuando hacen una consulta. Cada persona tiene un rol, que define qué puede ver y hacer.
+
+Para sumar a alguien, abrimos el formulario de creación.
+
+Escribimos su nombre y su correo electrónico, que va a usar para ingresar.
+
+Elegimos el rol. Ventas trabaja sus consultas y sus expedientes, y no ve los reportes financieros. Finanzas ve todos los expedientes, la caja y los reportes. Administrador puede todo. Para Lucas, que va a vender, elegimos Ventas.
+
+Le ponemos una contraseña inicial. Después le recomendás cambiarla.
+
+Y abajo están los permisos extra. Por defecto cada rol ya trae los suyos, pero acá podés darle a una persona accesos puntuales, por ejemplo ver los reportes financieros, sin cambiarle el rol. Tildamos solo lo que haga falta.
+
+Guardamos con Crear registro.
+
+Listo, Lucas ya puede ingresar con su correo y su contraseña, y va a ver solamente lo que corresponde a su rol. Para quitarle el acceso en el futuro, cambiás su rol o eliminás el usuario. ¡Gracias por mirar!
