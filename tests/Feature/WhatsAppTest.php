@@ -12,9 +12,11 @@ use App\Models\Message;
 use App\Models\PaymentInstallment;
 use App\Models\User;
 use App\Models\WhatsAppTemplate;
+use App\Services\WhatsApp\CloudApiGateway;
 use App\Services\WhatsApp\WhatsAppConversationService;
 use App\Services\WhatsApp\WhatsAppGateway;
 use App\Support\PhoneNumber;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 use Livewire\Livewire;
@@ -365,4 +367,16 @@ test('installment reminders also go out by WhatsApp when a template is registere
     expect($this->gateway->sent)->toHaveCount(1)
         ->and($this->gateway->sent[0])->toMatchArray(['type' => 'template', 'to' => '+5491155551234', 'template' => 'recordatorio_cuota'])
         ->and($this->gateway->sent[0]['variables'][1])->toBe('Cuota 1/2');
+});
+
+test('the Cloud API gateway posts to the configured Graph URL with the bearer token', function () {
+    Http::fake(['graph.example.test/*' => Http::response(['messages' => [['id' => 'wamid.OK']]])]);
+    config(['services.whatsapp.graph_url' => 'https://graph.example.test', 'services.whatsapp.graph_version' => 'v21.0']);
+
+    $id = (new CloudApiGateway)->sendText('+5491155551234', 'Hola');
+
+    expect($id)->toBe('wamid.OK');
+    Http::assertSent(fn ($request) => $request->url() === 'https://graph.example.test/v21.0/123/messages'
+        && $request->hasHeader('Authorization', 'Bearer token')
+        && $request['to'] === '5491155551234');
 });

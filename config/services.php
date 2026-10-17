@@ -35,6 +35,7 @@ return [
         'app_secret' => env('WHATSAPP_APP_SECRET'),
         'verify_token' => env('WHATSAPP_VERIFY_TOKEN'),
         'graph_version' => env('WHATSAPP_GRAPH_VERSION', 'v21.0'),
+        'graph_url' => env('WHATSAPP_GRAPH_URL', 'https://graph.facebook.com'),
     ],
 
     'gemini' => [

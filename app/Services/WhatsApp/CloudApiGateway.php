@@ -52,7 +52,7 @@ class CloudApiGateway implements WhatsAppGateway
         $version = config('services.whatsapp.graph_version');
         $response = Http::timeout(15)
             ->withToken(config('services.whatsapp.access_token'))
-            ->post("https://graph.facebook.com/{$version}/".config('services.whatsapp.phone_number_id').'/messages', $payload);
+            ->post(rtrim((string) config('services.whatsapp.graph_url'), '/')."/{$version}/".config('services.whatsapp.phone_number_id').'/messages', $payload);
 
         if ($response->failed()) {
             throw new RuntimeException('WhatsApp rechazó el mensaje: '.($response->json('error.message') ?? $response->status()));
