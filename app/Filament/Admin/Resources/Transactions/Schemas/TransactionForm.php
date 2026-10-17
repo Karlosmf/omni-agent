@@ -104,7 +104,7 @@ class TransactionForm
                                 Select::make('transaction_category_id')
                                     ->label('Categoría')
                                     ->relationship('category', 'name', modifyQueryUsing: function ($query, Get $get) {
-                                        $type = $get('type');
+                                        $type = self::typeValue($get);
                                         if ($type === TransactionType::Cobro->value) {
                                             return $query->where('type', 'ingreso');
                                         }
@@ -132,7 +132,7 @@ class TransactionForm
                                     ->relationship('booking', 'file_number')
                                     ->searchable()
                                     ->preload()
-                                    ->visible(fn (Get $get) => $get('type') === TransactionType::Cobro->value || $get('type') === TransactionType::Pago->value),
+                                    ->visible(fn (Get $get) => in_array(self::typeValue($get), [TransactionType::Cobro->value, TransactionType::Pago->value], true)),
 
                                 Select::make('installment_id')
                                     ->label('Imputar a cuota')
@@ -141,7 +141,7 @@ class TransactionForm
                                         ->orderBy('number')
                                         ->get()
                                         ->mapWithKeys(fn (PaymentInstallment $i) => [$i->id => "{$i->label} — vence {$i->due_date->format('d/m/Y')}"]))
-                                    ->visible(fn (Get $get, $livewire) => $get('type') === TransactionType::Cobro->value && self::resolveBookingId($get, $livewire))
+                                    ->visible(fn (Get $get, $livewire) => self::typeValue($get) === TransactionType::Cobro->value && self::resolveBookingId($get, $livewire))
                                     ->searchable(),
 
                                 Select::make('supplier_id')
@@ -149,7 +149,7 @@ class TransactionForm
                                     ->relationship('supplier', 'name')
                                     ->searchable()
                                     ->preload()
-                                    ->visible(fn (Get $get) => $get('type') === TransactionType::Pago->value)
+                                    ->visible(fn (Get $get) => self::typeValue($get) === TransactionType::Pago->value)
                                     ->live()
                                     ->afterStateUpdated(fn (Set $set) => $set('supplier_account_id', null)),
                             ]),
@@ -159,7 +159,7 @@ class TransactionForm
                                 Select::make('supplier_account_id')
                                     ->label('Cuenta Bancaria del Proveedor')
                                     ->options(fn (Get $get) => SupplierAccount::where('supplier_id', $get('supplier_id'))->pluck('bank_name', 'id'))
-                                    ->visible(fn (Get $get) => $get('type') === TransactionType::Pago->value && $get('supplier_id'))
+                                    ->visible(fn (Get $get) => self::typeValue($get) === TransactionType::Pago->value && $get('supplier_id'))
                                     ->live()
                                     ->afterStateUpdated(fn (Set $set) => $set('bank_info_trigger', true)),
 
@@ -284,6 +284,16 @@ class TransactionForm
                             ]),
                     ]),
             ]);
+    }
+
+    /**
+     * The selected transaction type as a plain string (Filament hands back the enum instance).
+     */
+    protected static function typeValue(Get $get): ?string
+    {
+        $type = $get('type');
+
+        return $type instanceof TransactionType ? $type->value : $type;
     }
 
     /**

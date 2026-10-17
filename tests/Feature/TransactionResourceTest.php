@@ -64,3 +64,21 @@ test('can create a transaction', function () {
 
     expect(Transaction::count())->toBe(1);
 });
+
+test('the booking and supplier fields show up for a pago and the installment picker for a cobro', function () {
+    $this->actingAs(User::factory()->create(['role' => UserRole::Admin]));
+
+    Livewire::test(CreateTransaction::class)
+        ->fillForm(['type' => TransactionType::Pago->value])
+        ->assertFormFieldIsVisible('booking_id')
+        ->assertFormFieldIsVisible('supplier_id')
+        ->assertFormFieldIsHidden('installment_id');
+
+    $booking = Booking::factory()->create();
+
+    Livewire::test(CreateTransaction::class)
+        ->fillForm(['type' => TransactionType::Cobro->value, 'booking_id' => $booking->id])
+        ->assertFormFieldIsVisible('booking_id')
+        ->assertFormFieldIsVisible('installment_id')
+        ->assertFormFieldIsHidden('supplier_id');
+});
