@@ -20,26 +20,14 @@ class BookingFinancialSummary extends BaseWidget
             return [];
         }
 
-        $currency = $booking->currency ?? 'USD';
+        $currency = 'USD';
 
         $totalVenta = (float) $booking->total_sell;
 
-        $totalPagado = $booking->transactions()
+        // Every cobro carries its USD equivalent at the rate of the day it was paid.
+        $totalPagadoCalc = (float) $booking->transactions()
             ->where('type', 'cobro')
-            ->sum('amount_usd_fixed'); // Or calculate equivalent based on currency
-
-        // Simplified: use amount if currency matches
-        $totalPagadoCalc = $booking->transactions()
-            ->where('type', 'cobro')
-            ->where('currency', $currency)
-            ->sum('amount');
-
-        // If there are other currencies, we fallback to usd fixed if booking is USD
-        if ($currency === 'USD') {
-            $totalPagadoCalc = $booking->transactions()
-                ->where('type', 'cobro')
-                ->sum('amount_usd_fixed');
-        }
+            ->sum('amount_usd_fixed');
 
         $saldoAdeudado = $totalVenta - $totalPagadoCalc;
 

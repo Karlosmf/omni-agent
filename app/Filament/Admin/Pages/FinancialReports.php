@@ -65,15 +65,15 @@ class FinancialReports extends Page
         $months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
         for ($i = 1; $i <= 12; $i++) {
-            $income = Transaction::whereYear('created_at', $this->year)
-                ->whereMonth('created_at', $i)
+            $income = Transaction::whereYear('date', $this->year)
+                ->whereMonth('date', $i)
                 ->where('type', TransactionType::Cobro)
-                ->sum('amount');
+                ->sum('amount_usd_fixed');
 
-            $expense = Transaction::whereYear('created_at', $this->year)
-                ->whereMonth('created_at', $i)
+            $expense = Transaction::whereYear('date', $this->year)
+                ->whereMonth('date', $i)
                 ->where('type', TransactionType::Pago)
-                ->sum('amount');
+                ->sum('amount_usd_fixed');
 
             $balance = $income - $expense;
 

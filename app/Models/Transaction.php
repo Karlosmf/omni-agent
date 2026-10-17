@@ -3,7 +3,10 @@
 namespace App\Models;
 
 use App\Enums\Currency;
+use App\Enums\RateSource;
 use App\Enums\TransactionType;
+use App\Exceptions\MissingExchangeRateException;
+use App\Services\CurrencyService;
 use Database\Factories\TransactionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,6 +27,10 @@ class Transaction extends Model
                 $transaction->date = now();
             }
         });
+
+        static::saving(function (Transaction $transaction) {
+            $transaction->syncUsdAmount();
+        });
     }
 
     protected $fillable = [
@@ -36,6 +43,7 @@ class Transaction extends Model
         'currency',
         'amount',
         'exchange_rate',
+        'rate_source',
         'amount_usd_fixed',
         'method',
         'notes',
@@ -52,9 +60,46 @@ class Transaction extends Model
         'currency' => Currency::class,
         'amount' => 'decimal:2',
         'exchange_rate' => 'decimal:4',
+        'rate_source' => RateSource::class,
         'amount_usd_fixed' => 'decimal:2',
         'tax_details' => 'array',
     ];
+
+    /**
+     * Keep `amount_usd_fixed` consistent no matter how the transaction was created
+     * (form, import, API). Non-USD amounts are converted with the stored rate
+     * (units of currency per 1 USD) and are never assumed 1:1.
+     */
+    public function syncUsdAmount(): void
+    {
+        $currency = $this->currency instanceof Currency ? $this->currency : Currency::tryFrom((string) $this->currency);
+
+        if ($currency === null || $currency === Currency::USD) {
+            $this->amount_usd_fixed = round((float) $this->amount, 2);
+
+            return;
+        }
+
+        $rate = (float) $this->exchange_rate;
+
+        if ($rate <= 0 && $this->rate_source !== RateSource::Custom) {
+            $source = $this->rate_source instanceof RateSource ? $this->rate_source : RateSource::Oficial;
+            $rate = (float) app(CurrencyService::class)->unitsPerUsd($currency, $source);
+
+            if ($rate > 0) {
+                $this->exchange_rate = $rate;
+                $this->rate_source ??= $source;
+            }
+        }
+
+        $usd = CurrencyService::toUsd($this->amount, $currency, $rate);
+
+        if ($usd === null) {
+            throw new MissingExchangeRateException("La transacción en {$currency->value} necesita una cotización.");
+        }
+
+        $this->amount_usd_fixed = $usd;
+    }
 
     public function booking(): BelongsTo
     {

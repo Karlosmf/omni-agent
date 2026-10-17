@@ -22,10 +22,10 @@ class TransactionFactory extends Factory
      */
     public function definition(): array
     {
-        $currency = fake()->randomElement(Currency::cases());
+        $currency = fake()->randomElement([Currency::USD, Currency::ARS]);
         $amount = fake()->randomFloat(2, 100, 2000);
-        $rate = $currency === Currency::ARS ? 1200 : 1;
-        $amountUsd = $currency === Currency::ARS ? $amount / $rate : $amount;
+        $rate = $currency === Currency::ARS ? 1200 : null;
+        $amountUsd = $currency === Currency::ARS ? round($amount / $rate, 2) : $amount;
 
         return [
             'booking_id' => Booking::factory(),

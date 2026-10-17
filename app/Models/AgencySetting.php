@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\AiProvider;
+use App\Enums\RateSource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
@@ -54,6 +55,8 @@ class AgencySetting extends Model
         'is_maintenance_mode',
         'maintenance_bypass_key',
         'contract_template',
+        'default_rate_source',
+        'file_number_prefix',
     ];
 
     /**
@@ -67,6 +70,7 @@ class AgencySetting extends Model
             'social_links' => 'array',
             'is_maintenance_mode' => 'boolean',
             'ai_provider' => AiProvider::class,
+            'default_rate_source' => RateSource::class,
         ];
     }
 

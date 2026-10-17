@@ -30,12 +30,12 @@ class MonthlyBudgetChart extends ChartWidget
 
         $isSqlite = DB::connection()->getDriverName() === 'sqlite';
         $monthExpression = $isSqlite
-            ? "CAST(strftime('%m', created_at) AS INTEGER)"
-            : 'MONTH(created_at)';
+            ? "CAST(strftime('%m', date) AS INTEGER)"
+            : 'MONTH(date)';
 
         $data = Transaction::query()
-            ->selectRaw("{$monthExpression} as month, type, SUM(amount) as total")
-            ->whereYear('created_at', $year)
+            ->selectRaw("{$monthExpression} as month, type, SUM(amount_usd_fixed) as total")
+            ->whereYear('date', $year)
             ->groupBy('month', 'type')
             ->get();
 

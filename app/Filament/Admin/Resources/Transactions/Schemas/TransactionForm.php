@@ -3,15 +3,16 @@
 namespace App\Filament\Admin\Resources\Transactions\Schemas;
 
 use App\Enums\Currency;
+use App\Enums\RateSource;
 use App\Enums\TransactionType;
 use App\Models\SupplierAccount;
 use App\Services\CurrencyService;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
@@ -183,39 +184,20 @@ class TransactionForm
                             ->schema([
                                 Select::make('currency')
                                     ->label('Moneda')
-                                    ->options(function () {
-                                        $service = app(CurrencyService::class);
-                                        $data = $service->getAllData();
-
-                                        $options = ['ARS' => 'Pesos Argentinos (ARS)'];
-
-                                        foreach ($data['currencies'] ?? [] as $key => $rate) {
-                                            $options[$key] = "{$rate['name']} ({$key})";
-                                        }
-
-                                        $options['OTHER'] = 'Otro';
-
-                                        return $options;
-                                    })
+                                    ->options(fn () => self::currencyOptions())
+                                    ->default('USD')
                                     ->required()
                                     ->live()
                                     ->afterStateUpdated(function (Set $set, Get $get) {
                                         $currency = $get('currency');
-                                        $service = app(CurrencyService::class);
 
-                                        if ($currency === 'ARS') {
-                                            $rate = $service->getRate('USD', 'sell');
-                                            $set('exchange_rate', $rate);
-                                            $set('use_exchange_rate', true);
-                                        } elseif ($currency !== 'OTHER') {
-                                            $rate = $service->getRate($currency, 'sell');
-                                            if ($rate > 1) {
-                                                $set('exchange_rate', $rate);
-                                                $set('use_exchange_rate', true);
-                                            }
+                                        if ($currency === Currency::USD->value) {
+                                            $set('exchange_rate', null);
+                                            $set('rate_source', null);
                                         } else {
-                                            $set('exchange_rate', 1.00);
-                                            $set('use_exchange_rate', false);
+                                            $source = get_agency_settings()?->default_rate_source ?? RateSource::Oficial;
+                                            $set('rate_source', $source->value);
+                                            $set('exchange_rate', app(CurrencyService::class)->unitsPerUsd($currency, $source));
                                         }
 
                                         self::updateUsdFixed($set, $get);
@@ -234,31 +216,47 @@ class TransactionForm
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(fn (Set $set, Get $get) => self::updateUsdFixed($set, $get)),
 
-                                Toggle::make('use_exchange_rate')
-                                    ->label('Cotizar')
-                                    ->inline(false)
-                                    ->default(false)
-                                    ->live()
-                                    ->afterStateUpdated(fn (Set $set, Get $get) => self::updateUsdFixed($set, $get)),
+                                DatePicker::make('date')
+                                    ->label('Fecha del movimiento')
+                                    ->default(now())
+                                    ->required(),
                             ]),
 
                         Grid::make(2)
+                            ->visible(fn (Get $get) => $get('currency') && $get('currency') !== Currency::USD->value)
                             ->schema([
+                                Select::make('rate_source')
+                                    ->label('Cotización del día')
+                                    ->options(fn () => app(CurrencyService::class)->rateSourceOptions())
+                                    ->live()
+                                    ->afterStateUpdated(function (Set $set, Get $get, ?string $state) {
+                                        $source = RateSource::tryFrom((string) $state);
+
+                                        if ($source && $source !== RateSource::Custom) {
+                                            $set('exchange_rate', app(CurrencyService::class)->unitsPerUsd($get('currency'), $source));
+                                        }
+
+                                        self::updateUsdFixed($set, $get);
+                                    }),
+
                                 TextInput::make('exchange_rate')
-                                    ->label('Cotización')
+                                    ->label(fn (Get $get) => ($get('currency') ?? 'ARS').' por 1 USD')
+                                    ->helperText('Editable. El monto en USD se calcula dividiendo por este valor.')
                                     ->numeric()
-                                    ->default(1.00)
+                                    ->minValue(0.0001)
+                                    ->required()
                                     ->live(onBlur: true)
-                                    ->required(fn (Get $get) => $get('use_exchange_rate'))
-                                    ->visible(fn (Get $get) => $get('use_exchange_rate'))
-                                    ->afterStateUpdated(fn (Set $set, Get $get) => self::updateUsdFixed($set, $get)),
+                                    ->afterStateUpdated(function (Set $set, Get $get) {
+                                        $set('rate_source', RateSource::Custom->value);
+                                        self::updateUsdFixed($set, $get);
+                                    }),
                             ]),
 
                         TextInput::make('amount_usd_fixed')
-                            ->label(fn (Get $get) => $get('use_exchange_rate') ? 'Total USD (Referencia)' : 'Total (Referencia)')
+                            ->label('Equivale a (USD)')
                             ->numeric()
                             ->readOnly()
-                            ->prefix('$')
+                            ->prefix('USD')
                             ->extraInputAttributes(['class' => 'bg-gray-100']),
 
                         Grid::make(1)
@@ -276,39 +274,29 @@ class TransactionForm
             ]);
     }
 
+    /**
+     * @return array<string, string>
+     */
+    protected static function currencyOptions(): array
+    {
+        $data = app(CurrencyService::class)->getAllData();
+
+        $options = ['USD' => 'Dólares (USD)', 'ARS' => 'Pesos Argentinos (ARS)'];
+
+        foreach (['EUR', 'BRL'] as $code) {
+            if (isset($data['currencies'][$code])) {
+                $options[$code] = "{$data['currencies'][$code]['name']} ({$code})";
+            }
+        }
+
+        return $options;
+    }
+
     public static function updateUsdFixed(Set $set, Get $get): void
     {
-        $amount = (float) ($get('amount') ?? 0);
-        $rate = (float) ($get('exchange_rate') ?? 1);
-        $currency = $get('currency');
-        $useExchangeRate = (bool) $get('use_exchange_rate');
+        $usd = CurrencyService::toUsd($get('amount'), $get('currency'), $get('exchange_rate'));
 
-        // If not using exchange rate (manual), normalized is just the amount
-        if (! $useExchangeRate) {
-            $set('amount_usd_fixed', number_format($amount, 2, '.', ''));
-
-            return;
-        }
-
-        $service = app(CurrencyService::class);
-        $usdRate = $service->getRate('USD', 'sell');
-
-        if ($currency === 'USD') {
-            // Amount is already in USD. We keep the BNA rate in exchange_rate for info.
-            $set('amount_usd_fixed', number_format($amount, 2, '.', ''));
-        } elseif ($currency === 'ARS') {
-            // Amount is in ARS. If rate is USD/ARS:
-            if ($rate > 0) {
-                $set('amount_usd_fixed', number_format($amount / $rate, 2, '.', ''));
-            }
-        } else {
-            // For other currencies (EUR, BRL)
-            // If the rate field represents ARS Price of that currency:
-            // Amount in USD = (Amount * Currency_ARS_Price) / USD_ARS_Price
-            if ($usdRate > 0) {
-                $set('amount_usd_fixed', number_format(($amount * $rate) / $usdRate, 2, '.', ''));
-            }
-        }
+        $set('amount_usd_fixed', $usd === null ? null : number_format($usd, 2, '.', ''));
     }
 
     public static function calculateNet(Set $set, Get $get): void

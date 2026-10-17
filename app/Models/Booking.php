@@ -26,7 +26,8 @@ class Booking extends Model
         static::creating(function ($booking) {
             if (empty($booking->file_number)) {
                 $year = now()->year;
-                $prefix = "LPN-{$year}-";
+                $agencyPrefix = Str::upper(trim((string) (get_agency_settings()?->file_number_prefix ?: 'LPN')));
+                $prefix = "{$agencyPrefix}-{$year}-";
 
                 // Find max number for current year
                 $lastBooking = self::where('file_number', 'like', "{$prefix}%")
@@ -78,7 +79,6 @@ class Booking extends Model
         'total_cost' => 'decimal:2',
         'total_sell' => 'decimal:2',
         'profit' => 'decimal:2',
-        'exchange_rate' => 'decimal:2',
         'vouchers' => 'array',
     ];
 

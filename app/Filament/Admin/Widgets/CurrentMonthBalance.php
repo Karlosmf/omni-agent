@@ -21,30 +21,30 @@ class CurrentMonthBalance extends StatsOverviewWidget
     {
         $now = now();
 
-        $income = Transaction::whereYear('created_at', $now->year)
-            ->whereMonth('created_at', $now->month)
+        $income = Transaction::whereYear('date', $now->year)
+            ->whereMonth('date', $now->month)
             ->where('type', TransactionType::Cobro)
-            ->sum('amount');
+            ->sum('amount_usd_fixed');
 
-        $expense = Transaction::whereYear('created_at', $now->year)
-            ->whereMonth('created_at', $now->month)
+        $expense = Transaction::whereYear('date', $now->year)
+            ->whereMonth('date', $now->month)
             ->where('type', TransactionType::Pago)
-            ->sum('amount');
+            ->sum('amount_usd_fixed');
 
         $balance = $income - $expense;
 
         return [
-            Stat::make('Ingresos (Mes Actual)', '$ '.number_format($income, 2))
+            Stat::make('Ingresos (Mes Actual)', 'USD '.number_format($income, 2))
                 ->description('Total cobrado este mes')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
 
-            Stat::make('Egresos (Mes Actual)', '$ '.number_format($expense, 2))
+            Stat::make('Egresos (Mes Actual)', 'USD '.number_format($expense, 2))
                 ->description('Total pagado este mes')
                 ->descriptionIcon('heroicon-m-arrow-trending-down')
                 ->color('danger'),
 
-            Stat::make('Balance Neto', '$ '.number_format($balance, 2))
+            Stat::make('Balance Neto', 'USD '.number_format($balance, 2))
                 ->description($balance >= 0 ? 'Superávit' : 'Déficit')
                 ->descriptionIcon($balance >= 0 ? 'heroicon-m-check-circle' : 'heroicon-m-exclamation-circle')
                 ->color($balance >= 0 ? 'success' : 'danger'),

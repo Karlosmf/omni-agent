@@ -4,10 +4,13 @@ namespace App\Filament\Admin\Resources\Bookings\Schemas;
 
 use App\Enums\BookingStatus;
 use App\Enums\Currency;
+use App\Enums\RateSource;
 use App\Enums\UserRole;
+use App\Exceptions\MissingExchangeRateException;
 use App\Models\Lead;
 use App\Models\ServiceType;
 use App\Models\User;
+use App\Services\BookingFinancialService;
 use App\Services\CurrencyService;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -323,7 +326,7 @@ class BookingForm
                                             ->columnSpan(3),
                                     ]),
 
-                                Grid::make(4)
+                                Grid::make(3)
                                     ->schema([
                                         Select::make('supplier_id')
                                             ->label('Prestador / Proveedor')
@@ -340,46 +343,52 @@ class BookingForm
 
                                         Select::make('currency')
                                             ->label('Moneda')
-                                            ->options(function () {
-                                                $service = app(CurrencyService::class);
-                                                $data = $service->getAllData();
-
-                                                $options = ['ARS' => 'Pesos Argentinos (ARS)'];
-
-                                                foreach ($data['currencies'] ?? [] as $key => $rate) {
-                                                    $options[$key] = "{$rate['name']} ({$key})";
-                                                }
-
-                                                $options['OTHER'] = 'Otro';
-
-                                                return $options;
-                                            })
+                                            ->options(fn () => self::currencyOptions())
                                             ->default('USD')
                                             ->required()
                                             ->live()
                                             ->afterStateUpdated(function (Set $set, Get $get) {
-                                                $currency = $get('currency');
-                                                if ($currency !== 'ARS' && $currency !== 'OTHER') {
-                                                    $service = app(CurrencyService::class);
-                                                    $rate = $service->getRate($currency, 'sell');
-                                                    if ($rate > 1) {
-                                                        $set('exchange_rate', $rate);
-                                                    }
-                                                } elseif ($currency === 'ARS') {
-                                                    $set('exchange_rate', 1.00);
+                                                $currency = self::getCurrencyLabel($get('currency'));
+
+                                                if ($currency === Currency::USD->value) {
+                                                    $set('exchange_rate', null);
+                                                    $set('rate_source', null);
+                                                } else {
+                                                    $source = get_agency_settings()?->default_rate_source ?? RateSource::Oficial;
+                                                    $set('rate_source', $source->value);
+                                                    $set('exchange_rate', app(CurrencyService::class)->unitsPerUsd($currency, $source));
+                                                }
+
+                                                self::updateTotals($set, $get);
+                                            }),
+
+                                        Select::make('rate_source')
+                                            ->label('Cotización')
+                                            ->options(fn () => app(CurrencyService::class)->rateSourceOptions())
+                                            ->visible(fn (Get $get) => self::getCurrencyLabel($get('currency')) !== 'USD')
+                                            ->live()
+                                            ->afterStateUpdated(function (Set $set, Get $get, ?string $state) {
+                                                $source = RateSource::tryFrom((string) $state);
+
+                                                if ($source && $source !== RateSource::Custom) {
+                                                    $set('exchange_rate', app(CurrencyService::class)->unitsPerUsd(self::getCurrencyLabel($get('currency')), $source));
                                                 }
 
                                                 self::updateTotals($set, $get);
                                             }),
 
                                         TextInput::make('exchange_rate')
-                                            ->label('Tipo de Cambio')
+                                            ->label(fn (Get $get) => self::getCurrencyLabel($get('currency')).' por 1 USD')
+                                            ->helperText('Se convierte a USD dividiendo por este valor.')
                                             ->numeric()
-                                            ->default(1.00)
-                                            ->required()
+                                            ->minValue(0.0001)
+                                            ->required(fn (Get $get) => self::getCurrencyLabel($get('currency')) !== 'USD')
                                             ->live(onBlur: true)
                                             ->visible(fn (Get $get) => self::getCurrencyLabel($get('currency')) !== 'USD')
-                                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateTotals($set, $get)),
+                                            ->afterStateUpdated(function (Set $set, Get $get) {
+                                                $set('rate_source', RateSource::Custom->value);
+                                                self::updateTotals($set, $get);
+                                            }),
 
                                         TextInput::make('cost')
                                             ->label(fn (Get $get) => 'Costo neto ('.self::getCurrencyLabel($get('currency')).')')
@@ -487,44 +496,45 @@ class BookingForm
         return (string) ($currency ?? 'USD');
     }
 
-    public static function updateTotals(Set $set, Get $get): void
+    /**
+     * @return array<string, string>
+     */
+    protected static function currencyOptions(): array
     {
-        $items = $get('items') ?? [];
+        $data = app(CurrencyService::class)->getAllData();
 
-        $totalCostArs = 0;
-        $totalSellArs = 0;
+        $options = ['USD' => 'Dólares (USD)', 'ARS' => 'Pesos Argentinos (ARS)'];
 
-        $totalCostUsd = 0;
-        $totalSellUsd = 0;
-
-        foreach ($items as $item) {
-            $currency = self::getCurrencyLabel($item['currency'] ?? 'USD');
-            $rate = (float) ($item['exchange_rate'] ?? 1);
-            $cost = (float) ($item['cost'] ?? 0);
-            $sell = (float) ($item['sell'] ?? 0);
-
-            if ($currency === Currency::USD->value) {
-                $totalCostUsd += $cost;
-                $totalSellUsd += $sell;
-            } elseif ($currency === Currency::ARS->value) {
-                $totalCostArs += $cost;
-                $totalSellArs += $sell;
-            } else {
-                if ($rate > 0) {
-                    $totalCostUsd += ($cost / $rate);
-                    $totalSellUsd += ($sell / $rate);
-                }
+        foreach (['EUR', 'BRL'] as $code) {
+            if (isset($data['currencies'][$code])) {
+                $options[$code] = "{$data['currencies'][$code]['name']} ({$code})";
             }
         }
 
-        // Set Display Values
+        return $options;
+    }
+
+    public static function updateTotals(Set $set, Get $get): void
+    {
+        $items = collect($get('items') ?? []);
+
+        $arsItems = $items->filter(fn ($item) => self::getCurrencyLabel($item['currency'] ?? 'USD') === Currency::ARS->value);
+        $totalCostArs = $arsItems->sum(fn ($item) => (float) ($item['cost'] ?? 0));
+        $totalSellArs = $arsItems->sum(fn ($item) => (float) ($item['sell'] ?? 0));
+
         $set('total_cost_ars_display', number_format($totalCostArs, 2, '.', ''));
         $set('total_sell_ars_display', number_format($totalSellArs, 2, '.', ''));
         $set('profit_ars_display', number_format($totalSellArs - $totalCostArs, 2, '.', ''));
 
-        // Set DB Values (USD bucket)
-        $set('total_cost', number_format($totalCostUsd, 2, '.', ''));
-        $set('total_sell', number_format($totalSellUsd, 2, '.', ''));
-        $set('profit', number_format($totalSellUsd - $totalCostUsd, 2, '.', ''));
+        // Preview only: the saved totals come from BookingFinancialService.
+        try {
+            $totals = app(BookingFinancialService::class)->calculateTotals($items->all());
+        } catch (MissingExchangeRateException) {
+            return;
+        }
+
+        $set('total_cost', number_format($totals['total_cost'], 2, '.', ''));
+        $set('total_sell', number_format($totals['total_sell'], 2, '.', ''));
+        $set('profit', number_format($totals['profit'], 2, '.', ''));
     }
 }

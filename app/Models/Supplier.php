@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\TransactionType;
+use App\Services\CurrencyService;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -49,11 +50,19 @@ class Supplier extends Model
         return $this->hasMany(Transaction::class);
     }
 
+    /**
+     * Amount owed to the supplier in USD: item costs converted with each item's rate, minus payments made.
+     */
     protected function balanceUsd(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->bookingItems()->sum('cost') -
-            $this->transactions()->where('type', TransactionType::Pago)->sum('amount_usd_fixed')
+            get: function () {
+                $costUsd = $this->bookingItems()
+                    ->get(['currency', 'exchange_rate', 'cost'])
+                    ->sum(fn (BookingItem $item) => CurrencyService::toUsd($item->cost, $item->currency, $item->exchange_rate) ?? 0);
+
+                return round($costUsd - (float) $this->transactions()->where('type', TransactionType::Pago)->sum('amount_usd_fixed'), 2);
+            }
         );
     }
 

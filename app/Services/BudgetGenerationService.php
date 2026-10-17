@@ -91,7 +91,6 @@ class BudgetGenerationService
             'nights' => $travelPackage->nights,
             'passengers' => $effectivePassengers,
             'currency' => $travelPackage->currency,
-            'exchange_rate' => 1.00,
             'total_cost' => 0,
             'total_sell' => $totalSell,
             'profit' => $totalSell,
@@ -119,7 +118,7 @@ class BudgetGenerationService
                     'description' => $service['description'],
                     'supplier_id' => $service['supplier_id'] ?? null,
                     'currency' => $service['currency'] ?? $travelPackage->currency,
-                    'exchange_rate' => 1.00,
+                    'exchange_rate' => null,
                     'cost' => (float) ($service['cost'] ?? 0) * $serviceMultiplier,
                     'sell' => (float) ($service['sell'] ?? 0) * $serviceMultiplier * $sellRatio,
                 ]);
@@ -132,7 +131,7 @@ class BudgetGenerationService
                     'service_type_id' => ServiceType::where('key', 'other')->value('id') ?? 1,
                     'description' => 'Suplemento single',
                     'currency' => $travelPackage->currency,
-                    'exchange_rate' => 1.00,
+                    'exchange_rate' => null,
                     'cost' => 0,
                     'sell' => $singleSupplement,
                 ]);
@@ -144,7 +143,7 @@ class BudgetGenerationService
                     'service_type_id' => ServiceType::where('key', 'other')->value('id') ?? 1,
                     'description' => 'Reducción base triple ('.$travelPackage->triple_reduction_percent.'%)',
                     'currency' => $travelPackage->currency,
-                    'exchange_rate' => 1.00,
+                    'exchange_rate' => null,
                     'cost' => 0,
                     'sell' => -$tripleReduction,
                 ]);
@@ -156,7 +155,7 @@ class BudgetGenerationService
                     'service_type_id' => ServiceType::where('key', 'other')->value('id') ?? 1,
                     'description' => 'Tarifas menores ('.count($children).' niño/s)',
                     'currency' => $travelPackage->currency,
-                    'exchange_rate' => 1.00,
+                    'exchange_rate' => null,
                     'cost' => 0,
                     'sell' => $childrenTotal,
                 ]);
@@ -170,7 +169,7 @@ class BudgetGenerationService
                 'service_type_id' => ServiceType::where('key', 'other')->value('id') ?? 1,
                 'description' => 'Servicios integrales del paquete: '.$travelPackage->title,
                 'currency' => $travelPackage->currency,
-                'exchange_rate' => 1.00,
+                'exchange_rate' => null,
                 'cost' => 0,
                 'sell' => $totalSell,
             ]);

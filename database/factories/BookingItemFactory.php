@@ -28,6 +28,7 @@ class BookingItemFactory extends Factory
             'supplier_id' => Supplier::inRandomOrder()->first()?->id ?? Supplier::factory(),
             'service_type_id' => ServiceType::inRandomOrder()->first()?->id ?? 1,
             'description' => fake()->sentence(),
+            'currency' => 'USD',
             'cost' => $cost,
             'sell' => $sell,
         ];

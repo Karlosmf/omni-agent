@@ -3,12 +3,14 @@
 namespace App\Filament\Admin\Pages;
 
 use App\Enums\AiProvider;
+use App\Enums\RateSource;
 use App\Models\AgencySetting;
 use Filament\Actions\Action;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -366,6 +368,28 @@ class ManageAgencySettings extends Page implements HasForms
                                             ]),
                                     ]),
                             ]),
+                        Tab::make('Finanzas')
+                            ->icon('heroicon-o-banknotes')
+                            ->schema([
+                                Section::make('Cotización y numeración')
+                                    ->description('Los expedientes se llevan siempre en USD. Los pagos y servicios en otras monedas se convierten con la cotización elegida en cada operación.')
+                                    ->schema([
+                                        Grid::make(2)
+                                            ->schema([
+                                                Select::make('default_rate_source')
+                                                    ->label('Dólar marcado por defecto')
+                                                    ->options(RateSource::class)
+                                                    ->default(RateSource::Oficial)
+                                                    ->helperText('Se puede cambiar en cada cobro, pago o servicio.'),
+                                                TextInput::make('file_number_prefix')
+                                                    ->label('Prefijo del número de expediente')
+                                                    ->default('LPN')
+                                                    ->maxLength(12)
+                                                    ->alphaDash()
+                                                    ->helperText('Ejemplo: ABC genera ABC-2026-00001.'),
+                                            ]),
+                                    ]),
+                            ]),
                         Tab::make('Mantenimiento')
                             ->icon('heroicon-o-wrench-screwdriver')
                             ->schema([
@@ -398,6 +422,13 @@ class ManageAgencySettings extends Page implements HasForms
         ];
         Storage::disk('local')->put('agency_legal.json', json_encode($legalData));
         unset($data['cuit'], $data['legajo']);
+
+        // Keep the column defaults (oficial / LPN) when these are left empty.
+        foreach (['default_rate_source', 'file_number_prefix'] as $key) {
+            if (blank($data[$key] ?? null)) {
+                unset($data[$key]);
+            }
+        }
 
         $settings = AgencySetting::first() ?: new AgencySetting;
         $settings->fill($data);
