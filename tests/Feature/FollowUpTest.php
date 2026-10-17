@@ -194,3 +194,17 @@ test('sending the quote by email marks the lead as contacted', function () {
 
     expect($lead->fresh()->last_contacted_at)->not->toBeNull()->and(BookingsTable::class)->toBeString();
 });
+
+test('baseline marks old matches as handled without creating tasks or notifications', function () {
+    newLead(['agent_id' => $this->agent->id, 'created_at' => now()->subDays(10), 'needs_human_attention' => true]);
+    Booking::factory()->create(['status' => BookingStatus::Presupuesto, 'valid_until' => today()->subWeek()]);
+
+    $this->artisan('omni:run-follow-ups --baseline')->assertSuccessful();
+
+    expect(Task::count())->toBe(0)
+        ->and($this->agent->notifications()->count() + $this->admin->notifications()->count())->toBe(0);
+
+    $this->artisan('omni:run-follow-ups')->assertSuccessful();
+
+    expect(Task::count())->toBe(0);
+});

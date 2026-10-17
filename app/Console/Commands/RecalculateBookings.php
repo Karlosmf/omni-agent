@@ -15,6 +15,7 @@ class RecalculateBookings extends Command
 {
     protected $signature = 'omni:recalculate-bookings
         {--apply : Write the changes. Without it nothing is modified (dry run)}
+        {--force : Skip the backup confirmation (for cron or panels without a terminal)}
         {--estimate-rates= : Fill missing ARS/other rates with today\'s dollar (oficial, mep or tarjeta), marked as estimated}
         {--csv= : Path of the CSV report, relative to storage/app}';
 
@@ -34,7 +35,7 @@ class RecalculateBookings extends Command
             return self::FAILURE;
         }
 
-        if ($apply && ! $this->confirm('¿Hiciste un backup de la base de datos antes de aplicar los cambios?')) {
+        if ($apply && ! $this->option('force') && ! $this->confirm('¿Hiciste un backup de la base de datos antes de aplicar los cambios?')) {
             $this->warn('Cancelado. Hacé el backup y volvé a correr el comando.');
 
             return self::FAILURE;

@@ -175,3 +175,13 @@ test('recalculate command leaves bookings without items untouched', function () 
 
     expect((float) $booking->fresh()->total_sell)->toBe(4000.0);
 });
+
+test('recalculate command can be applied without the interactive confirmation using --force', function () {
+    $booking = Booking::factory()->create();
+    BookingItem::withoutEvents(fn () => newBookingItem($booking, ['currency' => 'ARS', 'exchange_rate' => 1500, 'cost' => 1500000, 'sell' => 1500000]));
+    $booking->updateQuietly(['total_sell' => 1500000, 'total_cost' => 1500000, 'profit' => 0]);
+
+    $this->artisan('omni:recalculate-bookings --apply --force')->assertSuccessful();
+
+    expect((float) $booking->fresh()->total_sell)->toBe(1000.0);
+});

@@ -28,9 +28,12 @@ class FollowUpService
     /**
      * Run every active rule. Returns how many times each rule fired, keyed by rule id.
      *
+     * With $baseline the current matches are only recorded as already handled, without creating tasks
+     * or notifications. Use it right after installing, so old leads and quotes do not flood the team.
+     *
      * @return array<int, int>
      */
-    public function run(): array
+    public function run(bool $baseline = false): array
     {
         $fired = [];
 
@@ -48,7 +51,10 @@ class FollowUpService
                     continue;
                 }
 
-                $this->perform($rule, $subject);
+                if (! $baseline) {
+                    $this->perform($rule, $subject);
+                }
+
                 $fired[$rule->id]++;
             }
         }
