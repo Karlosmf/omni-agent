@@ -246,3 +246,18 @@ test('the booking form refreshes its status after a payment moves the booking to
 
     $page->dispatch('installments-changed')->assertSet('data.status', BookingStatus::Senado->value);
 });
+
+test('a cancelled installment does not swallow payments', function () {
+    $booking = planBooking(1000);
+    app(InstallmentService::class)->generate($booking, 30, 2, today()->addMonth());
+    $deposit = $booking->installments()->where('number', 0)->first();
+    $first = $booking->installments()->where('number', 1)->first();
+    $first->update(['status' => InstallmentStatus::Cancelled]);
+
+    cobro($booking, 100, ['installment_id' => $first->id]);
+    cobro($booking, 200);
+
+    expect((float) $deposit->fresh()->paid_amount)->toBe(300.0)
+        ->and($first->fresh()->status)->toBe(InstallmentStatus::Cancelled)
+        ->and((float) $first->fresh()->paid_amount)->toBe(0.0);
+});

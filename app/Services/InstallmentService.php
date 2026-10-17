@@ -97,30 +97,30 @@ class InstallmentService
             return;
         }
 
+        $open = $installments->where('status', '!=', InstallmentStatus::Cancelled);
+        $openIds = $open->pluck('id');
+
         $cobros = $booking->transactions()->where('type', TransactionType::Cobro)->get(['id', 'installment_id', 'amount_usd_fixed']);
-        $assigned = $cobros->whereNotNull('installment_id')->groupBy('installment_id')->map(fn ($group) => round((float) $group->sum('amount_usd_fixed'), 2));
-        $pool = round((float) $cobros->whereNull('installment_id')->sum('amount_usd_fixed'), 2);
+        $assigned = $cobros->whereIn('installment_id', $openIds)->groupBy('installment_id')->map(fn ($group) => round((float) $group->sum('amount_usd_fixed'), 2));
+        // Cobros with no installment, or pointing at a cancelled one, pay the oldest open installments.
+        $pool = round((float) $cobros->whereNotIn('installment_id', $openIds)->sum('amount_usd_fixed'), 2);
 
         $paid = [];
-        foreach ($installments as $installment) {
+        foreach ($open as $installment) {
             $own = (float) ($assigned[$installment->id] ?? 0);
             $applied = min((float) $installment->amount, $own);
             $paid[$installment->id] = $applied;
             $pool += $own - $applied;
         }
 
-        foreach ($installments as $installment) {
+        foreach ($open as $installment) {
             $room = (float) $installment->amount - $paid[$installment->id];
             $take = min($room, max(0, $pool));
             $paid[$installment->id] += $take;
             $pool -= $take;
         }
 
-        foreach ($installments as $installment) {
-            if ($installment->status === InstallmentStatus::Cancelled) {
-                continue;
-            }
-
+        foreach ($open as $installment) {
             $installment->update([
                 'paid_amount' => round($paid[$installment->id], 2),
                 'status' => $this->statusFor($installment, round($paid[$installment->id], 2)),

@@ -168,6 +168,9 @@ class MakeDeployZip extends Command
         $count = 0;
         foreach ($files as $name => $file) {
             $filePath = $file->getRealPath();
+            if (! $filePath) {
+                continue;
+            }
             $relativePath = ltrim(str_replace($rootPath, '', $filePath), DIRECTORY_SEPARATOR);
             $zipPathInternal = str_replace(DIRECTORY_SEPARATOR, '/', $relativePath);
 
@@ -285,6 +288,9 @@ class MakeDeployZip extends Command
         $count = 0;
         foreach ($files as $name => $file) {
             $filePath = $file->getRealPath();
+            if (! $filePath) {
+                continue;
+            }
             $relativePath = ltrim(str_replace($rootPath, '', $filePath), DIRECTORY_SEPARATOR);
             $zipPathInternal = str_replace(DIRECTORY_SEPARATOR, '/', $relativePath);
 

@@ -16,6 +16,7 @@ use App\Services\WhatsApp\CloudApiGateway;
 use App\Services\WhatsApp\WhatsAppConversationService;
 use App\Services\WhatsApp\WhatsAppGateway;
 use App\Support\PhoneNumber;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
@@ -379,4 +380,35 @@ test('the Cloud API gateway posts to the configured Graph URL with the bearer to
     Http::assertSent(fn ($request) => $request->url() === 'https://graph.example.test/v21.0/123/messages'
         && $request->hasHeader('Authorization', 'Bearer token')
         && $request['to'] === '5491155551234');
+});
+
+test('a failed AI answer is stored as its own message and does not overwrite an older one', function () {
+    $action = Mockery::mock(ProcessChatbotInteractionAction::class);
+    $action->shouldReceive('execute')->andReturn('Disculpá, tuve una pequeña desconexión.');
+    app()->instance(ProcessChatbotInteractionAction::class, $action);
+
+    $service = app(WhatsAppConversationService::class);
+    $lead = $service->receive(inboundText());
+    $old = $lead->messages()->create(['role' => 'assistant', 'content' => 'Respuesta vieja', 'external_id' => 'wamid.OLD', 'status' => 'delivered']);
+
+    $service->receive(inboundText('hola otra vez', 'wamid.IN2'));
+
+    expect($old->fresh()->external_id)->toBe('wamid.OLD')
+        ->and($old->fresh()->status)->toBe('delivered')
+        ->and($lead->messages()->where('content', 'Disculpá, tuve una pequeña desconexión.')->where('direction', 'out')->count())->toBe(2);
+});
+
+test('a message delivered twice at the same time is processed once', function () {
+    $service = app(WhatsAppConversationService::class);
+    $lead = $service->receive(inboundText());
+
+    // Simulates the other job winning the race between the exists() check and the insert.
+    Message::creating(fn (Message $m) => $m->external_id === 'wamid.RACE' && throw new UniqueConstraintViolationException('sqlite', 'insert', [], new Exception('duplicate')));
+
+    expect($service->receive(inboundText('hola', 'wamid.RACE')))->toBeNull()
+        ->and($lead->messages()->where('external_id', 'wamid.RACE')->count())->toBe(0);
+});
+
+test('the incoming message job is retried', function () {
+    expect((new ProcessIncomingWhatsApp([]))->tries)->toBe(3);
 });

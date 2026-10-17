@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\WhatsAppTemplate;
 use App\Support\PhoneNumber;
 use Filament\Notifications\Notification;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Throwable;
@@ -50,14 +51,19 @@ class WhatsAppConversationService
         $text = $this->textOf($message);
         $lead = $this->findOrCreateLead($phone, $profileName, $text);
 
-        $lead->messages()->create([
-            'role' => 'user',
-            'content' => $text,
-            'channel' => 'whatsapp',
-            'direction' => 'in',
-            'external_id' => $externalId,
-            'status' => 'received',
-        ]);
+        try {
+            $lead->messages()->create([
+                'role' => 'user',
+                'content' => $text,
+                'channel' => 'whatsapp',
+                'direction' => 'in',
+                'external_id' => $externalId,
+                'status' => 'received',
+            ]);
+        } catch (UniqueConstraintViolationException) {
+            // Meta delivered the same message twice at once: the other job already handles it.
+            return null;
+        }
 
         $lead->forceFill([
             'whatsapp_last_inbound_at' => now(),
@@ -129,18 +135,22 @@ class WhatsAppConversationService
         $history = $lead->messages()->latest()->take(10)->get()->reverse()
             ->map(fn (Message $m) => ['role' => $m->role === 'user' ? 'user' : 'assistant', 'content' => $m->content])->values()->all();
 
+        $lastAssistantId = (int) $lead->messages()->where('role', 'assistant')->max('id');
+
         $reply = $this->chatbot->execute($text, $lead, $history, recordUserMessage: false);
 
-        // The assistant message was stored by the AI service: tag it and send it.
-        $stored = $lead->messages()->where('role', 'assistant')->latest('id')->first();
-        $stored?->update(['channel' => 'whatsapp', 'direction' => 'out']);
+        // The AI service stores its reply. When it failed it stored nothing, so record the apology
+        // instead of re-tagging an older message.
+        $stored = $lead->messages()->where('role', 'assistant')->where('id', '>', $lastAssistantId)->latest('id')->first()
+            ?? $lead->messages()->create(['role' => 'assistant', 'content' => $reply]);
+        $stored->update(['channel' => 'whatsapp', 'direction' => 'out']);
 
         try {
             $id = $this->gateway->sendText((string) PhoneNumber::toE164($lead->customer?->phone), $reply);
-            $stored?->update(['external_id' => $id ?: null, 'status' => 'sent']);
+            $stored->update(['external_id' => $id ?: null, 'status' => 'sent']);
         } catch (Throwable $e) {
             Log::warning("WhatsApp AI reply not sent for lead {$lead->id}: ".$e->getMessage());
-            $stored?->update(['status' => 'failed']);
+            $stored->update(['status' => 'failed']);
         }
 
         $lead->refresh();
