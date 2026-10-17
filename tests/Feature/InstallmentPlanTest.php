@@ -233,3 +233,16 @@ test('the admin can generate a plan and register a payment from the booking scre
     expect($deposit->fresh()->status)->toBe(InstallmentStatus::Paid)
         ->and($booking->transactions()->first()->installment_id)->toBe($deposit->id);
 });
+
+test('the booking form refreshes its status after a payment moves the booking to reserved', function () {
+    $this->actingAs(User::factory()->create(['role' => UserRole::Admin]));
+    $booking = planBooking(1000);
+    app(InstallmentService::class)->generate($booking, 30, 2, today()->addMonth());
+
+    $page = Livewire\Livewire::test(EditBooking::class, ['record' => $booking->id])
+        ->assertSet('data.status', BookingStatus::Presupuesto->value);
+
+    cobro($booking, 300);
+
+    $page->dispatch('installments-changed')->assertSet('data.status', BookingStatus::Senado->value);
+});

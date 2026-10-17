@@ -71,6 +71,8 @@ class InstallmentsRelationManager extends RelationManager
                             return;
                         }
 
+                        $this->dispatch('installments-changed');
+
                         Notification::make()->title('Plan de pagos generado')->success()->send();
                     }),
             ])
@@ -149,6 +151,8 @@ class InstallmentsRelationManager extends RelationManager
                             'date' => $data['date'],
                             'notes' => "Pago de {$record->label}",
                         ]);
+
+                        $this->dispatch('installments-changed');
 
                         Notification::make()->title('Pago registrado')->success()->send();
                     }),

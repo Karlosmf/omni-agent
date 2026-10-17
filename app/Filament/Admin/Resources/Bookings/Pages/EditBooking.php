@@ -18,6 +18,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\Facades\Mail;
+use Livewire\Attributes\On;
 
 class EditBooking extends EditRecord
 {
@@ -28,6 +29,16 @@ class EditBooking extends EditRecord
         return [
             BookingFinancialSummary::class,
         ];
+    }
+
+    /**
+     * A payment (or a new plan) can move the booking to "Señado": refresh the form so saving it
+     * later does not write the stale status back.
+     */
+    #[On('installments-changed')]
+    public function refreshAfterInstallmentChange(): void
+    {
+        $this->refreshFormData(['status']);
     }
 
     protected function getHeaderActions(): array
