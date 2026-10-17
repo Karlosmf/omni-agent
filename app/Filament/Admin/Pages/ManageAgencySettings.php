@@ -113,64 +113,6 @@ class ManageAgencySettings extends Page implements HasForms
             ->components([
                 Tabs::make('Settings')
                     ->tabs([
-                        Tab::make('Inteligencia Artificial')
-                            ->icon('heroicon-o-sparkles')
-                            ->schema([
-                                Section::make('Asistente virtual')
-                                    ->description('Conectá la IA que usa el chat, WhatsApp y la importación de ideas de viaje. Cada agencia usa su propia API key.')
-                                    ->schema([
-                                        Grid::make(2)
-                                            ->schema([
-                                                TextInput::make('ai_assistant_name')
-                                                    ->label('Nombre de la Asistente Virtual')
-                                                    ->placeholder('Ej: Brisa')
-                                                    ->required()
-                                                    ->columnSpanFull(),
-                                                ToggleButtons::make('ai_provider')
-                                                    ->label('Proveedor de IA')
-                                                    ->options(AiProvider::class)
-                                                    ->default(AiProvider::None)
-                                                    ->inline()
-                                                    ->live()
-                                                    ->columnSpanFull(),
-                                                TextInput::make('ai_api_key')
-                                                    ->label('API Key de IA')
-                                                    ->placeholder(function (Get $get): string {
-                                                        $val = $get('ai_provider');
-                                                        $provider = $val instanceof AiProvider ? $val : AiProvider::tryFrom($val ?? 'none');
-
-                                                        return $provider?->getApiKeyPlaceholder() ?? 'API Key...';
-                                                    })
-                                                    ->helperText(function (Get $get): string {
-                                                        $val = $get('ai_provider');
-                                                        $provider = $val instanceof AiProvider ? $val : AiProvider::tryFrom($val ?? 'none');
-
-                                                        return $provider?->getHelperText() ?? '';
-                                                    })
-                                                    ->password()
-                                                    ->revealable()
-                                                    ->visible(function (Get $get): bool {
-                                                        $val = $get('ai_provider');
-                                                        $val = $val instanceof AiProvider ? $val->value : ($val ?? 'none');
-
-                                                        return $val !== 'none';
-                                                    })
-                                                    ->columnSpanFull(),
-                                                TextInput::make('ai_model')
-                                                    ->label('Modelo')
-                                                    ->placeholder(function (Get $get): string {
-                                                        $val = $get('ai_provider');
-                                                        $provider = $val instanceof AiProvider ? $val : AiProvider::tryFrom($val ?? 'none');
-
-                                                        return $provider?->getDefaultModel() ?: '';
-                                                    })
-                                                    ->helperText('Dejalo vacío para usar el modelo recomendado. Cambialo si el proveedor retira ese modelo.')
-                                                    ->visible(fn (Get $get): bool => ($get('ai_provider') instanceof AiProvider ? $get('ai_provider')->value : ($get('ai_provider') ?? 'none')) !== 'none')
-                                                    ->columnSpanFull(),
-                                            ]),
-                                    ]),
-                            ]),
-
                         Tab::make('Identidad y Frontend')
                             ->icon('heroicon-o-computer-desktop')
                             ->schema([
@@ -271,6 +213,64 @@ class ManageAgencySettings extends Page implements HasForms
                                                 ColorPicker::make('fe_info_color')
                                                     ->label('Información')
                                                     ->default('#3abff8'),
+                                            ]),
+                                    ]),
+                            ]),
+
+                        Tab::make('Inteligencia Artificial')
+                            ->icon('heroicon-o-sparkles')
+                            ->schema([
+                                Section::make('Asistente virtual')
+                                    ->description('Conectá la IA que usa el chat, WhatsApp y la importación de ideas de viaje. Cada agencia usa su propia API key.')
+                                    ->schema([
+                                        Grid::make(2)
+                                            ->schema([
+                                                TextInput::make('ai_assistant_name')
+                                                    ->label('Nombre de la Asistente Virtual')
+                                                    ->placeholder('Ej: Brisa')
+                                                    ->required()
+                                                    ->columnSpanFull(),
+                                                ToggleButtons::make('ai_provider')
+                                                    ->label('Proveedor de IA')
+                                                    ->options(AiProvider::class)
+                                                    ->default(AiProvider::None)
+                                                    ->inline()
+                                                    ->live()
+                                                    ->columnSpanFull(),
+                                                TextInput::make('ai_api_key')
+                                                    ->label('API Key de IA')
+                                                    ->placeholder(function (Get $get): string {
+                                                        $val = $get('ai_provider');
+                                                        $provider = $val instanceof AiProvider ? $val : AiProvider::tryFrom($val ?? 'none');
+
+                                                        return $provider?->getApiKeyPlaceholder() ?? 'API Key...';
+                                                    })
+                                                    ->helperText(function (Get $get): string {
+                                                        $val = $get('ai_provider');
+                                                        $provider = $val instanceof AiProvider ? $val : AiProvider::tryFrom($val ?? 'none');
+
+                                                        return $provider?->getHelperText() ?? '';
+                                                    })
+                                                    ->password()
+                                                    ->revealable()
+                                                    ->visible(function (Get $get): bool {
+                                                        $val = $get('ai_provider');
+                                                        $val = $val instanceof AiProvider ? $val->value : ($val ?? 'none');
+
+                                                        return $val !== 'none';
+                                                    })
+                                                    ->columnSpanFull(),
+                                                TextInput::make('ai_model')
+                                                    ->label('Modelo')
+                                                    ->placeholder(function (Get $get): string {
+                                                        $val = $get('ai_provider');
+                                                        $provider = $val instanceof AiProvider ? $val : AiProvider::tryFrom($val ?? 'none');
+
+                                                        return $provider?->getDefaultModel() ?: '';
+                                                    })
+                                                    ->helperText('Dejalo vacío para usar el modelo recomendado. Cambialo si el proveedor retira ese modelo.')
+                                                    ->visible(fn (Get $get): bool => ($get('ai_provider') instanceof AiProvider ? $get('ai_provider')->value : ($get('ai_provider') ?? 'none')) !== 'none')
+                                                    ->columnSpanFull(),
                                             ]),
                                     ]),
                             ]),
