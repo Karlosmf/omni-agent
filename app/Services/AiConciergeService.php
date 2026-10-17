@@ -173,7 +173,7 @@ class AiConciergeService
     /**
      * Call the configured AI provider with retry logic.
      */
-    private function callAiWithRetry(string $prompt): string
+    private function callAiWithRetry(string $prompt, ?string $pdfPath = null): string
     {
         $settings = get_agency_settings();
         $provider = $settings?->ai_provider ?? AiProvider::None;
@@ -196,6 +196,13 @@ class AiConciergeService
                     usleep($attempt * 500_000);
                 }
 
+                if ($pdfPath !== null) {
+                    return match ($provider) {
+                        AiProvider::Gemini => $this->callGeminiWithPdf($prompt, $pdfPath, $apiKey),
+                        AiProvider::OpenAI => $this->callOpenAiWithPdf($prompt, $pdfPath, $apiKey),
+                    };
+                }
+
                 return match ($provider) {
                     AiProvider::Gemini => $this->callGemini($prompt, $apiKey),
                     AiProvider::OpenAI => $this->callOpenAi($prompt, $apiKey),
@@ -207,6 +214,68 @@ class AiConciergeService
         }
 
         throw $lastException;
+    }
+
+    /**
+     * Run a one-off prompt with the agency's configured provider and key, optionally reading a PDF.
+     *
+     * @throws Throwable When the AI is disabled, has no key, or every retry failed.
+     */
+    public function generate(string $prompt, ?string $pdfPath = null): string
+    {
+        return $this->callAiWithRetry($prompt, $pdfPath);
+    }
+
+    /**
+     * Gemini reading a PDF directly (works for scanned PDFs too).
+     */
+    private function callGeminiWithPdf(string $prompt, string $pdfPath, string $apiKey): string
+    {
+        $response = Http::timeout(90)
+            ->withHeaders(['x-goog-api-key' => $apiKey])
+            ->post('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', [
+                'contents' => [[
+                    'parts' => [
+                        ['text' => $prompt],
+                        ['inline_data' => ['mime_type' => 'application/pdf', 'data' => base64_encode((string) file_get_contents($pdfPath))]],
+                    ],
+                ]],
+            ]);
+
+        if ($response->failed()) {
+            throw new \Exception('Gemini API error: '.$response->body());
+        }
+
+        return (string) $response->json('candidates.0.content.parts.0.text');
+    }
+
+    /**
+     * OpenAI reading a PDF directly.
+     */
+    private function callOpenAiWithPdf(string $prompt, string $pdfPath, string $apiKey): string
+    {
+        $response = Http::withToken($apiKey)
+            ->timeout(90)
+            ->post('https://api.openai.com/v1/chat/completions', [
+                'model' => 'gpt-4o-mini',
+                'messages' => [[
+                    'role' => 'user',
+                    'content' => [
+                        ['type' => 'text', 'text' => $prompt],
+                        ['type' => 'file', 'file' => [
+                            'filename' => basename($pdfPath),
+                            'file_data' => 'data:application/pdf;base64,'.base64_encode((string) file_get_contents($pdfPath)),
+                        ]],
+                    ],
+                ]],
+                'max_tokens' => 4000,
+            ]);
+
+        if ($response->failed()) {
+            throw new \Exception('OpenAI API error: '.$response->body());
+        }
+
+        return (string) $response->json('choices.0.message.content');
     }
 
     /**

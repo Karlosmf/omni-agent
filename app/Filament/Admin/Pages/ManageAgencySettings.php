@@ -413,6 +413,22 @@ class ManageAgencySettings extends Page implements HasForms
                                         Textarea::make('reminder_overdue_text')->label('Recordatorio: 2 días después')->rows(2),
                                     ]),
                             ]),
+                        Tab::make('Integraciones')
+                            ->icon('heroicon-o-puzzle-piece')
+                            ->schema([
+                                Section::make('Fotos para Ideas de Viaje')
+                                    ->description('El importador busca fotos reales con licencia libre. Wikimedia Commons funciona sin clave; Unsplash y Pexels son gratuitas y necesitan una clave.')
+                                    ->schema([
+                                        TextInput::make('unsplash_access_key')
+                                            ->label('Unsplash: Access Key')
+                                            ->password()->revealable()
+                                            ->helperText('Se obtiene gratis en unsplash.com/developers'),
+                                        TextInput::make('pexels_api_key')
+                                            ->label('Pexels: API Key')
+                                            ->password()->revealable()
+                                            ->helperText('Se obtiene gratis en pexels.com/api'),
+                                    ]),
+                            ]),
                         Tab::make('Mantenimiento')
                             ->icon('heroicon-o-wrench-screwdriver')
                             ->schema([

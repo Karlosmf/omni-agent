@@ -50,6 +50,8 @@ class TravelPackage extends Model
         'triple_reduction_percent',
         'children_policies',
         'seasons',
+        'image_credits',
+        'source_import_id',
     ];
 
     protected function casts(): array
@@ -61,6 +63,7 @@ class TravelPackage extends Model
             'services' => 'array',
             'children_policies' => 'array',
             'seasons' => 'array',
+            'image_credits' => 'array',
             'is_active' => 'boolean',
             'price_from' => 'decimal:2',
             'price_basis' => PriceBasis::class,

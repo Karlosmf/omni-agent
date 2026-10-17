@@ -27,4 +27,20 @@ class ImageService
 
         return "{$folder}/{$filename}";
     }
+
+    /**
+     * Same as storeWebp() for raw image bytes (e.g. a downloaded photo).
+     *
+     * @return string Relative path stored on the disk
+     */
+    public static function storeWebpFromString(string $binary, string $folder, int $quality = 85, string $disk = 'uploads'): string
+    {
+        $manager = new ImageManager(new Driver);
+        $image = $manager->decode($binary)->scaleDown(width: 1600);
+        $filename = Str::random(40).'.webp';
+
+        Storage::disk($disk)->put("{$folder}/{$filename}", (string) $image->encode(new WebpEncoder($quality)));
+
+        return "{$folder}/{$filename}";
+    }
 }

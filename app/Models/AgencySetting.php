@@ -58,6 +58,8 @@ class AgencySetting extends Model
         'default_rate_source',
         'file_number_prefix',
         'auto_assign_leads',
+        'unsplash_access_key',
+        'pexels_api_key',
         'installments_last_due_days_before_trip',
         'payment_instructions',
         'reminder_before_text',
@@ -76,6 +78,8 @@ class AgencySetting extends Model
             'social_links' => 'array',
             'is_maintenance_mode' => 'boolean',
             'auto_assign_leads' => 'boolean',
+            'unsplash_access_key' => 'encrypted',
+            'pexels_api_key' => 'encrypted',
             'ai_provider' => AiProvider::class,
             'default_rate_source' => RateSource::class,
         ];

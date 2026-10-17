@@ -125,6 +125,12 @@ new #[Layout('components.layouts.guest')] class extends Component
                 <div class="w-full h-full bg-gradient-to-br from-amber-400 via-orange-500 to-rose-500"></div>
             @endif
 
+            @if (! empty($package->image_credits))
+                <p class="absolute bottom-2 right-3 z-20 max-w-[60%] truncate text-[10px] text-white/70">
+                    Fotos: {{ collect($package->image_credits)->map(fn ($c) => trim(($c['author'] ?? '').' / '.($c['provider'] ?? ''), ' /'))->unique()->implode(' · ') }}
+                </p>
+            @endif
+
             {{-- Dark overlay --}}
             <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent z-10"></div>
 
