@@ -38,6 +38,11 @@ return [
         'graph_url' => env('WHATSAPP_GRAPH_URL', 'https://graph.facebook.com'),
     ],
 
+    // Optional bearer token for POST /api/leads. Empty keeps the endpoint open (web forms, integrations).
+    'leads_api' => [
+        'token' => env('LEADS_API_TOKEN'),
+    ],
+
     'gemini' => [
         'api_key' => env('GEMINI_API_KEY'),
     ],

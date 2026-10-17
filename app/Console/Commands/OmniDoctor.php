@@ -24,6 +24,7 @@ class OmniDoctor extends Command
             'Base de datos' => $this->database(),
             'storage:link' => [is_link(public_path('storage')) || is_dir(public_path('storage')), 'Ejecutá "storage:link" desde Sistema → Server Admin.'],
             'Cola en base de datos' => [config('queue.default') === 'database', 'Poné QUEUE_CONNECTION=database en el .env (en local puede ser sync).'],
+            'Modo producción' => [app()->environment(['local', 'testing']) || ! config('app.debug'), 'APP_DEBUG está en true: mostraría errores y datos internos. Poné APP_DEBUG=false en el .env.'],
             'Cron activo' => $this->cron(),
             'Trabajos fallidos' => $this->failedJobs(),
             'Cotización del dólar' => [$currencies->getDollarRate(RateSource::Oficial) !== null, 'No hay cotización guardada ni DolarAPI responde: se tendrá que cargar a mano.'],

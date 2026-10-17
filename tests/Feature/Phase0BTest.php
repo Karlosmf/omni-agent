@@ -180,3 +180,36 @@ test('the split command separates leads that share a placeholder customer', func
     expect($a->fresh()->customer_id)->not->toBe($b->fresh()->customer_id)
         ->and($shared->fresh()->phone)->toBeNull();
 });
+
+test('the public API rejects oversized messages', function () {
+    $this->postJson('/api/leads', [
+        'customer_name' => 'Ana', 'customer_phone' => '+5491155551234', 'raw_message' => str_repeat('a', 2001),
+    ])->assertUnprocessable()->assertJsonValidationErrors('raw_message');
+});
+
+test('the public API requires the token when one is configured', function () {
+    config(['services.leads_api.token' => 'secret-token']);
+    $payload = ['customer_name' => 'Ana', 'customer_phone' => '+5491155551234', 'raw_message' => 'Hola'];
+
+    $this->postJson('/api/leads', $payload)->assertForbidden();
+    $this->postJson('/api/leads', $payload, ['Authorization' => 'Bearer wrong'])->assertForbidden();
+    $this->postJson('/api/leads', $payload, ['Authorization' => 'Bearer secret-token'])->assertCreated();
+});
+
+test('the public API is rate limited', function () {
+    $payload = ['customer_name' => 'Ana', 'customer_phone' => '+5491155551234', 'raw_message' => 'Hola'];
+
+    foreach (range(1, 10) as $ignored) {
+        $this->postJson('/api/leads', $payload)->assertCreated();
+    }
+
+    $this->postJson('/api/leads', $payload)->assertTooManyRequests();
+});
+
+test('the public proposal page is rate limited', function () {
+    foreach (range(1, 60) as $ignored) {
+        $this->get('/presupuesto/unknown-token')->assertNotFound();
+    }
+
+    $this->get('/presupuesto/unknown-token')->assertTooManyRequests();
+});

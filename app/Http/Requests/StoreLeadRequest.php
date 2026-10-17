@@ -12,7 +12,9 @@ class StoreLeadRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $token = (string) config('services.leads_api.token');
+
+        return $token === '' || hash_equals($token, (string) $this->bearerToken());
     }
 
     /**
@@ -24,8 +26,8 @@ class StoreLeadRequest extends FormRequest
     {
         return [
             'customer_name' => ['required', 'string', 'max:255'],
-            'customer_phone' => ['required', 'string', 'max:255'],
-            'raw_message' => ['required', 'string'],
+            'customer_phone' => ['required', 'string', 'max:30'],
+            'raw_message' => ['required', 'string', 'max:2000'],
             'source' => ['nullable', 'string', 'max:50'],
         ];
     }
