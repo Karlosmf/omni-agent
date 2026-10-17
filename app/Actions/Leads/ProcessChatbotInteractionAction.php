@@ -20,11 +20,13 @@ class ProcessChatbotInteractionAction
      * @param  array  $messagesContext  The previous messages history to provide context
      * @return string The AI response content
      */
-    public function execute(string $userMsg, Lead $lead, array $messagesContext = []): string
+    public function execute(string $userMsg, Lead $lead, array $messagesContext = [], bool $recordUserMessage = true): string
     {
         try {
             // 1. Process with AI to get a reply
-            $replyContent = $this->aiService->processMessage($userMsg, $lead);
+            $replyContent = $recordUserMessage
+                ? $this->aiService->processMessage($userMsg, $lead)
+                : $this->aiService->processMessage($userMsg, $lead, false);
 
             // 2. Extract and update lead data
             $queryContext = array_slice($messagesContext, -10);

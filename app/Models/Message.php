@@ -12,6 +12,12 @@ class Message extends Model
         'lead_id',
         'role',
         'content',
+        'channel',
+        'direction',
+        'external_id',
+        'status',
+        'sent_by_user_id',
+        'media_path',
     ];
 
     public function lead(): BelongsTo

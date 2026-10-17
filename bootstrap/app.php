@@ -16,7 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->preventRequestsDuringMaintenance(except: [
             'admin*',
             'livewire*',
+            'webhooks/*',
         ]);
+        $middleware->validateCsrfTokens(except: ['webhooks/*']);
         $middleware->alias([
             'role' => CheckRole::class,
         ]);

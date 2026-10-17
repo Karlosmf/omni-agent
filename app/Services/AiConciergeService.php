@@ -25,13 +25,15 @@ class AiConciergeService
     /**
      * Process a message through the configured AI provider.
      */
-    public function processMessage(string $messageContent, Lead $lead): string
+    public function processMessage(string $messageContent, Lead $lead, bool $recordUserMessage = true): string
     {
         try {
-            $lead->messages()->create([
-                'role' => 'user',
-                'content' => $messageContent,
-            ]);
+            if ($recordUserMessage) {
+                $lead->messages()->create([
+                    'role' => 'user',
+                    'content' => $messageContent,
+                ]);
+            }
 
             $this->updateLeadTemperature($messageContent, $lead);
 

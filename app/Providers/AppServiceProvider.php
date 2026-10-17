@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Models\AgencySetting;
 use App\Models\BookingItem;
 use App\Observers\BookingItemObserver;
+use App\Services\WhatsApp\CloudApiGateway;
+use App\Services\WhatsApp\WhatsAppGateway;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
@@ -18,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(WhatsAppGateway::class, CloudApiGateway::class);
     }
 
     /**

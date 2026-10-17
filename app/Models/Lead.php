@@ -34,6 +34,9 @@ class Lead extends Model
         'temperature',
         'last_contacted_at',
         'next_follow_up_at',
+        'ai_paused',
+        'whatsapp_last_inbound_at',
+        'unread_count',
     ];
 
     protected $casts = [
@@ -43,6 +46,8 @@ class Lead extends Model
         'needs_human_attention' => 'boolean',
         'last_contacted_at' => 'datetime',
         'next_follow_up_at' => 'datetime',
+        'ai_paused' => 'boolean',
+        'whatsapp_last_inbound_at' => 'datetime',
     ];
 
     public function customer(): BelongsTo
@@ -63,6 +68,14 @@ class Lead extends Model
     public function messages(): HasMany
     {
         return $this->hasMany(Message::class);
+    }
+
+    /**
+     * WhatsApp only allows free-form replies within 24 hours of the customer's last message.
+     */
+    public function isInsideWhatsAppWindow(): bool
+    {
+        return $this->whatsapp_last_inbound_at?->gt(now()->subHours(24)) ?? false;
     }
 
     public function travelPackage(): BelongsTo

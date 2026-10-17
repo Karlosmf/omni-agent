@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PublicBookingController;
 use App\Http\Controllers\ReceiptController;
+use App\Http\Controllers\WhatsAppWebhookController;
 use App\Livewire\PublicCotizador;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -32,3 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/transactions/{transaction}/receipt', [ReceiptController::class, 'download'])
         ->name('transactions.receipt');
 });
+
+// WhatsApp Cloud API webhook (no CSRF: authenticated by Meta's HMAC signature).
+Route::get('/webhooks/whatsapp', [WhatsAppWebhookController::class, 'verify']);
+Route::post('/webhooks/whatsapp', [WhatsAppWebhookController::class, 'receive'])->middleware('throttle:300,1')->name('webhooks.whatsapp');

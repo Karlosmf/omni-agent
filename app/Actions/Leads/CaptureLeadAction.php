@@ -40,7 +40,7 @@ class CaptureLeadAction
     private function findOrCreateCustomer(array $data): User
     {
         $email = ! empty($data['customer_email']) ? trim($data['customer_email']) : null;
-        $phone = PhoneNumber::normalize($data['customer_phone'] ?? null);
+        $phone = PhoneNumber::toE164($data['customer_phone'] ?? null);
         $name = ! empty($data['customer_name']) ? trim($data['customer_name']) : 'Web Guest';
 
         $query = User::query()->where('role', UserRole::Customer);
@@ -48,7 +48,7 @@ class CaptureLeadAction
         if ($email) {
             $query->where('email', $email);
         } elseif ($phone) {
-            $query->where('phone', $phone);
+            $query->whereIn('phone', PhoneNumber::lookupVariants($phone));
         } else {
             // Without a real email or phone there is nothing to match on: anonymous
             // visitors must never be merged into one shared customer.

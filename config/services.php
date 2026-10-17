@@ -28,6 +28,15 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    // WhatsApp Cloud API (Meta). Secrets live in .env, never in the database.
+    'whatsapp' => [
+        'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
+        'access_token' => env('WHATSAPP_ACCESS_TOKEN'),
+        'app_secret' => env('WHATSAPP_APP_SECRET'),
+        'verify_token' => env('WHATSAPP_VERIFY_TOKEN'),
+        'graph_version' => env('WHATSAPP_GRAPH_VERSION', 'v21.0'),
+    ],
+
     'gemini' => [
         'api_key' => env('GEMINI_API_KEY'),
     ],
