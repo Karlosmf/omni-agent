@@ -33,6 +33,17 @@ class EditBooking extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('renew_validity')
+                ->label('Renovar validez')
+                ->icon('heroicon-o-arrow-path')
+                ->color('warning')
+                ->visible(fn ($record) => $record->isExpired() && in_array($record->status, [BookingStatus::Borrador, BookingStatus::Presupuesto], true))
+                ->requiresConfirmation()
+                ->modalDescription('La propuesta quedará vigente 7 días desde hoy.')
+                ->action(function ($record) {
+                    $record->renewValidity();
+                    $this->refreshFormData(['valid_until']);
+                }),
             Action::make('whatsapp')
                 ->label('Enviar por WhatsApp')
                 ->icon('heroicon-o-chat-bubble-left-ellipsis')

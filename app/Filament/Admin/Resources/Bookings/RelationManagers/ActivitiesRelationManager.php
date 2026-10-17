@@ -28,6 +28,8 @@ class ActivitiesRelationManager extends RelationManager
                         'created' => 'success',
                         'status_changed' => 'warning',
                         'email_sent' => 'info',
+                        'viewed' => 'success',
+                        'payment_plan' => 'info',
                         'updated' => 'gray',
                         default => 'gray',
                     })
@@ -35,6 +37,9 @@ class ActivitiesRelationManager extends RelationManager
                         'created' => 'Creado',
                         'status_changed' => 'Cambio de Estado',
                         'email_sent' => 'Email Enviado',
+                        'viewed' => 'Presupuesto abierto',
+                        'payment_plan' => 'Plan de pagos',
+                        'recalculated' => 'Recalculado',
                         'updated' => 'Actualizado',
                         default => $state,
                     }),

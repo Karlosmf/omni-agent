@@ -42,6 +42,10 @@ class BookingActivity extends Model
      */
     public static function log(Booking $booking, string $type, string $description, ?array $properties = null): self
     {
+        if ($type === 'email_sent') {
+            $booking->lead?->forceFill(['last_contacted_at' => now()])->saveQuietly();
+        }
+
         return self::create([
             'booking_id' => $booking->id,
             'user_id' => auth()->id(),

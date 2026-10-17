@@ -32,6 +32,8 @@ class Lead extends Model
         'ai_summary',
         'needs_human_attention',
         'temperature',
+        'last_contacted_at',
+        'next_follow_up_at',
     ];
 
     protected $casts = [
@@ -39,6 +41,8 @@ class Lead extends Model
         'temperature' => LeadTemperature::class,
         'ai_data' => 'array',
         'needs_human_attention' => 'boolean',
+        'last_contacted_at' => 'datetime',
+        'next_follow_up_at' => 'datetime',
     ];
 
     public function customer(): BelongsTo

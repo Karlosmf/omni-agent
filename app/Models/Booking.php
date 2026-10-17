@@ -70,6 +70,9 @@ class Booking extends Model
         'internal_notes',
         'notes',
         'vouchers',
+        'first_viewed_at',
+        'last_viewed_at',
+        'view_count',
     ];
 
     protected $casts = [
@@ -80,6 +83,8 @@ class Booking extends Model
         'total_sell' => 'decimal:2',
         'profit' => 'decimal:2',
         'vouchers' => 'array',
+        'first_viewed_at' => 'datetime',
+        'last_viewed_at' => 'datetime',
     ];
 
     public function lead(): BelongsTo
@@ -130,6 +135,16 @@ class Booking extends Model
     public function isExpired(): bool
     {
         return $this->valid_until && Carbon::parse($this->valid_until)->isPast();
+    }
+
+    /**
+     * Extend the validity of the quote from today and log it.
+     */
+    public function renewValidity(int $days = 7): void
+    {
+        $this->update(['valid_until' => today()->addDays($days)]);
+
+        BookingActivity::log($this, 'updated', "Validez renovada hasta el {$this->valid_until->format('d/m/Y')}");
     }
 
     public function calculateProfit(): float

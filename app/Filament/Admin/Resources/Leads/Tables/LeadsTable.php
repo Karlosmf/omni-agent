@@ -21,6 +21,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ExportAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Grouping\Group;
@@ -53,6 +54,17 @@ class LeadsTable
                     ->label('Atención')
                     ->boolean()
                     ->sortable(),
+                TextColumn::make('next_follow_up_at')
+                    ->label('Próximo seguimiento')
+                    ->dateTime('d/m H:i')
+                    ->placeholder('—')
+                    ->color(fn (Lead $record) => $record->next_follow_up_at?->isPast() && $record->status !== LeadStatus::Closed ? 'danger' : 'gray')
+                    ->sortable(),
+                TextColumn::make('last_contacted_at')
+                    ->label('Último contacto')
+                    ->since()
+                    ->placeholder('Sin contactar')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->label('Creado el')
                     ->dateTime()
@@ -71,6 +83,9 @@ class LeadsTable
                 SelectFilter::make('status')
                     ->label('Estado')
                     ->options(LeadStatus::class),
+                Filter::make('overdue_follow_up')
+                    ->label('Seguimiento atrasado')
+                    ->query(fn ($query) => $query->where('next_follow_up_at', '<', now())->where('status', '!=', LeadStatus::Closed)),
                 TernaryFilter::make('needs_human_attention')
                     ->label('Atención Requerida'),
             ])

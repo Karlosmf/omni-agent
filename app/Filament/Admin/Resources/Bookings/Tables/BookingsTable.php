@@ -77,6 +77,13 @@ class BookingsTable
                     ->color(fn ($record) => $record->isExpired() ? 'danger' : 'gray')
                     ->visibleFrom('lg')
                     ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('view_count')
+                    ->label('Aperturas')
+                    ->badge()
+                    ->color(fn (int $state): string => $state >= 3 ? 'success' : ($state > 0 ? 'info' : 'gray'))
+                    ->description(fn (Booking $record) => $record->last_viewed_at ? 'Última: '.$record->last_viewed_at->diffForHumans() : null)
+                    ->sortable()
+                    ->visibleFrom('lg'),
                 TextColumn::make('created_at')
                     ->label('Creado el')
                     ->dateTime()
@@ -131,6 +138,14 @@ class BookingsTable
 
                 EditAction::make()
                     ->label('Editar'),
+                Action::make('renew_validity')
+                    ->label('Renovar validez')
+                    ->icon('heroicon-o-arrow-path')
+                    ->color('warning')
+                    ->visible(fn (Booking $record) => $record->isExpired() && in_array($record->status, [BookingStatus::Borrador, BookingStatus::Presupuesto], true))
+                    ->requiresConfirmation()
+                    ->modalDescription('La propuesta quedará vigente 7 días desde hoy.')
+                    ->action(fn (Booking $record) => $record->renewValidity()),
                 Action::make('share_link')
                     ->label('Ver Link Público')
                     ->icon('heroicon-o-link')

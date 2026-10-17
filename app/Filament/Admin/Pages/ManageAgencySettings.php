@@ -389,6 +389,12 @@ class ManageAgencySettings extends Page implements HasForms
                                                     ->helperText('Ejemplo: ABC genera ABC-2026-00001.'),
                                             ]),
                                     ]),
+                                Section::make('Asignación de leads')
+                                    ->schema([
+                                        Toggle::make('auto_assign_leads')
+                                            ->label('Asignar automáticamente los leads nuevos')
+                                            ->helperText('Cada lead nuevo va al vendedor con menos leads sin contactar. Si está apagado, los leads sin asignar los ve todo el equipo.'),
+                                    ]),
                                 Section::make('Plan de pagos y recordatorios')
                                     ->description('Etiquetas disponibles: [NOMBRE], [CUOTA], [MONTO], [VENCIMIENTO], [EXPEDIENTE]. Si dejás un texto vacío se usa el predeterminado.')
                                     ->schema([

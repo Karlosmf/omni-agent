@@ -76,6 +76,14 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
+     * Leads assigned to this user as their agent.
+     */
+    public function leadsAssigned(): HasMany
+    {
+        return $this->hasMany(Lead::class, 'agent_id');
+    }
+
+    /**
      * Get the bookings for the user.
      */
     public function bookings(): HasMany
