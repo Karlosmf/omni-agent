@@ -1,5 +1,6 @@
 <?php
 
+use App\Ai\AgencyAi;
 use App\Enums\AiProvider;
 use App\Models\AgencySetting;
 use App\Services\AiConciergeService;
@@ -72,21 +73,40 @@ it('reports the provider error when the connection fails', function () {
     expect(app(AiConciergeService::class)->testConnection())->toContain('Groq');
 });
 
-it('asks for a JSON answer with room for a whole travel package', function () {
+it('asks for a JSON answer when the caller needs one', function () {
     configureAi(AiProvider::Groq);
     Http::fake(['api.groq.com/*' => Http::response(['choices' => [['message' => ['content' => '{}']]]])]);
 
     app(AiConciergeService::class)->generate('Importá esto', json: true);
 
-    Http::assertSent(fn ($request) => $request['max_tokens'] >= 8000
-        && $request['response_format'] === ['type' => 'json_object']);
+    Http::assertSent(fn ($request) => str_contains(json_encode($request->data(), JSON_UNESCAPED_UNICODE), 'objeto JSON válido'));
 });
 
-it('keeps chat answers short and free-form', function () {
+it('does not add the JSON instruction to a plain prompt', function () {
     configureAi(AiProvider::Groq);
     Http::fake(['api.groq.com/*' => Http::response(['choices' => [['message' => ['content' => 'Hola']]]])]);
 
     app(AiConciergeService::class)->generate('Hola');
 
-    Http::assertSent(fn ($request) => $request['max_tokens'] <= 2000 && ! isset($request['response_format']));
+    Http::assertSent(fn ($request) => ! str_contains(json_encode($request->data(), JSON_UNESCAPED_UNICODE), 'objeto JSON válido'));
+});
+
+it('builds one provider per saved key without touching config/ai.php', function () {
+    configureAi(AiProvider::Groq);
+
+    [$name, $model] = app(AgencyAi::class)->resolve();
+    [$again] = app(AgencyAi::class)->resolve();
+
+    expect($name)->toStartWith('agency_')->and($again)->toBe($name)->and($model)->toBe('llama-3.3-70b-versatile')
+        ->and(config('ai.providers.'.$name))->toBeNull();
+});
+
+it('says the key is missing before calling any provider', function () {
+    AgencySetting::query()->delete();
+    AgencySetting::create(['company_name' => 'Agencia', 'contact_email' => 'info@agencia.test', 'contact_phone' => '1155550000', 'ai_provider' => AiProvider::Groq]);
+    Http::fake();
+
+    expect(app(AiConciergeService::class)->testConnection())->toBe('Falta cargar la API key.');
+
+    Http::assertNothingSent();
 });

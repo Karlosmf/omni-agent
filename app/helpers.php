@@ -66,6 +66,24 @@ if (! function_exists('get_agency_settings')) {
     }
 }
 
+if (! function_exists('advisor_names')) {
+    /**
+     * The WhatsApp contacts configured by the agency, as "Ana o Luis" (or the fallback when there are none).
+     */
+    function advisor_names(mixed $settings, string $fallback): string
+    {
+        $names = collect($settings?->social_links ?? [])
+            ->filter(fn ($link) => str_contains(strtolower($link['platform'] ?? ''), 'whatsapp') ||
+                str_contains(strtolower($link['icon'] ?? ''), 'whatsapp')
+            )
+            ->map(fn ($link) => trim(str_ireplace('WhatsApp', '', $link['platform'] ?? '')) ?: 'nuestros agentes')
+            ->filter()
+            ->unique();
+
+        return $names->isNotEmpty() ? $names->join(', ', ' o ') : $fallback;
+    }
+}
+
 if (! function_exists('get_agency_logotipo_url')) {
     function get_agency_logotipo_url(): string
     {

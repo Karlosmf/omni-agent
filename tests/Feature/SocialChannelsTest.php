@@ -1,6 +1,7 @@
 <?php
 
 use App\Actions\Leads\ProcessChatbotInteractionAction;
+use App\Ai\Agents\ConciergeAgent;
 use App\Enums\BookingStatus;
 use App\Enums\Channel;
 use App\Enums\LeadStatus;
@@ -483,4 +484,34 @@ test('the channel funnel counts leads, quotes and confirmed bookings per channel
         ->and($data['datasets'][1]['data'])->toBe([0, 2])
         ->and($data['datasets'][2]['data'])->toBe([0, 1])
         ->and($web->conversationChannel())->toBe(Channel::Web);
+});
+
+// --- Hand-off by the AI's own qualification flag ---
+
+test('finishing the qualification hands the conversation to a person without matching any phrase', function () {
+    app()->forgetInstance(ProcessChatbotInteractionAction::class);
+    Cache::forget('agency_settings');
+    AgencySetting::factory()->create(['ai_provider' => 'gemini', 'ai_api_key' => 'k']);
+    ConciergeAgent::fake([conciergeTurn(['reply' => 'Listo, te contactan en breve.', 'calificacion_completa' => true])]);
+    fakeGraph();
+
+    $lead = app(WhatsAppConversationService::class)->receiveSocial(socialInbound(Channel::Instagram, 'IG1'));
+
+    expect($lead->fresh()->ai_paused)->toBeTrue()->and($this->admin->notifications()->first()->data['title'])->toStartWith('Instagram:');
+});
+
+test('a conversation that was already qualified does not hand off again on the next AI answer', function () {
+    app()->forgetInstance(ProcessChatbotInteractionAction::class);
+    Cache::forget('agency_settings');
+    AgencySetting::factory()->create(['ai_provider' => 'gemini', 'ai_api_key' => 'k']);
+    ConciergeAgent::fake([conciergeTurn(['calificacion_completa' => true]), conciergeTurn(['calificacion_completa' => true])]);
+    fakeGraph();
+    $service = app(WhatsAppConversationService::class);
+
+    $lead = $service->receiveSocial(socialInbound(Channel::Instagram, 'IG1', 'a1'));
+    $service->resumeAi($lead);
+    $lead->fresh()->update(['needs_human_attention' => false]);
+    $service->receiveSocial(socialInbound(Channel::Instagram, 'IG1', 'a2', 'una consulta más'));
+
+    expect($this->admin->notifications()->count())->toBe(1)->and($lead->fresh()->ai_paused)->toBeFalse();
 });

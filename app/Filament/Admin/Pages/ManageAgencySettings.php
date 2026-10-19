@@ -271,6 +271,15 @@ class ManageAgencySettings extends Page implements HasForms
                                                     ->helperText('Dejalo vacío para usar el modelo recomendado. Cambialo si el proveedor retira ese modelo.')
                                                     ->visible(fn (Get $get): bool => ($get('ai_provider') instanceof AiProvider ? $get('ai_provider')->value : ($get('ai_provider') ?? 'none')) !== 'none')
                                                     ->columnSpanFull(),
+                                                TextInput::make('ai_monthly_message_limit')
+                                                    ->label('Límite mensual de respuestas de la IA')
+                                                    ->numeric()
+                                                    ->integer()
+                                                    ->minValue(1)
+                                                    ->placeholder('Sin límite')
+                                                    ->helperText('Al llegar al límite la IA deja de contestar, avisa al equipo y los clientes esperan a una persona. Vacío = sin límite.')
+                                                    ->visible(fn (Get $get): bool => ($get('ai_provider') instanceof AiProvider ? $get('ai_provider')->value : ($get('ai_provider') ?? 'none')) !== 'none')
+                                                    ->columnSpanFull(),
                                             ]),
                                     ]),
                             ]),

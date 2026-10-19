@@ -13,10 +13,11 @@
     "sail": false,
     "skills": [
         "infer-conventions",
+        "ai-sdk-development",
         "laravel-best-practices",
+        "testing-best-practices",
         "livewire-development",
         "volt-development",
-        "pest-testing",
         "tailwindcss-development"
     ]
 }

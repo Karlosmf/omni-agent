@@ -18,6 +18,9 @@ class Message extends Model
         'status',
         'sent_by_user_id',
         'media_path',
+        'input_tokens',
+        'output_tokens',
+        'ai_model',
     ];
 
     public function lead(): BelongsTo

@@ -1,9 +1,7 @@
 <?php
 
 use App\Actions\Leads\ProcessChatbotInteractionAction;
-use App\Enums\UserRole;
 use App\Models\Lead;
-use App\Models\User;
 use App\Services\AiConciergeService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
@@ -11,38 +9,28 @@ use Tests\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class);
 
-test('it processes chat and extracts data', function () {
-    $customer = User::factory()->create(['name' => 'Web Guest', 'role' => UserRole::Customer]);
-    $lead = Lead::factory()->create([
-        'customer_id' => $customer->id,
-        'ai_data' => [],
-    ]);
+test('it answers through the AI service in a single call', function () {
+    $lead = Lead::factory()->create(['ai_data' => []]);
 
     $mockAiService = Mockery::mock(AiConciergeService::class);
     $mockAiService->shouldReceive('processMessage')
         ->once()
-        ->with('Hola quiero ir a paris', $lead)
+        ->with('Hola quiero ir a paris', $lead, true)
         ->andReturn('¡Qué lindo destino!');
-
-    $mockAiService->shouldReceive('extractLeadData')
-        ->once()
-        ->andReturn([
-            'destino' => 'Paris',
-            'presupuesto' => '$1000',
-            'nombre' => 'Juan',
-            'requiere_atencion' => true,
-        ]);
+    $mockAiService->shouldNotReceive('extractLeadData');
 
     $action = new ProcessChatbotInteractionAction($mockAiService);
 
-    $reply = $action->execute('Hola quiero ir a paris', $lead, []);
+    expect($action->execute('Hola quiero ir a paris', $lead, []))->toBe('¡Qué lindo destino!');
+});
 
-    expect($reply)->toBe('¡Qué lindo destino!');
+test('it passes along that the message was already stored', function () {
+    $lead = Lead::factory()->create();
 
-    $lead->refresh();
-    expect($lead->customer->name)->toBe('Juan')
-        ->and($lead->needs_human_attention)->toBeTrue()
-        ->and($lead->ai_data)->toHaveKey('destino', 'Paris');
+    $mockAiService = Mockery::mock(AiConciergeService::class);
+    $mockAiService->shouldReceive('processMessage')->once()->with('Hola', $lead, false)->andReturn('Hola');
+
+    expect((new ProcessChatbotInteractionAction($mockAiService))->execute('Hola', $lead, [], recordUserMessage: false))->toBe('Hola');
 });
 
 test('it handles exceptions gracefully', function () {

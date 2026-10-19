@@ -60,6 +60,7 @@ class AgencySetting extends Model
         'file_number_prefix',
         'auto_assign_leads',
         'sla_first_response_minutes',
+        'ai_monthly_message_limit',
         'unsplash_access_key',
         'pexels_api_key',
         'installments_last_due_days_before_trip',

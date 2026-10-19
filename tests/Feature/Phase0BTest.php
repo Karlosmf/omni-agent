@@ -1,6 +1,7 @@
 <?php
 
 use App\Actions\Leads\CaptureLeadAction;
+use App\Ai\Agents\ConciergeAgent;
 use App\Enums\BookingStatus;
 use App\Enums\UserRole;
 use App\Filament\Admin\Resources\Bookings\BookingResource;
@@ -160,8 +161,7 @@ test('role cannot be mass assigned', function () {
 test('the generic assistant prompt has no hard coded agency names', function () {
     $lead = Lead::factory()->create();
 
-    $method = new ReflectionMethod(AiConciergeService::class, 'buildSystemPrompt');
-    $prompt = $method->invoke(new AiConciergeService, 'hola', $lead);
+    $prompt = (string) (new ConciergeAgent($lead))->instructions();
 
     expect($prompt)->not->toContain('Nela')->not->toContain('Belén')->not->toContain('Brisa')
         ->and($prompt)->toContain('nuestros asesores');

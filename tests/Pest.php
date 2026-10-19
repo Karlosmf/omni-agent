@@ -56,3 +56,19 @@ function something()
 {
     // ..
 }
+
+/**
+ * A structured answer of the concierge agent, with everything unknown left as null.
+ *
+ * @param  array<string, mixed>  $overrides
+ * @return array<string, mixed>
+ */
+function conciergeTurn(array $overrides = []): array
+{
+    return array_merge([
+        'reply' => '¿Para qué fecha viajan?',
+        'destino' => null, 'presupuesto' => null, 'pasajeros' => null, 'fecha' => null, 'noches' => null,
+        'ciudad_salida' => null, 'nombre' => null, 'telefono' => null, 'email' => null, 'resumen' => null,
+        'calificacion_completa' => false, 'pide_persona' => false, 'intencion' => 'cotizar', 'temperatura' => 'cool',
+    ], $overrides);
+}

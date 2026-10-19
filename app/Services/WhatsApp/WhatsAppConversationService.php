@@ -182,6 +182,7 @@ class WhatsAppConversationService
             ->map(fn (Message $m) => ['role' => $m->role === 'user' ? 'user' : 'assistant', 'content' => $m->content])->values()->all();
 
         $lastAssistantId = (int) $lead->messages()->where('role', 'assistant')->max('id');
+        $wasQualified = (bool) ($lead->ai_data['calificacion_completa'] ?? false);
 
         $reply = $this->chatbot->execute($text, $lead, $history, recordUserMessage: false);
 
@@ -201,7 +202,9 @@ class WhatsAppConversationService
 
         $lead->refresh();
 
-        if ($lead->needs_human_attention || str_contains($reply, self::CLOSING_MARKER)) {
+        $qualifiedNow = ! $wasQualified && ($lead->ai_data['calificacion_completa'] ?? false);
+
+        if ($lead->needs_human_attention || $qualifiedNow || str_contains($reply, self::CLOSING_MARKER)) {
             $this->handOffToHuman($lead);
         }
     }
