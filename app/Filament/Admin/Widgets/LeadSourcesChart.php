@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 class LeadSourcesChart extends ChartWidget
 {
     protected ?string $heading = 'Fuentes de Leads';
-    
+
     protected static ?int $sort = 3;
 
     protected function getData(): array
@@ -17,7 +17,7 @@ class LeadSourcesChart extends ChartWidget
         $sources = Lead::select('source', DB::raw('count(*) as count'))
             ->groupBy('source')
             ->get();
-            
+
         return [
             'datasets' => [
                 [
@@ -26,10 +26,12 @@ class LeadSourcesChart extends ChartWidget
                     'backgroundColor' => ['#f59e0b', '#3b82f6', '#10b981', '#ef4444', '#8b5cf6'],
                 ],
             ],
-            'labels' => $sources->pluck('source')->map(fn($source) => match($source) {
+            'labels' => $sources->pluck('source')->map(fn ($source) => match ($source) {
                 'chatbot' => 'Chatbot IA',
                 'web_form' => 'Formulario Web / Catálogo',
                 'whatsapp' => 'WhatsApp Directo',
+                'instagram' => 'Instagram',
+                'messenger' => 'Messenger',
                 'manual' => 'Manual (Agente)',
                 default => ucfirst($source ?? 'Desconocido'),
             })->toArray(),

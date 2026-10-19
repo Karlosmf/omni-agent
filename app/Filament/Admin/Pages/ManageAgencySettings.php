@@ -442,6 +442,14 @@ class ManageAgencySettings extends Page implements HasForms
                                         Toggle::make('auto_assign_leads')
                                             ->label('Asignar automáticamente los leads nuevos')
                                             ->helperText('Cada lead nuevo va al vendedor con menos leads sin contactar. Si está apagado, los leads sin asignar los ve todo el equipo.'),
+                                        TextInput::make('sla_first_response_minutes')
+                                            ->label('Avisar si un cliente urgente espera más de N minutos')
+                                            ->numeric()
+                                            ->integer()
+                                            ->minValue(1)
+                                            ->maxValue(1440)
+                                            ->placeholder('15')
+                                            ->helperText('Aplica a leads calientes o que pidieron hablar con una persona, en WhatsApp, Instagram y Messenger. Vacío = sin aviso.'),
                                     ]),
                                 Section::make('Plan de pagos y recordatorios')
                                     ->description('Etiquetas disponibles: [NOMBRE], [CUOTA], [MONTO], [VENCIMIENTO], [EXPEDIENTE]. Si dejás un texto vacío se usa el predeterminado.')

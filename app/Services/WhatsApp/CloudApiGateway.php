@@ -2,15 +2,39 @@
 
 namespace App\Services\WhatsApp;
 
+use App\Models\ChannelAccount;
 use App\Models\WhatsAppTemplate;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
 class CloudApiGateway implements WhatsAppGateway
 {
+    private ?ChannelAccount $account = null;
+
+    /**
+     * A copy of this gateway that sends from a specific connected number instead of the .env default.
+     */
+    public function forAccount(?ChannelAccount $account): static
+    {
+        $clone = clone $this;
+        $clone->account = $account;
+
+        return $clone;
+    }
+
     public function isConfigured(): bool
     {
-        return filled(config('services.whatsapp.phone_number_id')) && filled(config('services.whatsapp.access_token'));
+        return filled($this->phoneNumberId()) && filled($this->accessToken());
+    }
+
+    private function phoneNumberId(): ?string
+    {
+        return $this->account ? $this->account->external_id : config('services.whatsapp.phone_number_id');
+    }
+
+    private function accessToken(): ?string
+    {
+        return $this->account ? $this->account->access_token : config('services.whatsapp.access_token');
     }
 
     public function sendText(string $to, string $text): string
@@ -51,8 +75,8 @@ class CloudApiGateway implements WhatsAppGateway
 
         $version = config('services.whatsapp.graph_version');
         $response = Http::timeout(15)
-            ->withToken(config('services.whatsapp.access_token'))
-            ->post(rtrim((string) config('services.whatsapp.graph_url'), '/')."/{$version}/".config('services.whatsapp.phone_number_id').'/messages', $payload);
+            ->withToken($this->accessToken())
+            ->post(rtrim((string) config('services.whatsapp.graph_url'), '/')."/{$version}/".$this->phoneNumberId().'/messages', $payload);
 
         if ($response->failed()) {
             throw new RuntimeException('WhatsApp rechazó el mensaje: '.($response->json('error.message') ?? $response->status()));

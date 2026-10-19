@@ -22,3 +22,4 @@ Schedule::command('queue:work --stop-when-empty --max-time=50 --tries=3')
     ->withoutOverlapping(5);
 Schedule::command('omni:installment-reminders')->dailyAt('09:00');
 Schedule::command('omni:run-follow-ups')->hourly();
+Schedule::command('omni:check-sla')->everyFiveMinutes();

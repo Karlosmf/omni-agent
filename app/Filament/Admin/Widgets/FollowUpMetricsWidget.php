@@ -23,10 +23,11 @@ class FollowUpMetricsWidget extends StatsOverviewWidget
     {
         $since = now()->subDays(30);
 
-        $contacted = Lead::whereNotNull('last_contacted_at')->where('created_at', '>=', $since)->get(['created_at', 'last_contacted_at']);
+        $contacted = Lead::where(fn ($q) => $q->whereNotNull('first_response_at')->orWhereNotNull('last_contacted_at'))
+            ->where('created_at', '>=', $since)->get(['created_at', 'first_response_at', 'last_contacted_at']);
         $avgMinutes = $contacted->isEmpty()
             ? null
-            : (int) round($contacted->avg(fn (Lead $lead) => $lead->created_at->diffInMinutes($lead->last_contacted_at, true)));
+            : (int) round($contacted->avg(fn (Lead $lead) => $lead->created_at->diffInMinutes($lead->first_response_at ?? $lead->last_contacted_at, true)));
 
         $sent = Booking::whereHas('activities', fn ($q) => $q->where('type', 'email_sent'))
             ->whereIn('status', [BookingStatus::Presupuesto, BookingStatus::Senado, BookingStatus::Emitido])

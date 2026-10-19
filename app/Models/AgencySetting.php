@@ -59,6 +59,7 @@ class AgencySetting extends Model
         'default_rate_source',
         'file_number_prefix',
         'auto_assign_leads',
+        'sla_first_response_minutes',
         'unsplash_access_key',
         'pexels_api_key',
         'installments_last_due_days_before_trip',

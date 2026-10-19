@@ -38,6 +38,13 @@ return [
         'graph_url' => env('WHATSAPP_GRAPH_URL', 'https://graph.facebook.com'),
     ],
 
+    // Instagram DMs and Facebook Messenger. Per-account tokens/secrets are stored (encrypted) in channel_accounts;
+    // these are optional app-wide fallbacks for the webhook handshake and signature.
+    'meta' => [
+        'app_secret' => env('META_APP_SECRET'),
+        'verify_token' => env('META_VERIFY_TOKEN'),
+    ],
+
     // Optional bearer token for POST /api/leads. Empty keeps the endpoint open (web forms, integrations).
     'leads_api' => [
         'token' => env('LEADS_API_TOKEN'),

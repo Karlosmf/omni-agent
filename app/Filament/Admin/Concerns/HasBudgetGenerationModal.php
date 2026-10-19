@@ -8,6 +8,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
@@ -25,9 +26,10 @@ class HasBudgetGenerationModal
      *
      * @return array<mixed>
      */
-    public static function schema(?TravelPackage $package = null): array
+    public static function schema(?TravelPackage $package = null, bool $withLeadDetails = false): array
     {
         return [
+            ...($withLeadDetails ? self::leadDetails() : []),
             Section::make('Datos del viaje')
                 ->schema([
                     Grid::make(2)
@@ -71,14 +73,14 @@ class HasBudgetGenerationModal
                                 ->numeric()
                                 ->prefix('$')
                                 ->default($package?->price_from)
-                                ->required()
+                                ->required($package !== null)
                                 ->helperText('Precio por persona/unidad según la base elegida.'),
 
                             Select::make('basis_override')
                                 ->label('Base del Precio')
                                 ->options(PriceBasis::toOptions())
                                 ->default($package?->price_basis?->value ?? PriceBasis::PorPersona->value)
-                                ->required()
+                                ->required($package !== null)
                                 ->live()
                                 ->helperText('Define cómo se multiplica el precio según los pasajeros.'),
                         ]),
@@ -130,6 +132,27 @@ class HasBudgetGenerationModal
 
                             return '$ '.number_format($total, 2, ',', '.');
                         }),
+                ]),
+        ];
+    }
+
+    /**
+     * Fields a conversation can fill in: who travels, where, for how long. Filled by LeadBookingDraftService.
+     *
+     * @return array<mixed>
+     */
+    private static function leadDetails(): array
+    {
+        return [
+            Section::make('Datos tomados de la conversación')
+                ->description('Revisalos antes de crear el expediente: la IA los leyó del chat y puede equivocarse.')
+                ->schema([
+                    Grid::make(2)->schema([
+                        TextInput::make('holder_name')->label('Titular')->maxLength(255),
+                        TextInput::make('destination')->label('Destino')->maxLength(255),
+                        TextInput::make('nights')->label('Noches')->numeric()->minValue(1),
+                    ]),
+                    Textarea::make('notes')->label('Notas internas')->rows(2),
                 ]),
         ];
     }

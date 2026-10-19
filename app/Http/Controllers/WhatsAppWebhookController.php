@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Channel;
 use App\Jobs\ProcessIncomingWhatsApp;
 use App\Models\Message;
+use App\Support\MetaWebhook;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -14,9 +16,7 @@ class WhatsAppWebhookController extends Controller
      */
     public function verify(Request $request): Response
     {
-        $expected = (string) config('services.whatsapp.verify_token');
-
-        if ($expected !== '' && $request->query('hub_mode') === 'subscribe' && hash_equals($expected, (string) $request->query('hub_verify_token'))) {
+        if (MetaWebhook::isValidHandshake($request, config('services.whatsapp.verify_token'), [Channel::WhatsApp])) {
             return response((string) $request->query('hub_challenge'), 200)->header('Content-Type', 'text/plain');
         }
 
@@ -38,7 +38,7 @@ class WhatsAppWebhookController extends Controller
                 $names = collect($value['contacts'] ?? [])->mapWithKeys(fn ($c) => [$c['wa_id'] ?? '' => $c['profile']['name'] ?? null]);
 
                 foreach ((array) ($value['messages'] ?? []) as $message) {
-                    ProcessIncomingWhatsApp::dispatch($message, $names[$message['from'] ?? ''] ?? null);
+                    ProcessIncomingWhatsApp::dispatch($message, $names[$message['from'] ?? ''] ?? null, $value['metadata']['phone_number_id'] ?? null);
                 }
 
                 foreach ((array) ($value['statuses'] ?? []) as $status) {
@@ -52,13 +52,6 @@ class WhatsAppWebhookController extends Controller
 
     private function hasValidSignature(Request $request): bool
     {
-        $secret = (string) config('services.whatsapp.app_secret');
-        $header = (string) $request->header('X-Hub-Signature-256');
-
-        if ($secret === '' || ! str_starts_with($header, 'sha256=')) {
-            return false;
-        }
-
-        return hash_equals('sha256='.hash_hmac('sha256', $request->getContent(), $secret), $header);
+        return MetaWebhook::hasValidSignature($request, MetaWebhook::secretsFor(config('services.whatsapp.app_secret'), [Channel::WhatsApp]));
     }
 }

@@ -25,10 +25,10 @@ class ProcessIncomingWhatsApp implements ShouldQueue
     /**
      * @param  array<string, mixed>  $message
      */
-    public function __construct(public array $message, public ?string $profileName = null) {}
+    public function __construct(public array $message, public ?string $profileName = null, public ?string $phoneNumberId = null) {}
 
     public function handle(WhatsAppConversationService $conversations): void
     {
-        $conversations->receive($this->message, $this->profileName);
+        $conversations->receive($this->message, $this->profileName, $this->phoneNumberId);
     }
 }

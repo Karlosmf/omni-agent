@@ -2,16 +2,14 @@
 
 namespace App\Filament\Admin\Resources\Leads\Tables;
 
-use App\Enums\BookingStatus;
+use App\Actions\Leads\CreateBookingFromLeadAction;
 use App\Enums\LeadStatus;
-use App\Enums\PriceBasis;
 use App\Filament\Admin\Concerns\HasBudgetGenerationModal;
 use App\Filament\Admin\Resources\Bookings\BookingResource;
 use App\Filament\Admin\Resources\Customers\CustomerResource;
+use App\Filament\Admin\Resources\Leads\Pages\EditLead;
 use App\Filament\Exporters\LeadExporter;
-use App\Models\Booking;
 use App\Models\Lead;
-use App\Services\BudgetGenerationService;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
@@ -123,39 +121,10 @@ class LeadsTable
                         ->label('Crear Expediente')
                         ->icon('heroicon-o-folder-plus')
                         ->color('primary')
-                        ->form(fn (Lead $record): array => HasBudgetGenerationModal::schema($record->travelPackage))
-                        ->fillForm(fn (Lead $record): array => [
-                            'adults' => $record->ai_data['pasajeros'] ?? 2,
-                            'children' => [],
-                        ])
+                        ->form(fn (Lead $record): array => HasBudgetGenerationModal::schema($record->travelPackage, withLeadDetails: true))
+                        ->fillForm(fn (Lead $record): array => EditLead::bookingFormDefaults($record))
                         ->action(function (Lead $record, array $data) {
-                            if ($record->travelPackage && $record->customer) {
-                                $service = app(BudgetGenerationService::class);
-                                $booking = $service->clonePackageToBudget(
-                                    $record->travelPackage,
-                                    $record->customer,
-                                    $record->id,
-                                    $data['travel_date'] ?? null,
-                                    null,
-                                    isset($data['price_override']) ? (float) $data['price_override'] : null,
-                                    PriceBasis::tryFrom($data['basis_override'] ?? '') ?: null,
-                                    (int) ($data['adults'] ?? 1),
-                                    $data['children'] ?? [],
-                                );
-                            } else {
-                                $effectivePassengers = ((int) ($data['adults'] ?? 1)) + count($data['children'] ?? []);
-                                $booking = Booking::create([
-                                    'lead_id' => $record->id,
-                                    'customer_id' => $record->customer_id,
-                                    'holder_name' => $record->customer?->name ?? 'A definir',
-                                    'destination' => $record->ai_data['destino'] ?? null,
-                                    'passengers' => $effectivePassengers,
-                                    'status' => BookingStatus::Borrador,
-                                    'travel_date' => $data['travel_date'] ?? now()->addMonths(1),
-                                    'valid_until' => now()->addDays(7),
-                                ]);
-                            }
-                            $record->update(['status' => LeadStatus::Closed]);
+                            $booking = app(CreateBookingFromLeadAction::class)->execute($record, $data);
 
                             return redirect()->to(BookingResource::getUrl('edit', ['record' => $booking->id]));
                         }),

@@ -48,6 +48,8 @@ class LeadEnrichmentService
 
         $lead->update($update);
 
+        app(CustomerMergeService::class)->adoptContact($lead, $extraction['telefono'] ?? null, $extraction['email'] ?? null);
+
         return $lead;
     }
 

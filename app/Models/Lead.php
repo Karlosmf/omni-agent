@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Channel;
 use App\Enums\LeadStatus;
 use App\Enums\LeadTemperature;
 use App\Observers\LeadObserver;
@@ -37,6 +38,13 @@ class Lead extends Model
         'ai_paused',
         'whatsapp_last_inbound_at',
         'unread_count',
+        'channel',
+        'channel_user_id',
+        'channel_account_id',
+        'last_inbound_at',
+        'first_response_at',
+        'sla_alerted_at',
+        'attribution',
     ];
 
     protected $casts = [
@@ -48,6 +56,10 @@ class Lead extends Model
         'next_follow_up_at' => 'datetime',
         'ai_paused' => 'boolean',
         'whatsapp_last_inbound_at' => 'datetime',
+        'last_inbound_at' => 'datetime',
+        'first_response_at' => 'datetime',
+        'sla_alerted_at' => 'datetime',
+        'attribution' => 'array',
     ];
 
     public function customer(): BelongsTo
@@ -70,12 +82,34 @@ class Lead extends Model
         return $this->hasMany(Message::class);
     }
 
+    public function channelAccount(): BelongsTo
+    {
+        return $this->belongsTo(ChannelAccount::class);
+    }
+
     /**
-     * WhatsApp only allows free-form replies within 24 hours of the customer's last message.
+     * The channel this conversation lives in. Leads created before channels existed fall back to their source.
      */
+    public function conversationChannel(): Channel
+    {
+        return Channel::tryFrom((string) ($this->channel ?? $this->source)) ?? Channel::Web;
+    }
+
+    /**
+     * Meta only allows free-form replies within 24 hours of the customer's last message.
+     * WhatsApp keeps its own legacy column; the social channels use last_inbound_at.
+     */
+    public function isInsideReplyWindow(): bool
+    {
+        $channel = $this->conversationChannel();
+        $lastInbound = $channel === Channel::WhatsApp ? $this->whatsapp_last_inbound_at : $this->last_inbound_at;
+
+        return $lastInbound?->gt(now()->subHours($channel->windowHours())) ?? false;
+    }
+
     public function isInsideWhatsAppWindow(): bool
     {
-        return $this->whatsapp_last_inbound_at?->gt(now()->subHours(24)) ?? false;
+        return $this->isInsideReplyWindow();
     }
 
     public function travelPackage(): BelongsTo

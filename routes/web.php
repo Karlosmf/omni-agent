@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MetaSocialWebhookController;
 use App\Http\Controllers\PublicBookingController;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\WhatsAppWebhookController;
@@ -36,4 +37,6 @@ Route::middleware('auth')->group(function () {
 
 // WhatsApp Cloud API webhook (no CSRF: authenticated by Meta's HMAC signature).
 Route::get('/webhooks/whatsapp', [WhatsAppWebhookController::class, 'verify']);
+Route::get('/webhooks/meta', [MetaSocialWebhookController::class, 'verify']);
+Route::post('/webhooks/meta', [MetaSocialWebhookController::class, 'receive'])->middleware('throttle:300,1')->name('webhooks.meta');
 Route::post('/webhooks/whatsapp', [WhatsAppWebhookController::class, 'receive'])->middleware('throttle:300,1')->name('webhooks.whatsapp');

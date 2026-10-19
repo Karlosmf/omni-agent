@@ -4,6 +4,7 @@
     @php
         $selected = $this->selectedLead();
         $conversations = $this->conversations();
+        $accounts = $this->accounts();
         $templates = \App\Models\WhatsAppTemplate::where('is_active', true)->get();
         $chosenTemplate = $templates->firstWhere('id', $this->templateId);
     @endphp
@@ -11,13 +12,29 @@
     <div wire:poll.5s class="omni-stack">
         @unless ($this->isConfigured())
             <x-filament::section>
-                <p class="omni-text-sm">WhatsApp todavía no está conectado. Completá <code>WHATSAPP_PHONE_NUMBER_ID</code>, <code>WHATSAPP_ACCESS_TOKEN</code>, <code>WHATSAPP_APP_SECRET</code> y <code>WHATSAPP_VERIFY_TOKEN</code> en el <code>.env</code> y registrá este webhook en Meta: <code>{{ url('/webhooks/whatsapp') }}</code></p>
+                <p class="omni-text-sm">Todavía no hay canales conectados. Conectá tus números y cuentas en <strong>Ajustes → Canales de mensajería</strong>. Webhooks para registrar en Meta: WhatsApp <code>{{ url('/webhooks/whatsapp') }}</code> · Instagram y Messenger <code>{{ url('/webhooks/meta') }}</code></p>
             </x-filament::section>
         @endunless
 
         <div class="omni-layout">
             {{-- Conversations --}}
             <x-filament::section>
+                <div class="omni-pills" style="margin-bottom: .5rem;">
+                    <button wire:click="setChannel('all')" type="button" class="omni-pill {{ $this->channel === 'all' ? 'is-active' : '' }}">Todos los canales</button>
+                    @foreach (\App\Enums\Channel::inbox() as $channelOption)
+                        <button wire:click="setChannel('{{ $channelOption->value }}')" type="button" class="omni-pill {{ $this->channel === $channelOption->value ? 'is-active' : '' }}">{{ $channelOption->getLabel() }}</button>
+                    @endforeach
+                </div>
+
+                @if ($accounts->count() > 1)
+                    <select wire:model.live="account" class="omni-input" style="margin-bottom: .5rem;">
+                        <option value="">Todas las cuentas y números</option>
+                        @foreach ($accounts as $accountOption)
+                            <option value="{{ $accountOption->id }}">{{ $accountOption->channel->getLabel() }} · {{ $accountOption->label }}</option>
+                        @endforeach
+                    </select>
+                @endif
+
                 <div class="omni-pills">
                     @foreach (['all' => 'Todas', 'unread' => 'No leídas', 'mine' => 'Mías', 'hot' => 'Urgentes'] as $key => $label)
                         <button wire:click="$set('filter', '{{ $key }}')" type="button" class="omni-pill {{ $this->filter === $key ? 'is-active' : '' }}">{{ $label }}</button>
@@ -30,11 +47,14 @@
                             <button wire:click="open({{ $conversation->id }})" type="button" class="omni-conv {{ $this->lead === $conversation->id ? 'is-selected' : '' }}">
                                 <span style="min-width: 0;">
                                     <span class="omni-ellipsis omni-strong omni-text-sm">{{ $conversation->customer_name ?: $conversation->customer?->name ?: 'Sin nombre' }}</span>
-                                    <span class="omni-ellipsis omni-muted">{{ $conversation->customer?->phone }}</span>
+                                    <span class="omni-ellipsis omni-muted">{{ $conversation->conversationChannel()->getLabel() }}@if ($conversation->channelAccount) · {{ $conversation->channelAccount->label }}@endif @if ($conversation->customer?->phone) · {{ $conversation->customer->phone }}@endif</span>
                                 </span>
                                 <span class="omni-conv-side">
                                     @if ($conversation->unread_count > 0)
                                         <x-filament::badge color="success">{{ $conversation->unread_count }}</x-filament::badge>
+                                    @endif
+                                    @if ($conversation->needs_human_attention && ! $conversation->first_response_at)
+                                        <x-filament::badge color="danger">Esperando</x-filament::badge>
                                     @endif
                                     @if ($conversation->ai_paused)
                                         <x-filament::badge color="gray">IA en pausa</x-filament::badge>
@@ -54,7 +74,7 @@
                     <div class="omni-between" style="margin-bottom: 1rem;">
                         <div>
                             <p class="omni-strong" style="margin: 0;">{{ $selected->customer_name ?: $selected->customer?->name }}</p>
-                            <p class="omni-muted" style="margin: 0;">{{ $selected->customer?->phone }} · {{ $selected->isInsideWhatsAppWindow() ? 'Ventana de 24 h abierta' : 'Fuera de la ventana de 24 h: solo plantillas' }}</p>
+                            <p class="omni-muted" style="margin: 0;">{{ $selected->conversationChannel()->getLabel() }}@if ($selected->channelAccount) ({{ $selected->channelAccount->label }})@endif @if ($selected->customer?->phone) · {{ $selected->customer->phone }}@endif · {{ $selected->isInsideReplyWindow() ? 'Ventana de 24 h abierta' : ($selected->conversationChannel()->isSocial() ? 'Fuera de la ventana de 24 h: no se puede responder' : 'Fuera de la ventana de 24 h: solo plantillas') }}</p>
                         </div>
                         <div class="omni-row">
                             <x-filament::button size="sm" color="gray" wire:click="toggleAi">{{ $selected->ai_paused ? 'Reanudar IA' : 'Pausar IA' }}</x-filament::button>
@@ -77,8 +97,10 @@
                     </div>
 
                     <form wire:submit="send" class="omni-form">
-                        @if ($selected->isInsideWhatsAppWindow())
+                        @if ($selected->isInsideReplyWindow())
                             <textarea wire:model="reply" rows="3" placeholder="Escribí tu respuesta… (al responder vos, la IA se pausa)" class="omni-input"></textarea>
+                        @elseif ($selected->conversationChannel()->isSocial())
+                            <p class="omni-note" style="margin: 0;">Pasaron más de 24 horas desde el último mensaje del cliente. Cuando vuelva a escribir podés responderle desde acá.</p>
                         @else
                             <select wire:model.live="templateId" class="omni-input">
                                 <option value="">Elegí una plantilla aprobada…</option>
@@ -95,7 +117,7 @@
                         @endif
 
                         <div>
-                            <x-filament::button type="submit" icon="heroicon-o-paper-airplane" :disabled="! $this->isConfigured()">Enviar</x-filament::button>
+                            <x-filament::button type="submit" icon="heroicon-o-paper-airplane" :disabled="! $this->isConfigured($selected)">Enviar</x-filament::button>
                         </div>
                     </form>
                 @else

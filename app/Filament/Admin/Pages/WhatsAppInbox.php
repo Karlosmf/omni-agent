@@ -2,10 +2,13 @@
 
 namespace App\Filament\Admin\Pages;
 
+use App\Enums\Channel;
 use App\Enums\LeadTemperature;
 use App\Filament\Admin\Resources\Leads\LeadResource;
+use App\Models\ChannelAccount;
 use App\Models\Lead;
 use App\Models\WhatsAppTemplate;
+use App\Services\WhatsApp\CloudApiGateway;
 use App\Services\WhatsApp\WhatsAppConversationService;
 use App\Services\WhatsApp\WhatsAppGateway;
 use Filament\Notifications\Notification;
@@ -21,9 +24,9 @@ class WhatsAppInbox extends Page
 
     protected static \UnitEnum|string|null $navigationGroup = 'Clientes';
 
-    protected static ?string $navigationLabel = 'Bandeja de WhatsApp';
+    protected static ?string $navigationLabel = 'Bandeja de mensajes';
 
-    protected static ?string $title = 'Bandeja de WhatsApp';
+    protected static ?string $title = 'Bandeja de mensajes';
 
     protected static ?string $slug = 'whatsapp';
 
@@ -36,6 +39,12 @@ class WhatsAppInbox extends Page
 
     #[Url]
     public string $filter = 'all';
+
+    #[Url]
+    public string $channel = 'all';
+
+    #[Url]
+    public ?int $account = null;
 
     public string $reply = '';
 
@@ -56,9 +65,40 @@ class WhatsAppInbox extends Page
         return $unread > 0 ? (string) $unread : null;
     }
 
-    public function isConfigured(): bool
+    /**
+     * Whether replies can go out: for a conversation, its own account; for the page, any channel at all.
+     */
+    public function isConfigured(?Lead $lead = null): bool
     {
-        return app(WhatsAppGateway::class)->isConfigured();
+        if ($lead) {
+            if ($lead->conversationChannel()->isSocial()) {
+                return (bool) $lead->channelAccount?->is_active && filled($lead->channelAccount->access_token);
+            }
+
+            $gateway = app(WhatsAppGateway::class);
+
+            return ($gateway instanceof CloudApiGateway ? $gateway->forAccount($lead->channelAccount) : $gateway)->isConfigured();
+        }
+
+        return app(WhatsAppGateway::class)->isConfigured() || ChannelAccount::where('is_active', true)->exists();
+    }
+
+    /**
+     * @return Collection<int, ChannelAccount>
+     */
+    public function accounts(): Collection
+    {
+        return ChannelAccount::where('is_active', true)
+            ->when($this->channel !== 'all', fn (Builder $q) => $q->where('channel', $this->channel))
+            ->orderBy('channel')->orderBy('label')->get();
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function inboxChannels(): array
+    {
+        return array_map(fn (Channel $c) => $c->value, Channel::inbox());
     }
 
     /**
@@ -66,21 +106,31 @@ class WhatsAppInbox extends Page
      */
     public function conversations(): Collection
     {
+        $channels = Channel::tryFrom($this->channel) ? [$this->channel] : $this->inboxChannels();
+
         return Lead::query()
-            ->whereHas('messages', fn (Builder $q) => $q->where('channel', 'whatsapp'))
-            ->with('customer')
-            ->withMax(['messages as last_message_at' => fn (Builder $q) => $q->where('channel', 'whatsapp')], 'created_at')
+            ->whereHas('messages', fn (Builder $q) => $q->whereIn('channel', $channels))
+            ->with(['customer', 'channelAccount'])
+            ->withMax(['messages as last_message_at' => fn (Builder $q) => $q->whereIn('channel', $channels)], 'created_at')
+            ->when($this->account, fn (Builder $q) => $q->where('channel_account_id', $this->account))
             ->when($this->filter === 'unread', fn (Builder $q) => $q->where('unread_count', '>', 0))
             ->when($this->filter === 'mine', fn (Builder $q) => $q->where('agent_id', auth()->id()))
             ->when($this->filter === 'hot', fn (Builder $q) => $q->where(fn (Builder $w) => $w->where('temperature', LeadTemperature::Hot)->orWhere('needs_human_attention', true)))
+            ->orderByDesc('needs_human_attention')
             ->orderByDesc('last_message_at')
             ->limit(100)
             ->get();
     }
 
+    public function setChannel(string $channel): void
+    {
+        $this->channel = $channel;
+        $this->account = null;
+    }
+
     public function selectedLead(): ?Lead
     {
-        return $this->lead ? Lead::with(['customer', 'messages' => fn ($q) => $q->where('channel', 'whatsapp')->orderBy('id')])->find($this->lead) : null;
+        return $this->lead ? Lead::with(['customer', 'channelAccount', 'messages' => fn ($q) => $q->whereIn('channel', $this->inboxChannels())->orderBy('id')])->find($this->lead) : null;
     }
 
     public function open(int $leadId): void
@@ -100,12 +150,16 @@ class WhatsAppInbox extends Page
         }
 
         try {
-            if ($lead->isInsideWhatsAppWindow()) {
+            if ($lead->isInsideReplyWindow()) {
                 if (trim($this->reply) === '') {
                     return;
                 }
 
                 $conversations->sendAgentReply($lead, auth()->user(), trim($this->reply));
+            } elseif ($lead->conversationChannel()->isSocial()) {
+                Notification::make()->title('Pasaron más de 24 horas')->body('En '.$lead->conversationChannel()->getLabel().' solo se puede responder dentro de las 24 horas del último mensaje del cliente.')->warning()->send();
+
+                return;
             } else {
                 $template = WhatsAppTemplate::where('is_active', true)->find($this->templateId);
 
