@@ -12,10 +12,11 @@ class AgencySettingSeeder extends Seeder
      */
     public function run(): void
     {
-        AgencySetting::updateOrCreate(
+        // firstOrCreate: correr el seeder otra vez nunca pisa lo que la agencia cambió en el panel.
+        AgencySetting::firstOrCreate(
             ['id' => 1],
             [
-                'company_name' => 'Omni-Agent',
+                'company_name' => config('brand.name'),
                 'logotipo_path' => null,
                 'isotipo_path' => null,
 
@@ -26,8 +27,8 @@ class AgencySettingSeeder extends Seeder
                 'gemini_api_key' => null,
 
                 // Frontend Colors
-                'fe_primary_color' => '#1a56db',
-                'fe_secondary_color' => '#7e22ce',
+                'fe_primary_color' => config('brand.colors.frontend_primary'),
+                'fe_secondary_color' => config('brand.colors.frontend_secondary'),
                 'fe_accent_color' => '#f59e0b',
                 'fe_neutral_color' => '#3d4451',
                 'fe_base_100_color' => '#ffffff',
@@ -39,23 +40,34 @@ class AgencySettingSeeder extends Seeder
                 'fe_base_content_color' => '#1f2937',
 
                 // Backend Colors (Filament)
-                'be_primary_color' => '#f59e0b', // Amber por defecto de Omni-Agent
+                'be_primary_color' => config('brand.colors.backend_primary'),
                 'be_success_color' => '#22c55e',
                 'be_warning_color' => '#f59e0b',
                 'be_danger_color' => '#ef4444',
                 'be_info_color' => '#3b82f6',
                 'be_gray_color' => '#71717a',
 
-                'contact_email' => 'info@omniagent.com',
-                'contact_phone' => '+34 900 123 456',
-                'address' => 'Calle Principal 123, Madrid, España',
-                'social_links' => [
-                    ['platform' => 'Instagram', 'url' => 'https://instagram.com/omniagent', 'icon' => 'ph-instagram-logo'],
-                    ['platform' => 'Facebook', 'url' => 'https://facebook.com/omniagent', 'icon' => 'ph-facebook-logo'],
-                    ['platform' => 'WhatsApp', 'url' => 'https://wa.me/34900123456', 'icon' => 'ph-whatsapp-logo'],
-                    ['platform' => 'Email', 'url' => 'mailto:info@omniagent.com', 'icon' => 'ph-envelope'],
-                ],
+                'contact_email' => config('brand.email'),
+                'contact_phone' => config('brand.phone'),
+                'address' => config('brand.address'),
+                'social_links' => $this->socialLinks(),
             ]
         );
+    }
+
+    /**
+     * Solo las redes que la instalación configuró.
+     *
+     * @return list<array{platform: string, url: string, icon: string}>
+     */
+    private function socialLinks(): array
+    {
+        $icons = ['instagram' => 'ph-instagram-logo', 'facebook' => 'ph-facebook-logo', 'whatsapp' => 'ph-whatsapp-logo'];
+
+        return collect($icons)
+            ->filter(fn (string $icon, string $network) => filled(config("brand.social.{$network}")))
+            ->map(fn (string $icon, string $network) => ['platform' => ucfirst($network), 'url' => config("brand.social.{$network}"), 'icon' => $icon])
+            ->values()
+            ->all();
     }
 }

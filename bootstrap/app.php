@@ -17,8 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin*',
             'livewire*',
             'webhooks/*',
+            'cron/run',
         ]);
-        $middleware->validateCsrfTokens(except: ['webhooks/*']);
+        $middleware->validateCsrfTokens(except: ['webhooks/*', 'cron/run']);
         $middleware->alias([
             'role' => CheckRole::class,
         ]);

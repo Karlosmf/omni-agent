@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CronController;
 use App\Http\Controllers\MetaSocialWebhookController;
 use App\Http\Controllers\PublicBookingController;
 use App\Http\Controllers\ReceiptController;
@@ -36,6 +37,8 @@ Route::middleware('auth')->group(function () {
 });
 
 // WhatsApp Cloud API webhook (no CSRF: authenticated by Meta's HMAC signature).
+Route::match(['get', 'post'], '/cron/run', CronController::class)->middleware('throttle:30,1')->name('cron.run');
+
 Route::get('/webhooks/whatsapp', [WhatsAppWebhookController::class, 'verify']);
 Route::get('/webhooks/meta/{token?}', [MetaSocialWebhookController::class, 'verify']);
 Route::post('/webhooks/meta/{token?}', [MetaSocialWebhookController::class, 'receive'])->middleware('throttle:300,1')->name('webhooks.meta');

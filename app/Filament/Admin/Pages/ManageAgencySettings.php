@@ -227,7 +227,7 @@ class ManageAgencySettings extends Page implements HasForms
                                             ->schema([
                                                 TextInput::make('ai_assistant_name')
                                                     ->label('Nombre de la Asistente Virtual')
-                                                    ->placeholder('Ej: Brisa')
+                                                    ->placeholder('Ej: Sol')
                                                     ->required()
                                                     ->columnSpanFull(),
                                                 ToggleButtons::make('ai_provider')

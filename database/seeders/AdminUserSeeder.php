@@ -11,32 +11,15 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
+        // Solo para la demo: la contraseña es aleatoria, usá «Olvidé mi contraseña» o omni:install para entrar.
         // `role` is not mass assignable, so seed with the guard lifted.
         User::unguarded(function () {
             User::updateOrCreate(
-                ['email' => 'admin@admin.com'],
+                ['email' => 'demo@example.com'],
                 [
-                    'name' => 'Administrador',
-                    'password' => Hash::make('admin123'),
+                    'name' => 'Demo',
+                    'password' => Hash::make('demo-'.str()->random(12)),
                     'role' => UserRole::Admin,
-                ]
-            );
-
-            User::updateOrCreate(
-                ['email' => 'belenzorzon@omniagent.com'],
-                [
-                    'name' => 'Belen',
-                    'password' => Hash::make('Agencia843'),
-                    'role' => UserRole::Admin,
-                ]
-            );
-
-            User::updateOrCreate(
-                ['email' => 'nelaflama@omniagent.com'],
-                [
-                    'name' => 'Nela',
-                    'password' => Hash::make('Agencia843'),
-                    'role' => UserRole::Staff,
                 ]
             );
         });

@@ -5,6 +5,9 @@
  * All of them run on shared hosting: one per-minute cron, database queue and cache, no Redis, no daemons.
  */
 return [
+    // Para hostings sin cron: un servicio externo llama a /cron/run?token=… cada minuto. Vacío = ruta apagada.
+    'cron_token' => env('CRON_TOKEN'),
+
     'cron_command' => '* * * * * cd {path} && {php} artisan schedule:run >> /dev/null 2>&1',
 
     'profiles' => [

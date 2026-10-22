@@ -10,6 +10,11 @@ class FinancialAccountSeeder extends Seeder
 {
     public function run(): void
     {
+        // Datos base: si ya existen, no se duplican al volver a instalar.
+        if (FinancialAccount::query()->exists()) {
+            return;
+        }
+
         FinancialAccount::create([
             'name' => 'Caja Pesos',
             'currency' => Currency::ARS,

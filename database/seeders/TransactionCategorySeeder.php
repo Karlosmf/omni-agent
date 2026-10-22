@@ -9,6 +9,11 @@ class TransactionCategorySeeder extends Seeder
 {
     public function run(): void
     {
+        // Datos base: si ya existen, no se duplican al volver a instalar.
+        if (TransactionCategory::query()->exists()) {
+            return;
+        }
+
         // Ingresos
         TransactionCategory::create(['name' => 'Pago de Pasajero', 'type' => 'ingreso', 'is_system' => true]);
         TransactionCategory::create(['name' => 'Devolución de Proveedor', 'type' => 'ingreso', 'is_system' => true]);
