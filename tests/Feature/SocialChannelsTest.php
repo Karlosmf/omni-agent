@@ -7,6 +7,7 @@ use App\Enums\Channel;
 use App\Enums\LeadStatus;
 use App\Enums\LeadTemperature;
 use App\Enums\UserRole;
+use App\Exceptions\MetaApiException;
 use App\Filament\Admin\Pages\WhatsAppInbox;
 use App\Filament\Admin\Resources\ChannelAccounts\ChannelAccountResource;
 use App\Filament\Admin\Resources\ChannelAccounts\Pages\ManageChannelAccounts;
@@ -23,6 +24,7 @@ use App\Models\User;
 use App\Models\WhatsAppTemplate;
 use App\Services\AiConciergeService;
 use App\Services\Channels\InboundMessage;
+use App\Services\Channels\MetaSocialGateway;
 use App\Services\CustomerMergeService;
 use App\Services\LeadBookingDraftService;
 use App\Services\LeadEnrichmentService;
@@ -514,4 +516,76 @@ test('a conversation that was already qualified does not hand off again on the n
     $service->receiveSocial(socialInbound(Channel::Instagram, 'IG1', 'a2', 'una consulta más'));
 
     expect($this->admin->notifications()->count())->toBe(1)->and($lead->fresh()->ai_paused)->toBeFalse();
+});
+
+test('instagram login accounts send through graph.instagram.com with their own token', function () {
+    config(['services.meta.instagram_graph_url' => 'https://ig.example.test', 'services.meta.graph_version' => 'v99.0']);
+    Http::fake(['ig.example.test/*' => Http::response(['message_id' => 'mid.IG'])]);
+    $account = ChannelAccount::factory()->create(['channel' => Channel::Instagram, 'external_id' => 'IG9', 'auth_type' => 'instagram_login', 'access_token' => 'igtoken']);
+
+    expect(app(MetaSocialGateway::class)->sendText($account, 'U1', 'Hola'))->toBe('mid.IG');
+
+    Http::assertSent(fn ($r) => $r->url() === 'https://ig.example.test/v99.0/IG9/messages' && $r->hasHeader('Authorization', 'Bearer igtoken'));
+});
+
+test('long replies are split by bytes and stripped of markdown', function () {
+    $chunks = MetaSocialGateway::chunks(str_repeat('áéí ', 400), 1000);
+
+    expect($chunks)->each(fn ($c) => expect(strlen($c->value))->toBeLessThanOrEqual(1000))
+        ->and(count($chunks))->toBeGreaterThan(1)
+        ->and(MetaSocialGateway::plainText("## Hola\n**Salta** y *Jujuy*"))->toBe("Hola\nSalta y Jujuy");
+
+    Http::fake(['graph.example.test/*' => Http::response(['message_id' => 'm'])]);
+    app(MetaSocialGateway::class)->sendText($this->account, 'U1', str_repeat('palabra ', 300));
+    Http::assertSentCount(3);
+});
+
+test('an expired token pauses the account, warns the admins once and a new token reconnects it', function () {
+    Http::fake(['graph.example.test/*' => Http::response(['error' => ['message' => 'Session expired', 'code' => 190]], 400)]);
+    $gateway = app(MetaSocialGateway::class);
+
+    expect(fn () => $gateway->sendText($this->account, 'U1', 'Hola'))->toThrow(MetaApiException::class);
+    expect(fn () => $gateway->sendText($this->account->fresh(), 'U1', 'Hola'))->toThrow(MetaApiException::class, 'reconectarse');
+
+    expect($this->account->fresh()->needsReconnect())->toBeTrue()->and($this->admin->notifications()->count())->toBe(1);
+    Http::assertSentCount(1);
+
+    $this->account->update(['access_token' => 'nuevo']);
+
+    expect($this->account->fresh()->needsReconnect())->toBeFalse();
+});
+
+test('a server error is retried and never marks the account as disconnected', function () {
+    Http::fake(['graph.example.test/*' => Http::sequence()->push('', 500)->push(['message_id' => 'ok'])]);
+
+    expect(app(MetaSocialGateway::class)->sendText($this->account, 'U1', 'Hola'))->toBe('ok')
+        ->and($this->account->fresh()->needsReconnect())->toBeFalse();
+});
+
+test('a person may answer after 24 hours with the human agent tag only when the account allows it', function () {
+    fakeAi();
+    fakeGraph();
+    $service = app(WhatsAppConversationService::class);
+    $lead = $service->receiveSocial(socialInbound(Channel::Instagram, 'IG1'));
+    $lead->update(['last_inbound_at' => now()->subHours(30)]);
+
+    expect(fn () => $service->sendAgentReply($lead->fresh(), $this->admin, 'tarde'))->toThrow(RuntimeException::class, '24 horas');
+
+    $this->account->update(['allow_human_agent' => true]);
+    $service->sendAgentReply($lead->fresh(), $this->admin, 'Perdón la demora');
+
+    Http::assertSent(fn ($r) => ($r['tag'] ?? null) === 'HUMAN_AGENT' && $r['messaging_type'] === 'MESSAGE_TAG');
+
+    $lead->update(['last_inbound_at' => now()->subDays(9)]);
+
+    expect(fn () => $service->sendAgentReply($lead->fresh(), $this->admin, 'muy tarde'))->toThrow(RuntimeException::class);
+});
+
+test('with a webhook token configured only the secret url answers', function () {
+    config(['services.meta.webhook_token' => 'abc123']);
+    $url = fn (string $t = '') => '/webhooks/meta'.$t.'?hub_mode=subscribe&hub_verify_token=ig-verify&hub_challenge=77';
+
+    $this->get($url())->assertForbidden();
+    $this->get($url('/mal'))->assertForbidden();
+    $this->get($url('/abc123'))->assertOk()->assertSee('77');
 });

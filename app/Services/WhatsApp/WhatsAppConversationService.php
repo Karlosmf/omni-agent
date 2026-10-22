@@ -124,13 +124,15 @@ class WhatsAppConversationService
      */
     public function sendAgentReply(Lead $lead, User $agent, string $text): Message
     {
-        if (! $lead->isInsideReplyWindow()) {
+        $humanAgent = ! $lead->isInsideReplyWindow() && $lead->canReplyAsHumanAgent();
+
+        if (! $humanAgent && ! $lead->isInsideReplyWindow()) {
             $only = $lead->conversationChannel() === Channel::WhatsApp ? ': solo se pueden enviar plantillas aprobadas.' : '.';
 
             throw new \RuntimeException('Pasaron más de 24 horas desde el último mensaje del cliente'.$only);
         }
 
-        $message = $this->deliver($lead, fn (string $to) => $this->sendTextVia($lead, $to, $text), $text, $agent);
+        $message = $this->deliver($lead, fn (string $to) => $this->sendTextVia($lead, $to, $text, $humanAgent), $text, $agent);
         $this->markAttended($lead, $agent);
 
         return $message;
@@ -356,7 +358,7 @@ class WhatsAppConversationService
             : (string) PhoneNumber::toE164($lead->customer?->phone);
     }
 
-    private function sendTextVia(Lead $lead, string $to, string $text): string
+    private function sendTextVia(Lead $lead, string $to, string $text, bool $humanAgent = false): string
     {
         if (! $lead->conversationChannel()->isSocial()) {
             return $this->whatsappGateway($lead)->sendText($to, $text);
@@ -368,7 +370,7 @@ class WhatsAppConversationService
             throw new \RuntimeException('La cuenta de '.$lead->conversationChannel()->getLabel().' de esta conversación no está conectada.');
         }
 
-        return $this->social->sendText($account, $to, $text);
+        return $this->social->sendText($account, $to, $text, $humanAgent);
     }
 
     private function whatsappGateway(Lead $lead): WhatsAppGateway

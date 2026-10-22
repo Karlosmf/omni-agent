@@ -23,6 +23,11 @@ class ChannelAccount extends Model
         'app_secret',
         'verify_token',
         'is_active',
+        'auth_type',
+        'page_id',
+        'status',
+        'last_error',
+        'allow_human_agent',
     ];
 
     protected $hidden = ['access_token', 'app_secret'];
@@ -34,7 +39,29 @@ class ChannelAccount extends Model
             'access_token' => 'encrypted',
             'app_secret' => 'encrypted',
             'is_active' => 'boolean',
+            'allow_human_agent' => 'boolean',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        // A new token is the reconnection: send again right away.
+        static::saving(function (self $account) {
+            if ($account->isDirty('access_token') && ! $account->isDirty('status')) {
+                $account->status = 'connected';
+                $account->last_error = null;
+            }
+        });
+    }
+
+    public function needsReconnect(): bool
+    {
+        return $this->status === 'reconnect_required';
+    }
+
+    public function usesInstagramLogin(): bool
+    {
+        return $this->auth_type === 'instagram_login';
     }
 
     public static function findActive(Channel $channel, string $externalId): ?self

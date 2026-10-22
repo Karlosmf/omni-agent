@@ -44,6 +44,28 @@ enum Channel: string implements HasColor, HasLabel
     }
 
     /**
+     * Largest text a single message may carry, in BYTES (accents and emojis weigh more than one).
+     */
+    public function maxTextBytes(): ?int
+    {
+        return match ($this) {
+            self::Instagram => 1000,
+            self::Messenger => 2000,
+            self::WhatsApp => 4096,
+            self::Web => null,
+        };
+    }
+
+    /**
+     * Days after the customer's last message during which a PERSON (never the AI) may still reply
+     * with Meta's HUMAN_AGENT tag.
+     */
+    public function humanAgentDays(): int
+    {
+        return $this->isSocial() ? 7 : 0;
+    }
+
+    /**
      * Channels that live inside the shared inbox (everything but the website widget).
      *
      * @return list<self>

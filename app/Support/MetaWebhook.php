@@ -3,7 +3,7 @@
 namespace App\Support;
 
 use App\Enums\Channel;
-use App\Models\ChannelAccount;
+use App\Services\Meta\MetaCredentials;
 use Illuminate\Http\Request;
 
 /**
@@ -12,29 +12,19 @@ use Illuminate\Http\Request;
 class MetaWebhook
 {
     /**
-     * Whether the hub.verify_token of the handshake matches the .env token or a connected account's token.
+     * Whether the hub.verify_token of the handshake matches any token the installation accepts.
+     *
+     * @param  list<Channel>  $channels
      */
-    public static function isValidHandshake(Request $request, ?string $envToken, array $channels): bool
+    public static function isValidHandshake(Request $request, array $channels): bool
     {
-        if ($request->query('hub_mode') !== 'subscribe') {
-            return false;
-        }
-
         $given = (string) $request->query('hub_verify_token');
 
-        if ($given === '') {
+        if ($request->query('hub_mode') !== 'subscribe' || $given === '') {
             return false;
         }
 
-        if (filled($envToken) && hash_equals((string) $envToken, $given)) {
-            return true;
-        }
-
-        return ChannelAccount::whereIn('channel', array_map(fn (Channel $c) => $c->value, $channels))
-            ->whereNotNull('verify_token')
-            ->where('is_active', true)
-            ->pluck('verify_token')
-            ->contains(fn (string $token) => hash_equals($token, $given));
+        return collect(app(MetaCredentials::class)->verifyTokens($channels))->contains(fn (string $token) => hash_equals($token, $given));
     }
 
     /**
@@ -57,19 +47,5 @@ class MetaWebhook
         }
 
         return false;
-    }
-
-    /**
-     * Secrets that may have signed a request for the given channels: the app-wide one plus each connected account's.
-     *
-     * @param  list<Channel>  $channels
-     * @return list<string>
-     */
-    public static function secretsFor(?string $envSecret, array $channels): array
-    {
-        $accounts = ChannelAccount::whereIn('channel', array_map(fn (Channel $c) => $c->value, $channels))
-            ->where('is_active', true)->get()->pluck('app_secret')->all();
-
-        return array_values(array_filter([$envSecret, ...$accounts]));
     }
 }

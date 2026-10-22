@@ -4,6 +4,7 @@ namespace App\Services\WhatsApp;
 
 use App\Models\ChannelAccount;
 use App\Models\WhatsAppTemplate;
+use App\Services\Meta\MetaCredentials;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
@@ -29,12 +30,12 @@ class CloudApiGateway implements WhatsAppGateway
 
     private function phoneNumberId(): ?string
     {
-        return $this->account ? $this->account->external_id : config('services.whatsapp.phone_number_id');
+        return app(MetaCredentials::class)->whatsappPhoneNumberId($this->account);
     }
 
     private function accessToken(): ?string
     {
-        return $this->account ? $this->account->access_token : config('services.whatsapp.access_token');
+        return app(MetaCredentials::class)->whatsappToken($this->account);
     }
 
     public function sendText(string $to, string $text): string
@@ -73,10 +74,10 @@ class CloudApiGateway implements WhatsAppGateway
             throw new RuntimeException('WhatsApp no está configurado: completá las variables WHATSAPP_* en el .env.');
         }
 
-        $version = config('services.whatsapp.graph_version');
+        $meta = app(MetaCredentials::class);
         $response = Http::timeout(15)
             ->withToken($this->accessToken())
-            ->post(rtrim((string) config('services.whatsapp.graph_url'), '/')."/{$version}/".$this->phoneNumberId().'/messages', $payload);
+            ->post($meta->graphUrl().'/'.$meta->graphVersion().'/'.$this->phoneNumberId().'/messages', $payload);
 
         if ($response->failed()) {
             throw new RuntimeException('WhatsApp rechazó el mensaje: '.($response->json('error.message') ?? $response->status()));

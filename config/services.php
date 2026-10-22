@@ -43,6 +43,11 @@ return [
     'meta' => [
         'app_secret' => env('META_APP_SECRET'),
         'verify_token' => env('META_VERIFY_TOKEN'),
+        'app_id' => env('META_APP_ID'),
+        // Optional: when set, the webhook only answers at /webhooks/meta/{token}.
+        'webhook_token' => env('META_WEBHOOK_TOKEN'),
+        'graph_version' => env('META_GRAPH_VERSION', env('WHATSAPP_GRAPH_VERSION', 'v21.0')),
+        'instagram_graph_url' => env('META_INSTAGRAM_GRAPH_URL', 'https://graph.instagram.com'),
     ],
 
     // Optional bearer token for POST /api/leads. Empty keeps the endpoint open (web forms, integrations).

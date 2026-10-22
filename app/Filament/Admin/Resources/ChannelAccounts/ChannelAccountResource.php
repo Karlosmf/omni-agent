@@ -10,10 +10,12 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
@@ -44,6 +46,17 @@ class ChannelAccountResource extends Resource
     {
         return $schema
             ->components([
+                Section::make('Dónde pegar en Meta')
+                    ->description('Cada agencia usa su propia app de Meta: estas son las dos direcciones y la clave que Meta te pide al registrar el webhook.')
+                    ->schema([
+                        Placeholder::make('webhook_url')
+                            ->label('URL de devolución de llamada (Instagram y Messenger)')
+                            ->content(fn () => url('/webhooks/meta'.(filled(config('services.meta.webhook_token')) ? '/'.config('services.meta.webhook_token') : ''))),
+                        Placeholder::make('whatsapp_webhook_url')
+                            ->label('URL de devolución de llamada (WhatsApp)')
+                            ->content(fn () => url('/webhooks/whatsapp')),
+                    ])
+                    ->columnSpanFull(),
                 Select::make('channel')
                     ->label('Canal')
                     ->options(collect(Channel::inbox())->mapWithKeys(fn (Channel $c) => [$c->value => $c->getLabel()])->all())
@@ -62,6 +75,24 @@ class ChannelAccountResource extends Resource
                     ->helperText('Lo encontrás en el panel de tu app de Meta. Es un número largo, no el teléfono.')
                     ->required()
                     ->unique(ignoreRecord: true, modifyRuleUsing: fn ($rule, $get) => $rule->where('channel', $get('channel'))),
+                Select::make('auth_type')
+                    ->label('Cómo se conectó')
+                    ->options([
+                        'facebook_login' => 'Página de Facebook (Messenger, o Instagram vinculado a la Página)',
+                        'instagram_login' => 'Inicio de sesión de Instagram (token de Instagram)',
+                    ])
+                    ->default('facebook_login')
+                    ->helperText('Define a qué servidor de Meta se envían las respuestas. Con token de Instagram elegí la segunda.')
+                    ->visible(fn ($get) => $get('channel') === 'instagram')
+                    ->required(),
+                TextInput::make('page_id')
+                    ->label('ID de la página de Facebook (opcional)')
+                    ->helperText('Solo si Instagram está vinculado a una Página y respondés por ella.')
+                    ->visible(fn ($get) => in_array($get('channel'), ['instagram', 'messenger'], true)),
+                Toggle::make('allow_human_agent')
+                    ->label('Permitir que una persona responda hasta 7 días después')
+                    ->helperText('Usa la etiqueta «Agente humano» de Meta. La IA nunca la usa. Activala solo si tu app tiene ese permiso.')
+                    ->visible(fn ($get) => in_array($get('channel'), ['instagram', 'messenger'], true)),
                 TextInput::make('access_token')
                     ->label('Token de acceso')
                     ->password()
@@ -91,6 +122,10 @@ class ChannelAccountResource extends Resource
                 TextColumn::make('channel')->label('Canal')->badge(),
                 TextColumn::make('label')->label('Nombre')->searchable(),
                 TextColumn::make('external_id')->label('ID en Meta')->copyable(),
+                TextColumn::make('status')->label('Estado')->badge()
+                    ->formatStateUsing(fn (string $state) => $state === 'reconnect_required' ? 'Reconectar' : 'Conectada')
+                    ->color(fn (string $state) => $state === 'reconnect_required' ? 'danger' : 'success')
+                    ->tooltip(fn (ChannelAccount $record) => $record->last_error),
                 IconColumn::make('is_active')->label('Activa')->boolean(),
             ])
             ->recordActions([

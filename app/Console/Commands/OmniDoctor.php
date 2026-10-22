@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Enums\RateSource;
+use App\Models\ChannelAccount;
 use App\Services\CurrencyService;
 use App\Support\CronHeartbeat;
 use Illuminate\Console\Command;
@@ -27,6 +28,7 @@ class OmniDoctor extends Command
             'Modo producción' => [app()->environment(['local', 'testing']) || ! config('app.debug'), 'APP_DEBUG está en true: mostraría errores y datos internos. Poné APP_DEBUG=false en el .env.'],
             'Cron activo' => $this->cron(),
             'Trabajos fallidos' => $this->failedJobs(),
+            'Canales de mensajería' => $this->channels(),
             'Cotización del dólar' => [$currencies->getDollarRate(RateSource::Oficial) !== null, 'No hay cotización guardada ni DolarAPI responde: se tendrá que cargar a mano.'],
         ];
 
@@ -75,6 +77,16 @@ class OmniDoctor extends Command
         $example = str_replace(['{path}', '{php}'], [base_path(), $profile['php_binary']], config('omni-hosting.cron_command'));
 
         return [! CronHeartbeat::isStale(), 'No hay latido en los últimos '.CronHeartbeat::STALE_AFTER_MINUTES." minutos. Creá este cron en el panel del hosting: {$example}"];
+    }
+
+    /**
+     * @return array{0: bool, 1: string}
+     */
+    protected function channels(): array
+    {
+        $broken = ChannelAccount::where('is_active', true)->where('status', 'reconnect_required')->pluck('label');
+
+        return [$broken->isEmpty(), 'Hay que reconectar: '.$broken->implode(', ').'. Cargá un token nuevo en Canales de mensajería.'];
     }
 
     /**

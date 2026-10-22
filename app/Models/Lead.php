@@ -107,6 +107,19 @@ class Lead extends Model
         return $lastInbound?->gt(now()->subHours($channel->windowHours())) ?? false;
     }
 
+    /**
+     * Past 24 h a person (never the AI) may still answer on Instagram/Messenger for a few days
+     * with Meta's HUMAN_AGENT tag, if the account allows it.
+     */
+    public function canReplyAsHumanAgent(): bool
+    {
+        $channel = $this->conversationChannel();
+
+        return $channel->isSocial()
+            && (bool) $this->channelAccount?->allow_human_agent
+            && ($this->last_inbound_at?->gt(now()->subDays($channel->humanAgentDays())) ?? false);
+    }
+
     public function isInsideWhatsAppWindow(): bool
     {
         return $this->isInsideReplyWindow();

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\Channel;
 use App\Jobs\ProcessIncomingWhatsApp;
 use App\Models\Message;
+use App\Services\Meta\MetaCredentials;
 use App\Support\MetaWebhook;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -16,7 +17,7 @@ class WhatsAppWebhookController extends Controller
      */
     public function verify(Request $request): Response
     {
-        if (MetaWebhook::isValidHandshake($request, config('services.whatsapp.verify_token'), [Channel::WhatsApp])) {
+        if (MetaWebhook::isValidHandshake($request, [Channel::WhatsApp])) {
             return response((string) $request->query('hub_challenge'), 200)->header('Content-Type', 'text/plain');
         }
 
@@ -52,6 +53,6 @@ class WhatsAppWebhookController extends Controller
 
     private function hasValidSignature(Request $request): bool
     {
-        return MetaWebhook::hasValidSignature($request, MetaWebhook::secretsFor(config('services.whatsapp.app_secret'), [Channel::WhatsApp]));
+        return MetaWebhook::hasValidSignature($request, app(MetaCredentials::class)->webhookSecrets([Channel::WhatsApp]));
     }
 }

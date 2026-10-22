@@ -6,6 +6,7 @@ use App\Enums\Channel;
 use App\Jobs\ProcessIncomingSocialMessage;
 use App\Models\Message;
 use App\Services\Channels\InboundMessage;
+use App\Services\Meta\MetaCredentials;
 use App\Support\MetaWebhook;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -17,18 +18,26 @@ class MetaSocialWebhookController extends Controller
 {
     private const CHANNELS = [Channel::Instagram, Channel::Messenger];
 
-    public function verify(Request $request): Response
+    public function verify(Request $request, ?string $token = null): Response
     {
-        if (MetaWebhook::isValidHandshake($request, config('services.meta.verify_token'), self::CHANNELS)) {
+        if (! $this->hasValidPathToken($token)) {
+            return response('Forbidden', 403);
+        }
+
+        if (MetaWebhook::isValidHandshake($request, self::CHANNELS)) {
             return response((string) $request->query('hub_challenge'), 200)->header('Content-Type', 'text/plain');
         }
 
         return response('Forbidden', 403);
     }
 
-    public function receive(Request $request): Response
+    public function receive(Request $request, ?string $token = null): Response
     {
-        if (! MetaWebhook::hasValidSignature($request, MetaWebhook::secretsFor(config('services.meta.app_secret'), self::CHANNELS))) {
+        if (! $this->hasValidPathToken($token)) {
+            return response('Forbidden', 403);
+        }
+
+        if (! MetaWebhook::hasValidSignature($request, app(MetaCredentials::class)->webhookSecrets(self::CHANNELS))) {
             return response('Invalid signature', 403);
         }
 
@@ -41,6 +50,16 @@ class MetaSocialWebhookController extends Controller
         }
 
         return response('OK', 200);
+    }
+
+    /**
+     * With META_WEBHOOK_TOKEN set, the URL itself is a second secret on top of the signature.
+     */
+    private function hasValidPathToken(?string $token): bool
+    {
+        $expected = config('services.meta.webhook_token');
+
+        return blank($expected) || hash_equals((string) $expected, (string) $token);
     }
 
     /**
