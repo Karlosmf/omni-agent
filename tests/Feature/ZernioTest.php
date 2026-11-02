@@ -18,6 +18,7 @@ beforeEach(function () {
         'services.zernio.whatsapp_account_id' => 'acc_luopan',
         'services.zernio.webhook_secret' => 'zernio-secret',
         'services.zernio.base_url' => 'https://zernio.example.test/api/v1',
+        'services.zernio.test_phones' => null,
     ]);
 });
 
@@ -136,4 +137,41 @@ test('the whatsapp provider is chosen in the config', function () {
     app()->forgetInstance(WhatsAppGateway::class);
     config(['services.whatsapp.provider' => 'cloud']);
     expect(app(WhatsAppGateway::class))->toBeInstanceOf(CloudApiGateway::class);
+});
+
+test('in test mode only the listed numbers reach the inbox', function () {
+    Queue::fake();
+    config(['services.zernio.test_phones' => '+54 9 11 6666-0000, 5491177770000']);
+
+    zernioPost(zernioIncoming())->assertOk();
+    Queue::assertNothingPushed();
+    expect(ZernioConversation::count())->toBe(0);
+
+    $allowed = zernioIncoming();
+    $allowed['message']['sender']['phoneNumber'] = '+5491166660000';
+    zernioPost($allowed)->assertOk();
+
+    Queue::assertPushed(ProcessIncomingWhatsApp::class, fn ($job) => $job->message['from'] === '5491166660000');
+});
+
+test('polling brings the new messages of the test numbers and skips the older ones', function () {
+    Queue::fake();
+    config(['services.zernio.test_phones' => '+5493482518081']);
+    $now = now()->toIso8601String();
+    Http::fake([
+        'zernio.example.test/api/v1/inbox/conversations?*' => Http::response(['data' => [
+            ['id' => 'conv_socio', 'participantId' => '5493482518081', 'participantName' => 'Socio', 'updatedTime' => $now],
+            ['id' => 'conv_otro', 'participantId' => '5491100000000', 'updatedTime' => $now],
+        ]]),
+        'zernio.example.test/api/v1/inbox/conversations/conv_socio/messages*' => Http::response(['messages' => [
+            ['id' => 'wamid.NEW', 'direction' => 'incoming', 'message' => 'Hola, quiero ir a Salta', 'createdAt' => $now, 'senderPhoneNumber' => '+5493482518081', 'metadata' => []],
+            ['id' => 'wamid.OLD', 'direction' => 'incoming', 'message' => 'Viejo', 'createdAt' => now()->subDay()->toIso8601String(), 'metadata' => []],
+        ]]),
+    ]);
+
+    $this->artisan('zernio:poll', ['--once' => true])->assertSuccessful();
+
+    Queue::assertPushed(ProcessIncomingWhatsApp::class, 1);
+    Queue::assertPushed(ProcessIncomingWhatsApp::class, fn ($job) => $job->message['id'] === 'wamid.NEW' && $job->message['text']['body'] === 'Hola, quiero ir a Salta');
+    Http::assertNotSent(fn ($request) => str_contains($request->url(), 'conv_otro'));
 });

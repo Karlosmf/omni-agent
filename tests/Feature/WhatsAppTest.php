@@ -478,3 +478,14 @@ test('the inbox tells apart the AI, the team and the phone', function () {
         ->call('open', $lead->id)
         ->assertSeeInOrder(['Respuesta de la IA', 'IA', 'Respuesta del panel', 'Equipo', 'Respuesta desde el celular', 'Celular']);
 });
+
+test('a message written on the phone before the conversation started does not pause the AI', function () {
+    $customer = User::factory()->create(['role' => UserRole::Customer, 'phone' => '+5491155551234']);
+    $lead = Lead::factory()->create(['customer_id' => $customer->id, 'source' => 'whatsapp', 'channel' => 'whatsapp', 'ai_paused' => false]);
+
+    $old = businessAppEcho() + ['timestamp' => $lead->created_at->subMinutes(3)->timestamp];
+
+    expect(app(WhatsAppConversationService::class)->receiveBusinessAppEcho($old))->toBeNull()
+        ->and($lead->fresh()->ai_paused)->toBeFalse()
+        ->and($lead->messages()->count())->toBe(0);
+});

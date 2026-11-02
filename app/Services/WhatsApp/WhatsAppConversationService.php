@@ -18,6 +18,7 @@ use App\Services\Channels\MetaSocialGateway;
 use App\Support\PhoneNumber;
 use Filament\Notifications\Notification;
 use Illuminate\Database\UniqueConstraintViolationException;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Throwable;
@@ -91,7 +92,8 @@ class WhatsAppConversationService
                 ->latest('id')->first()
             : null;
 
-        if (! $lead) {
+        // A message written on the phone before this conversation started (e.g. read again when polling) is not a takeover.
+        if (! $lead || (isset($echo['timestamp']) && Carbon::createFromTimestamp((int) $echo['timestamp'])->lt($lead->created_at))) {
             return null;
         }
 

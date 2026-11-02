@@ -47,6 +47,9 @@ return [
         // The secret you set when registering the webhook in Zernio; it signs every event.
         'webhook_secret' => env('ZERNIO_WEBHOOK_SECRET'),
         'base_url' => env('ZERNIO_BASE_URL', 'https://zernio.com/api/v1'),
+        // Test mode: comma-separated numbers. When set, events from any other number are ignored
+        // (useful while testing on a personal number). Leave empty in production.
+        'test_phones' => env('ZERNIO_TEST_PHONES'),
     ],
 
     // Instagram DMs and Facebook Messenger. Per-account tokens/secrets are stored (encrypted) in channel_accounts;
