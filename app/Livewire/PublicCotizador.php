@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Actions\Leads\CaptureLeadAction;
 use App\Enums\UserRole;
 use App\Models\User;
+use App\Support\VisitOrigin;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
@@ -75,6 +76,7 @@ class PublicCotizador extends Component
         ]);
         try {
             $lead = app(CaptureLeadAction::class)->execute([
+                ...VisitOrigin::forLead(),
                 'customer_name' => $this->name,
                 'customer_email' => $this->email,
                 'customer_phone' => $this->phone,

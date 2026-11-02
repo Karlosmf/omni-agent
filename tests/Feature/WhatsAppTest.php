@@ -6,6 +6,7 @@ use App\Enums\LeadStatus;
 use App\Enums\UserRole;
 use App\Filament\Admin\Pages\WhatsAppInbox;
 use App\Jobs\ProcessIncomingWhatsApp;
+use App\Jobs\ProcessWhatsAppBusinessAppEcho;
 use App\Models\Booking;
 use App\Models\Lead;
 use App\Models\Message;
@@ -372,12 +373,12 @@ test('installment reminders also go out by WhatsApp when a template is registere
 
 test('the Cloud API gateway posts to the configured Graph URL with the bearer token', function () {
     Http::fake(['graph.example.test/*' => Http::response(['messages' => [['id' => 'wamid.OK']]])]);
-    config(['services.whatsapp.graph_url' => 'https://graph.example.test', 'services.whatsapp.graph_version' => 'v21.0']);
+    config(['services.whatsapp.graph_url' => 'https://graph.example.test', 'services.meta.graph_version' => 'v26.0']);
 
     $id = (new CloudApiGateway)->sendText('+5491155551234', 'Hola');
 
     expect($id)->toBe('wamid.OK');
-    Http::assertSent(fn ($request) => $request->url() === 'https://graph.example.test/v21.0/123/messages'
+    Http::assertSent(fn ($request) => $request->url() === 'https://graph.example.test/v26.0/123/messages'
         && $request->hasHeader('Authorization', 'Bearer token')
         && $request['to'] === '5491155551234');
 });
@@ -411,4 +412,69 @@ test('a message delivered twice at the same time is processed once', function ()
 
 test('the incoming message job is retried', function () {
     expect((new ProcessIncomingWhatsApp([]))->tries)->toBe(3);
+});
+
+function businessAppEcho(string $to = '5491155551234', string $id = 'wamid.ECHO1', string $text = 'Hola, te paso la info por acá'): array
+{
+    return ['id' => $id, 'from' => '5493482600801', 'to' => $to, 'type' => 'text', 'text' => ['body' => $text]];
+}
+
+test('the webhook queues what the team writes from the Business app', function () {
+    Queue::fake();
+    config(['services.whatsapp.app_secret' => 'app-secret']);
+
+    [$body, $headers] = [null, null];
+    $payload = ['object' => 'whatsapp_business_account', 'entry' => [['changes' => [['field' => 'smb_message_echoes', 'value' => [
+        'metadata' => ['phone_number_id' => 'PN-1'],
+        'message_echoes' => [businessAppEcho()],
+    ]]]]]];
+    $body = json_encode($payload);
+
+    $this->call('POST', '/webhooks/whatsapp', [], [], [], ['HTTP_X_HUB_SIGNATURE_256' => 'sha256='.hash_hmac('sha256', $body, 'app-secret'), 'CONTENT_TYPE' => 'application/json'], $body)->assertOk();
+
+    Queue::assertPushed(ProcessWhatsAppBusinessAppEcho::class, fn ($job) => $job->echo['id'] === 'wamid.ECHO1' && $job->phoneNumberId === 'PN-1');
+});
+
+test('an answer from the phone is stored and the AI steps back', function () {
+    $customer = User::factory()->create(['role' => UserRole::Customer, 'phone' => '+5491155551234']);
+    $lead = Lead::factory()->create(['customer_id' => $customer->id, 'source' => 'whatsapp', 'channel' => 'whatsapp', 'ai_paused' => false, 'status' => LeadStatus::New]);
+
+    $service = app(WhatsAppConversationService::class);
+    $service->receiveBusinessAppEcho(businessAppEcho());
+    $service->receiveBusinessAppEcho(businessAppEcho());
+
+    $lead->refresh();
+
+    expect($lead->ai_paused)->toBeTrue()
+        ->and($lead->status)->toBe(LeadStatus::Contacted)
+        ->and($lead->messages()->where('external_id', 'wamid.ECHO1')->count())->toBe(1)
+        ->and($lead->messages()->where('external_id', 'wamid.ECHO1')->first())->direction->toBe('out')->role->toBe('assistant')->authorLabel()->toBe('Celular');
+});
+
+test('an answer from the phone to a chat without a lead is ignored', function () {
+    expect(app(WhatsAppConversationService::class)->receiveBusinessAppEcho(businessAppEcho('5491166660000')))->toBeNull()
+        ->and(Lead::count())->toBe(0);
+});
+
+test('a customer with a booking is handed to a person instead of the qualifying AI', function () {
+    $customer = User::factory()->create(['role' => UserRole::Customer, 'phone' => '+5491155551234']);
+    $lead = Lead::factory()->create(['customer_id' => $customer->id, 'source' => 'whatsapp', 'channel' => 'whatsapp', 'ai_paused' => false, 'status' => LeadStatus::New]);
+    Booking::factory()->create(['customer_id' => $customer->id, 'lead_id' => $lead->id]);
+    $this->mock(ProcessChatbotInteractionAction::class)->shouldNotReceive('execute');
+
+    app(WhatsAppConversationService::class)->receive(inboundText('Hola, ¿cómo va mi viaje?'));
+
+    expect($lead->fresh())->ai_paused->toBeTrue()->needs_human_attention->toBeTrue();
+});
+
+test('the inbox tells apart the AI, the team and the phone', function () {
+    $this->actingAs($admin = User::factory()->create(['role' => UserRole::Admin]));
+    $lead = Lead::factory()->create(['channel' => 'whatsapp']);
+    $lead->messages()->create(['role' => 'assistant', 'content' => 'Respuesta de la IA', 'direction' => 'out', 'channel' => 'whatsapp']);
+    $lead->messages()->create(['role' => 'assistant', 'content' => 'Respuesta del panel', 'direction' => 'out', 'channel' => 'whatsapp', 'sent_by_user_id' => $admin->id]);
+    $lead->messages()->create(['role' => 'assistant', 'content' => 'Respuesta desde el celular', 'direction' => 'out', 'channel' => 'whatsapp', 'sent_from' => Message::SENT_FROM_PHONE]);
+
+    Livewire::test(WhatsAppInbox::class)
+        ->call('open', $lead->id)
+        ->assertSeeInOrder(['Respuesta de la IA', 'IA', 'Respuesta del panel', 'Equipo', 'Respuesta desde el celular', 'Celular']);
 });

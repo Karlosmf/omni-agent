@@ -9,6 +9,8 @@ use App\Models\Message;
 use App\Models\User;
 use App\Services\AiConciergeService;
 use App\Support\ChatThrottle;
+use App\Support\ContinueOnChannel;
+use App\Support\VisitOrigin;
 use Illuminate\Support\Facades\Log;
 
 use function Livewire\Volt\boot;
@@ -60,8 +62,16 @@ mount(function (bool $embedded = false) {
         $assistantName = $settings?->ai_assistant_name ?? 'Brisa';
         $companyName = $settings?->company_name ?? config('app.name', 'nuestra agencia');
 
+        $hello = match (VisitOrigin::source()) {
+            'instagram' => 'Qué bueno verte por acá desde Instagram. 📸',
+            'facebook' => 'Qué bueno verte por acá desde Facebook. 👋',
+            'tiktok' => 'Si nos viste en TikTok, estás en el lugar indicado. 🎬',
+            'whatsapp' => 'Gracias por pasar desde WhatsApp. 💬',
+            default => '',
+        };
+
         $this->messages = [
-            ['role' => 'assistant', 'content' => "¡Hola! Soy {$assistantName}, tu asistente de {$companyName}. 🌴✈️ Completá tus datos y te ayudo a planificar tu viaje."],
+            ['role' => 'assistant', 'content' => trim("¡Hola! Soy {$assistantName}, tu asistente de {$companyName}. {$hello} 🌴✈️ Completá tus datos y te ayudo a planificar tu viaje.")],
         ];
     }
 });
@@ -86,6 +96,7 @@ $submitCapture = function () {
         'customer_phone' => trim($this->capturePhone),
         'customer_email' => ! empty(trim($this->captureEmail)) ? trim($this->captureEmail) : null,
         'customer_budget' => $budget,
+        ...VisitOrigin::forLead(),
         'source' => 'web_widget',
         'raw_message' => "Interesado en: {$destination}",
         'ai_data' => [
@@ -137,6 +148,7 @@ $sendMessage = function () {
                 'customer_phone' => $this->capturePhone ?: null,
                 'customer_email' => ! empty($this->captureEmail) ? $this->captureEmail : null,
                 'customer_budget' => (! empty($this->captureCurrency) && ! empty($this->captureBudgetAmount)) ? $this->captureCurrency.' '.$this->captureBudgetAmount : null,
+                ...VisitOrigin::forLead(),
                 'source' => 'web_widget',
                 'raw_message' => $userMsg,
                 'ai_data' => ['history' => []],
@@ -164,6 +176,13 @@ $sendMessage = function () {
     // 5. Add AI Response
     $this->messages[] = ['role' => 'assistant', 'content' => $replyContent];
     $this->isLoading = false;
+};
+
+// Botones para seguir la charla en la red de la que vino (lo inicia el cliente).
+$continueLinks = function (): array {
+    $lead = $this->leadId ? Lead::find($this->leadId) : null;
+
+    return $lead && count($this->messages) > 2 ? ContinueOnChannel::links($lead, VisitOrigin::source()) : [];
 };
 
 $toJSON = function (): array {
@@ -355,6 +374,15 @@ $toJSON = function (): array {
         @else
             <!-- Input Area -->
             <div class="bg-white/90 backdrop-blur-md p-4 shrink-0 border-t border-slate-100 z-10">
+                @php($links = $this->continueLinks())
+                @if($links)
+                    <div class="flex flex-wrap items-center justify-center gap-2 mb-3">
+                        @foreach($links as $link)
+                            <a href="{{ $link['url'] }}" target="_blank" rel="noopener"
+                                class="text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-300 text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition">{{ $link['label'] }}</a>
+                        @endforeach
+                    </div>
+                @endif
                 <form wire:submit="sendMessage" class="flex items-center gap-3 bg-slate-50 rounded-full p-1.5 pr-2 border border-slate-200 shadow-sm focus-within:border-emerald-400 focus-within:ring-2 focus-within:ring-emerald-400/20 transition-all">
                     <input type="text" wire:model="input" placeholder="Escribe un mensaje..."
                         class="flex-1 py-2 px-4 bg-transparent border-none focus:ring-0 text-sm placeholder:text-slate-400 text-slate-700" 

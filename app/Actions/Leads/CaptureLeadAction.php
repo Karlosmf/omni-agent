@@ -31,6 +31,9 @@ class CaptureLeadAction
             'temperature' => LeadTemperature::Cool,
             'ai_data' => $data['ai_data'] ?? [],
             'needs_human_attention' => false,
+            'utm_source' => $data['utm_source'] ?? null,
+            'utm_medium' => $data['utm_medium'] ?? null,
+            'utm_campaign' => $data['utm_campaign'] ?? null,
         ]);
     }
 

@@ -89,7 +89,7 @@
                                     <p>{{ $message->content }}</p>
                                     <small>
                                         {{ $message->created_at->format('d/m H:i') }}
-                                        @if ($message->direction === 'out') · {{ $message->sent_by_user_id ? 'Equipo' : 'IA' }} · {{ $message->status }} @endif
+                                        @if ($message->direction === 'out') · {{ $message->authorLabel() }} · {{ $message->status }} @endif
                                     </small>
                                 </div>
                             </div>

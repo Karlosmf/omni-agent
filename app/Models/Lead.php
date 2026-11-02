@@ -20,6 +20,9 @@ class Lead extends Model
     /** @use HasFactory<LeadFactory> */
     use HasFactory;
 
+    /** Sin 0/O ni 1/I: el cliente puede tener que leerlo. */
+    private const LINK_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
     protected $fillable = [
         'customer_id',
         'customer_name',
@@ -45,6 +48,9 @@ class Lead extends Model
         'first_response_at',
         'sla_alerted_at',
         'attribution',
+        'utm_source',
+        'utm_medium',
+        'utm_campaign',
     ];
 
     protected $casts = [
@@ -118,6 +124,37 @@ class Lead extends Model
         return $channel->isSocial()
             && (bool) $this->channelAccount?->allow_human_agent
             && ($this->last_inbound_at?->gt(now()->subDays($channel->humanAgentDays())) ?? false);
+    }
+
+    /**
+     * Código de un solo uso para seguir este chat web en WhatsApp, Instagram o Messenger.
+     */
+    public function ensureChannelLinkCode(): string
+    {
+        if (! $this->channel_link_code) {
+            do {
+                $code = 'V-'.collect(range(1, 6))->map(fn () => self::LINK_CODE_ALPHABET[random_int(0, strlen(self::LINK_CODE_ALPHABET) - 1)])->implode('');
+            } while (static::where('channel_link_code', $code)->exists());
+
+            $this->forceFill(['channel_link_code' => $code])->saveQuietly();
+        }
+
+        return $this->channel_link_code;
+    }
+
+    /**
+     * El lead web abierto y reciente cuyo código aparece en el texto o en el ref del enlace.
+     */
+    public static function findByLinkCode(?string $text): ?self
+    {
+        if (! $text || ! preg_match('/\bV-(['.self::LINK_CODE_ALPHABET.']{6})\b/i', $text, $match)) {
+            return null;
+        }
+
+        return static::where('channel_link_code', 'V-'.strtoupper($match[1]))
+            ->where('status', '!=', LeadStatus::Closed)
+            ->where('created_at', '>=', now()->subDays(14))
+            ->first();
     }
 
     public function isInsideWhatsAppWindow(): bool

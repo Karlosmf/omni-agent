@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\Channel;
 use App\Jobs\ProcessIncomingWhatsApp;
+use App\Jobs\ProcessWhatsAppBusinessAppEcho;
 use App\Models\Message;
 use App\Services\Meta\MetaCredentials;
 use App\Support\MetaWebhook;
@@ -25,7 +26,7 @@ class WhatsAppWebhookController extends Controller
     }
 
     /**
-     * Receive messages and delivery statuses. Answers 200 fast; the work happens on the queue.
+     * Receive messages, delivery statuses and, with the Business app coexisting, what the team writes from the phone. Answers 200 fast; the work happens on the queue.
      */
     public function receive(Request $request): Response
     {
@@ -40,6 +41,10 @@ class WhatsAppWebhookController extends Controller
 
                 foreach ((array) ($value['messages'] ?? []) as $message) {
                     ProcessIncomingWhatsApp::dispatch($message, $names[$message['from'] ?? ''] ?? null, $value['metadata']['phone_number_id'] ?? null);
+                }
+
+                foreach ((array) ($value['message_echoes'] ?? []) as $echo) {
+                    ProcessWhatsAppBusinessAppEcho::dispatch($echo, $value['metadata']['phone_number_id'] ?? null);
                 }
 
                 foreach ((array) ($value['statuses'] ?? []) as $status) {

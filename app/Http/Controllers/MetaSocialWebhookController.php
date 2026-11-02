@@ -7,7 +7,9 @@ use App\Jobs\ProcessIncomingSocialMessage;
 use App\Models\Message;
 use App\Services\Channels\InboundMessage;
 use App\Services\Meta\MetaCredentials;
+use App\Services\WhatsApp\WhatsAppConversationService;
 use App\Support\MetaWebhook;
+use App\Support\SocialEntryPoints;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -73,6 +75,22 @@ class MetaSocialWebhookController extends Controller
 
         $message = $event['message'] ?? null;
 
+        // "Seguir por Instagram/Messenger" from the web chat: the ref can arrive alone, before any message.
+        $ref = $event['referral']['ref'] ?? $event['postback']['referral']['ref'] ?? null;
+
+        if (! is_array($message) && is_string($ref) && $ref !== '') {
+            app(WhatsAppConversationService::class)->linkSocialReferral($channel, $accountId, (string) ($event['sender']['id'] ?? ''), $ref);
+
+            return;
+        }
+
+        // A tapped ice breaker / "Empezar" / menu item: it opens the conversation like a first message from the customer.
+        if (! is_array($message) && is_string($payload = $event['postback']['payload'] ?? null)) {
+            $this->handlePostback($channel, $accountId, (array) $event, $payload);
+
+            return;
+        }
+
         // Our own replies come back as echoes; read/delivery receipts and postbacks carry no customer text.
         if (! is_array($message) || ! empty($message['is_echo']) || empty($message['mid'])) {
             return;
@@ -88,6 +106,30 @@ class MetaSocialWebhookController extends Controller
             text: $text !== '' ? $text : $this->placeholderFor($message),
             isText: $text !== '',
             referral: $event['referral'] ?? $message['referral'] ?? null,
+        ));
+    }
+
+    /**
+     * @param  array<string, mixed>  $event
+     */
+    private function handlePostback(Channel $channel, string $accountId, array $event, string $payload): void
+    {
+        $text = SocialEntryPoints::textFor($payload);
+        $senderId = (string) ($event['sender']['id'] ?? '');
+
+        if ($text === null || $senderId === '') {
+            return;
+        }
+
+        $externalId = (string) ($event['postback']['mid'] ?? 'pb:'.sha1($senderId.($event['timestamp'] ?? '').$payload));
+
+        ProcessIncomingSocialMessage::dispatch(new InboundMessage(
+            channel: $channel,
+            accountExternalId: $accountId,
+            senderId: $senderId,
+            externalId: $externalId,
+            text: $text,
+            referral: $event['postback']['referral'] ?? null,
         ));
     }
 

@@ -7,6 +7,7 @@ use App\Models\BookingItem;
 use App\Observers\BookingItemObserver;
 use App\Services\WhatsApp\CloudApiGateway;
 use App\Services\WhatsApp\WhatsAppGateway;
+use App\Services\WhatsApp\ZernioGateway;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
@@ -20,7 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(WhatsAppGateway::class, CloudApiGateway::class);
+        $this->app->singleton(WhatsAppGateway::class, fn () => config('services.whatsapp.provider') === 'zernio'
+            ? new ZernioGateway
+            : new CloudApiGateway);
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Actions\Leads\CaptureLeadAction;
 use App\Jobs\ProcessLeadExtraction;
+use App\Support\VisitOrigin;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -73,6 +74,7 @@ class PublicLeadForm extends Component implements HasForms
         $data = $this->form->getState();
 
         $lead = $captureLeadAction->execute([
+            ...VisitOrigin::forLead(),
             'customer_name' => $data['name'],
             'customer_phone' => $data['phone'] ?? null,
             'customer_email' => $data['email'],

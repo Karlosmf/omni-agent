@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CaptureVisitOrigin;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -19,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'webhooks/*',
             'cron/run',
         ]);
+        $middleware->web(append: [CaptureVisitOrigin::class]);
         $middleware->validateCsrfTokens(except: ['webhooks/*', 'cron/run']);
         $middleware->alias([
             'role' => CheckRole::class,

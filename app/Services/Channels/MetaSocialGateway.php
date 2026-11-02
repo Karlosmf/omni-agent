@@ -2,11 +2,13 @@
 
 namespace App\Services\Channels;
 
+use App\Enums\Channel;
 use App\Enums\UserRole;
 use App\Exceptions\MetaApiException;
 use App\Models\ChannelAccount;
 use App\Models\User;
 use App\Services\Meta\MetaCredentials;
+use App\Support\SocialEntryPoints;
 use Filament\Notifications\Notification;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
@@ -55,6 +57,36 @@ class MetaSocialGateway
         }
 
         return $id;
+    }
+
+    /**
+     * Show the opening questions: ice breakers on Instagram; "Empezar" and a persistent menu on Messenger.
+     * Customers tap them and Meta sends a postback (the app must be subscribed to messaging_postbacks).
+     *
+     * @throws MetaApiException
+     */
+    public function setEntryPoints(ChannelAccount $account): void
+    {
+        $questions = SocialEntryPoints::questions();
+        $url = $this->host($account).'/'.$this->version().'/me/messenger_profile';
+
+        if ($account->channel === Channel::Instagram) {
+            $this->post($account, $account->usesInstagramLogin() ? $url : $url.'?platform=instagram', [
+                'platform' => 'instagram',
+                'ice_breakers' => [['call_to_actions' => $questions, 'locale' => 'default']],
+            ]);
+
+            return;
+        }
+
+        $this->post($account, $url, [
+            'get_started' => ['payload' => SocialEntryPoints::GET_STARTED],
+            'persistent_menu' => [[
+                'locale' => 'default',
+                'composer_input_disabled' => false,
+                'call_to_actions' => array_map(fn (array $q) => ['type' => 'postback', 'title' => $q['question'], 'payload' => $q['payload']], $questions),
+            ]],
+        ]);
     }
 
     /**

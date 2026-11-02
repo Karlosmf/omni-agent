@@ -1,5 +1,6 @@
 <?php
 
+use App\Actions\Leads\CaptureLeadAction;
 use App\Actions\Leads\ProcessChatbotInteractionAction;
 use App\Ai\Agents\ConciergeAgent;
 use App\Enums\BookingStatus;
@@ -32,6 +33,7 @@ use App\Services\SlaService;
 use App\Services\WhatsApp\CloudApiGateway;
 use App\Services\WhatsApp\WhatsAppConversationService;
 use App\Services\WhatsApp\WhatsAppGateway;
+use App\Support\ContinueOnChannel;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -588,4 +590,162 @@ test('with a webhook token configured only the secret url answers', function () 
     $this->get($url())->assertForbidden();
     $this->get($url('/mal'))->assertForbidden();
     $this->get($url('/abc123'))->assertOk()->assertSee('77');
+});
+
+test('a web visit remembers its origin from the link, the in-app browser or the referrer', function () {
+    $this->get('/?utm_source=IG&utm_medium=bio&utm_campaign=Verano 26')->assertOk();
+    expect(session('visit_origin'))->toBe(['utm_source' => 'instagram', 'utm_medium' => 'bio', 'utm_campaign' => 'verano_26']);
+
+    $this->flushSession();
+    $this->withHeader('User-Agent', 'Mozilla/5.0 Instagram 300.0 Android')->get('/')->assertOk();
+    expect(session('visit_origin.utm_source'))->toBe('instagram');
+
+    $this->flushSession();
+    $this->get('/?from=lo-que-sea')->assertOk();
+    expect(session('visit_origin.utm_source'))->toBe('otro');
+});
+
+test('web leads keep their origin and the agent is told about it', function () {
+    $lead = app(CaptureLeadAction::class)->execute(['customer_name' => 'Ana', 'source' => 'web_widget', 'utm_source' => 'tiktok']);
+
+    expect($lead->fresh()->utm_source)->toBe('tiktok')
+        ->and((string) (new ConciergeAgent($lead))->instructions())->toContain('Llegó a la web desde: TikTok');
+});
+
+test('the links to continue on a network carry a single-use code', function () {
+    AgencySetting::factory()->create(['social_links' => [
+        ['platform' => 'WhatsApp', 'url' => 'https://wa.me/5491155550000'],
+        ['platform' => 'Instagram', 'url' => 'https://instagram.com/luopanviajes'],
+        ['platform' => 'Facebook', 'url' => 'https://facebook.com/luopan'],
+    ]]);
+    Cache::forget('agency_settings');
+    $lead = Lead::factory()->create();
+
+    $links = ContinueOnChannel::links($lead, 'instagram');
+    $code = $lead->fresh()->channel_link_code;
+
+    expect($links[0]['url'])->toBe("https://ig.me/m/luopanviajes?ref={$code}")
+        ->and(collect($links)->pluck('url')->all())->toContain("https://m.me/luopan?ref={$code}")
+        ->and(collect($links)->firstWhere('channel', 'whatsapp')['url'])->toContain('wa.me/5491155550000?text=')->toContain($code);
+});
+
+test('a customer who continues on instagram or messenger lands in the web lead', function () {
+    fakeAi();
+    fakeGraph();
+    $web = Lead::factory()->create(['ai_data' => ['destino' => 'Salta'], 'status' => LeadStatus::New]);
+    $code = $web->ensureChannelLinkCode();
+    $service = app(WhatsAppConversationService::class);
+
+    $lead = $service->receiveSocial(socialInbound(Channel::Instagram, 'IG1', 'm9', "Hola {$code}", 'PSID7'));
+
+    expect($lead->id)->toBe($web->id)->and($lead->fresh())->channel->toBe('instagram')->channel_user_id->toBe('PSID7')->channel_link_code->toBeNull()
+        ->and($lead->ai_data['destino'])->toBe('Salta')
+        ->and(Lead::count())->toBe(1);
+
+    // The code is single-use: the same text from somebody else opens a new lead.
+    $other = $service->receiveSocial(socialInbound(Channel::Instagram, 'IG1', 'm10', "Hola {$code}", 'PSID8'));
+    expect($other->id)->not->toBe($web->id);
+});
+
+test('a ref that arrives alone links the sender so the first message goes to the web lead', function () {
+    fakeAi();
+    fakeGraph();
+    $web = Lead::factory()->create(['status' => LeadStatus::New]);
+    $code = $web->ensureChannelLinkCode();
+
+    metaPost(['object' => 'instagram', 'entry' => [['id' => 'IG1', 'messaging' => [['sender' => ['id' => 'PSID5'], 'referral' => ['ref' => $code]]]]]], 'ig-secret')->assertOk();
+
+    expect($web->fresh())->channel->toBe('instagram')->channel_user_id->toBe('PSID5');
+
+    $lead = app(WhatsAppConversationService::class)->receiveSocial(socialInbound(Channel::Instagram, 'IG1', 'm11', 'Hola', 'PSID5'));
+    expect($lead->id)->toBe($web->id);
+});
+
+test('whatsapp only attaches a web chat when the phone matches the one given on the web', function () {
+    fakeAi();
+    fakeGraph();
+    $customer = User::factory()->create(['role' => UserRole::Customer, 'phone' => '+5491155551234']);
+    $web = Lead::factory()->create(['customer_id' => $customer->id, 'source' => 'web_widget', 'status' => LeadStatus::New]);
+    $code = $web->ensureChannelLinkCode();
+    $service = app(WhatsAppConversationService::class);
+
+    $stranger = $service->receive(['id' => 'wamid.1', 'from' => '5491166669999', 'type' => 'text', 'text' => ['body' => "Hola {$code}"]]);
+    expect($stranger->id)->not->toBe($web->id);
+
+    $owner = $service->receive(['id' => 'wamid.2', 'from' => '5491155551234', 'type' => 'text', 'text' => ['body' => "Hola {$code}"]]);
+    expect($owner->id)->toBe($web->id)->and($owner->fresh()->channel)->toBe('whatsapp');
+});
+
+// --- Entry points (ice breakers, Get Started, persistent menu) ---
+
+function postback(string $object, string $accountId, string $payload, string $sender = 'PSID9', int $timestamp = 1700000000): array
+{
+    return ['object' => $object, 'entry' => [['id' => $accountId, 'messaging' => [[
+        'sender' => ['id' => $sender], 'recipient' => ['id' => $accountId], 'timestamp' => $timestamp,
+        'postback' => ['title' => 'Quiero cotizar un viaje', 'payload' => $payload],
+    ]]]]];
+}
+
+test('a tapped ice breaker opens the conversation and the AI answers', function () {
+    fakeAi('¿A qué destino te gustaría viajar?');
+    fakeGraph();
+
+    metaPost(postback('instagram', 'IG1', 'COTIZAR'), 'ig-secret')->assertOk();
+    metaPost(postback('instagram', 'IG1', 'COTIZAR'), 'ig-secret')->assertOk();
+
+    $lead = Lead::where('channel_user_id', 'PSID9')->sole();
+
+    expect($lead->messages()->where('role', 'user')->pluck('content')->all())->toBe(['Hola, quiero cotizar un viaje'])
+        ->and($lead->messages()->where('role', 'assistant')->count())->toBe(1);
+});
+
+test('postbacks we did not set are ignored', function () {
+    Queue::fake();
+
+    metaPost(postback('instagram', 'IG1', 'OTRA_COSA'), 'ig-secret')->assertOk();
+
+    Queue::assertNothingPushed();
+});
+
+test('ice breakers are published on instagram with both login types', function (string $authType, string $expectedUrl) {
+    config(['services.meta.instagram_graph_url' => 'https://ig.example.test', 'services.meta.graph_version' => 'v26.0']);
+    Http::fake(['*' => Http::response(['success' => true])]);
+    $this->account->update(['auth_type' => $authType]);
+
+    app(MetaSocialGateway::class)->setEntryPoints($this->account);
+
+    Http::assertSent(fn ($request) => $request->url() === $expectedUrl
+        && $request['platform'] === 'instagram'
+        && count($request['ice_breakers'][0]['call_to_actions']) === 4
+        && $request['ice_breakers'][0]['call_to_actions'][0] === ['question' => 'Quiero cotizar un viaje', 'payload' => 'COTIZAR']);
+})->with([
+    'instagram login' => ['instagram_login', 'https://ig.example.test/v26.0/me/messenger_profile'],
+    'facebook page' => ['facebook_login', 'https://graph.example.test/v26.0/me/messenger_profile?platform=instagram'],
+]);
+
+test('messenger gets a get started button and the same questions as a menu', function () {
+    config(['services.meta.graph_version' => 'v26.0']);
+    Http::fake(['*' => Http::response(['success' => true])]);
+    $page = ChannelAccount::factory()->create(['channel' => Channel::Messenger, 'external_id' => 'PAGE1']);
+
+    app(MetaSocialGateway::class)->setEntryPoints($page);
+
+    Http::assertSent(fn ($request) => $request->url() === 'https://graph.example.test/v26.0/me/messenger_profile'
+        && $request['get_started'] === ['payload' => 'GET_STARTED']
+        && $request['persistent_menu'][0]['call_to_actions'][3] === ['type' => 'postback', 'title' => 'Viaje a medida o luna de miel', 'payload' => 'A_MEDIDA']);
+});
+
+test('the admin publishes the entry points and sees what meta answered', function () {
+    $this->actingAs($this->admin);
+    Http::fake(['*' => Http::sequence()
+        ->push(['error' => ['message' => 'Falta el permiso', 'code' => 10]], 400)
+        ->push(['success' => true])]);
+
+    Livewire::test(ManageChannelAccounts::class)
+        ->callTableAction('entryPoints', $this->account)
+        ->assertNotified('Meta no las aceptó');
+
+    Livewire::test(ManageChannelAccounts::class)
+        ->callTableAction('entryPoints', $this->account)
+        ->assertNotified('Preguntas de entrada publicadas');
 });

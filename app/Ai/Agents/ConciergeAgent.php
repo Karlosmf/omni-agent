@@ -3,6 +3,7 @@
 namespace App\Ai\Agents;
 
 use App\Models\Lead;
+use App\Support\VisitOrigin;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Ai\Attributes\MaxTokens;
 use Laravel\Ai\Attributes\Temperature;
@@ -46,11 +47,12 @@ class ConciergeAgent implements Agent, Conversational, HasStructuredOutput
             TU OBJETIVO: Recabar información CLAVE de forma RÁPIDA y ESCUETA. No des consejos ni sugieras vuelos/hoteles. Solo pregunta.
 
             DATOS A CONSEGUIR (Uno por uno, en orden, no abrumes):
-            1. Destino y Pasajeros (si no los mencionaron aún).
+            1. Destino y Pasajeros (si no los mencionaron aún). Si viajan menores, preguntá sus edades: cambian el precio.
             2. Fecha aprox del viaje: ¿Primera o segunda quincena? ¿Tiene flexibilidad?
             3. Ciudad de salida (desde dónde quieren salir, no ofrezcas transporte).
             4. Presupuesto estimado (en USD o ARS). SIEMPRE preguntalo — es imprescindible para armar una propuesta real.
             5. Cantidad de noches si no quedó claro de la fecha.
+            6. Motivo del viaje (luna de miel, familia, amigos, egresados) y nombre del cliente, solo si lo dicen o después de tener lo anterior.
 
             CIERRE:
             Una vez que tengas estos datos, marcá calificacion_completa en true y en 'reply' poné este mensaje exacto:
@@ -65,8 +67,8 @@ class ConciergeAgent implements Agent, Conversational, HasStructuredOutput
 
             CÓMO RESPONDER (siempre JSON con estos campos):
             - reply: lo que le decís al cliente.
-            - destino, presupuesto, pasajeros (texto descriptivo, ej. '4 adultos, 3 niños'; NO sumes), fecha, noches (entero), ciudad_salida, nombre, telefono, email: lo que el CLIENTE dijo en el chat, null si no lo dijo. No inventes ni deduzcas.
-            - resumen: resumen corto con destino, fechas, noches, ciudad de salida, pasajeros y presupuesto si están.
+            - destino, presupuesto, pasajeros (texto descriptivo, ej. '2 adultos, 2 niños de 5 y 9 años'; NO sumes), fecha, noches (entero), ciudad_salida, nombre, telefono, email: lo que el CLIENTE dijo en el chat, null si no lo dijo. No inventes ni deduzcas.
+            - resumen: resumen corto con destino, fechas, noches, ciudad de salida, pasajeros, motivo del viaje y presupuesto si están.
             - calificacion_completa: true solo cuando ya diste el mensaje de CIERRE.
             - pide_persona: true si pide hablar con una persona o parece molesto.
             - intencion: cotizar, reclamo, postventa u otro.
@@ -129,6 +131,10 @@ class ConciergeAgent implements Agent, Conversational, HasStructuredOutput
 
         if ($this->lead->customer_name && $this->lead->customer_name !== 'Web Guest') {
             $lines[] = "- Nombre: {$this->lead->customer_name}";
+        }
+
+        if ($this->lead->utm_source && isset(VisitOrigin::LABELS[$this->lead->utm_source])) {
+            $lines[] = '- Llegó a la web desde: '.VisitOrigin::LABELS[$this->lead->utm_source];
         }
 
         return $lines === [] ? '' : "\n\n            DATOS DEL LEAD:\n            ".implode("\n            ", $lines);

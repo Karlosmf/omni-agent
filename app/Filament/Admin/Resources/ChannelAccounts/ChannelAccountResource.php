@@ -3,9 +3,12 @@
 namespace App\Filament\Admin\Resources\ChannelAccounts;
 
 use App\Enums\Channel;
+use App\Exceptions\MetaApiException;
 use App\Filament\Admin\Resources\ChannelAccounts\Pages\ManageChannelAccounts;
 use App\Models\ChannelAccount;
+use App\Services\Channels\MetaSocialGateway;
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -14,6 +17,7 @@ use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -21,6 +25,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\HtmlString;
 use UnitEnum;
 
 class ChannelAccountResource extends Resource
@@ -56,6 +61,24 @@ class ChannelAccountResource extends Resource
                             ->label('URL de devolución de llamada (WhatsApp)')
                             ->content(fn () => url('/webhooks/whatsapp')),
                     ])
+                    ->columnSpanFull(),
+                Section::make('Antes de conectar: qué tiene que tener la agencia en Meta')
+                    ->description('Se hace una sola vez, con la cuenta de Facebook que administra el negocio.')
+                    ->schema([
+                        Placeholder::make('meta_setup_steps')
+                            ->hiddenLabel()
+                            ->content(new HtmlString(
+                                '<ol class="list-decimal space-y-1 pl-5 text-sm">'
+                                .'<li>Portafolio comercial de Meta (idealmente con la empresa verificada).</li>'
+                                .'<li>App de tipo «Business» con los productos WhatsApp, Messenger e Instagram, en modo <b>Live</b>.</li>'
+                                .'<li>WhatsApp: un número que no esté en la app común y un token permanente de «usuario del sistema» con <code>whatsapp_business_messaging</code> y <code>whatsapp_business_management</code>.</li>'
+                                .'<li>Facebook e Instagram: la página vinculada a la cuenta profesional de Instagram, con <code>pages_messaging</code>, <code>instagram_manage_messages</code> y <code>pages_manage_metadata</code>.</li>'
+                                .'<li>Pegar las URL de arriba en el webhook de cada producto, suscribir la página y activar el evento <code>messaging_postbacks</code>.</li>'
+                                .'<li>Cargar abajo cada cuenta, probar la conexión y usar «Preguntas de entrada» en Instagram y Messenger.</li>'
+                                .'</ol>'
+                            )),
+                    ])
+                    ->collapsed()
                     ->columnSpanFull(),
                 Select::make('channel')
                     ->label('Canal')
@@ -129,6 +152,23 @@ class ChannelAccountResource extends Resource
                 IconColumn::make('is_active')->label('Activa')->boolean(),
             ])
             ->recordActions([
+                Action::make('entryPoints')
+                    ->label('Preguntas de entrada')
+                    ->icon(Heroicon::OutlinedChatBubbleLeftRight)
+                    ->visible(fn (ChannelAccount $record) => $record->channel->isSocial())
+                    ->requiresConfirmation()
+                    ->modalDescription('Publica en Meta las preguntas que ve el cliente al abrir el chat: «Quiero cotizar un viaje», «Salidas grupales», «Cruceros» y «Viaje a medida». Reemplaza las que haya.')
+                    ->action(function (ChannelAccount $record) {
+                        try {
+                            app(MetaSocialGateway::class)->setEntryPoints($record);
+                        } catch (MetaApiException $e) {
+                            Notification::make()->title('Meta no las aceptó')->body($e->getMessage())->danger()->send();
+
+                            return;
+                        }
+
+                        Notification::make()->title('Preguntas de entrada publicadas')->success()->send();
+                    }),
                 EditAction::make(),
                 DeleteAction::make(),
             ])

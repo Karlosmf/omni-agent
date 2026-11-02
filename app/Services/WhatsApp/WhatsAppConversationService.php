@@ -62,8 +62,72 @@ class WhatsAppConversationService
         $account = $phoneNumberId ? ChannelAccount::findActive(Channel::WhatsApp, $phoneNumberId) : null;
         $text = $this->textOf($message);
         $lead = $this->findOrCreateLead($phone, $profileName, $text, $account);
+        $this->keepExistingClientsWithPeople($lead);
 
         return $this->storeInbound($lead, Channel::WhatsApp, $externalId, $text, ($message['type'] ?? 'text') === 'text');
+    }
+
+    /**
+     * Coexistence: the team answered from the WhatsApp Business app on the phone. The reply is stored in the
+     * conversation and the AI steps back, as when an agent answers from the inbox. Chats we have no lead for are
+     * not turned into leads: a person is already handling them.
+     *
+     * @param  array<string, mixed>  $echo  A "message_echoes[]" item of the "smb_message_echoes" webhook field.
+     */
+    public function receiveBusinessAppEcho(array $echo, ?string $phoneNumberId = null): ?Lead
+    {
+        $externalId = (string) ($echo['id'] ?? '');
+        $phone = PhoneNumber::toE164('+'.ltrim((string) ($echo['to'] ?? ''), '+'));
+
+        if ($externalId === '' || $phone === null || Message::where('external_id', $externalId)->exists()) {
+            return null;
+        }
+
+        $customer = User::where('role', UserRole::Customer)->whereIn('phone', PhoneNumber::lookupVariants($phone))->first();
+
+        $lead = $customer
+            ? Lead::where('customer_id', $customer->id)->where('status', '!=', LeadStatus::Closed)
+                ->where(fn ($query) => $query->where('source', 'whatsapp')->orWhere('channel', Channel::WhatsApp->value))
+                ->latest('id')->first()
+            : null;
+
+        if (! $lead) {
+            return null;
+        }
+
+        try {
+            $lead->messages()->create([
+                'role' => 'assistant',
+                'content' => $this->textOf($echo),
+                'channel' => Channel::WhatsApp->value,
+                'direction' => 'out',
+                'external_id' => $externalId,
+                'status' => 'sent',
+                'sent_from' => Message::SENT_FROM_PHONE,
+            ]);
+        } catch (UniqueConstraintViolationException) {
+            return null;
+        }
+
+        $lead->forceFill([
+            'ai_paused' => true,
+            'unread_count' => 0,
+            'last_contacted_at' => $lead->last_contacted_at ?? now(),
+            'first_response_at' => $lead->first_response_at ?? now(),
+            'status' => $lead->status === LeadStatus::New ? LeadStatus::Contacted : $lead->status,
+        ])->saveQuietly();
+
+        return $lead;
+    }
+
+    /**
+     * The number is also the agency's everyday line: someone who already booked a trip talks to a person, not to the qualifying AI.
+     */
+    private function keepExistingClientsWithPeople(Lead $lead): void
+    {
+        if (! $lead->ai_paused && $lead->customer?->bookings()->exists()) {
+            $lead->forceFill(['ai_paused' => true, 'needs_human_attention' => true])->saveQuietly();
+        }
     }
 
     /**
@@ -274,8 +338,12 @@ class WhatsAppConversationService
         $customer = User::where('role', UserRole::Customer)->whereIn('phone', PhoneNumber::lookupVariants($phone))->first();
 
         $lead = $customer
-            ? Lead::where('customer_id', $customer->id)->where('status', '!=', LeadStatus::Closed)->where('source', 'whatsapp')->latest('id')->first()
+            ? Lead::where('customer_id', $customer->id)->where('status', '!=', LeadStatus::Closed)
+                ->where(fn ($query) => $query->where('source', 'whatsapp')->orWhere('channel', Channel::WhatsApp->value))
+                ->latest('id')->first()
             : null;
+
+        $lead ??= $this->webLeadForWhatsApp($text, $phone);
 
         $lead ??= $this->capture->execute([
             'customer_name' => $profileName,
@@ -307,6 +375,10 @@ class WhatsAppConversationService
             return $open;
         }
 
+        if ($web = Lead::findByLinkCode($incoming->referral['ref'] ?? null) ?? Lead::findByLinkCode($incoming->text)) {
+            return $this->attachToChannel($web, $incoming->channel, $account, $incoming->senderId);
+        }
+
         $name = $incoming->profileName ?? $this->lookupProfileName($account, $incoming->senderId);
         $previous = $known->latest('id')->first();
 
@@ -334,6 +406,54 @@ class WhatsAppConversationService
             'channel_user_id' => $incoming->senderId,
             'channel_account_id' => $account->id,
             'attribution' => $incoming->referral ?: null,
+        ])->saveQuietly();
+
+        return $lead;
+    }
+
+    /**
+     * Someone tapped "Seguir por Instagram/Messenger" in the web chat. Meta may send the ref on its own,
+     * before any message: remember who it is so their first message lands in the web lead.
+     */
+    public function linkSocialReferral(Channel $channel, string $accountExternalId, string $senderId, string $ref): ?Lead
+    {
+        $account = ChannelAccount::findActive($channel, $accountExternalId);
+        $web = Lead::findByLinkCode($ref);
+
+        if (! $account || ! $web || $senderId === '') {
+            return null;
+        }
+
+        $alreadyOpen = Lead::where('channel', $channel->value)->where('channel_user_id', $senderId)
+            ->where('channel_account_id', $account->id)->where('status', '!=', LeadStatus::Closed)->exists();
+
+        return $alreadyOpen ? null : $this->attachToChannel($web, $channel, $account, $senderId);
+    }
+
+    /**
+     * A WhatsApp message with the code of a web chat, from the same phone the customer gave there.
+     */
+    private function webLeadForWhatsApp(string $text, string $phone): ?Lead
+    {
+        $web = Lead::findByLinkCode($text);
+
+        if (! $web || ! in_array(PhoneNumber::toE164($web->customer?->phone), PhoneNumber::lookupVariants($phone), true)) {
+            return null;
+        }
+
+        return $this->attachToChannel($web, Channel::WhatsApp, null, null);
+    }
+
+    /**
+     * The web lead keeps its data and history; the conversation now continues on the channel. The code is single-use.
+     */
+    private function attachToChannel(Lead $lead, Channel $channel, ?ChannelAccount $account, ?string $channelUserId): Lead
+    {
+        $lead->forceFill([
+            'channel' => $channel->value,
+            'channel_user_id' => $channelUserId,
+            'channel_account_id' => $account?->id ?? $lead->channel_account_id,
+            'channel_link_code' => null,
         ])->saveQuietly();
 
         return $lead;

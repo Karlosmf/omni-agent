@@ -30,12 +30,23 @@ return [
 
     // WhatsApp Cloud API (Meta). Secrets live in .env, never in the database.
     'whatsapp' => [
+        // "cloud" = Meta's Cloud API with the agency's own app; "zernio" = through Zernio (allows coexistence).
+        'provider' => env('WHATSAPP_PROVIDER', 'cloud'),
         'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
         'access_token' => env('WHATSAPP_ACCESS_TOKEN'),
         'app_secret' => env('WHATSAPP_APP_SECRET'),
         'verify_token' => env('WHATSAPP_VERIFY_TOKEN'),
-        'graph_version' => env('WHATSAPP_GRAPH_VERSION', 'v21.0'),
+        'graph_version' => env('WHATSAPP_GRAPH_VERSION', 'v26.0'),
         'graph_url' => env('WHATSAPP_GRAPH_URL', 'https://graph.facebook.com'),
+    ],
+
+    // WhatsApp through Zernio (a Meta Tech Provider): needed to keep the number in the Business app (coexistence).
+    'zernio' => [
+        'api_key' => env('ZERNIO_API_KEY'),
+        'whatsapp_account_id' => env('ZERNIO_WHATSAPP_ACCOUNT_ID'),
+        // The secret you set when registering the webhook in Zernio; it signs every event.
+        'webhook_secret' => env('ZERNIO_WEBHOOK_SECRET'),
+        'base_url' => env('ZERNIO_BASE_URL', 'https://zernio.com/api/v1'),
     ],
 
     // Instagram DMs and Facebook Messenger. Per-account tokens/secrets are stored (encrypted) in channel_accounts;
@@ -46,7 +57,7 @@ return [
         'app_id' => env('META_APP_ID'),
         // Optional: when set, the webhook only answers at /webhooks/meta/{token}.
         'webhook_token' => env('META_WEBHOOK_TOKEN'),
-        'graph_version' => env('META_GRAPH_VERSION', env('WHATSAPP_GRAPH_VERSION', 'v21.0')),
+        'graph_version' => env('META_GRAPH_VERSION', env('WHATSAPP_GRAPH_VERSION', 'v26.0')),
         'instagram_graph_url' => env('META_INSTAGRAM_GRAPH_URL', 'https://graph.instagram.com'),
     ],
 
