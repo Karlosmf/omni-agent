@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\Leads\Tables;
 
 use App\Actions\Leads\CreateBookingFromLeadAction;
 use App\Enums\LeadStatus;
+use App\Enums\LeadTemperature;
 use App\Filament\Admin\Concerns\HasBudgetGenerationModal;
 use App\Filament\Admin\Resources\Bookings\BookingResource;
 use App\Filament\Admin\Resources\Customers\CustomerResource;
@@ -24,6 +25,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class LeadsTable
 {
@@ -34,7 +36,11 @@ class LeadsTable
                 TextColumn::make('customer.name')
                     ->label('Nombre')
                     ->searchable()
-                    ->description(fn ($record) => collect([$record->customer?->phone, $record->customer?->email])->filter()->implode(' | ')),
+                    ->description(fn (Lead $record) => collect([$record->destination(), $record->customer?->phone])->filter()->implode(' · ')),
+                TextColumn::make('temperature')
+                    ->label('Temperatura')
+                    ->badge()
+                    ->sortable(),
                 TextColumn::make('source')
                     ->label('Origen')
                     ->badge()
@@ -56,13 +62,16 @@ class LeadsTable
                     ->label('Próximo seguimiento')
                     ->dateTime('d/m H:i')
                     ->placeholder('—')
-                    ->color(fn (Lead $record) => $record->next_follow_up_at?->isPast() && $record->status !== LeadStatus::Closed ? 'danger' : 'gray')
+                    ->color(fn (Lead $record) => $record->isFollowUpOverdue() ? 'danger' : 'gray')
+                    ->weight(fn (Lead $record) => $record->isFollowUpOverdue() ? 'bold' : null)
                     ->sortable(),
                 TextColumn::make('last_contacted_at')
                     ->label('Último contacto')
                     ->since()
                     ->placeholder('Sin contactar')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable()
+                    ->visibleFrom('md')
+                    ->toggleable(),
                 TextColumn::make('created_at')
                     ->label('Creado el')
                     ->dateTime()
@@ -70,8 +79,9 @@ class LeadsTable
                     ->visibleFrom('md')
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultSort('created_at', 'desc')
-            ->defaultGroup('status')
+            // Most urgent first. Grouping by status stays available, but off by default so it does not break this order.
+            ->defaultSort(fn (Builder $query): Builder => $query->orderByPriority())
+            ->defaultSortOptionLabel('Prioridad')
             ->groups([
                 Group::make('status')
                     ->label('Estado')
@@ -81,9 +91,12 @@ class LeadsTable
                 SelectFilter::make('status')
                     ->label('Estado')
                     ->options(LeadStatus::class),
+                SelectFilter::make('temperature')
+                    ->label('Temperatura')
+                    ->options(LeadTemperature::class),
                 Filter::make('overdue_follow_up')
                     ->label('Seguimiento atrasado')
-                    ->query(fn ($query) => $query->where('next_follow_up_at', '<', now())->where('status', '!=', LeadStatus::Closed)),
+                    ->query(fn (Builder $query) => $query->followUpOverdue()),
                 TernaryFilter::make('needs_human_attention')
                     ->label('Atención Requerida'),
             ])

@@ -2,9 +2,11 @@
 
 namespace App\Filament\Admin\Resources\Customers\Schemas;
 
+use App\Models\User;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
@@ -17,6 +19,22 @@ class CustomerForm
         return $schema
             ->columns(1)
             ->components([
+                Section::make('Datos del pasajero')
+                    ->description('Los recuerda el bot entre viajes: en una consulta nueva solo los confirma.')
+                    ->visible(fn (?User $record): bool => filled($record?->traveler_profile))
+                    ->schema([
+                        TextEntry::make('traveler_summary')
+                            ->hiddenLabel()
+                            ->state(fn (User $record): array => collect($record->traveler_profile)
+                                ->map(fn (mixed $value, string $key) => str_replace('_', ' ', ucfirst($key)).': '.match (true) {
+                                    is_bool($value) => $value ? 'Sí' : 'No',
+                                    is_array($value) => implode(', ', $value),
+                                    default => (string) $value,
+                                })
+                                ->values()
+                                ->all())
+                            ->listWithLineBreaks(),
+                    ]),
                 Section::make('Datos Personales')
                     ->schema([
                         Grid::make(3)

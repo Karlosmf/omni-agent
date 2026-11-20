@@ -1,16 +1,24 @@
 <?php
 
+use App\Ai\Agents\ReceptionistAgent;
+use App\Enums\UserRole;
+use App\Filament\Admin\Pages\WhatsAppInbox;
 use App\Jobs\ProcessIncomingWhatsApp;
 use App\Jobs\ProcessWhatsAppBusinessAppEcho;
 use App\Models\Lead;
+use App\Models\Message;
+use App\Models\User;
 use App\Models\WhatsAppTemplate;
 use App\Models\ZernioConversation;
 use App\Services\WhatsApp\CloudApiGateway;
+use App\Services\WhatsApp\WhatsAppConversationService;
 use App\Services\WhatsApp\WhatsAppGateway;
 use App\Services\WhatsApp\ZernioGateway;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Sleep;
 use Illuminate\Testing\TestResponse;
+use Livewire\Livewire;
 
 beforeEach(function () {
     config([
@@ -54,6 +62,67 @@ test('events without a valid signature are rejected', function () {
     zernioPost(zernioIncoming(), 'wrong')->assertStatus(400);
 
     Queue::assertNothingPushed();
+});
+
+test('a signature sent with the sha256 prefix is accepted', function () {
+    Queue::fake();
+    $body = json_encode(zernioIncoming());
+
+    test()->call('POST', '/webhooks/zernio', [], [], [], [
+        'CONTENT_TYPE' => 'application/json',
+        'HTTP_X_ZERNIO_SIGNATURE' => 'sha256='.strtoupper(hash_hmac('sha256', $body, 'zernio-secret')),
+    ], $body)->assertOk();
+
+    Queue::assertPushed(ProcessIncomingWhatsApp::class);
+});
+
+test('a tap that arrives without text still reaches the conversation as a tap', function () {
+    Queue::fake();
+    $event = zernioIncoming('');
+    $event['message']['metadata'] = ['interactiveType' => 'list_reply', 'interactiveId' => 'menu:4:p:12'];
+
+    zernioPost($event)->assertOk();
+
+    Queue::assertPushed(ProcessIncomingWhatsApp::class, fn ($job) => $job->message['type'] === 'interactive'
+        && $job->message['interactive']['button_reply'] === ['id' => 'menu:4:p:12', 'title' => '']);
+});
+
+test('a send that loses the connection is retried with the same idempotency key', function () {
+    Sleep::fake();
+    Http::fakeSequence('zernio.example.test/*')
+        ->pushFailedConnection()
+        ->push(['data' => ['messageId' => 'wamid.SENT']]);
+    ZernioConversation::remember('+5491155551234', 'conv_1');
+
+    $id = (new ZernioGateway)->sendText('+5491155551234', 'Hola');
+
+    $keys = collect(Http::recorded())->map(fn (array $pair) => $pair[0]->header('Idempotency-Key')[0] ?? null);
+
+    expect($id)->toBe('wamid.SENT')
+        ->and($keys)->toHaveCount(2)
+        ->and($keys->unique())->toHaveCount(1)
+        ->and($keys->first())->not->toBeEmpty();
+});
+
+test('list messages go to the conversation in the interactive format, cut to whatsapp limits', function () {
+    Http::fake(['zernio.example.test/*' => Http::response(['data' => ['messageId' => 'wamid.LIST']])]);
+    ZernioConversation::remember('+5491155551234', 'conv_1');
+
+    (new ZernioGateway)->sendList('+5491155551234', 'Elegí un destino', 'Ver destinos', [
+        ['id' => 'menu:1:p:punta-cana', 'title' => 'Punta Cana', 'description' => '2 paquetes'],
+        ['id' => 'menu:1:p:rio', 'title' => 'Río de Janeiro y Búzios en verano'],
+    ], sectionTitle: 'Destinos');
+
+    Http::assertSent(fn ($request) => str_contains($request->url(), 'inbox/conversations/conv_1/messages')
+        && $request['accountId'] === 'acc_luopan'
+        && $request['interactive'] === [
+            'type' => 'list',
+            'body' => ['text' => 'Elegí un destino'],
+            'action' => ['button' => 'Ver destinos', 'sections' => [['title' => 'Destinos', 'rows' => [
+                ['id' => 'menu:1:p:punta-cana', 'title' => 'Punta Cana', 'description' => '2 paquetes'],
+                ['id' => 'menu:1:p:rio', 'title' => 'Río de Janeiro y Búzios…'],
+            ]]]],
+        ]);
 });
 
 test('a received message is queued in the cloud api shape and its conversation remembered', function () {
@@ -174,4 +243,137 @@ test('polling brings the new messages of the test numbers and skips the older on
     Queue::assertPushed(ProcessIncomingWhatsApp::class, 1);
     Queue::assertPushed(ProcessIncomingWhatsApp::class, fn ($job) => $job->message['id'] === 'wamid.NEW' && $job->message['text']['body'] === 'Hola, quiero ir a Salta');
     Http::assertNotSent(fn ($request) => str_contains($request->url(), 'conv_otro'));
+});
+
+test('a tapped reply button reaches the conversation as the button title', function () {
+    Queue::fake();
+    $event = zernioIncoming('Todo incluido');
+    $event['message']['metadata'] = ['interactiveType' => 'button_reply', 'interactiveId' => 'opt_1_todo-incluido'];
+
+    zernioPost($event)->assertOk();
+
+    Queue::assertPushed(ProcessIncomingWhatsApp::class, fn ($job) => $job->message['type'] === 'interactive'
+        && $job->message['interactive']['button_reply'] === ['id' => 'opt_1_todo-incluido', 'title' => 'Todo incluido']);
+});
+
+test('reply buttons and documents go to the conversation in zernio format', function () {
+    Http::fake(['zernio.example.test/*' => Http::response(['success' => true, 'data' => ['messageId' => 'wamid.SENT']])]);
+    ZernioConversation::remember('+5491155551234', 'conv_1');
+    $gateway = new ZernioGateway;
+
+    $gateway->sendText('+5491155551234', '¿Querés todo incluido?', ['Sí', 'No']);
+    $gateway->sendDocument('+5491155551234', 'https://agencia.test/presupuesto/abc/pdf', 'presupuesto-LP-1.pdf', 'Tu presupuesto');
+
+    Http::assertSent(fn ($request) => isset($request['buttons']) && $request['message'] === '¿Querés todo incluido?'
+        && $request['buttons'] === [
+            ['type' => 'postback', 'title' => 'Sí', 'payload' => 'opt_1_si'],
+            ['type' => 'postback', 'title' => 'No', 'payload' => 'opt_2_no'],
+        ]);
+    Http::assertSent(fn ($request) => isset($request['attachmentUrl']) && $request['attachmentUrl'] === 'https://agencia.test/presupuesto/abc/pdf'
+        && $request['attachmentType'] === 'file'
+        && $request['attachmentName'] === 'presupuesto-LP-1.pdf'
+        && $request['message'] === 'Tu presupuesto');
+});
+
+test('a whatsapp flow answer is not mistaken for a button tap', function () {
+    Queue::fake();
+    $event = zernioIncoming('Formulario enviado');
+    $event['message']['metadata'] = ['interactiveType' => 'nfm_reply', 'flowResponseData' => ['destino' => 'Salta']];
+
+    zernioPost($event)->assertOk();
+
+    Queue::assertPushed(ProcessIncomingWhatsApp::class, fn ($job) => $job->message['type'] === 'text');
+});
+
+// --- History import ---
+
+function zernioHistoryMessage(string $id, string $when, string $direction, string $text, ?string $source = null): array
+{
+    return ['id' => $id, 'createdAt' => $when, 'direction' => $direction, 'message' => $text, 'attachments' => [], 'metadata' => $source ? ['source' => $source] : []];
+}
+
+function zernioHistoryLead(): Lead
+{
+    $customer = User::factory()->create(['role' => UserRole::Customer, 'phone' => '+5491155551234']);
+
+    return Lead::factory()->create(['customer_id' => $customer->id, 'source' => 'whatsapp', 'channel' => 'whatsapp', 'unread_count' => 0, 'ai_paused' => false]);
+}
+
+test('earlier whatsapp messages come from zernio in their real order, without answering or counting them', function () {
+    app()->instance(WhatsAppGateway::class, new ZernioGateway);
+    ZernioConversation::remember('+5491155551234', 'conv_1');
+    $lead = zernioHistoryLead();
+    $lead->messages()->create(['role' => 'user', 'content' => 'Ya estaba', 'channel' => 'whatsapp', 'direction' => 'in', 'external_id' => 'wamid.KNOWN']);
+
+    Http::fake([
+        'zernio.example.test/api/v1/inbox/conversations/conv_1/messages?*cursor=page2*' => Http::response([
+            'messages' => [
+                zernioHistoryMessage('wamid.H1', now()->subDays(5)->toIso8601String(), 'incoming', 'Hola, ¿tienen algo para enero?'),
+                zernioHistoryMessage('wamid.OLD', now()->subDays(40)->toIso8601String(), 'incoming', 'Muy viejo'),
+            ],
+            'pagination' => ['hasMore' => true, 'nextCursor' => 'page3'],
+        ]),
+        'zernio.example.test/api/v1/inbox/conversations/conv_1/messages*' => Http::response([
+            'messages' => [
+                zernioHistoryMessage('wamid.KNOWN', now()->subHour()->toIso8601String(), 'incoming', 'Ya estaba'),
+                zernioHistoryMessage('wamid.H3', now()->subDays(2)->toIso8601String(), 'outgoing', 'Sí, te paso opciones', 'whatsapp_business_app'),
+                zernioHistoryMessage('wamid.H2', now()->subDays(4)->toIso8601String(), 'outgoing', 'Enviado desde otra app'),
+            ],
+            'pagination' => ['hasMore' => true, 'nextCursor' => 'page2'],
+        ]),
+    ]);
+    ReceptionistAgent::fake()->preventStrayPrompts();
+
+    $added = app(WhatsAppConversationService::class)->importWhatsAppHistory($lead);
+
+    $messages = $lead->messages()->chronological()->get();
+
+    expect($added)->toBe(3)
+        ->and($messages->pluck('external_id')->all())->toBe(['wamid.H1', 'wamid.H2', 'wamid.H3', 'wamid.KNOWN'])
+        ->and($messages[0])->role->toBe('user')->direction->toBe('in')
+        ->and($messages[0]->isImported())->toBeTrue()
+        ->and($messages[1]->authorLabel())->toBe('Zernio')
+        ->and($messages[2]->authorLabel())->toBe('Celular')
+        ->and($lead->fresh()->unread_count)->toBe(0)
+        ->and($lead->fresh()->ai_paused)->toBeFalse()
+        ->and(app(WhatsAppConversationService::class)->importWhatsAppHistory($lead))->toBe(0);
+
+    Http::assertNotSent(fn ($request) => str_contains($request->url(), 'page3'));
+    Http::assertNotSent(fn ($request) => $request->method() === 'POST');
+    ReceptionistAgent::assertNeverPrompted();
+});
+
+test('the conversation is looked up in zernio when it was never remembered', function () {
+    app()->instance(WhatsAppGateway::class, new ZernioGateway);
+    $lead = zernioHistoryLead();
+    Http::fake([
+        'zernio.example.test/api/v1/inbox/conversations?*' => Http::response(['data' => [
+            ['id' => 'conv_other', 'participantId' => '5491100000000'],
+            ['id' => 'conv_found', 'participantId' => '5491155551234'],
+        ], 'pagination' => ['hasMore' => false, 'nextCursor' => null]]),
+        'zernio.example.test/api/v1/inbox/conversations/conv_found/messages*' => Http::response([
+            'messages' => [zernioHistoryMessage('wamid.F1', now()->subDay()->toIso8601String(), 'incoming', 'Hola')],
+            'pagination' => ['hasMore' => false, 'nextCursor' => null],
+        ]),
+    ]);
+
+    expect(app(WhatsAppConversationService::class)->importWhatsAppHistory($lead))->toBe(1)
+        ->and(ZernioConversation::idFor('+5491155551234'))->toBe('conv_found');
+});
+
+test('the inbox offers the history only for whatsapp through zernio and shows it in date order', function () {
+    $this->actingAs(User::factory()->create(['role' => UserRole::Admin]));
+    $lead = zernioHistoryLead();
+    $lead->messages()->create(['role' => 'user', 'content' => 'Mensaje de hoy', 'channel' => 'whatsapp', 'direction' => 'in']);
+    $old = new Message(['lead_id' => $lead->id, 'role' => 'user', 'content' => 'Mensaje de la semana pasada', 'channel' => 'whatsapp', 'direction' => 'in', 'payload' => ['imported' => true]]);
+    $old->forceFill(['created_at' => now()->subWeek()])->save();
+
+    app()->instance(WhatsAppGateway::class, new CloudApiGateway);
+    Livewire::test(WhatsAppInbox::class)->call('open', $lead->id)->assertDontSee('Traer historial');
+
+    app()->instance(WhatsAppGateway::class, new ZernioGateway);
+    Livewire::test(WhatsAppInbox::class)
+        ->call('open', $lead->id)
+        ->assertSee('Traer historial')
+        ->assertSeeInOrder(['Mensaje de la semana pasada', 'Historial', 'Mensaje de hoy']);
 });

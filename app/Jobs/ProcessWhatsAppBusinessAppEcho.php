@@ -24,11 +24,12 @@ class ProcessWhatsAppBusinessAppEcho implements ShouldQueue
 
     /**
      * @param  array<string, mixed>  $echo  A "message_echoes[]" item of the "smb_message_echoes" webhook field.
+     * @param  array<string, mixed>|null  $rawPayload  The provider's event as it arrived, kept with the stored message.
      */
-    public function __construct(public array $echo, public ?string $phoneNumberId = null) {}
+    public function __construct(public array $echo, public ?string $phoneNumberId = null, public ?array $rawPayload = null) {}
 
     public function handle(WhatsAppConversationService $conversations): void
     {
-        $conversations->receiveBusinessAppEcho($this->echo, $this->phoneNumberId);
+        $conversations->receiveBusinessAppEcho($this->echo, $this->phoneNumberId, $this->rawPayload);
     }
 }

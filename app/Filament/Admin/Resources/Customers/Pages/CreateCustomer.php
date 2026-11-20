@@ -53,8 +53,9 @@ class CreateCustomer extends CreateRecord
         if ($this->lead_id) {
             $lead = Lead::find($this->lead_id);
             if ($lead) {
+                // With a travel idea a quote is created below and moves the lead to "Cotizada"; otherwise it is being worked on.
                 $lead->customer_id = $this->record->id;
-                $lead->status = LeadStatus::Closed;
+                $lead->status = $lead->status === LeadStatus::New ? LeadStatus::Contacted : $lead->status;
                 $lead->save();
 
                 if ($lead->travel_package_id) {

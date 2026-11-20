@@ -66,3 +66,22 @@ Si Hostinger NO soporta PHP 8.3 todavía en tu plan, puedes relajar la restricci
     }
     ```
 2.  Corre `composer dump-autoload`.
+
+## Cron y cola (obligatorio para el bot recepcionista)
+
+Sin cron los mensajes entrantes quedan en la cola y el bot no responde. No hace falta supervisor: el scheduler ya vacía la cola cada minuto (`queue:work --stop-when-empty`).
+
+1. En hPanel, **Avanzado → Trabajos Cron**, creá un trabajo que corra cada minuto (ajustá la ruta y el binario de PHP):
+   ```
+   * * * * * cd /home/USUARIO/domains/tudominio.com/public_html && /opt/alt/php84/usr/bin/php artisan schedule:run >> /dev/null 2>&1
+   ```
+2. En el `.env`, `QUEUE_CONNECTION=database`.
+3. Verificá con `php artisan omni:check-config`.
+
+## Activar el bot recepcionista
+
+1. `php artisan migrate --force` (solo agrega columnas y la tabla de avisos; el bot queda apagado).
+2. En el `.env`: `WHATSAPP_PROVIDER=zernio`, `ZERNIO_API_KEY`, `ZERNIO_WHATSAPP_ACCOUNT_ID`, `ZERNIO_WEBHOOK_SECRET`. Para probar con un solo número, `ZERNIO_TEST_PHONES=+549...`; en producción dejalo vacío.
+3. En Zernio, registrá el webhook `https://tudominio.com/webhooks/zernio` con el mismo secreto.
+4. En **Chat → Bot recepcionista**: cargá instrucciones, horario y proveedor de IA, usá **Probar bot** y recién después encendelo.
+5. Los nombres que el bot le da al cliente salen de **Marca Blanca → Contacto y Redes** (los enlaces llamados "WhatsApp Belén", "WhatsApp Nela").

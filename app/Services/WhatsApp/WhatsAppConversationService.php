@@ -4,18 +4,27 @@ namespace App\Services\WhatsApp;
 
 use App\Actions\Leads\CaptureLeadAction;
 use App\Actions\Leads\ProcessChatbotInteractionAction;
+use App\Enums\BotNoticeType;
 use App\Enums\Channel;
+use App\Enums\ChatMenuAction;
+use App\Enums\ChatMenuSource;
 use App\Enums\LeadStatus;
 use App\Enums\LeadTemperature;
 use App\Enums\UserRole;
+use App\Models\Booking;
+use App\Models\BotNotice;
 use App\Models\ChannelAccount;
+use App\Models\ChatMenu;
 use App\Models\Lead;
 use App\Models\Message;
 use App\Models\User;
 use App\Models\WhatsAppTemplate;
+use App\Services\Bot\ChatMenuService;
+use App\Services\Bot\ReceptionistBot;
 use App\Services\Channels\InboundMessage;
 use App\Services\Channels\MetaSocialGateway;
 use App\Support\PhoneNumber;
+use App\Support\ReplyButtons;
 use Filament\Notifications\Notification;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Carbon;
@@ -38,6 +47,8 @@ class WhatsAppConversationService
         private CaptureLeadAction $capture,
         private ProcessChatbotInteractionAction $chatbot,
         private MetaSocialGateway $social,
+        private ReceptionistBot $bot,
+        private ChatMenuService $menus,
     ) {}
 
     /**
@@ -45,8 +56,9 @@ class WhatsAppConversationService
      *
      * @param  array<string, mixed>  $message  A "messages[]" item of the Cloud API webhook.
      * @param  string|null  $phoneNumberId  The business number that received it (null = the .env default).
+     * @param  array<string, mixed>|null  $rawPayload  The provider's event as it arrived (defaults to the message itself).
      */
-    public function receive(array $message, ?string $profileName = null, ?string $phoneNumberId = null): ?Lead
+    public function receive(array $message, ?string $profileName = null, ?string $phoneNumberId = null, ?array $rawPayload = null): ?Lead
     {
         $externalId = (string) ($message['id'] ?? '');
 
@@ -65,7 +77,10 @@ class WhatsAppConversationService
         $lead = $this->findOrCreateLead($phone, $profileName, $text, $account);
         $this->keepExistingClientsWithPeople($lead);
 
-        return $this->storeInbound($lead, Channel::WhatsApp, $externalId, $text, ($message['type'] ?? 'text') === 'text');
+        // A tapped reply button or list row is an answer in words, like typed text.
+        $isText = in_array($message['type'] ?? 'text', ['text', 'button', 'interactive'], true);
+
+        return $this->storeInbound($lead, Channel::WhatsApp, $externalId, $text, $isText, $rawPayload ?? $message, $this->tapIdOf($message));
     }
 
     /**
@@ -74,8 +89,9 @@ class WhatsAppConversationService
      * not turned into leads: a person is already handling them.
      *
      * @param  array<string, mixed>  $echo  A "message_echoes[]" item of the "smb_message_echoes" webhook field.
+     * @param  array<string, mixed>|null  $rawPayload  The provider's event as it arrived (defaults to the echo itself).
      */
-    public function receiveBusinessAppEcho(array $echo, ?string $phoneNumberId = null): ?Lead
+    public function receiveBusinessAppEcho(array $echo, ?string $phoneNumberId = null, ?array $rawPayload = null): ?Lead
     {
         $externalId = (string) ($echo['id'] ?? '');
         $phone = PhoneNumber::toE164('+'.ltrim((string) ($echo['to'] ?? ''), '+'));
@@ -84,16 +100,18 @@ class WhatsAppConversationService
             return null;
         }
 
-        $customer = User::where('role', UserRole::Customer)->whereIn('phone', PhoneNumber::lookupVariants($phone))->first();
+        $customer = $this->customerByPhone($phone);
+        $lead = $customer ? $this->openWhatsAppLeadFor($customer) : null;
+        $sentAt = isset($echo['timestamp']) ? Carbon::createFromTimestamp((int) $echo['timestamp']) : now();
 
-        $lead = $customer
-            ? Lead::where('customer_id', $customer->id)->where('status', '!=', LeadStatus::Closed)
-                ->where(fn ($query) => $query->where('source', 'whatsapp')->orWhere('channel', Channel::WhatsApp->value))
-                ->latest('id')->first()
-            : null;
+        if (! $lead) {
+            ReceptionistBot::rememberHumanChat($phone, $sentAt);
+
+            return null;
+        }
 
         // A message written on the phone before this conversation started (e.g. read again when polling) is not a takeover.
-        if (! $lead || (isset($echo['timestamp']) && Carbon::createFromTimestamp((int) $echo['timestamp'])->lt($lead->created_at))) {
+        if ($sentAt->lt($lead->created_at)) {
             return null;
         }
 
@@ -106,13 +124,14 @@ class WhatsAppConversationService
                 'external_id' => $externalId,
                 'status' => 'sent',
                 'sent_from' => Message::SENT_FROM_PHONE,
+                'payload' => $rawPayload ?? $echo,
             ]);
         } catch (UniqueConstraintViolationException) {
             return null;
         }
 
         $lead->forceFill([
-            'ai_paused' => true,
+            ...ReceptionistBot::pauseAfterHumanReply($lead),
             'unread_count' => 0,
             'last_contacted_at' => $lead->last_contacted_at ?? now(),
             'first_response_at' => $lead->first_response_at ?? now(),
@@ -127,7 +146,7 @@ class WhatsAppConversationService
      */
     private function keepExistingClientsWithPeople(Lead $lead): void
     {
-        if (! $lead->ai_paused && $lead->customer?->bookings()->exists()) {
+        if (! ReceptionistBot::isEnabled() && ! $lead->ai_paused && $lead->customer?->bookings()->exists()) {
             $lead->forceFill(['ai_paused' => true, 'needs_human_attention' => true])->saveQuietly();
         }
     }
@@ -154,16 +173,21 @@ class WhatsAppConversationService
         return $this->storeInbound($lead, $incoming->channel, $incoming->externalId, $incoming->text, $incoming->isText);
     }
 
-    private function storeInbound(Lead $lead, Channel $channel, string $externalId, string $text, bool $isText): ?Lead
+    /**
+     * @param  array<string, mixed>|null  $payload  The provider's raw event.
+     * @param  string|null  $tapId  The id of the reply button or list row the customer tapped.
+     */
+    private function storeInbound(Lead $lead, Channel $channel, string $externalId, string $text, bool $isText, ?array $payload = null, ?string $tapId = null): ?Lead
     {
         try {
-            $lead->messages()->create([
+            $inbound = $lead->messages()->create([
                 'role' => 'user',
                 'content' => $text,
                 'channel' => $channel->value,
                 'direction' => 'in',
                 'external_id' => $externalId,
                 'status' => 'received',
+                'payload' => $payload,
             ]);
         } catch (UniqueConstraintViolationException) {
             // Meta delivered the same message twice at once: the other job already handles it.
@@ -176,11 +200,139 @@ class WhatsAppConversationService
             'unread_count' => $lead->unread_count + 1,
         ])->saveQuietly();
 
-        if ($isText && ! $lead->ai_paused) {
-            $this->replyWithAi($lead, $text);
+        if ($channel === Channel::WhatsApp && $this->answerWithMenu($lead, $inbound, $isText, $tapId)) {
+            return $lead;
+        }
+
+        // A tapped menu option may have rewritten the message into the option's title: that is what the AI reads.
+        if (ReceptionistBot::isEnabled()) {
+            $this->replyWithBot($lead, $inbound, $isText);
+        } elseif ($isText && ! $lead->isAiPaused()) {
+            $this->replyWithAi($lead, (string) $inbound->content);
         }
 
         return $lead;
+    }
+
+    /**
+     * Chat menus (WhatsApp list messages): a keyword opens one, and a tap on its rows is answered here.
+     * Returns false when the bot or the assistant should answer instead (including a tap meant for them).
+     */
+    private function answerWithMenu(Lead $lead, Message $inbound, bool $isText, ?string $tapId): bool
+    {
+        if (! $isText || ReceptionistBot::isPersonAttending($lead)) {
+            return false;
+        }
+
+        if ($tapId !== null) {
+            return str_starts_with($tapId, ChatMenuService::ID_PREFIX) && $this->answerMenuTap($lead, $inbound, $tapId);
+        }
+
+        $menu = $this->menus->forText((string) $inbound->content);
+
+        if (! $menu) {
+            return false;
+        }
+
+        $this->sendMenu($lead, $menu);
+
+        return true;
+    }
+
+    private function answerMenuTap(Lead $lead, Message $inbound, string $tapId): bool
+    {
+        $tap = $this->menus->resolveTap($tapId);
+
+        // The menu was deleted or switched off after it was sent: the bot reads the option like any answer.
+        if ($tap === null) {
+            return false;
+        }
+
+        $menu = $tap['menu'];
+
+        if ($tap['more']) {
+            $this->sendMenu($lead, $menu, $tap['destination'], $tap['offset']);
+
+            return true;
+        }
+
+        if ($tap['title'] === null) {
+            $this->sendAutomatic($lead, 'Esa opción ya no está disponible. Te muestro las opciones actualizadas.');
+            $this->sendMenu($lead, $menu);
+
+            return true;
+        }
+
+        $inbound->update(['content' => $tap['title']]);
+
+        if ($tap['package']) {
+            $lead->forceFill(['travel_package_id' => $tap['package']->id])->saveQuietly();
+        }
+
+        if ($menu->on_select === ChatMenuAction::Reply && filled($menu->reply_text)) {
+            $this->sendAutomatic($lead, str_replace('{opcion}', $tap['title'], (string) $menu->reply_text));
+
+            return true;
+        }
+
+        $next = $menu->on_select === ChatMenuAction::Menu ? $menu->nextMenu : null;
+
+        if ($next?->is_active) {
+            // A chosen destination narrows the packages of the next menu.
+            $this->sendMenu($lead, $next, $menu->source === ChatMenuSource::Destinations ? $tap['value'] : null);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private function sendMenu(Lead $lead, ChatMenu $menu, ?string $destination = null, int $offset = 0): void
+    {
+        $rows = $this->menus->rows($menu, $destination, $offset);
+
+        if ($rows === []) {
+            $this->sendAutomatic($lead, 'En este momento no hay opciones para mostrarte. Contame qué estás buscando y te ayudamos.');
+
+            return;
+        }
+
+        $this->sendAutomatic(
+            $lead,
+            $menu->body,
+            fn (string $to) => $this->whatsappGateway($lead)->sendList($to, $menu->body, $menu->button_text ?: 'Ver opciones', $rows, $menu->header, $menu->name),
+            ['list' => array_column($rows, 'title')],
+        );
+    }
+
+    /**
+     * A message no AI wrote (a menu or its fixed answer). If it cannot go out, a person has to pick the conversation up.
+     *
+     * @param  (callable(string): string)|null  $send  How to send it; plain text when null.
+     * @param  array<string, mixed>|null  $payload  What went with the text, for the inbox.
+     */
+    private function sendAutomatic(Lead $lead, string $text, ?callable $send = null, ?array $payload = null): void
+    {
+        $stored = $lead->messages()->create([
+            'role' => 'assistant',
+            'content' => $text,
+            'channel' => $lead->conversationChannel()->value,
+            'direction' => 'out',
+            'status' => 'sending',
+            'sent_from' => Message::SENT_FROM_MENU,
+            'payload' => $payload,
+        ]);
+
+        try {
+            $to = $this->recipientOf($lead);
+            $id = $send ? $send($to) : $this->sendTextVia($lead, $to, $text);
+            $stored->update(['external_id' => $id ?: null, 'status' => 'sent']);
+        } catch (Throwable $e) {
+            Log::warning("Chat menu not sent for lead {$lead->id}: ".$e->getMessage());
+            $stored->update(['status' => 'failed']);
+            BotNotice::raise($lead, BotNoticeType::Handoff, 'No se pudo enviar un menú del chat al cliente.');
+            $lead->forceFill(['needs_human_attention' => true])->saveQuietly();
+        }
     }
 
     /**
@@ -224,14 +376,197 @@ class WhatsAppConversationService
         return $message;
     }
 
+    /**
+     * An agent sends a document (the proposal PDF) from a public URL. Only on WhatsApp and inside the 24 h window.
+     *
+     * @throws \RuntimeException When the channel or the window does not allow it.
+     */
+    public function sendAgentDocument(Lead $lead, User $agent, string $url, string $filename, ?string $caption = null): Message
+    {
+        if ($lead->conversationChannel() !== Channel::WhatsApp) {
+            throw new \RuntimeException('Por ahora los documentos solo se envían por WhatsApp.');
+        }
+
+        if (! $lead->isInsideReplyWindow()) {
+            throw new \RuntimeException('Pasaron más de 24 horas desde el último mensaje del cliente: solo se pueden enviar plantillas aprobadas.');
+        }
+
+        $caption = trim((string) $caption) ?: null;
+
+        $message = $this->deliver(
+            $lead,
+            fn (string $to) => $this->whatsappGateway($lead)->sendDocument($to, $url, $filename, $caption),
+            $caption ?? "📎 {$filename}",
+            $agent,
+            ['attachment' => ['url' => $url, 'name' => $filename]],
+        );
+        $this->markAttended($lead, $agent);
+
+        return $message;
+    }
+
+    /**
+     * The WhatsApp conversation a booking can be sent to: its own lead, or the customer's open WhatsApp inquiry.
+     */
+    public function conversationForBooking(Booking $booking): ?Lead
+    {
+        $lead = $booking->lead;
+
+        if ($lead && $lead->conversationChannel() === Channel::WhatsApp) {
+            return $lead;
+        }
+
+        return $booking->customer ? $this->openWhatsAppLeadFor($booking->customer) : null;
+    }
+
+    /**
+     * Whether replies can go out on this conversation's channel and account.
+     */
+    public function isConfiguredFor(Lead $lead): bool
+    {
+        if ($lead->conversationChannel()->isSocial()) {
+            return (bool) $lead->channelAccount?->is_active && filled($lead->channelAccount->access_token);
+        }
+
+        return $this->whatsappGateway($lead)->isConfigured();
+    }
+
+    /**
+     * Whether earlier messages of this conversation can be brought from the provider (only WhatsApp through Zernio keeps them).
+     */
+    public function canImportHistory(Lead $lead): bool
+    {
+        return $this->gateway instanceof ZernioGateway
+            && $this->gateway->isConfigured()
+            && $lead->conversationChannel() === Channel::WhatsApp
+            && PhoneNumber::toE164($lead->customer?->phone) !== null;
+    }
+
+    /**
+     * Brings the messages of the last days from Zernio into the conversation, in their real order, so the team and the
+     * bot see what was said before the app was listening. Nothing is answered, counted as unread or paused, and a
+     * message already stored is skipped.
+     *
+     * @return int How many messages were added.
+     *
+     * @throws \RuntimeException When Zernio is not configured or does not answer.
+     */
+    public function importWhatsAppHistory(Lead $lead, int $days = 30): int
+    {
+        if (! $this->canImportHistory($lead)) {
+            throw new \RuntimeException('El historial solo se puede traer de conversaciones de WhatsApp conectadas por Zernio.');
+        }
+
+        /** @var ZernioGateway $zernio */
+        $zernio = $this->gateway;
+        $phone = (string) PhoneNumber::toE164($lead->customer->phone);
+        $conversationId = $zernio->conversationIdFor($phone);
+
+        if ($conversationId === null) {
+            return 0;
+        }
+
+        $messages = collect($zernio->messagesSince($conversationId, now()->subDays($days)))
+            ->filter(fn (array $message) => filled($message['id'] ?? null))
+            ->unique('id');
+
+        $known = Message::whereIn('external_id', $messages->pluck('id'))->pluck('external_id')->all();
+        $events = app(ZernioEventHandler::class);
+        $added = 0;
+
+        foreach ($messages->reject(fn (array $message) => in_array($message['id'], $known, true)) as $message) {
+            $incoming = ($message['direction'] ?? '') === 'incoming';
+            $source = $message['metadata']['source'] ?? null;
+            $sentAt = Carbon::parse($message['createdAt'] ?? $message['sentAt'] ?? now())->setTimezone(config('app.timezone'));
+
+            $text = $this->textOf($events->toCloudMessage($message['id'], $phone, [
+                'text' => $message['message'] ?? null,
+                'attachments' => $message['attachments'] ?? [],
+                'metadata' => $message['metadata'] ?? [],
+            ]));
+
+            $stored = new Message([
+                'lead_id' => $lead->id,
+                'role' => $incoming ? 'user' : 'assistant',
+                'content' => $text,
+                'channel' => Channel::WhatsApp->value,
+                'direction' => $incoming ? 'in' : 'out',
+                'external_id' => $message['id'],
+                'status' => $incoming ? 'received' : ($message['deliveryStatus'] ?? 'sent'),
+                'sent_from' => $incoming ? null : ($source === 'whatsapp_business_app' || $source === 'coexistence_history' ? Message::SENT_FROM_PHONE : Message::SENT_FROM_ZERNIO),
+                'payload' => ['imported' => true, 'zernio' => $message],
+            ]);
+            $stored->forceFill(['created_at' => $sentAt, 'updated_at' => now()]);
+
+            try {
+                $stored->save();
+                $added++;
+            } catch (UniqueConstraintViolationException) {
+                // Arrived live while importing: it is already in the conversation.
+            }
+        }
+
+        return $added;
+    }
+
+    /**
+     * Paused by hand: stays paused until someone resumes it.
+     */
     public function pauseAi(Lead $lead): void
     {
-        $lead->update(['ai_paused' => true]);
+        $lead->update(['ai_paused' => true, 'ai_paused_until' => null]);
     }
 
     public function resumeAi(Lead $lead): void
     {
-        $lead->update(['ai_paused' => false]);
+        $lead->update(['ai_paused' => false, 'ai_paused_until' => null]);
+    }
+
+    /**
+     * The receptionist answers and the reply goes out here. If it cannot go out, a person has to pick the conversation up.
+     */
+    private function replyWithBot(Lead $lead, Message $inbound, bool $isText): void
+    {
+        $key = 'wa-ai:'.$lead->id;
+
+        if (RateLimiter::tooManyAttempts($key, self::AI_REPLIES_PER_MINUTE)) {
+            Log::info("Receptionist bot throttled for lead {$lead->id}");
+
+            return;
+        }
+
+        RateLimiter::hit($key, 60);
+
+        $reply = $this->bot->respond($lead, $inbound, $isText);
+
+        if (! $reply) {
+            return;
+        }
+
+        $target = $reply->lead;
+
+        $stored = $target->messages()->create([
+            'role' => 'assistant',
+            'content' => $reply->text,
+            'channel' => $target->conversationChannel()->value,
+            'direction' => 'out',
+            'status' => 'sending',
+            'sent_from' => Message::SENT_FROM_BOT,
+            'input_tokens' => $reply->inputTokens,
+            'output_tokens' => $reply->outputTokens,
+            'ai_model' => $reply->model,
+            'payload' => $reply->buttons !== [] ? ['buttons' => $reply->buttons] : null,
+        ]);
+
+        try {
+            $id = $this->sendTextVia($target, $this->recipientOf($target), $reply->text, buttons: $reply->buttons);
+            $stored->update(['external_id' => $id ?: null, 'status' => 'sent']);
+        } catch (Throwable $e) {
+            Log::warning("Bot reply not sent for lead {$target->id}: ".$e->getMessage());
+            $stored->update(['status' => 'failed']);
+            BotNotice::raise($target, BotNoticeType::Handoff, 'No se pudo enviar la respuesta del bot al cliente.');
+            $target->forceFill(['needs_human_attention' => true])->saveQuietly();
+        }
     }
 
     private function replyWithAi(Lead $lead, string $text): void
@@ -246,7 +581,7 @@ class WhatsAppConversationService
 
         RateLimiter::hit($key, 60);
 
-        $history = $lead->messages()->latest()->take(10)->get()->reverse()
+        $history = $lead->messages()->newestFirst()->take(10)->get()->reverse()
             ->map(fn (Message $m) => ['role' => $m->role === 'user' ? 'user' : 'assistant', 'content' => $m->content])->values()->all();
 
         $lastAssistantId = (int) $lead->messages()->where('role', 'assistant')->max('id');
@@ -284,8 +619,8 @@ class WhatsAppConversationService
     {
         $lead->forceFill(['ai_paused' => true, 'needs_human_attention' => true])->saveQuietly();
 
-        $recipients = $lead->agent ? collect([$lead->agent]) : User::where('role', UserRole::Admin)->get();
-        $name = $lead->customer_name ?: $lead->customer?->name ?: "Lead #{$lead->id}";
+        $recipients = $lead->staffToNotify();
+        $name = $lead->displayName();
 
         foreach ($recipients as $user) {
             Notification::make()
@@ -298,8 +633,9 @@ class WhatsAppConversationService
 
     /**
      * @param  callable(string): string  $send
+     * @param  array<string, mixed>|null  $payload  What went with the text (buttons, attachment), for the inbox.
      */
-    private function deliver(Lead $lead, callable $send, string $content, ?User $agent): Message
+    private function deliver(Lead $lead, callable $send, string $content, ?User $agent, ?array $payload = null): Message
     {
         $to = $this->recipientOf($lead);
 
@@ -310,6 +646,7 @@ class WhatsAppConversationService
             'direction' => 'out',
             'status' => 'sending',
             'sent_by_user_id' => $agent?->id,
+            'payload' => $payload,
         ]);
 
         try {
@@ -326,7 +663,7 @@ class WhatsAppConversationService
     private function markAttended(Lead $lead, User $agent): void
     {
         $lead->forceFill([
-            'ai_paused' => true,
+            ...ReceptionistBot::pauseAfterHumanReply($lead),
             'unread_count' => 0,
             'agent_id' => $lead->agent_id ?? $agent->id,
             'last_contacted_at' => $lead->last_contacted_at ?? now(),
@@ -337,13 +674,8 @@ class WhatsAppConversationService
 
     private function findOrCreateLead(string $phone, ?string $profileName, string $text, ?ChannelAccount $account = null): Lead
     {
-        $customer = User::where('role', UserRole::Customer)->whereIn('phone', PhoneNumber::lookupVariants($phone))->first();
-
-        $lead = $customer
-            ? Lead::where('customer_id', $customer->id)->where('status', '!=', LeadStatus::Closed)
-                ->where(fn ($query) => $query->where('source', 'whatsapp')->orWhere('channel', Channel::WhatsApp->value))
-                ->latest('id')->first()
-            : null;
+        $customer = $this->customerByPhone($phone);
+        $lead = $customer ? $this->openWhatsAppLeadFor($customer) : null;
 
         $lead ??= $this->webLeadForWhatsApp($text, $phone);
 
@@ -359,6 +691,21 @@ class WhatsAppConversationService
         }
 
         return $lead;
+    }
+
+    private function customerByPhone(string $phone): ?User
+    {
+        return User::where('role', UserRole::Customer)->whereIn('phone', PhoneNumber::lookupVariants($phone))->first();
+    }
+
+    /**
+     * The customer's latest WhatsApp inquiry that is still open.
+     */
+    public function openWhatsAppLeadFor(User $customer): ?Lead
+    {
+        return Lead::where('customer_id', $customer->id)->where('status', '!=', LeadStatus::Closed)
+            ->where(fn ($query) => $query->where('source', 'whatsapp')->orWhere('channel', Channel::WhatsApp->value))
+            ->latest('id')->first();
     }
 
     /**
@@ -480,10 +827,13 @@ class WhatsAppConversationService
             : (string) PhoneNumber::toE164($lead->customer?->phone);
     }
 
-    private function sendTextVia(Lead $lead, string $to, string $text, bool $humanAgent = false): string
+    /**
+     * @param  list<string>  $buttons  Reply buttons on WhatsApp; written into the text on channels without them.
+     */
+    private function sendTextVia(Lead $lead, string $to, string $text, bool $humanAgent = false, array $buttons = []): string
     {
         if (! $lead->conversationChannel()->isSocial()) {
-            return $this->whatsappGateway($lead)->sendText($to, $text);
+            return $this->whatsappGateway($lead)->sendText($to, $text, $buttons);
         }
 
         $account = $lead->channelAccount;
@@ -492,7 +842,7 @@ class WhatsAppConversationService
             throw new \RuntimeException('La cuenta de '.$lead->conversationChannel()->getLabel().' de esta conversación no está conectada.');
         }
 
-        return $this->social->sendText($account, $to, $text, $humanAgent);
+        return $this->social->sendText($account, $to, ReplyButtons::asText($text, $buttons), $humanAgent);
     }
 
     private function whatsappGateway(Lead $lead): WhatsAppGateway
@@ -503,6 +853,22 @@ class WhatsAppConversationService
     }
 
     /**
+     * The id of the reply button or list row the customer tapped, if the message is a tap.
+     *
+     * @param  array<string, mixed>  $message
+     */
+    private function tapIdOf(array $message): ?string
+    {
+        if (($message['type'] ?? null) !== 'interactive') {
+            return null;
+        }
+
+        $id = trim((string) ($message['interactive']['list_reply']['id'] ?? $message['interactive']['button_reply']['id'] ?? ''));
+
+        return $id === '' ? null : $id;
+    }
+
+    /**
      * @param  array<string, mixed>  $message
      */
     private function textOf(array $message): string
@@ -510,7 +876,7 @@ class WhatsAppConversationService
         return match ($message['type'] ?? 'text') {
             'text' => (string) ($message['text']['body'] ?? ''),
             'button' => (string) ($message['button']['text'] ?? '[Botón]'),
-            'interactive' => (string) ($message['interactive']['button_reply']['title'] ?? $message['interactive']['list_reply']['title'] ?? '[Respuesta]'),
+            'interactive' => (string) ($message['interactive']['button_reply']['title'] ?? $message['interactive']['list_reply']['title'] ?? '') ?: '[Respuesta]',
             'image' => '[Imagen]'.(isset($message['image']['caption']) ? ' '.$message['image']['caption'] : ''),
             'audio' => '[Audio]',
             'video' => '[Video]',

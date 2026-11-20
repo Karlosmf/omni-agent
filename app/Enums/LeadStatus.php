@@ -8,15 +8,21 @@ use Filament\Support\Contracts\HasLabel;
 enum LeadStatus: string implements HasColor, HasLabel
 {
     case New = 'new';
+    case PendingReview = 'pending_review';
     case Contacted = 'contacted';
+    case Quoted = 'quoted';
+    case Booked = 'booked';
     case Closed = 'closed';
 
     public function getLabel(): ?string
     {
         return match ($this) {
-            self::New => 'Nuevo',
-            self::Contacted => 'Contactado',
-            self::Closed => 'Cerrado',
+            self::New => 'Nueva',
+            self::PendingReview => 'Por verificar',
+            self::Contacted => 'En curso',
+            self::Quoted => 'Cotizada',
+            self::Booked => 'Reservada',
+            self::Closed => 'Cerrada',
         };
     }
 
@@ -24,8 +30,10 @@ enum LeadStatus: string implements HasColor, HasLabel
     {
         return match ($this) {
             self::New => 'gray',
+            self::PendingReview => 'warning',
             self::Contacted => 'info',
-            self::Closed => 'success',
+            self::Quoted => 'primary',
+            self::Booked, self::Closed => 'success',
         };
     }
 }

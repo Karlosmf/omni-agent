@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class MonthlyBudgetChart extends ChartWidget
 {
-    protected static ?int $sort = 10;
+    protected static ?int $sort = 24;
 
     protected ?string $heading = 'Resultados Financieros (Año Actual)';
 

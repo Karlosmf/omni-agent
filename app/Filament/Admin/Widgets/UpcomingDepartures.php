@@ -10,7 +10,7 @@ use Filament\Widgets\TableWidget as BaseWidget;
 
 class UpcomingDepartures extends BaseWidget
 {
-    protected static ?int $sort = 5;
+    protected static ?int $sort = 20;
 
     protected static ?string $heading = 'Próximas Salidas Confirmadas';
 

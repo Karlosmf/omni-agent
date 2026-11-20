@@ -24,11 +24,12 @@ class ProcessIncomingWhatsApp implements ShouldQueue
 
     /**
      * @param  array<string, mixed>  $message
+     * @param  array<string, mixed>|null  $rawPayload  The provider's event as it arrived, kept with the stored message.
      */
-    public function __construct(public array $message, public ?string $profileName = null, public ?string $phoneNumberId = null) {}
+    public function __construct(public array $message, public ?string $profileName = null, public ?string $phoneNumberId = null, public ?array $rawPayload = null) {}
 
     public function handle(WhatsAppConversationService $conversations): void
     {
-        $conversations->receive($this->message, $this->profileName, $this->phoneNumberId);
+        $conversations->receive($this->message, $this->profileName, $this->phoneNumberId, $this->rawPayload);
     }
 }

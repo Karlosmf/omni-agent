@@ -51,8 +51,8 @@ class UserForm
                                 'manage_leads' => 'Gestionar Consultas',
                                 'manage_bookings' => 'Gestionar Presupuestos / Files',
                                 'manage_customers' => 'Gestionar Clientes',
+                                'manage_packages' => 'Gestionar Catálogo / Ideas de Viaje',
                                 'manage_transactions' => 'Gestionar Caja',
-                                'manage_users' => 'Gestionar Usuarios',
                                 'view_financial_reports' => 'Ver Reportes Financieros',
                             ])
                             ->columns(2)

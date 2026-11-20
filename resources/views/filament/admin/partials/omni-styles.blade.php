@@ -37,6 +37,10 @@
     .omni-msg.is-out .omni-bubble { background: var(--primary-100); color: var(--primary-950); box-shadow: none; }
     .omni-bubble p { margin: 0; white-space: pre-line; }
     .omni-bubble small { display: block; margin-top: .25rem; font-size: .65rem; color: var(--gray-500); }
+    .omni-chips { display: flex; flex-wrap: wrap; gap: .25rem; margin-top: .5rem; }
+    .omni-chip { border: 1px solid var(--primary-400); border-radius: 999px; padding: .1rem .6rem; font-size: .75rem; color: var(--primary-700); background: #fff; }
+    .dark .omni-chip { background: transparent; color: var(--primary-300); }
+    .omni-attachment { display: inline-block; margin-top: .4rem; font-size: .8rem; text-decoration: underline; }
     .omni-form { display: grid; gap: .75rem; margin-top: 1rem; }
     .omni-input { width: 100%; box-sizing: border-box; border: 1px solid var(--gray-300); border-radius: .5rem; padding: .5rem .75rem; font-size: .875rem; background: #fff; color: inherit; }
     .dark .omni-input { background: rgb(255 255 255 / .05); border-color: rgb(255 255 255 / .15); }

@@ -34,6 +34,11 @@ class TravelPackageResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasAnyPermission(['manage_packages', 'manage_bookings']) ?? false;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return TravelPackageForm::configure($schema);

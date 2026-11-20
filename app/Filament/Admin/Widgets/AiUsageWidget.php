@@ -8,7 +8,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class AiUsageWidget extends StatsOverviewWidget
 {
-    protected static ?int $sort = 4;
+    protected static ?int $sort = 30;
 
     protected ?string $heading = 'Uso de la IA este mes';
 

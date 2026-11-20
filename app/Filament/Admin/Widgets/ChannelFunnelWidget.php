@@ -16,7 +16,7 @@ class ChannelFunnelWidget extends ChartWidget
 {
     protected ?string $heading = 'Embudo por canal (últimos 90 días)';
 
-    protected static ?int $sort = 3;
+    protected static ?int $sort = 14;
 
     public static function canView(): bool
     {

@@ -3,9 +3,12 @@
 namespace App\Jobs;
 
 use App\Actions\Packages\ImportPackageAction;
+use App\Ai\AgencyAi;
+use App\Enums\AiProvider;
 use App\Enums\PackageImportStatus;
 use App\Models\PackageImport;
 use App\Services\Images\ImageSearchService;
+use App\Services\Import\PdfTextExtractor;
 use App\Services\Import\TravelPackageExtractor;
 use App\Services\Import\UrlExtractor;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -45,6 +48,15 @@ class ProcessPackageImport implements ShouldQueue
                     break;
                 case 'pdf':
                     $pdfPath = Storage::disk('local')->path((string) $this->import->source_file);
+
+                    // Providers that cannot see PDFs (Groq) get the text of the PDF instead.
+                    $provider = app(AgencyAi::class)->provider();
+
+                    if ($provider !== AiProvider::None && ! $provider->supportsPdf()) {
+                        $text = mb_substr(app(PdfTextExtractor::class)->extract($pdfPath), 0, UrlExtractor::MAX_CHARS);
+                        $pdfPath = null;
+                    }
+
                     break;
                 default:
                     $text = mb_substr((string) $this->import->source_text, 0, UrlExtractor::MAX_CHARS);

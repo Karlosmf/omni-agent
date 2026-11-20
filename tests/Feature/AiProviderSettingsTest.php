@@ -36,7 +36,7 @@ it('calls Groq with its endpoint, the default model and the saved key', function
     expect(app(AiConciergeService::class)->generate('Hola'))->toBe('Hola');
 
     Http::assertSent(fn ($request) => $request->url() === 'https://api.groq.com/openai/v1/chat/completions'
-        && $request['model'] === 'llama-3.3-70b-versatile'
+        && $request['model'] === 'qwen/qwen3.8-27b'
         && $request->hasHeader('Authorization', 'Bearer gsk_secret_key'));
 });
 
@@ -97,7 +97,7 @@ it('builds one provider per saved key without touching config/ai.php', function 
     [$name, $model] = app(AgencyAi::class)->resolve();
     [$again] = app(AgencyAi::class)->resolve();
 
-    expect($name)->toStartWith('agency_')->and($again)->toBe($name)->and($model)->toBe('llama-3.3-70b-versatile')
+    expect($name)->toStartWith('agency_')->and($again)->toBe($name)->and($model)->toBe('qwen/qwen3.8-27b')
         ->and(config('ai.providers.'.$name))->toBeNull();
 });
 

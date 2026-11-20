@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use App\Enums\BookingStatus;
+use App\Enums\InstallmentStatus;
 use App\Observers\BookingObserver;
 use Carbon\Carbon;
 use Database\Factories\BookingFactory;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -130,6 +132,81 @@ class Booking extends Model
     public function activities(): HasMany
     {
         return $this->hasMany(BookingActivity::class)->latest();
+    }
+
+    /**
+     * Sold files (señados o emitidos) that travel within the next days.
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopeTravellingSoon(Builder $query, int $days = 30): void
+    {
+        $query->whereIn('status', [BookingStatus::Senado, BookingStatus::Emitido])
+            ->whereDate('travel_date', '>=', today())
+            ->whereDate('travel_date', '<=', today()->addDays($days));
+    }
+
+    /**
+     * Files with an unpaid installment past its due date.
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopeWithOverdueInstallments(Builder $query): void
+    {
+        $query->where('status', '!=', BookingStatus::Cancelado)
+            ->whereHas('installments', fn (Builder $installments) => $installments
+                ->whereIn('status', [InstallmentStatus::Pending, InstallmentStatus::Partial, InstallmentStatus::Overdue])
+                ->whereDate('due_date', '<', today()));
+    }
+
+    /**
+     * Sold files travelling within the next days that have no voucher uploaded yet.
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopeMissingVouchers(Builder $query, int $days = 45): void
+    {
+        $query->travellingSoon($days)->where(fn (Builder $q) => $q->whereNull('vouchers')->orWhere('vouchers', '[]')->orWhere('vouchers', ''));
+    }
+
+    /**
+     * Quotes still waiting for the customer whose validity ends within the next days.
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopeQuoteExpiringSoon(Builder $query, int $days = 3): void
+    {
+        $query->whereIn('status', [BookingStatus::Borrador, BookingStatus::Presupuesto])
+            ->whereDate('valid_until', '>=', today())
+            ->whereDate('valid_until', '<=', today()->addDays($days));
+    }
+
+    /**
+     * The travel idea the proposal was built from: the lead's, or the one named in the notes by the budget generator.
+     */
+    public function proposalTravelPackage(): ?TravelPackage
+    {
+        if ($this->lead?->travelPackage) {
+            return $this->lead->travelPackage;
+        }
+
+        $prefix = 'Presupuesto generado a partir de Idea de Viaje: ';
+
+        if (str_starts_with((string) $this->internal_notes, $prefix)) {
+            return TravelPackage::where('title', substr((string) $this->internal_notes, strlen($prefix)))->first();
+        }
+
+        return null;
+    }
+
+    /**
+     * Public link to the proposal as a PDF (what gets attached on WhatsApp).
+     */
+    public function publicPdfUrl(string $format = 'budget_only'): string
+    {
+        $this->publicUrl();
+
+        return route('booking.public.pdf', ['token' => $this->public_token, 'format' => $format]);
     }
 
     public function isExpired(): bool

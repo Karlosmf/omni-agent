@@ -46,8 +46,8 @@ class UrlExtractor
         $text = preg_replace('/[ \t\x{00A0}]+/u', ' ', (string) $body?->textContent);
         $text = trim(preg_replace('/\s*\n\s*/', "\n", $text));
 
-        if (mb_strlen($text) < 80) {
-            throw new RuntimeException('La página no tiene texto suficiente para importar.');
+        if (mb_strlen($text) < 150) {
+            throw new RuntimeException('La página casi no tiene texto: probablemente carga su contenido con JavaScript y desde el servidor no se puede leer. Abrila en el navegador, copiá el texto de la oferta y usá la opción «Texto pegado».');
         }
 
         return [

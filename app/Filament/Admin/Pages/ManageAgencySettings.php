@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Pages;
 
 use App\Enums\AiProvider;
 use App\Enums\RateSource;
+use App\Filament\Admin\Schemas\AiProviderFields;
 use App\Models\AgencySetting;
 use App\Services\AiConciergeService;
 use Filament\Actions\Action;
@@ -15,7 +16,6 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
@@ -95,6 +95,7 @@ class ManageAgencySettings extends Page implements HasForms
 
         if ($settings) {
             $data = $settings->toArray();
+            unset($data['ai_api_key']);
             $data['is_maintenance_mode'] = app()->isDownForMaintenance();
 
             if (Storage::disk('local')->exists('agency_legal.json')) {
@@ -230,47 +231,7 @@ class ManageAgencySettings extends Page implements HasForms
                                                     ->placeholder('Ej: Sol')
                                                     ->required()
                                                     ->columnSpanFull(),
-                                                ToggleButtons::make('ai_provider')
-                                                    ->label('Proveedor de IA')
-                                                    ->options(AiProvider::class)
-                                                    ->default(AiProvider::None)
-                                                    ->inline()
-                                                    ->live()
-                                                    ->columnSpanFull(),
-                                                TextInput::make('ai_api_key')
-                                                    ->label('API Key de IA')
-                                                    ->placeholder(function (Get $get): string {
-                                                        $val = $get('ai_provider');
-                                                        $provider = $val instanceof AiProvider ? $val : AiProvider::tryFrom($val ?? 'none');
-
-                                                        return $provider?->getApiKeyPlaceholder() ?? 'API Key...';
-                                                    })
-                                                    ->helperText(function (Get $get): string {
-                                                        $val = $get('ai_provider');
-                                                        $provider = $val instanceof AiProvider ? $val : AiProvider::tryFrom($val ?? 'none');
-
-                                                        return $provider?->getHelperText() ?? '';
-                                                    })
-                                                    ->password()
-                                                    ->revealable()
-                                                    ->visible(function (Get $get): bool {
-                                                        $val = $get('ai_provider');
-                                                        $val = $val instanceof AiProvider ? $val->value : ($val ?? 'none');
-
-                                                        return $val !== 'none';
-                                                    })
-                                                    ->columnSpanFull(),
-                                                TextInput::make('ai_model')
-                                                    ->label('Modelo')
-                                                    ->placeholder(function (Get $get): string {
-                                                        $val = $get('ai_provider');
-                                                        $provider = $val instanceof AiProvider ? $val : AiProvider::tryFrom($val ?? 'none');
-
-                                                        return $provider?->getDefaultModel() ?: '';
-                                                    })
-                                                    ->helperText('Dejalo vacío para usar el modelo recomendado. Cambialo si el proveedor retira ese modelo.')
-                                                    ->visible(fn (Get $get): bool => ($get('ai_provider') instanceof AiProvider ? $get('ai_provider')->value : ($get('ai_provider') ?? 'none')) !== 'none')
-                                                    ->columnSpanFull(),
+                                                ...AiProviderFields::make(),
                                                 TextInput::make('ai_monthly_message_limit')
                                                     ->label('Límite mensual de respuestas de la IA')
                                                     ->numeric()
@@ -527,8 +488,8 @@ class ManageAgencySettings extends Page implements HasForms
         Storage::disk('local')->put('agency_legal.json', json_encode($legalData));
         unset($data['cuit'], $data['legajo']);
 
-        // Keep the column defaults (oficial / LPN) when these are left empty.
-        foreach (['default_rate_source', 'file_number_prefix', 'installments_last_due_days_before_trip'] as $key) {
+        // Keep the column defaults (oficial / LPN) and the saved AI key when these are left empty.
+        foreach (['default_rate_source', 'file_number_prefix', 'installments_last_due_days_before_trip', 'ai_api_key'] as $key) {
             if (blank($data[$key] ?? null)) {
                 unset($data[$key]);
             }

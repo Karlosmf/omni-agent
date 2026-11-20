@@ -3,8 +3,10 @@
 namespace App\Ai\Agents;
 
 use App\Models\Lead;
+use App\Models\Message as StoredMessage;
 use App\Support\VisitOrigin;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
+use Illuminate\Database\Eloquent\Builder;
 use Laravel\Ai\Attributes\MaxTokens;
 use Laravel\Ai\Attributes\Temperature;
 use Laravel\Ai\Attributes\Timeout;
@@ -32,7 +34,7 @@ class ConciergeAgent implements Agent, Conversational, HasStructuredOutput
     public const HISTORY_LIMIT = 15;
 
     /**
-     * @param  int|null  $beforeMessageId  Only history older than this message (the one being answered) is sent.
+     * @param  int|null  $beforeMessageId  Only history said before this message (the one being answered) is sent, by date.
      */
     public function __construct(private Lead $lead, private ?int $beforeMessageId = null) {}
 
@@ -82,9 +84,13 @@ class ConciergeAgent implements Agent, Conversational, HasStructuredOutput
      */
     public function messages(): iterable
     {
+        $before = $this->beforeMessageId ? StoredMessage::find($this->beforeMessageId) : null;
+
         $history = $this->lead->messages()
-            ->when($this->beforeMessageId, fn ($query) => $query->where('id', '<', $this->beforeMessageId))
-            ->orderByDesc('id')
+            ->when($before, fn (Builder $query) => $query->where(fn (Builder $earlier) => $earlier
+                ->where('created_at', '<', $before->created_at)
+                ->orWhere(fn (Builder $same) => $same->where('created_at', $before->created_at)->where('id', '<', $before->id))))
+            ->newestFirst()
             ->limit(self::HISTORY_LIMIT)
             ->get()
             ->reverse()

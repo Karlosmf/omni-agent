@@ -10,7 +10,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class FollowUpMetricsWidget extends StatsOverviewWidget
 {
-    protected static ?int $sort = 2;
+    protected static ?int $sort = 11;
 
     protected ?string $heading = 'Velocidad de respuesta';
 

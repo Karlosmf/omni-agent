@@ -3,14 +3,13 @@
 namespace App\Actions\Leads;
 
 use App\Enums\BookingStatus;
-use App\Enums\LeadStatus;
 use App\Enums\PriceBasis;
 use App\Models\Booking;
 use App\Models\Lead;
 use App\Services\BudgetGenerationService;
 
 /**
- * Creates the booking ("expediente") of a lead from the reviewed "Crear Expediente" form and closes the lead.
+ * Creates the booking ("expediente") of a lead from the reviewed "Crear Expediente" form. The lead moves to "Cotizada" on its own (BookingObserver).
  */
 class CreateBookingFromLeadAction
 {
@@ -56,8 +55,6 @@ class CreateBookingFromLeadAction
                 'internal_notes' => $data['notes'] ?? null,
             ]);
         }
-
-        $lead->update(['status' => LeadStatus::Closed]);
 
         return $booking;
     }

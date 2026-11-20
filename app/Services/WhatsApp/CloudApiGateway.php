@@ -5,6 +5,8 @@ namespace App\Services\WhatsApp;
 use App\Models\ChannelAccount;
 use App\Models\WhatsAppTemplate;
 use App\Services\Meta\MetaCredentials;
+use App\Support\ListMessage;
+use App\Support\ReplyButtons;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
@@ -38,13 +40,50 @@ class CloudApiGateway implements WhatsAppGateway
         return app(MetaCredentials::class)->whatsappToken($this->account);
     }
 
-    public function sendText(string $to, string $text): string
+    public function sendText(string $to, string $text, array $buttons = []): string
+    {
+        if ($buttons === []) {
+            return $this->send([
+                'messaging_product' => 'whatsapp',
+                'to' => ltrim($to, '+'),
+                'type' => 'text',
+                'text' => ['preview_url' => false, 'body' => $text],
+            ]);
+        }
+
+        return $this->send([
+            'messaging_product' => 'whatsapp',
+            'to' => ltrim($to, '+'),
+            'type' => 'interactive',
+            'interactive' => [
+                'type' => 'button',
+                'body' => ['text' => $text],
+                'action' => ['buttons' => array_map(
+                    fn (string $title, int $position) => ['type' => 'reply', 'reply' => ['id' => ReplyButtons::payloadFor($title, $position), 'title' => $title]],
+                    $buttons,
+                    array_keys($buttons),
+                )],
+            ],
+        ]);
+    }
+
+    public function sendList(string $to, string $body, string $button, array $rows, ?string $header = null, ?string $sectionTitle = null): string
     {
         return $this->send([
             'messaging_product' => 'whatsapp',
             'to' => ltrim($to, '+'),
-            'type' => 'text',
-            'text' => ['preview_url' => false, 'body' => $text],
+            'type' => 'interactive',
+            'interactive' => ListMessage::interactive($body, $button, $rows, $header, $sectionTitle),
+        ]);
+    }
+
+    public function sendDocument(string $to, string $url, string $filename, ?string $caption = null): string
+    {
+        return $this->send([
+            'messaging_product' => 'whatsapp',
+            'to' => ltrim($to, '+'),
+            'type' => 'document',
+            'document' => array_filter(['link' => $url, 'filename' => $filename, 'caption' => $caption], fn ($value) => $value !== null && $value !== ''),
         ]);
     }
 

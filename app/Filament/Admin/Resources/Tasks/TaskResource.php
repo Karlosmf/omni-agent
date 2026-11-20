@@ -23,6 +23,7 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class TaskResource extends Resource
 {
@@ -37,6 +38,31 @@ class TaskResource extends Resource
     protected static ?string $pluralModelLabel = 'Tareas';
 
     protected static ?int $navigationSort = 10;
+
+    /**
+     * Everyone in the panel has tasks; only an administrator touches someone else's.
+     */
+    public static function canAccess(): bool
+    {
+        return auth()->check();
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return self::owns($record);
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return self::owns($record);
+    }
+
+    private static function owns(Model $record): bool
+    {
+        $user = auth()->user();
+
+        return $user !== null && ($user->isAdmin() || (int) $record->agent_id === (int) $user->id);
+    }
 
     public static function getEloquentQuery(): Builder
     {

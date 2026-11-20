@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use App\Enums\BookingStatus;
 use App\Enums\Channel;
 use App\Enums\LeadStatus;
 use App\Enums\LeadTemperature;
+use App\Enums\UserRole;
 use App\Observers\LeadObserver;
 use Database\Factories\LeadFactory;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -33,12 +37,14 @@ class Lead extends Model
         'customer_budget',
         'raw_message',
         'ai_data',
+        'trip_data',
         'ai_summary',
         'needs_human_attention',
         'temperature',
         'last_contacted_at',
         'next_follow_up_at',
         'ai_paused',
+        'ai_paused_until',
         'whatsapp_last_inbound_at',
         'unread_count',
         'channel',
@@ -57,10 +63,12 @@ class Lead extends Model
         'status' => LeadStatus::class,
         'temperature' => LeadTemperature::class,
         'ai_data' => 'array',
+        'trip_data' => 'array',
         'needs_human_attention' => 'boolean',
         'last_contacted_at' => 'datetime',
         'next_follow_up_at' => 'datetime',
         'ai_paused' => 'boolean',
+        'ai_paused_until' => 'datetime',
         'whatsapp_last_inbound_at' => 'datetime',
         'last_inbound_at' => 'datetime',
         'first_response_at' => 'datetime',
@@ -83,9 +91,150 @@ class Lead extends Model
         return $this->hasOne(Booking::class);
     }
 
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class);
+    }
+
+    /**
+     * The funnel stage its bookings put it in: the most advanced one wins. Null when it has no bookings.
+     */
+    public function stageFromBookings(): ?LeadStatus
+    {
+        $statuses = $this->bookings()->pluck('status')->map(fn ($status) => $status instanceof BookingStatus ? $status : BookingStatus::from($status));
+
+        return match (true) {
+            $statuses->isEmpty() => null,
+            $statuses->contains(fn (BookingStatus $s) => in_array($s, [BookingStatus::Senado, BookingStatus::Emitido], true)) => LeadStatus::Booked,
+            $statuses->contains(fn (BookingStatus $s) => in_array($s, [BookingStatus::Borrador, BookingStatus::Presupuesto], true)) => LeadStatus::Quoted,
+            default => LeadStatus::Closed,
+        };
+    }
+
+    /**
+     * Moves the inquiry to the stage of its bookings, so nobody has to drag it by hand. A lead without bookings is left alone.
+     */
+    public function syncStageWithBookings(): void
+    {
+        $stage = $this->stageFromBookings();
+
+        if ($stage !== null && $stage !== $this->status) {
+            $this->update(['status' => $stage]);
+        }
+    }
+
     public function messages(): HasMany
     {
         return $this->hasMany(Message::class);
+    }
+
+    public function botNotices(): HasMany
+    {
+        return $this->hasMany(BotNotice::class);
+    }
+
+    /**
+     * What a non-admin may see: their own inquiries and the unassigned ones. Admins see everything.
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopeVisibleTo(Builder $query, ?User $user): void
+    {
+        if ($user && ! $user->isAdmin()) {
+            $query->where(fn (Builder $q) => $q->where('agent_id', $user->id)->orWhereNull('agent_id'));
+        }
+    }
+
+    /**
+     * Inquiries still being worked on.
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopeOpen(Builder $query): void
+    {
+        $query->whereNotIn('status', [LeadStatus::Closed, LeadStatus::Booked]);
+    }
+
+    /**
+     * Most urgent first: someone asking for a person, then an overdue follow-up, then hot leads,
+     * then the nearest follow-up (leads without one last), then the latest customer message.
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopeOrderByPriority(Builder $query): void
+    {
+        $now = now()->toDateTimeString();
+
+        $query
+            ->orderByDesc('needs_human_attention')
+            ->orderByRaw('CASE WHEN next_follow_up_at IS NOT NULL AND next_follow_up_at < ? THEN 0 ELSE 1 END', [$now])
+            ->orderByRaw('CASE temperature WHEN ? THEN 0 WHEN ? THEN 1 ELSE 2 END', [LeadTemperature::Hot->value, LeadTemperature::Warm->value])
+            ->orderByRaw('CASE WHEN next_follow_up_at IS NULL THEN 1 ELSE 0 END')
+            ->orderBy('next_follow_up_at')
+            ->orderByDesc('last_inbound_at')
+            ->orderByDesc('id');
+    }
+
+    /**
+     * Open inquiries someone has to act on today: asking for a person, still new, or with a follow-up due by tonight.
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopeNeedsActionToday(Builder $query): void
+    {
+        $query->open()->where(fn (Builder $q) => $q
+            ->where('needs_human_attention', true)
+            ->orWhere('status', LeadStatus::New)
+            ->orWhere('next_follow_up_at', '<=', now()->endOfDay()));
+    }
+
+    /**
+     * Open inquiries whose follow-up date already passed.
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopeFollowUpOverdue(Builder $query): void
+    {
+        $query->open()->where('next_follow_up_at', '<', now());
+    }
+
+    public function isFollowUpOverdue(): bool
+    {
+        return $this->next_follow_up_at?->isPast() && ! in_array($this->status, [LeadStatus::Closed, LeadStatus::Booked], true);
+    }
+
+    /**
+     * The name the team sees for this inquiry: the contact name, the customer's name, or its number.
+     */
+    public function displayName(): string
+    {
+        return $this->customer_name ?: $this->customer?->name ?: "Consulta #{$this->id}";
+    }
+
+    /**
+     * Who hears about this inquiry: its agent, or every admin while nobody has it.
+     *
+     * @return Collection<int, User>
+     */
+    public function staffToNotify(): Collection
+    {
+        return $this->agent ? new Collection([$this->agent]) : User::where('role', UserRole::Admin)->get();
+    }
+
+    /**
+     * The destination the customer asked about, from the bot's trip data or the older AI data.
+     */
+    public function destination(): ?string
+    {
+        return $this->trip_data['destino'] ?? $this->ai_data['destino'] ?? null;
+    }
+
+    /**
+     * Whether the AI must stay quiet: paused by hand (no end) or after a person answered (until the pause runs out).
+     */
+    public function isAiPaused(): bool
+    {
+        return $this->ai_paused && ($this->ai_paused_until === null || $this->ai_paused_until->isFuture());
     }
 
     public function channelAccount(): BelongsTo

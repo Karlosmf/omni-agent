@@ -393,7 +393,7 @@ test('create booking from the conversation fills the form and creates a draft bo
     $booking = Booking::where('lead_id', $lead->id)->first();
 
     expect($booking)->holder_name->toBe('Marta Gómez')->destination->toBe('Bariloche')->nights->toBe(7)->passengers->toEqual(3)->internal_notes->toBe('Pileta')
-        ->and($lead->fresh()->status)->toBe(LeadStatus::Closed);
+        ->and($lead->fresh()->status)->toBe(LeadStatus::Quoted);
 });
 
 // --- SLA ---

@@ -13,7 +13,7 @@ use Illuminate\Support\Carbon;
 
 class CurrencyRatesWidget extends BaseWidget
 {
-    protected static ?int $sort = 100;
+    protected static ?int $sort = 25;
 
     protected int|string|array $columnSpan = [
         'default' => 'full',

@@ -78,12 +78,23 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->databaseNotifications()
             ->navigationGroups([
+                // Communication first, then the trip and its money, then everything that sets the app up.
+                NavigationGroup::make()
+                    ->label('Chat'),
                 NavigationGroup::make()
                     ->label('Ventas')
                     ->collapsed(),
                 NavigationGroup::make()
+                    ->label('Gestión'),
+                NavigationGroup::make()
                     ->label('Catálogo')
                     ->collapsed(),
+                NavigationGroup::make()
+                    ->label('Tesorería'),
+                NavigationGroup::make()
+                    ->label('Reportes'),
+                NavigationGroup::make()
+                    ->label('Configuración'),
                 NavigationGroup::make()
                     ->label('Sistema')
                     ->collapsed(),

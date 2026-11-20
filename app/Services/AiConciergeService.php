@@ -49,13 +49,13 @@ class AiConciergeService
         try {
             $userMessage = $recordUserMessage
                 ? $lead->messages()->create(['role' => 'user', 'content' => $messageContent])
-                : $lead->messages()->where('role', 'user')->latest('id')->first();
+                : $lead->messages()->where('role', 'user')->newestFirst()->first();
 
             if (! $this->agencyAi->isEnabled()) {
                 return $this->fallbackBotLogic($messageContent, $lead);
             }
 
-            if ($this->monthlyLimitReached()) {
+            if ($this->budgetExhausted()) {
                 return $this->limitReached($lead);
             }
 
@@ -113,7 +113,7 @@ class AiConciergeService
      */
     public function extractBookingDraft(Lead $lead): array
     {
-        $transcript = $lead->messages()->orderByDesc('id')->limit(60)->get()->reverse()
+        $transcript = $lead->messages()->newestFirst()->limit(60)->get()->reverse()
             ->map(fn ($m) => ($m->role === 'user' ? 'Cliente' : 'Asesor').': '.$m->content)
             ->implode("\n");
 
@@ -192,7 +192,7 @@ class AiConciergeService
      *
      * @param  list<mixed>  $attachments
      */
-    private function prompt(Agent $agent, string $text, array $attachments = [], int $retries = self::MAX_RETRIES): AgentResponse
+    public function prompt(Agent $agent, string $text, array $attachments = [], int $retries = self::MAX_RETRIES): AgentResponse
     {
         [$provider, $model] = $this->agencyAi->resolve();
 
@@ -253,11 +253,34 @@ class AiConciergeService
         return $suggested && $order[$suggested->value] > $order[$current->value] ? $suggested : $current;
     }
 
-    private function monthlyLimitReached(): bool
+    /**
+     * Whether this month's budget ran out, either in AI replies or in dollars.
+     */
+    public function budgetExhausted(): bool
     {
-        $limit = (int) get_agency_settings()?->ai_monthly_message_limit;
+        $settings = get_agency_settings();
+        $messageLimit = (int) $settings?->ai_monthly_message_limit;
+        $spendLimit = (float) $settings?->ai_monthly_spend_limit_usd;
 
-        return $limit > 0 && Message::whereNotNull('input_tokens')->where('created_at', '>=', now()->startOfMonth())->count() >= $limit;
+        if ($messageLimit > 0 && Message::whereNotNull('input_tokens')->where('created_at', '>=', now()->startOfMonth())->count() >= $messageLimit) {
+            return true;
+        }
+
+        return $spendLimit > 0 && $this->monthlySpendUsd() >= $spendLimit;
+    }
+
+    /**
+     * Estimated from the tokens of the stored replies and the prices configured in the bot panel. Zero without prices.
+     */
+    public function monthlySpendUsd(): float
+    {
+        $settings = get_agency_settings();
+        $tokens = Message::whereNotNull('input_tokens')->where('created_at', '>=', now()->startOfMonth())
+            ->selectRaw('COALESCE(SUM(input_tokens), 0) as input, COALESCE(SUM(output_tokens), 0) as output')
+            ->first();
+
+        return ((int) $tokens->input * (float) $settings?->ai_input_price_per_million
+            + (int) $tokens->output * (float) $settings?->ai_output_price_per_million) / 1_000_000;
     }
 
     /**
@@ -270,6 +293,16 @@ class AiConciergeService
         $lead->forceFill(['needs_human_attention' => true])->saveQuietly();
         $lead->messages()->create(['role' => 'assistant', 'content' => $reply]);
 
+        $this->alertBudgetExhausted();
+
+        return $reply;
+    }
+
+    /**
+     * Tell the admins, once a month, that the AI stopped answering.
+     */
+    public function alertBudgetExhausted(): void
+    {
         if (Cache::add('ai-limit-alert:'.now()->format('Y-m'), true, now()->endOfMonth())) {
             foreach (User::where('role', UserRole::Admin)->get() as $admin) {
                 Notification::make()
@@ -279,8 +312,6 @@ class AiConciergeService
                     ->sendToDatabase($admin);
             }
         }
-
-        return $reply;
     }
 
     /**
@@ -312,7 +343,7 @@ class AiConciergeService
 
         $aiData = is_array($lead->ai_data) ? $lead->ai_data : [];
 
-        $lastAssistantMsg = $lead->messages()->where('role', 'assistant')->latest()->first();
+        $lastAssistantMsg = $lead->messages()->where('role', 'assistant')->newestFirst()->first();
         $lastText = $lastAssistantMsg ? strtolower($lastAssistantMsg->content) : '';
 
         if (str_contains($lastText, 'destino en mente')) {

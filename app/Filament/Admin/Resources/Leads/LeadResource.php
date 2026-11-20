@@ -20,7 +20,7 @@ class LeadResource extends Resource
 {
     protected static ?string $model = Lead::class;
 
-    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-chat-bubble-left-right';
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-clipboard-document-list';
 
     protected static UnitEnum|string|null $navigationGroup = 'Ventas';
 
@@ -48,17 +48,7 @@ class LeadResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $query = parent::getEloquentQuery();
-
-        $user = auth()->user();
-        if ($user && ! $user->isAdmin()) {
-            $query->where(function ($q) use ($user) {
-                $q->where('agent_id', $user->id)
-                    ->orWhereNull('agent_id');
-            });
-        }
-
-        return $query;
+        return parent::getEloquentQuery()->visibleTo(auth()->user());
     }
 
     public static function form(Schema $schema): Schema

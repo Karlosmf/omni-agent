@@ -15,7 +15,7 @@ Referencia completa del sistema, pantalla por pantalla. Si preferís aprender co
 9. Caja: cobros y pagos
 10. Proveedores, cuentas y categorías
 11. Seguimiento automático y tareas
-12. Bandeja de WhatsApp
+12. Bandeja de mensajes y bot recepcionista (WhatsApp, Instagram y Messenger)
 13. Ideas de Viaje y el Importador
 14. La vidriera web y sus formularios
 15. Portal del cliente
@@ -56,7 +56,18 @@ Entrá desde la dirección del panel de tu agencia (termina en `/admin`) con tu 
 | **Staff / Usuario** | Acceso básico. El administrador puede darle permisos puntuales desde *Sistema → Usuarios*. |
 | **Cliente** | Solo accede al portal del cliente (sección 15). |
 
-> **Importante:** el rol de una persona solo lo puede cambiar un administrador desde *Sistema → Usuarios*.
+**Permisos puntuales.** Además del rol, el administrador puede sumarle a una persona estos accesos:
+
+| Permiso | Qué habilita |
+|---|---|
+| **Gestionar Consultas** | Consultas, tablero, bandeja de mensajes. |
+| **Gestionar Presupuestos / Files** | Presupuestos, expedientes, proveedores y tipos de servicio. |
+| **Gestionar Clientes** | La agenda de clientes, con sus documentos. |
+| **Gestionar Catálogo / Ideas de Viaje** | Ideas de viaje, importador y banners. |
+| **Gestionar Caja** | Caja, cuentas y categorías. |
+| **Ver Reportes Financieros** | Los reportes de Tesorería. |
+
+> **Importante:** el rol de una persona, sus permisos y la lista de usuarios solo los maneja un **administrador** desde *Sistema → Usuarios*. Nadie más puede crear usuarios ni cambiarse sus propios permisos. Un administrador tampoco puede borrar su propia cuenta.
 
 ![Sistema → Usuarios](imagenes/25-usuarios.png)
 
@@ -95,7 +106,7 @@ Una **consulta** es una persona interesada en viajar. Entran solas por varios ca
 - el **chat** del sitio (con asistente virtual) ⚙️ *la IA requiere configuración*,
 - el **formulario de consulta**,
 - el **cotizador** (la persona completa destino, fechas y pasajeros),
-- **WhatsApp** (sección 12),
+- **WhatsApp, Instagram y Messenger** (sección 12),
 - una conexión externa (API), si la agencia la usa.
 
 El mismo cliente que vuelve a escribir no se duplica: se reconoce por su email o teléfono. Quien no deja ningún dato de contacto se guarda como una consulta separada (no se mezcla con otras).
@@ -104,9 +115,12 @@ El mismo cliente que vuelve a escribir no se duplica: se reconoce por su email o
 
 | Estado | Significado |
 |---|---|
-| **Nuevo** | Nadie la atendió todavía. |
-| **Contactado** | Ya se habló con la persona (pasa solo al cambiar el estado o al enviarle un presupuesto). |
-| **Cerrado** | Terminó (compró o se descartó). |
+| **Nueva** | Nadie la atendió todavía. |
+| **Por verificar** | El bot recepcionista abrió una segunda consulta para un cliente que ya tenía otra. Confirmala o unila desde *Chat → Avisos* (sección 12). |
+| **En curso** | Ya se habló con la persona. Pasa sola al responderle o al cambiar el estado. |
+| **Cotizada** | Ya tiene un presupuesto enviado. |
+| **Reservada** | Compró: tiene un expediente confirmado. |
+| **Cerrada** | Terminó sin compra o se descartó. |
 
 | Temperatura | Significado |
 |---|---|
@@ -114,14 +128,50 @@ El mismo cliente que vuelve a escribir no se duplica: se reconoce por su email o
 | 🟡 **Tibio** | Interesado, compara. Hacele seguimiento. |
 | 🔵 **Frío** | Solo pregunta. |
 
-La columna **Atención** marca las que necesitan a una persona. La columna **Próximo seguimiento** muestra cuándo toca volver a hablar (se pone en rojo si ya pasó) y el filtro **Seguimiento atrasado** las lista juntas.
+### La lista: lo más urgente primero
 
-![Listado de consultas agrupado por estado](imagenes/03-consultas.png)
+La lista de consultas **ya viene ordenada por urgencia**, así que siempre empezás por arriba:
+
+1. las que **piden una persona** (columna *Atención*),
+2. las que tienen el **seguimiento vencido**,
+3. las **calientes**,
+4. el resto, por la fecha del **próximo seguimiento** (las que no tienen fecha van al final).
+
+Arriba hay **pestañas** con un contador, que funcionan como tus colas de trabajo:
+
+| Pestaña | Qué muestra |
+|---|---|
+| **Para hoy** *(se abre por defecto)* | Las consultas abiertas que piden una persona, las nuevas y las que tienen seguimiento hasta hoy. |
+| **Seguimiento vencido** | Las que tenían que volver a contactarse y no se hizo. |
+| **Calientes** | Las abiertas con temperatura caliente. |
+| **Sin asignar** | Las abiertas que no tienen vendedor. |
+| **Abiertas** | Todas las que no están reservadas ni cerradas. |
+| **Todas** | Todo el historial. |
+
+En cada fila ves el nombre con el **destino** y el teléfono debajo, la **temperatura**, el **estado**, el **próximo seguimiento** (en rojo si ya pasó) y el **último contacto**. Si preferís otro orden, hacé clic en el título de una columna. También podés agrupar por estado y filtrar por estado, temperatura o *Seguimiento atrasado*.
+
+> Un vendedor ve y cuenta solo **sus** consultas y las que todavía no tienen vendedor.
+
+![Listado de consultas](imagenes/03-consultas.png)
+
+### El tablero de consultas
+
+*Menú: **Ventas → Tablero de consultas** (o el botón **Ver tablero** arriba de la lista)*
+
+Muestra las consultas en **columnas por estado**: *Nueva*, *En curso*, *Cotizada* y *Reservada*. La columna *Por verificar* aparece solo cuando el bot dejó consultas para confirmar, y *Cerrada* se muestra si tildás **Mostrar cerradas**.
+
+- **Arrastrá una tarjeta a otra columna** para cambiarle el estado.
+- Dentro de cada columna, **lo más urgente queda arriba**, con el mismo orden que la lista.
+- Cada tarjeta muestra el destino, la temperatura (con una franja roja si es caliente y amarilla si es tibia), la fecha de seguimiento (en rojo si venció), el último contacto y el vendedor. Un clic abre la consulta.
+- Arriba podés tildar **Solo mis consultas** y **Solo calientes**.
+- Cada columna muestra hasta 50 tarjetas. Si hay más, lo indica y las encontrás en la lista.
+
+> **¿Lista o tablero?** Usá la **lista** para el trabajo de todos los días: te dice a quién atender primero. Usá el **tablero** para la revisión semanal del embudo: ver cuántas consultas hay en cada etapa y moverlas.
 
 
 ### Lo que completa la inteligencia artificial
 
-Cuando hay IA configurada, lee la conversación y completa: **destino, presupuesto, pasajeros, fecha o quincena, noches, ciudad de salida y nombre**, y arma un resumen. Todo es editable: la IA ayuda, no decide.
+Cuando hay IA configurada, lee la conversación y completa: **destino, presupuesto, pasajeros, fecha o quincena, noches, ciudad de salida y nombre**, y arma un resumen. Si el **bot recepcionista** está encendido, además anota fechas desde y hasta, edades de los menores, pasaporte y visa, si lo quiere todo incluido, y se acuerda de lo que no cambia entre viajes (sección 12). Todo es editable: la IA ayuda, no decide.
 
 ### Acciones sobre una consulta
 
@@ -139,7 +189,11 @@ Menú ⋯ de cada fila:
 
 *Menú: **Ventas → Clientes***
 
-La agenda de personas que viajan. Cada ficha guarda nombre, teléfono, email y el historial de consultas y viajes. Podés crear clientes nuevos desde acá o "al vuelo" mientras armás un expediente.
+La agenda de personas que viajan. Cada ficha guarda nombre, teléfono, email, documento y pasaporte, y el historial de consultas y viajes. Podés crear clientes nuevos desde acá o "al vuelo" mientras armás un expediente.
+
+Dentro de la ficha, la pestaña **Consultas** lista todas las consultas del cliente con su destino, estado, vendedor, canal y último mensaje, y un botón para abrir la **Conversación** en la bandeja.
+
+> El documento y el pasaporte son lo que el cliente usa para entrar a su portal (sección 15). Por eso esta sección solo la ven quienes tienen permiso de clientes, consultas o presupuestos.
 
 ## 6. Presupuestos y expedientes (files)
 
@@ -156,6 +210,19 @@ Un mismo registro cambia de estado a medida que avanza:
 | **Cancelado** | Se cayó. |
 
 Cada expediente tiene un **número automático** (por ejemplo `LPN-2026-00001`). El prefijo se cambia en *Configuración → Finanzas*.
+
+### Las pestañas del listado
+
+Además de las pestañas por estado (*Borradores*, *Presupuestos*, *Files Activos*, *Cancelados*, *Todos*), hay cuatro **colas de seguimiento de pasajeros**, ordenadas por fecha de viaje:
+
+| Pestaña | Qué muestra |
+|---|---|
+| **Viajan en 30 días** *(se abre por defecto)* | Expedientes señados o emitidos que salen en los próximos 30 días, el más cercano primero. |
+| **Cuotas vencidas** | Expedientes con alguna cuota impaga cuyo vencimiento ya pasó. |
+| **Sin vouchers** | Expedientes señados o emitidos que viajan en 45 días o menos y todavía no tienen vouchers cargados. |
+| **Presupuestos por vencer** | Borradores y presupuestos cuya validez termina en los próximos 3 días. |
+
+Cada pestaña muestra cuántos expedientes tiene. Si un número no está en cero, hay algo para hacer.
 
 ![Listado de presupuestos y expedientes](imagenes/05-expedientes.png)
 
@@ -186,11 +253,18 @@ Botones arriba a la derecha:
 | Botón | Qué hace |
 |---|---|
 | **Enviar por Email** | Manda el presupuesto en PDF al correo del cliente. ⚙️ *Requiere correo saliente configurado.* |
-| **Enviar por WhatsApp** | Abre WhatsApp con el mensaje y el link listos. |
+| **Enviar PDF por WhatsApp** | Manda el **presupuesto en PDF** a la conversación de WhatsApp del cliente, con un mensaje que podés editar. Elegís *Solo Presupuesto* o *Presupuesto + Detalle de la Idea de Viaje*. El envío queda en la bandeja y en el historial del expediente. ⚙️ *Requiere WhatsApp conectado.* |
+| **Abrir en WhatsApp** | Abre WhatsApp en tu computadora o celular con el mensaje y el link listos, para que lo mandes vos. |
 | **Presupuesto (PDF)** | Descarga el PDF (con el plan de pagos si existe). |
 | **Acuerdo (PDF)** | Genera el contrato con los datos del cliente. |
 | **Ver Link Público** | Muestra el link privado del presupuesto para copiar y compartir. |
 | **Renovar validez** | Aparece si el presupuesto venció: lo deja vigente 7 días más. |
+
+**Sobre "Enviar PDF por WhatsApp":**
+
+- Aparece solo si el cliente tiene una **conversación de WhatsApp** abierta en la bandeja y WhatsApp está conectado.
+- Se puede usar dentro de las **24 horas** desde el último mensaje del cliente (es una regla de WhatsApp, sección 12). Fuera de ese plazo el botón queda gris y explica por qué: esperá a que el cliente vuelva a escribir o mandale una plantilla desde la bandeja.
+- El cliente recibe el PDF como documento, igual que si se lo mandaras desde el celular.
 
 En la parte de abajo del expediente hay pestañas: **Plan de Pagos**, **Movimientos de Caja**, **Itinerario del Viaje** y **Historial de Actividad** (el historial: creación, cambios de estado, envíos y *"el cliente abrió el presupuesto"*).
 
@@ -359,36 +433,86 @@ Además, todos los días a las 9:00 recibís avisos de tareas vencidas y de pres
 ![Listado de tareas](imagenes/16-tareas.png)
 
 
-## 12. Bandeja de WhatsApp
+## 12. Bandeja de mensajes y bot recepcionista
 
-*Menú: **Clientes → Bandeja de WhatsApp*** ⚙️ *Requiere conectar WhatsApp Business (Cloud API de Meta)*
+*Menú: **Chat → Bandeja de mensajes***, ***Chat → Bot recepcionista*** y ***Chat → Avisos*** ⚙️ *Requiere conectar al menos un canal (ver Guía de administración)*
 
-Los mensajes que tus clientes mandan al número de la agencia entran al sistema como consultas y se ven en esta pantalla, con las conversaciones a la izquierda y el chat a la derecha.
+Los mensajes que tus clientes mandan por **WhatsApp**, **Instagram** y **Messenger** entran al sistema como consultas y se ven todos juntos en la bandeja, con las conversaciones a la izquierda y el chat a la derecha.
 
-**Cómo funciona**
+![Bandeja de mensajes: conversaciones a la izquierda, chat a la derecha](imagenes/17-bandeja-whatsapp.png)
 
-1. Llega un mensaje: el sistema reconoce o crea al cliente (por su teléfono, en cualquier formato) y abre una consulta con origen *whatsapp*.
-2. Si todavía no lo atiende nadie, el **asistente de IA responde** y hace las preguntas clave (destino, fechas, ciudad de salida, pasajeros, presupuesto).
-3. Cuando la IA termina de calificar, **o el cliente pide hablar con una persona**, la IA **deja de responder**, la consulta pasa a "atención requerida" y se avisa al vendedor (o a los administradores).
-4. Desde la bandeja respondés vos. **Al responder, la IA se pausa sola** en esa conversación y la consulta pasa a *Contactado*.
+### Cómo llega un mensaje
 
-![Bandeja de WhatsApp: conversaciones a la izquierda, chat a la derecha](imagenes/17-bandeja-whatsapp.png)
+1. El sistema reconoce o crea al cliente: en WhatsApp por su **teléfono** (en cualquier formato) y en Instagram o Messenger por su cuenta. Abre una consulta con el canal de origen.
+2. Si todavía no lo atiende nadie, responde **el bot recepcionista** (si está encendido) o el **asistente anterior** (si no).
+3. Cuando hace falta una persona, la consulta pasa a "atención requerida" y el equipo recibe un **aviso**. Con el bot recepcionista, además, la consulta se marca como **caliente**.
+4. Desde la bandeja respondés vos. **Al responder, el bot se pausa** en esa conversación por las horas que configuraste (12 por defecto) y la consulta pasa a *En curso*.
 
+> **WhatsApp en el celular y en el sistema a la vez.** Si la agencia conectó WhatsApp a través de **Zernio**, el número sigue funcionando en la app **WhatsApp Business** del celular. Lo que el equipo escribe desde el celular también aparece en la bandeja (marcado como **Celular**) y el bot se corre igual que si hubieras respondido desde el sistema.
 
-**En la pantalla**
+### En la pantalla
 
-- Filtros: **Todas · No leídas · Mías · Urgentes**. El menú muestra un globito con las no leídas y la pantalla se actualiza sola cada pocos segundos.
+- **Canales:** *Todos los canales*, *WhatsApp*, *Instagram* o *Messenger*. Si la agencia tiene varios números o cuentas, también podés elegir uno.
+- **Filtros:** *Todas*, *No leídas*, *Mías* y *Urgentes*. El menú muestra un globito con las no leídas y la pantalla se actualiza sola cada pocos segundos.
 - **Pausar IA / Reanudar IA** y **Ver lead**.
-- Etiquetas de cada mensaje: enviado, entregado, leído o fallido.
+- Quién escribió cada mensaje: **IA**, **Equipo** o **Celular**, y su estado: enviado, entregado, leído o fallido.
+- Si el bot mandó **botones de respuesta**, se ven debajo del mensaje como etiquetas. Si se mandó un **PDF**, aparece el adjunto con un link para abrirlo.
 
-**La regla de las 24 horas (de WhatsApp, no nuestra)**
+### La regla de las 24 horas (de Meta, no nuestra)
 
-Podés escribir libremente solo hasta **24 horas después del último mensaje del cliente**. Pasado ese tiempo, WhatsApp solo deja enviar **plantillas aprobadas**: la pantalla te muestra un selector de plantilla (por ejemplo "seguimiento de viaje") y los campos para completarla.
+Podés escribir libremente solo hasta **24 horas después del último mensaje del cliente**.
 
-Las plantillas se cargan en *Sistema → Plantillas de WhatsApp* con el nombre exacto que aprobó Meta.
+- **WhatsApp:** pasado ese plazo, solo se pueden enviar **plantillas aprobadas**. La pantalla te muestra un selector de plantilla (por ejemplo "seguimiento de viaje") y los campos para completarla. Las plantillas se cargan en *Sistema → Plantillas de WhatsApp* con el nombre exacto que aprobó Meta.
+- **Instagram y Messenger:** no hay plantillas. Si la cuenta tiene activado *"Permitir que una persona responda hasta 7 días después"*, una persona (nunca el bot) puede seguir respondiendo hasta 7 días. Si no, hay que esperar a que el cliente vuelva a escribir.
 
 ![Plantillas de WhatsApp aprobadas por Meta](imagenes/19-plantillas-whatsapp.png)
 
+### El bot recepcionista
+
+*Menú: **Chat → Bot recepcionista*** (solo administradores)
+
+Es el asistente que atiende los primeros mensajes de **WhatsApp, Instagram y Messenger**. Su trabajo es **resolver dudas generales y juntar los datos del viaje** para que el equipo mande la cotización oficial:
+
+- destino, fechas (desde, hasta y si son flexibles), presupuesto en dólares,
+- adultos, menores y sus edades,
+- pasaporte y visa (solo si el viaje es al exterior), si lo quiere todo incluido y la ciudad de salida.
+
+Pregunta de a una o dos cosas por mensaje, no repite lo que ya sabe, y **se acuerda de lo que no cambia entre viajes**: la próxima vez solo confirma (*"¿seguís teniendo el pasaporte vigente?"*).
+
+**Botones de respuesta en WhatsApp.** Cuando la pregunta tiene respuestas cerradas (*Sí / No*, *Todo incluido / Solo hotel*), el bot la manda con **hasta 3 botones** para que el cliente conteste con un toque. El toque cuenta como si el cliente lo hubiera escrito. En Instagram y Messenger las mismas opciones aparecen escritas como lista.
+
+**Reglas fijas, que nadie puede cambiar:**
+
+- Nunca da **formas de pago, datos bancarios, precios finales ni disponibilidad confirmada**. Si una respuesta los incluye, el sistema la bloquea, manda un mensaje de derivación y avisa al equipo.
+- Solo habla de viajes y de la agencia.
+- No inventa. Si no sabe, si le piden una persona o si quieren reservar o pagar, **deriva**.
+- Lo que escribe el cliente son datos, nunca órdenes.
+
+**Lo que configurás:**
+
+| Sección | Qué ajustás |
+|---|---|
+| **Estado** | El interruptor que lo enciende. Apagado, los canales siguen con el asistente anterior. |
+| **Qué dice** | *Instrucciones* (tono, qué preguntar, preguntas frecuentes) y *Cuándo derivar a una persona*, en lenguaje común. |
+| **Promociones vigentes** | Título, texto, canal donde se publicó y fechas. El bot las explica tal cual, solo mientras están vigentes. |
+| **Horario y topes** | Días y horario del equipo (decide cuándo se muestran los avisos; el bot responde siempre), **horas de pausa** después de una respuesta humana y **máximo de respuestas por conversación por día**. |
+| **Proveedor de IA** | Es la misma IA de toda la agencia. Incluye un **límite de gasto mensual en dólares**: al llegar, el bot deja de responder, avisa al equipo y le dice al cliente que una persona se va a comunicar. |
+
+**Probar bot:** el botón abre un chat interno para escribirle como si fueras un cliente. Usa la misma IA y las mismas reglas, pero **no guarda ni envía nada**. Ves los datos que fue anotando, los botones que propone y los avisos que hubiera dado. Probalo siempre antes de encenderlo.
+
+### Avisos del bot
+
+*Menú: **Chat → Avisos***
+
+Es la lista de cosas que el bot te pide revisar:
+
+| Aviso | Qué hacer |
+|---|---|
+| **Derivación a una persona** | El cliente necesita a alguien (pidió hablar, quiere pagar, el bot no supo responder). Abrí la conversación y respondé. |
+| **Datos completos: lista para cotizar** | El bot juntó todo lo necesario. Armá el presupuesto. |
+| **Verificar consulta nueva** | El cliente habló de un viaje distinto y el bot abrió una consulta *Por verificar*. Elegí **Confirmar como nueva** o **Unir a la consulta de…** (pasa los mensajes y los datos a la otra y borra la duplicada). |
+
+Cada aviso tiene **Ver conversación** y **Marcar leído**.
 
 ## 13. Ideas de Viaje y el Importador
 
@@ -459,7 +583,7 @@ Lo que ve el público:
 ![Inicio del sitio público](imagenes/31-inicio-publico.png)
 
 - **Ideas de Viaje** (el catálogo), con el detalle de cada paquete y su formulario.
-- **Chat** con el asistente virtual ⚙️.
+- **Chat** con el asistente virtual ⚙️. Después de los primeros mensajes, el chat ofrece botones para **seguir la charla por WhatsApp, Instagram o Messenger**, poniendo primero la red de la que vino la visita. La conversación continúa en la misma consulta, con todo lo que ya se habló.
 - **Cotizador** (/cotizar): la persona elige destino, fechas, pasajeros y deja sus datos en 3 pasos.
 - **Página de presupuesto** (la del link privado).
 - Páginas de quiénes somos, privacidad y cookies.
@@ -471,7 +595,9 @@ Cualquier consulta que llega por estos medios aparece en **Consultas**. Para evi
 
 ## 15. Portal del cliente
 
-Los clientes pueden entrar a su propio espacio (dirección `/portal`) para ver sus viajes y consultas. Como las cuentas se crean sin contraseña conocida, la primera vez deben usar **"¿Olvidaste tu contraseña?"** para crear la suya por email. ⚙️ *Requiere correo saliente.*
+Los clientes pueden entrar a su propio espacio (dirección `/portal`) para ver sus viajes y consultas.
+
+Para entrar escriben su **email o teléfono** y, en lugar de una contraseña, su **DNI o pasaporte**, tal como figura en su ficha de cliente. Por eso conviene cargar bien esos datos en *Ventas → Clientes*. Después de varios intentos fallidos, el portal hace esperar unos minutos antes de dejar probar de nuevo.
 
 ## 16. Configuración de la agencia
 
@@ -479,7 +605,7 @@ Los clientes pueden entrar a su propio espacio (dirección `/portal`) para ver s
 
 | Pestaña | Qué configurás |
 |---|---|
-| **Identidad y Frontend** | Nombre de la empresa, logo e isotipo, **nombre del asistente virtual**, **proveedor de IA y su clave**, colores del sitio público, SEO. |
+| **Identidad y Frontend** | Nombre de la empresa, logo e isotipo, **nombre del asistente virtual**, **proveedor de IA** (Google Gemini, OpenAI, Groq u otro compatible) **y su clave**, colores del sitio público, SEO. La clave guardada nunca se vuelve a mostrar completa: solo sus últimos 4 caracteres. |
 | **Panel de Control (Backend)** | Colores del panel de administración. |
 | **Contacto y Redes** | Email, teléfono, dirección, mapa, redes sociales (los links de WhatsApp también se usan en el chat). |
 | **Analítica y Scripts** | Códigos externos (Google Analytics, píxeles). |
@@ -491,7 +617,9 @@ Los clientes pueden entrar a su propio espacio (dirección `/portal`) para ver s
 ![Configuración → Integraciones](imagenes/24c-configuracion-integraciones.png)
 
 
-Recordá apretar **Guardar Cambios** (arriba a la derecha).
+Recordá apretar **Guardar Cambios** (arriba a la derecha). El botón **Guardar y probar IA** guarda y comprueba que el proveedor, la clave y el modelo respondan.
+
+> Lo del bot recepcionista se configura aparte, en *Chat → Bot recepcionista* (sección 12).
 
 ![Configuración → pestaña Finanzas](imagenes/24b-configuracion-finanzas.png)
 
@@ -518,6 +646,10 @@ Recordá apretar **Guardar Cambios** (arriba a la derecha).
 **Cotización:** cuántos pesos vale un dólar en el momento de la operación.
 **Ventana de 24 horas:** plazo de WhatsApp para responder libremente.
 **Plantilla de WhatsApp:** mensaje pre-aprobado por Meta para escribir fuera de la ventana.
+**Bot recepcionista:** el asistente que atiende los primeros mensajes de WhatsApp, Instagram y Messenger y junta los datos del viaje.
+**Derivar:** cuando el bot pasa la conversación a una persona del equipo.
+**Botones de respuesta:** hasta 3 opciones que el cliente toca en WhatsApp en lugar de escribir.
+**Tablero:** la vista de consultas en columnas por estado, para mover cada consulta de etapa arrastrándola.
 
 **¿Por qué el total de un viaje en pesos cambió respecto de antes?**
 Porque ahora cada servicio en pesos se convierte a dólares con su cotización. Antes un servicio en pesos podía sumarse como si fueran dólares.
@@ -532,7 +664,16 @@ El excedente se aplica a las siguientes cuotas.
 Salen en una cola que se procesa cada minuto. Si pasan varios minutos, revisá el aviso del cron en el Escritorio.
 
 **La IA respondió algo incorrecto.**
-Corregilo desde la bandeja o el chat de la consulta y pausá la IA en esa conversación. Podés ajustar el nombre y el proveedor en *Configuración*.
+Corregilo desde la bandeja o el chat de la consulta y pausá la IA en esa conversación. Si usás el bot recepcionista, ajustá sus *Instrucciones* en *Chat → Bot recepcionista* y probalo con **Probar bot** antes de volver a encenderlo.
+
+**¿Por qué el bot no le respondió a un cliente?**
+Puede estar en pausa porque alguien del equipo respondió hace poco (también desde el celular): en ese caso no hay aviso, porque ya hay una persona atendiendo. También puede haber llegado al máximo de respuestas del día para esa conversación o al límite de gasto mensual: en esos dos casos queda un aviso en *Chat → Avisos*.
+
+**¿Por qué no aparece "Enviar PDF por WhatsApp" en un expediente?**
+El cliente no tiene una conversación de WhatsApp abierta o WhatsApp no está conectado. Si el botón aparece en gris, pasaron más de 24 horas desde su último mensaje.
+
+**¿En qué orden atiendo las consultas?**
+En el que te muestra la lista: ya viene ordenada por urgencia. Empezá por la pestaña **Para hoy** y vaciala de arriba hacia abajo.
 
 **¿Cómo evito que se mezclen clientes?**
 El sistema identifica por email o teléfono. Si alguien escribe sin datos, queda como una consulta aparte que podés completar a mano.

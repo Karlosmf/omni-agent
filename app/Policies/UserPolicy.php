@@ -4,61 +4,47 @@ namespace App\Policies;
 
 use App\Models\User;
 
+/**
+ * Staff accounts (roles and permissions) are managed by administrators only: anyone who could edit them
+ * could make themselves an administrator.
+ */
 class UserPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermission('manage_users');
+        return $user->isAdmin();
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
     public function view(User $user, User $model): bool
     {
-        return $user->hasPermission('manage_users');
+        return $user->isAdmin();
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
     public function create(User $user): bool
     {
-        return $user->hasPermission('manage_users');
+        return $user->isAdmin();
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
     public function update(User $user, User $model): bool
     {
-        return $user->hasPermission('manage_users');
+        return $user->isAdmin();
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * An administrator can never delete their own account.
      */
     public function delete(User $user, User $model): bool
     {
-        return $user->hasPermission('manage_users');
+        return $user->isAdmin() && ! $user->is($model);
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
     public function restore(User $user, User $model): bool
     {
-        return $user->hasPermission('manage_users');
+        return $user->isAdmin();
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
     public function forceDelete(User $user, User $model): bool
     {
-        return $user->hasPermission('manage_users');
+        return $user->isAdmin() && ! $user->is($model);
     }
 }

@@ -38,6 +38,30 @@ class PublicBookingController extends Controller
     }
 
     /**
+     * The proposal as a PDF, for WhatsApp to fetch and attach. Opening it is not counted as a customer view.
+     */
+    public function pdf(string $token, Request $request): Response
+    {
+        $booking = Booking::where('public_token', $token)
+            ->with(['items.serviceType', 'items.supplier', 'transactions', 'installments'])
+            ->firstOrFail();
+
+        $format = $request->query('format') === 'full' ? 'full' : 'budget_only';
+
+        $pdf = Pdf::loadView('pdf.booking', [
+            'booking' => $booking,
+            'settings' => get_agency_settings(),
+            'format' => $format,
+            'travelPackage' => $format === 'full' ? $booking->proposalTravelPackage() : null,
+        ])->output();
+
+        return response($pdf, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="presupuesto-'.$booking->file_number.'.pdf"',
+        ]);
+    }
+
+    /**
      * Count a customer opening the proposal. Staff previews and crawlers are ignored.
      */
     private function registerView(Booking $booking, Request $request): void

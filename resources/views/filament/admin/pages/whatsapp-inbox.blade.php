@@ -46,7 +46,7 @@
                         <li>
                             <button wire:click="open({{ $conversation->id }})" type="button" class="omni-conv {{ $this->lead === $conversation->id ? 'is-selected' : '' }}">
                                 <span style="min-width: 0;">
-                                    <span class="omni-ellipsis omni-strong omni-text-sm">{{ $conversation->customer_name ?: $conversation->customer?->name ?: 'Sin nombre' }}</span>
+                                    <span class="omni-ellipsis omni-strong omni-text-sm">{{ $conversation->displayName() }}</span>
                                     <span class="omni-ellipsis omni-muted">{{ $conversation->conversationChannel()->getLabel() }}@if ($conversation->channelAccount) · {{ $conversation->channelAccount->label }}@endif @if ($conversation->customer?->phone) · {{ $conversation->customer->phone }}@endif</span>
                                 </span>
                                 <span class="omni-conv-side">
@@ -56,7 +56,7 @@
                                     @if ($conversation->needs_human_attention && ! $conversation->first_response_at)
                                         <x-filament::badge color="danger">Esperando</x-filament::badge>
                                     @endif
-                                    @if ($conversation->ai_paused)
+                                    @if ($conversation->isAiPaused())
                                         <x-filament::badge color="gray">IA en pausa</x-filament::badge>
                                     @endif
                                 </span>
@@ -73,11 +73,14 @@
                 @if ($selected)
                     <div class="omni-between" style="margin-bottom: 1rem;">
                         <div>
-                            <p class="omni-strong" style="margin: 0;">{{ $selected->customer_name ?: $selected->customer?->name }}</p>
+                            <p class="omni-strong" style="margin: 0;">{{ $selected->displayName() }}</p>
                             <p class="omni-muted" style="margin: 0;">{{ $selected->conversationChannel()->getLabel() }}@if ($selected->channelAccount) ({{ $selected->channelAccount->label }})@endif @if ($selected->customer?->phone) · {{ $selected->customer->phone }}@endif · {{ $selected->isInsideReplyWindow() ? 'Ventana de 24 h abierta' : ($selected->conversationChannel()->isSocial() ? 'Fuera de la ventana de 24 h: no se puede responder' : 'Fuera de la ventana de 24 h: solo plantillas') }}</p>
                         </div>
                         <div class="omni-row">
-                            <x-filament::button size="sm" color="gray" wire:click="toggleAi">{{ $selected->ai_paused ? 'Reanudar IA' : 'Pausar IA' }}</x-filament::button>
+                            @if ($this->canImportHistory($selected))
+                                <x-filament::button size="sm" color="gray" icon="heroicon-o-arrow-down-tray" wire:click="importHistory" wire:target="importHistory" wire:loading.attr="disabled" tooltip="Trae los mensajes de los últimos 30 días desde Zernio">Traer historial</x-filament::button>
+                            @endif
+                            <x-filament::button size="sm" color="gray" wire:click="toggleAi">{{ $selected->isAiPaused() ? 'Reanudar IA' : 'Pausar IA' }}</x-filament::button>
                             <x-filament::button size="sm" color="gray" tag="a" :href="$this->leadUrl($selected)">Ver lead</x-filament::button>
                         </div>
                     </div>
@@ -87,7 +90,18 @@
                             <div class="omni-msg {{ $message->direction === 'in' ? '' : 'is-out' }}">
                                 <div class="omni-bubble">
                                     <p>{{ $message->content }}</p>
+                                    @if ($message->buttons() !== [])
+                                        <div class="omni-chips">
+                                            @foreach ($message->buttons() as $button)
+                                                <span class="omni-chip">{{ $button }}</span>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                    @if ($attachment = $message->attachment())
+                                        <a class="omni-attachment" href="{{ $attachment['url'] }}" target="_blank" rel="noopener">📎 {{ $attachment['name'] }}</a>
+                                    @endif
                                     <small>
+                                        @if ($message->isImported()) Historial · @endif
                                         {{ $message->created_at->format('d/m H:i') }}
                                         @if ($message->direction === 'out') · {{ $message->authorLabel() }} · {{ $message->status }} @endif
                                     </small>

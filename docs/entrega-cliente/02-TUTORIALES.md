@@ -11,13 +11,16 @@ Cada tutorial dice **cuánto lleva**, **qué necesitás** y **cómo saber que sa
 3. Cargar servicios en dólares y en pesos
 4. Armar el plan de pagos y cobrar la seña
 5. Cobrar una cuota en pesos y pagar a un proveedor
-6. Seguimiento automático: tareas y reglas
-7. Atender WhatsApp desde la bandeja
+6. Seguimiento: tu cola del día, el tablero y las reglas automáticas
+7. Atender WhatsApp, Instagram y Messenger desde la bandeja
 8. Importar una idea de viaje
 9. Publicar una idea y cuidar la vidriera
 10. Cierre del mes
 11. Sumar a una persona al equipo
 12. Qué hacer si…
+13. Configurar y probar el bot recepcionista
+14. Mandar el presupuesto en PDF por WhatsApp
+15. Controlar a los pasajeros que viajan pronto
 
 ---
 
@@ -49,7 +52,7 @@ Cada tutorial dice **cuánto lleva**, **qué necesitás** y **cómo saber que sa
 
 **Objetivo:** convertir una consulta en un presupuesto y mandárselo al cliente.
 
-1. Entrá a **Ventas → Consultas**. Si no hay ninguna, creá una de prueba desde el formulario de la web o con el botón **Nuevo**.
+1. Entrá a **Ventas → Consultas**. La lista abre en la pestaña **Para hoy**, con lo más urgente arriba. Si no hay ninguna, creá una de prueba desde el formulario de la web o con el botón **Nuevo**.
 
 ![Listado de consultas](imagenes/03-consultas.png)
 
@@ -63,9 +66,9 @@ Cada tutorial dice **cuánto lleva**, **qué necesitás** y **cómo saber que sa
 6. En **Estado** dejalo en **Presupuesto** y guardá.
 7. Arriba a la derecha:
    - **Presupuesto (PDF)** para revisar cómo lo ve el cliente, y
-   - **Enviar por Email** o **Enviar por WhatsApp**, o **Ver Link Público** para copiar el link.
+   - **Enviar por Email**, **Enviar PDF por WhatsApp** (Tutorial 14) o **Abrir en WhatsApp**, o **Ver Link Público** para copiar el link.
 
-✅ **Salió bien si…** en la pestaña **Actividad** del expediente figura el envío y la consulta deja de figurar como "sin contactar" para el seguimiento automático. (Si querés reflejarlo también en el estado, pasala a *Contactado* desde **Editar**.)
+✅ **Salió bien si…** en la pestaña **Actividad** del expediente figura el envío y la consulta deja de figurar como "sin contactar" para el seguimiento automático. Para reflejarlo en el estado, pasala a *Cotizada* desde **Editar** o arrastrándola en el **Tablero de consultas**.
 
 💡 Cuando el cliente abra el link, en **Actividad** vas a ver *"El cliente abrió el presupuesto por primera vez"*.
 
@@ -174,9 +177,27 @@ El sistema calcula a cuántos dólares equivale lo cobrado:
 
 ---
 
-## Tutorial 6 — Seguimiento automático: tareas y reglas
+## Tutorial 6 — Seguimiento: tu cola del día, el tablero y las reglas automáticas
 
-⏱ 10 minutos · 👤 Ventas (tareas) / Administrador (reglas)
+⏱ 15 minutos · 👤 Ventas (cola y tablero) / Administrador (reglas)
+
+### Empezar el día por la pestaña "Para hoy"
+
+1. Entrá a **Ventas → Consultas**. Abre en **Para hoy**: las consultas que piden una persona, las nuevas y las que tienen seguimiento hasta hoy.
+2. Trabajalas **de arriba hacia abajo**. La lista ya está ordenada: primero las que piden una persona, después los seguimientos vencidos, después las calientes y al final el resto por fecha de seguimiento.
+3. En cada una: respondé o llamá, y después **Editar** para cambiar el estado o poner la fecha del **próximo seguimiento**.
+4. Mirá las otras pestañas cuando termines: **Seguimiento vencido** debería quedar en cero, y en **Sin asignar** no debería quedar nada viejo.
+
+![Listado de consultas](imagenes/03-consultas.png)
+
+### Revisar el embudo en el tablero (una vez por semana)
+
+1. **Ventas → Tablero de consultas** (o **Ver tablero** desde la lista).
+2. Mirá cuántas consultas hay en cada columna: *Nueva*, *En curso*, *Cotizada*, *Reservada*.
+3. **Arrastrá** cada tarjeta a la columna que corresponda. Por ejemplo, de *En curso* a *Cotizada* cuando ya mandaste el presupuesto.
+4. Tildá **Solo mis consultas** para ver solo las tuyas, o **Solo calientes** para enfocarte en las que están por cerrar.
+
+💡 Una tarjeta con franja roja es caliente; una fecha en rojo es un seguimiento vencido.
 
 ### Ver lo que el sistema te dejó para hacer
 
@@ -203,34 +224,39 @@ El sistema calcula a cuántos dólares equivale lo cobrado:
 
 **Configuración → Finanzas → Asignación de leads** → activá *Asignar automáticamente los leads nuevos*. Cada consulta nueva va al vendedor con menos pendientes.
 
-### Ver las consultas atrasadas
-
-En **Consultas**, filtro **Seguimiento atrasado**. La columna *Próximo seguimiento* se ve en rojo cuando ya pasó.
-
-✅ **Salió bien si…** al otro día de una consulta sin atender, aparece una tarea para el vendedor.
+✅ **Salió bien si…** al terminar el día la pestaña **Seguimiento vencido** está vacía, y al otro día de una consulta sin atender aparece una tarea para el vendedor.
 
 ---
 
-## Tutorial 7 — Atender WhatsApp desde la bandeja
+## Tutorial 7 — Atender WhatsApp, Instagram y Messenger desde la bandeja
 
-⏱ 10 minutos · 👤 Ventas · ⚙️ *Requiere WhatsApp conectado (ver Guía de administración)*
+⏱ 10 minutos · 👤 Ventas · ⚙️ *Requiere al menos un canal conectado (ver Guía de administración)*
 
-1. Entrá a **Clientes → Bandeja de WhatsApp**. Un globito con número en el menú indica cuántas conversaciones tienen mensajes sin leer.
-2. A la izquierda, tus conversaciones. Filtrá por **No leídas**, **Mías** o **Urgentes**.
-3. Hacé clic en una: se abre el chat y se marca como leída.
+1. Entrá a **Chat → Bandeja de mensajes**. Un globito con número en el menú indica cuántas conversaciones tienen mensajes sin leer.
+2. Arriba elegí el canal (**Todos los canales**, *WhatsApp*, *Instagram* o *Messenger*) y, si quieren, filtrá por **No leídas**, **Mías** o **Urgentes**.
+3. Hacé clic en una conversación: se abre el chat y se marca como leída.
 
-![Bandeja de WhatsApp](imagenes/17-bandeja-whatsapp.png)
+![Bandeja de mensajes](imagenes/17-bandeja-whatsapp.png)
 
-4. Mirá quién respondió cada mensaje: **IA** (el asistente) o **Equipo**.
-5. Para responder, escribí abajo y apretá **Enviar**. **Desde ese momento la IA queda en pausa** en esa conversación y la consulta pasa a *Contactado*.
+4. Mirá quién respondió cada mensaje: **IA** (el bot o el asistente), **Equipo** (desde el sistema) o **Celular** (desde la app WhatsApp Business, si la agencia usa esa opción). Si el bot mandó botones, los ves como etiquetas debajo de su mensaje.
+5. Para responder, escribí abajo y apretá **Enviar**. **Desde ese momento el bot queda en pausa** en esa conversación y la consulta pasa a *En curso*.
 6. ¿Querés que la IA retome? Apretá **Reanudar IA**.
 7. **Ver lead** abre la ficha de la consulta para crear el expediente.
 
 ### Cuando pasaron más de 24 horas
 
-La bandeja avisa *"Fuera de la ventana de 24 h: solo plantillas"*. Elegí una **plantilla** de la lista, completá las variables (nombre, destino…) y enviá. Si no ves plantillas, pedile al administrador que las cargue en *Sistema → Plantillas de WhatsApp*.
+- **WhatsApp:** la bandeja avisa *"Fuera de la ventana de 24 h: solo plantillas"*. Elegí una **plantilla** de la lista, completá las variables (nombre, destino…) y enviá. Si no ves plantillas, pedile al administrador que las cargue en *Sistema → Plantillas de WhatsApp*.
+- **Instagram y Messenger:** si la cuenta lo permite, podés seguir respondiendo hasta 7 días. Si no, la bandeja te avisa que hay que esperar a que el cliente vuelva a escribir.
 
-✅ **Salió bien si…** el mensaje figura como *enviado* y luego *entregado/leído*.
+### Revisar los avisos del bot
+
+1. **Chat → Avisos**.
+2. *Derivación a una persona*: abrí la conversación con **Ver conversación** y respondé.
+3. *Datos completos: lista para cotizar*: armá el presupuesto (Tutorial 2).
+4. *Verificar consulta nueva*: si de verdad es otro viaje, **Confirmar como nueva**. Si es el mismo, **Unir a la consulta de…** y elegí la consulta abierta.
+5. **Marcar leído** cuando lo resolviste.
+
+✅ **Salió bien si…** el mensaje figura como *enviado* y luego *entregado/leído*, y no quedan avisos sin leer de días anteriores.
 
 ---
 
@@ -324,12 +350,16 @@ En la lista de ideas, la acción para **generar presupuesto** pide cliente, fech
 ![Usuarios del equipo](imagenes/25-usuarios.png)
 
 2. Nombre, email, contraseña inicial y **rol**:
-   - **Ventas:** trabaja sus consultas y expedientes,
+   - **Ventas:** trabaja sus consultas, clientes y expedientes,
    - **Finanzas:** ve todos los expedientes, la Caja y los reportes,
+   - **Staff:** acceso básico, más los permisos que le tildes,
    - **Administrador:** todo.
-3. Guardá y pasale su acceso. Recomendale cambiar la contraseña.
+3. Si hace falta, tildá **permisos puntuales** (por ejemplo *Gestionar Catálogo / Ideas de Viaje* para quien carga los paquetes, o *Gestionar Clientes*).
+4. Guardá y pasale su acceso. Recomendale cambiar la contraseña.
 
 Para quitarle el acceso a alguien, eliminá el usuario o cambiale el rol.
+
+> Solo un **administrador** puede entrar a *Sistema → Usuarios*. Dale ese rol solo a quien de verdad lo necesita: puede ver y cambiar todo.
 
 ---
 
@@ -346,3 +376,65 @@ Para quitarle el acceso a alguien, eliminá el usuario o cambiale el rol.
 | Se importó una idea con datos dudosos | No la publiques: **Editar borrador** y corregí, o **Descartar**. |
 | Dos clientes aparecen mezclados | Abrí la consulta y revisá email y teléfono; corregilos desde **Editar**. |
 | No veo una opción del menú | Es por tu rol. Pedile al administrador el permiso. |
+| El bot no le contestó a un cliente | Fijate si alguien del equipo le respondió hace poco (el bot se pausa) y revisá *Chat → Avisos*: ahí queda si llegó al tope diario o al límite de gasto. |
+| El bot dijo algo que no debía | Respondé vos desde la bandeja y ajustá sus *Instrucciones* en *Chat → Bot recepcionista*. Probalo con **Probar bot** antes de volver a encenderlo. |
+| No aparece **Enviar PDF por WhatsApp** | El cliente no tiene una conversación de WhatsApp abierta. Si está en gris, pasaron más de 24 horas: mandale una plantilla desde la bandeja. |
+| La pestaña **Para hoy** tiene demasiadas consultas | Poné fecha de **próximo seguimiento** a las que no son para hoy y cerrá las que ya no siguen. |
+
+---
+
+## Tutorial 13 — Configurar y probar el bot recepcionista
+
+⏱ 20 minutos · 👤 Administrador · ⚙️ *Requiere la IA y al menos un canal conectados*
+
+1. Entrá a **Chat → Bot recepcionista**. Dejá el interruptor **apagado** mientras lo configurás.
+2. En **Qué dice → Instrucciones**, escribí como le explicarías el trabajo a una persona nueva. Por ejemplo:
+   > *"Saludá con el nombre de la agencia. Si preguntan por Brasil, contá que tenemos salidas grupales en enero. Si preguntan por horarios, atendemos de lunes a viernes de 9 a 18."*
+3. En **Cuándo derivar a una persona**, sumá tus casos. Por ejemplo: *"grupos de más de 10 personas"*, *"viajes de egresados"*.
+4. En **Promociones vigentes**, cargá las que estén publicadas, con sus fechas. El bot solo las menciona mientras están vigentes.
+5. En **Horario y topes**, marcá los días y el horario del equipo. Dejá la pausa en 12 horas y un tope razonable de respuestas por día (por ejemplo 30).
+6. En **Proveedor de IA**, poné un **límite de gasto mensual** y los precios por millón de tokens de tu proveedor, así el sistema puede calcular cuánto se gastó.
+7. Apretá **Guardar**.
+8. Apretá **Probar bot** y escribile como un cliente: *"Hola, quiero ir a Bariloche en julio con mis dos hijos"*. Fijate que:
+   - responda corto y pregunte de a poco,
+   - al costado vaya completando los datos del viaje,
+   - si le preguntás *"¿cuánto sale?"* o *"¿cómo pago?"*, derive a una persona,
+   - cuando la pregunta es de sí o no, proponga botones.
+9. Si algo no te gusta, ajustá las instrucciones y volvé a probar. Cuando esté bien, **encendé el interruptor** y guardá.
+
+✅ **Salió bien si…** al escribirle desde tu celular al WhatsApp o al Instagram de la agencia, el bot responde y la consulta aparece en *Ventas → Consultas* con los datos que le diste.
+
+💡 Mientras el bot está encendido, todo lo que una persona del equipo responda (desde el sistema o desde el celular) lo pone en pausa en esa conversación.
+
+---
+
+## Tutorial 14 — Mandar el presupuesto en PDF por WhatsApp
+
+⏱ 3 minutos · 👤 Ventas · ⚙️ *Requiere WhatsApp conectado*
+
+**Antes de empezar:** el cliente tiene que haberte escrito por WhatsApp en las últimas 24 horas.
+
+1. Abrí el expediente en **Ventas → Presupuestos / Files**.
+2. Arriba a la derecha, apretá **Enviar PDF por WhatsApp**.
+3. Elegí el formato: **Solo Presupuesto** o **Presupuesto + Detalle de la Idea de Viaje**.
+4. Revisá el **mensaje** que acompaña al PDF. Viene armado con el nombre y el destino, y lo podés cambiar.
+5. Apretá **Enviar**.
+
+✅ **Salió bien si…** aparece el aviso *"Presupuesto enviado por WhatsApp"*, el PDF se ve en la conversación de la **Bandeja de mensajes** y en el **Historial de Actividad** del expediente figura el envío.
+
+💡 Si el botón está en gris, pasaron más de 24 horas. Mandale una plantilla desde la bandeja, esperá su respuesta y volvé a intentar. Si el botón no aparece, el cliente todavía no tiene una conversación de WhatsApp: usá **Abrir en WhatsApp** para escribirle desde tu celular.
+
+---
+
+## Tutorial 15 — Controlar a los pasajeros que viajan pronto
+
+⏱ 10 minutos por semana · 👤 Ventas / Finanzas
+
+1. Entrá a **Ventas → Presupuestos / Files**. Abre en la pestaña **Viajan en 30 días**, con el viaje más cercano primero.
+2. Para cada uno, revisá que tenga vouchers, pasajeros completos y el saldo al día.
+3. Pasá a la pestaña **Sin vouchers**: son los que salen en 45 días o menos y todavía no tienen documentos. Cargalos en *Información adicional* del expediente.
+4. Pasá a **Cuotas vencidas**: entrá a cada uno y registrá el pago o llamá al cliente.
+5. Terminá con **Presupuestos por vencer**: llamá al cliente o usá **Renovar validez** si todavía le interesa.
+
+✅ **Salió bien si…** las pestañas **Sin vouchers** y **Cuotas vencidas** quedan en cero, o solo con casos que ya están hablados con el cliente.
+

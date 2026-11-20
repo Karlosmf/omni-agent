@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Booking;
 use App\Models\BookingActivity;
+use App\Models\Lead;
 
 class BookingObserver
 {
@@ -14,10 +15,28 @@ class BookingObserver
             'created',
             "Presupuesto {$booking->file_number} creado",
         );
+
+        $booking->lead?->syncStageWithBookings();
+    }
+
+    /**
+     * A removed booking can take the inquiry back (for example, from "Reservada" to "Cotizada").
+     */
+    public function deleted(Booking $booking): void
+    {
+        $booking->lead?->syncStageWithBookings();
     }
 
     public function updated(Booking $booking): void
     {
+        if ($booking->wasChanged(['status', 'lead_id'])) {
+            $booking->lead?->syncStageWithBookings();
+
+            if ($booking->wasChanged('lead_id') && ($previous = Lead::find($booking->getOriginal('lead_id')))) {
+                $previous->syncStageWithBookings();
+            }
+        }
+
         if ($booking->wasChanged('status')) {
             $oldStatus = $booking->getOriginal('status');
             $newStatus = $booking->status;

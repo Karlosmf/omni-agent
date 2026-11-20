@@ -8,7 +8,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class UpcomingInstallmentsWidget extends StatsOverviewWidget
 {
-    protected static ?int $sort = 3;
+    protected static ?int $sort = 21;
 
     protected ?string $heading = 'Cobranzas';
 

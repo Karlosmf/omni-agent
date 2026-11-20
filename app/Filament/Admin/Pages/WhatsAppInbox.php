@@ -8,7 +8,6 @@ use App\Filament\Admin\Resources\Leads\LeadResource;
 use App\Models\ChannelAccount;
 use App\Models\Lead;
 use App\Models\WhatsAppTemplate;
-use App\Services\WhatsApp\CloudApiGateway;
 use App\Services\WhatsApp\WhatsAppConversationService;
 use App\Services\WhatsApp\WhatsAppGateway;
 use Filament\Notifications\Notification;
@@ -22,7 +21,7 @@ class WhatsAppInbox extends Page
 {
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-chat-bubble-left-right';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Clientes';
+    protected static \UnitEnum|string|null $navigationGroup = 'Chat';
 
     protected static ?string $navigationLabel = 'Bandeja de mensajes';
 
@@ -33,6 +32,9 @@ class WhatsAppInbox extends Page
     protected static ?int $navigationSort = 5;
 
     protected string $view = 'filament.admin.pages.whatsapp-inbox';
+
+    /** How far back "Traer historial" looks. */
+    public const HISTORY_DAYS = 30;
 
     #[Url]
     public ?int $lead = null;
@@ -60,7 +62,7 @@ class WhatsAppInbox extends Page
 
     public static function getNavigationBadge(): ?string
     {
-        $unread = Lead::where('unread_count', '>', 0)->count();
+        $unread = LeadResource::getEloquentQuery()->where('unread_count', '>', 0)->count();
 
         return $unread > 0 ? (string) $unread : null;
     }
@@ -71,13 +73,7 @@ class WhatsAppInbox extends Page
     public function isConfigured(?Lead $lead = null): bool
     {
         if ($lead) {
-            if ($lead->conversationChannel()->isSocial()) {
-                return (bool) $lead->channelAccount?->is_active && filled($lead->channelAccount->access_token);
-            }
-
-            $gateway = app(WhatsAppGateway::class);
-
-            return ($gateway instanceof CloudApiGateway ? $gateway->forAccount($lead->channelAccount) : $gateway)->isConfigured();
+            return app(WhatsAppConversationService::class)->isConfiguredFor($lead);
         }
 
         return app(WhatsAppGateway::class)->isConfigured() || ChannelAccount::where('is_active', true)->exists();
@@ -108,7 +104,7 @@ class WhatsAppInbox extends Page
     {
         $channels = Channel::tryFrom($this->channel) ? [$this->channel] : $this->inboxChannels();
 
-        return Lead::query()
+        return LeadResource::getEloquentQuery()
             ->whereHas('messages', fn (Builder $q) => $q->whereIn('channel', $channels))
             ->with(['customer', 'channelAccount'])
             ->withMax(['messages as last_message_at' => fn (Builder $q) => $q->whereIn('channel', $channels)], 'created_at')
@@ -130,11 +126,15 @@ class WhatsAppInbox extends Page
 
     public function selectedLead(): ?Lead
     {
-        return $this->lead ? Lead::with(['customer', 'channelAccount', 'messages' => fn ($q) => $q->whereIn('channel', $this->inboxChannels())->orderBy('id')])->find($this->lead) : null;
+        return $this->lead ? LeadResource::getEloquentQuery()->with(['customer', 'channelAccount', 'messages' => fn ($q) => $q->whereIn('channel', $this->inboxChannels())->chronological()])->find($this->lead) : null;
     }
 
     public function open(int $leadId): void
     {
+        if (! LeadResource::getEloquentQuery()->whereKey($leadId)->exists()) {
+            return;
+        }
+
         $this->lead = $leadId;
         $this->reset('reply', 'templateId', 'templateVariables');
 
@@ -180,10 +180,41 @@ class WhatsAppInbox extends Page
         $this->reset('reply', 'templateId', 'templateVariables');
     }
 
+    /**
+     * Brings this conversation's earlier WhatsApp messages from Zernio (last 30 days).
+     */
+    public function importHistory(WhatsAppConversationService $conversations): void
+    {
+        $lead = $this->selectedLead();
+
+        if (! $lead || ! $conversations->canImportHistory($lead)) {
+            return;
+        }
+
+        try {
+            $added = $conversations->importWhatsAppHistory($lead, self::HISTORY_DAYS);
+        } catch (Throwable $e) {
+            Notification::make()->title('No se pudo traer el historial')->body($e->getMessage())->danger()->send();
+
+            return;
+        }
+
+        Notification::make()
+            ->title($added > 0 ? "Se agregaron {$added} mensajes del historial" : 'No había mensajes nuevos para traer')
+            ->body('Se buscó en los últimos '.self::HISTORY_DAYS.' días. Los mensajes viejos no se responden ni cuentan como no leídos.')
+            ->success()
+            ->send();
+    }
+
+    public function canImportHistory(Lead $lead): bool
+    {
+        return app(WhatsAppConversationService::class)->canImportHistory($lead);
+    }
+
     public function toggleAi(WhatsAppConversationService $conversations): void
     {
         if ($lead = $this->selectedLead()) {
-            $lead->ai_paused ? $conversations->resumeAi($lead) : $conversations->pauseAi($lead);
+            $lead->isAiPaused() ? $conversations->resumeAi($lead) : $conversations->pauseAi($lead);
         }
     }
 

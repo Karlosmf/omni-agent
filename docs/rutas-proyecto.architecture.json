@@ -1,0 +1,431 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Rutas del Proyecto Omni-Agent — Laravel 12 + Filament v4",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "public-path",
+        "label": "Navegación pública",
+        "focus": [
+          "visitor",
+          "laravel_router",
+          "web_public",
+          "cotizador_livewire",
+          "booking_public"
+        ],
+        "note": "Recorrido sin autenticación: landing, paquetes, chat y presupuesto por token."
+      },
+      {
+        "id": "authenticated",
+        "label": "Zona autenticada",
+        "focus": [
+          "laravel_router",
+          "admin_panel",
+          "portal_panel",
+          "system_infra"
+        ],
+        "note": "Filament Admin (41 rutas) y Portal Cliente (5 rutas) bajo Authenticate + CSRF."
+      },
+      {
+        "id": "api-livewire",
+        "label": "API e infraestructura",
+        "focus": [
+          "api_leads",
+          "system_infra",
+          "laravel_router"
+        ],
+        "note": "API throttleada y capa Livewire/Storage/Sanctum que sostiene las páginas dinámicas."
+      }
+    ],
+    "viewBox": [
+      1350,
+      620
+    ]
+  },
+  "components": [
+    {
+      "id": "visitor",
+      "type": "external",
+      "label": "Visitante",
+      "sublabel": "Browser / Mobile",
+      "tag": "HTTPS",
+      "pos": [
+        540,
+        30
+      ],
+      "size": [
+        180,
+        60
+      ]
+    },
+    {
+      "id": "laravel_router",
+      "type": "backend",
+      "label": "Laravel Router",
+      "sublabel": "bootstrap/app.php : withRouting",
+      "tag": "web + api + health",
+      "pos": [
+        540,
+        130
+      ],
+      "size": [
+        180,
+        72
+      ]
+    },
+    {
+      "id": "web_public",
+      "type": "frontend",
+      "label": "Rutas Públicas",
+      "sublabel": "8 rutas · routes/web.php",
+      "tag": "/ · static views",
+      "pos": [
+        30,
+        272
+      ],
+      "size": [
+        180,
+        78
+      ]
+    },
+    {
+      "id": "cotizador_livewire",
+      "type": "frontend",
+      "label": "Cotizador & Volt",
+      "sublabel": "Livewire + Volt",
+      "tag": "/cotizar · /chat · /paquetes",
+      "pos": [
+        235,
+        272
+      ],
+      "size": [
+        190,
+        78
+      ]
+    },
+    {
+      "id": "booking_public",
+      "type": "backend",
+      "label": "Presupuesto Público",
+      "sublabel": "PublicBookingController",
+      "tag": "GET /presupuesto/{token}",
+      "pos": [
+        450,
+        272
+      ],
+      "size": [
+        150,
+        78
+      ]
+    },
+    {
+      "id": "api_leads",
+      "type": "backend",
+      "label": "API Leads",
+      "sublabel": "POST /api/leads",
+      "tag": "throttle:30,1",
+      "pos": [
+        650,
+        272
+      ],
+      "size": [
+        165,
+        78
+      ]
+    },
+    {
+      "id": "admin_panel",
+      "type": "backend",
+      "label": "Panel Admin",
+      "sublabel": "/admin · 41 rutas",
+      "tag": "Filament AdminPanelProvider",
+      "pos": [
+        850,
+        257
+      ],
+      "size": [
+        195,
+        110
+      ]
+    },
+    {
+      "id": "portal_panel",
+      "type": "backend",
+      "label": "Portal Cliente",
+      "sublabel": "/portal · 5 rutas",
+      "tag": "Filament CustomerPanel",
+      "pos": [
+        1080,
+        272
+      ],
+      "size": [
+        175,
+        78
+      ]
+    },
+    {
+      "id": "system_infra",
+      "type": "cloud",
+      "label": "Infra & Health",
+      "sublabel": "Livewire, Storage, Sanctum, /up, _dusk",
+      "tag": "16 rutas sistema",
+      "pos": [
+        532,
+        430
+      ],
+      "size": [
+        220,
+        78
+      ]
+    },
+    {
+      "id": "auth_guarded",
+      "type": "security",
+      "label": "Auth & CSRF",
+      "sublabel": "Authenticate + VerifyCsrfToken",
+      "tag": "Filament authMiddleware",
+      "pos": [
+        950,
+        430
+      ],
+      "size": [
+        210,
+        78
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Superficie Pública — sin autenticación",
+      "wraps": [
+        "web_public",
+        "cotizador_livewire",
+        "booking_public",
+        "api_leads"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "Zona Autenticada — Filament",
+      "wraps": [
+        "admin_panel",
+        "portal_panel",
+        "auth_guarded"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "Plataforma Laravel 12 · omni-agent.test",
+      "wraps": [
+        "laravel_router",
+        "system_infra",
+        "web_public",
+        "cotizador_livewire",
+        "booking_public",
+        "api_leads",
+        "admin_panel",
+        "portal_panel",
+        "auth_guarded"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "visitor-to-router",
+      "from": "visitor",
+      "to": "laravel_router",
+      "label": "HTTPS :443",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "variant": "emphasis",
+      "labelDy": 18,
+      "labelDx": -8,
+      "labelAt": [
+        640,
+        118
+      ]
+    },
+    {
+      "id": "router-to-web",
+      "from": "laravel_router",
+      "to": "web_public",
+      "label": "GET / · 4 views",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [
+        120,
+        368
+      ]
+    },
+    {
+      "id": "router-to-cotizador",
+      "from": "laravel_router",
+      "to": "cotizador_livewire",
+      "label": "GET /cotizar · chat · paquetes",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [
+        180,
+        368
+      ]
+    },
+    {
+      "id": "router-to-booking",
+      "from": "laravel_router",
+      "to": "booking_public",
+      "label": "GET /presupuesto/{token}",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [
+        525,
+        368
+      ]
+    },
+    {
+      "id": "router-to-api",
+      "from": "laravel_router",
+      "to": "api_leads",
+      "label": "POST /api/leads",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "variant": "emphasis",
+      "labelAt": [
+        732,
+        368
+      ]
+    },
+    {
+      "id": "router-to-admin",
+      "from": "laravel_router",
+      "to": "admin_panel",
+      "label": "41 rutas · /admin/*",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "variant": "security",
+      "labelAt": [
+        865,
+        225
+      ]
+    },
+    {
+      "id": "router-to-portal",
+      "from": "laravel_router",
+      "to": "portal_panel",
+      "label": "5 rutas · /portal/*",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "variant": "security",
+      "labelAt": [
+        1085,
+        253
+      ]
+    },
+    {
+      "id": "router-to-system",
+      "from": "laravel_router",
+      "to": "system_infra",
+      "label": "16 rutas · infra",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [
+        560,
+        360
+      ],
+      "labelDy": 6,
+      "via": [
+        [
+          630,
+          250
+        ],
+        [
+          614,
+          250
+        ],
+        [
+          614,
+          375
+        ],
+        [
+          642,
+          375
+        ]
+      ]
+    },
+    {
+      "id": "auth-to-admin",
+      "from": "auth_guarded",
+      "to": "admin_panel",
+      "label": "Authenticate",
+      "fromSide": "top",
+      "toSide": "bottom",
+      "variant": "security",
+      "labelDy": -12,
+      "labelAt": [
+        890,
+        380
+      ]
+    },
+    {
+      "id": "auth-to-portal",
+      "from": "auth_guarded",
+      "to": "portal_panel",
+      "label": "Authenticate",
+      "fromSide": "top",
+      "toSide": "bottom",
+      "variant": "security",
+      "labelDy": 12,
+      "labelAt": [
+        1080,
+        380
+      ]
+    },
+    {
+      "id": "system-to-cotizador",
+      "from": "system_infra",
+      "to": "cotizador_livewire",
+      "label": "livewire/update",
+      "fromSide": "top",
+      "toSide": "bottom",
+      "variant": "dashed",
+      "labelDy": 0,
+      "labelAt": [
+        400,
+        390
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "71 rutas totales",
+      "items": [
+        "Públicas 8: / , quienes-somos, 2 políticas, /chat, /paquetes, /paquetes/{slug}, /cotizar, /presupuesto/{token}",
+        "API 1: POST /api/leads → LeadController@store · throttle 30/min",
+        "Admin 41: /admin dashboard, login/logout, 12 resources CRUD + 4 pages + receipt",
+        "Portal 5: /portal dashboard, login/logout, bookings, leads"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Capas y middleware",
+      "items": [
+        "bootstrap/app.php withRouting(web, api, health:/up) + alias role",
+        "Filament panels: EncryptCookies, StartSession, VerifyCsrfToken, Authenticate",
+        "Infra: Livewire 5 rutas, Storage 2, Sanctum, Filament exports/imports"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Archivos fuente",
+      "items": [
+        "routes/web.php:9 — home + estáticas + Volt chat/paquetes + Cotizador + PublicBooking",
+        "routes/api.php:6 — POST /leads throttle:30,1",
+        "AdminPanelProvider.php:43 id admin · CustomerPanelProvider.php:26 id customer"
+      ]
+    }
+  ]
+}

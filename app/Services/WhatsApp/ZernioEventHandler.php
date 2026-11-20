@@ -38,7 +38,7 @@ class ZernioEventHandler
             }
 
             ZernioConversation::remember($phone, $message['conversationId'] ?? null);
-            ProcessIncomingWhatsApp::dispatch($this->toCloudMessage($externalId, $phone, $message), $message['sender']['name'] ?? null);
+            ProcessIncomingWhatsApp::dispatch($this->toCloudMessage($externalId, $phone, $message), $message['sender']['name'] ?? null, null, $event);
         } elseif ($name === 'message.sent' && ($message['source'] ?? null) === 'whatsapp_business_app') {
             $phone = (string) ($event['conversation']['participantId'] ?? $message['conversation']['participantId'] ?? '');
 
@@ -49,7 +49,7 @@ class ZernioEventHandler
             ZernioConversation::remember($phone, $message['conversationId'] ?? null);
             $sentAt = $message['sentAt'] ?? $message['createdAt'] ?? $event['timestamp'] ?? null;
 
-            ProcessWhatsAppBusinessAppEcho::dispatch(['to' => $phone] + ($sentAt ? ['timestamp' => Carbon::parse($sentAt)->timestamp] : []) + $this->toCloudMessage($externalId, $phone, $message));
+            ProcessWhatsAppBusinessAppEcho::dispatch(['to' => $phone] + ($sentAt ? ['timestamp' => Carbon::parse($sentAt)->timestamp] : []) + $this->toCloudMessage($externalId, $phone, $message), null, $event);
         } elseif (isset(self::STATUSES[$name]) && $externalId !== '') {
             Message::where('external_id', $externalId)->update(['status' => self::STATUSES[$name]]);
         }
@@ -82,11 +82,19 @@ class ZernioEventHandler
     }
 
     /**
-     * @param  array<string, mixed>  $message
+     * A Zernio message in the Cloud API shape the conversation service reads (text, button tap or attachment type).
+     *
+     * @param  array<string, mixed>  $message  With `text`, `attachments` and `metadata` as Zernio sends them.
      * @return array<string, mixed>
      */
-    private function toCloudMessage(string $id, string $phone, array $message): array
+    public function toCloudMessage(string $id, string $phone, array $message): array
     {
+        $from = ltrim($phone, '+');
+
+        if ($tap = $this->buttonTap($message)) {
+            return ['id' => $id, 'from' => $from, 'type' => 'interactive', 'interactive' => ['type' => 'button_reply', 'button_reply' => $tap]];
+        }
+
         $type = match ($message['attachments'][0]['type'] ?? null) {
             null => 'text',
             'image', 'audio', 'video', 'document', 'sticker', 'location' => $message['attachments'][0]['type'],
@@ -94,6 +102,31 @@ class ZernioEventHandler
             default => 'unsupported',
         };
 
-        return ['id' => $id, 'from' => ltrim($phone, '+'), 'type' => $type, 'text' => ['body' => (string) ($message['text'] ?? '')]];
+        return ['id' => $id, 'from' => $from, 'type' => $type, 'text' => ['body' => (string) ($message['text'] ?? '')]];
+    }
+
+    /**
+     * A tapped reply button or list row. Zernio documents the tap as `metadata.interactiveType` and `metadata.interactiveId`;
+     * it names no key for the title, so the message text (the title WhatsApp shows) is the answer the conversation keeps.
+     * A tap that arrives without text is still a tap: its id says which option it was (a chat menu row resolves its title).
+     *
+     * @param  array<string, mixed>  $message
+     * @return array{id: string, title: string}|null
+     */
+    private function buttonTap(array $message): ?array
+    {
+        $metadata = (array) ($message['metadata'] ?? []);
+        $type = $metadata['interactiveType'] ?? null;
+        $payload = $metadata['interactiveId'] ?? $metadata['buttonPayload'] ?? $metadata['payload'] ?? null;
+
+        // Flow answers and orders also arrive as interactive messages, but they are not button taps.
+        if (in_array($type, ['nfm_reply', 'flow', 'order'], true) || ($type === null && ! is_string($payload))) {
+            return null;
+        }
+
+        $id = trim((string) ($payload ?? ''));
+        $title = trim((string) ($metadata['buttonTitle'] ?? $metadata['title'] ?? $message['text'] ?? ''));
+
+        return $title === '' && $id === '' ? null : ['id' => $id, 'title' => $title];
     }
 }

@@ -29,6 +29,7 @@ class User extends Authenticatable implements FilamentUser
         'email',
         'phone',
         'is_guest',
+        'traveler_profile',
         'permissions', // Added
         'password',
     ];
@@ -41,6 +42,7 @@ class User extends Authenticatable implements FilamentUser
     protected $hidden = [
         'password',
         'remember_token',
+        'traveler_profile',
     ];
 
     /**
@@ -55,6 +57,7 @@ class User extends Authenticatable implements FilamentUser
             'password' => 'hashed',
             'role' => UserRole::class,
             'is_guest' => 'boolean',
+            'traveler_profile' => 'array',
             'permissions' => 'array', // Added
         ];
     }
@@ -110,7 +113,7 @@ class User extends Authenticatable implements FilamentUser
         }
 
         // Role-based defaults
-        if ($this->role === UserRole::Sales && in_array($permission, ['manage_leads', 'manage_bookings'])) {
+        if ($this->role === UserRole::Sales && in_array($permission, ['manage_leads', 'manage_bookings', 'manage_customers'])) {
             return true;
         }
 

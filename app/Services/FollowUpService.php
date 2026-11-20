@@ -131,7 +131,7 @@ class FollowUpService
     private function messageFor(FollowUpTrigger $trigger, Model $subject): array
     {
         $who = $subject instanceof Lead
-            ? ($subject->customer_name ?: $subject->customer?->name ?: "Lead #{$subject->id}")
+            ? $subject->displayName()
             : "{$subject->file_number} ({$subject->holder_name})";
 
         return match ($trigger) {

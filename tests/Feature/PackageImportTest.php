@@ -1,11 +1,13 @@
 <?php
 
 use App\Actions\Packages\ImportPackageAction;
+use App\Enums\AiProvider;
 use App\Enums\PackageImportStatus;
 use App\Enums\UserRole;
 use App\Filament\Admin\Resources\PackageImports\Pages\CreatePackageImport;
 use App\Filament\Admin\Resources\PackageImports\Pages\ReviewPackageImport;
 use App\Jobs\ProcessPackageImport;
+use App\Models\AgencySetting;
 use App\Models\PackageImport;
 use App\Models\TravelPackage;
 use App\Models\User;
@@ -20,6 +22,8 @@ use App\Services\Import\SafeHttp;
 use App\Services\Import\TravelPackageExtractor;
 use App\Services\Import\UrlExtractor;
 use App\Services\Import\UrlGuard;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
@@ -153,7 +157,7 @@ test('the html extractor keeps the offer text and drops navigation, scripts and 
 
 test('a page without enough text is rejected', function () {
     (new UrlExtractor)->parseHtml('<html><body><main>Hola</main></body></html>', 'https://operador.example/');
-})->throws(RuntimeException::class, 'texto suficiente');
+})->throws(RuntimeException::class, 'casi no tiene texto');
 
 // --- AI extraction ---
 
@@ -390,4 +394,59 @@ test('discarding removes the draft but keeps the record', function () {
     Livewire::test(ReviewPackageImport::class, ['record' => $import])->call('discard');
 
     expect(TravelPackage::find($packageId))->toBeNull()->and($import->fresh()->status)->toBe(PackageImportStatus::Discarded);
+});
+
+// --- PDF with providers that cannot read PDFs ---
+
+test('with Groq the job sends the text of the PDF instead of the file', function () {
+    Cache::forget('agency_settings');
+    AgencySetting::factory()->create(['ai_provider' => AiProvider::Groq, 'ai_api_key' => 'gsk_key']);
+    Storage::fake('local');
+    Storage::disk('local')->put('imports/oferta.pdf', Pdf::loadHTML('<p>Oferta Colombia: Bogotá, Pereira y Medellín, 9 noches, salida 10 de mayo.</p>')->output());
+    $import = PackageImport::create(['source_type' => 'pdf', 'source_file' => 'imports/oferta.pdf']);
+
+    $ai = Mockery::mock(AiConciergeService::class);
+    $ai->shouldReceive('generate')->once()->withArgs(fn (string $prompt, $pdfPath) => $pdfPath === null && str_contains($prompt, 'Bogotá, Pereira y Medellín'))->andReturn(aiJson());
+
+    (new ProcessPackageImport($import))->handle(new UrlExtractor, new TravelPackageExtractor($ai), new ImportPackageAction, new ImageSearchService([]));
+
+    expect($import->fresh()->status)->toBe(PackageImportStatus::ReadyForReview)
+        ->and($import->fresh()->extracted_text)->toContain('Colombia');
+});
+
+test('with Gemini the PDF is still sent as a file', function () {
+    Cache::forget('agency_settings');
+    AgencySetting::factory()->create(['ai_provider' => AiProvider::Gemini, 'ai_api_key' => 'key']);
+    Storage::fake('local');
+    Storage::disk('local')->put('imports/oferta.pdf', Pdf::loadHTML('<p>Oferta</p>')->output());
+    $import = PackageImport::create(['source_type' => 'pdf', 'source_file' => 'imports/oferta.pdf']);
+
+    $ai = Mockery::mock(AiConciergeService::class);
+    $ai->shouldReceive('generate')->once()->withArgs(fn (string $prompt, $pdfPath) => $pdfPath !== null && str_ends_with($pdfPath, 'oferta.pdf'))->andReturn(aiJson());
+
+    (new ProcessPackageImport($import))->handle(new UrlExtractor, new TravelPackageExtractor($ai), new ImportPackageAction, new ImageSearchService([]));
+
+    expect($import->fresh()->status)->toBe(PackageImportStatus::ReadyForReview);
+});
+
+test('a scanned PDF with Groq fails the import with a clear reason', function () {
+    Cache::forget('agency_settings');
+    AgencySetting::factory()->create(['ai_provider' => AiProvider::Groq, 'ai_api_key' => 'gsk_key']);
+    Storage::fake('local');
+    Storage::disk('local')->put('imports/scan.pdf', Pdf::loadHTML('<div style="width:80px;height:80px;background:#ddd"></div>')->output());
+    $import = PackageImport::create(['source_type' => 'pdf', 'source_file' => 'imports/scan.pdf']);
+
+    (new ProcessPackageImport($import))->handle(new UrlExtractor, new TravelPackageExtractor(Mockery::mock(AiConciergeService::class)), new ImportPackageAction, new ImageSearchService([]));
+
+    expect($import->fresh()->status)->toBe(PackageImportStatus::Failed)->and($import->fresh()->error)->toContain('imagen escaneada');
+});
+
+test('a page that loads its content with JavaScript is rejected with a clear reason', function () {
+    Http::fake(['93.184.216.34/*' => Http::response('<html><head><title>Disney en familia</title></head><body><div id="app"></div><footer>ebooking 0810 888 6735 Empresa Nuestras redes</footer><script src="/app.js"></script></body></html>', 200)]);
+    $import = PackageImport::create(['source_type' => 'url', 'source_url' => 'https://93.184.216.34/packages/details/?id=1']);
+
+    (new ProcessPackageImport($import))->handle(new UrlExtractor, new TravelPackageExtractor(Mockery::mock(AiConciergeService::class)), new ImportPackageAction, new ImageSearchService([]));
+
+    expect($import->fresh()->status)->toBe(PackageImportStatus::Failed)
+        ->and($import->fresh()->error)->toContain('JavaScript')->toContain('Texto pegado');
 });

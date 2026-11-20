@@ -49,11 +49,16 @@ class AgencyAi
         }
 
         $driver = $this->driverFor($provider);
-        $name = 'agency_'.substr(sha1($driver.'|'.$key), 0, 16);
-
-        Ai::build(['name' => $name, 'driver' => $driver, 'key' => $key]);
-
+        $url = $provider === AiProvider::OpenAiCompatible ? trim((string) $settings->ai_base_url) : '';
         $model = filled($settings?->ai_model) ? trim($settings->ai_model) : $provider->getDefaultModel();
+
+        if ($provider === AiProvider::OpenAiCompatible && ($url === '' || $model === '')) {
+            throw new Exception('Falta completar la URL y el modelo del proveedor compatible con OpenAI.');
+        }
+
+        $name = 'agency_'.substr(sha1($driver.'|'.$key.'|'.$url), 0, 16);
+
+        Ai::build(['name' => $name, 'driver' => $driver, 'key' => $key] + ($url !== '' ? ['url' => $url] : []));
 
         return [$name, $model];
     }
@@ -64,6 +69,7 @@ class AgencyAi
             AiProvider::Gemini => 'gemini',
             AiProvider::OpenAI => 'openai',
             AiProvider::Groq => 'groq',
+            AiProvider::OpenAiCompatible => 'openai-compatible',
             AiProvider::None => throw new Exception('AI_DISABLED'),
         };
     }

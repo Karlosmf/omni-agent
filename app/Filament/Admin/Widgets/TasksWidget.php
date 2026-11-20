@@ -15,7 +15,7 @@ class TasksWidget extends TableWidget
 {
     protected int|string|array $columnSpan = 'full';
 
-    protected static ?int $sort = 1;
+    protected static ?int $sort = 12;
 
     public function table(Table $table): Table
     {

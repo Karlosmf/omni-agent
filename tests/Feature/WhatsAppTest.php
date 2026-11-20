@@ -5,6 +5,7 @@ use App\Enums\BookingStatus;
 use App\Enums\LeadStatus;
 use App\Enums\UserRole;
 use App\Filament\Admin\Pages\WhatsAppInbox;
+use App\Filament\Admin\Resources\Bookings\Pages\EditBooking;
 use App\Jobs\ProcessIncomingWhatsApp;
 use App\Jobs\ProcessWhatsAppBusinessAppEcho;
 use App\Models\Booking;
@@ -35,9 +36,23 @@ class FakeWhatsAppGateway implements WhatsAppGateway
         return $this->configured;
     }
 
-    public function sendText(string $to, string $text): string
+    public function sendText(string $to, string $text, array $buttons = []): string
     {
-        $this->sent[] = ['type' => 'text', 'to' => $to, 'text' => $text];
+        $this->sent[] = ['type' => 'text', 'to' => $to, 'text' => $text] + ($buttons !== [] ? ['buttons' => $buttons] : []);
+
+        return 'wamid.OUT'.count($this->sent);
+    }
+
+    public function sendDocument(string $to, string $url, string $filename, ?string $caption = null): string
+    {
+        $this->sent[] = ['type' => 'document', 'to' => $to, 'url' => $url, 'filename' => $filename, 'caption' => $caption];
+
+        return 'wamid.OUT'.count($this->sent);
+    }
+
+    public function sendList(string $to, string $body, string $button, array $rows, ?string $header = null, ?string $sectionTitle = null): string
+    {
+        $this->sent[] = ['type' => 'list', 'to' => $to, 'text' => $body, 'button' => $button, 'rows' => $rows];
 
         return 'wamid.OUT'.count($this->sent);
     }
@@ -295,7 +310,7 @@ test('a failed send is recorded as failed', function () {
     $lead = app(WhatsAppConversationService::class)->receive(inboundText());
     $failing = new class extends FakeWhatsAppGateway
     {
-        public function sendText(string $to, string $text): string
+        public function sendText(string $to, string $text, array $buttons = []): string
         {
             throw new RuntimeException('Meta rechazó el mensaje');
         }
@@ -383,6 +398,22 @@ test('the Cloud API gateway posts to the configured Graph URL with the bearer to
         && $request['to'] === '5491155551234');
 });
 
+test('the Cloud API gateway sends list messages as interactive lists', function () {
+    Http::fake(['graph.example.test/*' => Http::response(['messages' => [['id' => 'wamid.LIST']]])]);
+    config(['services.whatsapp.graph_url' => 'https://graph.example.test', 'services.meta.graph_version' => 'v26.0']);
+
+    $id = (new CloudApiGateway)->sendList('+5491155551234', 'Elegí un destino', 'Ver destinos', [['id' => 'menu:1:p:salta', 'title' => 'Salta']], 'Luopan');
+
+    expect($id)->toBe('wamid.LIST');
+    Http::assertSent(fn ($request) => $request['type'] === 'interactive' && $request['to'] === '5491155551234'
+        && $request['interactive'] === [
+            'type' => 'list',
+            'header' => ['type' => 'text', 'text' => 'Luopan'],
+            'body' => ['text' => 'Elegí un destino'],
+            'action' => ['button' => 'Ver destinos', 'sections' => [['rows' => [['id' => 'menu:1:p:salta', 'title' => 'Salta']]]]],
+        ]);
+});
+
 test('a failed AI answer is stored as its own message and does not overwrite an older one', function () {
     $action = Mockery::mock(ProcessChatbotInteractionAction::class);
     $action->shouldReceive('execute')->andReturn('Disculpá, tuve una pequeña desconexión.');
@@ -459,7 +490,7 @@ test('an answer from the phone to a chat without a lead is ignored', function ()
 test('a customer with a booking is handed to a person instead of the qualifying AI', function () {
     $customer = User::factory()->create(['role' => UserRole::Customer, 'phone' => '+5491155551234']);
     $lead = Lead::factory()->create(['customer_id' => $customer->id, 'source' => 'whatsapp', 'channel' => 'whatsapp', 'ai_paused' => false, 'status' => LeadStatus::New]);
-    Booking::factory()->create(['customer_id' => $customer->id, 'lead_id' => $lead->id]);
+    Booking::factory()->create(['customer_id' => $customer->id, 'lead_id' => $lead->id, 'status' => BookingStatus::Senado]);
     $this->mock(ProcessChatbotInteractionAction::class)->shouldNotReceive('execute');
 
     app(WhatsAppConversationService::class)->receive(inboundText('Hola, ¿cómo va mi viaje?'));
@@ -488,4 +519,47 @@ test('a message written on the phone before the conversation started does not pa
     expect(app(WhatsAppConversationService::class)->receiveBusinessAppEcho($old))->toBeNull()
         ->and($lead->fresh()->ai_paused)->toBeFalse()
         ->and($lead->messages()->count())->toBe(0);
+});
+
+// --- Proposal PDF over WhatsApp ---
+
+test('the proposal pdf is sent to the customer whatsapp conversation and shows in the inbox', function () {
+    $this->actingAs($this->admin);
+    $customer = User::factory()->create(['role' => UserRole::Customer, 'phone' => '+5491155551234']);
+    $lead = Lead::factory()->create(['customer_id' => $customer->id, 'source' => 'whatsapp', 'channel' => 'whatsapp', 'whatsapp_last_inbound_at' => now()->subHour()]);
+    $booking = Booking::factory()->create(['customer_id' => $customer->id, 'lead_id' => $lead->id, 'file_number' => 'LP-2026-00001', 'status' => BookingStatus::Presupuesto]);
+
+    Livewire::test(EditBooking::class, ['record' => $booking->getRouteKey()])
+        ->callAction('whatsapp_pdf', ['format' => 'budget_only', 'message' => 'Te paso el presupuesto'])
+        ->assertHasNoActionErrors()
+        ->assertNotified('Presupuesto enviado por WhatsApp');
+
+    $sent = $this->gateway->sent[0];
+    $message = $lead->messages()->sole();
+
+    expect($sent)->toMatchArray(['type' => 'document', 'to' => '+5491155551234', 'filename' => 'presupuesto-LP-2026-00001.pdf', 'caption' => 'Te paso el presupuesto'])
+        ->and($sent['url'])->toBe(route('booking.public.pdf', ['token' => $booking->fresh()->public_token, 'format' => 'budget_only']))
+        ->and($message->attachment())->toBe(['url' => $sent['url'], 'name' => 'presupuesto-LP-2026-00001.pdf'])
+        ->and($message->sent_by_user_id)->toBe($this->admin->id)
+        ->and($booking->activities()->where('type', 'whatsapp_sent')->exists())->toBeTrue();
+});
+
+test('the proposal pdf is not sent outside the 24 hour window', function () {
+    $this->actingAs($this->admin);
+    $customer = User::factory()->create(['role' => UserRole::Customer, 'phone' => '+5491155551234']);
+    $lead = Lead::factory()->create(['customer_id' => $customer->id, 'source' => 'whatsapp', 'channel' => 'whatsapp', 'whatsapp_last_inbound_at' => now()->subDays(2)]);
+    $booking = Booking::factory()->create(['customer_id' => $customer->id, 'lead_id' => $lead->id]);
+
+    Livewire::test(EditBooking::class, ['record' => $booking->getRouteKey()])
+        ->assertActionDisabled('whatsapp_pdf');
+
+    expect($this->gateway->sent)->toBe([]);
+});
+
+test('the public pdf link serves the proposal and an unknown token is not found', function () {
+    $booking = Booking::factory()->create(['file_number' => 'LP-2026-00002']);
+
+    $this->get($booking->publicPdfUrl())->assertOk()->assertHeader('Content-Type', 'application/pdf');
+    $this->get('/presupuesto/unknown-token/pdf')->assertNotFound();
+    expect($booking->fresh()->view_count)->toBe(0);
 });

@@ -5,9 +5,7 @@ namespace App\Services;
 use App\Enums\Channel;
 use App\Enums\LeadStatus;
 use App\Enums\LeadTemperature;
-use App\Enums\UserRole;
 use App\Models\Lead;
-use App\Models\User;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -47,8 +45,8 @@ class SlaService
         $leads = $this->overdue();
 
         foreach ($leads as $lead) {
-            $recipients = $lead->agent ? collect([$lead->agent]) : User::where('role', UserRole::Admin)->get();
-            $name = $lead->customer_name ?: $lead->customer?->name ?: "Lead #{$lead->id}";
+            $recipients = $lead->staffToNotify();
+            $name = $lead->displayName();
             $waiting = (int) $lead->last_inbound_at->diffInMinutes(now(), true);
 
             foreach ($recipients as $user) {

@@ -34,6 +34,14 @@ class UserResource extends Resource
 
     protected static ?string $slug = 'usuarios';
 
+    /**
+     * Only administrators manage staff accounts (see UserPolicy).
+     */
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->isAdmin() ?? false;
+    }
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->where('role', '!=', UserRole::Customer);

@@ -2,23 +2,23 @@
 
 namespace App\Filament\Admin\Widgets;
 
-use App\Models\Lead;
-use App\Models\Booking;
 use App\Enums\BookingStatus;
+use App\Models\Booking;
+use App\Models\Lead;
 use Filament\Widgets\ChartWidget;
 
 class FunnelChart extends ChartWidget
 {
     protected ?string $heading = 'Funnel de Conversión';
-    
-    protected static ?int $sort = 2;
+
+    protected static ?int $sort = 13;
 
     protected function getData(): array
     {
         $totalLeads = Lead::count();
         $totalPresupuestos = Booking::count();
         $totalConfirmados = Booking::whereIn('status', [BookingStatus::Senado, BookingStatus::Emitido])->count();
-        
+
         return [
             'datasets' => [
                 [

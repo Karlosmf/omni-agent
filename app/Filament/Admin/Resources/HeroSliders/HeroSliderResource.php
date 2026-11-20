@@ -29,6 +29,11 @@ class HeroSliderResource extends Resource
 
     protected static ?int $navigationSort = 110;
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasAnyPermission(['manage_packages', 'manage_bookings']) ?? false;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return HeroSliderForm::configure($schema);

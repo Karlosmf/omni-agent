@@ -4,11 +4,14 @@ namespace App\Filament\Admin\Resources\Leads\Schemas;
 
 use App\Enums\LeadStatus;
 use App\Enums\UserRole;
+use App\Models\Lead;
+use App\Services\Bot\TripData;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -50,6 +53,18 @@ class LeadForm
                                     ->preload(),
                             ]),
                     ]),
+                Section::make('Datos del viaje')
+                    ->description('Lo que juntó el bot recepcionista.')
+                    ->visible(fn (?Lead $record): bool => filled($record?->trip_data))
+                    ->schema([
+                        TextEntry::make('trip_summary')
+                            ->hiddenLabel()
+                            ->state(fn (Lead $record): array => collect(TripData::summary($record->trip_data))
+                                ->map(fn (string $value, string $label) => "{$label}: {$value}")
+                                ->values()
+                                ->all())
+                            ->listWithLineBreaks(),
+                    ]),
                 Section::make('Análisis de IA')
                     ->schema([
                         KeyValue::make('ai_data')
@@ -62,12 +77,12 @@ class LeadForm
                             ->label('Requiere intervención manual')
                             ->required(),
                     ]),
-                Section::make('Interacción Original')
-                    ->label('Historial de Chat')
+                Section::make('Primer mensaje')
+                    ->description('Lo que escribió el cliente al abrir la consulta. La conversación completa está en Chat → Bandeja de mensajes.')
                     ->collapsed()
                     ->schema([
                         Textarea::make('raw_message')
-                            ->label('Conversación Completa')
+                            ->hiddenLabel()
                             ->required()
                             ->rows(10)
                             ->columnSpanFull(),

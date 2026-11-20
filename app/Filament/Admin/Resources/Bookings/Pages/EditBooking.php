@@ -9,16 +9,18 @@ use App\Mail\BookingProposalMail;
 use App\Models\Booking;
 use App\Models\BookingActivity;
 use App\Models\Lead;
-use App\Models\TravelPackage;
+use App\Services\WhatsApp\WhatsAppConversationService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\On;
+use Throwable;
 
 class EditBooking extends EditRecord
 {
@@ -55,8 +57,63 @@ class EditBooking extends EditRecord
                     $record->renewValidity();
                     $this->refreshFormData(['valid_until']);
                 }),
+            Action::make('whatsapp_pdf')
+                ->label('Enviar PDF por WhatsApp')
+                ->icon('heroicon-o-paper-airplane')
+                ->color('success')
+                ->visible(fn (Booking $record): bool => ($lead = $this->whatsAppConversation($record)) !== null && app(WhatsAppConversationService::class)->isConfiguredFor($lead))
+                ->disabled(fn (Booking $record): bool => ! $this->whatsAppConversation($record)?->isInsideReplyWindow())
+                ->tooltip(fn (Booking $record): ?string => $this->whatsAppConversation($record)?->isInsideReplyWindow()
+                    ? null
+                    : 'Pasaron más de 24 horas desde el último mensaje del cliente: esperá a que vuelva a escribir o mandale una plantilla desde la bandeja.')
+                ->form([
+                    Radio::make('format')
+                        ->label('Formato del documento')
+                        ->options([
+                            'budget_only' => 'Solo Presupuesto',
+                            'full' => 'Presupuesto + Detalle de la Idea de Viaje',
+                        ])
+                        ->default('budget_only')
+                        ->required(),
+                    Textarea::make('message')
+                        ->label('Mensaje')
+                        ->rows(4)
+                        ->maxLength(1000)
+                        ->default(fn (Booking $record): string => $this->whatsAppCaption($record)),
+                ])
+                ->action(function (Booking $record, array $data, WhatsAppConversationService $conversations) {
+                    $lead = $this->whatsAppConversation($record);
+
+                    if (! $lead) {
+                        Notification::make()->title('Este cliente no tiene una conversación de WhatsApp abierta')->warning()->send();
+
+                        return;
+                    }
+
+                    try {
+                        $conversations->sendAgentDocument(
+                            $lead,
+                            auth()->user(),
+                            $record->publicPdfUrl($data['format']),
+                            'presupuesto-'.$record->file_number.'.pdf',
+                            $data['message'] ?? null,
+                        );
+                    } catch (Throwable $e) {
+                        Notification::make()->title('No se pudo enviar el presupuesto')->body($e->getMessage())->danger()->send();
+
+                        return;
+                    }
+
+                    BookingActivity::log($record, 'whatsapp_sent', 'Presupuesto (PDF) enviado por WhatsApp a '.($lead->customer?->phone ?? 'cliente'));
+
+                    Notification::make()
+                        ->title('Presupuesto enviado por WhatsApp')
+                        ->body('El PDF quedó en la conversación de la bandeja de mensajes.')
+                        ->success()
+                        ->send();
+                }),
             Action::make('whatsapp')
-                ->label('Enviar por WhatsApp')
+                ->label('Abrir en WhatsApp')
                 ->icon('heroicon-o-chat-bubble-left-ellipsis')
                 ->color('success')
                 ->url(function ($record) {
@@ -102,16 +159,10 @@ class EditBooking extends EditRecord
                         ->required(),
                 ])
                 ->action(function (Booking $record, array $data) {
-                    $travelPackage = $record->lead?->travelPackage;
-                    if (! $travelPackage && str_starts_with((string) $record->internal_notes, 'Presupuesto generado a partir de Idea de Viaje: ')) {
-                        $title = str_replace('Presupuesto generado a partir de Idea de Viaje: ', '', $record->internal_notes);
-                        $travelPackage = TravelPackage::where('title', $title)->first();
-                    }
-
                     $pdfContent = Pdf::loadView('pdf.booking', [
                         'booking' => $record,
                         'format' => $data['format'],
-                        'travelPackage' => $travelPackage,
+                        'travelPackage' => $record->proposalTravelPackage(),
                     ])->output();
 
                     Mail::to($data['email'])
@@ -140,18 +191,10 @@ class EditBooking extends EditRecord
                 ])
                 ->action(function ($record, array $data) {
                     return response()->streamDownload(function () use ($record, $data) {
-                        $travelPackage = null;
-                        if ($record->lead?->travelPackage) {
-                            $travelPackage = $record->lead->travelPackage;
-                        } elseif (str_starts_with((string) $record->internal_notes, 'Presupuesto generado a partir de Idea de Viaje: ')) {
-                            $title = str_replace('Presupuesto generado a partir de Idea de Viaje: ', '', $record->internal_notes);
-                            $travelPackage = TravelPackage::where('title', $title)->first();
-                        }
-
                         echo Pdf::loadView('pdf.booking', [
                             'booking' => $record,
                             'format' => $data['format'],
-                            'travelPackage' => $travelPackage,
+                            'travelPackage' => $record->proposalTravelPackage(),
                         ])->output();
                     }, 'presupuesto-'.$record->file_number.'.pdf');
                 }),
@@ -170,6 +213,29 @@ class EditBooking extends EditRecord
                 ->label('Eliminar')
                 ->icon('heroicon-o-trash'),
         ];
+    }
+
+    /** @var array<int, Lead|null> */
+    private array $whatsAppConversations = [];
+
+    /**
+     * The WhatsApp conversation the proposal can be sent to, looked up once per request.
+     */
+    private function whatsAppConversation(Booking $booking): ?Lead
+    {
+        if (! array_key_exists($booking->id, $this->whatsAppConversations)) {
+            $this->whatsAppConversations[$booking->id] = app(WhatsAppConversationService::class)->conversationForBooking($booking);
+        }
+
+        return $this->whatsAppConversations[$booking->id];
+    }
+
+    private function whatsAppCaption(Booking $booking): string
+    {
+        $name = trim((string) ($booking->holder_name ?: $booking->customer?->name));
+        $trip = $booking->destination ? " a {$booking->destination}" : '';
+
+        return "¡Hola {$name}! 👋 Te comparto el presupuesto de tu viaje{$trip} ✈️ Cualquier duda, estamos a tu disposición.";
     }
 
     protected function mutateFormDataBeforeFill(array $data): array

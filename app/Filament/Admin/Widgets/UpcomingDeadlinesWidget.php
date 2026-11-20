@@ -10,7 +10,7 @@ use Filament\Widgets\TableWidget as BaseWidget;
 
 class UpcomingDeadlinesWidget extends BaseWidget
 {
-    protected static ?int $sort = 101; // Next to CurrencyRatesWidget at the bottom
+    protected static ?int $sort = 26;
 
     protected int|string|array $columnSpan = [
         'default' => 'full',

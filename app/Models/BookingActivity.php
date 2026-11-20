@@ -42,7 +42,7 @@ class BookingActivity extends Model
      */
     public static function log(Booking $booking, string $type, string $description, ?array $properties = null): self
     {
-        if ($type === 'email_sent') {
+        if (in_array($type, ['email_sent', 'whatsapp_sent'], true)) {
             $booking->lead?->forceFill(['last_contacted_at' => now()])->saveQuietly();
         }
 

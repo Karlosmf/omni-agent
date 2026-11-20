@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\Leads\Pages;
 
 use App\Actions\Leads\CreateBookingFromLeadAction;
 use App\Filament\Admin\Concerns\HasBudgetGenerationModal;
+use App\Filament\Admin\Pages\WhatsAppInbox;
 use App\Filament\Admin\Resources\Bookings\BookingResource;
 use App\Filament\Admin\Resources\Customers\CustomerResource;
 use App\Filament\Admin\Resources\Leads\LeadResource;
@@ -20,6 +21,13 @@ class EditLead extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('open_chat')
+                ->label('Abrir chat')
+                ->icon('heroicon-o-chat-bubble-left-right')
+                ->color('gray')
+                ->url(fn (Lead $record): string => WhatsAppInbox::getUrl(['lead' => $record->id]))
+                ->visible(fn (): bool => $this->record->messages()->exists()),
+
             Action::make('view_customer')
                 ->label('Ver Cliente')
                 ->icon('heroicon-o-user')

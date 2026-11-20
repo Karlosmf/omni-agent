@@ -9,7 +9,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class CurrentMonthBalance extends StatsOverviewWidget
 {
-    protected static ?int $sort = 4;
+    protected static ?int $sort = 23;
 
     protected int|string|array $columnSpan = [
         'default' => 'full',

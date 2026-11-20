@@ -8,7 +8,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class HotLeadsCount extends StatsOverviewWidget
 {
-    protected static ?int $sort = 3;
+    protected static ?int $sort = 10;
 
     protected int|string|array $columnSpan = [
         'default' => 'full',

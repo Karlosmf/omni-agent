@@ -10,7 +10,7 @@ class LeadSourcesChart extends ChartWidget
 {
     protected ?string $heading = 'Fuentes de Leads';
 
-    protected static ?int $sort = 3;
+    protected static ?int $sort = 15;
 
     protected function getData(): array
     {
