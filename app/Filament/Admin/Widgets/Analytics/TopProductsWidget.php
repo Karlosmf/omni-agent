@@ -3,11 +3,11 @@
 namespace App\Filament\Admin\Widgets\Analytics;
 
 use App\Enums\BookingStatus;
+use App\Models\Booking;
 use App\Models\TravelPackage;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
-use Illuminate\Support\Facades\DB;
 
 class TopProductsWidget extends TableWidget
 {
@@ -18,14 +18,22 @@ class TopProductsWidget extends TableWidget
         return $table
             ->query(
                 TravelPackage::query()
-                    ->select('travel_packages.*', DB::raw('count(bookings.id) as total'))
-                    ->join('leads', 'travel_packages.id', '=', 'leads.travel_package_id')
-                    ->join('bookings', 'leads.id', '=', 'bookings.lead_id')
-                    ->whereIn('bookings.status', [
-                        BookingStatus::Senado,
-                        BookingStatus::Emitido,
-                    ])
-                    ->groupBy('travel_packages.id')
+                    ->select('travel_packages.*')
+                    ->selectSub(
+                        Booking::query()
+                            ->selectRaw('count(*)')
+                            ->join('leads', 'leads.id', '=', 'bookings.lead_id')
+                            ->whereColumn('leads.travel_package_id', 'travel_packages.id')
+                            ->whereIn('bookings.status', [
+                                BookingStatus::Senado,
+                                BookingStatus::Emitido,
+                            ]),
+                        'total',
+                    )
+                    ->whereIn('travel_packages.id', Booking::query()
+                        ->join('leads', 'leads.id', '=', 'bookings.lead_id')
+                        ->whereIn('bookings.status', [BookingStatus::Senado, BookingStatus::Emitido])
+                        ->select('leads.travel_package_id'))
                     ->orderByDesc('total')
                     ->limit(5)
             )
