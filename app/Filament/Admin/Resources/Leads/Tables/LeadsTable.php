@@ -18,6 +18,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ExportAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
@@ -26,6 +27,7 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 
 class LeadsTable
 {
@@ -99,6 +101,26 @@ class LeadsTable
                     ->query(fn (Builder $query) => $query->followUpOverdue()),
                 TernaryFilter::make('needs_human_attention')
                     ->label('Atención Requerida'),
+                SelectFilter::make('source')
+                    ->label('Origen')
+                    ->options(fn (): array => Lead::query()->whereNotNull('source')->distinct()->orderBy('source')->pluck('source')
+                        ->mapWithKeys(fn (string $source): array => [$source => Lead::sourceLabel($source)])->all()),
+                SelectFilter::make('agent_id')
+                    ->label('Vendedor')
+                    ->relationship('agent', 'name'),
+                Filter::make('created_at')
+                    ->label('Fecha de la consulta')
+                    ->schema([
+                        DatePicker::make('created_from')->label('Recibida desde'),
+                        DatePicker::make('created_until')->label('Recibida hasta'),
+                    ])
+                    ->query(fn (Builder $query, array $data): Builder => $query
+                        ->when($data['created_from'] ?? null, fn (Builder $query, string $date) => $query->whereDate('created_at', '>=', $date))
+                        ->when($data['created_until'] ?? null, fn (Builder $query, string $date) => $query->whereDate('created_at', '<=', $date)))
+                    ->indicateUsing(fn (array $data): array => array_values(array_filter([
+                        ($data['created_from'] ?? null) ? 'Desde '.Carbon::parse($data['created_from'])->format('d/m/Y') : null,
+                        ($data['created_until'] ?? null) ? 'Hasta '.Carbon::parse($data['created_until'])->format('d/m/Y') : null,
+                    ]))),
             ])
             ->recordActions([
                 Action::make('view_customer')

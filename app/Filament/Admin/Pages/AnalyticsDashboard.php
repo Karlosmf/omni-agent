@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Pages;
 
 use App\Filament\Admin\Widgets\Analytics\FunnelStatsWidget;
+use App\Filament\Admin\Widgets\Analytics\LeadOutcomesWidget;
 use App\Filament\Admin\Widgets\Analytics\SourcesChartWidget;
 use App\Filament\Admin\Widgets\Analytics\TopProductsWidget;
 use BackedEnum;
@@ -24,6 +25,7 @@ class AnalyticsDashboard extends Page
     protected function getHeaderWidgets(): array
     {
         return [
+            LeadOutcomesWidget::class,
             FunnelStatsWidget::class,
             SourcesChartWidget::class,
             TopProductsWidget::class,

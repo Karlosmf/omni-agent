@@ -13,6 +13,16 @@ enum BookingStatus: string implements HasColor, HasLabel
     case Emitido = 'emitido';
     case Cancelado = 'cancelado';
 
+    /**
+     * Statuses that count as a sale.
+     *
+     * @return list<self>
+     */
+    public static function confirmed(): array
+    {
+        return [self::Senado, self::Emitido];
+    }
+
     public function getLabel(): ?string
     {
         return match ($this) {

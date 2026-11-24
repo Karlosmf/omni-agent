@@ -26,15 +26,7 @@ class LeadSourcesChart extends ChartWidget
                     'backgroundColor' => ['#f59e0b', '#3b82f6', '#10b981', '#ef4444', '#8b5cf6'],
                 ],
             ],
-            'labels' => $sources->pluck('source')->map(fn ($source) => match ($source) {
-                'chatbot' => 'Chatbot IA',
-                'web_form' => 'Formulario Web / Catálogo',
-                'whatsapp' => 'WhatsApp Directo',
-                'instagram' => 'Instagram',
-                'messenger' => 'Messenger',
-                'manual' => 'Manual (Agente)',
-                default => ucfirst($source ?? 'Desconocido'),
-            })->toArray(),
+            'labels' => $sources->pluck('source')->map(fn ($source) => Lead::sourceLabel($source))->toArray(),
         ];
     }
 

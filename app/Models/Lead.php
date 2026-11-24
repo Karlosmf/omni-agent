@@ -156,6 +156,58 @@ class Lead extends Model
     }
 
     /**
+     * Sold inquiries: dragged to "Reservada" or with a booking that was paid a deposit or issued.
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopeWon(Builder $query): void
+    {
+        $query->where(fn (Builder $q) => $q
+            ->where('status', LeadStatus::Booked)
+            ->orWhereHas('bookings', fn (Builder $bookings) => $bookings->whereIn('status', BookingStatus::confirmed())));
+    }
+
+    /**
+     * Inquiries closed without a sale.
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopeLost(Builder $query): void
+    {
+        $query->where('status', LeadStatus::Closed)
+            ->whereDoesntHave('bookings', fn (Builder $bookings) => $bookings->whereIn('status', BookingStatus::confirmed()));
+    }
+
+    /**
+     * Inquiries still being worked on that have not been sold yet: the ones to follow up.
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopePendingOutcome(Builder $query): void
+    {
+        $query->open()
+            ->whereDoesntHave('bookings', fn (Builder $bookings) => $bookings->whereIn('status', BookingStatus::confirmed()));
+    }
+
+    /**
+     * Human label for where the inquiry came from.
+     */
+    public static function sourceLabel(?string $source): string
+    {
+        return match ($source) {
+            'chatbot' => 'Chatbot IA',
+            'web_form' => 'Formulario Web / Catálogo',
+            'cotizador_publico' => 'Cotizador web',
+            'whatsapp' => 'WhatsApp Directo',
+            'instagram' => 'Instagram',
+            'messenger' => 'Messenger',
+            'manual' => 'Manual (Agente)',
+            null, '' => 'Desconocido',
+            default => ucfirst($source),
+        };
+    }
+
+    /**
      * Most urgent first: someone asking for a person, then an overdue follow-up, then hot leads,
      * then the nearest follow-up (leads without one last), then the latest customer message.
      *

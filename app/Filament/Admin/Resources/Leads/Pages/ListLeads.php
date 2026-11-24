@@ -53,7 +53,13 @@ class ListLeads extends ListRecords
                 ->badge(fn () => $this->countWhere(fn (Builder $query) => $query->open()->whereNull('agent_id'))),
             'abiertas' => Tab::make('Abiertas')
                 ->icon('heroicon-o-inbox')
-                ->modifyQueryUsing(fn (Builder $query) => $query->open()),
+                ->modifyQueryUsing(fn (Builder $query) => $query->pendingOutcome()),
+            'ganadas' => Tab::make('Concretadas')
+                ->icon('heroicon-o-check-badge')
+                ->modifyQueryUsing(fn (Builder $query) => $query->won()),
+            'perdidas' => Tab::make('Perdidas')
+                ->icon('heroicon-o-x-circle')
+                ->modifyQueryUsing(fn (Builder $query) => $query->lost()),
             'todas' => Tab::make('Todas')
                 ->icon('heroicon-o-list-bullet'),
         ];
