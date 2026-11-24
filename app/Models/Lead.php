@@ -111,7 +111,7 @@ class Lead extends Model
 
         return match (true) {
             $statuses->isEmpty() => null,
-            $statuses->contains(fn (BookingStatus $s) => in_array($s, [BookingStatus::Senado, BookingStatus::Emitido], true)) => LeadStatus::Booked,
+            $statuses->contains(fn (BookingStatus $s) => $s->isConfirmed()) => LeadStatus::Booked,
             $statuses->contains(fn (BookingStatus $s) => in_array($s, [BookingStatus::Borrador, BookingStatus::Presupuesto], true)) => LeadStatus::Quoted,
             default => LeadStatus::Closed,
         };

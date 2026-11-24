@@ -135,13 +135,23 @@ class Booking extends Model
     }
 
     /**
+     * Sold files: señados or emitidos.
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopeConfirmed(Builder $query): void
+    {
+        $query->whereIn('status', BookingStatus::confirmed());
+    }
+
+    /**
      * Sold files (señados o emitidos) that travel within the next days.
      *
      * @param  Builder<self>  $query
      */
     public function scopeTravellingSoon(Builder $query, int $days = 30): void
     {
-        $query->whereIn('status', [BookingStatus::Senado, BookingStatus::Emitido])
+        $query->confirmed()
             ->whereDate('travel_date', '>=', today())
             ->whereDate('travel_date', '<=', today()->addDays($days));
     }

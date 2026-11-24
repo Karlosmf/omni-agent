@@ -49,14 +49,8 @@ class ListBookings extends ListRecords
                 ->badge(fn () => Booking::where('status', BookingStatus::Presupuesto)->count()),
             'files' => Tab::make('Files Activos')
                 ->icon('heroicon-o-check-circle')
-                ->modifyQueryUsing(fn (Builder $query) => $query->whereIn('status', [
-                    BookingStatus::Senado,
-                    BookingStatus::Emitido,
-                ]))
-                ->badge(fn () => Booking::whereIn('status', [
-                    BookingStatus::Senado,
-                    BookingStatus::Emitido,
-                ])->count()),
+                ->modifyQueryUsing(fn (Builder $query) => $query->confirmed())
+                ->badge(fn () => Booking::confirmed()->count()),
             'cancelados' => Tab::make('Cancelados')
                 ->icon('heroicon-o-x-circle')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', BookingStatus::Cancelado)),

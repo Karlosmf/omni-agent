@@ -2,9 +2,7 @@
 
 namespace App\Filament\Admin\Widgets;
 
-use App\Enums\BookingStatus;
-use App\Models\Booking;
-use App\Models\Lead;
+use App\Services\SalesFunnelService;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -14,45 +12,25 @@ class KpiOverview extends StatsOverviewWidget
 
     protected function getStats(): array
     {
-        $confirmedStatuses = [BookingStatus::Senado, BookingStatus::Emitido];
-
-        // Current Month
+        $funnel = app(SalesFunnelService::class);
         $currentMonth = now()->startOfMonth();
         $previousMonth = now()->subMonth()->startOfMonth();
 
-        // Ventas USD (Mes actual)
-        $ventasActual = Booking::whereIn('status', $confirmedStatuses)
-            ->where('currency', 'USD')
-            ->where('created_at', '>=', $currentMonth)
-            ->sum('total_sell');
-
-        $ventasAnterior = Booking::whereIn('status', $confirmedStatuses)
-            ->where('currency', 'USD')
-            ->where('created_at', '>=', $previousMonth)
-            ->where('created_at', '<', $currentMonth)
-            ->sum('total_sell');
-
+        $thisMonth = $funnel->usdSales($currentMonth);
+        $ventasActual = $thisMonth['sell'];
+        $ventasAnterior = $funnel->usdSales($previousMonth, $currentMonth)['sell'];
         $ventasTrend = $ventasAnterior > 0 ? (($ventasActual - $ventasAnterior) / $ventasAnterior) * 100 : 0;
         $ventasIcon = $ventasTrend >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down';
         $ventasColor = $ventasTrend >= 0 ? 'success' : 'danger';
 
-        // Rentabilidad USD (Mes actual)
-        $costosActual = Booking::whereIn('status', $confirmedStatuses)
-            ->where('currency', 'USD')
-            ->where('created_at', '>=', $currentMonth)
-            ->sum('total_cost');
+        $rentabilidadActual = $ventasActual - $thisMonth['cost'];
+        $historic = $funnel->usdSales();
+        $rentabilidadHistorica = $historic['sell'] - $historic['cost'];
 
-        $rentabilidadActual = $ventasActual - $costosActual;
-
-        // Rentabilidad histórica (USD)
-        $rentabilidadHistorica = Booking::whereIn('status', $confirmedStatuses)
-            ->where('currency', 'USD')
-            ->sum(\DB::raw('total_sell - total_cost'));
-
-        // Tasa de conversión (General)
-        $totalLeads = Lead::count();
-        $totalConfirmados = Booking::whereIn('status', $confirmedStatuses)->count();
-        $conversionRate = $totalLeads > 0 ? round(($totalConfirmados / $totalLeads) * 100, 1) : 0;
+        $totals = $funnel->totals();
+        $totalLeads = $totals['leads'];
+        $totalConfirmados = $totals['sales'];
+        $conversionRate = $totals['total_rate'];
 
         return [
             Stat::make('Ventas Mes Actual (USD)', 'USD '.number_format($ventasActual, 2))

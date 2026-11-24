@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class LeadSourcesChart extends ChartWidget
 {
-    protected ?string $heading = 'Fuentes de Leads';
+    protected ?string $heading = 'Orígenes de Consultas';
 
     protected static ?int $sort = 15;
 

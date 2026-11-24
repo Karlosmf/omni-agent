@@ -4,8 +4,8 @@ namespace App\Filament\Admin\Pages;
 
 use App\Filament\Admin\Widgets\Analytics\FunnelStatsWidget;
 use App\Filament\Admin\Widgets\Analytics\LeadOutcomesWidget;
-use App\Filament\Admin\Widgets\Analytics\SourcesChartWidget;
 use App\Filament\Admin\Widgets\Analytics\TopProductsWidget;
+use App\Filament\Admin\Widgets\LeadSourcesChart;
 use BackedEnum;
 use Filament\Pages\Page;
 use UnitEnum;
@@ -27,7 +27,7 @@ class AnalyticsDashboard extends Page
         return [
             LeadOutcomesWidget::class,
             FunnelStatsWidget::class,
-            SourcesChartWidget::class,
+            LeadSourcesChart::class,
             TopProductsWidget::class,
         ];
     }

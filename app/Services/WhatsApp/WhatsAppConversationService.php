@@ -313,25 +313,13 @@ class WhatsAppConversationService
      */
     private function sendAutomatic(Lead $lead, string $text, ?callable $send = null, ?array $payload = null): void
     {
-        $stored = $lead->messages()->create([
-            'role' => 'assistant',
-            'content' => $text,
-            'channel' => $lead->conversationChannel()->value,
-            'direction' => 'out',
-            'status' => 'sending',
-            'sent_from' => Message::SENT_FROM_MENU,
-            'payload' => $payload,
-        ]);
+        $stored = $this->outbound($lead, $text, ['sent_from' => Message::SENT_FROM_MENU, 'payload' => $payload]);
 
         try {
-            $to = $this->recipientOf($lead);
-            $id = $send ? $send($to) : $this->sendTextVia($lead, $to, $text);
-            $stored->update(['external_id' => $id ?: null, 'status' => 'sent']);
+            $this->transmit($stored, $send ?? fn (string $to) => $this->sendTextVia($lead, $to, $text), $this->recipientOf($lead));
         } catch (Throwable $e) {
             Log::warning("Chat menu not sent for lead {$lead->id}: ".$e->getMessage());
-            $stored->update(['status' => 'failed']);
-            BotNotice::raise($lead, BotNoticeType::Handoff, 'No se pudo enviar un menú del chat al cliente.');
-            $lead->forceFill(['needs_human_attention' => true])->saveQuietly();
+            $this->needsPersonAfterFailedSend($lead, 'No se pudo enviar un menú del chat al cliente.');
         }
     }
 
@@ -527,15 +515,9 @@ class WhatsAppConversationService
      */
     private function replyWithBot(Lead $lead, Message $inbound, bool $isText): void
     {
-        $key = 'wa-ai:'.$lead->id;
-
-        if (RateLimiter::tooManyAttempts($key, self::AI_REPLIES_PER_MINUTE)) {
-            Log::info("Receptionist bot throttled for lead {$lead->id}");
-
+        if ($this->throttled($lead, 'Receptionist bot')) {
             return;
         }
-
-        RateLimiter::hit($key, 60);
 
         $reply = $this->bot->respond($lead, $inbound, $isText);
 
@@ -545,12 +527,7 @@ class WhatsAppConversationService
 
         $target = $reply->lead;
 
-        $stored = $target->messages()->create([
-            'role' => 'assistant',
-            'content' => $reply->text,
-            'channel' => $target->conversationChannel()->value,
-            'direction' => 'out',
-            'status' => 'sending',
+        $stored = $this->outbound($target, $reply->text, [
             'sent_from' => Message::SENT_FROM_BOT,
             'input_tokens' => $reply->inputTokens,
             'output_tokens' => $reply->outputTokens,
@@ -559,27 +536,18 @@ class WhatsAppConversationService
         ]);
 
         try {
-            $id = $this->sendTextVia($target, $this->recipientOf($target), $reply->text, buttons: $reply->buttons);
-            $stored->update(['external_id' => $id ?: null, 'status' => 'sent']);
+            $this->transmit($stored, fn (string $to) => $this->sendTextVia($target, $to, $reply->text, buttons: $reply->buttons), $this->recipientOf($target));
         } catch (Throwable $e) {
             Log::warning("Bot reply not sent for lead {$target->id}: ".$e->getMessage());
-            $stored->update(['status' => 'failed']);
-            BotNotice::raise($target, BotNoticeType::Handoff, 'No se pudo enviar la respuesta del bot al cliente.');
-            $target->forceFill(['needs_human_attention' => true])->saveQuietly();
+            $this->needsPersonAfterFailedSend($target, 'No se pudo enviar la respuesta del bot al cliente.');
         }
     }
 
     private function replyWithAi(Lead $lead, string $text): void
     {
-        $key = 'wa-ai:'.$lead->id;
-
-        if (RateLimiter::tooManyAttempts($key, self::AI_REPLIES_PER_MINUTE)) {
-            Log::info("WhatsApp AI throttled for lead {$lead->id}");
-
+        if ($this->throttled($lead, 'WhatsApp AI')) {
             return;
         }
-
-        RateLimiter::hit($key, 60);
 
         $history = $lead->messages()->newestFirst()->take(10)->get()->reverse()
             ->map(fn (Message $m) => ['role' => $m->role === 'user' ? 'user' : 'assistant', 'content' => $m->content])->values()->all();
@@ -596,11 +564,9 @@ class WhatsAppConversationService
         $stored->update(['channel' => $lead->conversationChannel()->value, 'direction' => 'out']);
 
         try {
-            $id = $this->sendTextVia($lead, $this->recipientOf($lead), $reply);
-            $stored->update(['external_id' => $id ?: null, 'status' => 'sent']);
+            $this->transmit($stored, fn (string $to) => $this->sendTextVia($lead, $to, $reply), $this->recipientOf($lead));
         } catch (Throwable $e) {
             Log::warning("WhatsApp AI reply not sent for lead {$lead->id}: ".$e->getMessage());
-            $stored->update(['status' => 'failed']);
         }
 
         $lead->refresh();
@@ -638,17 +604,37 @@ class WhatsAppConversationService
     private function deliver(Lead $lead, callable $send, string $content, ?User $agent, ?array $payload = null): Message
     {
         $to = $this->recipientOf($lead);
+        $message = $this->outbound($lead, $content, ['sent_by_user_id' => $agent?->id, 'payload' => $payload]);
 
-        $message = $lead->messages()->create([
+        $this->transmit($message, $send, $to);
+
+        return $message;
+    }
+
+    /**
+     * A reply about to go out, stored first as "sending" so the inbox shows it even if the provider fails.
+     *
+     * @param  array<string, mixed>  $attributes  Who or what wrote it (sent_from, sent_by_user_id, AI usage) and its payload.
+     */
+    private function outbound(Lead $lead, string $content, array $attributes = []): Message
+    {
+        return $lead->messages()->create([
             'role' => 'assistant',
             'content' => $content,
             'channel' => $lead->conversationChannel()->value,
             'direction' => 'out',
             'status' => 'sending',
-            'sent_by_user_id' => $agent?->id,
-            'payload' => $payload,
+            ...$attributes,
         ]);
+    }
 
+    /**
+     * Sends a stored reply and records the provider's id, or marks it failed and rethrows.
+     *
+     * @param  callable(string): string  $send  Gets the recipient, returns the provider's message id.
+     */
+    private function transmit(Message $message, callable $send, string $to): void
+    {
         try {
             $message->update(['external_id' => $send($to) ?: null, 'status' => 'sent']);
         } catch (Throwable $e) {
@@ -656,8 +642,33 @@ class WhatsAppConversationService
 
             throw $e;
         }
+    }
 
-        return $message;
+    /**
+     * Something the bot or a menu wrote could not reach the customer: a person has to pick the conversation up.
+     */
+    private function needsPersonAfterFailedSend(Lead $lead, string $detail): void
+    {
+        BotNotice::raise($lead, BotNoticeType::Handoff, $detail);
+        $lead->forceFill(['needs_human_attention' => true])->saveQuietly();
+    }
+
+    /**
+     * Caps automatic replies per conversation and minute, so a customer sending many messages at once gets one answer.
+     */
+    private function throttled(Lead $lead, string $who): bool
+    {
+        $key = 'wa-ai:'.$lead->id;
+
+        if (RateLimiter::tooManyAttempts($key, self::AI_REPLIES_PER_MINUTE)) {
+            Log::info("{$who} throttled for lead {$lead->id}");
+
+            return true;
+        }
+
+        RateLimiter::hit($key, 60);
+
+        return false;
     }
 
     private function markAttended(Lead $lead, User $agent): void

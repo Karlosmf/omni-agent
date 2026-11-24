@@ -24,15 +24,12 @@ class TopProductsWidget extends TableWidget
                             ->selectRaw('count(*)')
                             ->join('leads', 'leads.id', '=', 'bookings.lead_id')
                             ->whereColumn('leads.travel_package_id', 'travel_packages.id')
-                            ->whereIn('bookings.status', [
-                                BookingStatus::Senado,
-                                BookingStatus::Emitido,
-                            ]),
+                            ->whereIn('bookings.status', BookingStatus::confirmed()),
                         'total',
                     )
                     ->whereIn('travel_packages.id', Booking::query()
                         ->join('leads', 'leads.id', '=', 'bookings.lead_id')
-                        ->whereIn('bookings.status', [BookingStatus::Senado, BookingStatus::Emitido])
+                        ->whereIn('bookings.status', BookingStatus::confirmed())
                         ->select('leads.travel_package_id'))
                     ->orderByDesc('total')
                     ->limit(5)

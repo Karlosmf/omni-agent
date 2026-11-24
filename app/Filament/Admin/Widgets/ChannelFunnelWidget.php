@@ -2,7 +2,6 @@
 
 namespace App\Filament\Admin\Widgets;
 
-use App\Enums\BookingStatus;
 use App\Enums\Channel;
 use App\Models\Booking;
 use App\Models\Lead;
@@ -47,7 +46,7 @@ class ChannelFunnelWidget extends ChartWidget
             foreach ($bookings->get($lead->id, collect()) as $booking) {
                 $rows[$channel]['quotes']++;
 
-                if (in_array($booking->status, [BookingStatus::Senado, BookingStatus::Emitido], true)) {
+                if ($booking->status->isConfirmed()) {
                     $rows[$channel]['confirmed']++;
                 }
             }

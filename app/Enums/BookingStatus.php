@@ -23,6 +23,14 @@ enum BookingStatus: string implements HasColor, HasLabel
         return [self::Senado, self::Emitido];
     }
 
+    /**
+     * Whether this status counts as a sale (señado or emitido).
+     */
+    public function isConfirmed(): bool
+    {
+        return in_array($this, self::confirmed(), true);
+    }
+
     public function getLabel(): ?string
     {
         return match ($this) {

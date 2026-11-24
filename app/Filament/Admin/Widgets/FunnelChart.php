@@ -2,9 +2,7 @@
 
 namespace App\Filament\Admin\Widgets;
 
-use App\Enums\BookingStatus;
-use App\Models\Booking;
-use App\Models\Lead;
+use App\Services\SalesFunnelService;
 use Filament\Widgets\ChartWidget;
 
 class FunnelChart extends ChartWidget
@@ -15,15 +13,13 @@ class FunnelChart extends ChartWidget
 
     protected function getData(): array
     {
-        $totalLeads = Lead::count();
-        $totalPresupuestos = Booking::count();
-        $totalConfirmados = Booking::whereIn('status', [BookingStatus::Senado, BookingStatus::Emitido])->count();
+        $funnel = app(SalesFunnelService::class)->totals();
 
         return [
             'datasets' => [
                 [
                     'label' => 'Conversión',
-                    'data' => [$totalLeads, $totalPresupuestos, $totalConfirmados],
+                    'data' => [$funnel['leads'], $funnel['quotes'], $funnel['sales']],
                     'backgroundColor' => ['#f59e0b', '#3b82f6', '#10b981'],
                 ],
             ],

@@ -202,7 +202,7 @@ class EditBooking extends EditRecord
                 ->label('Acuerdo (PDF)')
                 ->icon('heroicon-o-document-check')
                 ->color('warning')
-                ->visible(fn (Booking $record) => in_array($record->status, [BookingStatus::Senado, BookingStatus::Emitido]))
+                ->visible(fn (Booking $record) => $record->status->isConfirmed())
                 ->action(function ($record) {
                     return response()->streamDownload(function () use ($record) {
                         $settings = get_agency_settings();
