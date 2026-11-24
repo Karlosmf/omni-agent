@@ -23,6 +23,8 @@ Actualizado: 24/11/2026. Marcá cada ítem con `[x]` cuando esté hecho.
 - [ ] **Decidir el modo prueba de WhatsApp**: solo atiende a `+5493482644107` y `+5493482518081`. Para atender a todos, vaciar `ZERNIO_TEST_PHONES` en el `.env` del servidor.
 - [ ] **Cambiar el usuario demo** (`demo@luopan.innodesigntest.com`) por uno propio, o crear un usuario vendedor para mostrar la demo con permisos limitados.
 - [ ] **Borrar el respaldo de la app anterior** cuando ya no haga falta: `~/backups/luopan-2026-11-20` y `luopan-2026-11-20.tar.gz` en el servidor.
+- [ ] **El cron de Hostinger no se ejecuta.** Hay 3 trabajos cron creados en la cuenta y ninguno corrió, ni siquiera uno de prueba que solo escribe la fecha. Revisarlo con el soporte de Hostinger (hPanel → Avanzado → Trabajos Cron). Mientras tanto, la alternativa es un cron externo gratuito (cron-job.org) que abra cada minuto `https://luopan.innodesigntest.com/cron/run?token=…` con el `CRON_TOKEN` del `.env`.
+- [ ] **Limpiar los crons duplicados** en hPanel: dejar solo el que escribe en `storage/logs/cron.log` y borrar el anterior (`… schedule:run >> /dev/null`) y el de prueba (`/bin/date >> ~/cron-test.log`).
 
 ## Instalaciones de clientes
 
@@ -42,4 +44,6 @@ Actualizado: 24/11/2026. Marcá cada ítem con `[x]` cuando esté hecho.
 
 - [ ] Respuestas automáticas fuera de horario (nexia las tiene; acá el bot atiende las 24 horas).
 - [ ] Marcar como leídos los mensajes de Instagram y Messenger cuando Meta avisa la lectura (hoy solo se registra "entregado").
-- [ ] Manual de uso en PDF por área, con capturas (en preparación).
+- [x] Manual de uso en PDF por área, con capturas: `docs/manual/Manual-de-uso.pdf` (se regenera desde `docs/manual/manual-de-uso.html`).
+- [ ] En la ficha de un expediente, los 6 botones de arriba aprietan el título ("Editar LP-1993-184" queda en 4 renglones). Agrupar los menos usados en un menú "Más".
+- [ ] Datos de ejemplo de la demo: los destinos de las consultas sembradas son nombres de ciudades inventados ("Don Martín"); conviene sembrar destinos reales para las presentaciones.

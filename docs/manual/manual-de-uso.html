@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Manual de uso paso a paso</title>
+<style>
+  @page { size: A4; margin: 16mm 15mm 18mm; }
+  :root { --ink: #1f2937; --muted: #6b7280; --red: #e11d48; --blue: #2563eb; --green: #15803d; --amber: #b45309; --line: #e5e7eb; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: var(--ink); font-size: 11.5pt; line-height: 1.5; margin: 0; }
+  h1, h2, h3 { line-height: 1.25; margin: 0 0 .4em; }
+  h2 { font-size: 19pt; color: #111827; border-bottom: 4px solid var(--red); padding-bottom: 6px; margin-top: 0; }
+  h3 { font-size: 14pt; margin-top: 1em; }
+  p { margin: .35em 0 .6em; }
+  section.area { margin-top: 26px; padding-top: 6px; }
+  .cover { break-after: page; }
+  section.first { break-after: page; margin-top: 0; }
+  h2, .chap, .where, .what { break-after: avoid; }
+  section.area > h2 { break-before: auto; }
+  .pb { break-before: page; }
+  .keep { break-inside: avoid; }
+  .where { display: inline-block; background: #f3f4f6; border: 1px solid var(--line); border-radius: 999px; padding: 2px 12px; font-size: 10.5pt; color: #374151; margin-bottom: 8px; }
+  .what { font-size: 12.5pt; background: #fff1f2; border-left: 6px solid var(--red); padding: 10px 14px; border-radius: 6px; margin: 8px 0 12px; }
+  figure { margin: 10px 0 12px; page-break-inside: avoid; }
+  figure img { display: block; margin: 0 auto; max-width: 100%; max-height: 118mm; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+  figcaption { font-size: 10pt; color: var(--muted); text-align: center; margin-top: 4px; }
+  .n { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: var(--red); color: #fff; font-weight: 700; font-size: 11pt; flex: 0 0 24px; }
+  ul.legend { list-style: none; padding: 0; margin: 6px 0 12px; page-break-inside: avoid; }
+  ul.legend li { display: flex; gap: 10px; align-items: flex-start; margin: 4px 0; }
+  ol.steps { counter-reset: s; list-style: none; padding: 0; margin: 6px 0 12px; }
+  ol.steps li { counter-increment: s; position: relative; padding: 5px 0 5px 54px; border-bottom: 1px dashed var(--line); page-break-inside: avoid; }
+  ol.steps li::before { content: "Paso " counter(s); position: absolute; left: 0; top: 6px; font-size: 8pt; font-weight: 800; color: #fff; background: var(--blue); border-radius: 4px; padding: 1px 4px; width: 44px; text-align: center; }
+  .box { border-radius: 8px; padding: 10px 14px 10px 52px; margin: 10px 0; position: relative; page-break-inside: avoid; }
+  .box::before { position: absolute; left: 14px; top: 9px; font-size: 20pt; line-height: 1; }
+  .box b.t { display: block; margin-bottom: 2px; }
+  .ej { background: #f0fdf4; border: 1px solid #bbf7d0; }
+  .ej::before { content: "🧳"; }
+  .tip { background: #eff6ff; border: 1px solid #bfdbfe; }
+  .tip::before { content: "💡"; }
+  .warn { background: #fffbeb; border: 1px solid #fde68a; }
+  .warn::before { content: "⚠️"; }
+  .key { display: inline-block; border: 1px solid #9ca3af; border-bottom-width: 3px; border-radius: 5px; padding: 0 6px; font-size: 10.5pt; background: #f9fafb; font-weight: 600; }
+  .btn { display: inline-block; background: #374151; color: #fff; border-radius: 5px; padding: 0 7px; font-size: 10.5pt; font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; font-size: 11pt; page-break-inside: avoid; }
+  th, td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+  th { background: #f9fafb; }
+  .cover { height: 255mm; display: flex; flex-direction: column; justify-content: center; text-align: center; }
+  .cover h1 { font-size: 34pt; color: #111827; }
+  .cover .sub { font-size: 15pt; color: var(--muted); margin-top: 6px; }
+  .cover .badge { margin: 30px auto 0; background: #fff1f2; border: 2px solid var(--red); color: #9f1239; border-radius: 12px; padding: 14px 22px; max-width: 520px; font-size: 13pt; }
+  .toc { columns: 2; column-gap: 28px; font-size: 12pt; padding-left: 20px; }
+  .toc li { margin: 3px 0; break-inside: avoid; }
+  .chap { font-size: 10pt; letter-spacing: .08em; text-transform: uppercase; color: var(--red); font-weight: 800; margin-bottom: 2px; }
+  .legend-demo { display: flex; gap: 18px; flex-wrap: wrap; margin: 10px 0; }
+  .legend-demo div { display: flex; gap: 8px; align-items: center; }
+  .redbox { display: inline-block; width: 40px; height: 22px; border: 3px solid var(--red); border-radius: 6px; }
+</style>
+</head>
+<body>
+
+<!-- ============ TAPA ============ -->
+<div class="cover">
+  <div class="chap">Manual de uso</div>
+  <h1>Tu agencia en el panel,<br>paso a paso</h1>
+  <div class="sub">Cómo usar cada sección del sistema, con capturas, señales y ejemplos</div>
+  <div class="badge">Escrito para que lo pueda usar <b>cualquier persona del equipo</b>, aunque no esté acostumbrada a la computadora. Leelo con el panel abierto al lado y andá probando.</div>
+</div>
+
+<!-- ============ ÍNDICE ============ -->
+<section class="area first">
+  <h2>Contenido</h2>
+  <ol class="toc">
+    <li>Cómo leer este manual</li>
+    <li>Palabras que vas a ver</li>
+    <li>Entrar al sistema</li>
+    <li>El Escritorio</li>
+    <li>Bandeja de mensajes</li>
+    <li>Avisos del bot</li>
+    <li>Bot recepcionista</li>
+    <li>Menús del chat</li>
+    <li>Consultas (la lista)</li>
+    <li>Tablero de consultas</li>
+    <li>La ficha de una consulta</li>
+    <li>Marcar una consulta como perdida</li>
+    <li>Clientes</li>
+    <li>Presupuestos y expedientes</li>
+    <li>Armar el presupuesto: servicios y totales</li>
+    <li>Plan de pagos y cuotas</li>
+    <li>Ideas de viaje (catálogo)</li>
+    <li>Importar una idea con IA</li>
+    <li>Tareas</li>
+    <li>Caja: cobros y pagos</li>
+    <li>Reportes financieros</li>
+    <li>Seguimiento de consultas (estadísticas)</li>
+    <li>Seguimiento automático</li>
+    <li>Marca blanca (configuración)</li>
+    <li>Usuarios del equipo</li>
+    <li>Proveedores</li>
+    <li>Canales y plantillas de WhatsApp</li>
+    <li>Preguntas frecuentes</li>
+  </ol>
+  <div class="box ej"><b class="t">El ejemplo que sigue todo el manual</b>
+    <b>Laura Gómez</b> le escribe a la agencia por WhatsApp porque quiere ir a <b>Punta Cana</b> en enero con su familia. A lo largo del manual vas a ver qué hace el equipo en cada pantalla: responderle, armarle el presupuesto, cobrarle la seña y las cuotas, y hacer el seguimiento hasta que viaja.
+  </div>
+</section>
+
+<!-- ============ 1 ============ -->
+<section class="area pb">
+  <div class="chap">Antes de empezar</div>
+  <h2>1. Cómo leer este manual</h2>
+  <p>Cada sección tiene siempre las mismas partes, para que sepas dónde mirar:</p>
+  <table>
+    <tr><th style="width:34%">Qué vas a ver</th><th>Qué significa</th></tr>
+    <tr><td><span class="where">Menú: Ventas → Consultas</span></td><td>Dónde está la pantalla. Buscá esos nombres en el <b>menú de la izquierda</b>.</td></tr>
+    <tr><td><div class="what" style="margin:0;font-size:11pt">¿Para qué sirve?</div></td><td>Una explicación corta, en una o dos líneas.</td></tr>
+    <tr><td><div class="legend-demo"><div><span class="redbox"></span></div><div><span class="n">1</span></div></div></td><td>En las capturas, <b>el recuadro rojo</b> marca un botón o un dato, y <b>el círculo con número</b> te dice cuál es. Debajo de la imagen está la explicación de cada número.</td></tr>
+    <tr><td><b>Paso a paso</b></td><td>Lo que tenés que hacer, en orden. Hacé un paso y recién después pasá al siguiente.</td></tr>
+    <tr><td><div class="box ej" style="margin:0;padding:6px 8px 6px 44px">Ejemplo</div></td><td>Un caso real, con Laura y su viaje a Punta Cana.</td></tr>
+    <tr><td><div class="box tip" style="margin:0;padding:6px 8px 6px 44px">Consejo</div></td><td>Algo que te ahorra tiempo.</td></tr>
+    <tr><td><div class="box warn" style="margin:0;padding:6px 8px 6px 44px">Atención</div></td><td>Algo importante para no equivocarse.</td></tr>
+  </table>
+
+  <h2 style="margin-top:22px">2. Palabras que vas a ver</h2>
+  <table>
+    <tr><th style="width:26%">Palabra</th><th>Qué es</th></tr>
+    <tr><td><b>Hacer clic</b></td><td>Apretar una vez el botón izquierdo del mouse (o tocar una vez el panel táctil de la notebook) sobre algo.</td></tr>
+    <tr><td><b>Botón</b></td><td>Un rectángulo con texto, como <span class="btn">Crear Consulta</span>. Al hacerle clic, hace algo.</td></tr>
+    <tr><td><b>Campo</b></td><td>Un recuadro blanco donde se escribe, por ejemplo el nombre o el teléfono.</td></tr>
+    <tr><td><b>Desplegable</b></td><td>Un campo con una flechita <b>⌄</b>. Al hacerle clic se abre una lista y elegís una opción.</td></tr>
+    <tr><td><b>Interruptor</b></td><td>Un botoncito que se desliza a un costado: <b>encendido</b> (de color) o <b>apagado</b> (gris).</td></tr>
+    <tr><td><b>Pestaña</b></td><td>Títulos uno al lado del otro arriba de una lista. Al hacer clic en uno, cambia lo que se muestra debajo.</td></tr>
+    <tr><td><b>Lista o tabla</b></td><td>Filas con datos. Cada fila es una persona, un viaje o un movimiento.</td></tr>
+    <tr><td><b>Ventana (o modal)</b></td><td>Un cuadro que aparece encima de la pantalla para completar algo. Se cierra con <b>Cancelar</b> o con la <b>✕</b>.</td></tr>
+    <tr><td><b>Bajar (desplazarse)</b></td><td>Mover la ruedita del mouse hacia vos, o deslizar dos dedos hacia arriba en el panel táctil, para ver lo que está más abajo.</td></tr>
+    <tr><td><b>Consulta</b></td><td>Una persona interesada en viajar que todavía no compró. También le dicen <i>lead</i>.</td></tr>
+    <tr><td><b>Expediente (o file)</b></td><td>El viaje de un cliente, desde el presupuesto hasta que viaja.</td></tr>
+  </table>
+  <div class="box tip"><b class="t">No tengas miedo de probar</b> Casi todo se puede corregir. Lo único que borra para siempre son los botones rojos que dicen <b>Eliminar</b> o <b>Borrar</b>, y siempre te piden confirmar antes.</div>
+</section>
+
+<!-- ============ 3 LOGIN ============ -->
+<section class="area pb">
+  <div class="chap">Primeros pasos</div>
+  <div class="keep"><h2>3. Entrar al sistema</h2>
+  <span class="where">Dirección: la de tu agencia, terminada en <b>/admin</b></span>
+  <div class="what">Es la puerta de entrada. Cada persona del equipo tiene su propio correo y contraseña.</div>
+  <figure><img src="imagenes/login.jpg" alt="Pantalla de ingreso"><figcaption>La pantalla de ingreso</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Correo electrónico:</b> escribí tu correo, el mismo que te dio el administrador.</div></li>
+    <li><span class="n">2</span><div><b>Contraseña:</b> escribila con cuidado. El ojito de la derecha la muestra, para que veas si la escribiste bien.</div></li>
+    <li><span class="n">3</span><div><b>Entrar:</b> hacé clic acá (o apretá <span class="key">Enter</span> en el teclado).</div></li>
+  </ul>
+  <ol class="steps">
+    <li>Abrí el navegador (Chrome, Edge o Safari) y escribí la dirección del panel de tu agencia.</li>
+    <li>Hacé clic en el campo <b>Correo electrónico</b> y escribí tu correo.</li>
+    <li>Hacé clic en <b>Contraseña</b> y escribila.</li>
+    <li>Si es tu computadora, podés tildar <b>Recordarme</b> para no tener que escribirla cada vez.</li>
+    <li>Hacé clic en <b>Entrar</b>.</li>
+  </ol>
+  <div class="box warn"><b class="t">¿Olvidaste la contraseña?</b> Pedile a un administrador que te la cambie desde <i>Sistema → Usuarios</i> (sección 25). Nunca compartas tu contraseña con otra persona: cada uno tiene la suya.</div>
+</section>
+
+<!-- ============ 4 ESCRITORIO ============ -->
+<section class="area">
+  <div class="keep"><h2>4. El Escritorio</h2>
+  <span class="where">Menú: Escritorio (la primera opción)</span>
+  <div class="what">Es la pantalla de inicio. Te muestra de un vistazo cómo viene el trabajo del día y tiene atajos a lo que más se usa.</div>
+  <figure><img src="imagenes/escritorio.jpg" alt="El Escritorio"><figcaption>El Escritorio, con el menú a la izquierda</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Menú de la izquierda:</b> desde acá vas a todas las secciones. Está agrupado por temas: <i>Chat, Ventas, Gestión, Catálogo, Tesorería, Reportes, Configuración y Sistema</i>. Hacé clic en el nombre de un grupo para abrirlo o cerrarlo.</div></li>
+    <li><span class="n">2</span><div><b>Buscar:</b> escribí un nombre, un teléfono o un número de expediente y aparece al instante.</div></li>
+    <li><span class="n">3</span><div><b>Campanita:</b> tus notificaciones (por ejemplo, "una consulta pide hablar con una persona").</div></li>
+    <li><span class="n">4</span><div><b>Tu usuario:</b> para cambiar entre modo claro u oscuro y para <b>salir</b> del sistema.</div></li>
+    <li><span class="n">5</span><div><b>Atajos de colores:</b> <i>Nueva Consulta, Buscar Cliente, Nuevo File</i> y <i>Registrar Pago</i>. Un clic y vas directo.</div></li>
+    <li><span class="n">6</span><div><b>Números del negocio:</b> consultas recibidas, presupuestos enviados y viajes vendidos, con el porcentaje que avanza de una etapa a la otra.</div></li>
+  </ul>
+  <div class="box tip"><b class="t">Los números al lado del menú</b> Un globito con número (por ejemplo, <b>3</b> al lado de <i>Avisos</i>) quiere decir que hay cosas esperándote ahí.</div>
+  <div class="box warn"><b class="t">Si ves un cartel rojo que dice "El cron no está corriendo"</b> Avisale al administrador: significa que los envíos automáticos (recordatorios, seguimientos) están frenados. Vos podés seguir trabajando normalmente.</div>
+</section>
+
+<!-- ============ 5 BANDEJA ============ -->
+<section class="area pb">
+  <div class="chap">Chat</div>
+  <div class="keep"><h2>5. Bandeja de mensajes</h2>
+  <span class="where">Menú: Chat → Bandeja de mensajes</span>
+  <div class="what">Acá llegan juntos todos los mensajes de <b>WhatsApp, Instagram y Messenger</b>. Desde acá leés y respondés sin tocar el celular.</div>
+  <figure><img src="imagenes/bandeja.jpg" alt="Bandeja de mensajes"><figcaption>A la izquierda, las conversaciones. A la derecha, la conversación abierta</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Canales:</b> mostrar todos, o solo WhatsApp, Instagram o Messenger.</div></li>
+    <li><span class="n">2</span><div><b>Filtros:</b> <i>Todas</i>, <i>No leídas</i>, <i>Mías</i> (las que tenés asignadas) y <i>Urgentes</i> (piden una persona).</div></li>
+    <li><span class="n">3</span><div><b>Una conversación:</b> hacé clic para abrirla. El número verde dice cuántos mensajes sin leer tiene. La etiqueta roja <i>Esperando</i> quiere decir que la persona está esperando que alguien del equipo le responda.</div></li>
+    <li><span class="n">4</span><div><b>Cuadro para escribir:</b> escribí tu respuesta acá y apretá <b>Enviar</b>.</div></li>
+    <li><span class="n">5</span><div><b>Pausar IA:</b> frena al asistente automático en esta conversación, para que hables solo vos.</div></li>
+  </ul>
+  <ol class="steps">
+    <li>Hacé clic en <b>No leídas</b> para ver solo lo nuevo.</li>
+    <li>Hacé clic en la conversación de arriba de todo.</li>
+    <li>Leé lo que escribió la persona y lo que ya le respondió el asistente (aparece marcado como <i>IA</i>).</li>
+    <li>Escribí tu respuesta en el cuadro de abajo y hacé clic en <b>Enviar</b>.</li>
+  </ol>
+  <div class="box ej"><b class="t">Ejemplo</b> Laura escribió: <i>"Quiero hablar con una persona para pagar"</i>. Su conversación aparece primera con la etiqueta <b>Esperando</b>. Hacés clic, ves que el bot ya le preguntó cuántos viajan y desde dónde, y le respondés: <i>"¡Hola Laura! Soy Ana, te armo el presupuesto ahora mismo."</i> Al responder vos, el asistente se pone en pausa solo en esa conversación.</div>
+  <div class="box warn"><b class="t">La regla de las 24 horas (es de WhatsApp, no del sistema)</b> Podés escribir libremente hasta <b>24 horas después del último mensaje del cliente</b>. Pasado ese tiempo, en WhatsApp solo se pueden mandar <b>plantillas aprobadas</b> (sección 27): la pantalla te muestra cuál elegir.</div>
+</section>
+
+<!-- ============ 6 AVISOS ============ -->
+<section class="area">
+  <div class="keep"><h2>6. Avisos del bot</h2>
+  <span class="where">Menú: Chat → Avisos</span>
+  <div class="what">Es la lista de cosas que el asistente automático te pide que revises. Miralos varias veces al día.</div>
+  <figure><img src="imagenes/avisos.jpg" alt="Avisos"><figcaption>Los avisos pendientes</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Tipo de aviso</b> (ver la tabla de abajo).</div></li>
+    <li><span class="n">2</span><div><b>Ver conversación:</b> abre el chat con ese cliente en la bandeja.</div></li>
+    <li><span class="n">3</span><div><b>Marcar leído:</b> cuando ya lo resolviste, para que desaparezca de la lista.</div></li>
+  </ul>
+  <table>
+    <tr><th style="width:36%">Aviso</th><th>Qué tenés que hacer</th></tr>
+    <tr><td><b style="color:#be123c">Derivación a una persona</b></td><td>El cliente necesita a alguien del equipo: pidió hablar con una persona, quiere pagar o el bot no supo qué contestar. Respondele cuanto antes.</td></tr>
+    <tr><td><b style="color:#15803d">Datos completos: lista para cotizar</b></td><td>El bot ya juntó destino, fechas y pasajeros. Armá el presupuesto (sección 14).</td></tr>
+    <tr><td><b style="color:#b45309">Verificar consulta nueva</b></td><td>Escribió alguien que ya era cliente. Fijate si es un viaje nuevo o la misma consulta de antes.</td></tr>
+  </table>
+  <div class="box ej"><b class="t">Ejemplo</b> Aparece <b>Derivación a una persona</b> con el detalle <i>"La clienta pidió hablar con una persona para pagar"</i>. Hacés clic en <b>Ver conversación</b>, le respondés a Laura y después volvés acá y hacés clic en <b>Marcar leído</b>.</div>
+</section>
+
+<!-- ============ 7 BOT ============ -->
+<section class="area">
+  <div class="keep"><h2>7. Bot recepcionista</h2>
+  <span class="where">Menú: Chat → Bot recepcionista · solo administradores</span>
+  <div class="what">Es el asistente automático que contesta los primeros mensajes, a cualquier hora, y junta los datos del viaje para que el equipo después mande el presupuesto.</div>
+  <figure><img src="imagenes/bot.jpg" alt="Bot recepcionista"><figcaption>La configuración del bot</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Interruptor de encendido:</b> prende o apaga el bot para todos los canales.</div></li>
+    <li><span class="n">2</span><div><b>Instrucciones:</b> escribí, con tus palabras, cómo querés que hable y qué tiene que preguntar. Por ejemplo: <i>"Tratá de vos, sé cálido, preguntá siempre desde qué ciudad sale"</i>.</div></li>
+    <li><span class="n">3</span><div><b>Probar bot:</b> abre un chat de prueba para escribirle como si fueras un cliente. No le manda nada a nadie.</div></li>
+    <li><span class="n">4</span><div><b>Guardar:</b> guarda los cambios. Si no hacés clic acá, no se aplican.</div></li>
+  </ul>
+  <ol class="steps">
+    <li>Escribí las <b>Instrucciones</b> y, más abajo, <b>Cuándo derivar a una persona</b>.</li>
+    <li>Bajá y revisá <b>Promociones vigentes</b> y <b>Horario y topes</b> (cuántas respuestas por día y por cuántas horas se pausa cuando responde una persona).</li>
+    <li>Hacé clic en <b>Guardar</b>.</li>
+    <li>Hacé clic en <b>Probar bot</b> y escribile como si fueras un cliente. Fijate si responde como querés.</li>
+    <li>Cuando estés conforme, encendé el <b>interruptor</b> y guardá.</li>
+  </ol>
+  <div class="box warn"><b class="t">Lo que el bot nunca hace</b> No da precios finales, formas de pago, datos bancarios ni confirma lugares. Cuando el cliente pregunta eso, le pasa la conversación a una persona y te deja un aviso. Así nadie promete algo que la agencia no puede cumplir.</div>
+</section>
+
+<!-- ============ 8 MENÚS ============ -->
+<section class="area">
+  <div class="keep"><h2>8. Menús del chat</h2>
+  <span class="where">Menú: Chat → Menús del chat · solo administradores</span>
+  <div class="what">Son listas de opciones que el cliente elige con un toque en WhatsApp, en vez de escribir. Se abren cuando el cliente escribe una palabra clave, por ejemplo <i>"destinos"</i>.</div>
+  <figure><img src="imagenes/menus.jpg" alt="Menús del chat"><figcaption>Los menús configurados</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Crear menú del chat:</b> para armar uno nuevo.</div></li>
+    <li><span class="n">2</span><div><b>Nombre</b> del menú y, al lado, las <b>palabras</b> que lo abren.</div></li>
+    <li><span class="n">3</span><div><b>Al elegir:</b> qué pasa cuando el cliente toca una opción. Puede <i>abrir otro menú</i>, <i>responder un texto fijo</i> o <i>seguir la conversación con el bot</i>.</div></li>
+    <li><span class="n">4</span><div><b>Editar:</b> cambiar el menú.</div></li>
+  </ul>
+  <table>
+    <tr><th style="width:32%">De dónde salen las opciones</th><th>Qué muestra</th></tr>
+    <tr><td><b>Destinos de los paquetes activos</b></td><td>Un renglón por destino (por ejemplo <i>Bariloche, Punta Cana, Roma</i>), con cuántos paquetes tiene cada uno. Se arma solo con tu catálogo.</td></tr>
+    <tr><td><b>Paquetes activos</b></td><td>Los paquetes publicados. Si viene de un menú de destinos, muestra solo los de ese destino.</td></tr>
+    <tr><td><b>Opciones escritas a mano</b></td><td>Las que vos escribas, por ejemplo <i>Horarios, Dirección, Medios de pago</i>.</td></tr>
+  </table>
+  <div class="box ej"><b class="t">Ejemplo</b> Un cliente escribe <i>"destinos"</i>. Le llega un botón <b>Ver destinos</b>; lo toca y elige <i>Punta Cana</i>. Enseguida recibe otro menú con los paquetes de Punta Cana. Elige uno, y el bot sigue la conversación preguntándole fechas y pasajeros.</div>
+  <div class="box tip"><b class="t">Límites de WhatsApp</b> Cada menú muestra hasta 10 renglones. Si hay más opciones, el último renglón dice <b>Ver más…</b> y trae las siguientes. Los títulos largos se cortan a 24 letras.</div>
+</section>
+
+<!-- ============ 9 CONSULTAS ============ -->
+<section class="area pb">
+  <div class="chap">Ventas</div>
+  <div class="keep"><h2>9. Consultas (la lista)</h2>
+  <span class="where">Menú: Ventas → Consultas</span>
+  <div class="what">Todas las personas interesadas en viajar. La lista <b>ya viene ordenada por urgencia</b>: siempre empezá por arriba.</div>
+  <figure><img src="imagenes/consultas.jpg" alt="Lista de consultas"><figcaption>La lista de consultas</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Para hoy:</b> lo que tenés que atender hoy (se abre siempre primero). El número dice cuántas hay.</div></li>
+    <li><span class="n">2</span><div><b>Perdidas:</b> las que terminaron sin venta. Al lado están <i>Abiertas</i> y <i>Concretadas</i>.</div></li>
+    <li><span class="n">3</span><div><b>Crear Consulta:</b> para cargar a mano a alguien que llamó o vino a la agencia.</div></li>
+    <li><span class="n">4</span><div><b>Ver tablero:</b> la misma información en columnas (sección 10).</div></li>
+    <li><span class="n">5</span><div><b>Temperatura:</b> qué tan cerca está de comprar: <b style="color:#be123c">Caliente</b>, <b style="color:#b45309">Tibio</b> o <b style="color:#2563eb">Frío</b>.</div></li>
+    <li><span class="n">6</span><div><b>Atención:</b> el tilde verde dice que nadie está esperando. Si pide una persona, se marca para que la atiendas primero.</div></li>
+  </ul>
+  <table>
+    <tr><th>Estado</th><th>Qué quiere decir</th></tr>
+    <tr><td>Nueva</td><td>Nadie la atendió todavía.</td></tr>
+    <tr><td>Por verificar</td><td>El bot abrió una consulta para alguien que ya tenía otra. Revisala desde Avisos.</td></tr>
+    <tr><td>En curso</td><td>Ya se habló con la persona.</td></tr>
+    <tr><td>Cotizada</td><td>Ya tiene un presupuesto enviado.</td></tr>
+    <tr><td>Reservada</td><td>Compró.</td></tr>
+    <tr><td>Cerrada</td><td>Terminó sin compra.</td></tr>
+  </table>
+  <div class="box tip"><b class="t">Tu rutina diaria</b> Abrí la pestaña <b>Para hoy</b> y atendé de arriba hacia abajo hasta que quede vacía. Así no se te escapa nadie.</div>
+</section>
+
+<!-- ============ 10 TABLERO ============ -->
+<section class="area">
+  <div class="keep"><h2>10. Tablero de consultas</h2>
+  <span class="where">Menú: Ventas → Tablero de consultas</span>
+  <div class="what">Las mismas consultas, pero en <b>columnas por estado</b>. Sirve para ver de un vistazo cuántas hay en cada etapa y moverlas.</div>
+  <figure><img src="imagenes/tablero.jpg" alt="Tablero de consultas"><figcaption>El tablero: una columna por estado</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Columna</b> con el nombre del estado y la cantidad de consultas.</div></li>
+    <li><span class="n">2</span><div><b>Atención:</b> esa persona necesita a alguien del equipo.</div></li>
+    <li><span class="n">3</span><div><b>Solo mis consultas</b> y <b>Solo calientes:</b> tildalos para ver menos tarjetas.</div></li>
+    <li><span class="n">4</span><div><b>Ver lista:</b> vuelve a la lista de la sección 9.</div></li>
+  </ul>
+  <ol class="steps">
+    <li>Buscá la tarjeta de la consulta.</li>
+    <li>Hacé clic sobre ella <b>y mantené apretado</b> el botón del mouse.</li>
+    <li>Sin soltar, arrastrala hasta la columna nueva (por ejemplo, de <i>En curso</i> a <i>Cotizada</i>).</li>
+    <li>Soltá el botón. El estado cambia solo.</li>
+  </ol>
+  <div class="box tip"><b class="t">¿Lista o tablero?</b> La <b>lista</b> es para el trabajo de todos los días (te dice a quién atender primero). El <b>tablero</b> es para la revisión semanal: ver cómo viene el embudo de ventas.</div>
+</section>
+
+<!-- ============ 11 FICHA ============ -->
+<section class="area">
+  <div class="keep"><h2>11. La ficha de una consulta</h2>
+  <span class="where">Ventas → Consultas → clic en una fila</span>
+  <div class="what">Todo lo que se sabe de esa persona y de su viaje, y los botones para avanzar con la venta.</div>
+  <figure><img src="imagenes/consulta.jpg" alt="Ficha de la consulta"><figcaption>Editar una consulta</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Abrir chat:</b> va directo a la conversación en la bandeja.</div></li>
+    <li><span class="n">2</span><div><b>Crear Expediente:</b> arma el presupuesto copiando destino, pasajeros y fechas de esta consulta.</div></li>
+    <li><span class="n">3</span><div><b>Marcar como perdida:</b> cuando la persona no va a comprar (sección 12).</div></li>
+    <li><span class="n">4</span><div><b>Estado de la Consulta:</b> en qué etapa está.</div></li>
+    <li><span class="n">5</span><div><b>Análisis de IA:</b> los datos que el asistente sacó de la charla (destino, presupuesto, pasajeros) y un resumen. Podés corregirlos.</div></li>
+    <li><span class="n">6</span><div><b>Guardar cambios:</b> no te olvides de hacer clic acá después de cambiar algo.</div></li>
+  </ul>
+  <div class="box ej"><b class="t">Ejemplo</b> Abrís la consulta de Laura. En <i>Análisis de IA</i> ya dice <b>destino: Punta Cana, pasajeros: 3</b>. Le asignás tu nombre en <b>Agente Asignado</b>, hacés clic en <b>Guardar cambios</b> y después en <b>Crear Expediente</b> para armarle el presupuesto.</div>
+  <div class="box warn"><b class="t">La IA ayuda, no decide</b> Revisá siempre lo que completó. Si algo está mal, corregilo y guardá.</div>
+</section>
+
+<!-- ============ 12 PERDIDA ============ -->
+<section class="area">
+  <div class="keep"><h2>12. Marcar una consulta como perdida</h2>
+  <span class="where">Ficha de la consulta → botón rojo «Marcar como perdida»</span>
+  <div class="what">Cuando la persona no compra, se cierra la consulta <b>diciendo por qué</b>. Con eso, después se ve en qué se pierden ventas (sección 22).</div>
+  <figure><img src="imagenes/perdida.jpg" alt="Marcar como perdida"><figcaption>La ventana para cerrar una consulta sin venta</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Motivo:</b> elegí uno de la lista: <i>Precio, Fechas o disponibilidad, Compró en otra agencia, Dejó de responder, Cambió de planes</i> u <i>Otro</i>.</div></li>
+    <li><span class="n">2</span><div><b>Detalle:</b> opcional. Una frase que explique qué pasó.</div></li>
+    <li><span class="n">3</span><div><b>Marcar como perdida:</b> confirma y cierra la consulta.</div></li>
+  </ul>
+  <div class="box ej"><b class="t">Ejemplo</b> Martín preguntó por Bariloche, pero le pareció caro y compró en otro lado. Elegís el motivo <b>Compró en otra agencia</b>, escribís en el detalle <i>"Consiguió más barato con hotel 3 estrellas"</i> y confirmás.</div>
+  <div class="box tip"><b class="t">¿Y si vuelve a escribir?</b> No pasa nada: si la persona vuelve a escribir más adelante, el sistema abre una consulta nueva y queda todo el historial.</div>
+</section>
+
+<!-- ============ 13 CLIENTES ============ -->
+<section class="area">
+  <div class="keep"><h2>13. Clientes</h2>
+  <span class="where">Menú: Ventas → Clientes</span>
+  <div class="what">La agenda de las personas que viajan con la agencia: datos de contacto, documento y todo su historial.</div>
+  <figure><img src="imagenes/clientes.jpg" alt="Clientes"><figcaption>La lista de clientes</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Crear Cliente:</b> cargar una persona nueva.</div></li>
+    <li><span class="n">2</span><div><b>Buscar:</b> escribí parte del nombre, del correo o del documento.</div></li>
+    <li><span class="n">3</span><div><b>Editar:</b> abre la ficha. Adentro, la pestaña <i>Consultas</i> muestra todo lo que preguntó y viajó.</div></li>
+  </ul>
+  <div class="box tip"><b class="t">El mismo cliente no se repite</b> Si alguien ya cargado vuelve a escribir, el sistema lo reconoce por su teléfono o su correo y lo suma a su ficha.</div>
+  <div class="box warn"><b class="t">Cargá bien el documento</b> El DNI o pasaporte es lo que el cliente usa para entrar a su <b>portal</b>, donde ve sus viajes y cuotas.</div>
+</section>
+
+<!-- ============ 14 PRESUPUESTOS ============ -->
+<section class="area">
+  <div class="keep"><h2>14. Presupuestos y expedientes</h2>
+  <span class="where">Menú: Ventas → Presupuestos / Files</span>
+  <div class="what">Cada viaje es un expediente. Empieza como <b>presupuesto</b> y, a medida que el cliente paga, pasa a <b>señado</b> y después a <b>emitido</b>.</div>
+  <figure><img src="imagenes/presupuestos.jpg" alt="Presupuestos"><figcaption>La lista de presupuestos y expedientes</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Viajan en 30 días:</b> los que salen pronto, el más cercano primero.</div></li>
+    <li><span class="n">2</span><div><b>Cuotas vencidas:</b> clientes que deben una cuota. Más a la derecha: <i>Sin vouchers</i> y <i>Presupuestos por vencer</i>.</div></li>
+    <li><span class="n">3</span><div><b>Exportar Excel:</b> descarga la lista para trabajarla en una planilla.</div></li>
+    <li><span class="n">4</span><div><b>Estado</b> de cada expediente (ver tabla).</div></li>
+  </ul>
+  <table>
+    <tr><th>Estado</th><th>Qué quiere decir</th></tr>
+    <tr><td>Borrador</td><td>Lo estás armando.</td></tr>
+    <tr><td>Presupuesto</td><td>Listo para mandar al cliente.</td></tr>
+    <tr><td>Señado</td><td>El cliente pagó la seña. Pasa solo cuando cobrás la primera cuota.</td></tr>
+    <tr><td>Emitido</td><td>Viaje confirmado y documentación emitida.</td></tr>
+    <tr><td>Cancelado</td><td>Se cayó.</td></tr>
+  </table>
+  <figure><img src="imagenes/expediente.jpg" alt="Un expediente"><figcaption>Arriba de un expediente: botones y saldo del cliente</figcaption></figure>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Enviar PDF por WhatsApp:</b> le manda el presupuesto en PDF al chat del cliente.</div></li>
+    <li><span class="n">2</span><div><b>Presupuesto (PDF):</b> lo descarga para imprimirlo o mandarlo por otro lado. Al lado está <i>Acuerdo (PDF)</i>, el contrato.</div></li>
+    <li><span class="n">3</span><div><b>Total del Viaje</b>, en dólares.</div></li>
+    <li><span class="n">4</span><div><b>Saldo Adeudado:</b> cuánto le falta pagar al cliente.</div></li>
+    <li><span class="n">5</span><div><b>Estado</b> del expediente.</div></li>
+  </ul>
+  <div class="box tip"><b class="t">¿El cliente lo abrió?</b> Cuando le mandás el link del presupuesto, el sistema anota cada vez que el cliente lo abre. Lo ves en la pestaña <i>Historial de Actividad</i>, abajo de todo.</div>
+</section>
+
+<!-- ============ 15 SERVICIOS ============ -->
+<section class="area">
+  <div class="keep"><h2>15. Armar el presupuesto: servicios y totales</h2>
+  <span class="where">Dentro de un expediente → bajar hasta «Detalle de Servicios»</span>
+  <div class="what">Cada renglón es un servicio del viaje (vuelo, hotel, traslado). Cargás cuánto te cuesta y a cuánto lo vendés, y el sistema suma todo solo.</div>
+  <figure><img src="imagenes/expediente-servicios.jpg" alt="Servicios"><figcaption>Los servicios del viaje</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Tipo de Servicio:</b> vuelo, hotel, traslado, asistencia, etc.</div></li>
+    <li><span class="n">2</span><div><b>Prestador / Proveedor:</b> quién da el servicio. El <b>+</b> permite crear uno nuevo sin salir.</div></li>
+    <li><span class="n">3</span><div><b>Costo neto:</b> lo que le pagás vos al proveedor.</div></li>
+    <li><span class="n">4</span><div><b>Precio Venta:</b> lo que paga el cliente.</div></li>
+  </ul>
+  <figure><img src="imagenes/expediente-liquidacion.jpg" alt="Liquidación"><figcaption>Los totales que calcula el sistema</figcaption></figure>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Precio Total (USD):</b> lo que paga el cliente por todo el viaje.</div></li>
+    <li><span class="n">2</span><div><b>Rentabilidad (USD):</b> lo que gana la agencia.</div></li>
+    <li><span class="n">3</span><div><b>Guardar cambios.</b></div></li>
+    <li><span class="n">4</span><div><b>Plan de Pagos:</b> la pestaña de las cuotas (sección 16).</div></li>
+  </ul>
+  <ol class="steps">
+    <li>Completá el <b>Tipo de Servicio</b> y una <b>Descripción</b> (por ejemplo, <i>"Hotel Barceló, 10 noches, todo incluido"</i>).</li>
+    <li>Elegí el <b>Proveedor</b> y la <b>Moneda</b>. Si es en pesos, elegí la cotización del dólar del día.</li>
+    <li>Escribí el <b>Costo neto</b> y el <b>Precio Venta</b>.</li>
+    <li>Para agregar otro servicio, hacé clic en <b>Añadir a servicios</b>.</li>
+    <li>Revisá los totales en <b>Liquidación / Resumen</b> y hacé clic en <b>Guardar cambios</b>.</li>
+  </ol>
+  <div class="box ej"><b class="t">Ejemplo</b> Para Laura cargás 3 servicios: vuelo Rosario–Punta Cana, hotel todo incluido por 10 noches y traslados. El sistema muestra que el viaje sale <b>USD 2.922</b> y que la agencia gana <b>USD 479</b>.</div>
+  <div class="box warn"><b class="t">Todo se lleva en dólares</b> Aunque cargues un servicio en pesos, el sistema lo pasa a dólares con la cotización que elegiste y la guarda. Así el saldo no cambia aunque el dólar suba o baje.</div>
+</section>
+
+<!-- ============ 16 CUOTAS ============ -->
+<section class="area">
+  <div class="keep"><h2>16. Plan de pagos y cuotas</h2>
+  <span class="where">Dentro de un expediente → pestaña «Plan de Pagos» (abajo de todo)</span>
+  <div class="what">Divide el viaje en una seña y cuotas, con fecha de vencimiento. El sistema avisa solo al cliente antes de cada vencimiento.</div>
+  <figure><img src="imagenes/expediente-cuotas.jpg" alt="Plan de pagos"><figcaption>El plan de pagos de un viaje</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Generar plan:</b> crea la seña y las cuotas.</div></li>
+    <li><span class="n">2</span><div><b>Estado de la cuota:</b> <i>Pendiente</i>, <i>Pago parcial</i>, <i>Pagada</i> o <i>Vencida</i>.</div></li>
+    <li><span class="n">3</span><div><b>Registrar pago:</b> anota lo que pagó el cliente en esa cuota.</div></li>
+  </ul>
+  <ol class="steps">
+    <li>Hacé clic en <b>Generar plan</b>.</li>
+    <li>Completá la <b>Seña (%)</b> (por ejemplo 30), la <b>cantidad de cuotas</b>, el <b>primer vencimiento</b> y la <b>frecuencia</b> (mensual, quincenal o semanal).</li>
+    <li>Confirmá. Aparecen la seña y las cuotas con sus fechas.</li>
+    <li>Cuando el cliente pague, hacé clic en <b>Registrar pago</b> en esa cuota, completá el monto, la moneda y el método, y confirmá.</li>
+  </ol>
+  <div class="box ej"><b class="t">Ejemplo</b> Laura paga la seña del 30% por transferencia. Hacés clic en <b>Registrar pago</b> en la fila <i>Seña</i>: la cuota pasa a <b>Pagada</b>, el expediente pasa solo a <b>Señado</b> y el cobro aparece en la Caja (sección 20).</div>
+  <div class="box warn"><b class="t">La última cuota tiene que vencer antes del viaje</b> Por seguridad, la última cuota tiene que vencer al menos 30 días antes de la salida. Si no se cumple, el sistema te dice cuál es la fecha límite.</div>
+  <div class="box tip"><b class="t">Recordatorios automáticos</b> El cliente recibe un aviso 3 días antes del vencimiento, el mismo día y 2 días después si todavía no pagó. No tenés que acordarte vos.</div>
+</section>
+
+<!-- ============ 17 IDEAS ============ -->
+<section class="area pb">
+  <div class="chap">Catálogo</div>
+  <div class="keep"><h2>17. Ideas de viaje (catálogo)</h2>
+  <span class="where">Menú: Catálogo → Ideas de Viaje</span>
+  <div class="what">Los paquetes que se publican en la web de la agencia y que el bot y los menús del chat ofrecen.</div>
+  <figure><img src="imagenes/ideas.jpg" alt="Ideas de viaje"><figcaption>El catálogo de paquetes</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Nueva Idea de Viaje:</b> cargar un paquete nuevo.</div></li>
+    <li><span class="n">2</span><div><b>Activo:</b> el interruptor encendido quiere decir que se ve en la web. Apagalo para ocultarlo sin borrarlo.</div></li>
+    <li><span class="n">3</span><div><b>Presupuestar:</b> arma un presupuesto para un cliente a partir de este paquete.</div></li>
+  </ul>
+  <div class="box warn"><b class="t">Para publicar hace falta</b> una <b>imagen de portada</b>, un <b>precio</b> y un <b>resumen</b>. Sin eso, el paquete no se puede activar.</div>
+</section>
+
+<!-- ============ 18 IMPORTAR ============ -->
+<section class="area">
+  <div class="keep"><h2>18. Importar una idea con IA</h2>
+  <span class="where">Menú: Catálogo → Importar Ideas de Viaje</span>
+  <div class="what">Le pasás la oferta de un operador (un link, un texto o un PDF) y la IA arma un <b>borrador</b> del paquete. Vos lo revisás antes de publicarlo.</div>
+  <figure><img src="imagenes/importar.jpg" alt="Importar"><figcaption>Elegir de dónde sale la información</figcaption></figure></div>
+  <ol class="steps">
+    <li>En <b>Fuente</b>, elegí <i>Un link</i>, <i>Texto pegado</i> o <i>Un archivo PDF</i>.</li>
+    <li>Pegá el link, pegá el texto o subí el PDF.</li>
+    <li>Si tenés permiso para usar las fotos de esa página, encendé el interruptor de las imágenes. Si no, el sistema busca fotos con licencia libre.</li>
+    <li>Hacé clic en <b>Importar</b> y esperá menos de un minuto.</li>
+    <li>Revisá el borrador: los datos dudosos aparecen marcados. Corregí lo que haga falta.</li>
+    <li>Elegí las fotos y la portada, y hacé clic en <b>Publicar</b>.</li>
+  </ol>
+  <div class="box tip"><b class="t">La IA no inventa</b> Lo que la oferta no dice queda vacío, y también saca el nombre y los datos del operador original.</div>
+  <div class="box warn"><b class="t">Revisá siempre antes de publicar</b> La IA se puede equivocar, y el paquete sale con el nombre de tu agencia.</div>
+</section>
+
+<!-- ============ 19 TAREAS ============ -->
+<section class="area pb">
+  <div class="chap">Gestión</div>
+  <div class="keep"><h2>19. Tareas</h2>
+  <span class="where">Menú: Gestión → Tareas</span>
+  <div class="what">Tu agenda de pendientes. Algunas las cargás vos y otras las crea solo el sistema (por ejemplo, "llamar a quien abrió el presupuesto 3 veces").</div>
+  <figure><img src="imagenes/tareas.jpg" alt="Tareas"><figcaption>Las tareas pendientes</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Crear Tarea:</b> agendar algo para vos o para otra persona.</div></li>
+    <li><span class="n">2</span><div><b>Hecha:</b> encendé el interruptor cuando la terminaste. Desaparece de la lista de pendientes.</div></li>
+    <li><span class="n">3</span><div><b>Vencimiento:</b> en <b style="color:#be123c">rojo</b> si es para hoy o ya pasó.</div></li>
+  </ul>
+  <div class="box ej"><b class="t">Ejemplo</b> Hoy tenés <i>"Llamar a Laura Gómez por el pago de la seña"</i>. La llamás, registrás el pago en el expediente y encendés <b>Hecha</b>.</div>
+</section>
+
+<!-- ============ 20 CAJA ============ -->
+<section class="area pb">
+  <div class="chap">Tesorería</div>
+  <div class="keep"><h2>20. Caja: cobros y pagos</h2>
+  <span class="where">Menú: Tesorería → Caja</span>
+  <div class="what">Cada vez que entra o sale plata, se anota acá. <b>Cobro</b> es lo que te paga un cliente; <b>pago</b> es lo que pagás vos (a un proveedor, un gasto, un sueldo).</div>
+  <figure><img src="imagenes/caja.jpg" alt="Caja"><figcaption>Los movimientos de la caja</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Crear Movimiento:</b> anotar un cobro o un pago.</div></li>
+    <li><span class="n">2</span><div><b>Cobro (Ingreso)</b>, en verde.</div></li>
+    <li><span class="n">3</span><div><b>Pago (Egreso)</b>, en rojo.</div></li>
+    <li><span class="n">4</span><div><b>USD (Congelado):</b> cuántos dólares valía ese movimiento el día que se hizo. Ese valor no cambia más.</div></li>
+  </ul>
+  <figure><img src="imagenes/caja-nuevo.jpg" alt="Nuevo movimiento"><figcaption>Cargar un movimiento nuevo</figcaption></figure>
+  <ol class="steps">
+    <li>Elegí el <b>Tipo de Transacción</b> (cobro o pago), el <b>Método de Pago</b> (efectivo, transferencia, tarjeta…) y la <b>Cuenta</b> donde entra o sale la plata.</li>
+    <li>Elegí la <b>Categoría</b> (por ejemplo <i>Pago de Pasajero</i> o <i>Pago a Proveedor</i>).</li>
+    <li>Si es de un viaje, elegí el <b>expediente</b>. Si es un pago a un proveedor, elegilo también.</li>
+    <li>Elegí la <b>Moneda</b> y escribí el <b>Monto</b>. Si es en pesos, elegí la cotización: abajo ves a cuántos dólares equivale.</li>
+    <li>Revisá la <b>fecha</b>, agregá una nota o el comprobante si querés, y guardá.</li>
+  </ol>
+  <div class="box tip"><b class="t">Calculadora de comisiones</b> Arriba de todo hay una calculadora plegada: cargás lo que pagó el cliente y los porcentajes que te descuenta el banco o la tarjeta, y te dice cuánto te queda en realidad.</div>
+</section>
+
+<!-- ============ 21 REPORTES ============ -->
+<section class="area">
+  <div class="keep"><h2>21. Reportes financieros</h2>
+  <span class="where">Menú: Tesorería → Reportes Financieros · administradores y finanzas</span>
+  <div class="what">Cuánto entró y cuánto salió cada mes del año, en dólares.</div>
+  <figure><img src="imagenes/reportes.jpg" alt="Reportes financieros"><figcaption>Ingresos (verde) y egresos (rojo) de cada mes</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Descargar Balance (PDF):</b> baja el resumen del año para imprimirlo o mandárselo al contador.</div></li>
+  </ul>
+  <div class="box tip"><b class="t">Se cuenta por la fecha real</b> Cada movimiento cae en el mes de la fecha que cargaste en la Caja, no en el día en que lo anotaste.</div>
+</section>
+
+<!-- ============ 22 ESTADÍSTICAS ============ -->
+<section class="area pb">
+  <div class="chap">Reportes</div>
+  <div class="keep"><h2>22. Seguimiento de consultas (estadísticas)</h2>
+  <span class="where">Menú: Reportes → Analytics &amp; Funnel</span>
+  <div class="what">Cuántas consultas recibiste, cuántas se vendieron, cuántas se perdieron y cuántas siguen abiertas. Cada número es un link a esas consultas, para hacerles el seguimiento.</div>
+  <figure><img src="imagenes/analytics.jpg" alt="Estadísticas"><figcaption>El seguimiento de consultas del mes</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Período:</b> <i>Este mes, Mes pasado, Últimos 30 días, Este año</i> o un <i>Rango</i> de fechas que elijas.</div></li>
+    <li><span class="n">2</span><div><b>Recibidas:</b> todas las consultas que entraron en ese período.</div></li>
+    <li><span class="n">3</span><div><b>Perdidas:</b> las que terminaron sin venta. Hacé clic para ver cuáles fueron.</div></li>
+    <li><span class="n">4</span><div><b>Abiertas (a seguir):</b> las que todavía se pueden vender. Hacé clic y empezá a llamarlas.</div></li>
+    <li><span class="n">5</span><div><b>Por origen</b> (WhatsApp, Instagram, web…) y <b>por vendedor</b>: dónde y quién vende más.</div></li>
+    <li><span class="n">6</span><div><b>Motivos de pérdida:</b> por qué se perdieron (precio, fechas, otra agencia…). Sale de lo que se carga al marcar una consulta como perdida (sección 12).</div></li>
+  </ul>
+  <div class="box ej"><b class="t">Ejemplo</b> En noviembre entraron <b>89</b> consultas, se vendieron <b>46</b> y quedan <b>38 abiertas</b>. Hacés clic en el <b>38</b>: se abre la lista de esas consultas, ordenada por urgencia, para que el equipo las llame.</div>
+  <div class="box tip"><b class="t">Conversión</b> El porcentaje de la derecha dice cuántas de cada 100 consultas terminan en venta. Si baja, mirá los motivos de pérdida para saber qué mejorar.</div>
+</section>
+
+<!-- ============ 23 SEGUIMIENTO AUTOMÁTICO ============ -->
+<section class="area pb">
+  <div class="chap">Sistema</div>
+  <div class="keep"><h2>23. Seguimiento automático</h2>
+  <span class="where">Menú: Sistema → Seguimiento automático · solo administradores</span>
+  <div class="what">Reglas que revisan cada hora que ninguna consulta ni presupuesto quede olvidado, y crean tareas o avisos cuando hace falta.</div>
+  <figure><img src="imagenes/seguimiento.jpg" alt="Seguimiento automático"><figcaption>Las reglas que vienen listas</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Crear regla de seguimiento:</b> agregar una regla nueva.</div></li>
+    <li><span class="n">2</span><div><b>Espera:</b> cuánto tiempo pasa antes de actuar (por ejemplo, 24 horas sin contactar).</div></li>
+    <li><span class="n">3</span><div><b>Activa:</b> encendé o apagá cada regla.</div></li>
+  </ul>
+  <table>
+    <tr><th>Cuándo</th><th>Espera</th><th>Qué hace</th></tr>
+    <tr><td>Consulta nueva sin vendedor</td><td>2 h</td><td>Avisa a los administradores</td></tr>
+    <tr><td>Consulta sin contactar</td><td>24 h</td><td>Crea una tarea para el vendedor</td></tr>
+    <tr><td>Pide hablar con una persona</td><td>enseguida</td><td>Crea una tarea urgente</td></tr>
+    <tr><td>Presupuesto enviado y no abierto</td><td>48 h</td><td>Tarea "Llamar a…"</td></tr>
+    <tr><td>Presupuesto abierto 3 veces y sin seña</td><td>24 h</td><td>Tarea "Cerrar la venta con…"</td></tr>
+    <tr><td>Presupuesto vencido</td><td>enseguida</td><td>Avisa al vendedor</td></tr>
+  </table>
+  <div class="box tip"><b class="t">Sin avisos repetidos</b> Cada regla actúa una sola vez por consulta o presupuesto.</div>
+</section>
+
+<!-- ============ 24 MARCA ============ -->
+<section class="area pb">
+  <div class="chap">Configuración</div>
+  <div class="keep"><h2>24. Marca blanca (configuración)</h2>
+  <span class="where">Menú: Configuración → Marca Blanca · solo administradores</span>
+  <div class="what">Los datos y la imagen de tu agencia: nombre, logo, colores, contacto, la IA y las reglas de cobro.</div>
+  <figure><img src="imagenes/marca.jpg" alt="Marca blanca"><figcaption>La configuración de la agencia, organizada en pestañas</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Identidad y Frontend:</b> nombre, logo y colores de la web.</div></li>
+    <li><span class="n">2</span><div><b>Inteligencia Artificial:</b> qué IA se usa y su clave. Más a la derecha: <i>Contacto y Redes, Analítica, Legal, Finanzas</i> y otras.</div></li>
+    <li><span class="n">3</span><div><b>Nombre de la Empresa:</b> el que ven tus clientes.</div></li>
+    <li><span class="n">4</span><div><b>Guardar Cambios:</b> sin este clic no se guarda nada. <i>Guardar y probar IA</i> además comprueba que la IA responda.</div></li>
+  </ul>
+  <div class="box warn"><b class="t">Cambiá una cosa por vez</b> Hacé un cambio, guardá y mirá cómo quedó. Si algo no te gusta, es fácil volver atrás.</div>
+</section>
+
+<!-- ============ 25 USUARIOS ============ -->
+<section class="area">
+  <div class="keep"><h2>25. Usuarios del equipo</h2>
+  <span class="where">Menú: Sistema → Usuarios · solo administradores</span>
+  <div class="what">Las personas que usan el sistema, con su rol y sus permisos.</div>
+  <figure><img src="imagenes/usuarios.jpg" alt="Usuarios"><figcaption>Los usuarios del equipo</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Crear Usuario:</b> sumar a una persona al equipo.</div></li>
+    <li><span class="n">2</span><div><b>Rol:</b> lo que puede hacer (ver tabla).</div></li>
+  </ul>
+  <table>
+    <tr><th>Rol</th><th>Qué puede hacer</th></tr>
+    <tr><td><b>Administrador</b></td><td>Todo: usuarios, configuración, finanzas y sistema.</td></tr>
+    <tr><td><b>Ventas</b></td><td>Consultas y presupuestos. Ve las suyas y las que no tienen vendedor.</td></tr>
+    <tr><td><b>Finanzas</b></td><td>Todos los expedientes, la caja y los reportes financieros.</td></tr>
+    <tr><td><b>Staff</b></td><td>Acceso básico, más los permisos que le dé el administrador.</td></tr>
+  </table>
+  <ol class="steps">
+    <li>Hacé clic en <b>Crear Usuario</b>.</li>
+    <li>Escribí el nombre, el correo y una contraseña inicial.</li>
+    <li>Elegí el <b>rol</b> y, si hace falta, tildá permisos extra.</li>
+    <li>Guardá y pasale a la persona su correo y su contraseña.</li>
+  </ol>
+  <div class="box warn"><b class="t">Seguridad</b> Solo un administrador puede crear usuarios o cambiar permisos, y nadie puede darse permisos a sí mismo. Un administrador tampoco puede borrar su propia cuenta.</div>
+</section>
+
+<!-- ============ 26 PROVEEDORES ============ -->
+<section class="area">
+  <div class="keep"><h2>26. Proveedores</h2>
+  <span class="where">Menú: Sistema → Proveedores</span>
+  <div class="what">Hoteles, aerolíneas, mayoristas y demás empresas a las que les comprás servicios, con lo que les debés.</div>
+  <figure><img src="imagenes/proveedores.jpg" alt="Proveedores"><figcaption>La lista de proveedores</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Crear Proveedor:</b> cargar uno nuevo, con sus datos bancarios.</div></li>
+    <li><span class="n">2</span><div><b>Deuda (USD):</b> cuánto le debés. Es lo que cargaste como costo en los expedientes menos lo que ya le pagaste desde la Caja.</div></li>
+  </ul>
+  <div class="box tip"><b class="t">También en Sistema</b> <i>Tipos de Servicio</i> (la lista de servicios que aparece al armar un presupuesto) y <i>Categorías</i> (para ordenar los movimientos de caja).</div>
+</section>
+
+<!-- ============ 27 CANALES ============ -->
+<section class="area">
+  <div class="keep"><h2>27. Canales y plantillas de WhatsApp</h2>
+  <span class="where">Menú: Sistema → Canales de mensajería · Sistema → Plantillas de WhatsApp · administradores</span>
+  <div class="what">Desde acá se conectan las cuentas de WhatsApp, Instagram y Messenger, y se cargan los mensajes aprobados por WhatsApp.</div>
+  <figure><img src="imagenes/canales.jpg" alt="Canales de mensajería"><figcaption>Canales de mensajería</figcaption></figure></div>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Crear cuenta de mensajería:</b> conectar una cuenta de Instagram o una página de Facebook (Messenger). Lo hace quien instaló el sistema, con los datos de Meta.</div></li>
+  </ul>
+  <figure><img src="imagenes/plantillas.jpg" alt="Plantillas de WhatsApp"><figcaption>Plantillas de WhatsApp</figcaption></figure>
+  <ul class="legend">
+    <li><span class="n">1</span><div><b>Crear plantilla de WhatsApp:</b> cargá una plantilla con <b>el mismo nombre exacto</b> que aprobó Meta.</div></li>
+    <li><span class="n">2</span><div><b>Variables:</b> cuántos datos se completan en la plantilla (por ejemplo, nombre, cuota, monto y vencimiento).</div></li>
+  </ul>
+  <div class="box tip"><b class="t">¿Para qué sirven las plantillas?</b> Para escribirle a un cliente <b>después de las 24 horas</b> de su último mensaje, y para los recordatorios automáticos de cuotas por WhatsApp.</div>
+</section>
+
+<!-- ============ 28 FAQ ============ -->
+<section class="area">
+  <h2>28. Preguntas frecuentes</h2>
+  <h3>¿En qué orden atiendo las consultas?</h3>
+  <p>En el que te muestra la lista: ya viene ordenada por urgencia. Empezá por la pestaña <b>Para hoy</b> y atendé de arriba hacia abajo.</p>
+  <h3>Respondí desde el celular, ¿se ve en el sistema?</h3>
+  <p>Sí, si WhatsApp está conectado con Zernio: lo que escribís desde la app WhatsApp Business aparece en la bandeja marcado como <b>Celular</b>, y el bot se pone en pausa igual que si hubieras respondido desde el sistema.</p>
+  <h3>¿Por qué el bot no le respondió a un cliente?</h3>
+  <p>Porque alguien del equipo le respondió hace poco (el bot se pausa unas horas), porque llegó al máximo de respuestas del día o porque se terminó el presupuesto mensual de IA. En los dos últimos casos queda un aviso en <i>Chat → Avisos</i>.</p>
+  <h3>No me aparece «Enviar PDF por WhatsApp» en un expediente</h3>
+  <p>El cliente no tiene una conversación de WhatsApp abierta o WhatsApp no está conectado. Si el botón está gris, pasaron más de 24 horas desde su último mensaje.</p>
+  <h3>¿Puedo cobrar en pesos un viaje que está en dólares?</h3>
+  <p>Sí. Elegí pesos y la cotización del día: el sistema calcula cuántos dólares cubre ese pago.</p>
+  <h3>El cliente pagó más que la cuota</h3>
+  <p>El sobrante se aplica solo a las cuotas siguientes.</p>
+  <h3>Me equivoqué al cargar algo</h3>
+  <p>Abrilo con <b>Editar</b>, corregí y hacé clic en <b>Guardar cambios</b>. Si borraste algo por error, avisale a un administrador.</p>
+  <h3>Los mails o los recordatorios no salen</h3>
+  <p>Avisale al administrador: puede que el correo no esté configurado o que el cron esté frenado (aparece un cartel rojo en el Escritorio).</p>
+  <div class="box tip" style="margin-top:18px"><b class="t">¿Te trabaste?</b> Hacé una captura de pantalla de lo que ves y mandásela al administrador del sistema. Con eso es mucho más fácil ayudarte.</div>
+</section>
+
+</body>
+</html>

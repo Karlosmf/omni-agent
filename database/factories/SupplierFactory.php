@@ -25,7 +25,7 @@ class SupplierFactory extends Factory
             'contact_phone' => fake()->phoneNumber(),
             'website' => fake()->url(),
             'service_type_id' => ServiceType::inRandomOrder()->first()?->id ?? 1,
-            'category' => fake()->word(),
+            'category' => fake()->randomElement(['Aerolínea', 'Hotel', 'Mayorista', 'Traslados', 'Asistencia al viajero', 'Excursiones']),
             'location' => fake()->city(),
             'cuit' => fake()->numerify('##-########-#'),
             'bank_name' => fake()->company().' Bank',

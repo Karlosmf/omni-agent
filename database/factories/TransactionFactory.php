@@ -36,8 +36,8 @@ class TransactionFactory extends Factory
             'amount' => $amount,
             'exchange_rate' => $rate,
             'amount_usd_fixed' => $amountUsd,
-            'method' => fake()->randomElement(['Cash', 'Bank Transfer', 'Credit Card']),
-            'date' => fake()->date(),
+            'method' => fake()->randomElement(['Efectivo', 'Transferencia', 'Tarjeta']),
+            'date' => fake()->dateTimeBetween('-10 months', 'now')->format('Y-m-d'),
             'notes' => fake()->sentence(),
         ];
     }

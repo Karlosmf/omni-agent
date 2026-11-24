@@ -17,16 +17,20 @@ class SuppliersTable
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 TextColumn::make('category')
+                    ->label('Categoría')
                     ->searchable(),
                 TextColumn::make('serviceType.name')
                     ->label('Tipo de Servicio')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('contact_email')
+                    ->label('Email')
                     ->searchable(),
                 TextColumn::make('contact_phone')
+                    ->label('Teléfono')
                     ->searchable(),
                 TextColumn::make('balance_usd')
                     ->label('Deuda (USD)')
