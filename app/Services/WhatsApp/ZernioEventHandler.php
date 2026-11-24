@@ -51,7 +51,7 @@ class ZernioEventHandler
 
             ProcessWhatsAppBusinessAppEcho::dispatch(['to' => $phone] + ($sentAt ? ['timestamp' => Carbon::parse($sentAt)->timestamp] : []) + $this->toCloudMessage($externalId, $phone, $message), null, $event);
         } elseif (isset(self::STATUSES[$name]) && $externalId !== '') {
-            Message::where('external_id', $externalId)->update(['status' => self::STATUSES[$name]]);
+            Message::recordDeliveryStatus($externalId, self::STATUSES[$name]);
         }
     }
 

@@ -110,7 +110,7 @@ class ChatMenuService
         return match ($menu->source) {
             ChatMenuSource::Destinations => ['title' => $this->destinationsWithSlug($rest)[0] ?? null] + $tap,
             ChatMenuSource::Packages => $this->packageTap($tap, $rest),
-            ChatMenuSource::Options => ['title' => ctype_digit($rest) ? ($menu->typedOptions()[(int) $rest]['title'] ?? null) : null] + $tap,
+            ChatMenuSource::Options => ['title' => $this->optionTitle($menu, $rest)] + $tap,
         };
     }
 
@@ -141,12 +141,17 @@ class ChatMenuService
                 ->groupBy('destination')
                 ->orderBy('destination')
                 ->get()
-                ->unique(fn (TravelPackage $row) => Str::slug($row->destination))
-                ->map(fn (TravelPackage $row) => [
-                    'value' => Str::slug($row->destination),
-                    'title' => (string) $row->destination,
-                    'description' => $row->packages_count == 1 ? '1 paquete' : $row->packages_count.' paquetes',
-                ])
+                // "Punta Cana" and "punta cana" are one destination: the first spelling names it, the counts add up.
+                ->groupBy(fn (TravelPackage $row) => Str::slug($row->destination))
+                ->map(function ($rows, string $slug) {
+                    $count = (int) $rows->sum('packages_count');
+
+                    return [
+                        'value' => $slug,
+                        'title' => (string) $rows->first()->destination,
+                        'description' => $count === 1 ? '1 paquete' : $count.' paquetes',
+                    ];
+                })
                 ->values()
                 ->all(),
             ChatMenuSource::Packages => TravelPackage::query()
@@ -161,10 +166,38 @@ class ChatMenuService
                 ])
                 ->all(),
             ChatMenuSource::Options => collect($menu->typedOptions())
-                ->map(fn (array $option, int $index) => ['value' => (string) $index] + $option)
+                ->map(fn (array $option, int $index) => ['value' => $index.'-'.self::optionKey($option['title'])] + $option)
                 ->values()
                 ->all(),
         };
+    }
+
+    /**
+     * The option a tapped row stands for. Rows carry the option's position and a key of its title, so a tap on a menu
+     * sent before the options were edited never lands on a different option: a removed or renamed one gives null.
+     * Rows sent before the key existed carry only the position.
+     */
+    private function optionTitle(ChatMenu $menu, string $value): ?string
+    {
+        [$index, $key] = array_pad(explode('-', $value, 2), 2, null);
+        $options = $menu->typedOptions();
+
+        if ($key === null) {
+            return ctype_digit((string) $index) ? ($options[(int) $index]['title'] ?? null) : null;
+        }
+
+        foreach ($options as $option) {
+            if (self::optionKey($option['title']) === $key) {
+                return $option['title'];
+            }
+        }
+
+        return null;
+    }
+
+    private static function optionKey(string $title): string
+    {
+        return substr(md5(KeywordMatcher::normalize($title)), 0, 8);
     }
 
     /**

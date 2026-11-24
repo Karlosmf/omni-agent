@@ -43,7 +43,16 @@ class MetaSocialWebhookController extends Controller
             return response('Invalid signature', 403);
         }
 
-        $channel = $request->input('object') === 'instagram' ? Channel::Instagram : Channel::Messenger;
+        // Only Instagram ("instagram") and Messenger ("page") events belong here; anything else is acknowledged and ignored.
+        $channel = match ($request->input('object')) {
+            'instagram' => Channel::Instagram,
+            'page' => Channel::Messenger,
+            default => null,
+        };
+
+        if ($channel === null) {
+            return response('OK', 200);
+        }
 
         foreach ((array) $request->input('entry', []) as $entry) {
             foreach ((array) ($entry['messaging'] ?? []) as $event) {
@@ -70,7 +79,7 @@ class MetaSocialWebhookController extends Controller
     private function handleEvent(Channel $channel, string $accountId, array $event): void
     {
         foreach ((array) ($event['delivery']['mids'] ?? []) as $mid) {
-            Message::where('external_id', $mid)->update(['status' => 'delivered']);
+            Message::recordDeliveryStatus((string) $mid, 'delivered');
         }
 
         $message = $event['message'] ?? null;

@@ -21,10 +21,30 @@ class OmniInstall extends Command
         $this->components->task('Datos base (marca, servicios, cajas, categorías)', fn () => $this->callSilently('db:seed', ['--class' => DatabaseSeeder::class, '--force' => true]) === self::SUCCESS);
 
         if (! is_link(public_path('storage')) && ! is_dir(public_path('storage'))) {
-            $this->components->task('Enlace de storage', fn () => $this->callSilently('storage:link') === self::SUCCESS);
+            $this->components->task('Enlace de storage', fn () => $this->linkStorage());
         }
 
         return $this->ensureAdmin();
+    }
+
+    /**
+     * Some shared hostings (Hostinger) disable both symlink() and exec(): the link then has to be made by hand,
+     * and the rest of the installation must still run.
+     */
+    private function linkStorage(): bool
+    {
+        try {
+            if ($this->callSilently('storage:link') === self::SUCCESS && is_link(public_path('storage'))) {
+                return true;
+            }
+        } catch (\Throwable) {
+            // Handled below with the manual command.
+        }
+
+        $this->components->warn('No se pudo crear el enlace de storage (el hosting no lo permite desde PHP). Crealo a mano por SSH o desde el administrador de archivos: '
+            .'ln -s '.storage_path('app/public').' '.public_path('storage'));
+
+        return false;
     }
 
     /**

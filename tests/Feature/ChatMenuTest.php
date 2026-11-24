@@ -242,3 +242,29 @@ test('only admins manage the chat menus', function () {
 
     expect(ChatMenuResource::canAccess())->toBeFalse();
 });
+
+test('a tap on an option that was removed after the menu went out never lands on another option', function () {
+    ReceptionistAgent::fake()->preventStrayPrompts();
+    $menu = ChatMenu::factory()->withOptions([['title' => 'Bariloche'], ['title' => 'Mendoza']])->create([
+        'keywords' => 'info', 'on_select' => ChatMenuAction::Reply, 'reply_text' => 'Elegiste {opcion}.',
+    ]);
+
+    menuReceive(menuText('info', 'wamid.1'));
+    $menu->update(['options' => [['title' => 'Mendoza']]]);
+    menuReceive(menuTap($this->gateway->sent[0]['rows'][0]['id'], 'Bariloche', 'wamid.2'));
+
+    expect($this->gateway->sent[1])->toMatchArray(['type' => 'text', 'text' => 'Esa opción ya no está disponible. Te muestro las opciones actualizadas.'])
+        ->and(array_column($this->gateway->sent[2]['rows'], 'title'))->toBe(['Mendoza']);
+    ReceptionistAgent::assertNeverPrompted();
+});
+
+test('a destination written in different ways is one row with all its packages', function () {
+    TravelPackage::factory()->count(2)->create(['destination' => 'Punta Cana', 'is_active' => true]);
+    TravelPackage::factory()->create(['destination' => 'punta cana', 'is_active' => true]);
+    ChatMenu::factory()->create(['keywords' => 'destinos']);
+
+    menuReceive(menuText('destinos', 'wamid.1'));
+
+    expect($this->gateway->sent[0]['rows'])->toHaveCount(1)
+        ->and($this->gateway->sent[0]['rows'][0]['description'])->toBe('3 paquetes');
+});

@@ -48,7 +48,7 @@ class WhatsAppWebhookController extends Controller
                 }
 
                 foreach ((array) ($value['statuses'] ?? []) as $status) {
-                    Message::where('external_id', $status['id'] ?? '')->update(['status' => $status['status'] ?? 'sent']);
+                    Message::recordDeliveryStatus((string) ($status['id'] ?? ''), (string) ($status['status'] ?? ''));
                 }
             }
         }

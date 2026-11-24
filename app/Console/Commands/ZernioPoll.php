@@ -84,7 +84,10 @@ class ZernioPoll extends Command
                     'account' => ['accountId' => $accountId],
                     'conversation' => ['participantId' => $conversation['participantId'] ?? null],
                     'message' => [
+                        // The same ids and tap data the webhook carries, so a message seen by both is processed once.
                         'id' => $message['id'],
+                        'platformMessageId' => $message['platformMessageId'] ?? null,
+                        'metadata' => $message['metadata'] ?? [],
                         'conversationId' => $conversation['id'],
                         'direction' => $message['direction'] ?? null,
                         'text' => $message['message'] ?? null,

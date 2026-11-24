@@ -7,6 +7,7 @@ use App\Models\ChannelAccount;
 use App\Models\FinancialAccount;
 use App\Models\User;
 use App\Services\Meta\MetaCredentials;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
@@ -71,4 +72,19 @@ test('credentials come from the env first and from the connected accounts after'
 
     expect(app(MetaCredentials::class)->webhookSecrets([Channel::Instagram]))->toBe(['del-env', 'de-la-cuenta'])
         ->and(app(MetaCredentials::class)->whatsappToken(ChannelAccount::factory()->channel(Channel::WhatsApp)->create(['access_token' => 'tk'])))->toBe('tk');
+});
+
+test('omni:install still creates the admin when the hosting does not allow the storage link', function () {
+    $public = sys_get_temp_dir().'/omni-public-'.uniqid();
+    mkdir($public);
+    app()->usePublicPath($public);
+    Artisan::command('storage:link', fn () => throw new Error('Call to undefined function exec()'));
+
+    $this->artisan('omni:install', ['--email' => 'admin@sol.test', '--password' => 'clave-segura-1'])
+        ->expectsOutputToContain('No se pudo crear el enlace de storage')
+        ->assertSuccessful();
+
+    expect(User::where('email', 'admin@sol.test')->value('role'))->toBe(UserRole::Admin);
+
+    rmdir($public);
 });

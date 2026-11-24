@@ -54,6 +54,27 @@ class Message extends Model
     public const SENT_FROM_ZERNIO = 'zernio';
 
     /**
+     * Applies a delivery receipt from Meta or Zernio. Receipts can arrive out of order, so a message only moves
+     * forward (sent → delivered → read); "failed" replaces anything short of read. Unknown statuses are ignored.
+     */
+    public static function recordDeliveryStatus(string $externalId, string $status): void
+    {
+        $replaces = match ($status) {
+            'sent' => ['sending'],
+            'delivered' => ['sending', 'sent'],
+            'read' => ['sending', 'sent', 'delivered'],
+            'failed' => ['sending', 'sent', 'delivered'],
+            default => null,
+        };
+
+        if ($externalId === '' || $replaces === null) {
+            return;
+        }
+
+        static::where('external_id', $externalId)->whereIn('status', $replaces)->update(['status' => $status]);
+    }
+
+    /**
      * In the order things were said. Imported history gets new ids for old messages, so the date decides.
      *
      * @param  Builder<self>  $query

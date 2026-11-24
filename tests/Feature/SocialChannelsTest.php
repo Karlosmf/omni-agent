@@ -749,3 +749,21 @@ test('the admin publishes the entry points and sees what meta answered', functio
         ->callTableAction('entryPoints', $this->account)
         ->assertNotified('Preguntas de entrada publicadas');
 });
+
+test('a late delivery receipt does not turn a read message back into delivered', function () {
+    $lead = Lead::factory()->create();
+    $message = $lead->messages()->create(['role' => 'assistant', 'content' => 'hola', 'channel' => 'messenger', 'direction' => 'out', 'external_id' => 'mid.READ', 'status' => 'read']);
+    ChannelAccount::factory()->channel(Channel::Messenger)->create(['external_id' => 'P1', 'app_secret' => 'pg-secret']);
+
+    metaPost(['object' => 'page', 'entry' => [['id' => 'P1', 'messaging' => [['sender' => ['id' => 'x'], 'delivery' => ['mids' => ['mid.READ']]]]]]], 'pg-secret')->assertOk();
+
+    expect($message->fresh()->status)->toBe('read');
+});
+
+test('events of other meta products sent to the social webhook are ignored', function () {
+    Queue::fake();
+
+    metaPost(['object' => 'whatsapp_business_account'] + dm('instagram', 'IG1', ['mid' => 'm9', 'text' => 'hola']), 'ig-secret')->assertOk();
+
+    Queue::assertNothingPushed();
+});
