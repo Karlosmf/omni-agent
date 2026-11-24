@@ -101,6 +101,32 @@
                         </table>
                     </div>
                 @endforeach
+
+                @if ($byLostReason !== [])
+                    <div class="lo-scroll">
+                        <p class="omni-strong omni-text-sm" style="margin: 0 0 .5rem;">Motivos de pérdida</p>
+                        <table class="lo-table">
+                            <thead>
+                                <tr><th></th><th>Perdidas</th><th>% de las perdidas</th></tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($byLostReason as $row)
+                                    <tr>
+                                        <td>{{ $row['label'] }}</td>
+                                        <td>
+                                            @if ($row['lost_reason'] !== null)
+                                                <a href="{{ $this->listUrl($stats, 'perdidas', ['lost_reason' => ['value' => $row['lost_reason']]]) }}">{{ $row['lost'] }}</a>
+                                            @else
+                                                {{ $row['lost'] }}
+                                            @endif
+                                        </td>
+                                        <td>{{ number_format($row['share'], 1, ',', '.') }}%</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
             </div>
         @endif
     </x-filament::section>

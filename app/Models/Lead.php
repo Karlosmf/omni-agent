@@ -6,6 +6,7 @@ use App\Enums\BookingStatus;
 use App\Enums\Channel;
 use App\Enums\LeadStatus;
 use App\Enums\LeadTemperature;
+use App\Enums\LostReason;
 use App\Enums\UserRole;
 use App\Observers\LeadObserver;
 use Database\Factories\LeadFactory;
@@ -34,6 +35,9 @@ class Lead extends Model
         'source',
         'travel_package_id',
         'status',
+        'lost_reason',
+        'lost_note',
+        'lost_at',
         'customer_budget',
         'raw_message',
         'ai_data',
@@ -61,6 +65,8 @@ class Lead extends Model
 
     protected $casts = [
         'status' => LeadStatus::class,
+        'lost_reason' => LostReason::class,
+        'lost_at' => 'datetime',
         'temperature' => LeadTemperature::class,
         'ai_data' => 'array',
         'trip_data' => 'array',
@@ -121,6 +127,41 @@ class Lead extends Model
         if ($stage !== null && $stage !== $this->status) {
             $this->update(['status' => $stage]);
         }
+    }
+
+    /**
+     * Closes the inquiry as lost, keeping why. It may still have bookings that were never confirmed.
+     */
+    public function markAsLost(LostReason $reason, ?string $note = null): void
+    {
+        $this->update([
+            'status' => LeadStatus::Closed,
+            'lost_reason' => $reason,
+            'lost_note' => filled($note) ? $note : null,
+            'lost_at' => now(),
+        ]);
+    }
+
+    /**
+     * Whether a booking of this inquiry was paid a deposit or issued. Lists can preload it with {@see scopeWithConfirmedBooking()}.
+     */
+    public function hasConfirmedBooking(): bool
+    {
+        if (array_key_exists('has_confirmed_booking', $this->attributes)) {
+            return (bool) $this->attributes['has_confirmed_booking'];
+        }
+
+        return $this->bookings()->whereIn('status', BookingStatus::confirmed())->exists();
+    }
+
+    /**
+     * Adds whether each inquiry has a confirmed booking, to avoid a query per row.
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopeWithConfirmedBooking(Builder $query): void
+    {
+        $query->withExists(['bookings as has_confirmed_booking' => fn (Builder $bookings) => $bookings->whereIn('status', BookingStatus::confirmed())]);
     }
 
     public function messages(): HasMany

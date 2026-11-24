@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Pages;
 
 use App\Enums\LeadStatus;
 use App\Enums\LeadTemperature;
+use App\Filament\Admin\Resources\Leads\Actions\MarkAsLostAction;
 use App\Filament\Admin\Resources\Leads\LeadResource;
 use App\Models\Lead;
 use Filament\Actions\Action;
@@ -113,12 +114,44 @@ class LeadBoard extends Page
             return;
         }
 
+        // Closing an inquiry that was never sold means it was lost: ask why first.
+        if ($target === LeadStatus::Closed && MarkAsLostAction::canBeLost($lead)) {
+            $this->mountAction('markLost', ['lead' => $lead->id]);
+
+            return;
+        }
+
         $lead->update(['status' => $target]);
 
         Notification::make()
             ->title($lead->displayName().' → '.$target->getLabel())
             ->success()
             ->send();
+    }
+
+    /**
+     * Opened when a card that was never sold is dropped on "Cerrada".
+     */
+    public function markLostAction(): Action
+    {
+        return Action::make('markLost')
+            ->modalHeading('¿Por qué se perdió la consulta?')
+            ->modalSubmitActionLabel('Marcar como perdida')
+            ->schema(MarkAsLostAction::schema())
+            ->action(function (array $data, array $arguments): void {
+                $lead = LeadResource::getEloquentQuery()->find($arguments['lead'] ?? null);
+
+                if (! $lead || Gate::denies('update', $lead)) {
+                    return;
+                }
+
+                $lead->markAsLost(MarkAsLostAction::reason($data['lost_reason']), $data['lost_note'] ?? null);
+
+                Notification::make()
+                    ->title($lead->displayName().' → Perdida')
+                    ->success()
+                    ->send();
+            });
     }
 
     public function editUrl(Lead $lead): string

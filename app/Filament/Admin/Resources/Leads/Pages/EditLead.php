@@ -7,6 +7,7 @@ use App\Filament\Admin\Concerns\HasBudgetGenerationModal;
 use App\Filament\Admin\Pages\WhatsAppInbox;
 use App\Filament\Admin\Resources\Bookings\BookingResource;
 use App\Filament\Admin\Resources\Customers\CustomerResource;
+use App\Filament\Admin\Resources\Leads\Actions\MarkAsLostAction;
 use App\Filament\Admin\Resources\Leads\LeadResource;
 use App\Models\Lead;
 use App\Services\LeadBookingDraftService;
@@ -46,6 +47,8 @@ class EditLead extends EditRecord
 
                     return redirect()->to(BookingResource::getUrl('edit', ['record' => $booking->id]));
                 }),
+
+            MarkAsLostAction::make(),
 
             DeleteAction::make()
                 ->label('Eliminar')

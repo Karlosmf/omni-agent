@@ -60,6 +60,7 @@ class LeadOutcomesWidget extends Widget
             'totals' => $stats->totals(),
             'bySource' => $stats->bySource(),
             'byAgent' => $stats->byAgent(),
+            'byLostReason' => $stats->byLostReason(),
             'periods' => LeadOutcomeStats::PERIODS,
         ];
     }

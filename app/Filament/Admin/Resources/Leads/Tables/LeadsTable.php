@@ -5,9 +5,11 @@ namespace App\Filament\Admin\Resources\Leads\Tables;
 use App\Actions\Leads\CreateBookingFromLeadAction;
 use App\Enums\LeadStatus;
 use App\Enums\LeadTemperature;
+use App\Enums\LostReason;
 use App\Filament\Admin\Concerns\HasBudgetGenerationModal;
 use App\Filament\Admin\Resources\Bookings\BookingResource;
 use App\Filament\Admin\Resources\Customers\CustomerResource;
+use App\Filament\Admin\Resources\Leads\Actions\MarkAsLostAction;
 use App\Filament\Admin\Resources\Leads\Pages\EditLead;
 use App\Filament\Exporters\LeadExporter;
 use App\Models\Lead;
@@ -34,6 +36,7 @@ class LeadsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query): Builder => $query->withConfirmedBooking())
             ->columns([
                 TextColumn::make('customer.name')
                     ->label('Nombre')
@@ -55,6 +58,7 @@ class LeadsTable
                 TextColumn::make('status')
                     ->label('Estado')
                     ->badge()
+                    ->description(fn (Lead $record): ?string => $record->lost_reason?->getLabel())
                     ->sortable(),
                 IconColumn::make('needs_human_attention')
                     ->label('Atención')
@@ -105,6 +109,9 @@ class LeadsTable
                     ->label('Origen')
                     ->options(fn (): array => Lead::query()->whereNotNull('source')->distinct()->orderBy('source')->pluck('source')
                         ->mapWithKeys(fn (string $source): array => [$source => Lead::sourceLabel($source)])->all()),
+                SelectFilter::make('lost_reason')
+                    ->label('Motivo de pérdida')
+                    ->options(LostReason::class),
                 SelectFilter::make('agent_id')
                     ->label('Vendedor')
                     ->relationship('agent', 'name'),
@@ -163,6 +170,7 @@ class LeadsTable
 
                             return redirect()->to(BookingResource::getUrl('edit', ['record' => $booking->id]));
                         }),
+                    MarkAsLostAction::make(),
                     DeleteAction::make()
                         ->label('Eliminar')
                         ->icon('heroicon-o-trash'),

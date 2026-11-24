@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Enums\BookingStatus;
 use App\Enums\LeadStatus;
+use App\Enums\LostReason;
 use App\Models\Booking;
 use App\Models\Lead;
 use App\Models\User;
@@ -42,8 +43,8 @@ class LeadOutcomeStats
             'last_30_days' => [$now->subDays(29)->startOfDay(), $now->endOfDay()],
             'this_year' => [$now->startOfYear(), $now->endOfDay()],
             'custom' => [
-                $from ? CarbonImmutable::parse($from)->startOfDay() : $now->startOfMonth(),
-                $until ? CarbonImmutable::parse($until)->endOfDay() : $now->endOfDay(),
+                self::date($from)?->startOfDay() ?? $now->startOfMonth(),
+                self::date($until)?->endOfDay() ?? $now->endOfDay(),
             ],
             default => [$now->startOfMonth(), $now->endOfMonth()],
         };
@@ -53,6 +54,20 @@ class LeadOutcomeStats
         }
 
         return new self($start, $end, $viewer);
+    }
+
+    /**
+     * A Y-m-d date from the range picker; anything else (the value comes from the browser) counts as not given.
+     */
+    private static function date(?string $value): ?CarbonImmutable
+    {
+        if (! is_string($value) || preg_match('/^\d{4}-\d{2}-\d{2}$/', $value) !== 1) {
+            return null;
+        }
+
+        $date = CarbonImmutable::createFromFormat('!Y-m-d', $value);
+
+        return $date && $date->format('Y-m-d') === $value ? $date : null;
     }
 
     /**
@@ -93,6 +108,37 @@ class LeadOutcomeStats
                 'label' => $row->agent_id === null ? 'Sin asignar' : ($names[$row->agent_id] ?? 'Usuario eliminado'),
             ] + $this->row($row))
             ->sortByDesc('received')
+            ->values()
+            ->all();
+    }
+
+    /**
+     * Why the lost inquiries of the period were lost, most common first. Inquiries closed before reasons
+     * were asked for show up as "Sin motivo", last among equals.
+     *
+     * @return list<array{lost_reason: ?string, label: string, lost: int, share: float}>
+     */
+    public function byLostReason(): array
+    {
+        $rows = $this->query()
+            ->lost()
+            ->selectRaw('leads.lost_reason, count(*) as lost')
+            ->groupBy('leads.lost_reason')
+            ->toBase()
+            ->get();
+        $total = (int) $rows->sum('lost');
+
+        return $rows
+            ->map(fn (object $row): array => [
+                'lost_reason' => $row->lost_reason,
+                'label' => LostReason::tryFrom((string) $row->lost_reason)?->getLabel() ?? 'Sin motivo',
+                'lost' => (int) $row->lost,
+                'share' => $total > 0 ? round($row->lost / $total * 100, 1) : 0.0,
+            ])
+            ->sortBy([
+                ['lost', 'desc'],
+                fn (array $a, array $b): int => ($a['lost_reason'] === null) <=> ($b['lost_reason'] === null),
+            ])
             ->values()
             ->all();
     }

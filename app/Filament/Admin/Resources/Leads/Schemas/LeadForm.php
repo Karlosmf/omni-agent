@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Leads\Schemas;
 
 use App\Enums\LeadStatus;
+use App\Enums\LostReason;
 use App\Enums\UserRole;
 use App\Models\Lead;
 use App\Services\Bot\TripData;
@@ -14,6 +15,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 class LeadForm
@@ -44,13 +46,27 @@ class LeadForm
                                 Select::make('status')
                                     ->label('Estado de la Consulta')
                                     ->options(LeadStatus::class)
-                                    ->required(),
+                                    ->required()
+                                    ->live(),
                                 Select::make('agent_id')
                                     ->label('Agente Asignado')
                                     ->relationship('agent', 'name', fn ($query) => $query->where('role', UserRole::Sales)->orWhere('role', UserRole::Admin))
                                     ->default(fn () => auth()->check() ? auth()->id() : null)
                                     ->searchable()
                                     ->preload(),
+                            ]),
+                        Grid::make(3)
+                            ->visible(fn (Get $get): bool => self::isClosed($get('status')))
+                            ->schema([
+                                Select::make('lost_reason')
+                                    ->label('Motivo de pérdida')
+                                    ->helperText('Dejalo vacío si se cerró por otra razón (por ejemplo, el viaje ya se hizo).')
+                                    ->options(LostReason::class),
+                                Textarea::make('lost_note')
+                                    ->label('Detalle')
+                                    ->maxLength(500)
+                                    ->rows(2)
+                                    ->columnSpan(2),
                             ]),
                     ]),
                 Section::make('Datos del viaje')
@@ -88,5 +104,10 @@ class LeadForm
                             ->columnSpanFull(),
                     ]),
             ]);
+    }
+
+    private static function isClosed(mixed $status): bool
+    {
+        return $status === LeadStatus::Closed || $status === LeadStatus::Closed->value;
     }
 }

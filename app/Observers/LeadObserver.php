@@ -33,6 +33,24 @@ class LeadObserver
     }
 
     /**
+     * A reason given by hand dates the loss; reopening the inquiry forgets why it was lost.
+     */
+    public function updating(Lead $lead): void
+    {
+        if ($lead->status !== LeadStatus::Closed) {
+            $lead->lost_reason = null;
+            $lead->lost_note = null;
+            $lead->lost_at = null;
+
+            return;
+        }
+
+        if ($lead->lost_reason !== null && $lead->lost_at === null) {
+            $lead->lost_at = now();
+        }
+    }
+
+    /**
      * Moving a lead out of "new" counts as contacting it.
      */
     public function updated(Lead $lead): void

@@ -147,3 +147,10 @@ it('lists the open inquiries of a seller on the open tab', function () {
         ->assertCanSeeTableRecords([$leads['quoted'], $leads['openLastMonth']])
         ->assertCanNotSeeTableRecords([$leads['open'], $leads['soldThenClosed'], $leads['lost']]);
 });
+
+it('falls back to this month when the custom range is not a valid date', function () {
+    $stats = LeadOutcomeStats::forPeriod('custom', 'abc', '2026-02-31', $this->admin);
+
+    expect($stats->from->toDateString())->toBe('2026-11-01')
+        ->and($stats->until->toDateString())->toBe('2026-11-20');
+});
