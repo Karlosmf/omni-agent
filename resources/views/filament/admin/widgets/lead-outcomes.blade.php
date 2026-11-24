@@ -8,6 +8,10 @@
         .dark .lo-card { border-color: rgb(255 255 255 / .1); }
         a.lo-card:hover { border-color: var(--primary-500); }
         .lo-value { font-size: 1.75rem; font-weight: 600; line-height: 1.2; }
+        .lo-breakdown { display: grid; gap: 1.5rem; grid-template-columns: minmax(0, 1fr); margin-top: 1.5rem; }
+        @media (min-width: 1400px) { .lo-breakdown { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        .lo-scroll { min-width: 0; overflow-x: auto; }
+        .lo-table th, .lo-table td { white-space: nowrap; }
         .lo-table { width: 100%; border-collapse: collapse; font-size: .875rem; }
         .lo-table th, .lo-table td { padding: .4rem .5rem; text-align: right; border-bottom: 1px solid var(--gray-200); }
         .dark .lo-table th, .dark .lo-table td { border-color: rgb(255 255 255 / .1); }
@@ -61,9 +65,9 @@
         </div>
 
         @if ($totals['received'] > 0)
-            <div class="omni-two" style="margin-top: 1.5rem;">
+            <div class="lo-breakdown">
                 @foreach ([['Por origen', $bySource, 'source'], ['Por vendedor', $byAgent, 'agent_id']] as [$title, $rows, $filter])
-                    <div>
+                    <div class="lo-scroll">
                         <p class="omni-strong omni-text-sm" style="margin: 0 0 .5rem;">{{ $title }}</p>
                         <table class="lo-table">
                             <thead>
